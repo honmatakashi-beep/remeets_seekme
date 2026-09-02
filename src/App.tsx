@@ -1,4 +1,5 @@
 import { cn, PREFECTURES, formatEraLabel, getCategoryText, getPostUrl, PageHeader } from './lib/utils';
+import { type User, AuthProvider, AuthContext, useAuth, ConfirmContext, useConfirm, useNgFilter } from './contexts/AuthContext';
 import React, { useState, useEffect, createContext, useContext, useRef, Component } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useParams, Navigate, useLocation, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -8,7 +9,7 @@ import {
   LineChart, Line, AreaChart, Area, PieChart, Pie, Cell, Legend 
 } from 'recharts';
 import { 
-  Search, PlusCircle, Heart, MapPin, User, Lock, Mail, ArrowLeft, ArrowRight, ArrowDown, 
+  Search, PlusCircle, Heart, MapPin, User as UserIcon, Lock, Mail, ArrowLeft, ArrowRight, ArrowDown, 
   CheckCircle2, CheckCircle, LogIn, LogOut, MessageSquare, Send, Share2, Shield, Activity, Facebook, 
   Trash2, Users, AlertCircle, Image as ImageIcon, HelpCircle, BookOpen, Eye, EyeOff, X, Plus, MoreVertical, Bot, Edit, Edit2, Edit3,
   Clock, Tag, Info, School, ShieldAlert, RefreshCw, Wind, MessageSquareX, FileWarning, UserCheck,
@@ -68,91 +69,6 @@ import quizMatchHearts from './assets/images/quiz_match_hearts_pastel_1785940521
 import heroBottleMail from './assets/images/hero_small_bottle_mail_1785944479619.jpg';
 
 // --- Core Auth Context & State Managers ---
-
-interface User {
-  id: number;
-  username: string;
-  name?: string;
-  fullName?: string;
-  lastName?: string;
-  firstName?: string;
-  nickname?: string;
-  email?: string;
-  role?: string;
-  is_blocked?: boolean;
-  is_ekyc_verified?: boolean;
-  is_supporter?: boolean;
-  email_notifications?: boolean;
-  contact_type?: string;
-  contact_id?: string;
-}
-
-interface AuthContextType {
-  user: User | null;
-  token: string | null;
-  login: (token: string, user: User) => void;
-  logout: () => void;
-  updateUser: (updatedFields: Partial<User>) => void;
-  loading: boolean;
-}
-
-const AuthContext = createContext<AuthContextType | null>(null);
-
-const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const savedToken = localStorage.getItem('token');
-    const savedUser = localStorage.getItem('user');
-    if (savedToken && savedUser) {
-      setToken(savedToken);
-      try {
-        setUser(JSON.parse(savedUser));
-      } catch (e) {
-        console.error(e);
-      }
-    }
-    setLoading(false);
-  }, []);
-
-  const login = (newToken: string, newUser: User) => {
-    setToken(newToken);
-    setUser(newUser);
-    localStorage.setItem('token', newToken);
-    localStorage.setItem('user', JSON.stringify(newUser));
-  };
-
-  const logout = () => {
-    setToken(null);
-    setUser(null);
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-  };
-
-  const updateUser = (updatedFields: Partial<User>) => {
-    setUser(prev => {
-      if (!prev) return null;
-      const nextUser = { ...prev, ...updatedFields };
-      localStorage.setItem('user', JSON.stringify(nextUser));
-      return nextUser;
-    });
-  };
-
-  return (
-    <AuthContext.Provider value={{ user, token, login, logout, updateUser, loading }}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
-
-const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) throw new Error('useAuth must be used within an AuthProvider');
-  return context;
-};
-
 // --- LoginPage Component ---
 
 const LoginPage = () => {
@@ -275,34 +191,6 @@ const LoginPage = () => {
       </div>
     </div>
   );
-};
-
-// --- Confirmation Dialog Context ---
-
-interface ConfirmContextType {
-  showConfirm: (title: string, message: string, onConfirm: () => void) => void;
-}
-
-const ConfirmContext = createContext<ConfirmContextType | null>(null);
-
-const useConfirm = () => {
-  const context = useContext(ConfirmContext);
-  if (!context) throw new Error('useConfirm must be used within ConfirmProvider');
-  return context;
-};
-
-// --- NG Word Filter Hook ---
-
-const useNgFilter = () => {
-  const check = (val: string): string | null => {
-    // Basic fallback check for harmful phrases or placeholders
-    const badPatterns = ['死ね', '殺す', '痴漢', '援助交際', '買春'];
-    for (const pattern of badPatterns) {
-      if (val.includes(pattern)) return pattern;
-    }
-    return null;
-  };
-  return { check };
 };
 
 // --- Common UI Components ---
@@ -639,7 +527,7 @@ const Navbar = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) => {
                     className="flex items-center justify-between px-3 py-2.5 text-xs text-slate-700 hover:text-sky-600 hover:bg-sky-50/60 rounded-xl transition-all font-semibold text-left"
                   >
                     <div className="flex items-center gap-3">
-                      <User size={16} className="text-sky-600 shrink-0" />
+                      <UserIcon size={16} className="text-sky-600 shrink-0" />
                       <span>マイアカウント</span>
                     </div>
                     {unreadCount > 0 && (
@@ -3936,7 +3824,7 @@ const AccountPage = () => {
     <div className="max-w-5xl mx-auto px-4 md:px-8 py-10 md:py-16 space-y-8 text-black">
       {/* Account Header Section */}
       <PageHeader
-        icon={<User size={24} className="text-sky-600" />}
+        icon={<UserIcon size={24} className="text-sky-600" />}
         iconBoxClassName="bg-sky-50 text-sky-600 border border-sky-100"
         category="My Account Dashboard"
         badge={
@@ -4495,7 +4383,7 @@ const AccountPage = () => {
           <div className="space-y-2">
             <div className="flex items-center justify-between px-1 text-[11px] font-bold text-slate-500">
               <span className="flex items-center gap-1.5 font-sans">
-                <User size={13} className="text-teal-600" />
+                <UserIcon size={13} className="text-teal-600" />
                 <span>マイアカウント管理（タブを選択して表示項目を切り替え）</span>
               </span>
               <span className="text-[10px] text-teal-800 font-extrabold bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200/60">
@@ -12971,7 +12859,7 @@ const EditPostPage = () => {
             {/* あなたのこと */}
             <section className="space-y-8">
               <div className="flex items-center gap-3 pb-2 border-b border-brand-primary/20">
-                <User className="text-black" size={20} />
+                <UserIcon className="text-black" size={20} />
                 <h2 className="text-xl font-bold text-black">あなたのこと</h2>
               </div>
               
@@ -13730,7 +13618,7 @@ const CreatePostPage = () => {
           {/* お相手の情報 */}
           <div className="space-y-5 bg-white/80 p-5 md:p-6 rounded-2xl border-2 border-teal-200/90 shadow-xs overflow-hidden">
             <h3 className="text-base sm:text-lg md:text-xl font-black text-teal-950 flex items-center gap-2.5 border-b-2 border-teal-600/70 bg-gradient-to-r from-teal-100/80 to-sky-100/60 -mx-5 -mt-5 p-4 md:-mx-6 md:-mt-6 md:p-5">
-              <User size={24} className="text-teal-700 shrink-0" />
+              <UserIcon size={24} className="text-teal-700 shrink-0" />
               <span>1. 探しているお相手の情報</span>
             </h3>
             
@@ -15236,7 +15124,7 @@ const ChatComponent = ({ postId, otherUserId, otherUserName, otherUserFullName, 
       <div className="px-6 md:px-8 py-4 md:py-5 bg-white border-b border-brand-border flex items-center gap-4 md:gap-6 relative z-20 shadow-sm">
         <div className="relative flex-shrink-0">
           <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-brand-primary/10 flex items-center justify-center text-black shadow-inner border border-brand-primary/5">
-            <User size={24} className="md:w-7 md:h-7" />
+            <UserIcon size={24} className="md:w-7 md:h-7" />
           </div>
           <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 md:w-4 md:h-4 rounded-full bg-emerald-500 border-2 md:border-4 border-white shadow-sm" />
         </div>
@@ -16170,7 +16058,7 @@ const RevealContactModal = ({
                   }}
                   className="w-full py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98"
                 >
-                  <User size={16} />
+                  <UserIcon size={16} />
                   <span>マイアカウントで手紙・連絡先を確認する →</span>
                 </button>
                 <button
@@ -19521,7 +19409,7 @@ const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void })
                         to="/account" 
                         className="w-full py-3.5 bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-sm rounded-2xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98"
                       >
-                        <User size={16} />
+                        <UserIcon size={16} />
                         <span>マイアカウントですべての情報を確認する →</span>
                       </Link>
                     </div>
@@ -22674,7 +22562,7 @@ const AdminDashboard = () => {
       title: 'Account',
       items: [
         { id: 'home', label: 'HOMEに戻る', icon: ArrowLeft, onClick: () => navigate('/') },
-        { id: 'account', label: 'マイページ', icon: User, onClick: () => navigate('/account') },
+        { id: 'account', label: 'マイページ', icon: UserIcon, onClick: () => navigate('/account') },
         { id: 'logout', label: 'ログアウト', icon: LogOut, onClick: () => { logout(); navigate('/'); } },
       ]
     }
@@ -25210,7 +25098,7 @@ const AdminDashboard = () => {
                             </div>
                             <div className="flex items-center gap-4 text-[12px] font-bold text-black/75 uppercase tracking-widest">
                               <div className="flex items-center gap-1.5">
-                                <User size={14} /> {p.searcher_username}
+                                <UserIcon size={14} /> {p.searcher_username}
                               </div>
                               <div className="w-1 h-1 rounded-full bg-brand-border" />
                               <div className="flex items-center gap-1.5">
@@ -25258,7 +25146,7 @@ const AdminDashboard = () => {
                             </div>
                             <div className="flex items-center gap-4 text-[12px] font-bold text-black/75 uppercase tracking-widest">
                               <div className="flex items-center gap-1.5">
-                                <User size={14} /> {p.searcher_username}
+                                <UserIcon size={14} /> {p.searcher_username}
                               </div>
                               <div className="w-1 h-1 rounded-full bg-brand-border" />
                               <div className="flex items-center gap-1.5">
@@ -31122,7 +31010,7 @@ const SitemapPage = () => {
     },
     {
       title: "アカウント",
-      icon: <User size={20} />,
+      icon: <UserIcon size={20} />,
       links: [
         { label: "ログイン", path: "/login" },
         { label: "新規登録", path: "/register" },
