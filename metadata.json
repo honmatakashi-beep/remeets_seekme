@@ -1,0 +1,10 @@
+{
+  "name": "Remix2: ReMEETs〜再会のボトルメール〜",
+  "description": "同窓生、元恋人、元バンド仲間、元職場仲間。昭和の時代に繋がっていた大切な人たちへ、ボトルメールを流すように想いを綴る再会掲示板。海を漂う言葉が、いつか誰かの元へ届くことを願って。",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

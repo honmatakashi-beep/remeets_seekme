@@ -1,0 +1,1154 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@200;300;400;500;600;700&family=New+Tegomin&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Noto Sans JP", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+  --font-serif: "Noto Serif JP", serif;
+  --font-chalk: "New Tegomin", serif;
+  
+  --color-brand-primary: #1B2B34; /* Deep Indigo Navy */
+  --color-brand-light: #FDF9F0; /* Pale Yellow Japanese Washi Base */
+  --color-brand-dark: #0A1419; /* Midnight Blue-Black */
+  --color-brand-border: #D1E0E3; /* Soft Horizon */
+  --color-brand-accent: #4A90E2; /* Accent Clean Blue (Muted soft blue) */
+  --color-brand-surface: #F5F2ED; /* Warm Sand */
+  --color-brand-blue: #3A6B88; /* Clear Primary Blue (Muted calm slate-blue) */
+}
+
+@layer base {
+  * {
+    @apply border-brand-border;
+  }
+
+  ::placeholder {
+    opacity: 1 !important;
+  }
+
+  input::placeholder,
+  textarea::placeholder,
+  select::placeholder {
+    opacity: 1 !important;
+  }
+
+  html {
+    scroll-behavior: initial;
+    font-size: 16px;
+  }
+  
+  @media (max-width: 768px) {
+    html {
+      font-size: 15px;
+    }
+  }
+
+  /* Global visibility improvements for small text */
+  .text-\[10px\] {
+    font-size: 0.8125rem !important; /* 13px */
+  }
+  .text-\[11px\] {
+    font-size: 0.875rem !important; /* 14px */
+  }
+  .text-xs {
+    font-size: 0.9375rem !important; /* 15px */
+  }
+
+  /* --- Universal Enclosed Borders for ALL Input Forms Site-Wide --- */
+  input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="color"]):not([type="range"]):not([type="file"]),
+  textarea,
+  select {
+    border-width: 1px;
+    border-style: solid;
+    border-color: #94a3b8; /* slate-400 crisp distinct border */
+    background-color: #ffffff;
+    border-radius: 0.75rem; /* rounded-xl */
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  }
+
+  input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="color"]):not([type="range"]):not([type="file"]):hover,
+  textarea:hover,
+  select:hover {
+    border-color: #475569; /* slate-600 on hover */
+  }
+
+  input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="color"]):not([type="range"]):not([type="file"]):focus,
+  textarea:focus,
+  select:focus {
+    border-color: #0d9488; /* teal-600 on focus */
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.2);
+  }
+  
+  html.lenis, html.lenis body {
+    height: auto;
+  }
+
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+    touch-action: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(10, 20, 25, 0.03);
+    border-radius: 9999px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-brand-dark/25 rounded-full;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-brand-dark/45;
+  }
+  
+  body {
+    background-color: #FDF9F0; /* Pale yellow Washi Base */
+    background-image: 
+      /* Subtle cloudy organic texture */
+      radial-gradient(at 10% 10%, rgba(255, 252, 243, 0.6) 0%, transparent 60%),
+      radial-gradient(at 90% 20%, rgba(250, 242, 218, 0.7) 0%, transparent 50%),
+      radial-gradient(at 50% 80%, rgba(253, 247, 227, 0.7) 0%, transparent 60%),
+      radial-gradient(at 80% 90%, rgba(255, 254, 248, 0.8) 0%, transparent 40%),
+      /* High-fidelity washi paper fiber noise */
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='washiFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.035' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.0 0.0 0.0 0.0 0.98 0.0 0.0 0.0 0.0 0.95 0.0 0.0 0.0 0.0 0.88 0.0 0.0 0.0 0.045 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23washiFilter)'/%3E%3C/svg%3E");
+    background-attachment: fixed;
+    background-repeat: repeat;
+    @apply text-brand-dark font-sans antialiased font-[400] overflow-x-hidden transition-colors duration-300;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* --- Moving Rainbow Designs for Hero Copy --- */
+  @keyframes moving-rainbow-text {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+  }
+  .animated-rainbow-text {
+    background: linear-gradient(
+      90deg,
+      #38bdf8 0%,
+      #818cf8 7.14%,
+      #c084fc 14.28%,
+      #f472b6 21.42%,
+      #fb923c 28.57%,
+      #facc15 35.71%,
+      #2dd4bf 42.85%,
+      #38bdf8 50%,
+      #818cf8 57.14%,
+      #c084fc 64.28%,
+      #f472b6 71.42%,
+      #fb923c 78.57%,
+      #facc15 85.71%,
+      #2dd4bf 92.85%,
+      #38bdf8 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    color: transparent !important;
+    animation: moving-rainbow-text 10s linear infinite;
+    display: inline-block;
+  }
+
+  @keyframes moving-rainbow-aura {
+    0% { transform: translate(-50%, -50%) rotate(0deg) scale(0.95); opacity: 0.40; }
+    50% { transform: translate(-50%, -50%) rotate(180deg) scale(1.15); opacity: 0.60; }
+    100% { transform: translate(-50%, -50%) rotate(360deg) scale(0.95); opacity: 0.40; }
+  }
+  .rainbow-aura-bg {
+    background: conic-gradient(
+      from 180deg at 50% 50%,
+      #ff4e50 0deg,
+      #fcae41 60deg,
+      #10ca98 120deg,
+      #00b0ff 180deg,
+      #8b5cf6 240deg,
+      #ec4899 300deg,
+      #ff4e50 360deg
+    );
+    animation: moving-rainbow-aura 15s linear infinite;
+    filter: blur(48px);
+    will-change: transform;
+  }
+
+  @keyframes moving-prism {
+    0% { background-position: 0% 50%; filter: hue-rotate(0deg); }
+    50% { background-position: 100% 50%; filter: hue-rotate(180deg); }
+    100% { background-position: 0% 50%; filter: hue-rotate(360deg); }
+  }
+  .animated-prism-text {
+    background: linear-gradient(
+      135deg,
+      #e0c3fc 0%,
+      #8ec5fc 30%,
+      #feedf7 60%,
+      #fbc2eb 100%
+    );
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: moving-prism 12s ease-in-out infinite;
+    display: inline-block;
+  }
+  /* ------------------------------------------- */
+
+  h1, h2, h3, h4, h5, h6, p, span, div, label, input, textarea, select, a {
+    opacity: 1 !important;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif font-[500] tracking-[0.1em] leading-tight text-brand-blue;
+  }
+
+  p {
+    @apply text-lg leading-relaxed font-[400] font-sans text-brand-primary/80;
+  }
+
+  button, input, textarea, select {
+    @apply font-sans;
+  }
+
+  .font-serif {
+    font-weight: 300;
+  }
+
+  .font-bold {
+    font-weight: 600 !important;
+  }
+
+  .font-medium {
+    font-weight: 500 !important;
+  }
+
+  .text-ui {
+    @apply text-sm leading-normal font-sans font-[400] tracking-wider;
+  }
+
+  .text-letter {
+    @apply font-serif leading-loose font-[300];
+  }
+}
+
+.nostalgic-grain {
+  display: none;
+}
+
+.sepia-filter {
+  filter: none;
+}
+
+/* ==========================================
+   DYNAMIC WATER-SURFACE GLASSMORPHISM SYSTEM
+   ========================================== */
+@keyframes water-liquid-flow {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+.glass-card {
+  position: relative;
+  /* Translucent pure base to let background ambient aurora glow through, like clear water */
+  background: rgba(255, 255, 255, 0.45) !important;
+  backdrop-filter: blur(28px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(160%) !important;
+  
+  /* Specular dispersion highlights along physical container edges */
+  border: 1px solid rgba(255, 255, 255, 0.65) !important;
+  border-radius: 32px;
+  box-shadow: 
+    0 1px 3px 0 rgba(255, 255, 255, 0.8) inset,
+    0 4px 18px rgba(72, 119, 153, 0.04),
+    0 15px 35px rgba(30, 60, 80, 0.03),
+    inset 0 -6px 15px rgba(118, 206, 228, 0.05),
+    inset 0 4px 12px rgba(255, 255, 255, 0.6) !important;
+  
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  overflow: hidden;
+}
+
+.glass-card::before {
+  content: "" !important;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(255, 255, 255, 0.05) 30%,
+    rgba(165, 235, 245, 0.12) 50%,
+    rgba(255, 255, 255, 0.02) 70%,
+    rgba(255, 255, 255, 0.35) 100%
+  ) !important;
+  background-size: 200% 200% !important;
+  animation: water-liquid-flow 18s ease-in-out infinite alternate !important;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Underwater caustics overlay */
+.glass-card::after {
+  content: "" !important;
+  position: absolute;
+  inset: -100%;
+  background: radial-gradient(
+    circle at 35% 25%,
+    rgba(141, 231, 247, 0.15) 0%,
+    rgba(255, 255, 255, 0.05) 40%,
+    transparent 70%
+  ) !important;
+  transform: rotate(0deg) !important;
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 1;
+  transition: opacity 0.8s ease, transform 0.8s ease !important;
+  animation: water-liquid-flow 25s linear infinite !important;
+}
+
+.glass-card:hover {
+  transform: translateY(-5px) !important;
+  background: rgba(255, 255, 255, 0.58) !important;
+  border-color: rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 
+    0 1px 4px 0 rgba(255, 255, 255, 0.9) inset,
+    0 24px 50px rgba(72, 119, 153, 0.12),
+    inset 0 -8px 20px rgba(118, 206, 228, 0.1),
+    inset 0 6px 18px rgba(255, 255, 255, 0.8) !important;
+}
+
+.glass-card:hover::after {
+  opacity: 0.35 !important;
+  transform: rotate(15deg) scale(1.05) !important;
+}
+
+.bottle-card {
+  position: relative;
+  /* Deep bottle water teal/blue tint for deeper aquatic levels */
+  background: rgba(72, 119, 153, 0.09) !important;
+  backdrop-filter: blur(28px) saturate(170%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(170%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.45) !important;
+  border-radius: 32px;
+  box-shadow: 
+    0 1px 3px 0 rgba(255, 255, 255, 0.5) inset,
+    0 18px 40px rgba(30, 60, 80, 0.06),
+    inset 0 4px 20px rgba(255, 255, 255, 0.2),
+    inset 0 -6px 20px rgba(72, 119, 153, 0.15) !important;
+  overflow: hidden;
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.bottle-card::before {
+  content: "" !important;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.25) 0%,
+    rgba(255, 255, 255, 0.02) 40%,
+    rgba(72, 119, 153, 0.12) 60%,
+    rgba(141, 231, 247, 0.25) 100%
+  ) !important;
+  background-size: 200% 200% !important;
+  animation: water-liquid-flow 15s ease-in-out infinite alternate !important;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.bottle-card:hover {
+  transform: translateY(-5px) !important;
+  background: rgba(72, 119, 153, 0.15) !important;
+  border-color: rgba(255, 255, 255, 0.6) !important;
+  box-shadow: 
+    0 1px 4px 0 rgba(255, 255, 255, 0.6) inset,
+    0 30px 60px rgba(30, 60, 80, 0.14),
+    inset 0 6px 24px rgba(255, 255, 255, 0.3),
+    inset 0 -8px 25px rgba(72, 119, 153, 0.22) !important;
+}
+
+.sepia-letter-card {
+  background-color: #fdf6e3; /* Light sepia */
+  background-image: 
+    linear-gradient(rgba(180, 160, 130, 0.4) 1px, transparent 1px);
+  background-size: 100% 2.5rem;
+  border: 1px solid #d2c1a5;
+  border-radius: 24px;
+  position: relative;
+  transition: all 0.5s ease;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+}
+
+.sepia-letter-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.1);
+  border-color: #1B2B34;
+}
+
+.sepia-letter-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: transparent;
+  pointer-events: none;
+}
+
+
+.glass-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: transparent;
+  pointer-events: none;
+}
+
+.btn-primary {
+  @apply bg-brand-primary text-brand-light px-8 py-4 rounded-full font-[400] transition-all hover:bg-brand-dark hover:shadow-2xl active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 tracking-[0.2em] text-sm uppercase;
+}
+
+.btn-secondary {
+  @apply bg-white text-brand-primary border border-brand-primary/20 px-8 py-4 rounded-full font-[400] transition-all hover:border-brand-primary hover:shadow-lg active:scale-95 flex items-center justify-center gap-2 tracking-[0.2em] text-sm uppercase;
+}
+
+.input-field {
+  @apply w-full px-6 py-4 rounded-xl border border-brand-border focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/20 outline-none transition-all bg-white text-lg text-black font-[300];
+}
+
+.atmosphere-bg {
+  @apply pointer-events-none;
+  background: radial-gradient(circle, currentColor 0%, transparent 70%);
+  filter: blur(60px);
+  will-change: transform;
+  animation: wave-ripple 20s ease-in-out infinite alternate;
+}
+
+@keyframes wave-ripple {
+  0% { transform: translate(0, 0) scale(1.1); opacity: 0.25; }
+  33% { transform: translate(4%, 5%) scale(1.3); opacity: 0.35; }
+  66% { transform: translate(-2%, 4%) scale(1.15); opacity: 0.3; }
+  100% { transform: translate(2%, -4%) scale(1.25); opacity: 0.25; }
+}
+
+@keyframes bottle-float {
+  0%, 100% { transform: translateY(0) rotate(-5deg); }
+  50% { transform: translateY(-15px) rotate(5deg); }
+}
+
+.bottle-float {
+  animation: bottle-float 3s ease-in-out infinite;
+}
+
+.vertical-text {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
+.ocean-hero {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 16px 48px rgba(10, 30, 45, 0.25);
+  background: linear-gradient(180deg, #0d2735 0%, #153c52 35%, #185a77 70%, #1a7f9c 100%);
+  transition: background 0.5s ease;
+}
+
+.ocean-texture {
+  position: relative;
+  overflow: hidden;
+}
+
+.ocean-hero::before,
+.ocean-texture::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.015' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.16;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  animation: water-drift 30s linear infinite;
+}
+
+.ocean-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% -10%, rgba(255, 255, 255, 0.18) 0%, rgba(200, 240, 255, 0.05) 50%, transparent 80%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+@keyframes water-drift {
+  from { background-position: 0 0; }
+  to { background-position: 800px 400px; }
+}
+
+@keyframes wave-sway-1 {
+  0%, 100% { transform: translateY(0) scaleY(1) skewX(0deg); }
+  50% { transform: translateY(-8px) scaleY(1.05) skewX(2deg); }
+}
+
+@keyframes wave-sway-2 {
+  0%, 100% { transform: translateY(0) scaleY(1.05) skewX(0deg); }
+  50% { transform: translateY(6px) scaleY(0.95) skewX(-2deg); }
+}
+
+@keyframes wave-sway-3 {
+  0%, 100% { transform: translateY(0) scaleY(0.98) rotate(0deg); }
+  50% { transform: translateY(-5px) scaleY(1.02) rotate(1deg); }
+}
+
+@keyframes css-caustics {
+  0%, 100% { opacity: 0.15; transform: scale(1) rotate(0deg); }
+  50% { opacity: 0.35; transform: scale(1.1) rotate(3deg); }
+}
+
+@keyframes caustics-sunray {
+  0%, 100% { opacity: 0.25; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(1.06); }
+}
+
+@keyframes css-blob-glow {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.08; }
+  50% { transform: translate(30px, -20px) scale(1.2); opacity: 0.18; }
+}
+
+@keyframes bubble-rise {
+  0% { transform: translateY(110%) scale(0.6); opacity: 0; }
+  10% { opacity: 0.7; }
+  90% { opacity: 0.7; }
+  100% { transform: translateY(-10%) scale(1.3); opacity: 0; }
+}
+
+.animate-wave-1 {
+  animation: wave-sway-1 12s ease-in-out infinite;
+}
+
+.animate-wave-2 {
+  animation: wave-sway-2 16s ease-in-out infinite;
+}
+
+.animate-wave-3 {
+  animation: wave-sway-3 20s ease-in-out infinite;
+}
+
+.animate-caustics {
+  animation: css-caustics 14s ease-in-out infinite;
+}
+
+.animate-sunray {
+  animation: caustics-sunray 10s ease-in-out infinite;
+}
+
+.animate-blob-1 {
+  animation: css-blob-glow 18s ease-in-out infinite;
+}
+
+.animate-blob-2 {
+  animation: css-blob-glow 24s ease-in-out infinite;
+}
+
+.animate-bubble {
+  animation: bubble-rise var(--bubble-duration, 14s) linear infinite;
+  animation-delay: var(--bubble-delay, 0s);
+}
+
+.water-surface {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.05) 0%, transparent 70%);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+@keyframes slow-zoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.15); }
+}
+
+/* Removed ::before overlay to brighten the hero section */
+
+.water-text {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  color: white;
+  text-shadow: 
+    0 4px 40px rgba(10, 30, 60, 0.9),
+    0 0 80px rgba(10, 30, 60, 0.6),
+    0 0 20px rgba(10, 30, 60, 0.4);
+  letter-spacing: 0.08em;
+}
+
+.hero-subtext {
+  text-shadow: 
+    0 2px 20px rgba(10, 30, 60, 1),
+    0 0 10px rgba(10, 30, 60, 0.8);
+  font-weight: 300;
+}
+
+.serif-normal {
+  font-family: var(--font-serif);
+  font-style: normal;
+}
+
+.markdown-body ul {
+  @apply list-disc pl-5 space-y-2;
+}
+
+.markdown-body li {
+  @apply leading-snug;
+}
+
+.markdown-body p {
+  @apply mb-4;
+}
+
+/* --- Professional Print Mode Styling Optimization --- */
+@media print {
+  body {
+    background-color: #ffffff !important;
+    background-image: none !important;
+    color: #000000 !important;
+    font-family: "Noto Serif JP", serif !important;
+  }
+  
+  /* Reset background gradients, card borders, and shadows globally for printing */
+  .glass-card, 
+  .bottle-card, 
+  .sepia-letter-card {
+    background-color: transparent !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    transform: none !important;
+    overflow: visible !important;
+  }
+
+  /* Force display headings to black with no text-shadow */
+  h1, h2, h3, h4, h5, h6 {
+    color: #000000 !important;
+    text-shadow: none !important;
+    font-family: "Noto Serif JP", serif !important;
+  }
+
+  button, 
+  a.print-hidden,
+  .print-hidden,
+  .print\:hidden {
+    display: none !important;
+  }
+
+  /* Make containers use full width to maximize printable space */
+  .max-w-4xl, 
+  .max-w-6xl, 
+  .container {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Ensure page margins are standard and text doesn't overflow */
+  @page {
+    size: A4;
+    margin: 20mm 15mm 20mm 15mm;
+  }
+
+  /* Hide headers and footers or unnecessary structures */
+  header, footer, nav, aside {
+    display: none !important;
+  }
+
+  /* --- Active Slide Preview ONLY Print Mode --- */
+  body.printing-active-slide-preview {
+    background-color: transparent !important;
+    background-image: none !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+
+  body.printing-active-slide-preview .print-hide-slide-target,
+  body.printing-active-slide-preview header,
+  body.printing-active-slide-preview footer,
+  body.printing-active-slide-preview nav,
+  body.printing-active-slide-preview main,
+  body.printing-active-slide-preview aside,
+  body.printing-active-slide-preview button,
+  body.printing-active-slide-preview .print-hidden,
+  body.printing-active-slide-preview .print\:hidden,
+  body.printing-active-slide-preview .mb-4,
+  body.printing-active-slide-preview div:not(.active-slide-print-target):not(.active-slide-print-target *) {
+    display: none !important;
+  }
+
+  body.printing-active-slide-preview #root,
+  body.printing-active-slide-preview .max-w-5xl,
+  body.printing-active-slide-preview .p-4,
+  body.printing-active-slide-preview .p-6,
+  body.printing-active-slide-preview .space-y-6,
+  body.printing-active-slide-preview .w-full {
+    display: block !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    border: none !important;
+  }
+
+  body.printing-active-slide-preview .active-slide-print-target {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 9999999 !important;
+    margin: 0 !important;
+    padding: 6% 10% !important;
+    box-sizing: border-box !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    overflow: hidden !important;
+  }
+
+  /* Ensure background colors are correct */
+  body.printing-active-slide-preview .layout-title {
+    background-color: #1C2B3C !important;
+    color: #FAFAF8 !important;
+  }
+
+  body.printing-active-slide-preview .layout-content {
+    background-color: #FAFAF8 !important;
+    color: #1A2735 !important;
+  }
+
+  body.printing-active-slide-preview .active-slide-print-target * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  @page {
+    size: landscape;
+    margin: 0;
+  }
+}
+
+/* --- Rainbow hover animation for target button --- */
+@keyframes moving-rainbow-bg {
+  0% { background-position: 0px 0px; }
+  100% { background-position: -400px 0px; }
+}
+
+.btn-hover-rainbow {
+  position: relative !important;
+  overflow: hidden !important;
+  background: transparent !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease !important;
+  z-index: 1 !important;
+}
+
+.btn-hover-rainbow::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 50, 75, 0.5) 0%,
+    rgba(255, 125, 0, 0.5) 15%,
+    rgba(255, 220, 0, 0.5) 28%,
+    rgba(0, 220, 120, 0.5) 42%,
+    rgba(0, 150, 255, 0.5) 58%,
+    rgba(160, 50, 255, 0.5) 75%,
+    rgba(235, 50, 160, 0.5) 88%,
+    rgba(255, 50, 75, 0.5) 100%
+  ) !important;
+  background-size: 400px 100% !important;
+  background-position: 0px 0px !important;
+  opacity: 0 !important;
+  transition: opacity 0.4s ease !important;
+  z-index: -2 !important;
+}
+
+.btn-hover-rainbow::after {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background-color: #ffffff !important;
+  opacity: 1 !important;
+  transition: opacity 0.4s ease !important;
+  z-index: -1 !important;
+}
+
+.btn-hover-rainbow:hover::before {
+  opacity: 1 !important;
+  animation: moving-rainbow-bg 3.5s linear infinite !important;
+}
+
+.btn-hover-rainbow:hover::after {
+  opacity: 0 !important;
+}
+
+
+/* ==========================================
+   ADMIN MANUAL PRINT / PDF EXPORT SYSTEM
+   ========================================== */
+@media print {
+  /* Reset background and fonts for clean paper layout */
+  html, body {
+    background: white !important;
+    background-image: none !important;
+    color: #111111 !important;
+    font-family: "Noto Serif JP", YuMincho, "Hiragino Mincho ProN", serif !important;
+    font-size: 11pt !important;
+    line-height: 1.5 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Composed UI elements - Hide all dashboard sidebars, tables, navigation, and trigger buttons */
+  #root,
+  header,
+  footer,
+  nav,
+  aside,
+  button,
+  .no-print,
+  #admin-sidebar,
+  .sidebar-collapsed,
+  .flex.flex-wrap.border-b.border-brand-border,
+  .flex.border-b.border-brand-border,
+  .glass-card > button {
+    display: none !important;
+  }
+
+  /* Full-width printer context window Container */
+  #admin-manual-print-container,
+  .print-area-active {
+    display: block !important;
+    visibility: visible !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    margin: 0 !important;
+    padding: 30px !important;
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Clean up cards, removing glassy borders, translucent layers and glow shadows */
+  .glass-card {
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+    border: 1px solid #999999 !important;
+    border-radius: 6px !important;
+    padding: 20px !important;
+    margin-bottom: 24px !important;
+    page-break-inside: avoid !important; /* Prevent page dividing inside sections */
+  }
+
+  /* Standard text colors translated into high-contrast monochrome printing */
+  .text-brand-primary,
+  .text-brand-accent,
+  .text-indigo-600,
+  .text-blue-600,
+  .text-teal-600,
+  .text-red-600,
+  .text-amber-800,
+  .text-emerald-800,
+  .text-white {
+    color: black !important;
+  }
+
+  /* Container styles reset */
+  .bg-slate-50, 
+  .bg-blue-50\/50, 
+  .bg-blue-50, 
+  .bg-indigo-50, 
+  .bg-amber-500\/5, 
+  .bg-red-50, 
+  .bg-emerald-50, 
+  .bg-slate-900, 
+  .bg-brand-dark {
+    background: white !important;
+    color: black !important;
+    border: 1px solid #111111 !important;
+    box-shadow: none !important;
+  }
+
+  /* Control heading breaks */
+  h1, h2, h3, h4 {
+    page-break-after: avoid !important;
+    color: black !important;
+    font-weight: bold !important;
+  }
+
+  /* Dynamic Page Breaks helpers */
+  .page-break {
+    page-break-before: always !important;
+    clear: both !important;
+  }
+}
+
+/* Hidden by default on regular displays */
+#admin-manual-print-container {
+  display: none;
+}
+
+/* Auth Memo Textarea scrollbar styling */
+.auth-memo-textarea::-webkit-scrollbar {
+  width: 8px !important;
+  height: 8px !important;
+  display: block !important;
+}
+
+.auth-memo-textarea::-webkit-scrollbar-track {
+  background: #090d16 !important;
+  border-radius: 4px !important;
+}
+
+.auth-memo-textarea::-webkit-scrollbar-thumb {
+  background-color: #3B627F !important;
+  border-radius: 4px !important;
+  border: 1px solid #090d16 !important;
+}
+
+.auth-memo-textarea::-webkit-scrollbar-thumb:hover {
+  background-color: #487799 !important;
+}
+
+/* ==========================================
+   AURORA AMBIENT GLOW SYSTEM
+   ========================================== */
+@keyframes aurora-ambient-1 {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1) rotate(0deg);
+  }
+  33% {
+    transform: translate(80px, -60px) scale(1.25) rotate(120deg);
+  }
+  66% {
+    transform: translate(-50px, 40px) scale(0.85) rotate(240deg);
+  }
+}
+
+@keyframes aurora-ambient-2 {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1.15) rotate(0deg);
+  }
+  40% {
+    transform: translate(-90px, 50px) scale(0.9) rotate(-140deg);
+  }
+  70% {
+    transform: translate(60px, -30px) scale(1.3) rotate(180deg);
+  }
+}
+
+@keyframes aurora-ambient-3 {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(0.9) rotate(0deg);
+  }
+  30% {
+    transform: translate(70px, 60px) scale(1.2) rotate(90deg);
+  }
+  75% {
+    transform: translate(-60px, -50px) scale(0.95) rotate(-120deg);
+  }
+}
+
+.aurora-glow-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  opacity: 0.28; /* Gentle, non-intrusive visibility */
+  mix-blend-mode: multiply;
+  filter: blur(120px);
+}
+
+/* Dark mode and dark containers safe fallback */
+.dark-mode-aurora {
+  mix-blend-mode: screen;
+  opacity: 0.15;
+}
+
+.aurora-animate-1 {
+  animation: aurora-ambient-1 35s ease-in-out infinite alternate;
+}
+
+.aurora-animate-2 {
+  animation: aurora-ambient-2 42s ease-in-out infinite alternate;
+}
+
+.aurora-animate-3 {
+  animation: aurora-ambient-3 48s ease-in-out infinite alternate;
+}
+/* --- chat input first blink & pulse highlight --- */
+@keyframes chat-pulse-emerald {
+  0%, 100% {
+    border-color: #10b981;
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.4), inset 0 0 8px rgba(16, 185, 129, 0.1);
+  }
+  50% {
+    border-color: #34d399;
+    box-shadow: 0 0 25px rgba(52, 211, 153, 0.75), 0 0 10px rgba(16, 185, 129, 0.2), inset 0 0 12px rgba(16, 185, 129, 0.25);
+    background-color: rgba(209, 250, 229, 0.5); /* slightly brighter emerald bg */
+  }
+}
+
+.animate-chat-pulse {
+  animation: chat-pulse-emerald 1.8s ease-in-out infinite;
+}
+
+/* ==========================================
+   LETTER FORM LINED INPUT STYLES (便箋風 全周枠線＆罫線表示)
+   選択前（未フォーカス時）でも全周がはっきりと罫線（枠線）で囲まれるデザイン
+   ========================================== */
+.letter-field-input,
+.letter-field-select {
+  border: 2px solid rgba(27, 43, 52, 0.4) !important;
+  border-radius: 1rem !important;
+  background-color: rgba(250, 249, 246, 0.95) !important;
+  transition: all 0.2s ease;
+}
+.letter-field-input:focus,
+.letter-field-select:focus {
+  border-color: #1B2B34 !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(27, 43, 52, 0.1), 0 2px 8px rgba(27, 43, 52, 0.08);
+}
+
+.letter-field-textarea {
+  border: 2px solid rgba(27, 43, 52, 0.45) !important;
+  border-radius: 1rem !important;
+  background-color: #faf9f6 !important;
+  background-image: linear-gradient(to bottom, transparent calc(100% - 1px), rgba(27, 43, 52, 0.2) 1px) !important;
+  background-size: 100% 2.4rem !important;
+  background-position: 0 0.4rem !important;
+  line-height: 2.4rem !important;
+  transition: all 0.2s ease;
+}
+.letter-field-textarea:focus {
+  background-color: #ffffff !important;
+  background-image: linear-gradient(to bottom, transparent calc(100% - 1px), rgba(27, 43, 52, 0.35) 1px) !important;
+  border-color: #1B2B34 !important;
+  box-shadow: 0 0 0 3px rgba(27, 43, 52, 0.1), 0 2px 8px rgba(27, 43, 52, 0.08);
+}
+
+/* ==========================================
+   TRACKPAD & MODAL OVERFLOW SCROLL CONTAINMENT
+   モーダルおよび内部スクロール表示時の背景スクロール防止＆トラックパッドスムーズスクロール対応
+   ========================================== */
+.overflow-y-auto,
+.overflow-x-auto,
+.overflow-auto,
+[data-lenis-prevent] {
+  overscroll-behavior: contain !important;
+  overscroll-behavior-y: contain !important;
+  -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-y !important;
+  pointer-events: auto !important;
+}
+
+/* Body scroll lock during active modal overlay */
+body.modal-open {
+  overflow: hidden !important;
+}
+
+.modal-backdrop,
+.fixed.inset-0 {
+  overscroll-behavior: contain !important;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-shimmer {
+  animation: shimmer 2.5s infinite linear;
+}
+
+@keyframes waterLightCaustics {
+  0% {
+    transform: translateX(-140%) skewX(-20deg) scaleY(0.9);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.85;
+    transform: translateX(-60%) skewX(-12deg) scaleY(1.1);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(40%) skewX(-22deg) scaleY(1.0);
+  }
+  80% {
+    opacity: 0.85;
+    transform: translateX(140%) skewX(-12deg) scaleY(1.1);
+  }
+  100% {
+    transform: translateX(240%) skewX(-20deg) scaleY(0.9);
+    opacity: 0;
+  }
+}
+
+.group:hover .animate-water-light {
+  animation: waterLightCaustics 3.4s cubic-bezier(0.35, 0, 0.25, 1) infinite;
+  animation-delay: 0.45s;
+}
+
+
+
+

@@ -1,0 +1,234 @@
+import React, { useState } from 'react';
+import { Heart, ShieldCheck, Sparkles, Award, Coffee, HelpCircle, ArrowRight, CheckCircle2, Lock, Anchor, MessageCircle } from 'lucide-react';
+import { SupportModal } from './SupportModal';
+import supporterTwilightCool from '../assets/images/supporter_twilight_cool_1785860735348.jpg';
+
+export const SupporterPage: React.FC = () => {
+  const [isDonateModalOpen, setIsDonateModalOpen] = useState(false);
+
+  return (
+    <div className="min-h-screen bg-slate-50/50 font-sans text-slate-800 pb-20">
+      {/* ヒーローセクション（中央配置イラスト＆左右・上下ソフトグラデーション） */}
+      <section className="relative overflow-hidden bg-white border-b border-slate-100 text-slate-800 py-12 md:py-16 px-4 sm:px-6">
+        {/* 背景イラスト（センター配置＆左右上下フェードグラデーション） */}
+        <div className="absolute inset-0 flex justify-center items-center pointer-events-none overflow-hidden select-none">
+          <div className="relative w-full max-w-4xl h-full opacity-65">
+            <img 
+              src={supporterTwilightCool} 
+              alt="涼やかな夕暮れの思い出の海" 
+              className="w-full h-full object-cover object-center"
+            />
+            {/* 左右グラデーション */}
+            <div className="absolute inset-0 bg-gradient-to-r from-white via-transparent to-white" />
+            {/* 上下グラデーション */}
+            <div className="absolute inset-0 bg-gradient-to-b from-white via-transparent via-50% to-white" />
+          </div>
+        </div>
+
+        <div className="max-w-4xl mx-auto text-center space-y-5 relative z-10">
+          
+          <div className="inline-flex items-center gap-2 bg-teal-50 border border-teal-200 px-4 py-1.5 rounded-full text-xs md:text-sm font-extrabold tracking-wide text-teal-800 shadow-2xs">
+            <Coffee size={15} className="text-teal-600 shrink-0" />
+            <span>ReMEETs OFFICIAL SUPPORTER PROGRAM</span>
+          </div>
+
+          <h1 className="text-[19px] xs:text-[24px] sm:text-[28px] md:text-[34px] lg:text-[42px] xl:text-[48px] font-serif font-extrabold tracking-[0.02em] xs:tracking-[0.04em] sm:tracking-[0.1em] md:tracking-[0.16em] lg:tracking-[0.22em] leading-[1.8] max-w-full mx-auto flex flex-col items-center gap-1.5 md:gap-3 px-2 text-sky-700">
+            <span className="block whitespace-normal md:whitespace-nowrap text-center max-w-full break-words">思い出の海を、</span>
+            <span className="block whitespace-normal md:whitespace-nowrap text-center max-w-full break-words">みんなの温かい心で守る。</span>
+          </h1>
+
+          <p className="text-sm text-slate-700 max-w-2xl mx-auto leading-relaxed font-semibold">
+            ReMEETsは、もう一度会いたい大切な人を探すのを無料でお手伝いする、<br className="hidden md:inline" />
+            個人運営のボトルメールプラットフォームです。
+          </p>
+
+          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <button
+              onClick={() => setIsDonateModalOpen(true)}
+              className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-sky-600 via-teal-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 text-white font-extrabold text-base rounded-2xl shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center gap-2.5 cursor-pointer"
+            >
+              <Coffee size={18} className="text-white shrink-0" />
+              <span>ReMEETsを応援（寄付）</span>
+            </button>
+          </div>
+
+          <p className="text-xs text-slate-400">
+            ※ 1口 500円（コーヒー1杯分）からの単発寄付です。自動で月額課金されることはありません。
+          </p>
+        </div>
+      </section>
+
+      {/* メインコンテンツ */}
+      <main className="max-w-4xl mx-auto px-4 md:px-6 -mt-8 relative z-20 space-y-10">
+        
+        {/* 1. なぜ寄付をお願いしているのか（ストーリー） */}
+        <section className="bg-white rounded-3xl p-6 md:p-10 shadow-xl border border-slate-100 space-y-6">
+          <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
+            <div className="w-10 h-10 rounded-2xl bg-teal-100 text-teal-700 flex items-center justify-center font-bold shrink-0">
+              <Anchor size={20} />
+            </div>
+            <div>
+              <span className="text-[11px] font-bold text-teal-700 uppercase tracking-wider block">OUR MISSION</span>
+              <h2 className="text-xl md:text-2xl font-black font-serif text-slate-900">
+                なぜ、ボトルメールの投函や検索を無料で行っているのか
+              </h2>
+            </div>
+          </div>
+
+          <div className="space-y-3 text-slate-700 leading-relaxed">
+            <p className="text-xs md:text-sm text-slate-700">
+              人生の中で、もう一度会いたい人、どうしても伝えたい感謝や昔の思い出があるとき、複雑な月額課金や広告まみれの画面は、人の温かい感情を冷めさせてしまいます。
+            </p>
+            <p className="text-xs md:text-sm text-slate-700">
+              そのため、ReMEETsでは<strong>「手紙を流す・思い出を探す」といった基本機能をすべて無料</strong>でお手伝いしています。
+            </p>
+            <p className="text-xs md:text-sm text-slate-700">
+              費用が発生するのは、お互いの思い出クイズが合致し<strong>「ボトルメールを開封（連絡先・手紙を開通）する瞬間」のみ</strong>です。なりすましや悪質行為を防ぐ公的本人確認（eKYC）の実費と、システム運用費用の一部として開通手数料（600円）をご負担いただく仕組みをとっています。
+            </p>
+
+            <div className="p-4 md:p-5 bg-sky-50/70 border-l-4 border-sky-600 rounded-r-2xl font-serif text-slate-800 space-y-2 my-4">
+              <p className="font-bold text-xs md:text-sm">「安全な海を維持するためのセキュリティ費用とAI防衛費」</p>
+              <p className="text-xs md:text-sm font-sans text-slate-600 leading-relaxed">
+                実名や住所の漏洩、誹謗中傷、ストーカー行為等の不適切投稿を24時間監視・隔離する高度なAI安全防衛エンジンの運用費や、公的本人確認（eKYC）のシステム原価、高セキュリティサーバー維持費は、開封時のお手数料だけでは賄いきれないのが現状です。
+              </p>
+            </div>
+            <p className="text-xs md:text-sm text-slate-700">
+              「この温かい海を無くしたくない」「昔の友人との再会をつないでくれた感謝を伝えたい」と思ってくださる有志の皆様のサポーター寄付によって、ReMEETsは健全に守られ、運営を続けることができています。
+            </p>
+          </div>
+        </section>
+
+        {/* 2. 寄付金の使い道（透明性） */}
+        <section className="bg-white rounded-3xl p-6 md:p-10 shadow-xl border border-slate-100 space-y-6">
+          <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
+            <div className="w-10 h-10 rounded-2xl bg-sky-100 text-sky-700 flex items-center justify-center font-bold shrink-0">
+              <ShieldCheck size={20} />
+            </div>
+            <div>
+              <span className="text-[11px] font-bold text-sky-700 uppercase tracking-wider block">TRANSPARENCY</span>
+              <h2 className="text-xl md:text-2xl font-black font-serif text-slate-900">
+                ご寄付いただいた資金の使い道
+              </h2>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="p-5 bg-slate-50/80 rounded-2xl border border-slate-200/80 space-y-2">
+              <div className="w-8 h-8 rounded-xl bg-teal-500 text-white flex items-center justify-center font-bold text-xs">01</div>
+              <h3 className="font-bold text-slate-900 text-sm md:text-base font-serif">AI安全防衛エンジンの運用費</h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                誹謗中傷や個人情報の漏洩をリアルタイムで検知・隔離するAIセキュリティシステムのAPI利用料金に充当されます。
+              </p>
+            </div>
+
+            <div className="p-5 bg-slate-50/80 rounded-2xl border border-slate-200/80 space-y-2">
+              <div className="w-8 h-8 rounded-xl bg-indigo-500 text-white flex items-center justify-center font-bold text-xs">02</div>
+              <h3 className="font-bold text-slate-900 text-sm md:text-base font-serif">高セキュリティDB・サーバー維持</h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                大切な思い出の手紙やマッチングデータを安全に保管するための、暗号化クラウドデータベースおよび高速サーバー運用費。
+              </p>
+            </div>
+
+            <div className="p-5 bg-slate-50/80 rounded-2xl border border-slate-200/80 space-y-2">
+              <div className="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center font-bold text-xs">03</div>
+              <h3 className="font-bold text-slate-900 text-sm md:text-base font-serif">eKYC・本人確認インフラ補助</h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                なりすまし防止のための公的本人確認（eKYC）やSMS認証コード送信における従量原価の補填に活用されます。
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* 3. 公式サポーター特典 */}
+        <section className="bg-gradient-to-br from-amber-500/10 via-rose-500/10 to-indigo-500/10 rounded-3xl p-6 md:p-10 shadow-xl border border-amber-200/80 space-y-6">
+          <div className="flex items-center gap-3 border-b border-amber-200/80 pb-4">
+            <div className="w-10 h-10 rounded-2xl bg-amber-500 text-white flex items-center justify-center font-bold shrink-0">
+              <Award size={20} />
+            </div>
+            <div>
+              <span className="text-[11px] font-bold text-amber-800 uppercase tracking-wider block">SUPPORTER REWARDS</span>
+              <h2 className="text-xl md:text-2xl font-black font-serif text-slate-900">
+                公式サポーター様にお贈りする特典
+              </h2>
+            </div>
+          </div>
+
+          <div className="bg-white p-6 rounded-2xl border border-amber-200/80 shadow-xs space-y-4">
+            <div className="flex items-start gap-3">
+              <Sparkles size={24} className="text-amber-500 shrink-0 mt-0.5" />
+              <div className="space-y-1">
+                <h3 className="font-extrabold text-slate-900 text-sm md:text-base font-serif">
+                  ⭐ マイページ＆プロファイルに「公式サポーター」ゴールドバッジ付与
+                </h3>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  ご寄付完了後、アカウントのマイページおよびコミュニティ画面にて「⭐ 公式サポーター認証済み」ゴールドバッジが自動的に点灯いたします。温かいお心遣いを可視化し、プラットフォーム全体で感謝を表します。
+                </p>
+              </div>
+            </div>
+
+            <div className="border-t border-slate-100 pt-3 flex items-center gap-2 text-xs text-amber-800 font-medium">
+              <CheckCircle2 size={16} className="text-amber-600 shrink-0" />
+              <span>寄付金額にかかわらず（1口 500円〜）、サポーター特典が適用されます。</span>
+            </div>
+          </div>
+        </section>
+
+        {/* 4. よくあるご質問 (FAQ) */}
+        <section className="bg-white rounded-3xl p-6 md:p-10 shadow-xl border border-slate-100 space-y-6">
+          <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
+            <div className="w-10 h-10 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold shrink-0">
+              <HelpCircle size={20} />
+            </div>
+            <div>
+              <span className="text-[11px] font-bold text-indigo-700 uppercase tracking-wider block">FAQ</span>
+              <h2 className="text-xl md:text-2xl font-black font-serif text-slate-900">
+                寄付に関するよくあるご質問
+              </h2>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-1.5">
+              <h3 className="font-bold text-slate-900 text-xs md:text-sm font-serif flex items-center gap-2">
+                <span className="text-teal-600 font-mono font-bold">Q.</span>
+                月額サブスクリプションのように毎月自動引き落としされますか？
+              </h3>
+              <p className="text-xs text-slate-600 leading-relaxed pl-5">
+                いいえ。ReMEETsのサポーター寄付はすべて<strong>「単発の一括決済」</strong>です。解約手続きなども一切不要で、応援したい時にいつでも何度でも都度寄付いただけます。
+              </p>
+            </div>
+
+            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-1.5">
+              <h3 className="font-bold text-slate-900 text-xs md:text-sm font-serif flex items-center gap-2">
+                <span className="text-teal-600 font-mono font-bold">Q.</span>
+                いくらから寄付できますか？支払い方法は？
+              </h3>
+              <p className="text-xs text-slate-600 leading-relaxed pl-5">
+                1口 500円（コーヒー1杯分）から最大20口（10,000円）までプルダウンで自由にお選びいただけます。Stripeによる国際標準の各種クレジットカード決済に対応しています。
+              </p>
+            </div>
+
+            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-1.5">
+              <h3 className="font-bold text-slate-900 text-xs md:text-sm font-serif flex items-center gap-2">
+                <span className="text-teal-600 font-mono font-bold">Q.</span>
+                寄付しないとアプリの機能は制限されますか？
+              </h3>
+              <p className="text-xs text-slate-600 leading-relaxed pl-5">
+                いいえ、一切制限されません。ボトルメールの作成・検索・照合機能はすべてのユーザー様に無料で開放されています。寄付は完全任意となっております。
+              </p>
+            </div>
+          </div>
+        </section>
+
+
+
+      </main>
+
+      {/* 寄付決済モーダル */}
+      <SupportModal
+        isOpen={isDonateModalOpen}
+        onClose={() => setIsDonateModalOpen(false)}
+      />
+    </div>
+  );
+};

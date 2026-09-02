@@ -1,0 +1,13 @@
+node_modules/
+build/
+dist/
+coverage/
+.DS_Store
+*.log
+.env*
+!.env.example
+
+# Database files (local only)
+*.db
+*.db.*
+pm2_logs.txt
