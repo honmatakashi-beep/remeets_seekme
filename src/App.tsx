@@ -47,8 +47,6 @@ import { QuizMatchingAnalyticsView } from './components/QuizMatchingAnalyticsVie
 import { AdminLiveAlertMonitor } from './components/AdminLiveAlertMonitor';
 import { AdminRbacView } from './components/AdminRbacView';
 import { AdminDesignSystem } from './components/AdminDesignSystem';
-import { AdminEffectLab } from './components/AdminEffectLab';
-import { ReunionThreeEffect, type EffectType } from './components/ReunionThreeEffect';
 import { AdminMonetizationBlock } from './components/AdminMonetizationBlock';
 import { AdminPaymentManagementBlock } from './components/AdminPaymentManagementBlock';
 import { PolicePresentationSlideViewer } from './components/PolicePresentationSlideViewer';
