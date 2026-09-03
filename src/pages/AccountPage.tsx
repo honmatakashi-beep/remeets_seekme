@@ -730,9 +730,9 @@ export const AccountPage = () => {
           )}
 
           {/* User Profile Card Summary Dashboard */}
-          <div className="bg-white border border-slate-200/90 rounded-3xl p-6 md:p-8 shadow-xs relative overflow-hidden space-y-6">
+          <div className="bg-slate-50/90 border border-slate-200/90 rounded-3xl p-6 md:p-8 shadow-xs relative overflow-hidden space-y-6">
             {/* Top Bar: Large Prominent Name, Badge & Prominent Edit Actions */}
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5 border-b border-slate-100 pb-6">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5 border-b border-slate-200/80 pb-6">
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-600 via-indigo-700 to-teal-600 text-white flex items-center justify-center font-serif font-bold text-2xl shadow-md shrink-0 select-none ring-4 ring-indigo-50">
                   {user?.fullName ? user.fullName.charAt(0) : 'R'}
@@ -742,7 +742,7 @@ export const AccountPage = () => {
                     <span className="text-[11px] font-bold text-slate-400 font-sans uppercase tracking-wider">
                       【お名前】
                     </span>
-                    <span className="text-[10px] font-sans font-bold bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md border border-slate-200/70">
+                    <span className="text-[10px] font-sans font-bold bg-white text-slate-700 px-2 py-0.5 rounded-md border border-slate-200/70">
                       {user?.role === 'super_admin' ? '管理者アカウント' : '一般メンバー'}
                     </span>
                     {(user?.is_supporter || localStorage.getItem('remeets_is_supporter') === 'true') && (
@@ -755,7 +755,7 @@ export const AccountPage = () => {
                   <h2 className="text-2xl sm:text-3xl font-serif font-extrabold text-slate-900 tracking-wide flex items-baseline gap-2 flex-wrap">
                     <span>{user?.fullName || '名前未設定'}</span>
                     {user?.maiden_name && (
-                      <span className="text-sm sm:text-base font-medium text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-lg border border-slate-200">
+                      <span className="text-sm sm:text-base font-medium text-slate-600 bg-white px-2.5 py-0.5 rounded-lg border border-slate-200 shadow-2xs">
                         （旧姓: {user.maiden_name}）
                       </span>
                     )}
@@ -786,7 +786,7 @@ export const AccountPage = () => {
                 <button
                   type="button"
                   onClick={() => setShowDonationModal(true)}
-                  className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold text-xs border border-slate-200 transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
+                  className="px-3.5 py-2 bg-white hover:bg-slate-100 text-slate-700 rounded-xl font-bold text-xs border border-slate-200 transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 shadow-2xs"
                 >
                   <Coffee size={13} className="text-amber-600 shrink-0" />
                   <span>☕ 応援（寄付）</span>
@@ -798,7 +798,7 @@ export const AccountPage = () => {
             <div className="space-y-2.5 font-sans">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {/* 1. ニックネーム */}
-                <div className="bg-slate-50/90 hover:bg-white px-4 py-2.5 rounded-xl border border-slate-200/90 shadow-2xs transition-all flex items-center justify-between gap-3 group">
+                <div className="bg-white hover:border-indigo-300 px-4 py-2.5 rounded-xl border border-slate-200/90 shadow-2xs transition-all flex items-center justify-between gap-3 group">
                   <span className="text-[11px] font-bold text-slate-400 shrink-0">
                     【ニックネーム】
                   </span>
@@ -808,7 +808,7 @@ export const AccountPage = () => {
                 </div>
 
                 {/* 2. ユーザーID */}
-                <div className="bg-slate-50/90 hover:bg-white px-4 py-2.5 rounded-xl border border-slate-200/90 shadow-2xs transition-all flex items-center justify-between gap-3 group">
+                <div className="bg-white hover:border-indigo-300 px-4 py-2.5 rounded-xl border border-slate-200/90 shadow-2xs transition-all flex items-center justify-between gap-3 group">
                   <span className="text-[11px] font-bold text-slate-400 shrink-0">
                     【ユーザーID】
                   </span>
@@ -818,7 +818,7 @@ export const AccountPage = () => {
                 </div>
 
                 {/* 3. 登録メールアドレス */}
-                <div className="bg-slate-50/90 hover:bg-white px-4 py-2.5 rounded-xl border border-slate-200/90 shadow-2xs transition-all flex items-center justify-between gap-3 group">
+                <div className="bg-white hover:border-indigo-300 px-4 py-2.5 rounded-xl border border-slate-200/90 shadow-2xs transition-all flex items-center justify-between gap-3 group">
                   <span className="text-[11px] font-bold text-slate-400 shrink-0">
                     【登録メールアドレス】
                   </span>
@@ -828,7 +828,7 @@ export const AccountPage = () => {
                 </div>
 
                 {/* 4. 優先開示用SNS ID / 連絡先 */}
-                <div className="bg-slate-50/90 hover:bg-white px-4 py-2.5 rounded-xl border border-slate-200/90 shadow-2xs transition-all flex items-center justify-between gap-3 group">
+                <div className="bg-white hover:border-teal-300 px-4 py-2.5 rounded-xl border border-slate-200/90 shadow-2xs transition-all flex items-center justify-between gap-3 group">
                   <span className="text-[11px] font-bold text-slate-400 shrink-0">
                     【優先開示用SNS ID】
                   </span>
@@ -903,11 +903,11 @@ export const AccountPage = () => {
             </div>
 
             {/* Bottom Row: Quick Status Counters */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-100 font-sans">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-200/80 font-sans">
               <button
                 type="button"
                 onClick={() => handleTabChange('chats')}
-                className="bg-slate-50/70 hover:bg-emerald-50/70 px-4 py-2.5 border border-slate-200/70 hover:border-emerald-300 rounded-xl text-left transition-all cursor-pointer flex items-center justify-between group"
+                className="bg-white hover:bg-emerald-50/70 px-4 py-2.5 border border-slate-200/90 hover:border-emerald-300 rounded-xl text-left transition-all cursor-pointer flex items-center justify-between group shadow-2xs"
               >
                 <div className="flex items-center gap-2">
                   <MessageSquare size={16} className="text-emerald-600" />
@@ -927,7 +927,7 @@ export const AccountPage = () => {
               <button
                 type="button"
                 onClick={() => handleTabChange('sent')}
-                className="bg-slate-50/70 hover:bg-teal-50/70 px-4 py-2.5 border border-slate-200/70 hover:border-teal-300 rounded-xl text-left transition-all cursor-pointer flex items-center justify-between group"
+                className="bg-white hover:bg-teal-50/70 px-4 py-2.5 border border-slate-200/90 hover:border-teal-300 rounded-xl text-left transition-all cursor-pointer flex items-center justify-between group shadow-2xs"
               >
                 <div className="flex items-center gap-2">
                   <Send size={15} className="text-teal-600" />
