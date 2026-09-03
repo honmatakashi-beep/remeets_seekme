@@ -612,8 +612,7 @@ export const PricingPage = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* 左カード：基本機能（エメラルド＆ティール） */}
-            <div className="p-6 md:p-7 rounded-3xl bg-gradient-to-b from-emerald-50/90 via-teal-50/30 to-white border-2 border-emerald-300/90 shadow-sm flex flex-col justify-between space-y-6 relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-emerald-400 to-teal-500"></div>
+            <div className="p-6 md:p-7 rounded-3xl bg-gradient-to-b from-emerald-50/90 via-teal-50/30 to-white border border-emerald-300 shadow-sm flex flex-col justify-between space-y-6 relative overflow-hidden">
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <span className="px-3 py-1 bg-emerald-600 text-white text-[11px] font-bold rounded-full shadow-2xs">
@@ -663,7 +662,7 @@ export const PricingPage = () => {
             </div>
 
             {/* 右カード：手紙開封・連絡先開示（インディゴ＆パープル） */}
-            <div className="p-6 md:p-7 rounded-3xl bg-gradient-to-b from-indigo-50/90 via-purple-50/40 to-white border-2 border-indigo-400 shadow-md flex flex-col justify-between space-y-6 relative overflow-hidden">
+            <div className="p-6 md:p-7 rounded-3xl bg-gradient-to-b from-indigo-50/90 via-purple-50/40 to-white border border-indigo-300 shadow-sm flex flex-col justify-between space-y-6 relative overflow-hidden">
               <div className="absolute top-0 right-0 bg-indigo-600 text-white text-[10px] font-bold px-3.5 py-1 rounded-bl-xl tracking-wider">
                 正解・開封時のみ
               </div>
@@ -714,8 +713,8 @@ export const PricingPage = () => {
         </div>
 
         {/* 下段ワイド：公的本人確認 eKYC（アンバー＆ゴールド） */}
-        <div className="p-6 md:p-8 rounded-3xl bg-gradient-to-r from-amber-50/90 via-yellow-50/40 to-white border-2 border-amber-300/90 shadow-xs space-y-5 relative overflow-hidden">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-amber-200/80 pb-4">
+        <div className="p-6 md:p-8 rounded-3xl bg-gradient-to-r from-amber-50/90 via-yellow-50/40 to-white border border-amber-300 shadow-xs space-y-5 relative overflow-hidden">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-amber-200/80 pb-4">
             <div className="flex items-center gap-3">
               <div className="p-2.5 bg-amber-600 text-white rounded-2xl shadow-2xs shrink-0">
                 <ShieldCheck size={22} />
@@ -729,13 +728,13 @@ export const PricingPage = () => {
                 </h3>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="px-3 py-1 bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold rounded-full">
+            <div className="flex items-center gap-2.5 flex-wrap shrink-0">
+              <span className="px-2.5 py-1 bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold rounded-full whitespace-nowrap">
                 任意機能
               </span>
-              <span className="text-sm font-bold text-amber-900 font-serif">
-                事前登録 0 円 <span className="text-xs font-normal text-slate-600">(手紙開封時に一括精算)</span>
-              </span>
+              <div className="text-sm font-bold text-amber-950 font-serif whitespace-nowrap">
+                事前登録 0円 <span className="text-xs font-normal font-sans text-slate-600">(手紙開封時に一括精算)</span>
+              </div>
             </div>
           </div>
 
