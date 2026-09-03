@@ -827,10 +827,10 @@ export const AccountPage = () => {
                   </div>
                 </div>
 
-                {/* 4. 優先開示用SNS ID / 連絡先 */}
+                {/* 4. 再会時の開示連絡先 */}
                 <div className="bg-white hover:border-teal-400 px-4 py-2.5 rounded-xl border border-slate-200 shadow-xs transition-all flex items-center justify-between gap-3 group">
-                  <span className="text-[11px] font-bold text-slate-400 shrink-0">
-                    【優先開示用SNS ID】
+                  <span className="text-[11px] font-bold text-slate-500 shrink-0">
+                    【再会時の開示連絡先】
                   </span>
                   <div className="text-xs sm:text-sm font-bold text-teal-800 flex items-center gap-1.5 truncate">
                     <span className="bg-teal-100 text-teal-800 px-1.5 py-0.5 rounded text-[10px] font-mono font-extrabold shrink-0">
@@ -1148,11 +1148,11 @@ export const AccountPage = () => {
                       </p>
                     </div>
 
-                    {/* 優先開示用SNS ID / 連絡先 */}
+                    {/* 再会時の開示連絡先 */}
                     <div className="p-4 bg-teal-50/60 border border-teal-200/80 rounded-2xl space-y-3">
                       <div>
                         <label className="block text-xs font-bold text-teal-950 mb-1">
-                          優先開示用SNS ID・連絡先（想い出照合・開通時）
+                          再会時の開示連絡先（想い出照合・開通時）
                         </label>
                         <p className="text-[10px] text-teal-800/80 mb-3">
                           お相手と思い出クイズが一致して開通となった際に、相手に安全に引き渡す（開示する）連絡先です。
