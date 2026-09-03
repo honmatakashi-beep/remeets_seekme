@@ -2341,12 +2341,27 @@ export const AccountPage = () => {
             {/* Step 1: 氏名・生年月日・書類選択 */}
             {mypageEkycStep === 1 && (
               <div className="space-y-6">
-                <div className="border-b border-zinc-150 pb-3">
-                  <span className="text-[10px] font-bold text-teal-700 uppercase tracking-widest block font-sans">Step 1 / 4</span>
-                  <h3 className="text-lg font-serif font-bold text-brand-dark">ご本人様情報の入力 ＆ 書類選択</h3>
-                  <p className="text-xs text-slate-500 font-sans mt-0.5">
-                    身分証と照合するための基本情報を入力し、提出書類をお選びください。
-                  </p>
+                <div className="flex items-center justify-between border-b border-zinc-150 pb-3 gap-2">
+                  <div>
+                    <span className="text-[10px] font-bold text-teal-700 uppercase tracking-widest block font-sans">Step 1 / 4</span>
+                    <h3 className="text-lg font-serif font-bold text-brand-dark">ご本人様情報の入力 ＆ 書類選択</h3>
+                    <p className="text-xs text-slate-500 font-sans mt-0.5">
+                      身分証と照合するための基本情報を入力し、提出書類をお選びください。
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMypageEkycName(user?.fullName || '山田 太郎');
+                      setMypageEkycBirthdate('1995-08-15');
+                      setMypageEkycDocType('license');
+                    }}
+                    className="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 rounded-lg text-[11px] font-bold transition-all shadow-2xs shrink-0 flex items-center gap-1 cursor-pointer"
+                    title="検証用のテスト氏名・生年月日を自動入力"
+                  >
+                    <Sparkles size={12} className="text-amber-600" />
+                    <span>⚡ テスト自動入力</span>
+                  </button>
                 </div>
 
                 <div className="space-y-4 text-xs">
@@ -2465,9 +2480,24 @@ export const AccountPage = () => {
             {/* Step 3: 決済 */}
             {mypageEkycStep === 3 && (
               <div className="space-y-6 font-sans">
-                <div className="border-b border-zinc-150 pb-3">
-                  <span className="text-[10px] font-bold text-teal-700 uppercase tracking-widest block font-sans">Step 3 / 4</span>
-                  <h3 className="text-lg font-serif font-bold text-brand-dark">クレジットカードお支払い（600円）</h3>
+                <div className="flex items-center justify-between border-b border-zinc-150 pb-3 gap-2">
+                  <div>
+                    <span className="text-[10px] font-bold text-teal-700 uppercase tracking-widest block font-sans">Step 3 / 4</span>
+                    <h3 className="text-lg font-serif font-bold text-brand-dark">クレジットカードお支払い（600円）</h3>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMypagePayCardNumber('4242 4242 4242 4242');
+                      setMypagePayCardExpiry('12/28');
+                      setMypagePayCardCvc('123');
+                    }}
+                    className="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 rounded-lg text-[11px] font-bold transition-all shadow-2xs shrink-0 flex items-center gap-1 cursor-pointer"
+                    title="検証用のStripeテストカード情報を自動入力"
+                  >
+                    <Sparkles size={12} className="text-amber-600" />
+                    <span>⚡ テストカード自動入力</span>
+                  </button>
                 </div>
 
                 {mypageEkycCapturedImages.front && (

@@ -7173,7 +7173,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                       onClick={() => setFinderEkycStep(5)}
                       className="flex-1 py-3.5 bg-gradient-to-r from-indigo-600 via-indigo-700 to-purple-700 hover:from-indigo-700 hover:to-purple-800 disabled:opacity-50 text-white rounded-xl text-sm font-bold shadow-md transition-all cursor-pointer disabled:cursor-not-allowed"
                     >
-                      1,200円を一括決済して公的証明・手紙開示を完了
+                      600円をお支払いして公的証明・手紙開示を完了
                     </button>
                   </div>
                 </div>
