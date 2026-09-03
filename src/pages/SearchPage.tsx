@@ -31,6 +31,7 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
   });
   const [alertSubmitting, setAlertSubmitting] = useState(false);
   const [alertMessage, setAlertMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+  const [alertSuccess, setAlertSuccess] = useState(false);
   const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
 
   useEffect(() => {
@@ -90,6 +91,7 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
       });
       const data = await res.json();
       if (res.ok) {
+        setAlertSuccess(true);
         setAlertMessage({ type: 'success', text: data.message });
         setAlertForm(prev => ({ ...prev, email: '' }));
       } else {
@@ -403,115 +405,160 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
               </button>
 
               <div className="p-6 md:p-8 space-y-5">
-                <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center shrink-0 border border-teal-200/80">
-                    <Bell size={22} />
-                  </div>
-                  <div>
-                    <span className="text-[10px] font-extrabold text-teal-800 uppercase tracking-widest bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200 font-sans">
-                      Email Alert
-                    </span>
-                    <h3 className="text-base sm:text-lg font-serif font-bold text-slate-900 mt-0.5">
-                      新着手紙のメール通知（入荷アラート）
-                    </h3>
-                  </div>
-                </div>
-
-                <p className="text-xs text-slate-600 leading-relaxed font-sans bg-slate-50 p-3.5 rounded-2xl border border-slate-200/80">
-                  あなたのお名前やゆかりの地域に該当する新着ボトルメールが投函された際、システムから自動メールでお知らせします。お相手にメールアドレスが開示されることはありません。
-                </p>
-
-                <form onSubmit={handleAlertSubmit} className="space-y-4 text-left font-sans">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-zinc-700 block">探したい人のお名前（あなたなど / 必須）</label>
-                      <input 
-                        type="text" 
-                        required
-                        placeholder="例：山田 太郎"
-                        className="w-full px-3.5 py-2.5 border border-zinc-300 rounded-xl text-xs bg-slate-50 text-black focus:bg-white focus:border-brand-primary outline-none transition-all"
-                        value={alertForm.targetName}
-                        onChange={e => setAlertForm(prev => ({ ...prev, targetName: e.target.value }))}
-                      />
+                {alertSuccess ? (
+                  <div className="text-center py-4 space-y-5 font-sans">
+                    <div className="w-16 h-16 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto border-2 border-emerald-200 shadow-inner">
+                      <CheckCircle2 size={36} />
                     </div>
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-zinc-700 block">通知先メールアドレス（必須）</label>
-                      <input 
-                        type="email" 
-                        required
-                        placeholder="your-email@example.com"
-                        className="w-full px-3.5 py-2.5 border border-zinc-300 rounded-xl text-xs bg-slate-50 text-black focus:bg-white focus:border-brand-primary outline-none transition-all"
-                        value={alertForm.email}
-                        onChange={e => setAlertForm(prev => ({ ...prev, email: e.target.value }))}
-                      />
+                    
+                    <div className="space-y-2">
+                      <span className="inline-block px-3 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-bold tracking-wider font-sans">
+                        ✓ 登録完了
+                      </span>
+                      <h3 className="text-lg md:text-xl font-serif font-bold text-slate-900">
+                        新着手紙のメール通知を登録しました！
+                      </h3>
+                      <p className="text-xs text-slate-600 leading-relaxed max-w-md mx-auto">
+                        探したい人【<span className="font-bold text-teal-800">{alertForm.targetName || 'あなた'}</span>】宛ての新着ボトルメールが海に流された際、ご登録のメールアドレス宛てに自動でお知らせいたします。
+                      </p>
                     </div>
-                  </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-zinc-700 block">ゆかりの地（任意）</label>
-                      <input 
-                        type="text" 
-                        placeholder="例：神奈川県横浜市"
-                        className="w-full px-3.5 py-2.5 border border-zinc-300 rounded-xl text-xs bg-slate-50 text-black focus:bg-white focus:border-brand-primary outline-none transition-all"
-                        value={alertForm.targetHometown}
-                        onChange={e => setAlertForm(prev => ({ ...prev, targetHometown: e.target.value }))}
-                      />
+                    <div className="bg-slate-50 border border-slate-200/80 p-4 rounded-2xl text-left space-y-1.5 text-xs text-slate-700 font-sans">
+                      <p className="flex items-center gap-1.5">
+                        <span className="font-bold text-slate-900">🔔 通知条件:</span>
+                        <span>{alertForm.targetName || '指定なし'} {alertForm.targetHometown ? `(${alertForm.targetHometown})` : ''}</span>
+                      </p>
+                      <p className="text-[11px] text-slate-500 pt-1 border-t border-slate-200/60">
+                        ※ 登録内容はマイアカウント（`/account`）の「通知・受信ログ」からいつでも確認・解除できます。
+                      </p>
                     </div>
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-zinc-700 block">年代（任意）</label>
-                      <select
-                        className="w-full px-3.5 py-2.5 border border-zinc-300 rounded-xl text-xs bg-slate-50 text-neutral-800 focus:bg-white focus:border-brand-primary outline-none transition-all"
-                        value={alertForm.era}
-                        onChange={e => setAlertForm(prev => ({ ...prev, era: e.target.value }))}
+
+                    <div className="pt-2 flex justify-center">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsAlertModalOpen(false);
+                          setAlertSuccess(false);
+                        }}
+                        className="w-full py-3.5 bg-gradient-to-r from-teal-700 via-teal-800 to-indigo-800 hover:from-teal-800 hover:to-indigo-900 text-white font-bold text-sm rounded-xl shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2 active:scale-98"
                       >
-                        <option value="">指定なし</option>
-                        <option value="60">1960年代</option>
-                        <option value="70">1970年代</option>
-                        <option value="80">1980年代</option>
-                        <option value="90">1990年代</option>
-                        <option value="00">2000年代以降</option>
-                      </select>
-                    </div>
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-zinc-700 block">関係性（任意）</label>
-                      <select
-                        className="w-full px-3.5 py-2.5 border border-zinc-300 rounded-xl text-xs bg-slate-50 text-neutral-800 focus:bg-white focus:border-brand-primary outline-none transition-all"
-                        value={alertForm.category}
-                        onChange={e => setAlertForm(prev => ({ ...prev, category: e.target.value }))}
-                      >
-                        <option value="">指定なし</option>
-                        <option value="friend">同級生・友人</option>
-                        <option value="love">初恋・元恋人</option>
-                        <option value="work">元同僚・仕事仲間</option>
-                        <option value="other">その他</option>
-                      </select>
+                        <span>閉じて検索を続ける</span>
+                      </button>
                     </div>
                   </div>
-
-                  {alertMessage && (
-                    <div className={`p-3.5 rounded-xl text-xs font-bold ${alertMessage.type === 'success' ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
-                      {alertMessage.text}
+                ) : (
+                  <>
+                    <div className="flex items-center gap-3">
+                      <div className="w-11 h-11 rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center shrink-0 border border-teal-200/80">
+                        <Bell size={22} />
+                      </div>
+                      <div>
+                        <span className="text-[10px] font-extrabold text-teal-800 uppercase tracking-widest bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200 font-sans">
+                          Email Alert
+                        </span>
+                        <h3 className="text-base sm:text-lg font-serif font-bold text-slate-900 mt-0.5">
+                          新着手紙のメール通知（入荷アラート）
+                        </h3>
+                      </div>
                     </div>
-                  )}
 
-                  <div className="pt-2 flex gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setIsAlertModalOpen(false)}
-                      className="px-5 py-3 border border-slate-300 bg-white hover:bg-slate-50 rounded-xl text-xs font-bold text-slate-700 transition-all cursor-pointer"
-                    >
-                      キャンセル
-                    </button>
-                    <button 
-                      type="submit" 
-                      disabled={alertSubmitting}
-                      className="flex-1 py-3 text-xs font-bold bg-gradient-to-r from-teal-700 to-indigo-800 hover:from-teal-800 hover:to-indigo-900 text-white rounded-xl shadow-md transition-all disabled:opacity-50 inline-flex items-center justify-center gap-2 cursor-pointer"
-                    >
-                      {alertSubmitting ? '登録処理中...' : 'メール通知を登録する ✨'}
-                    </button>
-                  </div>
-                </form>
+                    <p className="text-xs text-slate-600 leading-relaxed font-sans bg-slate-50 p-3.5 rounded-2xl border border-slate-200/80">
+                      あなたのお名前やゆかりの地域に該当する新着ボトルメールが投函された際、システムから自動メールでお知らせします。お相手にメールアドレスが開示されることはありません。
+                    </p>
+
+                    <form onSubmit={handleAlertSubmit} className="space-y-4 text-left font-sans">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                        <div className="space-y-1.5">
+                          <label className="text-xs font-bold text-zinc-700 block">探したい人のお名前（あなたなど / 必須）</label>
+                          <input 
+                            type="text" 
+                            required
+                            placeholder="例：山田 太郎"
+                            className="w-full px-3.5 py-2.5 border border-zinc-300 rounded-xl text-xs bg-slate-50 text-black focus:bg-white focus:border-brand-primary outline-none transition-all"
+                            value={alertForm.targetName}
+                            onChange={e => setAlertForm(prev => ({ ...prev, targetName: e.target.value }))}
+                          />
+                        </div>
+                        <div className="space-y-1.5">
+                          <label className="text-xs font-bold text-zinc-700 block">通知先メールアドレス（必須）</label>
+                          <input 
+                            type="email" 
+                            required
+                            placeholder="your-email@example.com"
+                            className="w-full px-3.5 py-2.5 border border-zinc-300 rounded-xl text-xs bg-slate-50 text-black focus:bg-white focus:border-brand-primary outline-none transition-all"
+                            value={alertForm.email}
+                            onChange={e => setAlertForm(prev => ({ ...prev, email: e.target.value }))}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                        <div className="space-y-1.5">
+                          <label className="text-xs font-bold text-zinc-700 block">ゆかりの地（任意）</label>
+                          <input 
+                            type="text" 
+                            placeholder="例：神奈川県横浜市"
+                            className="w-full px-3.5 py-2.5 border border-zinc-300 rounded-xl text-xs bg-slate-50 text-black focus:bg-white focus:border-brand-primary outline-none transition-all"
+                            value={alertForm.targetHometown}
+                            onChange={e => setAlertForm(prev => ({ ...prev, targetHometown: e.target.value }))}
+                          />
+                        </div>
+                        <div className="space-y-1.5">
+                          <label className="text-xs font-bold text-zinc-700 block">年代（任意）</label>
+                          <select
+                            className="w-full px-3.5 py-2.5 border border-zinc-300 rounded-xl text-xs bg-slate-50 text-neutral-800 focus:bg-white focus:border-brand-primary outline-none transition-all"
+                            value={alertForm.era}
+                            onChange={e => setAlertForm(prev => ({ ...prev, era: e.target.value }))}
+                          >
+                            <option value="">指定なし</option>
+                            <option value="60">1960年代</option>
+                            <option value="70">1970年代</option>
+                            <option value="80">1980年代</option>
+                            <option value="90">1990年代</option>
+                            <option value="00">2000年代以降</option>
+                          </select>
+                        </div>
+                        <div className="space-y-1.5">
+                          <label className="text-xs font-bold text-zinc-700 block">関係性（任意）</label>
+                          <select
+                            className="w-full px-3.5 py-2.5 border border-zinc-300 rounded-xl text-xs bg-slate-50 text-neutral-800 focus:bg-white focus:border-brand-primary outline-none transition-all"
+                            value={alertForm.category}
+                            onChange={e => setAlertForm(prev => ({ ...prev, category: e.target.value }))}
+                          >
+                            <option value="">指定なし</option>
+                            <option value="friend">同級生・友人</option>
+                            <option value="love">初恋・元恋人</option>
+                            <option value="work">元同僚・仕事仲間</option>
+                            <option value="other">その他</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      {alertMessage && (
+                        <div className={`p-3.5 rounded-xl text-xs font-bold ${alertMessage.type === 'success' ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
+                          {alertMessage.text}
+                        </div>
+                      )}
+
+                      <div className="pt-2 flex gap-3">
+                        <button
+                          type="button"
+                          onClick={() => setIsAlertModalOpen(false)}
+                          className="px-5 py-3 border border-slate-300 bg-white hover:bg-slate-50 rounded-xl text-xs font-bold text-slate-700 transition-all cursor-pointer"
+                        >
+                          キャンセル
+                        </button>
+                        <button 
+                          type="submit" 
+                          disabled={alertSubmitting}
+                          className="flex-1 py-3 text-xs font-bold bg-gradient-to-r from-teal-700 to-indigo-800 hover:from-teal-800 hover:to-indigo-900 text-white rounded-xl shadow-md transition-all disabled:opacity-50 inline-flex items-center justify-center gap-2 cursor-pointer"
+                        >
+                          {alertSubmitting ? '登録処理中...' : 'メール通知を登録する ✨'}
+                        </button>
+                      </div>
+                    </form>
+                  </>
+                )}
               </div>
             </motion.div>
           </div>
