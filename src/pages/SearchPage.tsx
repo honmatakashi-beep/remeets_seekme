@@ -13,6 +13,7 @@ import searchEmptySea from '../assets/images/search_empty_sea_1785869230086.jpg'
 
 export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const qParam = searchParams.get('q') || '';
   const [query, setQuery] = useState(qParam);
@@ -22,6 +23,52 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
   const [categoryFilter, setCategoryFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 20;
+
+  // あなた宛て新着通知スイッチ状態
+  const [notifyEnabled, setNotifyEnabled] = useState<boolean>(true);
+  const [isUpdatingNotify, setIsUpdatingNotify] = useState(false);
+  const token = localStorage.getItem('token');
+
+  useEffect(() => {
+    const fetchNotifyStatus = async () => {
+      if (!token) return;
+      try {
+        const res = await fetch('/api/user/notify-settings', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setNotifyEnabled(data.enabled);
+        }
+      } catch (e) {}
+    };
+    fetchNotifyStatus();
+  }, [token]);
+
+  const handleToggleNotify = async () => {
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+    setIsUpdatingNotify(true);
+    const nextState = !notifyEnabled;
+    setNotifyEnabled(nextState);
+    try {
+      const res = await fetch('/api/user/notify-settings', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ enabled: nextState })
+      });
+      if (!res.ok) setNotifyEnabled(!nextState);
+    } catch (e) {
+      setNotifyEnabled(!nextState);
+    } finally {
+      setIsUpdatingNotify(false);
+    }
+  };
   
   const [alertForm, setAlertForm] = useState({
     email: user?.email || '',
@@ -175,29 +222,72 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
           </div>
 
           {/* 🔔 新着通知（入荷アラート）小型カード */}
-          <div className="p-5 bg-gradient-to-br from-teal-50/80 via-sky-50/40 to-white rounded-3xl border-2 border-teal-200/90 shadow-xs space-y-3 font-sans">
-            <div className="flex items-center gap-2">
-              <span className="p-1.5 bg-teal-600 text-white rounded-xl shadow-2xs">
-                <Bell size={14} />
-              </span>
-              <h4 className="text-xs font-bold text-teal-950 font-serif">
-                新着手紙のメール通知
-              </h4>
+          <div className="p-5 bg-gradient-to-br from-teal-50/90 via-sky-50/50 to-white rounded-3xl border-2 border-teal-200/90 shadow-xs space-y-3 font-sans">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="p-1.5 bg-teal-600 text-white rounded-xl shadow-2xs">
+                  <Bell size={14} className={notifyEnabled && user ? "animate-pulse" : ""} />
+                </span>
+                <h4 className="text-xs font-bold text-teal-950 font-serif">
+                  あなた宛て新着手紙の通知
+                </h4>
+              </div>
+              {user && (
+                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                  notifyEnabled ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-500'
+                }`}>
+                  {notifyEnabled ? 'ON' : 'OFF'}
+                </span>
+              )}
             </div>
-            <p className="text-[11px] text-slate-600 leading-relaxed font-sans">
-              あなたを探す手紙が届いた際、メールでお知らせします。
-            </p>
-            <button
-              type="button"
-              onClick={() => {
-                setAlertMessage(null);
-                setIsAlertModalOpen(true);
-              }}
-              className="w-full py-2.5 px-3 bg-white hover:bg-teal-50 text-teal-800 border border-teal-300 font-bold text-xs rounded-xl shadow-2xs hover:shadow transition-all flex items-center justify-center gap-1.5 cursor-pointer font-sans active:scale-98"
-            >
-              <Mail size={13} className="text-teal-600" />
-              <span>通知を設定する ✨</span>
-            </button>
+
+            {user ? (
+              <>
+                <p className="text-[11px] text-slate-600 leading-relaxed font-sans">
+                  あなた（<span className="font-bold text-teal-900">{user.fullName || user.username}</span> 様）宛ての手紙が海に流された際、メールでお知らせします。
+                </p>
+
+                <div className="pt-1 flex items-center justify-between bg-white/90 p-2.5 rounded-2xl border border-teal-200/80">
+                  <span className="text-xs font-bold text-slate-700">
+                    {notifyEnabled ? 'メール通知 有効中' : 'メール通知 停止中'}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleToggleNotify}
+                    disabled={isUpdatingNotify}
+                    className={`w-11 h-6 flex items-center rounded-full p-0.5 transition-colors duration-300 cursor-pointer shadow-inner ${
+                      notifyEnabled ? 'bg-teal-600' : 'bg-slate-300'
+                    }`}
+                    title={notifyEnabled ? '通知を停止する' : '通知を有効にする'}
+                  >
+                    <div
+                      className={`bg-white w-5 h-5 rounded-full shadow-md transform transition-transform duration-300 flex items-center justify-center ${
+                        notifyEnabled ? 'translate-x-5' : 'translate-x-0'
+                      }`}
+                    >
+                      {notifyEnabled ? (
+                        <CheckCircle2 size={11} className="text-teal-600" />
+                      ) : (
+                        <X size={11} className="text-slate-400" />
+                      )}
+                    </div>
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <p className="text-[11px] text-slate-600 leading-relaxed font-sans">
+                  無料登録すると、あなた宛ての手紙が海に流された瞬間に自動でメール通知が届きます。
+                </p>
+                <Link
+                  to="/login"
+                  className="w-full py-2.5 px-3 bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer font-sans"
+                >
+                  <Mail size={13} />
+                  <span>ログインして通知を有効化</span>
+                </Link>
+              </>
+            )}
           </div>
         </div>
 

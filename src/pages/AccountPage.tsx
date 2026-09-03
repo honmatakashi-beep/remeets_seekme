@@ -135,6 +135,47 @@ export const AccountPage = () => {
   const [isResettingEkyc, setIsResettingEkyc] = useState(false);
   const [ekycMessage, setEkycMessage] = useState<string | null>(null);
 
+  // あなた宛て新着手紙のワンタップ通知ON/OFF設定
+  const [notifyAlertEnabled, setNotifyAlertEnabled] = useState<boolean>(true);
+  const [isUpdatingNotifyAlert, setIsUpdatingNotifyAlert] = useState(false);
+
+  const fetchNotifySettings = async () => {
+    if (!token) return;
+    try {
+      const res = await fetch('/api/user/notify-settings', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setNotifyAlertEnabled(data.enabled);
+      }
+    } catch (e) {}
+  };
+
+  const handleToggleNotifyAlert = async () => {
+    if (!token) return;
+    setIsUpdatingNotifyAlert(true);
+    const nextState = !notifyAlertEnabled;
+    setNotifyAlertEnabled(nextState);
+    try {
+      const res = await fetch('/api/user/notify-settings', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ enabled: nextState })
+      });
+      if (!res.ok) {
+        setNotifyAlertEnabled(!nextState);
+      }
+    } catch (e) {
+      setNotifyAlertEnabled(!nextState);
+    } finally {
+      setIsUpdatingNotifyAlert(false);
+    }
+  };
+
   // 保存された入荷通知アラート用の状態管理
   const [myAlerts, setMyAlerts] = useState<any[]>([]);
   const [deletingAlertId, setDeletingAlertId] = useState<number | null>(null);
@@ -462,6 +503,7 @@ export const AccountPage = () => {
           }
           updateUser(latestUser);
         }
+        await fetchNotifySettings();
       } catch (e) {
         console.error("Failed to sync user info:", e);
       }
@@ -1754,149 +1796,112 @@ export const AccountPage = () => {
             )}
             {activeSubTab === 'notifications' && (
               <div className="space-y-10 animate-fade-in text-black font-sans">
-                {/* 1. 保存済み入荷通知アラート（検索条件アラート）一覧カード */}
-                <div className="bg-gradient-to-br from-teal-50/80 via-white to-emerald-50/50 p-6 md:p-8 rounded-3xl border-2 border-teal-300/80 shadow-sm space-y-6">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-teal-200/70 pb-4">
-                    <div className="space-y-1">
+                {/* 1. あなた宛て新着手紙のメール通知（プロファイル連動・ワンタップON/OFF） */}
+                <div className="bg-gradient-to-br from-teal-50/90 via-white to-emerald-50/60 p-6 md:p-8 rounded-3xl border-2 border-teal-300/80 shadow-sm space-y-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-teal-200/70 pb-5">
+                    <div className="space-y-1.5">
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-extrabold text-teal-800 uppercase tracking-widest bg-teal-100/80 px-2.5 py-0.5 rounded-full border border-teal-200">
-                          Incoming Alert Settings
+                        <span className="text-[10px] font-extrabold text-teal-800 uppercase tracking-widest bg-teal-100/90 px-2.5 py-0.5 rounded-full border border-teal-200">
+                          Auto Match Alert
                         </span>
-                        {myAlerts.length > 0 && (
-                          <span className="text-xs text-teal-700 font-bold">
-                            登録中: {myAlerts.length} 件
-                          </span>
-                        )}
+                        <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${
+                          notifyAlertEnabled ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-slate-100 text-slate-500 border border-slate-200'
+                        }`}>
+                          {notifyAlertEnabled ? '✓ メール通知 有効' : '✕ メール通知 停止中'}
+                        </span>
                       </div>
                       <h3 className="text-lg font-serif font-bold text-slate-900 flex items-center gap-2">
-                        <Bell size={20} className="text-teal-700" />
-                        <span>📬 あなた宛て新着手紙の入荷メール通知設定</span>
+                        <Bell size={20} className={notifyAlertEnabled ? "text-teal-700 animate-pulse" : "text-slate-400"} />
+                        <span>📬 あなた宛て新着手紙の入荷メール通知</span>
                       </h3>
-                      <p className="text-xs text-slate-600 font-sans leading-relaxed">
-                        あなたのお名前や旧姓・ゆかりの地域に該当する新着ボトルメールが投函された際、ご登録のメール宛てに即時自動でお知らせします。
+                      <p className="text-xs text-slate-600 font-sans leading-relaxed max-w-xl">
+                        あなたのお名前（本名・旧姓・愛称）宛てに新しい想い出のボトルメールが海に流された瞬間、ご登録のメールアドレスへ即座にお知らせします。
                       </p>
                     </div>
-                    {myAlerts.length > 0 && (
+
+                    {/* ワンタップON/OFFスイッチ */}
+                    <div className="flex items-center gap-3 bg-white px-4 py-3 rounded-2xl border border-teal-200/80 shadow-xs shrink-0">
+                      <div className="text-right">
+                        <span className="text-xs font-bold block text-slate-800">
+                          {notifyAlertEnabled ? '自動通知 ON' : '自動通知 OFF'}
+                        </span>
+                        <span className="text-[10px] text-slate-400 block">
+                          {notifyAlertEnabled ? '手紙をリアルタイム検知' : '通知を一時停止中'}
+                        </span>
+                      </div>
                       <button
                         type="button"
-                        onClick={handleOpenAddAlert}
-                        className="px-5 py-2.5 bg-gradient-to-r from-teal-700 to-indigo-800 hover:from-teal-800 hover:to-indigo-900 text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 w-fit shrink-0 cursor-pointer shadow-md active:scale-98"
+                        onClick={handleToggleNotifyAlert}
+                        disabled={isUpdatingNotifyAlert}
+                        className={`w-14 h-8 flex items-center rounded-full p-1 transition-colors duration-300 cursor-pointer shadow-inner ${
+                          notifyAlertEnabled ? 'bg-teal-600' : 'bg-slate-300'
+                        }`}
+                        title={notifyAlertEnabled ? '通知を停止する' : '通知を有効にする'}
                       >
-                        <Plus size={15} />
-                        <span>新しい通知条件を追加</span>
+                        <div
+                          className={`bg-white w-6 h-6 rounded-full shadow-md transform transition-transform duration-300 flex items-center justify-center ${
+                            notifyAlertEnabled ? 'translate-x-6' : 'translate-x-0'
+                          }`}
+                        >
+                          {notifyAlertEnabled ? (
+                            <CheckCircle2 size={13} className="text-teal-600" />
+                          ) : (
+                            <X size={13} className="text-slate-400" />
+                          )}
+                        </div>
                       </button>
-                    )}
+                    </div>
                   </div>
 
-                  {myAlerts.length === 0 ? (
-                    <div className="bg-white/95 p-8 rounded-2xl border border-teal-100 text-center space-y-3 shadow-2xs">
-                      <div className="w-12 h-12 bg-teal-50 text-teal-600 rounded-full flex items-center justify-center mx-auto border border-teal-200/60 shadow-inner">
-                        <Bell size={24} />
+                  {/* 自動照合されるプロファイル連動情報 */}
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                      <ShieldCheck size={14} className="text-teal-700" />
+                      <span>自動照合されるあなたのアカウント情報（他人の名前による監視を100%防止）</span>
+                    </h4>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 font-sans">
+                      <div className="bg-white p-3.5 rounded-2xl border border-slate-200 space-y-1 shadow-2xs">
+                        <span className="text-[10px] text-slate-400 font-bold block">👤 登録本名（姓名）</span>
+                        <span className="text-xs font-extrabold text-slate-900 block truncate">
+                          {user?.fullName || user?.username || '未設定'}
+                        </span>
                       </div>
-                      <div className="space-y-1">
-                        <h4 className="text-sm font-bold text-slate-900">現在、登録中の入荷通知アラートはありません</h4>
-                        <p className="text-xs text-slate-500 leading-relaxed max-w-md mx-auto">
-                          お名前（姓名・旧姓・愛称）やゆかりの地を登録しておくと、あなたを探す手紙が新しく海に流された瞬間に自動でメール通知が届きます。
-                        </p>
+
+                      <div className="bg-white p-3.5 rounded-2xl border border-slate-200 space-y-1 shadow-2xs">
+                        <span className="text-[10px] text-slate-400 font-bold block">🌸 旧姓（同窓生照合用）</span>
+                        <span className="text-xs font-extrabold text-rose-700 block truncate">
+                          {(user as any)?.maiden_name || (user as any)?.maidenName ? `旧姓: ${(user as any)?.maiden_name || (user as any)?.maidenName}` : '未登録（任意）'}
+                        </span>
                       </div>
-                      <div className="pt-2">
-                        <button
-                          type="button"
-                          onClick={handleOpenAddAlert}
-                          className="px-6 py-2.5 bg-gradient-to-r from-teal-700 to-indigo-800 hover:from-teal-800 hover:to-indigo-900 text-white text-xs font-bold rounded-xl transition-all inline-flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-98"
-                        >
-                          <Plus size={14} />
-                          <span>通知条件を登録する ✨</span>
-                        </button>
+
+                      <div className="bg-white p-3.5 rounded-2xl border border-slate-200 space-y-1 shadow-2xs">
+                        <span className="text-[10px] text-slate-400 font-bold block">✨ 愛称・ニックネーム</span>
+                        <span className="text-xs font-extrabold text-indigo-700 block truncate">
+                          {user?.nickname ? `@${user.nickname}` : '未登録（任意）'}
+                        </span>
+                      </div>
+
+                      <div className="bg-white p-3.5 rounded-2xl border border-slate-200 space-y-1 shadow-2xs">
+                        <span className="text-[10px] text-slate-400 font-bold block">📧 通知先メール</span>
+                        <span className="text-xs font-bold text-teal-800 block truncate">
+                          {user?.email || '未設定'}
+                        </span>
                       </div>
                     </div>
-                  ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {myAlerts.map((alertItem: any) => (
-                        <div 
-                          key={alertItem.id} 
-                          className="p-5 bg-white border-2 border-slate-200/90 rounded-2xl space-y-3.5 relative group hover:border-teal-400 transition-all shadow-xs"
-                        >
-                          <div className="flex items-start justify-between gap-2 border-b border-slate-100 pb-3">
-                            <div className="space-y-1">
-                              <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
-                                alertItem.is_verified ? 'bg-teal-100 text-teal-800 border border-teal-200' : 'bg-amber-100 text-amber-800 border border-amber-200'
-                              }`}>
-                                {alertItem.is_verified ? '✓ メール通知有効中' : '⏳ メール認証待ち'}
-                              </span>
-                              <div className="pt-0.5">
-                                <h4 className="text-base font-bold text-slate-900 flex items-center gap-2 flex-wrap">
-                                  <span>探すお名前:</span>
-                                  <span className="text-teal-800 font-extrabold">{alertItem.target_name}</span>
-                                </h4>
-                                {(alertItem.target_maiden_name || alertItem.target_nickname) && (
-                                  <div className="flex items-center gap-1.5 pt-1 flex-wrap">
-                                    {alertItem.target_maiden_name && (
-                                      <span className="text-[10px] bg-rose-50 text-rose-700 font-bold px-2 py-0.5 rounded-md border border-rose-200">
-                                        旧姓: {alertItem.target_maiden_name}
-                                      </span>
-                                    )}
-                                    {alertItem.target_nickname && (
-                                      <span className="text-[10px] bg-indigo-50 text-indigo-700 font-bold px-2 py-0.5 rounded-md border border-indigo-200">
-                                        愛称: {alertItem.target_nickname}
-                                      </span>
-                                    )}
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <button
-                                type="button"
-                                onClick={() => handleOpenEditAlert(alertItem)}
-                                className="px-2.5 py-1.5 text-xs text-teal-700 hover:text-teal-900 hover:bg-teal-50 rounded-lg transition-all font-bold cursor-pointer flex items-center gap-1 border border-teal-200"
-                                title="条件を変更"
-                              >
-                                <Edit3 size={13} />
-                                <span>編集</span>
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => handleDeleteAlert(alertItem.id)}
-                                disabled={deletingAlertId === alertItem.id}
-                                className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all cursor-pointer"
-                                title="通知条件を解除"
-                              >
-                                <Trash2 size={15} />
-                              </button>
-                            </div>
-                          </div>
 
-                          <div className="text-xs text-slate-600 space-y-1.5">
-                            <div className="grid grid-cols-2 gap-2 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
-                              <div>
-                                <span className="text-[10px] text-slate-400 block font-medium">📍 ゆかりの地</span>
-                                <span className="font-semibold text-slate-800">{alertItem.target_hometown || '指定なし（全国）'}</span>
-                              </div>
-                              <div>
-                                <span className="text-[10px] text-slate-400 block font-medium">⏳ 対象年代</span>
-                                <span className="font-semibold text-slate-800">{alertItem.era ? `${alertItem.era}年代` : '指定なし'}</span>
-                              </div>
-                            </div>
-
-                            <div className="flex items-center justify-between text-[11px] pt-1 text-slate-500">
-                              <span>🤝 関係性: <strong className="text-slate-700">{
-                                alertItem.category === 'friend' ? '同級生・友人' :
-                                alertItem.category === 'love' ? '初恋・元恋人' :
-                                alertItem.category === 'work' ? '元同僚・仕事仲間' :
-                                alertItem.category === 'other' ? 'その他' : '指定なし'
-                              }</strong></span>
-                              <span>登録: {new Date(alertItem.created_at).toLocaleDateString('ja-JP')}</span>
-                            </div>
-
-                            <div className="pt-2 border-t border-slate-100 text-[11px] text-slate-500 flex items-center justify-between">
-                              <span className="truncate max-w-[220px]">📧 通知先: <strong className="text-teal-800">{alertItem.email}</strong></span>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
+                    <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1">
+                      <span>※ 本名・旧姓・ニックネームは「基本情報」タブからいつでも最新の内容に変更いただけます。</span>
+                      <button
+                        type="button"
+                        onClick={() => handleTabChange('profile')}
+                        className="text-teal-700 hover:text-teal-900 font-bold cursor-pointer hover:underline flex items-center gap-1 shrink-0"
+                      >
+                        <span>基本情報を編集する</span>
+                        <ArrowRight size={11} />
+                      </button>
                     </div>
-                  )}
+                  </div>
                 </div>
 
                 {/* 2. 事務局・システムからの受信通知ログ */}

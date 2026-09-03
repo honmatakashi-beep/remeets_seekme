@@ -1671,6 +1671,7 @@ async function startServer() {
     try { db.exec("ALTER TABLE users ADD COLUMN ekyc_name TEXT"); } catch (e) {}
     try { db.exec("ALTER TABLE users ADD COLUMN maiden_name TEXT"); } catch (e) {}
     try { db.exec("ALTER TABLE users ADD COLUMN birthdate TEXT"); } catch (e) {}
+    try { db.exec("ALTER TABLE users ADD COLUMN notify_new_post INTEGER DEFAULT 1"); } catch (e) {}
     
     // search_alerts columns migration
     try { db.exec("ALTER TABLE search_alerts ADD COLUMN user_id INTEGER"); } catch (e) {}
@@ -2506,6 +2507,34 @@ async function startServer() {
     }
   });
 
+  // --- User Post Match Alert Setting (Single Toggle per User) ---
+  app.get("/api/user/notify-settings", authenticateToken, (req: any, res) => {
+    try {
+      const user = db.prepare("SELECT id, full_name, nickname, maiden_name, email, notify_new_post FROM users WHERE id = ?").get(req.user.id) as any;
+      if (!user) return res.status(404).json({ error: "User not found" });
+      res.json({
+        enabled: user.notify_new_post !== 0,
+        full_name: user.full_name || '',
+        nickname: user.nickname || '',
+        maiden_name: user.maiden_name || '',
+        email: user.email || ''
+      });
+    } catch (err) {
+      res.status(500).json({ error: "Failed to fetch notification settings" });
+    }
+  });
+
+  app.put("/api/user/notify-settings", authenticateToken, (req: any, res) => {
+    const { enabled } = req.body;
+    try {
+      const val = enabled ? 1 : 0;
+      db.prepare("UPDATE users SET notify_new_post = ? WHERE id = ?").run(val, req.user.id);
+      res.json({ success: true, enabled: val === 1 });
+    } catch (err) {
+      res.status(500).json({ error: "Failed to update notification settings" });
+    }
+  });
+
   app.post("/api/search-alerts", searchLimiter, optionalAuthenticateToken, (req: any, res) => {
     const { 
       email, 
@@ -2859,6 +2888,34 @@ async function startServer() {
       } else {
         // AI Auto-flagging (Async)
         aiAutoFlagPost(postId, validation);
+      }
+
+      // 自動マッチ通知：投稿された宛名と一致する notify_new_post = 1 のユーザーに通知を即時発行
+      try {
+        const matchingUsers = db.prepare(`
+          SELECT id, email, full_name, nickname, maiden_name 
+          FROM users 
+          WHERE (notify_new_post IS NULL OR notify_new_post != 0) AND id != ?
+        `).all(req.user.id) as any[];
+
+        for (const u of matchingUsers) {
+          const userNames = [u.full_name, u.nickname, u.maiden_name].filter(Boolean).map(n => n.trim().toLowerCase());
+          const targetNames = [targetName, targetLastName, targetFirstName, `${targetLastName || ''}${targetFirstName || ''}`].filter(Boolean).map(n => n.trim().toLowerCase());
+          
+          const isMatched = userNames.some(un => targetNames.some(tn => (tn.length >= 2 && un.includes(tn)) || (un.length >= 2 && tn.includes(un))));
+          if (isMatched) {
+            db.prepare(`
+              INSERT INTO notifications (user_id, type, content, link, is_read)
+              VALUES (?, 'match', ?, ?, 0)
+            `).run(
+              u.id,
+              `📬 あなた（${u.full_name || u.nickname} 様）宛てと思われる新しい想い出の手紙が海に流されました。`,
+              `/post/${postId}`
+            );
+          }
+        }
+      } catch (notifyErr) {
+        console.warn("Failed to notify matching users on new post:", notifyErr);
       }
 
       res.json({ id: postId });
