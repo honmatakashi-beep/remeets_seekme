@@ -730,9 +730,9 @@ export const AccountPage = () => {
           )}
 
           {/* User Profile Card Summary Dashboard */}
-          <div className="bg-[#f2f5f8] border border-slate-300/90 rounded-3xl p-6 md:p-8 shadow-sm relative overflow-hidden space-y-6">
+          <div className="bg-[#f2f5f8] border-2 border-slate-300 rounded-3xl p-6 md:p-8 shadow-sm relative overflow-hidden space-y-6">
             {/* Top Bar: Large Prominent Name, Badge & Prominent Edit Actions */}
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5 border-b border-slate-300/70 pb-6">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5 border-b-2 border-slate-300/70 pb-6">
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-600 via-indigo-700 to-teal-600 text-white flex items-center justify-center font-serif font-bold text-2xl shadow-md shrink-0 select-none ring-4 ring-white">
                   {user?.fullName ? user.fullName.charAt(0) : 'R'}
@@ -742,11 +742,11 @@ export const AccountPage = () => {
                     <span className="text-[11px] font-bold text-slate-500 font-sans uppercase tracking-wider">
                       【お名前】
                     </span>
-                    <span className="text-[10px] font-sans font-bold bg-white text-slate-700 px-2 py-0.5 rounded-md border border-slate-300/80 shadow-2xs">
+                    <span className="text-[10px] font-sans font-bold bg-white text-slate-700 px-2 py-0.5 rounded-md border-2 border-slate-300/90 shadow-2xs">
                       {user?.role === 'super_admin' ? '管理者アカウント' : '一般メンバー'}
                     </span>
                     {(user?.is_supporter || localStorage.getItem('remeets_is_supporter') === 'true') && (
-                      <span className="text-[11px] text-amber-900 bg-amber-100 border border-amber-300 font-bold px-2 py-0.5 rounded-md flex items-center gap-1 shadow-2xs">
+                      <span className="text-[11px] text-amber-900 bg-amber-100 border-2 border-amber-300 font-bold px-2 py-0.5 rounded-md flex items-center gap-1 shadow-2xs">
                         ⭐ 公式サポーター
                       </span>
                     )}
@@ -755,7 +755,7 @@ export const AccountPage = () => {
                   <h2 className="text-2xl sm:text-3xl font-serif font-extrabold text-slate-900 tracking-wide flex items-baseline gap-2 flex-wrap">
                     <span>{user?.fullName || '名前未設定'}</span>
                     {user?.maiden_name && (
-                      <span className="text-sm sm:text-base font-bold text-indigo-900 bg-white px-2.5 py-0.5 rounded-lg border border-slate-300 shadow-2xs">
+                      <span className="text-sm sm:text-base font-bold text-indigo-900 bg-white px-2.5 py-0.5 rounded-lg border-2 border-slate-300 shadow-2xs">
                         （旧姓: {user.maiden_name}）
                       </span>
                     )}
@@ -786,7 +786,7 @@ export const AccountPage = () => {
                 <button
                   type="button"
                   onClick={() => setShowDonationModal(true)}
-                  className="px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 rounded-xl font-bold text-xs border border-slate-300 transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 shadow-2xs"
+                  className="px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 rounded-xl font-bold text-xs border-2 border-slate-300 transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 shadow-2xs"
                 >
                   <Coffee size={13} className="text-amber-600 shrink-0" />
                   <span>☕ 応援（寄付）</span>
@@ -798,7 +798,7 @@ export const AccountPage = () => {
             <div className="space-y-2.5 font-sans">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {/* 1. ニックネーム */}
-                <div className="bg-white hover:border-indigo-400 px-4 py-2.5 rounded-xl border border-slate-200 shadow-xs transition-all flex items-center justify-between gap-3 group">
+                <div className="bg-white hover:border-indigo-400 px-4 py-2.5 rounded-xl border-2 border-slate-300/90 shadow-xs transition-all flex items-center justify-between gap-3 group">
                   <span className="text-[11px] font-bold text-slate-500 shrink-0">
                     【ニックネーム】
                   </span>
@@ -808,7 +808,7 @@ export const AccountPage = () => {
                 </div>
 
                 {/* 2. ユーザーID */}
-                <div className="bg-white hover:border-indigo-400 px-4 py-2.5 rounded-xl border border-slate-200 shadow-xs transition-all flex items-center justify-between gap-3 group">
+                <div className="bg-white hover:border-indigo-400 px-4 py-2.5 rounded-xl border-2 border-slate-300/90 shadow-xs transition-all flex items-center justify-between gap-3 group">
                   <span className="text-[11px] font-bold text-slate-500 shrink-0">
                     【ユーザーID】
                   </span>
@@ -818,7 +818,7 @@ export const AccountPage = () => {
                 </div>
 
                 {/* 3. 登録メールアドレス */}
-                <div className="bg-white hover:border-indigo-400 px-4 py-2.5 rounded-xl border border-slate-200 shadow-xs transition-all flex items-center justify-between gap-3 group">
+                <div className="bg-white hover:border-indigo-400 px-4 py-2.5 rounded-xl border-2 border-slate-300/90 shadow-xs transition-all flex items-center justify-between gap-3 group">
                   <span className="text-[11px] font-bold text-slate-500 shrink-0">
                     【登録メールアドレス】
                   </span>
@@ -828,7 +828,7 @@ export const AccountPage = () => {
                 </div>
 
                 {/* 4. 再会時の開示連絡先 */}
-                <div className="bg-white hover:border-teal-400 px-4 py-2.5 rounded-xl border border-slate-200 shadow-xs transition-all flex items-center justify-between gap-3 group">
+                <div className="bg-white hover:border-teal-400 px-4 py-2.5 rounded-xl border-2 border-slate-300/90 shadow-xs transition-all flex items-center justify-between gap-3 group">
                   <span className="text-[11px] font-bold text-slate-500 shrink-0">
                     【再会時の開示連絡先】
                   </span>
@@ -849,18 +849,18 @@ export const AccountPage = () => {
                 </div>
 
                 {/* 5. 本人確認（eKYC）状況 */}
-                <div className={`px-4 py-2.5 rounded-xl border shadow-2xs sm:col-span-2 flex items-center justify-between gap-2.5 ${
+                <div className={`px-4 py-2.5 rounded-xl border-2 shadow-xs sm:col-span-2 flex items-center justify-between gap-2.5 ${
                   (user?.is_ekyc_verified || localStorage.getItem('ekyc_verified') === 'true')
-                    ? 'bg-emerald-50/80 border-emerald-200/90'
-                    : 'bg-amber-50/80 border-amber-200/90'
+                    ? 'bg-emerald-50/80 border-emerald-300'
+                    : 'bg-amber-50/80 border-amber-300'
                 }`}>
                   <span className="text-[11px] font-bold text-slate-500 shrink-0">【本人確認（eKYC）状況】</span>
                   {(user?.is_ekyc_verified || localStorage.getItem('ekyc_verified') === 'true') ? (
-                    <span className="text-xs font-bold text-emerald-800 bg-emerald-100/90 border border-emerald-300 px-2.5 py-0.5 rounded-lg flex items-center gap-1 shadow-2xs">
+                    <span className="text-xs font-bold text-emerald-800 bg-emerald-100 border-2 border-emerald-300 px-2.5 py-0.5 rounded-lg flex items-center gap-1 shadow-2xs">
                       🛡️ 公的本人確認完了
                     </span>
                   ) : (
-                    <span className="text-xs font-bold text-amber-900 bg-white/90 border border-amber-300 px-2.5 py-0.5 rounded-lg shadow-2xs">
+                    <span className="text-xs font-bold text-amber-900 bg-white border-2 border-amber-300 px-2.5 py-0.5 rounded-lg shadow-2xs">
                       📝 自己誓約のみ（未eKYC）
                     </span>
                   )}
@@ -869,7 +869,7 @@ export const AccountPage = () => {
             </div>
 
             {/* メール通知の受け取り設定バナー */}
-            <div className="bg-rose-50/70 border border-rose-200/80 rounded-2xl p-4.5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 font-sans">
+            <div className="bg-rose-50/70 border-2 border-rose-200 rounded-2xl p-4.5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 font-sans">
               <div className="space-y-1 max-w-xl">
                 <div className="flex items-center gap-2">
                   <Bell size={16} className="text-rose-600 shrink-0" />
@@ -898,11 +898,11 @@ export const AccountPage = () => {
             </div>
 
             {/* Bottom Row: Quick Status Counters */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-200/80 font-sans">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t-2 border-slate-300/70 font-sans">
               <button
                 type="button"
                 onClick={() => handleTabChange('chats')}
-                className="bg-white hover:bg-emerald-50/70 px-4 py-2.5 border border-slate-200/90 hover:border-emerald-300 rounded-xl text-left transition-all cursor-pointer flex items-center justify-between group shadow-2xs"
+                className="bg-white hover:bg-emerald-50/70 px-4 py-2.5 border-2 border-slate-300/90 hover:border-emerald-400 rounded-xl text-left transition-all cursor-pointer flex items-center justify-between group shadow-xs"
               >
                 <div className="flex items-center gap-2">
                   <MessageSquare size={16} className="text-emerald-600" />
@@ -922,7 +922,7 @@ export const AccountPage = () => {
               <button
                 type="button"
                 onClick={() => handleTabChange('sent')}
-                className="bg-white hover:bg-teal-50/70 px-4 py-2.5 border border-slate-200/90 hover:border-teal-300 rounded-xl text-left transition-all cursor-pointer flex items-center justify-between group shadow-2xs"
+                className="bg-white hover:bg-teal-50/70 px-4 py-2.5 border-2 border-slate-300/90 hover:border-teal-400 rounded-xl text-left transition-all cursor-pointer flex items-center justify-between group shadow-xs"
               >
                 <div className="flex items-center gap-2">
                   <Send size={15} className="text-teal-600" />
