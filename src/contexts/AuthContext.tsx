@@ -12,6 +12,7 @@ export interface User {
   nickname?: string;
   email?: string;
   role?: string;
+  maiden_name?: string;
   is_blocked?: boolean;
   is_ekyc_verified?: boolean;
   is_supporter?: boolean;

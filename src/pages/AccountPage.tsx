@@ -26,6 +26,7 @@ export const AccountPage = () => {
   const [loading, setLoading] = useState(true);
   const [editingNickname, setEditingNickname] = useState(user?.nickname || '');
   const [editingEmail, setEditingEmail] = useState(user?.email || '');
+  const [editingMaidenName, setEditingMaidenName] = useState((user as any)?.maiden_name || '');
   const [editingEmailNotifications, setEditingEmailNotifications] = useState<boolean>(true);
   const [editingContactType, setEditingContactType] = useState<string>(() => localStorage.getItem('remeets_default_contact_type') || 'LINE');
   const [editingContactId, setEditingContactId] = useState<string>(() => localStorage.getItem('remeets_default_contact_id') || (user as any)?.contact_id || '');
@@ -518,6 +519,7 @@ export const AccountPage = () => {
           const profile = await resProfile.json();
           setEditingNickname(profile.nickname || '');
           setEditingEmail(profile.email || '');
+          setEditingMaidenName(profile.maiden_name || '');
           if (profile.email_notifications !== undefined) {
             setEditingEmailNotifications(!!profile.email_notifications);
           }
@@ -529,6 +531,7 @@ export const AccountPage = () => {
             firstName: profile.firstName, 
             nickname: profile.nickname, 
             email: profile.email,
+            maiden_name: profile.maiden_name,
             email_notifications: profile.email_notifications !== undefined ? profile.email_notifications : true,
             contact_type: profile.contact_type || editingContactType,
             contact_id: profile.contact_id || editingContactId
@@ -562,6 +565,7 @@ export const AccountPage = () => {
         body: JSON.stringify({
           nickname: editingNickname,
           email: editingEmail,
+          maiden_name: editingMaidenName,
           email_notifications: editingEmailNotifications,
           contact_type: editingContactType,
           contact_id: editingContactId
@@ -580,7 +584,8 @@ export const AccountPage = () => {
 
       updateUser({ 
         nickname: editingNickname, 
-        email: editingEmail, 
+        email: editingEmail,
+        maiden_name: editingMaidenName, 
         contact_type: editingContactType, 
         contact_id: editingContactId 
       });
@@ -747,8 +752,14 @@ export const AccountPage = () => {
                     )}
                   </div>
                   {/* 大きく見やすいフォントでお名前を表示 */}
-                  <h2 className="text-2xl sm:text-3xl font-serif font-extrabold text-slate-900 tracking-wide">
-                    {user?.fullName || '名前未設定'} 様
+                  <h2 className="text-2xl sm:text-3xl font-serif font-extrabold text-slate-900 tracking-wide flex items-baseline gap-2 flex-wrap">
+                    <span>{user?.fullName || '名前未設定'}</span>
+                    {user?.maiden_name && (
+                      <span className="text-sm sm:text-base font-medium text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-lg border border-slate-200">
+                        （旧姓: {user.maiden_name}）
+                      </span>
+                    )}
+                    <span>様</span>
                   </h2>
                 </div>
               </div>
@@ -760,6 +771,7 @@ export const AccountPage = () => {
                   onClick={() => {
                     setEditingNickname(user?.nickname || '');
                     setEditingEmail(user?.email || '');
+                    setEditingMaidenName(user?.maiden_name || '');
                     setEditingContactType((user as any)?.contact_type || localStorage.getItem('remeets_default_contact_type') || 'LINE');
                     setEditingContactId((user as any)?.contact_id || localStorage.getItem('remeets_default_contact_id') || '');
                     setUpdateError('');
@@ -1097,6 +1109,24 @@ export const AccountPage = () => {
                       />
                       <p className="text-[10px] text-slate-400 mt-1">
                         ※ボトルメール内や公開プロフィールで相手に表示されるお名前です。
+                      </p>
+                    </div>
+
+                    {/* 旧姓（任意） */}
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+                        <span>旧姓（旧氏名・結婚前の名字）</span>
+                        <span className="text-[10px] text-slate-400 font-normal">任意</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={editingMaidenName}
+                        onChange={(e) => setEditingMaidenName(e.target.value)}
+                        placeholder="例: 鈴木（旧姓がある場合のみ記入）"
+                        className="w-full px-3.5 py-2.5 bg-white border border-slate-200 hover:border-indigo-400 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 rounded-xl text-xs font-medium text-slate-900 transition-all"
+                      />
+                      <p className="text-[10px] text-slate-400 mt-1">
+                        ※昔の同級生やお知り合いが旧姓でお手紙を探している際に気づきやすくなります。マイアカウントのお名前横に表示されます。
                       </p>
                     </div>
 

@@ -1366,6 +1366,7 @@ async function startServer() {
         email TEXT UNIQUE,
         password TEXT NOT NULL,
         full_name TEXT,
+        maiden_name TEXT,
         role TEXT DEFAULT 'user',
         is_verified INTEGER DEFAULT 0,
         verification_token TEXT,
@@ -1668,6 +1669,7 @@ async function startServer() {
     try { db.exec("ALTER TABLE users ADD COLUMN ekyc_verified_at DATETIME"); } catch (e) {}
     try { db.exec("ALTER TABLE users ADD COLUMN ekyc_document_type TEXT"); } catch (e) {}
     try { db.exec("ALTER TABLE users ADD COLUMN ekyc_name TEXT"); } catch (e) {}
+    try { db.exec("ALTER TABLE users ADD COLUMN maiden_name TEXT"); } catch (e) {}
     try { db.exec("ALTER TABLE users ADD COLUMN birthdate TEXT"); } catch (e) {}
     
     // Ensure multiple sample users and test user have eKYC verified status populated
@@ -1851,6 +1853,7 @@ async function startServer() {
     try { db.prepare("ALTER TABLE users ADD COLUMN ekyc_verified_at DATETIME").run(); } catch (e) {}
     try { db.prepare("ALTER TABLE users ADD COLUMN ekyc_document_type TEXT").run(); } catch (e) {}
     try { db.prepare("ALTER TABLE users ADD COLUMN ekyc_name TEXT").run(); } catch (e) {}
+    try { db.prepare("ALTER TABLE users ADD COLUMN maiden_name TEXT").run(); } catch (e) {}
     try { db.prepare("ALTER TABLE users ADD COLUMN birthdate TEXT").run(); } catch (e) {}
     try { db.prepare("ALTER TABLE posts ADD COLUMN user_id INTEGER").run(); } catch (e) {}
     try { db.prepare("ALTER TABLE posts ADD COLUMN contact_type TEXT").run(); } catch (e) {}
@@ -2072,9 +2075,10 @@ async function startServer() {
       const firstName = user.first_name || null;
       const nickname = user.nickname || null;
       const email = user.email || null;
-      const token = jwt.sign({ id: user.id, username: user.username, role, fullName, lastName, firstName, nickname, email }, JWT_SECRET);
+      const maiden_name = user.maiden_name || null;
+      const token = jwt.sign({ id: user.id, username: user.username, role, fullName, lastName, firstName, nickname, email, maiden_name }, JWT_SECRET);
       logAction(user.id, "login_success", `User ${username} logged in`, ip);
-      res.json({ token, user: { id: user.id, username: user.username, role, fullName, lastName, firstName, nickname, email } });
+      res.json({ token, user: { id: user.id, username: user.username, role, fullName, lastName, firstName, nickname, email, maiden_name } });
     } catch (err) {
       res.status(500).json({ error: "ログインに失敗しました。" });
     }
@@ -2352,13 +2356,14 @@ async function startServer() {
 
   app.get("/api/auth/me", authenticateToken, (req: any, res) => {
     try {
-      const user = db.prepare("SELECT id, username, email, role, full_name, last_name, first_name, nickname, is_ekyc_verified, ekyc_verified_at, ekyc_document_type, ekyc_name FROM users WHERE id = ?").get(req.user.id) as any;
+      const user = db.prepare("SELECT id, username, email, role, full_name, last_name, first_name, nickname, maiden_name, is_ekyc_verified, ekyc_verified_at, ekyc_document_type, ekyc_name FROM users WHERE id = ?").get(req.user.id) as any;
       res.json({ 
         ...user, 
         fullName: user.full_name || `${user.last_name || ''} ${user.first_name || ''}`.trim(),
         lastName: user.last_name || '',
         firstName: user.first_name || '',
         nickname: user.nickname || '',
+        maiden_name: user.maiden_name || '',
         is_ekyc_verified: user.is_ekyc_verified === 1 || Boolean(user.is_ekyc_verified)
       });
     } catch (err) {
@@ -2436,9 +2441,12 @@ async function startServer() {
   app.post("/api/auth/ekyc-reset", authenticateToken, resetEkycHandler);
 
   app.patch("/api/auth/me", authenticateToken, async (req: any, res) => {
-    const { nickname, email } = req.body;
+    const { nickname, email, maiden_name } = req.body;
     if (nickname && filterNGWords(nickname) !== nickname) {
       return res.status(400).json({ error: "ニックネームに不適切な言葉、または個人情報が含まれています。" });
+    }
+    if (maiden_name && filterNGWords(maiden_name) !== maiden_name) {
+      return res.status(400).json({ error: "旧姓に不適切な言葉が含まれています。" });
     }
     try {
       const currentUser = db.prepare("SELECT email FROM users WHERE id = ?").get(req.user.id) as any;
@@ -2458,22 +2466,11 @@ async function startServer() {
         verificationToken = crypto.randomBytes(32).toString("hex");
       }
 
-      if (nickname !== undefined && email !== undefined) {
-        if (emailChanged) {
-          db.prepare("UPDATE users SET nickname = ?, email = ?, is_verified = 0, verification_token = ? WHERE id = ?").run(nickname, email, verificationToken, req.user.id);
-          await sendVerificationEmail(email, verificationToken);
-        } else {
-          db.prepare("UPDATE users SET nickname = ?, email = ? WHERE id = ?").run(nickname, email, req.user.id);
-        }
-      } else if (nickname !== undefined) {
-        db.prepare("UPDATE users SET nickname = ? WHERE id = ?").run(nickname, req.user.id);
-      } else if (email !== undefined) {
-        if (emailChanged) {
-          db.prepare("UPDATE users SET email = ?, is_verified = 0, verification_token = ? WHERE id = ?").run(email, verificationToken, req.user.id);
-          await sendVerificationEmail(email, verificationToken);
-        } else {
-          db.prepare("UPDATE users SET email = ? WHERE id = ?").run(email, req.user.id);
-        }
+      if (emailChanged) {
+        db.prepare("UPDATE users SET nickname = COALESCE(?, nickname), email = ?, maiden_name = COALESCE(?, maiden_name), is_verified = 0, verification_token = ? WHERE id = ?").run(nickname ?? null, email, maiden_name ?? null, verificationToken, req.user.id);
+        await sendVerificationEmail(email, verificationToken);
+      } else {
+        db.prepare("UPDATE users SET nickname = COALESCE(?, nickname), email = COALESCE(?, email), maiden_name = COALESCE(?, maiden_name) WHERE id = ?").run(nickname ?? null, email ?? null, maiden_name ?? null, req.user.id);
       }
 
       res.json({ success: true, emailChanged });
@@ -3853,7 +3850,7 @@ async function startServer() {
   app.get("/api/admin/users", authenticateToken, isAdmin, (req, res) => {
     try {
       const users = db.prepare(`
-        SELECT u.id, u.username, u.email, u.full_name, u.last_name, u.first_name, u.nickname, u.role, u.is_blocked, u.is_ekyc_verified, u.ekyc_document_type, u.ekyc_verified_at, u.ekyc_name, u.created_at,
+        SELECT u.id, u.username, u.email, u.full_name, u.last_name, u.first_name, u.nickname, u.maiden_name, u.role, u.is_blocked, u.is_ekyc_verified, u.ekyc_document_type, u.ekyc_verified_at, u.ekyc_name, u.created_at,
                (SELECT COUNT(*) FROM posts p WHERE p.user_id = u.id) as posts_count
         FROM users u
         ORDER BY u.created_at DESC

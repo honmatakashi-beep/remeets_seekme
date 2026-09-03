@@ -5493,6 +5493,7 @@ export const AdminDashboard = () => {
                                 u.username.toLowerCase().includes(userSearchTerm.toLowerCase()) ||
                                 (u.nickname && u.nickname.toLowerCase().includes(userSearchTerm.toLowerCase())) ||
                                 (u.full_name && u.full_name.toLowerCase().includes(userSearchTerm.toLowerCase())) ||
+                                (u.maiden_name && u.maiden_name.toLowerCase().includes(userSearchTerm.toLowerCase())) ||
                                 (u.email && u.email.toLowerCase().includes(userSearchTerm.toLowerCase()))
                               )
                             );
@@ -5518,6 +5519,7 @@ export const AdminDashboard = () => {
                         <th className="px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-black/75 whitespace-nowrap">ユーザー名</th>
                         <th className="px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-black/75 whitespace-nowrap">ニックネーム</th>
                         <th className="px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-black/75 whitespace-nowrap">本名</th>
+                        <th className="px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-black/75 whitespace-nowrap">旧姓</th>
                         <th className="px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-black/75 whitespace-nowrap">メールアドレス</th>
                         <th className="px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-black/75 text-center whitespace-nowrap">投関数</th>
                         <th className="px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-black/75 whitespace-nowrap">権限</th>
@@ -5532,6 +5534,7 @@ export const AdminDashboard = () => {
                           u.username.toLowerCase().includes(userSearchTerm.toLowerCase()) ||
                           (u.nickname && u.nickname.toLowerCase().includes(userSearchTerm.toLowerCase())) ||
                           (u.full_name && u.full_name.toLowerCase().includes(userSearchTerm.toLowerCase())) ||
+                                (u.maiden_name && u.maiden_name.toLowerCase().includes(userSearchTerm.toLowerCase())) ||
                           (u.email && u.email.toLowerCase().includes(userSearchTerm.toLowerCase()))
                         )
                         .slice((userPage - 1) * itemsPerPage, userPage * itemsPerPage)
@@ -5577,6 +5580,7 @@ export const AdminDashboard = () => {
                           </td>
                           <td className="px-3 py-1 text-[12px] font-medium text-brand-dark whitespace-nowrap">{u.nickname || '-'}</td>
                           <td className="px-3 py-1 text-[12px] text-black/75 whitespace-nowrap">{u.full_name || '-'}</td>
+                          <td className="px-3 py-1 text-[11px] text-slate-600 whitespace-nowrap">{u.maiden_name ? <span className="bg-indigo-50 text-indigo-850 px-2 py-0.5 rounded-md border border-indigo-200/80 font-bold">旧姓: {u.maiden_name}</span> : '-'}</td>
                           <td className="px-3 py-1 text-[11px] font-mono text-black/60 whitespace-nowrap">{u.email || '-'}</td>
                           <td className="px-3 py-1 whitespace-nowrap text-center">
                             <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full border ${
@@ -5650,6 +5654,7 @@ export const AdminDashboard = () => {
                 u.username.toLowerCase().includes(userSearchTerm.toLowerCase()) ||
                 (u.nickname && u.nickname.toLowerCase().includes(userSearchTerm.toLowerCase())) ||
                 (u.full_name && u.full_name.toLowerCase().includes(userSearchTerm.toLowerCase())) ||
+                                (u.maiden_name && u.maiden_name.toLowerCase().includes(userSearchTerm.toLowerCase())) ||
                 (u.email && u.email.toLowerCase().includes(userSearchTerm.toLowerCase()))
               ).length > itemsPerPage && (
                 <div className="flex items-center justify-center gap-4 pt-4">
@@ -5665,6 +5670,7 @@ export const AdminDashboard = () => {
                       u.username.toLowerCase().includes(userSearchTerm.toLowerCase()) ||
                       (u.nickname && u.nickname.toLowerCase().includes(userSearchTerm.toLowerCase())) ||
                       (u.full_name && u.full_name.toLowerCase().includes(userSearchTerm.toLowerCase())) ||
+                                (u.maiden_name && u.maiden_name.toLowerCase().includes(userSearchTerm.toLowerCase())) ||
                       (u.email && u.email.toLowerCase().includes(userSearchTerm.toLowerCase()))
                     ).length / itemsPerPage)}
                   </span>
@@ -5673,6 +5679,7 @@ export const AdminDashboard = () => {
                       u.username.toLowerCase().includes(userSearchTerm.toLowerCase()) ||
                       (u.nickname && u.nickname.toLowerCase().includes(userSearchTerm.toLowerCase())) ||
                       (u.full_name && u.full_name.toLowerCase().includes(userSearchTerm.toLowerCase())) ||
+                                (u.maiden_name && u.maiden_name.toLowerCase().includes(userSearchTerm.toLowerCase())) ||
                       (u.email && u.email.toLowerCase().includes(userSearchTerm.toLowerCase()))
                     ).length / itemsPerPage)}
                     onClick={() => setUserPage(prev => prev + 1)}
@@ -9976,6 +9983,14 @@ export const AdminDashboard = () => {
                         <span className="text-sm md:text-base text-black/60">本名</span>
                         <span className="text-sm font-bold text-black">{selectedUser.full_name || '未設定'}</span>
                       </div>
+                      {selectedUser.maiden_name && (
+                        <div className="flex justify-between py-2.5 border-b border-brand-border bg-indigo-50/50 px-2 rounded-lg">
+                          <span className="text-sm md:text-base text-indigo-900 font-bold">登録旧姓</span>
+                          <span className="text-sm font-bold text-indigo-950 bg-indigo-100 px-2.5 py-0.5 rounded-md border border-indigo-300">
+                            旧姓: {selectedUser.maiden_name}
+                          </span>
+                        </div>
+                      )}
                       <div className="flex items-center justify-between py-2.5 border-b border-brand-border gap-2">
                         <span className="text-sm md:text-base text-black/60 shrink-0">公的本人確認 (eKYC)</span>
                         <div className="flex items-center gap-1.5 shrink-0 flex-nowrap">
