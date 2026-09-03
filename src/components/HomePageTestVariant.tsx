@@ -32,6 +32,7 @@ import {
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
+import { getPostUrl } from '../lib/utils';
 
 interface HomePageTestVariantProps {
   onToggleDesign: () => void;
@@ -883,7 +884,7 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {recentPosts && recentPosts.length > 0 ? (
                 (paginatedList as any[]).map((post: any) => {
-                  const postUrl = post.id ? `/name/${encodeURIComponent(post.target_name || 'someone')}/${encodeURIComponent(post.target_hometown ? (post.target_hometown.match(/.*?[都道府県]/)?.[0] || post.target_hometown) : 'anywhere')}/${encodeURIComponent(post.era ? (post.era.toString().startsWith('19') ? post.era : `19${post.era}`) : '1980')}/${encodeURIComponent(post.category === 'friend' ? '同級生・友人' : post.category === 'love' ? '初恋・元恋人' : post.category === 'work' ? '同僚・仕事仲間' : 'その他')}?id=${post.id}` : `/search?query=${encodeURIComponent(post.target_name || '')}`;
+                  const postUrl = post.id ? getPostUrl(post) : `/search?query=${encodeURIComponent(post.target_name || '')}`;
                   const eraStr = post.era ? (post.era.toString().startsWith('19') ? post.era : `19${post.era}`) : '1980';
                   const catStr = post.category === 'friend' ? '友人' : post.category === 'love' ? '初恋・恋人' : post.category === 'work' ? '仕事' : 'その他';
                   const hometownStr = post.target_hometown ? (post.target_hometown.match(/.*?[都道府県]/)?.[0] || post.target_hometown) : '未設定';

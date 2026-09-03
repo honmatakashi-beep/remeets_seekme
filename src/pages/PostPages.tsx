@@ -4763,138 +4763,94 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
   useEffect(() => {
     const fetchPost = async () => {
       setError('');
-      let postId = (idQuery && idQuery !== 'undefined' && idQuery !== 'null') ? idQuery : (id && id !== 'undefined' && id !== 'null' ? id : null);
+      // 1. postId の特定（クエリパラメータ ?id=123、または パスパラメータ /post/:id）
+      let postId = (idQuery && idQuery !== 'undefined' && idQuery !== 'null') 
+        ? idQuery 
+        : (id && id !== 'undefined' && id !== 'null' ? id : null);
       
-      // If we already have the post and we are on an SEO route, check if it matches
-      if (post && !id && nameParam && locParam && yearParam && relParam) {
-        // Already loaded, no need to re-fetch
-        return;
-      }
-
-      // SEO Route handling if postId is not yet known or to resolve SEO URL
+      // 2. SEOルート（/name/:name/:location/:year/:relationship）で postId が未特定の場合のみ、SEO照合APIを呼ぶ
       if (!postId && nameParam && locParam && yearParam && relParam) {
         try {
-          console.log("Looking up SEO route:", { nameParam, locParam, yearParam, relParam, idQuery });
-          const fetchSeoUrl = `/api/posts/seo/${nameParam}/${locParam}/${yearParam}/${relParam}${idQuery ? `?id=${idQuery}` : ''}`;
+          const fetchSeoUrl = `/api/posts/seo/${nameParam}/${locParam}/${yearParam}/${relParam}`;
           const res = await fetch(fetchSeoUrl, {
             headers: token ? { 'Authorization': `Bearer ${token}` } : {}
           });
           if (res.ok) {
             const data = await res.json();
-            postId = data.id;
-            console.log("SEO lookup success, found ID:", postId);
-          } else {
-            console.warn("SEO lookup failed, falling back to recent posts");
-            const recentRes = await fetch('/api/posts/recent');
-            if (recentRes.ok) {
-              const recentList = await recentRes.json();
-              if (recentList && recentList.length > 0) {
-                postId = recentList[0].id;
-              }
+            if (data?.id) {
+              postId = data.id;
             }
+          } else {
+            setError('お探しの手紙（ボトルメール）は見つかりませんでした。');
+            return;
           }
         } catch (e) {
-          console.error("SEO lookup exception, falling back to recent posts:", e);
-          try {
-            const recentRes = await fetch('/api/posts/recent');
-            if (recentRes.ok) {
-              const recentList = await recentRes.json();
-              if (recentList && recentList.length > 0) {
-                postId = recentList[0].id;
-              }
-            }
-          } catch (err) {
-            console.error(err);
-          }
+          console.error("SEO lookup exception:", e);
+          setError('手紙の読み込み中にエラーが発生しました。');
+          return;
         }
       }
 
+      // 3. それでも postId がない場合はエラー
       if (!postId) {
-        // Fallback if still no postId
-        try {
-          const recentRes = await fetch('/api/posts/recent');
-          if (recentRes.ok) {
-            const recentList = await recentRes.json();
-            if (recentList && recentList.length > 0) {
-              postId = recentList[0].id;
-            }
-          }
-        } catch (e) {
-          console.error(e);
-        }
+        setError('お探しの手紙（ボトルメール）は見つかりませんでした。');
+        return;
       }
 
-      if (postId) {
-        try {
-          console.log("Fetching post data for ID:", postId);
-          let res = await fetch(`/api/posts/${postId}`, {
-            headers: token ? { 'Authorization': `Bearer ${token}` } : {}
-          });
-          if (!res.ok) {
-            // Fallback to recent posts if specific post fetch fails
-            const recentRes = await fetch('/api/posts/recent');
-            if (recentRes.ok) {
-              const recentList = await recentRes.json();
-              if (recentList && recentList.length > 0) {
-                postId = recentList[0].id;
-                res = await fetch(`/api/posts/${postId}`, {
-                  headers: token ? { 'Authorization': `Bearer ${token}` } : {}
-                });
-              }
-            }
-          }
+      // 4. 正確に特定された postId の手紙データを取得（※勝手な recentList フォールバックは一切行わない）
+      try {
+        const res = await fetch(`/api/posts/${postId}`, {
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+        });
 
-          if (res.ok) {
-            const data = await res.json();
-            setPost(data);
-            const resolvedFullName = data.searcher_full_name || data.owner_full_name || (data.author_info?.full_name) || null;
-            setSearcherFullName(resolvedFullName);
-            setVerifiedByUser(data.verified_by_user || null);
-            
-            // Restore verification states, searcherId, searcherName, and revealedContact if the logged in user is owner, verified finder, or contact info is available
-            const isResolvedOrVerified = !!(data.is_verified_finder || data.is_owner || data.status === 'resolved' || data.verified_by || data.searcher_full_name || data.contact_id);
-            if (isResolvedOrVerified) {
-              setIsQuestionVerified(true);
-              setIsAgeVerified(true);
-              if (data.searcherId) {
-                setSearcherId(data.searcherId);
-              }
-              const resolvedName = data.searcher_name || data.owner_nickname || '差出人';
-              if (data.searcher_name) {
-                setSearcherName(data.searcher_name);
-              }
-              const contactIdVal = data.contact_id || data.unlock_contact_info || (data.owner_username ? `@${data.owner_username}` : (data.searcher_name ? `@${data.searcher_name}` : '開示済み'));
-              setRevealedContact({
-                contactType: data.contact_type || 'LINE',
-                contactId: contactIdVal,
-                contactNote: data.contact_note || data.unlock_message || 'お手紙を見つけていただきありがとうございます！LINEまたはメールにてご連絡をお待ちしております。',
-                searcherName: resolvedName,
-                searcherFullName: resolvedFullName || resolvedName,
-                message: data.message
-              });
+        if (res.ok) {
+          const data = await res.json();
+          setPost(data);
+          const resolvedFullName = data.searcher_full_name || data.owner_full_name || (data.author_info?.full_name) || null;
+          setSearcherFullName(resolvedFullName);
+          setVerifiedByUser(data.verified_by_user || null);
+          
+          // Restore verification states, searcherId, searcherName, and revealedContact if the logged in user is owner, verified finder, or contact info is available
+          const isResolvedOrVerified = !!(data.is_verified_finder || data.is_owner || data.status === 'resolved' || data.verified_by || data.searcher_full_name || data.contact_id);
+          if (isResolvedOrVerified) {
+            setIsQuestionVerified(true);
+            setIsAgeVerified(true);
+            if (data.searcherId) {
+              setSearcherId(data.searcherId);
             }
-            
-            if (data.questions) {
-              setAnswers(new Array(data.questions.length).fill(''));
+            const resolvedName = data.searcher_name || data.owner_nickname || '差出人';
+            if (data.searcher_name) {
+              setSearcherName(data.searcher_name);
             }
-            if (data.remaining !== undefined) {
-              setRemainingAttempts(data.remaining);
-            }
-            if (data.locked) {
-              setIsAttemptsLocked(true);
-            }
-            if (data.lockedUntil) {
-              setLockedUntil(data.lockedUntil);
-            }
-            console.log("Post data fetched successfully");
-          } else {
-            console.error("Post fetch failed with status:", res.status);
-            setError('投稿が見つかりませんでした。');
+            const contactIdVal = data.contact_id || data.unlock_contact_info || (data.owner_username ? `@${data.owner_username}` : (data.searcher_name ? `@${data.searcher_name}` : '開示済み'));
+            setRevealedContact({
+              contactType: data.contact_type || 'LINE',
+              contactId: contactIdVal,
+              contactNote: data.contact_note || data.unlock_message || 'お手紙を見つけていただきありがとうございます！LINEまたはメールにてご連絡をお待ちしております。',
+              searcherName: resolvedName,
+              searcherFullName: resolvedFullName || resolvedName,
+              message: data.message
+            });
           }
-        } catch (err) {
-          console.error("Post fetch exception:", err);
-          setError('通信エラーが発生しました。インターネット接続を確認してください。');
+          
+          if (data.questions) {
+            setAnswers(new Array(data.questions.length).fill(''));
+          }
+          if (data.remaining !== undefined) {
+            setRemainingAttempts(data.remaining);
+          }
+          if (data.locked) {
+            setIsAttemptsLocked(true);
+          }
+          if (data.lockedUntil) {
+            setLockedUntil(data.lockedUntil);
+          }
+        } else {
+          setError('お探しの手紙（ボトルメール）は見つかりませんでした。');
         }
+      } catch (err) {
+        console.error("Post fetch exception:", err);
+        setError('通信エラーが発生しました。インターネット接続を確認してください。');
       }
     };
 
