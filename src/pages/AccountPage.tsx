@@ -849,31 +849,20 @@ export const AccountPage = () => {
                 </div>
 
                 {/* 5. 本人確認（eKYC）状況 */}
-                <div className={`px-4 py-2.5 rounded-xl border shadow-2xs sm:col-span-2 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 ${
+                <div className={`px-4 py-2.5 rounded-xl border shadow-2xs sm:col-span-2 flex items-center justify-between gap-2.5 ${
                   (user?.is_ekyc_verified || localStorage.getItem('ekyc_verified') === 'true')
                     ? 'bg-emerald-50/80 border-emerald-200/90'
                     : 'bg-amber-50/80 border-amber-200/90'
                 }`}>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[11px] font-bold text-slate-500 shrink-0">【本人確認（eKYC）状況】</span>
-                    {(user?.is_ekyc_verified || localStorage.getItem('ekyc_verified') === 'true') ? (
-                      <span className="text-xs font-bold text-emerald-800 bg-emerald-100/90 border border-emerald-300 px-2.5 py-0.5 rounded-lg flex items-center gap-1">
-                        🛡️ 公的本人確認完了
-                      </span>
-                    ) : (
-                      <span className="text-xs font-bold text-amber-900 bg-amber-100/90 border border-amber-300 px-2.5 py-0.5 rounded-lg">
-                        📝 自己誓約のみ（未eKYC）
-                      </span>
-                    )}
-                  </div>
-                  {!(user?.is_ekyc_verified || localStorage.getItem('ekyc_verified') === 'true') && (
-                    <button
-                      type="button"
-                      onClick={handleOpenMypageEkycModal}
-                      className="text-xs bg-teal-700 hover:bg-teal-800 text-white font-bold px-3 py-1 rounded-lg transition-all shadow-xs active:scale-95 cursor-pointer flex items-center gap-1 self-start sm:self-auto shrink-0"
-                    >
-                      <span>⚡ 本人確認手続きを行う (600円)</span>
-                    </button>
+                  <span className="text-[11px] font-bold text-slate-500 shrink-0">【本人確認（eKYC）状況】</span>
+                  {(user?.is_ekyc_verified || localStorage.getItem('ekyc_verified') === 'true') ? (
+                    <span className="text-xs font-bold text-emerald-800 bg-emerald-100/90 border border-emerald-300 px-2.5 py-0.5 rounded-lg flex items-center gap-1 shadow-2xs">
+                      🛡️ 公的本人確認完了
+                    </span>
+                  ) : (
+                    <span className="text-xs font-bold text-amber-900 bg-white/90 border border-amber-300 px-2.5 py-0.5 rounded-lg shadow-2xs">
+                      📝 自己誓約のみ（未eKYC）
+                    </span>
                   )}
                 </div>
               </div>
