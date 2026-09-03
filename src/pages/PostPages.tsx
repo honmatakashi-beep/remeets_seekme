@@ -292,7 +292,7 @@ export const EditPostPage = () => {
             <p className="text-black">投稿内容を修正して、再び海へ流します。</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-12">
+          <form onSubmit={handleSubmit} noValidate className="space-y-12">
             {/* あなたのこと */}
             <section className="space-y-8">
               <div className="flex items-center gap-3 pb-2 border-b border-brand-primary/20">
@@ -761,7 +761,8 @@ export const EditPostPage = () => {
               </div>
 
               <button 
-                type="submit" 
+                type="button"
+                onClick={handleSubmit}
                 disabled={isSubmitting}
                 className={`w-full py-5 text-xl font-bold flex items-center justify-center gap-3 rounded-full transition-all shadow-xl cursor-pointer ${
                   agreed 
