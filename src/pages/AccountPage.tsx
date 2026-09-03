@@ -832,14 +832,20 @@ export const AccountPage = () => {
                   <span className="text-[11px] font-bold text-slate-500 shrink-0">
                     【再会時の開示連絡先】
                   </span>
-                  <div className="text-xs sm:text-sm font-bold text-teal-800 flex items-center gap-1.5 truncate">
-                    <span className="bg-teal-100 text-teal-800 px-1.5 py-0.5 rounded text-[10px] font-mono font-extrabold shrink-0">
-                      {(user as any)?.contact_type || editingContactType || 'LINE'}
-                    </span>
-                    <span className="font-mono truncate">
-                      {(user as any)?.contact_id || editingContactId || '未登録'}
-                    </span>
-                  </div>
+                  {((user as any)?.contact_id || editingContactId) ? (
+                    <div className="text-xs sm:text-sm font-bold text-teal-800 flex items-center gap-1.5 truncate">
+                      <span className="bg-teal-100 text-teal-800 px-1.5 py-0.5 rounded text-[10px] font-mono font-extrabold shrink-0">
+                        {(user as any)?.contact_type || editingContactType || 'LINE'}
+                      </span>
+                      <span className="font-mono truncate">
+                        {(user as any)?.contact_id || editingContactId}
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="text-xs sm:text-sm font-medium text-slate-400 text-right">
+                      未登録
+                    </div>
+                  )}
                 </div>
 
                 {/* 5. 本人確認（eKYC）状況 */}
