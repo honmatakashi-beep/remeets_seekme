@@ -1802,18 +1802,112 @@ export const AccountPage = () => {
 
             {activeSubTab === 'profile' && (
               <div className="space-y-6 animate-fade-in text-black">
-                {/* 本人確認（eKYC）ステータス・手続きカード ＆ 動的照合進捗・精度スコア詳細 */}
+                {/* 本人確認（eKYC）ステータス・手続きカード */}
                 <div id="ekyc-status-panel" className="transition-all duration-300">
-                  <EkycProgressTelemetryPanel
-                    isVerified={Boolean(user?.is_ekyc_verified || localStorage.getItem('ekyc_verified') === 'true')}
-                    onStartEkyc={() => {
-                      setMypageEkycStep(1);
-                      setShowMypageEkycModal(true);
-                    }}
-                    onForceComplete={handleForceCompleteEkyc}
-                    onResetEkyc={handleResetEkycStatus}
-                    isResetting={isResettingEkyc}
-                  />
+                  {Boolean(user?.is_ekyc_verified || localStorage.getItem('ekyc_verified') === 'true') ? (
+                    /* 認証完了済みカード（手続きボタンなし・スマートな証明書スタイル） */
+                    <div className="p-6 md:p-8 bg-gradient-to-br from-emerald-50/90 via-teal-50/40 to-white rounded-3xl border-2 border-emerald-300/90 shadow-sm space-y-4 relative overflow-hidden font-sans">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-emerald-200/80 pb-4">
+                        <div className="flex items-center gap-3.5">
+                          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-600 text-white flex items-center justify-center shadow-xs shrink-0">
+                            <ShieldCheck size={26} className="text-white" />
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="text-[10px] font-extrabold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full uppercase tracking-widest border border-emerald-300">
+                                Identity Verified
+                              </span>
+                              <span className="text-[11px] font-bold text-emerald-900 flex items-center gap-1">
+                                🛡️ 公的本人確認（eKYC）認証完了
+                              </span>
+                            </div>
+                            <h3 className="text-xl font-serif font-bold text-slate-900 mt-0.5">
+                              ご本人様確認が完了しています
+                            </h3>
+                          </div>
+                        </div>
+                        <div className="bg-white/95 px-3.5 py-2 rounded-2xl border border-emerald-200 shadow-2xs flex items-center gap-2.5 shrink-0 self-start sm:self-auto">
+                          <div className="text-right">
+                            <span className="text-[10px] text-slate-400 font-bold block leading-none">総合照合信頼度</span>
+                            <span className="text-sm font-mono font-extrabold text-emerald-700">99.6%</span>
+                          </div>
+                          <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                        </div>
+                      </div>
+
+                      <p className="text-xs text-slate-700 leading-relaxed bg-white/80 p-4 rounded-2xl border border-emerald-100">
+                        あなたのアカウントは公的身分証明書（運転免許証/マイナンバーカード等）による本人確認が正常に完了しています。
+                        思い出クイズが正解したお相手との間で、安全・確実に連絡先を開示し合える信頼のアカウント状態です。
+                      </p>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
+                        <div className="bg-white p-3 rounded-xl border border-emerald-100/80 shadow-2xs">
+                          <span className="text-slate-400 text-[10px] font-bold block">認証ステータス</span>
+                          <span className="font-bold text-emerald-800 flex items-center gap-1 mt-0.5">
+                            ✓ 承認済み（正常稼働中）
+                          </span>
+                        </div>
+                        <div className="bg-white p-3 rounded-xl border border-emerald-100/80 shadow-2xs">
+                          <span className="text-slate-400 text-[10px] font-bold block">想い出照合＆連絡先開示</span>
+                          <span className="font-bold text-teal-800 flex items-center gap-1 mt-0.5">
+                            ✓ 即時開示可能
+                          </span>
+                        </div>
+                        <div className="bg-white p-3 rounded-xl border border-emerald-100/80 shadow-2xs">
+                          <span className="text-slate-400 text-[10px] font-bold block">セキュリティ保護</span>
+                          <span className="font-bold text-slate-700 flex items-center gap-1 mt-0.5">
+                            🔒 暗号化保護中
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    /* 未認証カード（手続き案内） */
+                    <div className="p-6 md:p-8 bg-gradient-to-br from-amber-50/80 via-orange-50/30 to-white rounded-3xl border-2 border-amber-300 shadow-sm space-y-4 relative overflow-hidden font-sans">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-amber-200/80 pb-4">
+                        <div className="flex items-center gap-3.5">
+                          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-600 text-white flex items-center justify-center shadow-xs shrink-0">
+                            <Shield size={26} className="text-white" />
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="text-[10px] font-extrabold text-amber-900 bg-amber-100 px-2.5 py-0.5 rounded-full uppercase tracking-widest border border-amber-300/80">
+                                Identity Verification
+                              </span>
+                              <span className="text-[11px] font-bold text-amber-900">
+                                📝 自己誓約のみ（公的eKYC未認証）
+                              </span>
+                            </div>
+                            <h3 className="text-xl font-serif font-bold text-slate-900 mt-0.5">
+                              公的本人確認（eKYC）のお願い
+                            </h3>
+                          </div>
+                        </div>
+                        <span className="text-xs font-bold text-amber-900 bg-white border border-amber-300 px-3 py-1.5 rounded-xl text-center shrink-0 shadow-2xs font-serif">
+                          審査・照合手数料: 600円 (税込)
+                        </span>
+                      </div>
+
+                      <p className="text-xs text-slate-700 leading-relaxed bg-white/80 p-4 rounded-2xl border border-amber-100">
+                        ReMEETsでは、なりすましや不正利用を防止し、お相手と安心して再会を果たすために公的身分証明書による本人確認（eKYC）を導入しています。
+                        認証が完了すると、想い出クイズが正解したお相手に安全に連絡先を開示できるようになります。
+                      </p>
+
+                      <div className="flex flex-col sm:flex-row items-center gap-3 pt-1">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setMypageEkycStep(1);
+                            setShowMypageEkycModal(true);
+                          }}
+                          className="w-full sm:w-auto flex-1 py-3 px-6 bg-gradient-to-r from-teal-700 via-teal-800 to-indigo-800 hover:from-teal-800 hover:to-indigo-900 text-white font-bold text-xs rounded-2xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer font-sans active:scale-98"
+                        >
+                          <ShieldCheck size={16} />
+                          <span>⚡ 公的本人確認手続きを開始する（600円）</span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* 3. 💖 サービスを応援する（サポーター寄付）専用カード */}
