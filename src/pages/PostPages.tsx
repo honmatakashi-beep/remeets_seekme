@@ -664,26 +664,38 @@ export const EditPostPage = () => {
             </section>
 
             <div className="space-y-6 pt-8 border-t border-brand-border">
-              <div className="flex items-start gap-3 p-6 bg-brand-primary/5 rounded-2xl border border-brand-primary/10">
+              <div 
+                onClick={() => setAgreed(!agreed)}
+                className={`flex items-start gap-3.5 p-6 rounded-2xl border-2 transition-all cursor-pointer ${
+                  agreed 
+                    ? 'bg-teal-50/80 border-teal-400 shadow-sm' 
+                    : 'bg-brand-primary/5 border-brand-primary/20 hover:border-brand-primary/40'
+                }`}
+              >
                 <input 
                   type="checkbox" 
                   id="edit-agreement" 
                   required 
                   checked={agreed}
-                  onChange={e => setAgreed(e.target.checked)}
-                  className="mt-1 w-5 h-5 rounded border-brand-border text-brand-primary focus:ring-brand-primary cursor-pointer shrink-0" 
+                  onChange={e => {
+                    e.stopPropagation();
+                    setAgreed(e.target.checked);
+                  }}
+                  className="mt-1 w-5 h-5 rounded border-brand-border text-teal-700 focus:ring-teal-500 cursor-pointer shrink-0" 
                 />
-                <div className="text-sm text-black leading-relaxed font-bold select-none space-y-1">
-                  <label htmlFor="edit-agreement" className="cursor-pointer">
+                <div className="text-sm text-black leading-relaxed font-bold select-none space-y-1.5 flex-1">
+                  <label htmlFor="edit-agreement" className="cursor-pointer block">
                     利用規約・個人情報の取り扱い・投稿ガイドラインをすべて理解し、これに同意して内容を更新します。
                   </label>
-                  <div className="text-xs font-normal text-slate-600 flex flex-wrap items-center gap-1.5 font-sans">
+                  <div 
+                    onClick={e => e.stopPropagation()} 
+                    className="text-xs font-normal text-slate-600 flex flex-wrap items-center gap-1.5 font-sans pt-0.5"
+                  >
                     <span>規約を確認：</span>
                     <Link 
                       to="/terms" 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      onClick={e => e.stopPropagation()} 
                       className="text-teal-700 hover:text-teal-900 underline font-medium"
                     >
                       利用規約
@@ -693,7 +705,6 @@ export const EditPostPage = () => {
                       to="/privacy" 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      onClick={e => e.stopPropagation()} 
                       className="text-teal-700 hover:text-teal-900 underline font-medium"
                     >
                       プライバシーポリシー
@@ -703,7 +714,6 @@ export const EditPostPage = () => {
                       to="/guidelines" 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      onClick={e => e.stopPropagation()} 
                       className="text-teal-700 hover:text-teal-900 underline font-medium"
                     >
                       投稿ガイドライン
@@ -715,7 +725,7 @@ export const EditPostPage = () => {
               <button 
                 type="submit" 
                 disabled={isSubmitting || !agreed}
-                className="btn-primary w-full py-5 text-xl flex items-center justify-center gap-3 shadow-2xl shadow-brand-primary/20 disabled:opacity-50" 
+                className="btn-primary w-full py-5 text-xl flex items-center justify-center gap-3 shadow-2xl shadow-brand-primary/20 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed" 
               >
                 {isSubmitting ? (
                   <RefreshCw className="animate-spin" size={24} />
