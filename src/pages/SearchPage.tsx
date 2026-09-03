@@ -31,6 +31,7 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
   });
   const [alertSubmitting, setAlertSubmitting] = useState(false);
   const [alertMessage, setAlertMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+  const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
 
   useEffect(() => {
     setAlertForm(prev => ({
@@ -125,46 +126,74 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* Filter Panel */}
-        <div className="lg:col-span-1 space-y-6 bg-brand-light/10 p-6 rounded-3xl border border-brand-border">
-          <h3 className="text-xs font-bold text-brand-dark/80 uppercase tracking-widest border-b border-brand-border pb-3 flex items-center gap-2 font-sans">
-            <Info size={14} />
-            <span>絞り込み</span>
-          </h3>
+        <div className="lg:col-span-1 space-y-5">
+          <div className="space-y-6 bg-brand-light/10 p-6 rounded-3xl border border-brand-border">
+            <h3 className="text-xs font-bold text-brand-dark/80 uppercase tracking-widest border-b border-brand-border pb-3 flex items-center gap-2 font-sans">
+              <Info size={14} />
+              <span>絞り込み</span>
+            </h3>
 
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold text-brand-dark/60 uppercase tracking-widest block font-sans">年代</label>
-              <select 
-                value={eraFilter}
-                onChange={e => setEraFilter(e.target.value)}
-                className="w-full px-3 py-2 border border-brand-border rounded-xl bg-white text-xs outline-none text-black"
-              >
-                <option value="">すべての年代</option>
-                <option value="1950">1950年代</option>
-                <option value="1960">1960年代</option>
-                <option value="1970">1970年代</option>
-                <option value="1980">1980年代</option>
-                <option value="1990">1990年代</option>
-                <option value="2000">2000年代</option>
-                <option value="2010">2010年代</option>
-                <option value="2020">2020年代</option>
-              </select>
-            </div>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-brand-dark/60 uppercase tracking-widest block font-sans">年代</label>
+                <select 
+                  value={eraFilter}
+                  onChange={e => setEraFilter(e.target.value)}
+                  className="w-full px-3 py-2 border border-brand-border rounded-xl bg-white text-xs outline-none text-black"
+                >
+                  <option value="">すべての年代</option>
+                  <option value="1950">1950年代</option>
+                  <option value="1960">1960年代</option>
+                  <option value="1970">1970年代</option>
+                  <option value="1980">1980年代</option>
+                  <option value="1990">1990年代</option>
+                  <option value="2000">2000年代</option>
+                  <option value="2010">2010年代</option>
+                  <option value="2020">2020年代</option>
+                </select>
+              </div>
 
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold text-brand-dark/60 uppercase tracking-widest block font-sans">カテゴリー</label>
-              <select 
-                value={categoryFilter}
-                onChange={e => setCategoryFilter(e.target.value)}
-                className="w-full px-3 py-2 border border-brand-border rounded-xl bg-white text-xs outline-none text-black"
-              >
-                <option value="">すべての関係性</option>
-                <option value="friend">同級生・友人</option>
-                <option value="love">初恋・元恋人</option>
-                <option value="work">元同僚・仕事仲間</option>
-                <option value="other">その他</option>
-              </select>
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-brand-dark/60 uppercase tracking-widest block font-sans">カテゴリー</label>
+                <select 
+                  value={categoryFilter}
+                  onChange={e => setCategoryFilter(e.target.value)}
+                  className="w-full px-3 py-2 border border-brand-border rounded-xl bg-white text-xs outline-none text-black"
+                >
+                  <option value="">すべての関係性</option>
+                  <option value="friend">同級生・友人</option>
+                  <option value="love">初恋・元恋人</option>
+                  <option value="work">元同僚・仕事仲間</option>
+                  <option value="other">その他</option>
+                </select>
+              </div>
             </div>
+          </div>
+
+          {/* 🔔 新着通知（入荷アラート）小型カード */}
+          <div className="p-5 bg-gradient-to-br from-teal-50/80 via-sky-50/40 to-white rounded-3xl border-2 border-teal-200/90 shadow-xs space-y-3 font-sans">
+            <div className="flex items-center gap-2">
+              <span className="p-1.5 bg-teal-600 text-white rounded-xl shadow-2xs">
+                <Bell size={14} />
+              </span>
+              <h4 className="text-xs font-bold text-teal-950 font-serif">
+                新着手紙のメール通知
+              </h4>
+            </div>
+            <p className="text-[11px] text-slate-600 leading-relaxed font-sans">
+              あなたを探す手紙が届いた際、メールでお知らせします。
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                setAlertMessage(null);
+                setIsAlertModalOpen(true);
+              }}
+              className="w-full py-2.5 px-3 bg-white hover:bg-teal-50 text-teal-800 border border-teal-300 font-bold text-xs rounded-xl shadow-2xs hover:shadow transition-all flex items-center justify-center gap-1.5 cursor-pointer font-sans active:scale-98"
+            >
+              <Mail size={13} className="text-teal-600" />
+              <span>通知を設定する ✨</span>
+            </button>
           </div>
         </div>
 
@@ -203,7 +232,7 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
           ) : posts.length === 0 ? (
             <div className="space-y-8">
               <div className="text-center py-12 md:py-16 bg-white rounded-3xl border border-brand-border/80 p-6 md:p-10 space-y-4 relative overflow-hidden shadow-sm">
-                {/* 背景イラスト（凪いた朝もやの海 - SupporterPageスタイルの上下左右グラデーションフェード） */}
+                {/* 背景イラスト（凪いた朝もやの海） */}
                 <div className="absolute inset-0 flex justify-center items-center pointer-events-none overflow-hidden select-none">
                   <div className="relative w-full h-full opacity-55">
                     <img 
@@ -218,116 +247,33 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
                   </div>
                 </div>
 
-                <div className="relative z-10 space-y-3 max-w-lg mx-auto">
+                <div className="relative z-10 space-y-4 max-w-lg mx-auto">
                   <div className="w-14 h-14 bg-slate-100/90 rounded-2xl border border-slate-200 flex items-center justify-center mx-auto text-slate-600 shadow-2xs backdrop-blur-xs">
                     <FileWarning size={28} />
                   </div>
-                  <h3 className="text-base md:text-xl font-serif font-bold text-slate-800">
-                    該当するボトルメールが見つかりませんでした
-                  </h3>
-                  <p className="text-xs md:text-sm font-serif text-slate-600 leading-relaxed">
-                    まだボトルが届いていないか、異なる表現で投稿されている可能性があります。<br />
-                    ひらがな、旧姓、または都道府県のみで再検索をお試しいただくか、下記より<b>「新着通知」</b>をご登録ください。
-                  </p>
-                </div>
-              </div>
-
-              {/* メール通知（検索アラート）登録フォーム */}
-              <div className="bg-white/85 p-8 rounded-[32px] border border-brand-border shadow-xl space-y-6 max-w-2xl mx-auto">
-                <div className="flex items-start gap-4">
-                  <div className="p-3 bg-zinc-100 rounded-2xl text-[#888f8a]">
-                    <Bell size={24} />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-black font-sans">あなたを探す手紙が届いたらメールで通知を受け取る（入荷アラート）</h3>
-                    <p className="text-xs text-zinc-500 leading-relaxed mt-1">
-                      あなたのお名前やゆかりの都道府県・年代・関係性に該当する新着ボトルメールが投函された際に、システムから安全な自動メール通知でお知らせします。お相手にあなたのメールアドレスが開示されることはありません。
+                  <div className="space-y-1.5">
+                    <h3 className="text-base md:text-xl font-serif font-bold text-slate-800">
+                      該当するボトルメールが見つかりませんでした
+                    </h3>
+                    <p className="text-xs md:text-sm font-serif text-slate-600 leading-relaxed">
+                      まだボトルが届いていないか、異なる表現で投稿されている可能性があります。<br />
+                      ひらがな、旧姓、または都道府県のみで再検索をお試しいただくか、<b>「新着通知」</b>をご登録ください。
                     </p>
                   </div>
+                  <div className="pt-2 flex justify-center">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setAlertMessage(null);
+                        setIsAlertModalOpen(true);
+                      }}
+                      className="px-6 py-3 bg-gradient-to-r from-teal-700 via-teal-800 to-indigo-800 hover:from-teal-800 hover:to-indigo-900 text-white font-bold text-xs rounded-2xl shadow-md hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer font-sans active:scale-98"
+                    >
+                      <Bell size={14} />
+                      <span>あなたを探す手紙が届いたらメールで通知を受け取る ✨</span>
+                    </button>
+                  </div>
                 </div>
-
-                <form onSubmit={handleAlertSubmit} className="space-y-4 text-left">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-zinc-500 uppercase tracking-wider block">探したい人のお名前（あなたのお名前など / 必須）</label>
-                      <input 
-                        type="text" 
-                        required
-                        placeholder="例：山田 太郎"
-                        className="w-full px-4 py-3 border border-brand-border rounded-xl text-sm bg-zinc-50 text-black focus:bg-white focus:border-brand-primary outline-none transition-all"
-                        value={alertForm.targetName}
-                        onChange={e => setAlertForm(prev => ({ ...prev, targetName: e.target.value }))}
-                      />
-                    </div>
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-zinc-500 uppercase tracking-wider block">通知先メールアドレス（必須）</label>
-                      <input 
-                        type="email" 
-                        required
-                        placeholder="your-email@example.com"
-                        className="w-full px-4 py-3 border border-brand-border rounded-xl text-sm bg-zinc-50 text-black focus:bg-white focus:border-brand-primary outline-none transition-all"
-                        value={alertForm.email}
-                        onChange={e => setAlertForm(prev => ({ ...prev, email: e.target.value }))}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-zinc-500 uppercase tracking-wider block">ゆかりの地（任意）</label>
-                      <input 
-                        type="text" 
-                        placeholder="例：神奈川県横浜市"
-                        className="w-full px-4 py-3 border border-brand-border rounded-xl text-sm bg-zinc-50 text-black focus:bg-white focus:border-brand-primary outline-none transition-all"
-                        value={alertForm.targetHometown}
-                        onChange={e => setAlertForm(prev => ({ ...prev, targetHometown: e.target.value }))}
-                      />
-                    </div>
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-zinc-500 uppercase tracking-wider block">年代（任意）</label>
-                      <select
-                        className="w-full px-4 py-3 border border-brand-border rounded-xl text-sm bg-zinc-50 text-neutral-800 focus:bg-white focus:border-brand-primary outline-none transition-all"
-                        value={alertForm.era}
-                        onChange={e => setAlertForm(prev => ({ ...prev, era: e.target.value }))}
-                      >
-                        <option value="">指定なし</option>
-                        <option value="60">1960年代</option>
-                        <option value="70">1970年代</option>
-                        <option value="80">1980年代</option>
-                        <option value="90">1990年代</option>
-                        <option value="00">2000年代以降</option>
-                      </select>
-                    </div>
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-zinc-500 uppercase tracking-wider block">関係性（任意）</label>
-                      <select
-                        className="w-full px-4 py-3 border border-brand-border rounded-xl text-sm bg-zinc-50 text-neutral-800 focus:bg-white focus:border-brand-primary outline-none transition-all"
-                        value={alertForm.category}
-                        onChange={e => setAlertForm(prev => ({ ...prev, category: e.target.value }))}
-                      >
-                        <option value="">指定なし</option>
-                        <option value="friend">同級生・友人</option>
-                        <option value="love">初恋・元恋人</option>
-                        <option value="work">元同僚・仕事仲間</option>
-                        <option value="other">その他</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  {alertMessage && (
-                    <div className={`p-4 rounded-xl text-xs font-bold ${alertMessage.type === 'success' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
-                      {alertMessage.text}
-                    </div>
-                  )}
-
-                  <button 
-                    type="submit" 
-                    disabled={alertSubmitting}
-                    className="w-full py-4 text-sm font-bold bg-[#888f8a] text-white hover:bg-neutral-750 transition-all rounded-xl focus:outline-none focus:ring-2 focus:ring-[#888f8a]/50 disabled:opacity-50 inline-flex items-center justify-center gap-2"
-                  >
-                    {alertSubmitting ? '登録処理中...' : 'メール通知を登録する'}
-                  </button>
-                </form>
               </div>
             </div>
           ) : (
@@ -435,6 +381,142 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
           )}
         </div>
       </div>
+
+      {/* 🔔 新着通知（入荷アラート）登録モーダル */}
+      <AnimatePresence>
+        {isAlertModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm font-sans" data-lenis-prevent>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 15 }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+              className="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl border border-slate-200 relative text-left"
+            >
+              <button
+                type="button"
+                onClick={() => setIsAlertModalOpen(false)}
+                className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-all cursor-pointer border border-slate-200"
+                aria-label="閉じる"
+              >
+                <X size={16} />
+              </button>
+
+              <div className="p-6 md:p-8 space-y-5">
+                <div className="flex items-center gap-3">
+                  <div className="w-11 h-11 rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center shrink-0 border border-teal-200/80">
+                    <Bell size={22} />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-extrabold text-teal-800 uppercase tracking-widest bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200 font-sans">
+                      Email Alert
+                    </span>
+                    <h3 className="text-base sm:text-lg font-serif font-bold text-slate-900 mt-0.5">
+                      新着手紙のメール通知（入荷アラート）
+                    </h3>
+                  </div>
+                </div>
+
+                <p className="text-xs text-slate-600 leading-relaxed font-sans bg-slate-50 p-3.5 rounded-2xl border border-slate-200/80">
+                  あなたのお名前やゆかりの地域に該当する新着ボトルメールが投函された際、システムから自動メールでお知らせします。お相手にメールアドレスが開示されることはありません。
+                </p>
+
+                <form onSubmit={handleAlertSubmit} className="space-y-4 text-left font-sans">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-zinc-700 block">探したい人のお名前（あなたなど / 必須）</label>
+                      <input 
+                        type="text" 
+                        required
+                        placeholder="例：山田 太郎"
+                        className="w-full px-3.5 py-2.5 border border-zinc-300 rounded-xl text-xs bg-slate-50 text-black focus:bg-white focus:border-brand-primary outline-none transition-all"
+                        value={alertForm.targetName}
+                        onChange={e => setAlertForm(prev => ({ ...prev, targetName: e.target.value }))}
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-zinc-700 block">通知先メールアドレス（必須）</label>
+                      <input 
+                        type="email" 
+                        required
+                        placeholder="your-email@example.com"
+                        className="w-full px-3.5 py-2.5 border border-zinc-300 rounded-xl text-xs bg-slate-50 text-black focus:bg-white focus:border-brand-primary outline-none transition-all"
+                        value={alertForm.email}
+                        onChange={e => setAlertForm(prev => ({ ...prev, email: e.target.value }))}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-zinc-700 block">ゆかりの地（任意）</label>
+                      <input 
+                        type="text" 
+                        placeholder="例：神奈川県横浜市"
+                        className="w-full px-3.5 py-2.5 border border-zinc-300 rounded-xl text-xs bg-slate-50 text-black focus:bg-white focus:border-brand-primary outline-none transition-all"
+                        value={alertForm.targetHometown}
+                        onChange={e => setAlertForm(prev => ({ ...prev, targetHometown: e.target.value }))}
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-zinc-700 block">年代（任意）</label>
+                      <select
+                        className="w-full px-3.5 py-2.5 border border-zinc-300 rounded-xl text-xs bg-slate-50 text-neutral-800 focus:bg-white focus:border-brand-primary outline-none transition-all"
+                        value={alertForm.era}
+                        onChange={e => setAlertForm(prev => ({ ...prev, era: e.target.value }))}
+                      >
+                        <option value="">指定なし</option>
+                        <option value="60">1960年代</option>
+                        <option value="70">1970年代</option>
+                        <option value="80">1980年代</option>
+                        <option value="90">1990年代</option>
+                        <option value="00">2000年代以降</option>
+                      </select>
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-zinc-700 block">関係性（任意）</label>
+                      <select
+                        className="w-full px-3.5 py-2.5 border border-zinc-300 rounded-xl text-xs bg-slate-50 text-neutral-800 focus:bg-white focus:border-brand-primary outline-none transition-all"
+                        value={alertForm.category}
+                        onChange={e => setAlertForm(prev => ({ ...prev, category: e.target.value }))}
+                      >
+                        <option value="">指定なし</option>
+                        <option value="friend">同級生・友人</option>
+                        <option value="love">初恋・元恋人</option>
+                        <option value="work">元同僚・仕事仲間</option>
+                        <option value="other">その他</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {alertMessage && (
+                    <div className={`p-3.5 rounded-xl text-xs font-bold ${alertMessage.type === 'success' ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
+                      {alertMessage.text}
+                    </div>
+                  )}
+
+                  <div className="pt-2 flex gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setIsAlertModalOpen(false)}
+                      className="px-5 py-3 border border-slate-300 bg-white hover:bg-slate-50 rounded-xl text-xs font-bold text-slate-700 transition-all cursor-pointer"
+                    >
+                      キャンセル
+                    </button>
+                    <button 
+                      type="submit" 
+                      disabled={alertSubmitting}
+                      className="flex-1 py-3 text-xs font-bold bg-gradient-to-r from-teal-700 to-indigo-800 hover:from-teal-800 hover:to-indigo-900 text-white rounded-xl shadow-md transition-all disabled:opacity-50 inline-flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      {alertSubmitting ? '登録処理中...' : 'メール通知を登録する ✨'}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
