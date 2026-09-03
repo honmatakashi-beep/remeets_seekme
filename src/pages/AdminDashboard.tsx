@@ -4059,7 +4059,7 @@ export const AdminDashboard = () => {
   }
 
   return (
-    <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-12 relative overflow-visible">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-12 relative overflow-visible">
       {/* Decorative background elements for Admin */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-brand-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-brand-accent/5 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
