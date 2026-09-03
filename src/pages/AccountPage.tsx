@@ -753,13 +753,12 @@ export const AccountPage = () => {
                   </div>
                   {/* 大きく見やすいフォントでお名前を表示 */}
                   <h2 className="text-2xl sm:text-3xl font-serif font-extrabold text-slate-900 tracking-wide flex items-baseline gap-2 flex-wrap">
-                    <span>{user?.fullName || '名前未設定'}</span>
+                    <span>{user?.fullName || '名前未設定'} 様</span>
                     {user?.maiden_name && (
-                      <span className="text-sm sm:text-base font-bold text-indigo-900 bg-white px-2.5 py-0.5 rounded-lg border-2 border-slate-300 shadow-2xs">
+                      <span className="text-sm sm:text-base font-medium text-slate-500 font-sans">
                         （旧姓: {user.maiden_name}）
                       </span>
                     )}
-                    <span>様</span>
                   </h2>
                 </div>
               </div>
