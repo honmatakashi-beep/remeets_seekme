@@ -242,3 +242,27 @@ ReMEETsでは、万が一Webサーバーがサイバー攻撃や不正アクセ�
 ## Technical Constraints & Guardrails
 - **Port:** Port `3000` is the ONLY externally accessible port. All dev servers must run on port `3000`. Do not change or override it.
 - **Vite/Express integration:** Keep server-side keys (like `GEMINI_API_KEY`, Stripe keys, or future LINE/Google OAuth keys) strictly server-side in `server.ts`.
+
+---
+
+## 📝 開発運用ルール・ファイル分割＆トークン節約ガイドライン (重要)
+
+### 1. ファイル分割（リファクタリング）時のトークン節約プロトコル
+ユーザーからファイル分割の依頼があった際、またはエージェント側から肥大化ファイル（`AdminDashboard.tsx`, `PostPages.tsx` 等）の分割を提案する際は、**必ず以下の文言と方針を提示・実行すること**:
+
+> **「スクリプト等を使ってトークンを節約しながら、チャットに全コードを出力せず一括で安全にファイルを分割いたします。」**
+
+- **実行原則**:
+  1. チャット往復で数千〜数万行のコードをテキスト出力せず、Pythonスクリプトやツール（`write_to_file` / `replace_file_content`）を用いてローカル側で一括切り出しを実行する。
+  2. 切り出し後は直ちに `~/.volta/bin/volta run --node 20 npx tsc --noEmit` で型安全性を検証し、0エラーを確認した上でGitコミットを作成する。
+  3. これにより、ユーザーのトークン消費量を95%以上削減し、超高速かつ安全に分割を完遂する。
+
+### 2. 利用料金ページ (`/pricing`) の最新UI構造メモ
+- **ヘッダー**: サイト全静的ページ共通の `PageHeader`（丸角アイコンボックス付き `CreditCard`）を使用。
+- **安心宣言バナー**: `PageHeader` 直下に「月額会費・サブスクなし」「投函0円・開封時のみ600円買い切り」のメッセージを大きく配置。
+- **2大メインカード（横並び）**:
+  - `01. 手紙を書く人（会員登録・投函・検索）`: 0円（完全無料）
+  - `03. 手紙を受け取る人（手紙開封・連絡先開示）`: 600円（税込・買い切り）
+- **下段ワイドカード**:
+  - `02. 安心して繋がる（公的本人確認 eKYC）`: 事前登録0円（手紙開封時に一括精算）、信頼マーク付与、100%全額即時返金保証。
+- **比較表 ＆ 3大安心ポリシー ＆ FAQ ＆ サポーター寄付**: 全体と調和したグラスカード・ホワイトトーンで統一。
