@@ -1672,6 +1672,13 @@ async function startServer() {
     try { db.exec("ALTER TABLE users ADD COLUMN maiden_name TEXT"); } catch (e) {}
     try { db.exec("ALTER TABLE users ADD COLUMN birthdate TEXT"); } catch (e) {}
     
+    // search_alerts columns migration
+    try { db.exec("ALTER TABLE search_alerts ADD COLUMN user_id INTEGER"); } catch (e) {}
+    try { db.exec("ALTER TABLE search_alerts ADD COLUMN target_last_name TEXT"); } catch (e) {}
+    try { db.exec("ALTER TABLE search_alerts ADD COLUMN target_first_name TEXT"); } catch (e) {}
+    try { db.exec("ALTER TABLE search_alerts ADD COLUMN target_maiden_name TEXT"); } catch (e) {}
+    try { db.exec("ALTER TABLE search_alerts ADD COLUMN target_nickname TEXT"); } catch (e) {}
+    
     // Ensure multiple sample users and test user have eKYC verified status populated
     try {
       db.prepare(`
@@ -2499,29 +2506,56 @@ async function startServer() {
     }
   });
 
-  app.post("/api/search-alerts", searchLimiter, (req, res) => {
-    const { email, target_name, target_hometown, era, category } = req.body;
-    if (!email || !target_name) {
-      return res.status(400).json({ error: "メールアドレスとお探しの対象者名を入力してください。" });
+  app.post("/api/search-alerts", searchLimiter, optionalAuthenticateToken, (req: any, res) => {
+    const { 
+      email, 
+      target_name, 
+      target_last_name, 
+      target_first_name, 
+      target_maiden_name, 
+      target_nickname, 
+      target_hometown, 
+      era, 
+      category 
+    } = req.body;
+
+    const fullName = (target_name || `${target_last_name || ''} ${target_first_name || ''}`.trim() || target_nickname || target_maiden_name || '').trim();
+    if (!email || !fullName) {
+      return res.status(400).json({ error: "通知先メールアドレスとお探しの対象者名（姓・名・旧姓または愛称）を入力してください。" });
     }
+
+    const userId = req.user?.id || null;
+
     try {
       db.prepare(`
-        INSERT INTO search_alerts (email, target_name, target_hometown, era, category, is_verified)
-        VALUES (?, ?, ?, ?, ?, 1)
-      `).run(email, target_name, target_hometown || null, era || null, category || null);
+        INSERT INTO search_alerts (
+          user_id, email, target_name, target_last_name, target_first_name, target_maiden_name, target_nickname,
+          target_hometown, era, category, is_verified
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
+      `).run(
+        userId, email, fullName, target_last_name || null, target_first_name || null, 
+        target_maiden_name || null, target_nickname || null,
+        target_hometown || null, era || null, category || null
+      );
       res.json({ success: true, message: "新着入荷通知アラートが正常に保存されました。" });
     } catch (err) {
+      console.error(err);
       res.status(500).json({ error: "アラートの保存に失敗しました。" });
     }
   });
 
   app.get("/api/search-alerts/my-alerts", authenticateToken, (req: any, res) => {
     try {
-      const user = db.prepare("SELECT email FROM users WHERE id = ?").get(req.user.id) as any;
-      if (!user || !user.email) {
+      const user = db.prepare("SELECT id, email FROM users WHERE id = ?").get(req.user.id) as any;
+      if (!user) {
         return res.json({ alerts: [] });
       }
-      const alerts = db.prepare("SELECT * FROM search_alerts WHERE email = ? ORDER BY created_at DESC").all(user.email);
+      const alerts = db.prepare(`
+        SELECT * FROM search_alerts 
+        WHERE user_id = ? OR (email IS NOT NULL AND email != '' AND email = ?) 
+        ORDER BY created_at DESC
+      `).all(user.id, user.email || '');
       res.json({ alerts });
     } catch (err) {
       res.status(500).json({ error: "Failed to fetch search alerts" });
@@ -2530,39 +2564,75 @@ async function startServer() {
 
   app.delete("/api/search-alerts/:id", authenticateToken, (req: any, res) => {
     try {
-      const user = db.prepare("SELECT email FROM users WHERE id = ?").get(req.user.id) as any;
-      if (!user || !user.email) {
+      const user = db.prepare("SELECT id, email, role FROM users WHERE id = ?").get(req.user.id) as any;
+      if (!user) {
         return res.status(403).json({ error: "Unauthorized" });
       }
-      db.prepare("DELETE FROM search_alerts WHERE id = ? AND email = ?").run(req.params.id, user.email);
+      if (user.role === 'admin') {
+        db.prepare("DELETE FROM search_alerts WHERE id = ?").run(req.params.id);
+      } else {
+        db.prepare(`
+          DELETE FROM search_alerts 
+          WHERE id = ? AND (user_id = ? OR (email IS NOT NULL AND email != '' AND email = ?))
+        `).run(req.params.id, user.id, user.email || '');
+      }
       res.json({ success: true });
     } catch (err) {
+      console.error("Failed to delete search alert:", err);
       res.status(500).json({ error: "Failed to delete alert" });
     }
   });
 
   app.put("/api/search-alerts/:id", authenticateToken, (req: any, res) => {
-    const { email, target_name, target_hometown, era, category } = req.body;
-    if (!target_name) {
-      return res.status(400).json({ error: "お探しの対象者名を入力してください。" });
+    const { 
+      email, 
+      target_name, 
+      target_last_name, 
+      target_first_name, 
+      target_maiden_name, 
+      target_nickname, 
+      target_hometown, 
+      era, 
+      category 
+    } = req.body;
+
+    const fullName = (target_name || `${target_last_name || ''} ${target_first_name || ''}`.trim() || target_nickname || target_maiden_name || '').trim();
+    if (!fullName) {
+      return res.status(400).json({ error: "お探しの対象者名（姓・名・旧姓または愛称）を入力してください。" });
     }
     try {
-      const user = db.prepare("SELECT email FROM users WHERE id = ?").get(req.user.id) as any;
-      if (!user || !user.email) {
+      const user = db.prepare("SELECT id, email, role FROM users WHERE id = ?").get(req.user.id) as any;
+      if (!user) {
         return res.status(403).json({ error: "Unauthorized" });
       }
-      const existing = db.prepare("SELECT * FROM search_alerts WHERE id = ? AND email = ?").get(req.params.id, user.email) as any;
-      if (!existing && req.user.role !== 'admin') {
-        return res.status(404).json({ error: "Alert not found" });
-      }
+
       const targetEmail = email || user.email;
-      db.prepare(`
-        UPDATE search_alerts 
-        SET email = ?, target_name = ?, target_hometown = ?, era = ?, category = ?
-        WHERE id = ?
-      `).run(targetEmail, target_name, target_hometown || null, era || null, category || null, req.params.id);
+      if (user.role === 'admin') {
+        db.prepare(`
+          UPDATE search_alerts 
+          SET email = ?, target_name = ?, target_last_name = ?, target_first_name = ?, 
+              target_maiden_name = ?, target_nickname = ?, target_hometown = ?, era = ?, category = ?
+          WHERE id = ?
+        `).run(
+          targetEmail, fullName, target_last_name || null, target_first_name || null,
+          target_maiden_name || null, target_nickname || null,
+          target_hometown || null, era || null, category || null, req.params.id
+        );
+      } else {
+        db.prepare(`
+          UPDATE search_alerts 
+          SET email = ?, target_name = ?, target_last_name = ?, target_first_name = ?, 
+              target_maiden_name = ?, target_nickname = ?, target_hometown = ?, era = ?, category = ?
+          WHERE id = ? AND (user_id = ? OR (email IS NOT NULL AND email != '' AND email = ?))
+        `).run(
+          targetEmail, fullName, target_last_name || null, target_first_name || null,
+          target_maiden_name || null, target_nickname || null,
+          target_hometown || null, era || null, category || null, req.params.id, user.id, user.email || ''
+        );
+      }
       res.json({ success: true, message: "新着入荷通知アラートが正常に更新されました。" });
     } catch (err) {
+      console.error("Failed to update search alert:", err);
       res.status(500).json({ error: "アラートの更新に失敗しました。" });
     }
   });

@@ -144,6 +144,10 @@ export const AccountPage = () => {
   const [editingAlert, setEditingAlert] = useState<{
     id: number | null;
     target_name: string;
+    target_last_name: string;
+    target_first_name: string;
+    target_maiden_name: string;
+    target_nickname: string;
     target_hometown: string;
     era: string;
     category: string;
@@ -151,6 +155,10 @@ export const AccountPage = () => {
   }>({
     id: null,
     target_name: '',
+    target_last_name: '',
+    target_first_name: '',
+    target_maiden_name: '',
+    target_nickname: '',
     target_hometown: '',
     era: '',
     category: '',
@@ -176,6 +184,10 @@ export const AccountPage = () => {
     setEditingAlert({
       id: null,
       target_name: '',
+      target_last_name: '',
+      target_first_name: '',
+      target_maiden_name: '',
+      target_nickname: '',
       target_hometown: '',
       era: '',
       category: '',
@@ -186,9 +198,26 @@ export const AccountPage = () => {
   };
 
   const handleOpenEditAlert = (item: any) => {
+    // 姓名の分解
+    let lName = item.target_last_name || '';
+    let fName = item.target_first_name || '';
+    if (!lName && !fName && item.target_name) {
+      const parts = item.target_name.trim().split(/\s+/);
+      if (parts.length >= 2) {
+        lName = parts[0];
+        fName = parts.slice(1).join(' ');
+      } else {
+        lName = parts[0];
+      }
+    }
+
     setEditingAlert({
       id: item.id,
       target_name: item.target_name || '',
+      target_last_name: lName,
+      target_first_name: fName,
+      target_maiden_name: item.target_maiden_name || '',
+      target_nickname: item.target_nickname || '',
       target_hometown: item.target_hometown || '',
       era: item.era || '',
       category: item.category || '',
@@ -200,14 +229,27 @@ export const AccountPage = () => {
 
   const handleSaveAlertModal = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!editingAlert.target_name.trim()) {
-      setAlertModalError('探したい人のお名前を入力してください。');
+    const fullName = (
+      editingAlert.target_name || 
+      `${editingAlert.target_last_name || ''} ${editingAlert.target_first_name || ''}`.trim() ||
+      editingAlert.target_nickname || 
+      editingAlert.target_maiden_name || 
+      ''
+    ).trim();
+
+    if (!fullName) {
+      setAlertModalError('探したい人のお名前（姓・名、旧姓または当時の愛称）を入力してください。');
       return;
     }
     if (!editingAlert.email.trim()) {
       setAlertModalError('通知先メールアドレスを入力してください。');
       return;
     }
+
+    const payload = {
+      ...editingAlert,
+      target_name: fullName
+    };
 
     setIsAlertSaving(true);
     setAlertModalError(null);
@@ -220,7 +262,7 @@ export const AccountPage = () => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           },
-          body: JSON.stringify(editingAlert)
+          body: JSON.stringify(payload)
         });
         if (res.ok) {
           await fetchMyAlerts();
@@ -237,7 +279,7 @@ export const AccountPage = () => {
             'Content-Type': 'application/json',
             'Authorization': token ? `Bearer ${token}` : ''
           },
-          body: JSON.stringify(editingAlert)
+          body: JSON.stringify(payload)
         });
         if (res.ok) {
           await fetchMyAlerts();
@@ -1720,26 +1762,30 @@ export const AccountPage = () => {
                         <span className="text-[10px] font-extrabold text-teal-800 uppercase tracking-widest bg-teal-100/80 px-2.5 py-0.5 rounded-full border border-teal-200">
                           Incoming Alert Settings
                         </span>
-                        <span className="text-xs text-teal-700 font-bold">
-                          登録中: {myAlerts.length} 件
-                        </span>
+                        {myAlerts.length > 0 && (
+                          <span className="text-xs text-teal-700 font-bold">
+                            登録中: {myAlerts.length} 件
+                          </span>
+                        )}
                       </div>
                       <h3 className="text-lg font-serif font-bold text-slate-900 flex items-center gap-2">
                         <Bell size={20} className="text-teal-700" />
                         <span>📬 あなた宛て新着手紙の入荷メール通知設定</span>
                       </h3>
                       <p className="text-xs text-slate-600 font-sans leading-relaxed">
-                        あなたのお名前やゆかりの地域に該当する新着ボトルメールが投函された際、ご登録のメールアドレス宛てに即時自動でお知らせします。
+                        あなたのお名前や旧姓・ゆかりの地域に該当する新着ボトルメールが投函された際、ご登録のメール宛てに即時自動でお知らせします。
                       </p>
                     </div>
-                    <button
-                      type="button"
-                      onClick={handleOpenAddAlert}
-                      className="px-5 py-2.5 bg-gradient-to-r from-teal-700 to-indigo-800 hover:from-teal-800 hover:to-indigo-900 text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 w-fit shrink-0 cursor-pointer shadow-md active:scale-98"
-                    >
-                      <Plus size={15} />
-                      <span>新しい通知条件を追加</span>
-                    </button>
+                    {myAlerts.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={handleOpenAddAlert}
+                        className="px-5 py-2.5 bg-gradient-to-r from-teal-700 to-indigo-800 hover:from-teal-800 hover:to-indigo-900 text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 w-fit shrink-0 cursor-pointer shadow-md active:scale-98"
+                      >
+                        <Plus size={15} />
+                        <span>新しい通知条件を追加</span>
+                      </button>
+                    )}
                   </div>
 
                   {myAlerts.length === 0 ? (
@@ -1750,14 +1796,14 @@ export const AccountPage = () => {
                       <div className="space-y-1">
                         <h4 className="text-sm font-bold text-slate-900">現在、登録中の入荷通知アラートはありません</h4>
                         <p className="text-xs text-slate-500 leading-relaxed max-w-md mx-auto">
-                          お名前やゆかりの地を登録しておくと、あなたを探す手紙が新しく海に流された瞬間に自動でメール通知が届きます。
+                          お名前（姓名・旧姓・愛称）やゆかりの地を登録しておくと、あなたを探す手紙が新しく海に流された瞬間に自動でメール通知が届きます。
                         </p>
                       </div>
                       <div className="pt-2">
                         <button
                           type="button"
                           onClick={handleOpenAddAlert}
-                          className="px-6 py-2.5 bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold rounded-xl transition-all inline-flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-98"
+                          className="px-6 py-2.5 bg-gradient-to-r from-teal-700 to-indigo-800 hover:from-teal-800 hover:to-indigo-900 text-white text-xs font-bold rounded-xl transition-all inline-flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-98"
                         >
                           <Plus size={14} />
                           <span>通知条件を登録する ✨</span>
@@ -1778,9 +1824,26 @@ export const AccountPage = () => {
                               }`}>
                                 {alertItem.is_verified ? '✓ メール通知有効中' : '⏳ メール認証待ち'}
                               </span>
-                              <h4 className="text-base font-bold text-slate-900 pt-0.5">
-                                探すお名前: <span className="text-teal-800">{alertItem.target_name}</span>
-                              </h4>
+                              <div className="pt-0.5">
+                                <h4 className="text-base font-bold text-slate-900 flex items-center gap-2 flex-wrap">
+                                  <span>探すお名前:</span>
+                                  <span className="text-teal-800 font-extrabold">{alertItem.target_name}</span>
+                                </h4>
+                                {(alertItem.target_maiden_name || alertItem.target_nickname) && (
+                                  <div className="flex items-center gap-1.5 pt-1 flex-wrap">
+                                    {alertItem.target_maiden_name && (
+                                      <span className="text-[10px] bg-rose-50 text-rose-700 font-bold px-2 py-0.5 rounded-md border border-rose-200">
+                                        旧姓: {alertItem.target_maiden_name}
+                                      </span>
+                                    )}
+                                    {alertItem.target_nickname && (
+                                      <span className="text-[10px] bg-indigo-50 text-indigo-700 font-bold px-2 py-0.5 rounded-md border border-indigo-200">
+                                        愛称: {alertItem.target_nickname}
+                                      </span>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
                             </div>
                             <div className="flex items-center gap-1">
                               <button
@@ -2737,29 +2800,91 @@ export const AccountPage = () => {
                 </p>
 
                 <form onSubmit={handleSaveAlertModal} className="space-y-4 text-left font-sans">
+                  {/* 1. お名前（姓名別） */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-zinc-700 block">
+                      探したい人のお名前（あなたなど） <span className="text-rose-500 font-bold">*必須</span>
+                    </label>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <input 
+                          type="text" 
+                          placeholder="姓（例：山田）"
+                          className="w-full px-3.5 py-2.5 border border-zinc-300 rounded-xl text-xs bg-slate-50 text-black focus:bg-white focus:border-brand-primary outline-none transition-all"
+                          value={editingAlert.target_last_name}
+                          onChange={e => {
+                            const l = e.target.value;
+                            setEditingAlert(prev => ({ 
+                              ...prev, 
+                              target_last_name: l,
+                              target_name: `${l} ${prev.target_first_name}`.trim()
+                            }));
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <input 
+                          type="text" 
+                          placeholder="名（例：太郎）"
+                          className="w-full px-3.5 py-2.5 border border-zinc-300 rounded-xl text-xs bg-slate-50 text-black focus:bg-white focus:border-brand-primary outline-none transition-all"
+                          value={editingAlert.target_first_name}
+                          onChange={e => {
+                            const f = e.target.value;
+                            setEditingAlert(prev => ({ 
+                              ...prev, 
+                              target_first_name: f,
+                              target_name: `${prev.target_last_name} ${f}`.trim()
+                            }));
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 2. 旧姓 ＆ 当時のニックネーム（愛称） */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-zinc-700 block">探したい人のお名前（あなたなど / 必須）</label>
+                      <label className="text-xs font-bold text-zinc-700 block flex items-center justify-between">
+                        <span>旧姓・旧姓の姓（任意）</span>
+                        <span className="text-[10px] text-slate-400 font-normal">同窓生からの照合用</span>
+                      </label>
                       <input 
                         type="text" 
-                        required
-                        placeholder="例：山田 太郎"
+                        placeholder="例：佐藤（結婚前の苗字）"
                         className="w-full px-3.5 py-2.5 border border-zinc-300 rounded-xl text-xs bg-slate-50 text-black focus:bg-white focus:border-brand-primary outline-none transition-all"
-                        value={editingAlert.target_name}
-                        onChange={e => setEditingAlert(prev => ({ ...prev, target_name: e.target.value }))}
+                        value={editingAlert.target_maiden_name}
+                        onChange={e => setEditingAlert(prev => ({ ...prev, target_maiden_name: e.target.value }))}
                       />
                     </div>
+
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-zinc-700 block">通知先メールアドレス（必須）</label>
+                      <label className="text-xs font-bold text-zinc-700 block flex items-center justify-between">
+                        <span>当時の愛称・あだ名（任意）</span>
+                        <span className="text-[10px] text-slate-400 font-normal">部活や呼び名</span>
+                      </label>
                       <input 
-                        type="email" 
-                        required
-                        placeholder="your-email@example.com"
+                        type="text" 
+                        placeholder="例：タッちゃん、部長"
                         className="w-full px-3.5 py-2.5 border border-zinc-300 rounded-xl text-xs bg-slate-50 text-black focus:bg-white focus:border-brand-primary outline-none transition-all"
-                        value={editingAlert.email}
-                        onChange={e => setEditingAlert(prev => ({ ...prev, email: e.target.value }))}
+                        value={editingAlert.target_nickname}
+                        onChange={e => setEditingAlert(prev => ({ ...prev, target_nickname: e.target.value }))}
                       />
                     </div>
+                  </div>
+
+                  {/* 3. 通知先メールアドレス */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-zinc-700 block">
+                      通知先メールアドレス <span className="text-rose-500 font-bold">*必須</span>
+                    </label>
+                    <input 
+                      type="email" 
+                      required
+                      placeholder="your-email@example.com"
+                      className="w-full px-3.5 py-2.5 border border-zinc-300 rounded-xl text-xs bg-slate-50 text-black focus:bg-white focus:border-brand-primary outline-none transition-all"
+                      value={editingAlert.email}
+                      onChange={e => setEditingAlert(prev => ({ ...prev, email: e.target.value }))}
+                    />
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
