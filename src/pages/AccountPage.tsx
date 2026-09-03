@@ -730,7 +730,7 @@ export const AccountPage = () => {
           )}
 
           {/* User Profile Card Summary Dashboard */}
-          <div className="bg-slate-100/95 border border-slate-300/90 rounded-3xl p-6 md:p-8 shadow-sm relative overflow-hidden space-y-6">
+          <div className="bg-[#f2f5f8] border border-slate-300/90 rounded-3xl p-6 md:p-8 shadow-sm relative overflow-hidden space-y-6">
             {/* Top Bar: Large Prominent Name, Badge & Prominent Edit Actions */}
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5 border-b border-slate-300/70 pb-6">
               <div className="flex items-center gap-4">
