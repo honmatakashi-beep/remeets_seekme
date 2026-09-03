@@ -20,7 +20,7 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
   const [eraFilter, setEraFilter] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const ITEMS_PER_PAGE = 50;
+  const ITEMS_PER_PAGE = 20;
   
   const [alertForm, setAlertForm] = useState({
     email: '',
@@ -215,11 +215,11 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
 
           {/* NULL検索（未入力）時の案内バナー */}
           {isNullSearch && !loading && (
-            <div className="bg-amber-50/80 border border-amber-200/90 p-4 rounded-2xl flex items-start gap-3 text-xs text-amber-900 leading-relaxed font-sans shadow-2xs">
-              <Info size={18} className="text-amber-600 shrink-0 mt-0.5" />
+            <div className="bg-amber-50/80 border border-amber-200/90 p-3.5 rounded-2xl flex items-start gap-2.5 text-xs text-amber-900 leading-relaxed font-sans shadow-2xs">
+              <Info size={16} className="text-amber-600 shrink-0 mt-0.5" />
               <div>
-                <p className="font-bold text-amber-950">💡 検索方法のアドバイス</p>
-                <p className="mt-0.5 text-amber-800">
+                <p className="font-bold text-xs text-amber-950">💡 検索方法のアドバイス</p>
+                <p className="mt-0.5 text-[11px] text-amber-900/90 leading-relaxed font-sans">
                   現在検索条件が未入力のため、<b>最新の漂うボトルメール（新着順）</b>を表示しています。<br />
                   ご自身宛ての手紙をお探しの場合は、上の検索ボックスに<b>「あなたのお名前（苗字・旧姓・お名前・ニックネーム）」</b>や<b>「ゆかりの都道府県」「年代」</b>等を入力して検索してください。（※具体的な市区町村や学校名は安全のため非公開となっており、秘密の質問正解後に開示されます）
                 </p>
@@ -282,7 +282,7 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
                 <p className="text-xs text-brand-dark/70 font-serif">
                   該当する手紙： <span className="font-bold text-brand-primary text-sm">{posts.length}</span> 通
                   <span className="ml-2 text-brand-dark/40 font-sans">
-                    ({currentPage} / {totalPages} ページ目 - 1ページ上限50件)
+                    ({currentPage} / {totalPages} ページ目 - 1ページ上限20件)
                   </span>
                 </p>
                 <div className="text-[11px] font-sans text-brand-dark/50">
