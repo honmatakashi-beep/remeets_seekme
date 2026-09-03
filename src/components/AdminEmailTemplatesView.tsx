@@ -19,7 +19,11 @@ import {
   MessageSquare,
   Heart,
   Bell,
-  CheckSquare
+  CheckSquare,
+  Receipt,
+  Trash2,
+  ShieldAlert,
+  UserX
 } from 'lucide-react';
 
 interface EmailTemplate {
@@ -107,7 +111,7 @@ ReMEETs〜再会のボトルメール〜 運営事務局
     tags: ['自動送信', '1時間有効', '暗号化']
   },
 
-  // 3. SMS電話番号認証 (新設)
+  // 3. SMS電話番号認証
   {
     id: 'sms_code',
     category: '本人確認・eKYC',
@@ -125,7 +129,7 @@ ReMEETs〜再会のボトルメール〜 運営事務局
     tags: ['SMS配信', 'Twilio/EZSMS', '10分有効', '厳格認証']
   },
 
-  // 4. ボトル投函完了・控えメール (新設)
+  // 4. ボトル投函完了・控えメール
   {
     id: 'post_created',
     category: 'ボトルメール管理',
@@ -173,7 +177,7 @@ ReMEETs〜再会のボトルメール〜 運営事務局
     tags: ['投函直後', '安心控え', '状況追跡']
   },
 
-  // 5. 新着入荷通知アラート (フルネーム・地域合致) (新設)
+  // 5. 新着入荷通知アラート (フルネーム・地域合致)
   {
     id: 'new_bottle_alert',
     category: '再会マッチング',
@@ -297,7 +301,55 @@ ReMEETs〜再会のボトルメール〜 運営事務局
     tags: ['祝・再会成立', '最重要通知', '連絡先引き渡し']
   },
 
-  // 8. eKYC本人確認 審査結果通知 (新設)
+  // 8. 手紙開封手数料（600円）決済領収メール (新設)
+  {
+    id: 'fee_receipt',
+    category: '決済・領収書',
+    type: 'email',
+    title: '手紙開封・連絡先開示手数料（600円）決済領収メール',
+    triggerEvent: '手紙開封・連絡先開示のStripe決済（600円 税込）が完了した直後',
+    fromName: 'ReMEETs 決済窓口',
+    fromEmail: 'payment@remeets.link',
+    subject: '【ReMEETs】手紙開封・開示手数料の決済が完了いたしました（領収控え）🧾',
+    bodyTemplate: `{{payerName}} 様
+
+いつもReMEETsをご利用いただきありがとうございます。
+
+手紙の開封および想い出照合・連絡先開示システム利用料の決済が正常に完了いたしました。
+領収情報およびご利用明細は以下の通りです。
+
+--------------------------------------------------
+【ご利用明細・領収書】
+役務内容：手紙開封・想い出照合および連絡先開示システム利用料
+決済金額：600 円（税込 / 一括買い切り型）
+※月額料金や追加サブスクリプションは一切発生しません。
+決済方法：クレジットカード（Stripe安全決済）
+決済番号：#{{transactionId}}
+決済日時：{{paymentDate}}
+--------------------------------------------------
+
+開示された手紙およびSNS連絡先は、マイページの「開封済みのお手紙」より
+いつでもご確認いただけます。
+
+▼ 開封済みお手紙を確認する
+{{openedLetterUrl}}
+
+--------------------------------------------------
+ReMEETs〜再会のボトルメール〜 決済運営部
+公式サイト: https://remeets.link
+特定商取引法表記: https://remeets.link/company
+お問い合わせ: support@remeets.link
+--------------------------------------------------`,
+    sampleData: {
+      payerName: '渡辺 美咲',
+      transactionId: 'ch_3OpenLetter600YenSample',
+      paymentDate: '2026年8月22日 19:40',
+      openedLetterUrl: 'https://remeets.link/account?tab=opened'
+    },
+    tags: ['Stripe領収', '600円買い切り', '明細控え']
+  },
+
+  // 9. eKYC本人確認 審査結果通知
   {
     id: 'ekyc_result',
     category: '本人確認・eKYC',
@@ -342,7 +394,102 @@ ReMEETs〜再会のボトルメール〜 本人確認審査窓口
     tags: ['eKYC連携', '信頼バッジ', '法令遵守']
   },
 
-  // 9. サポーター寄付・開発支援完了 (新設)
+  // 10. 削除申請（第三者申し立て）受付完了メール (新設)
+  {
+    id: 'deletion_request_received',
+    category: 'プライバシー保護・権利擁護',
+    type: 'email',
+    title: '手紙の削除申請・プライバシー保護申し立て 受付完了メール',
+    triggerEvent: '第三者または当事者が /deletion-request フォームから削除申請を送信した直後',
+    fromName: 'ReMEETs 法務・削除審査局',
+    fromEmail: 'compliance@remeets.link',
+    subject: '【ReMEETs】手紙の削除・非公開申請を受け付けました（受付番号: #{{requestId}}）',
+    bodyTemplate: `{{applicantName}} 様
+
+ReMEETs 法務・プライバシー保護窓口でございます。
+
+手紙（ボトルメール）に関する削除・非公開化の申し立て申請を受け付けました。
+内容の確認および迅速な調査を開始いたします。
+
+--------------------------------------------------
+【申請概要】
+受付番号：#{{requestId}}
+対象手紙URL：{{targetUrl}}
+申し立て理由：{{deletionReason}}
+申請受付日時：{{submittedAt}}
+--------------------------------------------------
+
+当事務局では、個人の名誉・プライバシー・安全保護を最優先事項として運営しております。
+ガイドラインに基づき目視審査を実施し、原則として24時間以内に適切な非公開・削除措置を講じます。
+
+処置が完了次第、改めて本メールアドレス宛てにご報告申し上げます。
+
+--------------------------------------------------
+ReMEETs〜再会のボトルメール〜 法務コンプライアンス部
+公式サイト: https://remeets.link
+投稿ガイドライン: https://remeets.link/guidelines
+お問い合わせ: support@remeets.link
+--------------------------------------------------`,
+    sampleData: {
+      applicantName: '佐々木 健',
+      requestId: 'DEL-20260825-001',
+      targetUrl: 'https://remeets.link/post/sample-reported-post-777',
+      deletionReason: '個人の氏名が推測される可能性があるため非公開を希望',
+      submittedAt: '2026年8月25日 11:20'
+    },
+    tags: ['権利保護', '自動受付', '迅速対応']
+  },
+
+  // 11. AI安全隔離・警告通知メール (新設)
+  {
+    id: 'ai_moderation_quarantined',
+    category: '安全・モデレーション',
+    type: 'email',
+    title: '投稿内容のAI安全自動診断による非公開（安全隔離）通知',
+    triggerEvent: '投稿された手紙がAI安全診断（個人情報の直接記載、誹謗中傷、ストーカー兆候等）に抵触して非公開化された時',
+    fromName: 'ReMEETs 安全防衛システム',
+    fromEmail: 'safety-bot@remeets.link',
+    subject: '【重要・ReMEETs】投稿された手紙の安全確認・一時非公開について',
+    bodyTemplate: `{{userName}} 様
+
+いつもReMEETsをご利用いただきありがとうございます。
+
+あなたが投函（または更新）されたボトルメールにつきまして、
+システムのAI安全自動診断エンジンにより、投稿ガイドライン第3条または第4条に
+抵触する可能性が検出されたため、第三者への露出を防ぐ目的で【一時非公開（安全隔離）】の措置を行いました。
+
+--------------------------------------------------
+【判定内容】
+対象手紙タイトル：{{postTitle}}
+主な検出要因：{{quarantineReason}}
+安全措置日時：{{quarantinedAt}}
+--------------------------------------------------
+
+ReMEETsでは、健全で心温まる再会を守るため、実名・電話番号・詳細住所の直書き、
+他者への誹謗中傷、ストーカー行為の兆候等を水際で防止しています。
+
+手紙の内容をご確認いただき、修正・再投稿を行っていただくか、
+誤判定と思われる場合はサポート窓口までご連絡ください。
+
+▼ マイページで手紙の内容を確認・修正する
+{{editUrl}}
+
+--------------------------------------------------
+ReMEETs〜再会のボトルメール〜 安全防衛チーム
+投稿ガイドライン: https://remeets.link/guidelines
+お問い合わせ: support@remeets.link
+--------------------------------------------------`,
+    sampleData: {
+      userName: '木村 拓也',
+      postTitle: '1995年 世田谷区の同級生を探しています',
+      quarantineReason: 'メッセージ本文内に電話番号または直通連絡先と類似する数字列が検出されました',
+      quarantinedAt: '2026年8月26日 15:45',
+      editUrl: 'https://remeets.link/edit/sample-post-id-888'
+    },
+    tags: ['AI自動検閲', 'Gemini連携', '安全隔離', '規約遵守']
+  },
+
+  // 12. サポーター寄付・開発支援完了
   {
     id: 'supporter_donation',
     category: '寄付・サポート',
@@ -390,7 +537,7 @@ ReMEETs〜再会のボトルメール〜 運営事務局
     tags: ['Stripe連携', '寄付お礼', 'サポーターバッジ']
   },
 
-  // 10. お問い合わせ公式返信
+  // 13. お問い合わせ公式返信
   {
     id: 'contact_reply',
     category: 'カスタマーサポート',
@@ -433,6 +580,51 @@ ReMEETs〜再会のボトルメール〜 カスタマーサポート窓口
       replyContent: 'お問い合わせいただきありがとうございます。\n自分宛ての手紙は、トップページの検索窓にお名前（旧姓・ニックネーム含む）またはゆかりの地を入力していただくことで簡単に見つけることができます。\n万が一見つからない場合でも、「新着入荷通知アラート」を登録しておくと、今後あなた宛てのボトルが投函された際に自動でメールが届きますのでぜひご活用ください。'
     },
     tags: ['CS対応', 'AIアシスト連携', '個別返信']
+  },
+
+  // 14. 退会（アカウント完全削除）完了メール (新設)
+  {
+    id: 'account_deleted',
+    category: 'アカウント・退会',
+    type: 'email',
+    title: '退会手続き・アカウント完全消去完了メール',
+    triggerEvent: 'ユーザーがマイページから退会手続きを実行した直後',
+    fromName: 'ReMEETs 運営事務局',
+    fromEmail: 'no-reply@remeets.link',
+    subject: '【ReMEETs】退会手続きおよびアカウント情報の消去が完了いたしました',
+    bodyTemplate: `{{userName}} 様
+
+これまでReMEETs（リミーツ）をご利用いただき、誠にありがとうございました。
+
+ご申請いただきました退会手続きが完了し、お客様のアカウント情報および
+登録データの消去（匿名化処理）が正常に完了いたしました。
+
+--------------------------------------------------
+【退会処理の概要】
+退会完了アカウント：{{userName}}（{{userEmail}}）
+処理完了日時：{{deletedAt}}
+消去対象：ログイン認証情報、プロフィール、登録通知条件
+--------------------------------------------------
+
+※安全管理および法令（不正防止）に基づく一定のセキュリティ監査ログを除き、
+個人情報はすべて安全に消去されました。
+
+またいつか大切な思い出と巡り合いたくなった際には、
+いつでも新しい気持ちでReMEETsの海をお訪ねください。
+
+これまでのご利用に、心より感謝申し上げます。
+
+--------------------------------------------------
+ReMEETs〜再会のボトルメール〜 運営事務局
+公式サイト: https://remeets.link
+お問い合わせ: support@remeets.link
+--------------------------------------------------`,
+    sampleData: {
+      userName: '伊藤 美咲',
+      userEmail: 'ito.misaki@example.com',
+      deletedAt: '2026年8月27日 20:10'
+    },
+    tags: ['退会処理', '完全消去', 'GDPR/個人情報保護']
   }
 ];
 
@@ -452,7 +644,19 @@ export const AdminEmailTemplatesView: React.FC = () => {
   const [sendResult, setSendResult] = useState<{ success: boolean; message: string } | null>(null);
   const [copied, setCopied] = useState(false);
 
-  const categories = ['all', '認証・セキュリティ', '本人確認・eKYC', 'ボトルメール管理', '再会マッチング', '寄付・サポート', 'カスタマーサポート'];
+  const categories = [
+    'all', 
+    '認証・セキュリティ', 
+    '本人確認・eKYC', 
+    'ボトルメール管理', 
+    '再会マッチング', 
+    '決済・領収書', 
+    '安全・モデレーション', 
+    'プライバシー保護・権利擁護', 
+    '寄付・サポート', 
+    'カスタマーサポート', 
+    'アカウント・退会'
+  ];
 
   const filteredTemplates = templates.filter(t => {
     if (selectedFilterCategory === 'all') return true;
@@ -561,13 +765,13 @@ export const AdminEmailTemplatesView: React.FC = () => {
                 <span className="text-[10px] font-bold text-teal-800 uppercase tracking-widest bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-200">
                   Dispatch & Notification Hub
                 </span>
-                <span className="text-[10px] text-zinc-500 font-mono">全10種（メール9種 ＋ SMS1種）完備</span>
+                <span className="text-[10px] text-zinc-500 font-mono">全14種（メール13種 ＋ SMS1種）完全網羅</span>
               </div>
               <h2 className="text-xl md:text-2xl font-serif font-bold text-slate-900 mt-1">
                 送信メール・SMS一覧 ＆ テスト配信センター
               </h2>
               <p className="text-xs text-slate-600 font-sans mt-0.5">
-                手紙投函控え、フルネーム新着アラート、クイズ正解、eKYC審査、SMSコード等、全通知の文面確認と実機テスト配信が行えます。
+                認証・投函・新着・開通・領収・審査・削除・警告・退会まで、システムから送信される全14種類の通知を完全プレビュー＆実機テスト配信できます。
               </p>
             </div>
           </div>
@@ -645,7 +849,7 @@ export const AdminEmailTemplatesView: React.FC = () => {
                 : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
             }`}
           >
-            {cat === 'all' ? 'すべて表示 (10)' : cat}
+            {cat === 'all' ? 'すべて表示 (14)' : cat}
           </button>
         ))}
       </div>
