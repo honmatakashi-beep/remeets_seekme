@@ -730,23 +730,23 @@ export const AccountPage = () => {
           )}
 
           {/* User Profile Card Summary Dashboard */}
-          <div className="bg-slate-50/90 border border-slate-200/90 rounded-3xl p-6 md:p-8 shadow-xs relative overflow-hidden space-y-6">
+          <div className="bg-slate-100/95 border border-slate-300/90 rounded-3xl p-6 md:p-8 shadow-sm relative overflow-hidden space-y-6">
             {/* Top Bar: Large Prominent Name, Badge & Prominent Edit Actions */}
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5 border-b border-slate-200/80 pb-6">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5 border-b border-slate-300/70 pb-6">
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-600 via-indigo-700 to-teal-600 text-white flex items-center justify-center font-serif font-bold text-2xl shadow-md shrink-0 select-none ring-4 ring-indigo-50">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-600 via-indigo-700 to-teal-600 text-white flex items-center justify-center font-serif font-bold text-2xl shadow-md shrink-0 select-none ring-4 ring-white">
                   {user?.fullName ? user.fullName.charAt(0) : 'R'}
                 </div>
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-[11px] font-bold text-slate-400 font-sans uppercase tracking-wider">
+                    <span className="text-[11px] font-bold text-slate-500 font-sans uppercase tracking-wider">
                       【お名前】
                     </span>
-                    <span className="text-[10px] font-sans font-bold bg-white text-slate-700 px-2 py-0.5 rounded-md border border-slate-200/70">
+                    <span className="text-[10px] font-sans font-bold bg-white text-slate-700 px-2 py-0.5 rounded-md border border-slate-300/80 shadow-2xs">
                       {user?.role === 'super_admin' ? '管理者アカウント' : '一般メンバー'}
                     </span>
                     {(user?.is_supporter || localStorage.getItem('remeets_is_supporter') === 'true') && (
-                      <span className="text-[11px] text-amber-900 bg-amber-100/90 border border-amber-300 font-bold px-2 py-0.5 rounded-md flex items-center gap-1 shadow-2xs">
+                      <span className="text-[11px] text-amber-900 bg-amber-100 border border-amber-300 font-bold px-2 py-0.5 rounded-md flex items-center gap-1 shadow-2xs">
                         ⭐ 公式サポーター
                       </span>
                     )}
@@ -755,7 +755,7 @@ export const AccountPage = () => {
                   <h2 className="text-2xl sm:text-3xl font-serif font-extrabold text-slate-900 tracking-wide flex items-baseline gap-2 flex-wrap">
                     <span>{user?.fullName || '名前未設定'}</span>
                     {user?.maiden_name && (
-                      <span className="text-sm sm:text-base font-medium text-slate-600 bg-white px-2.5 py-0.5 rounded-lg border border-slate-200 shadow-2xs">
+                      <span className="text-sm sm:text-base font-bold text-indigo-900 bg-white px-2.5 py-0.5 rounded-lg border border-slate-300 shadow-2xs">
                         （旧姓: {user.maiden_name}）
                       </span>
                     )}
@@ -786,7 +786,7 @@ export const AccountPage = () => {
                 <button
                   type="button"
                   onClick={() => setShowDonationModal(true)}
-                  className="px-3.5 py-2 bg-white hover:bg-slate-100 text-slate-700 rounded-xl font-bold text-xs border border-slate-200 transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 shadow-2xs"
+                  className="px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 rounded-xl font-bold text-xs border border-slate-300 transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 shadow-2xs"
                 >
                   <Coffee size={13} className="text-amber-600 shrink-0" />
                   <span>☕ 応援（寄付）</span>
@@ -798,8 +798,8 @@ export const AccountPage = () => {
             <div className="space-y-2.5 font-sans">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {/* 1. ニックネーム */}
-                <div className="bg-white hover:border-indigo-300 px-4 py-2.5 rounded-xl border border-slate-200/90 shadow-2xs transition-all flex items-center justify-between gap-3 group">
-                  <span className="text-[11px] font-bold text-slate-400 shrink-0">
+                <div className="bg-white hover:border-indigo-400 px-4 py-2.5 rounded-xl border border-slate-200 shadow-xs transition-all flex items-center justify-between gap-3 group">
+                  <span className="text-[11px] font-bold text-slate-500 shrink-0">
                     【ニックネーム】
                   </span>
                   <div className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-indigo-900 transition-colors truncate text-right">
@@ -808,8 +808,8 @@ export const AccountPage = () => {
                 </div>
 
                 {/* 2. ユーザーID */}
-                <div className="bg-white hover:border-indigo-300 px-4 py-2.5 rounded-xl border border-slate-200/90 shadow-2xs transition-all flex items-center justify-between gap-3 group">
-                  <span className="text-[11px] font-bold text-slate-400 shrink-0">
+                <div className="bg-white hover:border-indigo-400 px-4 py-2.5 rounded-xl border border-slate-200 shadow-xs transition-all flex items-center justify-between gap-3 group">
+                  <span className="text-[11px] font-bold text-slate-500 shrink-0">
                     【ユーザーID】
                   </span>
                   <div className="text-xs sm:text-sm font-mono font-bold text-indigo-700 truncate text-right">
@@ -818,8 +818,8 @@ export const AccountPage = () => {
                 </div>
 
                 {/* 3. 登録メールアドレス */}
-                <div className="bg-white hover:border-indigo-300 px-4 py-2.5 rounded-xl border border-slate-200/90 shadow-2xs transition-all flex items-center justify-between gap-3 group">
-                  <span className="text-[11px] font-bold text-slate-400 shrink-0">
+                <div className="bg-white hover:border-indigo-400 px-4 py-2.5 rounded-xl border border-slate-200 shadow-xs transition-all flex items-center justify-between gap-3 group">
+                  <span className="text-[11px] font-bold text-slate-500 shrink-0">
                     【登録メールアドレス】
                   </span>
                   <div className="text-xs sm:text-sm font-medium text-slate-800 truncate text-right max-w-[200px]" title={user?.email}>
@@ -828,7 +828,7 @@ export const AccountPage = () => {
                 </div>
 
                 {/* 4. 優先開示用SNS ID / 連絡先 */}
-                <div className="bg-white hover:border-teal-300 px-4 py-2.5 rounded-xl border border-slate-200/90 shadow-2xs transition-all flex items-center justify-between gap-3 group">
+                <div className="bg-white hover:border-teal-400 px-4 py-2.5 rounded-xl border border-slate-200 shadow-xs transition-all flex items-center justify-between gap-3 group">
                   <span className="text-[11px] font-bold text-slate-400 shrink-0">
                     【優先開示用SNS ID】
                   </span>
