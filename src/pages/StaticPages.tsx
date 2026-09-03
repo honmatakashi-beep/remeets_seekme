@@ -581,27 +581,24 @@ export const PricingPage = () => {
       </Link>
 
       <div className="glass-card p-6 md:p-12 bg-white rounded-3xl border border-slate-200/90 shadow-sm space-y-10">
-        {/* ヒーローヘッダー ＆ 重要コピー強調バナー */}
-        <div className="text-center space-y-5 border-b border-slate-150 pb-8">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold tracking-wider uppercase border border-emerald-300">
-            <CreditCard size={14} className="text-emerald-700" />
-            <span>完全買い切り・透明な料金設計</span>
-          </div>
-          
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-slate-900 tracking-wide">
-            ReMEETs 利用料金のご案内
-          </h1>
+        {/* 共通の PageHeader */}
+        <PageHeader
+          icon={<CreditCard size={26} className="text-emerald-700" />}
+          iconBoxClassName="bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-sm"
+          category="Service Pricing"
+          title="利用料金表"
+          description="ReMEETsは、月額会費や自動更新が一切発生しない「完全買い切り・透明安心モデル」です。お手紙の投函や通常検索はいつでも完全無料（0円）でご利用いただけます。"
+        />
 
-          {/* 重要コピー：視認性抜群の安心宣言ボックス */}
-          <div className="max-w-2xl mx-auto p-4 md:p-5 bg-gradient-to-r from-emerald-50 via-teal-50/60 to-emerald-50 rounded-2xl border-2 border-emerald-300/90 shadow-xs space-y-1.5">
-            <p className="text-sm md:text-base font-serif font-bold text-slate-900 leading-relaxed">
-              ReMEETsは、<span className="text-emerald-700 font-extrabold underline decoration-emerald-400 underline-offset-4">月額会費や自動更新（サブスク）が一切発生しない</span>安心設計です。
-            </p>
-            <p className="text-xs md:text-sm text-slate-700 font-sans leading-relaxed">
-              手紙の投函・検索・思い出クイズ回答は<strong>いつでも完全無料（0円）</strong>。<br className="hidden sm:inline" />
-              お相手の手紙を開封するときだけ<strong>1通600円（税込・買い切り）</strong>でご利用いただけます。
-            </p>
-          </div>
+        {/* 重要コピー：視認性抜群の安心宣言ボックス */}
+        <div className="p-4 md:p-5 bg-gradient-to-r from-emerald-50 via-teal-50/60 to-emerald-50 rounded-2xl border-2 border-emerald-300/90 shadow-xs space-y-1.5 text-center">
+          <p className="text-sm md:text-base font-serif font-bold text-slate-900 leading-relaxed">
+            ReMEETsは、<span className="text-emerald-700 font-extrabold underline decoration-emerald-400 underline-offset-4">月額会費や自動更新（サブスク）が一切発生しない</span>安心設計です。
+          </p>
+          <p className="text-xs md:text-sm text-slate-700 font-sans leading-relaxed">
+            手紙の投函・検索・思い出クイズ回答は<strong>いつでも完全無料（0円）</strong>。<br className="hidden sm:inline" />
+            お相手の手紙を開封するときだけ<strong>1通600円（税込・買い切り）</strong>でご利用いただけます。
+          </p>
         </div>
 
         {/* 2大メイン料金プランカード（横並び） */}
