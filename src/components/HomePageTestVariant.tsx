@@ -33,6 +33,7 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { getPostUrl } from '../lib/utils';
+import { SupportBanner } from './SupportBanner';
 
 interface HomePageTestVariantProps {
   onToggleDesign: () => void;
@@ -986,6 +987,11 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
             )}
           </div>
         </div>
+      </section>
+
+      {/* ☕ 公式サポーター・応援寄付カード (朝もやの海の上品なデザイン) */}
+      <section className="max-w-7xl mx-auto px-4 md:px-6 py-4 pb-12">
+        <SupportBanner variant="card" />
       </section>
 
       {/* モーダル: 漂うボトルメール詳細表示 */}
