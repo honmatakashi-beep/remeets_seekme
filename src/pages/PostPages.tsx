@@ -168,9 +168,47 @@ export const EditPostPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!agreed) {
+      alert('最下部の「利用規約・個人情報の取り扱い・投稿ガイドライン」への同意チェックボックスにチェックを入れてください。');
+      return;
+    }
+
+    if (!formData.searcherProfile?.trim()) {
+      alert('「差出人（あなた）の手がかり」を入力してください。');
+      return;
+    }
+    if (!formData.targetLastName?.trim() || !formData.targetFirstName?.trim()) {
+      alert('「探しているお相手のお名前（姓・名）」を入力してください。');
+      return;
+    }
+    if (!formData.targetHometownPref) {
+      alert('「ゆかりの地（都道府県）」を選択してください。');
+      return;
+    }
+    if (!formData.targetHometownArea?.trim()) {
+      alert('「ゆかりの地域・詳細な場所（市区町村以下）」を入力してください。');
+      return;
+    }
+    if (!questions[0]?.question?.trim() || !questions[0]?.answer?.trim()) {
+      alert('「秘密の質問1とその答え」を入力してください。');
+      return;
+    }
+    if (!questions[1]?.question?.trim() || !questions[1]?.answer?.trim()) {
+      alert('「秘密の質問2とその答え」を入力してください。');
+      return;
+    }
+    if (!formData.message?.trim()) {
+      alert('「プライベートメッセージ」を入力してください。');
+      return;
+    }
+    if (!formData.contactId?.trim()) {
+      alert('「正解者へ開示するSNS・連絡先（IDやアドレス）」を入力してください。');
+      return;
+    }
+
     const hasWarnings = Object.values(warnings).some(w => w !== null);
     if (hasWarnings) {
-      alert('不適切な入力が含まれています。修正してから再試行してください。');
+      alert('不適切な入力（禁止文字等）が含まれています。該当項目を修正してから再試行してください。');
       return;
     }
 
@@ -724,15 +762,19 @@ export const EditPostPage = () => {
 
               <button 
                 type="submit" 
-                disabled={isSubmitting || !agreed}
-                className="btn-primary w-full py-5 text-xl flex items-center justify-center gap-3 shadow-2xl shadow-brand-primary/20 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed" 
+                disabled={isSubmitting}
+                className={`w-full py-5 text-xl font-bold flex items-center justify-center gap-3 rounded-full transition-all shadow-xl cursor-pointer ${
+                  agreed 
+                    ? 'bg-gradient-to-r from-teal-700 via-teal-800 to-indigo-900 hover:from-teal-800 hover:to-indigo-950 text-white shadow-teal-900/20 hover:scale-[1.01] active:scale-98' 
+                    : 'bg-slate-300 text-slate-600 hover:bg-slate-400/80'
+                }`} 
               >
                 {isSubmitting ? (
-                  <RefreshCw className="animate-spin" size={24} />
+                  <RefreshCw className="animate-spin text-white" size={24} />
                 ) : (
                   <>
                     <span>内容を更新してボトルを流す</span>
-                    <Heart size={24} />
+                    <Heart size={24} className={agreed ? "text-rose-400" : "text-slate-500"} />
                   </>
                 )}
               </button>
