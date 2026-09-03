@@ -1040,48 +1040,39 @@ export const AdminEmailTemplatesView: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Mail Headers (From, To, Subject) */}
-                <div className="p-3.5 bg-white rounded-xl border border-slate-200/80 space-y-2 text-xs font-sans">
-                  <div className="grid grid-cols-1 sm:grid-cols-12 gap-1 sm:gap-2 items-center">
-                    <span className="sm:col-span-2 text-slate-400 font-bold text-[11px]">差出人 (From):</span>
-                    <span className="sm:col-span-10 text-slate-800 font-medium">
+                {/* Mail Headers (From, To, Subject) - Compact Pro Mailer Style */}
+                <div className="p-3 bg-white rounded-xl border border-slate-200/80 space-y-1.5 text-[11px] font-sans">
+                  <div className="grid grid-cols-1 sm:grid-cols-12 gap-1 items-center">
+                    <span className="sm:col-span-2 text-slate-400 font-bold text-[10.5px]">From:</span>
+                    <span className="sm:col-span-10 text-slate-700 font-medium truncate">
                       {currentTemplate.fromName} &lt;<span className="text-teal-700 font-mono">{currentTemplate.fromEmail}</span>&gt;
                     </span>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-12 gap-1 sm:gap-2 items-center">
-                    <span className="sm:col-span-2 text-slate-400 font-bold text-[11px]">宛先 (To):</span>
-                    <span className="sm:col-span-10 text-slate-800 font-mono">
-                      {testEmailAddress} <span className="text-[10px] text-teal-700 font-sans font-bold ml-1">（設定中のテスト受信用アドレス）</span>
+                  <div className="grid grid-cols-1 sm:grid-cols-12 gap-1 items-center">
+                    <span className="sm:col-span-2 text-slate-400 font-bold text-[10.5px]">To:</span>
+                    <span className="sm:col-span-10 text-slate-700 font-mono truncate">
+                      {testEmailAddress}
                     </span>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-12 gap-1 sm:gap-2 items-center border-t border-slate-100 pt-1.5">
-                    <span className="sm:col-span-2 text-slate-400 font-bold text-[11px]">件名 (Subject):</span>
-                    <span className="sm:col-span-10 text-slate-900 font-bold text-xs sm:text-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-12 gap-1 items-center border-t border-slate-100 pt-1.5">
+                    <span className="sm:col-span-2 text-slate-400 font-bold text-[10.5px]">Subject:</span>
+                    <span className="sm:col-span-10 text-slate-900 font-bold text-[12px] truncate">
                       {renderPreviewSubject(currentTemplate)}
                     </span>
                   </div>
                 </div>
               </div>
 
-              {/* Mail Body Area */}
-              <div className="p-6 sm:p-8 bg-[#FAF8F5] flex-1 overflow-x-auto">
-                <div className="max-w-xl mx-auto bg-white p-6 sm:p-8 rounded-2xl border border-slate-200/90 shadow-2xs space-y-4">
-                  <div className="border-b border-teal-600/20 pb-3 flex items-center justify-between">
-                    <span className="text-base font-serif font-bold text-teal-900 tracking-wider">
-                      ReMEETs
-                    </span>
-                    <span className="text-[10px] text-slate-400 font-sans">
-                      公式自動配信メール
-                    </span>
+              {/* Mail Body Area (Plain Text Mode) */}
+              <div className="p-4 sm:p-6 bg-[#F8F9FA] flex-1 overflow-x-auto">
+                <div className="bg-white p-5 sm:p-7 rounded-xl border border-slate-200/80 shadow-2xs">
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-100 text-[10px] text-slate-400 font-mono">
+                    <span>MIME-Version: 1.0 (Content-Type: text/plain; charset=UTF-8)</span>
+                    <span>Format: Plain Text</span>
                   </div>
 
-                  <div className="text-xs sm:text-sm text-slate-800 font-mono leading-relaxed whitespace-pre-wrap select-text">
+                  <div className="pt-4 text-[12px] text-slate-800 font-mono leading-relaxed whitespace-pre-wrap select-text selection:bg-teal-100">
                     {renderPreviewBody(currentTemplate)}
-                  </div>
-
-                  <div className="pt-4 border-t border-slate-100 text-[10px] text-slate-400 text-center font-sans space-y-0.5">
-                    <p>© 2026 ReMEETs TEAM. All rights reserved.</p>
-                    <p>本メールは送信専用アドレスより自動配信されています。</p>
                   </div>
                 </div>
               </div>
