@@ -12,6 +12,7 @@ import { BottleLoader, GoogleSearchResultPreview } from '../components/SharedCom
 import searchEmptySea from '../assets/images/search_empty_sea_1785869230086.jpg';
 
 export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) => {
+  const { user } = useAuth();
   const [searchParams] = useSearchParams();
   const qParam = searchParams.get('q') || '';
   const [query, setQuery] = useState(qParam);
@@ -23,7 +24,7 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
   const ITEMS_PER_PAGE = 20;
   
   const [alertForm, setAlertForm] = useState({
-    email: '',
+    email: user?.email || '',
     targetName: qParam || '',
     targetHometown: '',
     era: '',
@@ -37,11 +38,12 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
   useEffect(() => {
     setAlertForm(prev => ({
       ...prev,
+      email: prev.email || user?.email || '',
       targetName: query || prev.targetName,
       era: eraFilter,
       category: categoryFilter
     }));
-  }, [query, eraFilter, categoryFilter]);
+  }, [query, eraFilter, categoryFilter, user?.email]);
 
   const fetchPosts = async () => {
     setLoading(true);

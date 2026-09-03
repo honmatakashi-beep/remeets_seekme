@@ -2541,6 +2541,32 @@ async function startServer() {
     }
   });
 
+  app.put("/api/search-alerts/:id", authenticateToken, (req: any, res) => {
+    const { email, target_name, target_hometown, era, category } = req.body;
+    if (!target_name) {
+      return res.status(400).json({ error: "お探しの対象者名を入力してください。" });
+    }
+    try {
+      const user = db.prepare("SELECT email FROM users WHERE id = ?").get(req.user.id) as any;
+      if (!user || !user.email) {
+        return res.status(403).json({ error: "Unauthorized" });
+      }
+      const existing = db.prepare("SELECT * FROM search_alerts WHERE id = ? AND email = ?").get(req.params.id, user.email) as any;
+      if (!existing && req.user.role !== 'admin') {
+        return res.status(404).json({ error: "Alert not found" });
+      }
+      const targetEmail = email || user.email;
+      db.prepare(`
+        UPDATE search_alerts 
+        SET email = ?, target_name = ?, target_hometown = ?, era = ?, category = ?
+        WHERE id = ?
+      `).run(targetEmail, target_name, target_hometown || null, era || null, category || null, req.params.id);
+      res.json({ success: true, message: "新着入荷通知アラートが正常に更新されました。" });
+    } catch (err) {
+      res.status(500).json({ error: "アラートの更新に失敗しました。" });
+    }
+  });
+
   app.post("/api/log-pledge", postLimiter, optionalAuthenticateToken, (req: any, res) => {
     const { agreement1, agreement2, agreement3 } = req.body;
     if (!agreement1 || !agreement2 || !agreement3) {
