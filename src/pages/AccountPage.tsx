@@ -7,7 +7,7 @@ import {
   Heart, Lock, Mail, MessageSquare, RotateCcw, Search, Send,
   ShieldCheck, Sparkles, Trash2, User as UserIcon, X, AlertCircle,
   Shield, Info, Clock, ChevronDown, ChevronUp, ArrowLeft,
-  MessageCircle, Key, Plus
+  MessageCircle, Key, Plus, Zap
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { cn, PageHeader, formatEraLabel, getCategoryText, getPostUrl, PREFECTURES } from '../lib/utils';
@@ -2075,36 +2075,69 @@ export const AccountPage = () => {
                       </div>
                     </div>
                   ) : (
-                    /* 未認証カード（手続き案内） */
-                    <div className="p-6 md:p-8 bg-gradient-to-br from-amber-50/80 via-orange-50/30 to-white rounded-3xl border-2 border-amber-300 shadow-sm space-y-4 relative overflow-hidden font-sans">
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-amber-200/80 pb-4">
+                    /* 未認証カード（事前本人確認の3大メリット案内） */
+                    <div className="p-6 md:p-8 bg-gradient-to-br from-teal-50/90 via-sky-50/30 to-white rounded-3xl border-2 border-teal-300/90 shadow-sm space-y-5 relative overflow-hidden font-sans">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-teal-200/80 pb-4">
                         <div className="flex items-center gap-3.5">
-                          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-600 text-white flex items-center justify-center shadow-xs shrink-0">
-                            <Shield size={26} className="text-white" />
+                          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-teal-600 to-indigo-700 text-white flex items-center justify-center shadow-xs shrink-0">
+                            <ShieldCheck size={26} className="text-white" />
                           </div>
                           <div>
                             <div className="flex items-center gap-2 flex-wrap">
-                              <span className="text-[10px] font-extrabold text-amber-900 bg-amber-100 px-2.5 py-0.5 rounded-full uppercase tracking-widest border border-amber-300/80">
+                              <span className="text-[10px] font-extrabold text-teal-800 bg-teal-100 px-2.5 py-0.5 rounded-full uppercase tracking-widest border border-teal-300">
                                 Identity Verification
                               </span>
-                              <span className="text-[11px] font-bold text-amber-900">
-                                📝 自己誓約のみ（公的eKYC未認証）
+                              <span className="text-[11px] font-bold text-teal-900 flex items-center gap-1">
+                                🛡️ 未認証（事前登録受付中）
                               </span>
                             </div>
                             <h3 className="text-xl font-serif font-bold text-slate-900 mt-0.5">
-                              公的本人確認（eKYC）のお願い
+                              事前本人確認（eKYC）の3大メリット
                             </h3>
                           </div>
                         </div>
-                        <span className="text-xs font-bold text-amber-900 bg-white border border-amber-300 px-3 py-1.5 rounded-xl text-center shrink-0 shadow-2xs font-serif">
-                          審査・照合手数料: 600円 (税込)
-                        </span>
+                        <div className="bg-white/95 border border-teal-200 px-3.5 py-1.5 rounded-xl text-center shrink-0 shadow-2xs">
+                          <span className="text-[10px] text-slate-400 font-bold block">利用・事前確認</span>
+                          <span className="text-xs font-bold text-teal-800 font-sans">完全無料（手紙開通時のみ600円）</span>
+                        </div>
                       </div>
 
-                      <p className="text-xs text-slate-700 leading-relaxed bg-white/80 p-4 rounded-2xl border border-amber-100">
-                        ReMEETsでは、なりすましや不正利用を防止し、お相手と安心して再会を果たすために公的身分証明書による本人確認（eKYC）を導入しています。
-                        認証が完了すると、想い出クイズが正解したお相手に安全に連絡先を開示できるようになります。
+                      <p className="text-xs text-slate-700 leading-relaxed bg-white/80 p-3.5 rounded-2xl border border-teal-100">
+                        事前に公的身分証明書による本人確認を済ませておくことで、あなた宛ての手紙が海に流された際、<strong>審査待ち時間ゼロで即座に手紙本文と連絡先を開封</strong>できます。
                       </p>
+
+                      {/* 3大メリット・アイコン小箱グリッド */}
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-sans">
+                        <div className="bg-white p-4 rounded-2xl border border-teal-100/90 shadow-2xs space-y-1.5">
+                          <div className="w-8 h-8 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center font-bold">
+                            <Zap size={16} />
+                          </div>
+                          <h4 className="font-bold text-slate-900 text-xs">1. 届いたら即時開封</h4>
+                          <p className="text-[11px] text-slate-500 leading-relaxed">
+                            お相手からの手紙が見つかった際、審査待ち時間なくその場ですぐ手紙本文と連絡先を開示できます。
+                          </p>
+                        </div>
+
+                        <div className="bg-white p-4 rounded-2xl border border-teal-100/90 shadow-2xs space-y-1.5">
+                          <div className="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center font-bold">
+                            <ShieldCheck size={16} />
+                          </div>
+                          <h4 className="font-bold text-slate-900 text-xs">2. なりすまし完全防止</h4>
+                          <p className="text-[11px] text-slate-500 leading-relaxed">
+                            あなたのお名前を他人が勝手に騙って手紙を受け取る不正を100%防止し、大切な想い出を守ります。
+                          </p>
+                        </div>
+
+                        <div className="bg-white p-4 rounded-2xl border border-teal-100/90 shadow-2xs space-y-1.5">
+                          <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center font-bold">
+                            <Sparkles size={16} />
+                          </div>
+                          <h4 className="font-bold text-slate-900 text-xs">3. お相手への信頼証明</h4>
+                          <p className="text-[11px] text-slate-500 leading-relaxed">
+                            「正真正銘の本人」という公式証明が付くため、お相手も安心・安全に連絡先を届けることができます。
+                          </p>
+                        </div>
+                      </div>
 
                       <div className="flex flex-col sm:flex-row items-center gap-3 pt-1">
                         <button
@@ -2113,10 +2146,10 @@ export const AccountPage = () => {
                             setMypageEkycStep(1);
                             setShowMypageEkycModal(true);
                           }}
-                          className="w-full sm:w-auto flex-1 py-3 px-6 bg-gradient-to-r from-teal-700 via-teal-800 to-indigo-800 hover:from-teal-800 hover:to-indigo-900 text-white font-bold text-xs rounded-2xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer font-sans active:scale-98"
+                          className="w-full sm:w-auto flex-1 py-3.5 px-6 bg-gradient-to-r from-teal-700 via-teal-800 to-indigo-800 hover:from-teal-800 hover:to-indigo-900 text-white font-bold text-xs rounded-2xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer font-sans active:scale-98"
                         >
                           <ShieldCheck size={16} />
-                          <span>⚡ 公的本人確認手続きを開始する（600円）</span>
+                          <span>✨ 本人確認を完了して安心バッジを取得する（スムーズな開封へ）</span>
                         </button>
                       </div>
                     </div>
