@@ -533,17 +533,17 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
               <div className="space-y-3 flex-1 flex flex-col justify-between pt-1">
                 <div className="space-y-1.5">
                   <h3 className="text-base sm:text-lg font-serif font-extrabold text-slate-900 leading-snug whitespace-nowrap tracking-tight">
-                    クイズで連絡先が開示
+                    秘密の質問で再会・SNS開示
                   </h3>
                   <p className="text-xs sm:text-sm text-slate-600 font-sans leading-relaxed">
-                    ふと検索したお相手が発見。『秘密の質問』に正解すると本人証明が完了し、指定した連絡先が開示され、直接つながることができます。
+                    ふと検索したお相手が手紙を発見。『秘密の質問』に正解すると手紙が開封され、設定したLINEやSNS連絡先が開示されて直接つながれます。
                   </p>
                 </div>
 
                 <div className="pt-2.5 border-t border-teal-100 flex items-center text-[11px] sm:text-xs text-teal-700 font-sans font-bold">
                   <span className="flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse" />
-                    ご本人限定の連絡先開示
+                    正解者のみに届く安全開示
                   </span>
                 </div>
               </div>

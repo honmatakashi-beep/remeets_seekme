@@ -587,10 +587,10 @@ export const HomePage = ({ onOpenOnboarding, heroCopyStyle }: { onOpenOnboarding
                   </div>
                   <div className="space-y-1">
                     <h5 className="font-extrabold text-slate-900 text-sm sm:text-base font-serif flex items-center gap-1.5 whitespace-nowrap">
-                      <span>クイズで連絡先が開示</span>
+                      <span>秘密の質問で再会・SNS開示</span>
                     </h5>
                     <p className="text-[11.5px] text-slate-600 leading-relaxed font-sans">
-                      お相手が検索で見つけ、秘密の質問に正解すると封が開き、言葉と連絡先が繋がります。
+                      お相手が検索で見つけ、秘密の質問に正解すると手紙が開封され、LINEやSNS連絡先が開示されて直接つながれます。
                     </p>
                   </div>
                 </div>
