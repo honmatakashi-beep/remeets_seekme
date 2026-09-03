@@ -896,49 +896,6 @@ export const AccountPage = () => {
                 </div>
               </div>
             </div>
-
-            {/* Bottom Row: Quick Status Counters */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t-2 border-slate-300/70 font-sans">
-              <button
-                type="button"
-                onClick={() => handleTabChange('chats')}
-                className="bg-white hover:bg-emerald-50/70 px-4 py-2.5 border-2 border-slate-300/90 hover:border-emerald-400 rounded-xl text-left transition-all cursor-pointer flex items-center justify-between group shadow-xs"
-              >
-                <div className="flex items-center gap-2">
-                  <MessageSquare size={16} className="text-emerald-600" />
-                  <span className="text-xs font-bold text-slate-700 group-hover:text-emerald-800">
-                    開封されたお手紙・やり取り中の相手
-                  </span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <span className="text-base font-serif font-extrabold text-emerald-700">
-                    {connectedPosts.length}
-                  </span>
-                  <span className="text-[11px] font-bold text-emerald-600/70">通</span>
-                  <span className="text-[10px] text-slate-400 group-hover:text-emerald-700 ml-1">表示 →</span>
-                </div>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleTabChange('sent')}
-                className="bg-white hover:bg-teal-50/70 px-4 py-2.5 border-2 border-slate-300/90 hover:border-teal-400 rounded-xl text-left transition-all cursor-pointer flex items-center justify-between group shadow-xs"
-              >
-                <div className="flex items-center gap-2">
-                  <Send size={15} className="text-teal-600" />
-                  <span className="text-xs font-bold text-slate-700 group-hover:text-teal-800">
-                    あなたが流したボトルメール
-                  </span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <span className="text-base font-serif font-extrabold text-teal-700">
-                    {myPosts.length}
-                  </span>
-                  <span className="text-[11px] font-bold text-teal-600/70">通</span>
-                  <span className="text-[10px] text-slate-400 group-hover:text-teal-700 ml-1">管理 →</span>
-                </div>
-              </button>
-            </div>
           </div>
 
           {/* 登録内容・SNS ID 変更ポップアップモーダル */}
@@ -1282,13 +1239,13 @@ export const AccountPage = () => {
                   <MessageSquare size={14} />
                 </span>
                 <span>出会えた人</span>
-                {connectedPosts.length > 0 && (
-                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold transition-all ${
-                    activeSubTab === 'chats' ? 'bg-emerald-600 text-white shadow-2xs' : 'bg-slate-300/80 text-slate-700'
-                  }`}>
-                    {connectedPosts.length}
-                  </span>
-                )}
+                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold transition-all ${
+                  connectedPosts.length > 0
+                    ? (activeSubTab === 'chats' ? 'bg-emerald-600 text-white shadow-2xs' : 'bg-emerald-100 text-emerald-800 border border-emerald-300')
+                    : (activeSubTab === 'chats' ? 'bg-slate-200 text-slate-700 font-normal' : 'bg-slate-300/80 text-slate-600 font-normal')
+                }`}>
+                  {connectedPosts.length}通
+                </span>
                 {activeSubTab === 'chats' && (
                   <span className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full shadow-2xs animate-pulse" />
                 )}
@@ -1309,13 +1266,13 @@ export const AccountPage = () => {
                   <Send size={13} />
                 </span>
                 <span>流したボトル</span>
-                {myPosts.length > 0 && (
-                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold transition-all ${
-                    activeSubTab === 'sent' ? 'bg-teal-600 text-white shadow-2xs' : 'bg-slate-300/80 text-slate-700'
-                  }`}>
-                    {myPosts.length}
-                  </span>
-                )}
+                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold transition-all ${
+                  myPosts.length > 0
+                    ? (activeSubTab === 'sent' ? 'bg-teal-600 text-white shadow-2xs' : 'bg-teal-100 text-teal-800 border border-teal-300')
+                    : (activeSubTab === 'sent' ? 'bg-slate-200 text-slate-700 font-normal' : 'bg-slate-300/80 text-slate-600 font-normal')
+                }`}>
+                  {myPosts.length}通
+                </span>
                 {activeSubTab === 'sent' && (
                   <span className="absolute -top-1 -right-1 w-3 h-3 bg-teal-500 border-2 border-white rounded-full shadow-2xs animate-pulse" />
                 )}
@@ -1339,13 +1296,13 @@ export const AccountPage = () => {
                   <Bell size={14} />
                 </span>
                 <span>通知ログ</span>
-                {notifications.filter(n => !n.is_read).length > 0 && (
-                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold transition-all ${
-                    activeSubTab === 'notifications' ? 'bg-rose-600 text-white shadow-2xs' : 'bg-rose-100 text-rose-700 border border-rose-200'
-                  }`}>
-                    {notifications.filter(n => !n.is_read).length}
-                  </span>
-                )}
+                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold transition-all ${
+                  notifications.filter(n => !n.is_read).length > 0
+                    ? (activeSubTab === 'notifications' ? 'bg-rose-600 text-white shadow-2xs' : 'bg-rose-100 text-rose-700 border border-rose-200')
+                    : (activeSubTab === 'notifications' ? 'bg-slate-200 text-slate-700 font-normal' : 'bg-slate-300/80 text-slate-600 font-normal')
+                }`}>
+                  {notifications.filter(n => !n.is_read).length > 0 ? `${notifications.filter(n => !n.is_read).length}件未読` : `${notifications.length}件`}
+                </span>
                 {activeSubTab === 'notifications' && (
                   <span className="absolute -top-1 -right-1 w-3 h-3 bg-rose-500 border-2 border-white rounded-full shadow-2xs animate-pulse" />
                 )}
