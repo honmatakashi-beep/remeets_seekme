@@ -718,7 +718,7 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
             </Link>
 
             <Link 
-              to="/guide" 
+              to="/safety" 
               className="p-3.5 bg-white/95 rounded-2xl border border-slate-200/90 hover:border-emerald-400 shadow-2xs hover:shadow-xs transition-all flex items-center gap-3 group text-left cursor-pointer"
             >
               <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
@@ -731,7 +731,7 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
             </Link>
 
             <Link 
-              to="/guide" 
+              to="/pricing" 
               className="p-3.5 bg-white/95 rounded-2xl border border-slate-200/90 hover:border-sky-400 shadow-2xs hover:shadow-xs transition-all flex items-center gap-3 group text-left cursor-pointer"
             >
               <div className="w-9 h-9 rounded-xl bg-sky-50 text-sky-700 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
