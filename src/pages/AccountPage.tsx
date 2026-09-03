@@ -1967,31 +1967,47 @@ export const AccountPage = () => {
           </div>
 
           {/* 💌 ページ最下部：奇跡の再会エピソード・感謝の声の投稿カード */}
-          <div className="pt-6 border-t border-slate-200/80 mt-8 space-y-6">
-            <div className="bg-gradient-to-br from-amber-50/90 via-orange-50/60 to-rose-50/80 border border-amber-200/80 rounded-3xl p-5 md:p-6 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-              <div className="space-y-1.5 flex-1 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="p-1.5 bg-amber-500 text-white rounded-lg shadow-2xs">
-                    <Sparkles size={14} />
-                  </span>
-                  <span className="text-[11px] font-bold text-amber-900 uppercase tracking-widest font-sans">
-                    Miracle Reunion & Thank You Stories
-                  </span>
-                  {mySubmittedStories.length > 0 && (
-                    <span className="text-[10px] bg-amber-200 text-amber-950 font-extrabold px-2.5 py-0.5 rounded-full font-sans border border-amber-300">
-                      あなたが投稿した体験談: {mySubmittedStories.length}件
-                    </span>
-                  )}
+          <div className="pt-6 border-t-2 border-slate-200/80 mt-8 space-y-6">
+            <div className="p-6 md:p-8 bg-gradient-to-br from-amber-50/80 via-orange-50/30 to-white rounded-3xl border-2 border-amber-300 shadow-xs space-y-5 relative overflow-hidden font-sans">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-amber-200/80 pb-4">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 via-orange-500 to-rose-500 text-white flex items-center justify-center shadow-xs shrink-0">
+                    <Sparkles size={24} className="text-white" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-[10px] font-extrabold text-amber-900 bg-amber-100 px-2.5 py-0.5 rounded-full uppercase tracking-widest border border-amber-300/80">
+                        Miracle Reunion Stories
+                      </span>
+                      {mySubmittedStories.length > 0 && (
+                        <span className="text-[10px] bg-amber-200 text-amber-950 font-extrabold px-2.5 py-0.5 rounded-full border border-amber-300 flex items-center gap-1">
+                          投稿済み: {mySubmittedStories.length}件
+                        </span>
+                      )}
+                    </div>
+                    <h3 className="text-xl font-serif font-bold text-slate-900 mt-1">
+                      💌 奇跡の再会エピソード・運営へのお礼
+                    </h3>
+                  </div>
                 </div>
-                <h3 className="font-serif font-bold text-base md:text-lg text-amber-950">
-                  奇跡の再会エピソード・運営へのお礼メッセージを届ける
-                </h3>
-                <p className="text-xs text-amber-900/80 font-sans leading-relaxed">
-                  差出人（手紙を流した方）・受取人（手紙を見つけた方）どちらの立場からでもご投稿いただけます。<br className="hidden sm:inline" />
-                  お寄せいただいた温かいエピソードは、管理者が匿名化・確認の上で「奇跡の再会報告」ページ等に大切に掲載されます。
-                </p>
+                <span className="text-xs font-bold text-amber-900 bg-white border border-amber-300 px-3 py-1.5 rounded-xl text-center shrink-0 shadow-2xs font-serif">
+                  感謝・体験談の共有
+                </span>
               </div>
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 shrink-0 w-full md:w-auto">
+
+              <p className="text-xs text-slate-700 leading-relaxed bg-white/80 p-4 rounded-2xl border border-amber-100">
+                差出人（手紙を流した方）・受取人（手紙を見つけた方）どちらの立場からでもご投稿いただけます。<br className="hidden md:inline" />
+                お寄せいただいた温かいエピソードやお礼の言葉は、管理者が匿名化・確認の上で「奇跡の再会報告」ページ等に大切に掲載されます。
+              </p>
+
+              <div className="flex flex-col sm:flex-row items-center gap-3 pt-1">
+                <Link
+                  to="/success-stories"
+                  className="w-full sm:w-auto flex-1 py-3 px-5 bg-white hover:bg-amber-50 text-amber-900 border border-amber-300 font-bold text-xs rounded-2xl shadow-2xs hover:shadow transition-all flex items-center justify-center gap-2 cursor-pointer font-sans active:scale-98 text-center"
+                >
+                  <BookOpen size={16} className="text-amber-600" />
+                  <span>📖 みんなの再会報告を見る</span>
+                </Link>
                 <button
                   type="button"
                   onClick={() => {
@@ -1999,17 +2015,11 @@ export const AccountPage = () => {
                     setStoryTargetRole('general');
                     setStoryModalOpen(true);
                   }}
-                  className="px-5 py-3 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-bold rounded-2xl text-xs transition-all shadow-md hover:shadow-lg active:scale-95 flex items-center justify-center gap-2 cursor-pointer font-sans whitespace-nowrap"
+                  className="w-full sm:w-auto flex-1 py-3 px-5 bg-gradient-to-r from-amber-600 via-orange-600 to-amber-700 hover:from-amber-700 hover:to-orange-700 text-white font-bold text-xs rounded-2xl shadow-sm hover:shadow transition-all flex items-center justify-center gap-2 cursor-pointer font-sans active:scale-98"
                 >
-                  <Heart size={15} className="fill-white/30 text-white" />
-                  <span>体験談・お礼を投稿する ✨</span>
+                  <Heart size={16} className="fill-white/30 text-white" />
+                  <span>✨ 体験談・お礼を投稿する</span>
                 </button>
-                <Link
-                  to="/success-stories"
-                  className="px-4 py-3 bg-white hover:bg-amber-50/80 text-amber-900 border border-amber-300 rounded-2xl text-xs font-bold transition-all text-center font-sans whitespace-nowrap"
-                >
-                  みんなの再会報告を見る →
-                </Link>
               </div>
             </div>
 
