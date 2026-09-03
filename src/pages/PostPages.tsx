@@ -21,7 +21,6 @@ import { cn, PageHeader, formatEraLabel, getCategoryText, getPostUrl, PREFECTURE
 import { BottleLoader, WarningMessage, ProtectedRoute, GoogleSearchResultPreview } from '../components/SharedComponents';
 import { DocumentCameraOverlay, stopAllGlobalCameraStreams } from '../components/DocumentCameraOverlay';
 import { QuizMatchingAnalyticsView } from '../components/QuizMatchingAnalyticsView';
-import { ReunionThreeEffect, type EffectType } from '../components/ReunionThreeEffect';
 import { SupportModal } from '../components/SupportModal';
 import { QuestionSampleModal } from './AuthPages';
 import { SuccessStoryModal } from './SearchPage';
@@ -4540,7 +4539,6 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
   const [finderPayCardCvc, setFinderPayCardCvc] = useState('');
   const [finderPayCardName, setFinderPayCardName] = useState('');
   const [finderIsPaying, setFinderIsPaying] = useState(false);
-  const [showThreeReunionEffectModal, setShowThreeReunionEffectModal] = useState(false);
 
   useEffect(() => {
     sessionStorage.setItem('show_finder_ekyc_modal', showFinderEkycModal ? 'true' : 'false');
@@ -5488,20 +5486,6 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                 <span>このボトルメールは {new Date(post.created_at).toLocaleDateString('ja-JP').replace(/\//g, '.')} に投函されました</span>
               </span>
             </div>
-
-            {/* 3D再会エフェクト再生ボタン */}
-            {(isQuestionVerified || showDetails || Boolean(revealedContact) || post.status === 'resolved') && (
-              <div className="mt-4 pt-2 flex justify-center w-full">
-                <button
-                  type="button"
-                  onClick={() => setShowThreeReunionEffectModal(true)}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 hover:from-emerald-500 hover:to-indigo-500 text-white font-serif font-bold text-xs sm:text-sm rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer border border-white/40"
-                >
-                  <Sparkles size={16} className="text-amber-300 animate-spin" style={{ animationDuration: '4s' }} />
-                  <span>✨ 「思い出の鍵」3D解封エフェクトを再生する</span>
-                </button>
-              </div>
-            )}
           </div>
 
           {/* ご本人様向け早めの手紙開封仕組み案内カード (正解前) */}
@@ -7341,21 +7325,6 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
           targetName={post?.target_name}
           targetSummary={post?.searcher_profile}
         />
-      )}
-
-      {/* 3D再会解封フルスクリーンモーダル */}
-      {showThreeReunionEffectModal && (
-        <div className="fixed inset-0 z-[10000] bg-slate-950/90 backdrop-blur-md flex flex-col items-center justify-center p-2 sm:p-6" data-lenis-prevent>
-          <div className="relative w-full h-full max-w-5xl max-h-[90vh] bg-slate-900 rounded-3xl overflow-hidden border-2 border-emerald-400/60 shadow-2xl">
-            <ReunionThreeEffect
-              effectType={(localStorage.getItem('remeets_active_effect') as EffectType) || 'bottle'}
-              targetName={post?.target_name || '三浦 拓也'}
-              postDate={post?.created_at ? new Date(post.created_at).toLocaleDateString('ja-JP').replace(/\//g, '.') : '2026.8.25'}
-              showControlBar={true}
-              onClose={() => setShowThreeReunionEffectModal(false)}
-            />
-          </div>
-        </div>
       )}
     </div>
   );
