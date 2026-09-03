@@ -4087,7 +4087,7 @@ export const SuccessModal = ({
                         className="w-full py-3.5 px-4 bg-gradient-to-r from-indigo-600 via-indigo-700 to-purple-700 hover:from-indigo-700 hover:to-purple-800 text-white font-extrabold text-xs md:text-sm rounded-xl shadow-md hover:scale-[1.01] active:scale-98 transition-all flex items-center justify-center gap-1.5 cursor-pointer font-sans"
                       >
                         <ShieldCheck size={16} />
-                        <span>公的証明バッジを取得して開封（1,200円）</span>
+                        <span>公的証明バッジを取得して開封（600円 税込）</span>
                       </button>
                     </div>
                   </div>
@@ -4565,7 +4565,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
 
   useEffect(() => {
     let interval: any;
-    if (showFinderEkycModal && finderEkycStep === 5) {
+    if (showFinderEkycModal && finderEkycStep === 4) {
       setFinderEkycProgress(0);
       interval = setInterval(() => {
         setFinderEkycProgress((prev) => {
@@ -4629,7 +4629,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               } catch (err) {
                 console.error('eKYC verify / reveal contact error:', err);
               } finally {
-                setFinderEkycStep(6);
+                setFinderEkycStep(5);
               }
             })();
 
@@ -6744,15 +6744,15 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                             <button
                               type="button"
                               onClick={() => {
-                                setFinderEkycStep(2);
+                                setFinderEkycStep(1);
                                 setFinderEkycProgress(0);
-                                sessionStorage.setItem('finder_ekyc_step', '2');
+                                sessionStorage.setItem('finder_ekyc_step', '1');
                                 setShowFinderEkycModal(true);
                               }}
                               className="w-full py-3.5 px-4 bg-gradient-to-r from-indigo-600 via-indigo-700 to-purple-700 hover:from-indigo-700 hover:to-purple-800 text-white font-extrabold text-xs md:text-sm rounded-xl shadow-md hover:scale-[1.01] active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer font-sans"
                             >
                               <ShieldCheck size={16} />
-                              <span>公的証明バッジを取得して開封（1,200円）</span>
+                              <span>公的証明バッジを取得して開封（600円 税込）</span>
                             </button>
                           </div>
 
@@ -6797,9 +6797,9 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                           handleAgeVerified();
                           return;
                         }
-                        setFinderEkycStep(2);
+                        setFinderEkycStep(1);
                         setFinderEkycProgress(0);
-                        sessionStorage.setItem('finder_ekyc_step', '2');
+                        sessionStorage.setItem('finder_ekyc_step', '1');
                         setShowFinderEkycModal(true);
                       }} 
                     />
@@ -6918,41 +6918,34 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                 </p>
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 text-indigo-800 text-[11px] font-bold rounded-full border border-indigo-200">
                   <ShieldCheck size={14} className="text-indigo-600" />
-                  <span>公的証明バッジ取得 ＆ 手紙開封コース（1,200円）</span>
+                  <span>公的証明バッジ取得 ＆ 手紙開封コース（600円 税込）</span>
                 </div>
               </div>
 
+              {/* Step 1: 身分証明書の選択と基本情報の入力 */}
               {finderEkycStep === 1 && (
                 <div className="space-y-6">
-                  <div className="text-center space-y-3">
-                    <div className="w-16 h-16 bg-indigo-500/10 rounded-full flex items-center justify-center text-indigo-600 mx-auto">
-                      <ShieldCheck size={32} />
+                  <div className="flex items-center justify-between border-b border-indigo-150 pb-3 gap-2">
+                    <div>
+                      <span className="text-[10px] font-bold text-indigo-700 uppercase tracking-widest block font-sans">Step 1 / 4</span>
+                      <h3 className="text-lg font-bold text-black font-serif">1. 身分証明書の選択と基本情報の入力</h3>
+                      <p className="text-xs text-black/60 font-sans leading-relaxed mt-0.5">
+                        ご提示いただく身分証明書を選択し、本名と生年月日をご記入ください。
+                      </p>
                     </div>
-                    <h3 className="text-xl font-bold font-serif text-black">本人確認（eKYC）手続き</h3>
-                    <p className="text-xs text-black/60 font-sans leading-relaxed">
-                      安全なメッセージのやり取りのため、公的身分証明書による本人確認を行います。
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => setFinderEkycStep(2)}
-                    className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold shadow transition-all cursor-pointer flex items-center justify-center gap-2"
-                  >
-                    <span>手続きを始める</span>
-                    <ArrowRight size={16} />
-                  </button>
-                </div>
-              )}
-
-              {finderEkycStep === 2 && (
-                <div className="space-y-6">
-                  <div className="text-center space-y-2">
-                    <div className="w-12 h-12 bg-indigo-500/10 rounded-full flex items-center justify-center text-indigo-600 mx-auto">
-                      <FileSpreadsheet size={24} />
-                    </div>
-                    <h3 className="text-lg font-bold text-black font-serif">1. 身分証明書の選択と基本情報の入力</h3>
-                    <p className="text-xs text-black/60 font-sans leading-relaxed">
-                      ご提示いただく身分証明書を選択し、本名と生年月日をご記入ください。
-                    </p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setFinderEkycName(user?.fullName || "本間 貴司");
+                        setFinderEkycBirthdate("1995-05-15");
+                        setFinderEkycDocType("license");
+                      }}
+                      className="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-lg text-[11px] font-bold transition-all shadow-2xs shrink-0 flex items-center gap-1 cursor-pointer"
+                      title="検証用のテスト氏名・生年月日を自動入力"
+                    >
+                      <Sparkles size={12} className="text-indigo-600" />
+                      <span>⚡ テスト自動入力</span>
+                    </button>
                   </div>
 
                   <div className="space-y-4">
@@ -6970,7 +6963,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                             onClick={() => setFinderEkycDocType(doc.id)}
                             className={`py-3 px-2 border rounded-xl text-xs font-bold transition-all text-center cursor-pointer ${
                               finderEkycDocType === doc.id
-                                ? 'border-indigo-600 bg-indigo-50 text-indigo-600'
+                                ? 'border-indigo-600 bg-indigo-50 text-indigo-600 ring-2 ring-indigo-500/20'
                                 : 'border-zinc-200 hover:bg-zinc-50 text-zinc-600'
                             }`}
                           >
@@ -6988,7 +6981,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                           value={finderEkycName}
                           onChange={(e) => setFinderEkycName(e.target.value)}
                           placeholder="山田 太郎"
-                          className="w-full px-4 py-2.5 border border-zinc-200 rounded-xl text-sm focus:outline-none focus:border-indigo-600"
+                          className="w-full px-4 py-2.5 border border-zinc-200 rounded-xl text-sm focus:outline-none focus:border-indigo-600 font-sans"
                         />
                       </div>
                       <div>
@@ -6997,40 +6990,37 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                           type="date"
                           value={finderEkycBirthdate}
                           onChange={(e) => setFinderEkycBirthdate(e.target.value)}
-                          className="w-full px-4 py-2.5 border border-zinc-200 rounded-xl text-sm focus:outline-none focus:border-indigo-600"
+                          className="w-full px-4 py-2.5 border border-zinc-200 rounded-xl text-sm focus:outline-none focus:border-indigo-600 font-sans"
                         />
                       </div>
                     </div>
-
-                    <div className="flex justify-end pt-1">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setFinderEkycName(user?.fullName || "本間 貴司");
-                          setFinderEkycBirthdate("1995-05-15");
-                        }}
-                        className="text-[11px] text-indigo-600 hover:text-indigo-800 font-bold flex items-center gap-1 cursor-pointer bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-100"
-                      >
-                        ⚡ サンプル情報を一括入力
-                      </button>
-                    </div>
                   </div>
 
-                  <button
-                    disabled={!finderEkycName || !finderEkycBirthdate}
-                    onClick={() => setFinderEkycStep(3)}
-                    className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl text-sm font-bold shadow transition-all cursor-pointer disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                  >
-                    <span>証明書の撮影画面へ進む（ガイド枠あり）</span>
-                    <ArrowRight size={16} />
-                  </button>
+                  <div className="flex gap-3 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowFinderEkycModal(false)}
+                      className="py-3 px-5 border border-zinc-200 hover:bg-zinc-100 rounded-xl text-xs font-bold text-zinc-700 transition-colors cursor-pointer"
+                    >
+                      キャンセル
+                    </button>
+                    <button
+                      disabled={!finderEkycName || !finderEkycBirthdate}
+                      onClick={() => setFinderEkycStep(2)}
+                      className="flex-1 py-3.5 bg-gradient-to-r from-indigo-600 via-indigo-700 to-purple-700 hover:from-indigo-700 hover:to-purple-800 disabled:opacity-50 text-white rounded-xl text-sm font-bold shadow transition-all cursor-pointer disabled:cursor-not-allowed flex items-center justify-center gap-2 active:scale-98"
+                    >
+                      <span>証明書の撮影画面へ進む（ガイド枠あり）</span>
+                      <ArrowRight size={16} />
+                    </button>
+                  </div>
                 </div>
               )}
 
-              {/* Step 3: Document Camera Capture with Guidelines Overlay */}
-              {finderEkycStep === 3 && (
+              {/* Step 2: Document Camera Capture with Guidelines Overlay */}
+              {finderEkycStep === 2 && (
                 <div className="space-y-4">
                   <div className="text-center space-y-1">
+                    <span className="text-[10px] font-bold text-indigo-700 uppercase tracking-widest block font-sans">Step 2 / 4</span>
                     <h3 className="text-lg font-bold text-black font-serif">2. 身分証明書の撮影・アップロード</h3>
                     <p className="text-xs text-zinc-500 font-sans">
                       反射や四隅の欠けを防ぐガイドライン枠線に合わせて撮影を行ってください。
@@ -7042,44 +7032,73 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                     docTypeName={
                       finderEkycDocType === 'license' ? '運転免許証' : finderEkycDocType === 'mynumber' ? 'マイナンバーカード' : 'パスポート'
                     }
-                    onBack={() => setFinderEkycStep(2)}
+                    onBack={() => setFinderEkycStep(1)}
                     onComplete={(imgs) => {
                       setFinderEkycCapturedImages(imgs);
-                      setFinderEkycStep(4);
+                      setFinderEkycStep(3);
                     }}
                   />
                 </div>
               )}
 
-              {finderEkycStep === 4 && (
-                <div className="space-y-5">
-                  <div className="text-center space-y-1.5">
-                    <div className="w-12 h-12 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-full flex items-center justify-center text-indigo-700 mx-auto shadow-2xs">
-                      <Coins size={24} />
+              {/* Step 3: Payment (Credit Card Billing) */}
+              {finderEkycStep === 3 && (
+                <div className="space-y-5 py-2 text-left">
+                  <div className="flex items-center justify-between border-b border-indigo-100 pb-3 gap-2">
+                    <div>
+                      <span className="text-[10px] font-bold text-indigo-700 uppercase tracking-widest block font-sans">Step 3 / 4</span>
+                      <h3 className="text-lg font-serif font-bold text-zinc-900">
+                        3. 安全照合・手紙開封手数料のお支払い
+                      </h3>
                     </div>
-                    <h3 className="text-lg font-bold text-black font-serif">3. 公的証明 ＆ 手紙開封手数料 一括 1,200円</h3>
-                    <p className="text-xs text-black/60 font-sans leading-relaxed">
-                      公的身分証明（eKYC）の厳格審査とお相手への安心証明、および手紙開封・連絡先開示を一括で行います。<br/>
-                      ※年齢不一致・書類不備等での不承認時は自動的に即時全額返金されます。
-                    </p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setFinderPayCardNumber("4242 4242 4242 4242");
+                        setFinderPayCardExpiry("12/28");
+                        setFinderPayCardCvc("123");
+                        setFinderPayCardName("TAKASHI HONMA");
+                      }}
+                      className="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-lg text-[11px] font-bold transition-all shadow-2xs shrink-0 flex items-center gap-1 cursor-pointer"
+                      title="検証用のStripeテストカード情報を自動入力"
+                    >
+                      <Sparkles size={12} className="text-indigo-600" />
+                      <span>⚡ テストカード自動入力</span>
+                    </button>
                   </div>
 
-                  {/* 1,200円の内訳表示ボックス */}
-                  <div className="p-3.5 bg-indigo-50/80 border border-indigo-200 rounded-2xl space-y-2 text-xs font-sans">
-                    <div className="flex items-center justify-between text-indigo-950 font-medium pb-1.5 border-b border-indigo-200/70">
-                      <span>🪪 公的身分証（eKYC）認証審査料</span>
-                      <span className="font-bold">600 円</span>
+                  {/* 🤝 安心・安全な連絡先相互開示の仕組みカード（案3） */}
+                  <div className="p-3.5 bg-gradient-to-br from-indigo-50/90 via-purple-50/50 to-white rounded-2xl border border-indigo-200/90 shadow-2xs space-y-2 text-xs font-sans">
+                    <div className="flex items-center gap-1.5 font-bold text-indigo-950 font-serif">
+                      <ShieldCheck size={15} className="text-indigo-600" />
+                      <span>🤝 安心・安全な連絡先相互開示のお約束</span>
                     </div>
-                    <div className="flex items-center justify-between text-indigo-950 font-medium pb-1.5 border-b border-indigo-200/70">
-                      <span>✉️ 手紙開封・直通連絡先開示料</span>
-                      <span className="font-bold">600 円</span>
+                    <ul className="space-y-1.5 text-[11px] text-slate-600 pl-1 leading-relaxed">
+                      <li className="flex items-start gap-1.5">
+                        <span className="text-indigo-600 font-bold">✓</span>
+                        <span>差出人の<strong>「手紙の全文」</strong>と<strong>「直通連絡先（LINE・メール等）」</strong>が即座に開示されます。</span>
+                      </li>
+                      <li className="flex items-start gap-1.5">
+                        <span className="text-indigo-600 font-bold">✓</span>
+                        <span>あなたのアカウント情報も公的認証マーク付きでお相手と安全に照合・共有されます。</span>
+                      </li>
+                      <li className="flex items-start gap-1.5">
+                        <span className="text-indigo-600 font-bold">✓</span>
+                        <span>256-bit暗号化と公的eKYCにより、第三者によるなりすまし・個人情報の漏洩を100%防御します。</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="text-zinc-600 font-bold">手紙開封 ＆ 公的本人確認（eKYC）費用</span>
+                      <span className="text-zinc-900 font-mono font-bold">600 円</span>
                     </div>
-                    <div className="flex items-center justify-between text-indigo-950 font-bold pt-0.5 text-sm font-sans">
-                      <span className="flex items-center gap-1 font-bold">
-                        <Sparkles size={14} className="text-amber-500" />
+                    <div className="border-t border-dashed border-zinc-200 pt-2 flex justify-between items-center">
+                      <span className="text-xs text-indigo-950 font-extrabold">
                         一括お引き落とし合計額（買い切り）
                       </span>
-                      <span className="text-base text-indigo-900 font-sans font-bold">1,200 円 <span className="text-[10px] font-normal text-indigo-700">(税込)</span></span>
+                      <span className="text-base text-indigo-900 font-sans font-bold">600 円 <span className="text-[10px] font-normal text-indigo-700">(税込)</span></span>
                     </div>
                   </div>
 
@@ -7092,7 +7111,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                       </div>
                       <button
                         type="button"
-                        onClick={() => setFinderEkycStep(3)}
+                        onClick={() => setFinderEkycStep(2)}
                         className="text-[11px] text-indigo-600 hover:underline font-bold shrink-0 ml-2 cursor-pointer"
                       >
                         再撮影
@@ -7108,7 +7127,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                         value={finderPayCardNumber}
                         onChange={(e) => setFinderPayCardNumber(e.target.value)}
                         placeholder="4111 1111 1111 1111"
-                        className="w-full px-4 py-2.5 border border-zinc-200 rounded-xl text-sm focus:outline-none focus:border-indigo-600"
+                        className="w-full px-4 py-2.5 border border-zinc-200 rounded-xl text-sm focus:outline-none focus:border-indigo-600 font-mono"
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-3">
@@ -7119,7 +7138,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                           value={finderPayCardExpiry}
                           onChange={(e) => setFinderPayCardExpiry(e.target.value)}
                           placeholder="12/29"
-                          className="w-full px-4 py-2.5 border border-zinc-200 rounded-xl text-sm focus:outline-none focus:border-indigo-600"
+                          className="w-full px-4 py-2.5 border border-zinc-200 rounded-xl text-sm focus:outline-none focus:border-indigo-600 font-mono"
                         />
                       </div>
                       <div>
@@ -7129,7 +7148,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                           value={finderPayCardCvc}
                           onChange={(e) => setFinderPayCardCvc(e.target.value)}
                           placeholder="123"
-                          className="w-full px-4 py-2.5 border border-zinc-200 rounded-xl text-sm focus:outline-none focus:border-indigo-600"
+                          className="w-full px-4 py-2.5 border border-zinc-200 rounded-xl text-sm focus:outline-none focus:border-indigo-600 font-mono"
                         />
                       </div>
                     </div>
@@ -7140,38 +7159,23 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                         value={finderPayCardName}
                         onChange={(e) => setFinderPayCardName(e.target.value)}
                         placeholder="TARO YAMADA"
-                        className="w-full px-4 py-2.5 border border-zinc-200 rounded-xl text-sm focus:outline-none focus:border-indigo-600 text-uppercase"
+                        className="w-full px-4 py-2.5 border border-zinc-200 rounded-xl text-sm focus:outline-none focus:border-indigo-600 text-uppercase font-sans"
                       />
-                    </div>
-
-                    <div className="flex justify-end pt-1">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setFinderPayCardNumber("4242 4242 4242 4242");
-                          setFinderPayCardExpiry("12/28");
-                          setFinderPayCardCvc("123");
-                          setFinderPayCardName("TAKASHI HONMA");
-                        }}
-                        className="text-[11px] text-indigo-600 hover:text-indigo-800 font-bold flex items-center gap-1 cursor-pointer bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-100"
-                      >
-                        ⚡ テスト用カード情報を一括入力
-                      </button>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 pt-1">
                     <button
                       type="button"
-                      onClick={() => setFinderEkycStep(3)}
-                      className="px-4 py-3 border border-zinc-200 text-zinc-600 hover:bg-zinc-50 rounded-xl text-xs font-bold transition-all"
+                      onClick={() => setFinderEkycStep(2)}
+                      className="px-4 py-3 border border-zinc-200 text-zinc-600 hover:bg-zinc-50 rounded-xl text-xs font-bold transition-all cursor-pointer"
                     >
                       撮影に戻る
                     </button>
                     <button
                       disabled={!finderPayCardNumber || !finderPayCardExpiry || !finderPayCardCvc || !finderPayCardName}
-                      onClick={() => setFinderEkycStep(5)}
-                      className="flex-1 py-3.5 bg-gradient-to-r from-indigo-600 via-indigo-700 to-purple-700 hover:from-indigo-700 hover:to-purple-800 disabled:opacity-50 text-white rounded-xl text-sm font-bold shadow-md transition-all cursor-pointer disabled:cursor-not-allowed"
+                      onClick={() => setFinderEkycStep(4)}
+                      className="flex-1 py-3.5 bg-gradient-to-r from-indigo-600 via-indigo-700 to-purple-700 hover:from-indigo-700 hover:to-purple-800 disabled:opacity-50 text-white rounded-xl text-sm font-bold shadow-md transition-all cursor-pointer disabled:cursor-not-allowed active:scale-98"
                     >
                       600円をお支払いして公的証明・手紙開示を完了
                     </button>
@@ -7179,7 +7183,8 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                 </div>
               )}
 
-              {finderEkycStep === 5 && (
+              {/* Step 4: 照合中 */}
+              {finderEkycStep === 4 && (
                 <div className="space-y-6 py-4 text-center font-serif">
                   {/* 中央の二重発光スピナー & アイコン */}
                   <div className="relative inline-flex items-center justify-center my-2">
@@ -7285,7 +7290,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                 </div>
               )}
 
-              {finderEkycStep === 6 && (
+              {finderEkycStep === 5 && (
                 <div className="space-y-6">
                   <div className="text-center space-y-3">
                     <div className="w-16 h-16 bg-emerald-500/10 rounded-full flex items-center justify-center text-emerald-500 mx-auto animate-bounce">
