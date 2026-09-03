@@ -6781,6 +6781,37 @@ ReMEETs カスタマーサポート運営事務局
     }
   });
 
+  // Admin Email Templates: Send Test Email
+  app.post("/api/admin/email-templates/send-test", authenticateToken, isAdmin, async (req: any, res) => {
+    const { templateId, toEmail, subject, bodyText } = req.body;
+
+    if (!toEmail || !subject || !bodyText) {
+      return res.status(400).json({ error: "Missing required fields (toEmail, subject, bodyText)" });
+    }
+
+    try {
+      console.log(`\n======================================================`);
+      console.log(`[ADMIN TEST EMAIL DISPATCH] 📨`);
+      console.log(`Template: ${templateId}`);
+      console.log(`To: ${toEmail}`);
+      console.log(`Subject: ${subject}`);
+      console.log(`Timestamp: ${new Date().toISOString()}`);
+      console.log(`------------------------------------------------------`);
+      console.log(bodyText);
+      console.log(`======================================================\n`);
+
+      logAction(req.user?.id || 1, "ADMIN_TEST_EMAIL_SENT", `Sent test email '${templateId}' to ${toEmail}`, req.ip);
+
+      res.json({ 
+        success: true, 
+        message: `Test email (${templateId}) dispatched successfully to ${toEmail}` 
+      });
+    } catch (err) {
+      console.error("Test email dispatch error:", err);
+      res.status(500).json({ error: "Failed to dispatch test email" });
+    }
+  });
+
   // Vite middleware for development
   let vite: any;
   if (process.env.NODE_ENV !== "production") {

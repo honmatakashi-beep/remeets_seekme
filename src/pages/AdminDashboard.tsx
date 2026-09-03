@@ -35,6 +35,7 @@ import { AdminPaymentManagementBlock } from '../components/AdminPaymentManagemen
 import { QuizMatchingAnalyticsView } from '../components/QuizMatchingAnalyticsView';
 import { EkycProgressTelemetryPanel } from '../components/EkycProgressTelemetryPanel';
 import { MaValuationDataRoomView } from '../components/MaValuationDataRoomView';
+import { AdminEmailTemplatesView } from '../components/AdminEmailTemplatesView';
 import {
   classifyTicket,
   TicketCategory,
@@ -2457,7 +2458,7 @@ export const AdminDashboard = () => {
     );
   };
 
-  const [activeTab, setActiveTab] = useState<'stats' | 'valuation' | 'quizAnalytics' | 'liveAlerts' | 'users' | 'posts' | 'logs' | 'reports' | 'deletion' | 'ngWords' | 'contacts' | 'successStories' | 'security' | 'system' | 'versions' | 'notifications' | 'moderation' | 'manual' | 'designSystem' | 'ageVerification' | 'settings' | 'deployment' | 'monetization' | 'payments' | 'rbac'>('stats');
+  const [activeTab, setActiveTab] = useState<'stats' | 'valuation' | 'quizAnalytics' | 'liveAlerts' | 'users' | 'posts' | 'logs' | 'reports' | 'deletion' | 'ngWords' | 'contacts' | 'emailTemplates' | 'successStories' | 'security' | 'system' | 'versions' | 'notifications' | 'moderation' | 'manual' | 'designSystem' | 'ageVerification' | 'settings' | 'deployment' | 'monetization' | 'payments' | 'rbac'>('stats');
   const [quizMatchingAnalytics, setQuizMatchingAnalytics] = useState<any>(null);
   const [guideDocType, setGuideDocType] = useState<'deployment' | 'cost_estimate' | 'cost_list_detailed' | 'permit' | 'police' | 'consult' | 'matrix' | 'slides' | 'scenario' | 'requirements' | 'evaluation' | 'pr_plan' | 'legal_guide'>('deployment');
   const [loading, setLoading] = useState(true);
@@ -2685,6 +2686,7 @@ export const AdminDashboard = () => {
       items: [
         { id: 'rbac', label: '管理者権限・ロール (RBAC)', icon: ShieldCheck },
         { id: 'contacts', label: 'お問い合わせ', icon: Mail, badge: contacts.filter(c => c.status === 'pending').length },
+        { id: 'emailTemplates', label: '送信メール一覧・テスト配信', icon: Mail },
         { id: 'notifications', label: '一括配信', icon: Bell },
         { id: 'logs', label: 'ログ', icon: Terminal },
         { id: 'versions', label: 'バージョン履歴 (Versions)', icon: History },
@@ -8713,6 +8715,8 @@ export const AdminDashboard = () => {
                 </div>
               );
             })()
+          ) : activeTab === 'emailTemplates' ? (
+            <AdminEmailTemplatesView />
           ) : activeTab === 'notifications' ? (
             <div className="max-w-2xl mx-auto">
               <div className="glass-card p-8 space-y-8">
