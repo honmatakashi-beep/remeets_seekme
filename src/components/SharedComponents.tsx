@@ -493,11 +493,16 @@ export const Navbar = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) 
 
 export const Footer = () => {
   const location = useLocation();
-  const isAccountPage = location.pathname === '/account';
+  const isExcludedPage = 
+    location.pathname === '/account' || 
+    location.pathname.startsWith('/post') || 
+    location.pathname.startsWith('/name') || 
+    location.pathname.startsWith('/create') || 
+    location.pathname.startsWith('/edit');
 
   return (
     <footer className="border-t border-brand-border bg-brand-light/10 py-12">
-      {!isAccountPage && (
+      {!isExcludedPage && (
         <div className="max-w-7xl mx-auto px-6 mb-8">
           <SupportBanner variant="footer" />
         </div>

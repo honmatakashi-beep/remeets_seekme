@@ -5097,9 +5097,14 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
   }
 
   if (!post) return (
-    <div className="p-24 text-center font-serif">
-      <div className="w-12 h-12 border-4 border-brand-primary/20 border-t-brand-primary rounded-full animate-spin mx-auto mb-4" />
-      <p className="opacity-40">記憶を呼び起こしています...</p>
+    <div className="min-h-[75vh] flex flex-col items-center justify-center p-6 text-center font-serif">
+      <div className="w-12 h-12 border-3 border-teal-500/20 border-t-teal-600 rounded-full animate-spin mx-auto mb-5" />
+      <h3 className="text-sm md:text-base font-bold text-slate-800 tracking-widest mb-1.5 font-serif">
+        あの日のボトルメール
+      </h3>
+      <p className="text-xs text-slate-500 font-serif">
+        記憶の海から手紙を読み込んでいます...
+      </p>
     </div>
   );
 
