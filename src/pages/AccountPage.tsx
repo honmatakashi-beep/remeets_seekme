@@ -522,7 +522,7 @@ export const AccountPage = () => {
   // マイページ用eKYCプログレスバー＆API処理連動
   useEffect(() => {
     let interval: any;
-    if (showMypageEkycModal && mypageEkycStep === 5) {
+    if (showMypageEkycModal && mypageEkycStep === 4) {
       setMypageEkycProgress(0);
       interval = setInterval(() => {
         setMypageEkycProgress((prev) => {
@@ -547,16 +547,16 @@ export const AccountPage = () => {
                   localStorage.setItem('ekyc_verified', 'true');
                   window.dispatchEvent(new Event('ekyc_changed'));
                   updateUser({ is_ekyc_verified: true });
-                  setMypageEkycStep(6);
+                  setMypageEkycStep(5);
                 } else {
                   const data = await res.json();
                   alert(data.error || '本人確認に失敗しました。');
-                  setMypageEkycStep(2);
+                  setMypageEkycStep(1);
                 }
               } catch (err) {
                 console.error(err);
                 alert('本人確認処理中にエラーが発生しました。');
-                setMypageEkycStep(2);
+                setMypageEkycStep(1);
               }
             })();
             return 100;
@@ -2338,54 +2338,15 @@ export const AccountPage = () => {
                 <X size={20} />
               </button>
 
-            {/* Step 1: 案内 */}
+            {/* Step 1: 氏名・生年月日・書類選択 */}
             {mypageEkycStep === 1 && (
               <div className="space-y-6">
-                <div className="text-center space-y-2 border-b border-zinc-150 pb-4">
-                  <div className="w-14 h-14 bg-amber-100 text-amber-700 rounded-2xl flex items-center justify-center mx-auto mb-2 border border-amber-300">
-                    <ShieldCheck size={32} />
-                  </div>
-                  <h3 className="text-xl font-serif font-bold text-brand-dark">公的本人確認（eKYC）手続き</h3>
-                  <p className="text-xs text-brand-dark/60 font-sans">
-                    公的身分証明書による実名照合 ＆ 安全確認
-                  </p>
-                </div>
-
-                <div className="space-y-4 text-xs text-brand-dark/80 leading-relaxed font-sans bg-amber-50/50 p-4 rounded-2xl border border-amber-200/60">
-                  <p className="font-semibold text-amber-950">
-                    ReMEETsでは、すべてのユーザー様が安心して懐かしい方と再会できるよう、厳格な本人確認制度を設けています。
-                  </p>
-                  <ul className="list-disc pl-5 space-y-1.5 text-zinc-700">
-                    <li>公的身分証明書（免許証・マイナンバーカード等）の氏名・生年月日を照合します。</li>
-                    <li>いたずら・複数アカウントアタック防止のため、審査手続き費用 <strong>600円（税込）</strong>が発生します。</li>
-                    <li>手続き完了後、アカウントに「🛡️公的本人確認済」ゴールドバッジが付与されます。</li>
-                  </ul>
-                </div>
-
-                <div className="flex gap-3 pt-2">
-                  <button
-                    onClick={() => setShowMypageEkycModal(false)}
-                    className="flex-1 py-3 border border-zinc-300 hover:bg-zinc-100 rounded-xl text-xs font-bold text-zinc-700 transition-colors"
-                  >
-                    キャンセル
-                  </button>
-                  <button
-                    onClick={() => setMypageEkycStep(2)}
-                    className="flex-1 py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer"
-                  >
-                    <span>次へ進む（情報入力）</span>
-                    <ArrowRight size={14} />
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* Step 2: 氏名・生年月日・書類選択 */}
-            {mypageEkycStep === 2 && (
-              <div className="space-y-6">
                 <div className="border-b border-zinc-150 pb-3">
-                  <span className="text-[10px] font-bold text-amber-700 uppercase tracking-widest block font-sans">Step 2 / 4</span>
+                  <span className="text-[10px] font-bold text-teal-700 uppercase tracking-widest block font-sans">Step 1 / 4</span>
                   <h3 className="text-lg font-serif font-bold text-brand-dark">ご本人様情報の入力 ＆ 書類選択</h3>
+                  <p className="text-xs text-slate-500 font-sans mt-0.5">
+                    身分証と照合するための基本情報を入力し、提出書類をお選びください。
+                  </p>
                 </div>
 
                 <div className="space-y-4 text-xs">
@@ -2396,7 +2357,7 @@ export const AccountPage = () => {
                       placeholder="例: 山田 太郎"
                       value={mypageEkycName}
                       onChange={(e) => setMypageEkycName(e.target.value)}
-                      className="w-full px-4 py-2.5 bg-slate-50 border border-zinc-300 rounded-xl text-xs text-black focus:outline-none focus:border-amber-500 font-sans"
+                      className="w-full px-4 py-2.5 bg-slate-50 border border-zinc-300 rounded-xl text-xs text-black focus:outline-none focus:border-teal-500 font-sans"
                     />
                   </div>
 
@@ -2406,7 +2367,7 @@ export const AccountPage = () => {
                       type="date"
                       value={mypageEkycBirthdate}
                       onChange={(e) => setMypageEkycBirthdate(e.target.value)}
-                      className="w-full px-4 py-2.5 bg-slate-50 border border-zinc-300 rounded-xl text-xs text-black focus:outline-none focus:border-amber-500 font-sans"
+                      className="w-full px-4 py-2.5 bg-slate-50 border border-zinc-300 rounded-xl text-xs text-black focus:outline-none focus:border-teal-500 font-sans"
                     />
                   </div>
 
@@ -2418,8 +2379,8 @@ export const AccountPage = () => {
                         onClick={() => setMypageEkycDocType('license')}
                         className={`p-3 rounded-xl border text-center transition-all cursor-pointer ${
                           mypageEkycDocType === 'license'
-                            ? 'border-amber-500 bg-amber-50 text-amber-900 font-bold'
-                            : 'border-zinc-200 bg-white text-zinc-600'
+                            ? 'border-teal-500 bg-teal-50 text-teal-900 font-bold ring-2 ring-teal-500/20'
+                            : 'border-zinc-200 bg-white text-zinc-600 hover:border-zinc-300'
                         }`}
                       >
                         <span className="block text-[11px]">運転免許証</span>
@@ -2429,8 +2390,8 @@ export const AccountPage = () => {
                         onClick={() => setMypageEkycDocType('mynumber')}
                         className={`p-3 rounded-xl border text-center transition-all cursor-pointer ${
                           mypageEkycDocType === 'mynumber'
-                            ? 'border-amber-500 bg-amber-50 text-amber-900 font-bold'
-                            : 'border-zinc-200 bg-white text-zinc-600'
+                            ? 'border-teal-500 bg-teal-50 text-teal-900 font-bold ring-2 ring-teal-500/20'
+                            : 'border-zinc-200 bg-white text-zinc-600 hover:border-zinc-300'
                         }`}
                       >
                         <span className="block text-[11px]">マイナンバー</span>
@@ -2440,8 +2401,8 @@ export const AccountPage = () => {
                         onClick={() => setMypageEkycDocType('passport')}
                         className={`p-3 rounded-xl border text-center transition-all cursor-pointer ${
                           mypageEkycDocType === 'passport'
-                            ? 'border-amber-500 bg-amber-50 text-amber-900 font-bold'
-                            : 'border-zinc-200 bg-white text-zinc-600'
+                            ? 'border-teal-500 bg-teal-50 text-teal-900 font-bold ring-2 ring-teal-500/20'
+                            : 'border-zinc-200 bg-white text-zinc-600 hover:border-zinc-300'
                         }`}
                       >
                         <span className="block text-[11px]">パスポート</span>
@@ -2452,20 +2413,22 @@ export const AccountPage = () => {
 
                 <div className="flex gap-3 pt-2">
                   <button
-                    onClick={() => setMypageEkycStep(1)}
-                    className="py-3 px-5 border border-zinc-300 hover:bg-zinc-100 rounded-xl text-xs font-bold text-zinc-700 transition-colors"
+                    type="button"
+                    onClick={() => setShowMypageEkycModal(false)}
+                    className="py-3 px-5 border border-zinc-300 hover:bg-zinc-100 rounded-xl text-xs font-bold text-zinc-700 transition-colors cursor-pointer"
                   >
-                    戻る
+                    キャンセル
                   </button>
                   <button
+                    type="button"
                     onClick={() => {
                       if (!mypageEkycName || !mypageEkycBirthdate) {
                         alert('氏名と生年月日を入力してください。');
                         return;
                       }
-                      setMypageEkycStep(3);
+                      setMypageEkycStep(2);
                     }}
-                    className="flex-1 py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer"
+                    className="flex-1 py-3 bg-gradient-to-r from-teal-700 to-indigo-800 hover:from-teal-800 hover:to-indigo-900 text-white rounded-xl text-xs font-bold transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer active:scale-98"
                   >
                     <span>次へ進む（証明書の撮影）</span>
                     <ArrowRight size={14} />
@@ -2474,11 +2437,12 @@ export const AccountPage = () => {
               </div>
             )}
 
-            {/* Step 3: Document Camera Overlay */}
-            {mypageEkycStep === 3 && (
+            {/* Step 2: Document Camera Overlay */}
+            {mypageEkycStep === 2 && (
               <div className="space-y-4 font-sans">
                 <div className="text-center space-y-1">
-                  <h3 className="text-lg font-bold text-zinc-900 font-serif">2. 身分証明書の撮影・アップロード</h3>
+                  <span className="text-[10px] font-bold text-teal-700 uppercase tracking-widest block font-sans">Step 2 / 4</span>
+                  <h3 className="text-lg font-bold text-zinc-900 font-serif">身分証明書の撮影・アップロード</h3>
                   <p className="text-xs text-zinc-500">
                     光の反射や四隅の欠けを防ぐガイドライン枠線に合わせて撮影を行ってください。
                   </p>
@@ -2489,20 +2453,20 @@ export const AccountPage = () => {
                   docTypeName={
                     mypageEkycDocType === 'license' ? '運転免許証' : mypageEkycDocType === 'mynumber' ? 'マイナンバーカード' : 'パスポート'
                   }
-                  onBack={() => setMypageEkycStep(2)}
+                  onBack={() => setMypageEkycStep(1)}
                   onComplete={(imgs) => {
                     setMypageEkycCapturedImages(imgs);
-                    setMypageEkycStep(4);
+                    setMypageEkycStep(3);
                   }}
                 />
               </div>
             )}
 
-            {/* Step 4: 決済 */}
-            {mypageEkycStep === 4 && (
+            {/* Step 3: 決済 */}
+            {mypageEkycStep === 3 && (
               <div className="space-y-6 font-sans">
                 <div className="border-b border-zinc-150 pb-3">
-                  <span className="text-[10px] font-bold text-amber-700 uppercase tracking-widest block">Step 3 / 4</span>
+                  <span className="text-[10px] font-bold text-teal-700 uppercase tracking-widest block font-sans">Step 3 / 4</span>
                   <h3 className="text-lg font-serif font-bold text-brand-dark">クレジットカードお支払い（600円）</h3>
                 </div>
 
@@ -2514,8 +2478,8 @@ export const AccountPage = () => {
                     </div>
                     <button
                       type="button"
-                      onClick={() => setMypageEkycStep(3)}
-                      className="text-[11px] text-amber-700 hover:underline font-bold shrink-0 cursor-pointer"
+                      onClick={() => setMypageEkycStep(2)}
+                      className="text-[11px] text-teal-700 hover:underline font-bold shrink-0 cursor-pointer"
                     >
                       再撮影
                     </button>
@@ -2525,7 +2489,7 @@ export const AccountPage = () => {
                 <div className="p-4 bg-slate-50 border border-zinc-200 rounded-2xl space-y-3 text-xs">
                   <div className="flex justify-between items-center font-bold text-brand-dark border-b border-zinc-200 pb-2">
                     <span>eKYC本人確認手続き費用（税込）</span>
-                    <span className="text-base text-amber-700 font-serif">600円</span>
+                    <span className="text-base text-teal-800 font-serif">600円</span>
                   </div>
                   
                   <div className="space-y-2 pt-1">
@@ -2536,7 +2500,7 @@ export const AccountPage = () => {
                         placeholder="4242 •••• •••• 4242"
                         value={mypagePayCardNumber}
                         onChange={(e) => setMypagePayCardNumber(e.target.value)}
-                        className="w-full px-3 py-2 bg-white border border-zinc-300 rounded-lg text-xs focus:outline-none focus:border-amber-500 font-mono"
+                        className="w-full px-3 py-2 bg-white border border-zinc-300 rounded-lg text-xs focus:outline-none focus:border-teal-500 font-mono"
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-2">
@@ -2547,7 +2511,7 @@ export const AccountPage = () => {
                           placeholder="12/28"
                           value={mypagePayCardExpiry}
                           onChange={(e) => setMypagePayCardExpiry(e.target.value)}
-                          className="w-full px-3 py-2 bg-white border border-zinc-300 rounded-lg text-xs focus:outline-none focus:border-amber-500 font-mono"
+                          className="w-full px-3 py-2 bg-white border border-zinc-300 rounded-lg text-xs focus:outline-none focus:border-teal-500 font-mono"
                         />
                       </div>
                       <div>
@@ -2557,7 +2521,7 @@ export const AccountPage = () => {
                           placeholder="123"
                           value={mypagePayCardCvc}
                           onChange={(e) => setMypagePayCardCvc(e.target.value)}
-                          className="w-full px-3 py-2 bg-white border border-zinc-300 rounded-lg text-xs focus:outline-none focus:border-amber-500 font-mono"
+                          className="w-full px-3 py-2 bg-white border border-zinc-300 rounded-lg text-xs focus:outline-none focus:border-teal-500 font-mono"
                         />
                       </div>
                     </div>
@@ -2571,7 +2535,7 @@ export const AccountPage = () => {
 
                 <div className="flex gap-3 pt-2">
                   <button
-                    onClick={() => setMypageEkycStep(3)}
+                    onClick={() => setMypageEkycStep(2)}
                     className="py-3 px-5 border border-zinc-300 hover:bg-zinc-100 rounded-xl text-xs font-bold text-zinc-700 transition-colors cursor-pointer"
                   >
                     撮影に戻る
@@ -2581,11 +2545,11 @@ export const AccountPage = () => {
                       setIsMypagePaying(true);
                       setTimeout(() => {
                         setIsMypagePaying(false);
-                        setMypageEkycStep(5);
+                        setMypageEkycStep(4);
                       }, 1000);
                     }}
                     disabled={isMypagePaying}
-                    className="flex-1 py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition-all shadow-md flex items-center justify-center gap-1.5 disabled:opacity-50 cursor-pointer"
+                    className="flex-1 py-3 bg-gradient-to-r from-teal-700 to-indigo-800 hover:from-teal-800 hover:to-indigo-900 text-white rounded-xl text-xs font-bold transition-all shadow-md flex items-center justify-center gap-1.5 disabled:opacity-50 cursor-pointer active:scale-98"
                   >
                     {isMypagePaying ? (
                       <span>決済処理中...</span>
@@ -2597,8 +2561,8 @@ export const AccountPage = () => {
               </div>
             )}
 
-            {/* Step 5: 照合中 */}
-            {mypageEkycStep === 5 && (
+            {/* Step 4: 照合中 */}
+            {mypageEkycStep === 4 && (
               <div className="space-y-6 py-4 text-center font-serif">
                 {/* 中央の二重発光スピナー & アイコン */}
                 <div className="relative inline-flex items-center justify-center my-2">
@@ -2744,8 +2708,8 @@ export const AccountPage = () => {
               </div>
             )}
 
-            {/* Step 6: 完了 */}
-            {mypageEkycStep === 6 && (
+            {/* Step 5: 完了 */}
+            {mypageEkycStep === 5 && (
               <div className="py-6 text-center space-y-6 font-sans">
                 <div className="w-16 h-16 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto border border-emerald-300">
                   <CheckCircle size={36} />
