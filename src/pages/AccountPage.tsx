@@ -848,52 +848,53 @@ export const AccountPage = () => {
                 </div>
 
                 {/* 5. 本人確認（eKYC）状況 */}
-                <div className={`px-4 py-2.5 rounded-xl border-2 shadow-xs sm:col-span-2 flex items-center justify-between gap-2.5 ${
+                <div className={`px-4 py-2.5 rounded-xl border-2 shadow-xs flex items-center justify-between gap-2.5 ${
                   (user?.is_ekyc_verified || localStorage.getItem('ekyc_verified') === 'true')
                     ? 'bg-emerald-50/80 border-emerald-300'
                     : 'bg-amber-50/80 border-amber-300'
                 }`}>
-                  <span className="text-[11px] font-bold text-slate-500 shrink-0">【本人確認（eKYC）状況】</span>
+                  <span className="text-[11px] font-bold text-slate-500 shrink-0">【本人確認（eKYC）】</span>
                   {(user?.is_ekyc_verified || localStorage.getItem('ekyc_verified') === 'true') ? (
                     <span className="text-xs font-bold text-emerald-800 bg-emerald-100 border-2 border-emerald-300 px-2.5 py-0.5 rounded-lg flex items-center gap-1 shadow-2xs">
-                      🛡️ 公的本人確認完了
+                      🛡️ 認証完了
                     </span>
                   ) : (
                     <span className="text-xs font-bold text-amber-900 bg-white border-2 border-amber-300 px-2.5 py-0.5 rounded-lg shadow-2xs">
-                      📝 自己誓約のみ（未eKYC）
+                      📝 自己誓約（未認証）
                     </span>
                   )}
                 </div>
-              </div>
-            </div>
 
-            {/* メール通知の受け取り設定バナー */}
-            <div className="bg-rose-50/70 border-2 border-rose-200 rounded-2xl p-4.5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 font-sans">
-              <div className="space-y-1 max-w-xl">
-                <div className="flex items-center gap-2">
-                  <Bell size={16} className="text-rose-600 shrink-0" />
-                  <span className="text-xs sm:text-sm font-bold text-rose-950">
-                    メール通知の受け取り設定（{editingEmailNotifications ? 'ON: 受信する' : 'OFF: 受信しない'}）
-                  </span>
+                {/* 6. メール通知設定 */}
+                <div className="bg-white hover:border-rose-400 px-4 py-2.5 rounded-xl border-2 border-slate-300/90 shadow-xs transition-all flex items-center justify-between gap-2 group">
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <Bell size={12} className={editingEmailNotifications ? "text-rose-500" : "text-slate-400"} />
+                    <span className="text-[11px] font-bold text-slate-500">
+                      【メール通知】
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className={`text-[11px] font-bold ${editingEmailNotifications ? 'text-rose-700' : 'text-slate-400'}`}>
+                      {editingEmailNotifications ? '受信中 (ON)' : '停止中 (OFF)'}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleToggleQuickEmailNotifications()}
+                      title={editingEmailNotifications ? "通知をOFFにする" : "通知をONにする"}
+                      className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                        editingEmailNotifications ? 'bg-rose-600' : 'bg-slate-300'
+                      }`}
+                    >
+                      <span className="sr-only">メール通知切り替え</span>
+                      <span
+                        className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out ${
+                          editingEmailNotifications ? 'translate-x-4' : 'translate-x-0'
+                        }`}
+                      />
+                    </button>
+                  </div>
                 </div>
-                <p className="text-[11px] sm:text-xs text-rose-900/70 leading-relaxed">
-                  流したボトルがお相手に見つけられて質問回答・クイズ正解された時の通知メールや、事務局からの連絡を登録メール宛に受送信します。
-                </p>
               </div>
-              <button
-                type="button"
-                onClick={() => handleToggleQuickEmailNotifications()}
-                className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none self-end sm:self-center ${
-                  editingEmailNotifications ? 'bg-rose-600' : 'bg-slate-300'
-                }`}
-              >
-                <span className="sr-only">メール通知の切り替え</span>
-                <span
-                  className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out ${
-                    editingEmailNotifications ? 'translate-x-5' : 'translate-x-0'
-                  }`}
-                />
-              </button>
             </div>
 
             {/* Bottom Row: Quick Status Counters */}
