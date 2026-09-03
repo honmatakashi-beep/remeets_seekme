@@ -24,9 +24,9 @@ export const WarningMessage = ({ message }: { message: string }) => {
 };
 
 export const BottleLoader = () => (
-  <div className="flex flex-col items-center justify-center py-24 space-y-4">
-    <div className="w-12 h-12 border-4 border-brand-primary/20 border-t-brand-primary rounded-full animate-spin" />
-    <p className="text-sm text-brand-dark/60 font-serif">ボトルを引き上げています...</p>
+  <div className="min-h-[50vh] flex flex-col items-center justify-center py-16 space-y-4 font-serif">
+    <div className="w-12 h-12 border-3 border-teal-500/20 border-t-teal-600 rounded-full animate-spin" />
+    <p className="text-sm text-slate-500 font-serif">ボトルを引き上げています...</p>
   </div>
 );
 
@@ -492,22 +492,8 @@ export const Navbar = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) 
 };
 
 export const Footer = () => {
-  const location = useLocation();
-  const isExcludedPage = 
-    location.pathname === '/account' || 
-    location.pathname.startsWith('/post') || 
-    location.pathname.startsWith('/name') || 
-    location.pathname.startsWith('/create') || 
-    location.pathname.startsWith('/edit');
-
   return (
     <footer className="border-t border-brand-border bg-brand-light/10 py-12">
-      {!isExcludedPage && (
-        <div className="max-w-7xl mx-auto px-6 mb-8">
-          <SupportBanner variant="footer" />
-        </div>
-      )}
-
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8">
       <div className="space-y-4">
         <div className="flex items-center gap-2">
