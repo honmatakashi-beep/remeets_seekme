@@ -574,195 +574,198 @@ export const PricingPage = () => {
   }, [location.hash, location.pathname]);
 
   return (
-    <div className="max-w-5xl mx-auto px-4 md:px-6 py-12 md:py-20 font-sans text-slate-800 animate-in fade-in duration-300">
+    <div className="max-w-4xl mx-auto px-4 md:px-6 py-12 md:py-20 font-sans text-slate-800 animate-in fade-in duration-300">
       <Link to="/" className="inline-flex items-center gap-2 text-xs md:text-sm text-slate-500 hover:text-slate-800 transition-colors mb-6 font-serif">
         <ArrowLeft size={16} />
         <span>トップへ戻る</span>
       </Link>
 
-      <div className="glass-card p-6 md:p-12 bg-white rounded-3xl border border-slate-200/90 shadow-sm space-y-12">
-        {/* ヒーローヘッダー */}
-        <div className="text-center space-y-4 border-b border-slate-150 pb-8">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold tracking-wider uppercase">
-            <CreditCard size={14} className="text-emerald-600" />
+      <div className="glass-card p-6 md:p-12 bg-white rounded-3xl border border-slate-200/90 shadow-sm space-y-10">
+        {/* ヒーローヘッダー ＆ 重要コピー強調バナー */}
+        <div className="text-center space-y-5 border-b border-slate-150 pb-8">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold tracking-wider uppercase border border-emerald-300">
+            <CreditCard size={14} className="text-emerald-700" />
             <span>完全買い切り・透明な料金設計</span>
           </div>
-          <h1 className="text-2xl md:text-4xl font-serif font-bold text-slate-900 tracking-wide">
+          
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-slate-900 tracking-wide">
             ReMEETs 利用料金のご案内
           </h1>
-          <p className="text-xs md:text-sm text-slate-600 max-w-2xl mx-auto leading-relaxed font-sans">
-            月額会費やサブスクリプションは一切ございません。<br className="hidden sm:inline" />
-            手紙の投函・検索・思い出クイズ回答は<strong>いつでも完全無料（0円）</strong>。お相手の手紙を開封するときだけ<strong>1通600円（税込・買い切り）</strong>です。
-          </p>
 
-          {/* 3大料金ポリシーハイライト */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 max-w-3xl mx-auto">
-            <div className="p-3.5 bg-gradient-to-br from-emerald-50 via-teal-50/40 to-white rounded-2xl border border-emerald-200 flex flex-col items-center justify-center text-center shadow-2xs">
-              <span className="text-[11px] font-bold text-emerald-900 block">① 会員登録・基本機能</span>
-              <span className="text-lg md:text-xl font-extrabold text-emerald-700 font-serif">0 円 <span className="text-xs font-normal font-sans text-emerald-800">(完全無料)</span></span>
+          {/* 重要コピー：視認性抜群の安心宣言ボックス */}
+          <div className="max-w-2xl mx-auto p-4 md:p-5 bg-gradient-to-r from-emerald-50 via-teal-50/60 to-emerald-50 rounded-2xl border-2 border-emerald-300/90 shadow-xs space-y-1.5">
+            <p className="text-sm md:text-base font-serif font-bold text-slate-900 leading-relaxed">
+              ReMEETsは、<span className="text-emerald-700 font-extrabold underline decoration-emerald-400 underline-offset-4">月額会費や自動更新（サブスク）が一切発生しない</span>安心設計です。
+            </p>
+            <p className="text-xs md:text-sm text-slate-700 font-sans leading-relaxed">
+              手紙の投函・検索・思い出クイズ回答は<strong>いつでも完全無料（0円）</strong>。<br className="hidden sm:inline" />
+              お相手の手紙を開封するときだけ<strong>1通600円（税込・買い切り）</strong>でご利用いただけます。
+            </p>
+          </div>
+        </div>
+
+        {/* 2大メイン料金プランカード（横並び） */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <Sparkles size={18} className="text-indigo-600" />
+            <h2 className="text-base md:text-lg font-serif font-bold text-slate-900">
+              基本プラン ＆ 手紙開封費用
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* 左カード：基本機能（エメラルド＆ティール） */}
+            <div className="p-6 md:p-7 rounded-3xl bg-gradient-to-b from-emerald-50/90 via-teal-50/30 to-white border-2 border-emerald-300/90 shadow-sm flex flex-col justify-between space-y-6 relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-emerald-400 to-teal-500"></div>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="px-3 py-1 bg-emerald-600 text-white text-[11px] font-bold rounded-full shadow-2xs">
+                    基本機能
+                  </span>
+                  <span className="text-xs text-emerald-800 font-bold font-serif">月額 0 円</span>
+                </div>
+                <div>
+                  <h3 className="text-xl font-serif font-bold text-emerald-950">
+                    会員登録・投函・検索
+                  </h3>
+                  <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                    手紙を海に流し、大切な人を探すための基本機能はすべて永続無料です。
+                  </p>
+                </div>
+                <div className="pt-2">
+                  <div className="text-3xl font-extrabold text-emerald-900 font-serif">
+                    0 <span className="text-sm font-sans font-normal text-slate-500">円</span>
+                  </div>
+                </div>
+                <div className="border-t border-emerald-100 pt-4 space-y-2.5 text-xs text-slate-700">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+                    <span>アカウント登録・維持費（永久無料）</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+                    <span>思い出ボトルメールの投函（無制限）</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+                    <span>実名・地域・キーワードでの全体検索</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+                    <span>秘密の質問（思い出クイズ）への回答・照合</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+                    <span>ソーシャル年齢確認（LINE / Google）</span>
+                  </div>
+                </div>
+              </div>
+              <div className="p-2.5 bg-white/90 rounded-xl border border-emerald-200 text-center text-xs font-bold text-emerald-800 shadow-2xs">
+                いつでも気軽にご利用いただけます
+              </div>
             </div>
-            <div className="p-3.5 bg-gradient-to-br from-amber-50 via-yellow-50/40 to-white rounded-2xl border border-amber-200 flex flex-col items-center justify-center text-center shadow-2xs">
-              <span className="text-[11px] font-bold text-amber-900 block">② 公的本人確認 (eKYC)</span>
-              <span className="text-lg md:text-xl font-extrabold text-amber-800 font-serif">0 円 <span className="text-xs font-normal font-sans text-amber-900">(事前登録無料)</span></span>
-            </div>
-            <div className="p-3.5 bg-gradient-to-br from-indigo-50 via-purple-50/40 to-white rounded-2xl border border-indigo-200 flex flex-col items-center justify-center text-center shadow-2xs">
-              <span className="text-[11px] font-bold text-indigo-900 block">③ 手紙開封・連絡先開示</span>
-              <span className="text-lg md:text-xl font-extrabold text-indigo-900 font-serif">600 円 <span className="text-xs font-normal font-sans text-indigo-700">(税込/買い切り)</span></span>
+
+            {/* 右カード：手紙開封・連絡先開示（インディゴ＆パープル） */}
+            <div className="p-6 md:p-7 rounded-3xl bg-gradient-to-b from-indigo-50/90 via-purple-50/40 to-white border-2 border-indigo-400 shadow-md flex flex-col justify-between space-y-6 relative overflow-hidden">
+              <div className="absolute top-0 right-0 bg-indigo-600 text-white text-[10px] font-bold px-3.5 py-1 rounded-bl-xl tracking-wider">
+                正解・開封時のみ
+              </div>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="px-3 py-1 bg-indigo-600 text-white text-[11px] font-bold rounded-full shadow-2xs">
+                    買い切り型
+                  </span>
+                </div>
+                <div>
+                  <h3 className="text-xl font-serif font-bold text-indigo-950">
+                    手紙開封 ＆ 連絡先開示
+                  </h3>
+                  <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                    クイズ正解後、お相手からの手紙全文と直通連絡先（LINE ID等）を開示します。
+                  </p>
+                </div>
+                <div className="pt-2 flex items-baseline gap-1.5">
+                  <div className="text-3xl font-extrabold text-indigo-950 font-serif">
+                    600 <span className="text-sm font-sans font-normal text-slate-600">円</span>
+                  </div>
+                  <span className="text-xs text-slate-500 font-sans">（税込 / 1通買い切り）</span>
+                </div>
+                <div className="border-t border-indigo-200/80 pt-4 space-y-2.5 text-xs text-slate-800">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 size={16} className="text-indigo-600 shrink-0" />
+                    <span><strong>手紙全文の閲覧</strong>（想い出のメッセージ解凍）</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 size={16} className="text-indigo-600 shrink-0" />
+                    <span><strong>差出人の直通連絡先</strong>（LINE・メール等）開示</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 size={16} className="text-indigo-600 shrink-0" />
+                    <span><strong>ワンタップ直通連絡</strong>（LINE起動・メール作成）</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 size={16} className="text-indigo-600 shrink-0" />
+                    <span><strong>お返事メッセージの送信</strong></span>
+                  </div>
+                </div>
+              </div>
+              <div className="p-2.5 bg-indigo-100/70 rounded-xl border border-indigo-200/80 text-center text-xs font-bold text-indigo-900 shadow-2xs">
+                月額課金なし・1通ごとの都度決済
+              </div>
             </div>
           </div>
         </div>
 
-        {/* 3本柱メイン料金カード */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6">
-          {/* カード1：基本機能（鮮やかなエメラルド＆ティール） */}
-          <div className="p-6 rounded-3xl bg-gradient-to-b from-emerald-50/90 via-teal-50/30 to-white border-2 border-emerald-300/90 shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-6 relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-emerald-400 to-teal-500"></div>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <span className="px-3 py-1 bg-emerald-600 text-white text-[10.5px] font-bold rounded-full shadow-2xs">
-                  基本機能
-                </span>
-                <span className="text-xs text-emerald-800 font-bold font-serif">月額 0 円</span>
+        {/* 下段ワイド：公的本人確認 eKYC（アンバー＆ゴールド） */}
+        <div className="p-6 md:p-8 rounded-3xl bg-gradient-to-r from-amber-50/90 via-yellow-50/40 to-white border-2 border-amber-300/90 shadow-xs space-y-5 relative overflow-hidden">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-amber-200/80 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 bg-amber-600 text-white rounded-2xl shadow-2xs shrink-0">
+                <ShieldCheck size={22} />
               </div>
               <div>
-                <h2 className="text-lg md:text-xl font-serif font-bold text-emerald-950">
-                  会員登録・投函・検索
-                </h2>
-                <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-                  手紙を海に流し、大切な人を探すための基本機能はすべて永続無料です。
-                </p>
-              </div>
-              <div className="pt-2">
-                <div className="text-3xl font-extrabold text-emerald-900 font-serif">
-                  0 <span className="text-sm font-sans font-normal text-slate-500">円</span>
-                </div>
-              </div>
-              <div className="border-t border-emerald-100 pt-4 space-y-2.5 text-xs text-slate-700">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 size={15} className="text-emerald-600 shrink-0" />
-                  <span>アカウント登録・維持費（永久無料）</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 size={15} className="text-emerald-600 shrink-0" />
-                  <span>思い出ボトルメールの投函（無制限）</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 size={15} className="text-emerald-600 shrink-0" />
-                  <span>実名・地域・キーワードでの全体検索</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 size={15} className="text-emerald-600 shrink-0" />
-                  <span>秘密の質問（思い出クイズ）への回答・照合</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 size={15} className="text-emerald-600 shrink-0" />
-                  <span>ソーシャル年齢確認（LINE / Google）</span>
-                </div>
+                <span className="text-[10px] font-bold text-amber-800 uppercase tracking-widest block font-sans">
+                  Identity Verification
+                </span>
+                <h3 className="text-lg md:text-xl font-serif font-bold text-amber-950">
+                  公的本人確認 (eKYC) について
+                </h3>
               </div>
             </div>
-            <div className="p-2.5 bg-white/90 rounded-xl border border-emerald-200 text-center text-[11px] font-bold text-emerald-800 shadow-2xs">
-              いつでも気軽にご利用いただけます
+            <div className="flex items-center gap-2">
+              <span className="px-3 py-1 bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold rounded-full">
+                任意機能
+              </span>
+              <span className="text-sm font-bold text-amber-900 font-serif">
+                事前登録 0 円 <span className="text-xs font-normal text-slate-600">(手紙開封時に一括精算)</span>
+              </span>
             </div>
           </div>
 
-          {/* カード2：公的本人確認 eKYC（温かみのあるアンバー＆ゴールド） */}
-          <div className="p-6 rounded-3xl bg-gradient-to-b from-amber-50/90 via-yellow-50/30 to-white border-2 border-amber-300/90 shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-6 relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-amber-400 to-orange-500"></div>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <span className="px-3 py-1 bg-amber-600 text-white text-[10.5px] font-bold rounded-full shadow-2xs flex items-center gap-1">
-                  <ShieldCheck size={12} />
-                  信頼度UP
-                </span>
-                <span className="text-xs text-amber-900 font-bold font-serif">事前登録 0 円</span>
-              </div>
-              <div>
-                <h2 className="text-lg md:text-xl font-serif font-bold text-amber-950">
-                  公的本人確認 (eKYC)
-                </h2>
-                <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-                  公的身分証による厳格な身元確認。マイアカウントから事前登録できます。
-                </p>
-              </div>
-              <div className="pt-2 flex items-baseline gap-1.5">
-                <div className="text-3xl font-extrabold text-amber-900 font-serif">
-                  0 <span className="text-sm font-sans font-normal text-slate-500">円</span>
-                </div>
-                <span className="text-[11px] text-amber-900 font-sans">（事前登録は完全無料）</span>
-              </div>
-              <div className="border-t border-amber-100 pt-4 space-y-2.5 text-xs text-slate-700">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 size={15} className="text-amber-600 shrink-0" />
-                  <span>運転免許証・マイナンバー等による確認</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 size={15} className="text-amber-600 shrink-0" />
-                  <span><strong>「🛡️ 公的本人確認済」マーク</strong>の付与</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 size={15} className="text-amber-600 shrink-0" />
-                  <span>お相手への信頼度・返信率が大幅UP</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 size={15} className="text-amber-600 shrink-0" />
-                  <span>第三者によるなりすまし被害を完全防止</span>
-                </div>
-                <div className="flex items-center gap-2 text-slate-500 text-[11px]">
-                  <span>※手紙の開封・開示時に一括精算（600円）</span>
-                </div>
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-slate-700">
+            <div className="p-3.5 bg-white/90 rounded-2xl border border-amber-200/80 space-y-1.5 shadow-2xs">
+              <span className="font-bold text-amber-950 block flex items-center gap-1.5">
+                <span>🛡️</span> 信頼マークの付与
+              </span>
+              <p className="text-slate-600 leading-relaxed text-[11px]">
+                運転免許証・マイナンバー等による確認でプロフィールに「🛡️ 公的本人確認済」マークが点灯します。
+              </p>
             </div>
-            <div className="p-2.5 bg-white/90 rounded-xl border border-amber-200 text-center text-[11px] font-bold text-amber-900 shadow-2xs">
-              マイアカウントからいつでも登録可能
+            <div className="p-3.5 bg-white/90 rounded-2xl border border-amber-200/80 space-y-1.5 shadow-2xs">
+              <span className="font-bold text-amber-950 block flex items-center gap-1.5">
+                <span>✨</span> 返信率の大幅向上
+              </span>
+              <p className="text-slate-600 leading-relaxed text-[11px]">
+                お相手に「サクラやなりすましではない実在の本人」という絶対の安心を届け、再会の成功率を高めます。
+              </p>
             </div>
-          </div>
-
-          {/* カード3：手紙開封・連絡先開示（上品なインディゴ＆パープル） */}
-          <div className="p-6 rounded-3xl bg-gradient-to-b from-indigo-50/90 via-purple-50/40 to-white border-2 border-indigo-400 shadow-md hover:shadow-lg transition-all flex flex-col justify-between space-y-6 relative overflow-hidden">
-            <div className="absolute top-0 right-0 bg-indigo-600 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl tracking-wider">
-              正解・開封時のみ
-            </div>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <span className="px-3 py-1 bg-indigo-600 text-white text-[10.5px] font-bold rounded-full shadow-2xs">
-                  買い切り型
-                </span>
-              </div>
-              <div>
-                <h2 className="text-lg md:text-xl font-serif font-bold text-indigo-950">
-                  手紙開封 ＆ 連絡先開示
-                </h2>
-                <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-                  クイズ正解後、お相手からの手紙全文と直通連絡先（LINE ID等）を開示します。
-                </p>
-              </div>
-              <div className="pt-2 flex items-baseline gap-1.5">
-                <div className="text-3xl font-extrabold text-indigo-950 font-serif">
-                  600 <span className="text-sm font-sans font-normal text-slate-600">円</span>
-                </div>
-                <span className="text-xs text-slate-500 font-sans">（税込 / 1通買い切り）</span>
-              </div>
-              <div className="border-t border-indigo-200/80 pt-4 space-y-2.5 text-xs text-slate-800">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 size={15} className="text-indigo-600 shrink-0" />
-                  <span><strong>手紙全文の閲覧</strong>（想い出のメッセージ解凍）</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 size={15} className="text-indigo-600 shrink-0" />
-                  <span><strong>差出人の直通連絡先</strong>（LINE・メール等）開示</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 size={15} className="text-indigo-600 shrink-0" />
-                  <span><strong>ワンタップ直通連絡</strong>（LINE起動・メール作成）</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 size={15} className="text-indigo-600 shrink-0" />
-                  <span><strong>100%全額即時返金保証</strong>（不一致・不承認時）</span>
-                </div>
-              </div>
-            </div>
-            <div className="p-2.5 bg-indigo-100/70 rounded-xl border border-indigo-200/80 text-center text-[11px] font-bold text-indigo-900 shadow-2xs">
-              月額課金なし・1通ごとの都度決済
+            <div className="p-3.5 bg-white/90 rounded-2xl border border-amber-200/80 space-y-1.5 shadow-2xs">
+              <span className="font-bold text-amber-950 block flex items-center gap-1.5">
+                <span>🔄</span> 100%全額即時返金保証
+              </span>
+              <p className="text-slate-600 leading-relaxed text-[11px]">
+                万が一、年齢不一致や書類不備で審査不承認となった場合は、Stripe仮売上により即座に全額自動返金されます。
+              </p>
             </div>
           </div>
         </div>
@@ -771,7 +774,7 @@ export const PricingPage = () => {
         <div className="space-y-4">
           <div className="flex items-center gap-2 border-b border-slate-200 pb-3">
             <Coins size={20} className="text-indigo-600" />
-            <h2 className="text-lg font-serif font-bold text-slate-900">
+            <h2 className="text-base md:text-lg font-serif font-bold text-slate-900">
               差出人と受取人のご負担比較
             </h2>
           </div>
@@ -854,7 +857,7 @@ export const PricingPage = () => {
         <div className="space-y-4">
           <div className="flex items-center gap-2 border-b border-slate-200 pb-3">
             <HelpCircle size={20} className="text-indigo-600" />
-            <h2 className="text-lg font-serif font-bold text-slate-900">
+            <h2 className="text-base md:text-lg font-serif font-bold text-slate-900">
               よくあるご質問（FAQ）
             </h2>
           </div>
