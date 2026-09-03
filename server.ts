@@ -2920,17 +2920,19 @@ async function startServer() {
     }
 
     if (era) {
-      const eraStr = String(era);
+      const eraStr = String(era).replace(/[^0-9]/g, '');
       if (eraStr.length === 2) {
-        sqlQuery += " AND era = ?";
-        params.push(eraStr);
+        const fullEra19 = `19${eraStr}`;
+        const fullEra20 = `20${eraStr}`;
+        sqlQuery += " AND (era = ? OR era = ? OR era = ? OR era LIKE ?)";
+        params.push(eraStr, fullEra19, fullEra20, `%${eraStr}%`);
       } else if (eraStr.length === 4) {
-        sqlQuery += " AND (era = ? OR era = ?)";
-        params.push(eraStr);
-        params.push(eraStr.substring(2));
+        const shortEra = eraStr.substring(2);
+        sqlQuery += " AND (era = ? OR era = ? OR era LIKE ?)";
+        params.push(eraStr, shortEra, `%${shortEra}%`);
       } else {
-        sqlQuery += " AND era = ?";
-        params.push(eraStr);
+        sqlQuery += " AND (era = ? OR era LIKE ?)";
+        params.push(eraStr, `%${eraStr}%`);
       }
     }
 
@@ -3013,17 +3015,19 @@ async function startServer() {
       params.push(`%${name}%`, `%${name}%`, `%${name}%`, `%${name}%`);
     }
     if (era) {
-      const eraStr = String(era);
+      const eraStr = String(era).replace(/[^0-9]/g, '');
       if (eraStr.length === 2) {
-        sqlQuery += " AND era = ?";
-        params.push(eraStr);
+        const fullEra19 = `19${eraStr}`;
+        const fullEra20 = `20${eraStr}`;
+        sqlQuery += " AND (era = ? OR era = ? OR era = ? OR era LIKE ?)";
+        params.push(eraStr, fullEra19, fullEra20, `%${eraStr}%`);
       } else if (eraStr.length === 4) {
-        sqlQuery += " AND (era = ? OR era = ?)";
-        params.push(eraStr);
-        params.push(eraStr.substring(2));
+        const shortEra = eraStr.substring(2);
+        sqlQuery += " AND (era = ? OR era = ? OR era LIKE ?)";
+        params.push(eraStr, shortEra, `%${shortEra}%`);
       } else {
-        sqlQuery += " AND era = ?";
-        params.push(eraStr);
+        sqlQuery += " AND (era = ? OR era LIKE ?)";
+        params.push(eraStr, `%${eraStr}%`);
       }
     }
     if (hometown) {

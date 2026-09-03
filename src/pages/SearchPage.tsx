@@ -140,11 +140,14 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
                 className="w-full px-3 py-2 border border-brand-border rounded-xl bg-white text-xs outline-none text-black"
               >
                 <option value="">すべての年代</option>
-                <option value="60">1960年代</option>
-                <option value="70">1970年代</option>
-                <option value="80">1980年代</option>
-                <option value="90">1990年代</option>
-                <option value="00">2000年代以降</option>
+                <option value="1950">1950年代</option>
+                <option value="1960">1960年代</option>
+                <option value="1970">1970年代</option>
+                <option value="1980">1980年代</option>
+                <option value="1990">1990年代</option>
+                <option value="2000">2000年代</option>
+                <option value="2010">2010年代</option>
+                <option value="2020">2020年代</option>
               </select>
             </div>
 
