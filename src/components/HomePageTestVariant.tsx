@@ -695,6 +695,33 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
                   <ArrowRight size={16} />
                 </button>
               </form>
+
+              {/* 自分宛ての手紙を探す（エゴサーチ）への親切な誘導バナー */}
+              <div className="pt-2 border-t border-teal-200/60 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-sans">
+                <div className="flex items-center gap-2 text-slate-600">
+                  <Search size={15} className="text-teal-600 shrink-0" />
+                  <span>あなた宛ての手紙が届いているかも？</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (fullTargetName) {
+                      navigate(`/search?q=${encodeURIComponent(fullTargetName)}`);
+                    } else {
+                      navigate('/search');
+                    }
+                  }}
+                  className="w-full sm:w-auto px-4 py-2 bg-white hover:bg-teal-50 text-teal-800 border border-teal-300 rounded-xl font-bold transition-all shadow-2xs hover:shadow-xs flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap"
+                >
+                  <Search size={13} className="text-teal-600" />
+                  <span>
+                    {fullTargetName 
+                      ? `『${fullTargetName}』で自分宛ての手紙を検索` 
+                      : '自分宛ての手紙を探す（エゴサーチ）'}
+                  </span>
+                  <ArrowRight size={12} />
+                </button>
+              </div>
             </div>
           </div>
         </div>
