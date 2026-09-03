@@ -671,13 +671,45 @@ export const EditPostPage = () => {
                   required 
                   checked={agreed}
                   onChange={e => setAgreed(e.target.checked)}
-                  className="mt-1 w-5 h-5 rounded border-brand-border text-brand-primary focus:ring-brand-primary cursor-pointer" 
+                  className="mt-1 w-5 h-5 rounded border-brand-border text-brand-primary focus:ring-brand-primary cursor-pointer shrink-0" 
                 />
-                <label htmlFor="edit-agreement" className="text-sm text-black leading-relaxed cursor-pointer font-bold">
-                  <Link to="/terms" target="_blank" className="text-black hover:underline">利用規約</Link>、
-                  <Link to="/privacy" target="_blank" className="text-black hover:underline">個人情報の取り扱い</Link>、
-                  <Link to="/guidelines" target="_blank" className="text-black hover:underline">投稿ガイドライン</Link>をすべて理解し、これに同意して内容を更新します。
-                </label>
+                <div className="text-sm text-black leading-relaxed font-bold select-none space-y-1">
+                  <label htmlFor="edit-agreement" className="cursor-pointer">
+                    利用規約・個人情報の取り扱い・投稿ガイドラインをすべて理解し、これに同意して内容を更新します。
+                  </label>
+                  <div className="text-xs font-normal text-slate-600 flex flex-wrap items-center gap-1.5 font-sans">
+                    <span>規約を確認：</span>
+                    <Link 
+                      to="/terms" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      onClick={e => e.stopPropagation()} 
+                      className="text-teal-700 hover:text-teal-900 underline font-medium"
+                    >
+                      利用規約
+                    </Link>
+                    <span>・</span>
+                    <Link 
+                      to="/privacy" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      onClick={e => e.stopPropagation()} 
+                      className="text-teal-700 hover:text-teal-900 underline font-medium"
+                    >
+                      プライバシーポリシー
+                    </Link>
+                    <span>・</span>
+                    <Link 
+                      to="/guidelines" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      onClick={e => e.stopPropagation()} 
+                      className="text-teal-700 hover:text-teal-900 underline font-medium"
+                    >
+                      投稿ガイドライン
+                    </Link>
+                  </div>
+                </div>
               </div>
 
               <button 
@@ -1538,19 +1570,39 @@ export const CreatePostPage = () => {
                 onChange={e => setAgreed(e.target.checked)}
                 className="mt-1 w-5 h-5 rounded border-zinc-500 text-amber-700 focus:ring-amber-500 cursor-pointer shrink-0"
               />
-              <label htmlFor="agreement" className="text-xs text-zinc-900 leading-relaxed cursor-pointer font-sans space-y-1.5">
-                <div className="font-bold text-xs text-amber-950 flex items-center gap-1.5">
-                  <ShieldCheck size={16} className="text-amber-700" />
-                  <span>利用規約・投稿ガイドラインへの同意</span><span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
+              <div className="text-xs text-zinc-900 leading-relaxed font-sans space-y-1.5 select-none">
+                <label htmlFor="agreement" className="cursor-pointer block space-y-1">
+                  <div className="font-bold text-xs text-amber-950 flex items-center gap-1.5">
+                    <ShieldCheck size={16} className="text-amber-700" />
+                    <span>利用規約・投稿ガイドラインへの同意</span><span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
+                  </div>
+                  <p className="text-[11px] text-zinc-800">
+                    純粋な再会・旧交目的にのみ利用し、不適切な表現を行わないことに同意します。
+                  </p>
+                </label>
+                <div className="text-[11px] text-zinc-700 font-normal flex flex-wrap items-center gap-1 pt-0.5">
+                  <span>規約を確認：</span>
+                  <Link 
+                    to="/terms" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    onClick={e => e.stopPropagation()} 
+                    className="text-teal-800 hover:underline font-bold"
+                  >
+                    利用規約
+                  </Link>
+                  <span>・</span>
+                  <Link 
+                    to="/privacy" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    onClick={e => e.stopPropagation()} 
+                    className="text-teal-800 hover:underline font-bold"
+                  >
+                    プライバシーポリシー
+                  </Link>
                 </div>
-                <p className="text-[11px] text-zinc-800">
-                  純粋な再会・旧交目的にのみ利用し、不適切な表現を行わないことに同意します。
-                </p>
-                <div className="text-[11px] text-zinc-900 font-bold pt-1">
-                  <Link to="/terms" target="_blank" className="text-teal-800 hover:underline">利用規約</Link>・
-                  <Link to="/privacy" target="_blank" className="text-teal-800 hover:underline">プライバシーポリシー</Link>に同意して投函します。
-                </div>
-              </label>
+              </div>
             </div>
           </div>
         </div>
