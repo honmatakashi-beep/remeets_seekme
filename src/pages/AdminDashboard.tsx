@@ -41,6 +41,7 @@ import { AdminBroadcastView } from '../components/AdminBroadcastView';
 import { AdminLogsView } from '../components/AdminLogsView';
 import { AdminSecurityCenterView } from '../components/AdminSecurityCenterView';
 import { AdminSystemCenterView } from '../components/AdminSystemCenterView';
+import { AdminMasterKnowledgeBase } from '../components/AdminMasterKnowledgeBase';
 import {
   classifyTicket,
   TicketCategory,
@@ -2923,7 +2924,7 @@ export const AdminDashboard = () => {
       title: 'Support & UI Specs',
       items: [
         { id: 'designSystem', label: 'デザインシステム\n(UI/UX Specs)', icon: Palette },
-        { id: 'deployment', label: '公式監査・運営ライブラリ', icon: ShieldCheck, onClick: () => { setActiveTab('deployment'); setGuideDocType('deployment'); } },
+        { id: 'deployment', label: 'マスター備忘録 ＆\n公式運営ライブラリ', icon: BookOpen, onClick: () => { setActiveTab('deployment'); setGuideDocType('deployment'); } },
         { id: 'manual', label: '操作マニュアル', icon: BookOpen },
       ]
     },
@@ -6872,7 +6873,7 @@ export const AdminDashboard = () => {
               </div>
             </div>
           ) : activeTab === 'deployment' ? (
-            <AdminDeploymentGuideBlock docType={guideDocType} setDocType={setGuideDocType} />
+            <AdminMasterKnowledgeBase guideDocType={guideDocType} setGuideDocType={setGuideDocType} />
           ) : activeTab === 'payments' ? (
             <AdminPaymentManagementBlock />
           ) : activeTab === 'monetization' ? (
