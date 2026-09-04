@@ -54,6 +54,7 @@ export const SuccessStoriesPage = () => {
     { id: 'journey', label: '🧭 旅・一期一会' },
     { id: 'neighbor', label: '🏡 幼馴染・ご近所' },
     { id: 'colleague', label: '💼 元同僚・仲間' },
+    { id: 'rival', label: '⚽ 青春・ライバル' },
   ];
 
   const defaultStories = [
@@ -63,11 +64,9 @@ export const SuccessStoriesPage = () => {
       tag: "同級生との再会",
       era: "1980年代後半",
       relationship: "中学時代の親友（陸上部）",
-      title: "「思い出クイズ」が結びつけた、35年越しの奇跡の再会",
+      title: "卒業から35年。懐かしいあだ名とお互いの記憶が繋いでくれた奇跡",
       participants: "佐藤 健 様（52歳）＆ 鈴木 信一郎 様（51歳）",
-      quizQuestion: "顧問の〇〇先生から卒業式で最後に全員に贈られた激励の言葉は？",
-      quizAnswer: "「迷ったら一歩前へ」",
-      description: "中学の卒業式以来、お互いに引越しを重ねてしまい連絡先が分からなくなっていました。他のSNSでは同姓同名が多く、確信が持てずにいましたが、鈴木様が流した『1980年代後半の〇〇中学校陸上部』のボトルを発見。当事者しか絶対に知り得ないクイズに佐藤様が正解。35年ぶりに旧交を温め、今では年に一度集まる仲に戻りました。",
+      description: "中学の卒業以来、お互いに転居が重なり連絡先が分からなくなっていました。ふとReMEETsで当時の陸上部の手紙を見つけ、懐かしい想い出のキーワードをきっかけに35年ぶりにメッセージが開通。当時のあだ名で呼び合い、まるで当時にタイムスリップしたような感動でした。今では年に一度集まる仲に戻り、一生の友人を再び取り戻せました。",
       bg: "bg-amber-50/40 border-amber-200/80"
     },
     {
@@ -76,11 +75,9 @@ export const SuccessStoriesPage = () => {
       tag: "恩師への感謝",
       era: "1990年代半ば",
       relationship: "高校吹奏楽部の顧問と元部長",
-      title: "定年退職された恩師に、30年越しの感謝を届けたい",
+      title: "定年退職された吹奏楽部の恩師へ。30年越しの『ありがとう』が届いた日",
       participants: "高橋 由美子 様（45歳）＆ 山本 栄治 先生（71歳）",
-      quizQuestion: "近畿大会で金賞を受賞した直後、先生が泣きながら部員全員に奢ってくれたアイスの名前は？",
-      quizAnswer: "「ホームランバー」",
-      description: "山本先生の定年退職の噂を聞き、当時の部活仲間で感謝を伝えたいと考えました。先生の実名は伏せ、あだ名である『やまおに先生』と金賞エピソードを宛先ヒントにしてボトルを投函。先生の娘さんが偶然ボトルを見つけ、お父様へ。クイズの一致でメッセージが開通し、当時の部員一同で先生を囲む温かい同窓会が実現しました。",
+      description: "山本先生が定年退職されたと風の噂で聞き、当時の部活仲間で『どうしても感謝を伝えたい』と手紙を流しました。先生のご家族がこの手紙を見つけて先生に伝えてくださり、30年ぶりに温かいお返事をいただくことができました。先日、当時の部員一同で先生を囲んで同窓会を開き、最高の恩返しができました。",
       bg: "bg-indigo-50/30 border-indigo-200/60"
     },
     {
@@ -89,11 +86,9 @@ export const SuccessStoriesPage = () => {
       tag: "旅・一期一会",
       era: "1990年代初頭",
       relationship: "北海道一人旅で同宿だった旅人仲間",
-      title: "あの夏の北海道。夜通し夢を語り合った旅の友へ",
+      title: "あの夏の北海道。夜通し夢を語り合った旅の友から、3年越しの返信",
       participants: "中村 慎吾 様（54歳）＆ 井上 拓也 様（53歳）",
-      quizQuestion: "富良野のユースホステルで豪雨の夜、二人でギターを弾きながら歌った曲の名前は？",
-      quizAnswer: "「乾杯」",
-      description: "学生時代、バイクで北海道を一周した際に偶然同じ宿になり、将来の夢について朝まで語り合いました。連絡先メモを紛失してしまい後悔していましたが、『1992年夏・富良野のユースホステル』として手紙を漂流。3年越しに井上様が検索で見つけてくださり、当時の情熱を昨日のことのように語り合うことができました。",
+      description: "学生時代、バイクで北海道を巡っていた時に富良野の宿で偶然知り合い、朝まで将来の夢について熱く語り合いました。連絡先を書いた紙を紛失してしまいずっと悔やんでいましたが、ダメ元でReMEETsの海に想いを流していました。3年後、彼から『見つけたよ！』と連絡が入った時は手の震えが止まりませんでした。お互いに白髪交じりの大人になりましたが、心の距離は当時のままでした。",
       bg: "bg-teal-50/35 border-teal-200/60"
     },
     {
@@ -102,11 +97,9 @@ export const SuccessStoriesPage = () => {
       tag: "幼馴染・ご近所",
       era: "1980年代初頭",
       relationship: "小学校時代の幼馴染",
-      title: "急な引っ越しで『さようなら』が言えなかった親友へ",
+      title: "さよならを言えないまま離れ離れになった幼馴染。40年ぶりの笑顔",
       participants: "松田 恵美 様（48歳）＆ 川上 陽子 様（48歳）",
-      quizQuestion: "近所の神社裏の秘密基地に二人で埋めた缶の中身は？",
-      quizAnswer: "「ガラス玉と手作りの押し花」",
-      description: "親の急な転勤で、手紙を渡せないまま離れ離れになってしまった親友。大人になりずっと心残りでしたが、『緑町公園のシーソー』をキーワードに投函。川上様が思い出のフレーズから検索して見つけてくださり、40年ぶりに当時の『ごめんね』と『ありがとう』を直接伝え合えました。",
+      description: "小学校の時、親の急な転勤で手紙も渡せないまま引っ越してしまい、40年間ずっと心に引っかかっていました。ReMEETsに当時の公園の思い出を流したところ、彼女が検索して見つけてくれました。『ずっと探してたよ』と言われた瞬間、涙があふれました。今はお互いの子供のことや近況を楽しく語り合っています。",
       bg: "bg-rose-50/30 border-rose-200/60"
     },
     {
@@ -115,12 +108,21 @@ export const SuccessStoriesPage = () => {
       tag: "元職場の同僚",
       era: "2000年代初頭",
       relationship: "ベンチャー企業の創業メンバー",
-      title: "会社統合で散り散りになった創業メンバーが再集結",
+      title: "20年前、共に徹夜を乗り越えた仲間と再会。お互いの成長を喜び合う",
       participants: "渡辺 直樹 様（42歳）＆ 小林 誠 様（43歳）",
-      quizQuestion: "深夜3時にサーバーがダウンした時、全員で願掛けに行った近くの神社の名前は？",
-      quizAnswer: "「金王八幡宮」",
-      description: "20年前、雑居ビルで共に徹夜を乗り越えてサービスを作った創業期の仲間。会社統合でそれぞれの道を歩んだ後、連絡が途絶えていましたが、渡辺様の投函を小林様が発見。今ではお互いの家族やキャリアについて和やかに連絡を取り合い、旧交を温めています。",
+      description: "20代の頃、小さな雑居ビルで寝る間も惜しんでサービス開発に明け暮れた創業メンバー。会社が大きくなり別々の道を歩んでから疎遠になっていましたが、ReMEETsを通じて再び繋がることができました。20年ぶりにグラスを交わし、当時の熱い情熱とお互いのこれまでの歩みを称え合いました。",
       bg: "bg-emerald-50/30 border-emerald-200/60"
+    },
+    {
+      id: "def-6",
+      category: "rival",
+      tag: "青春・ライバル",
+      era: "2000年代半ば",
+      relationship: "高校サッカー部の他校ライバル",
+      title: "高校最後の決勝で競い合った他校のエース。『あの時の握手』をもう一度",
+      participants: "宮本 俊介 様（38歳）＆ 千葉 健太 様（38歳）",
+      description: "高校サッカー選手権の決勝戦で激闘を繰り広げ、試合後に抱き合って健闘を称え合った他校のキャプテン。大人になってからもずっと心に残っていたあの時の感謝をボトルに託しました。メッセージが届き、今では社会人フットサルで時々一緒に汗を流す大切な友人になりました。",
+      bg: "bg-sky-50/35 border-sky-200/60"
     }
   ];
 
@@ -131,10 +133,8 @@ export const SuccessStoriesPage = () => {
       tag: story.era ? `${story.era}年代の再会` : "再会の物語",
       era: story.era ? `${story.era}年代` : "想い出の年代",
       relationship: story.gender ? `再会のご報告（${story.gender === 'male' || story.gender === '男性' ? '男性' : story.gender === 'female' || story.gender === '女性' ? '女性' : 'その他'}）` : "再会のご報告",
-      title: story.title || "「思い出クイズ」が結びつけた、奇跡の再会",
+      title: story.title || "奇跡が結びつけた、温かい再会の物語",
       participants: `${story.username || "匿名のユーザー"} 様`,
-      quizQuestion: story.quiz_question || "当事者同士しか知らない特別な想い出キーワード",
-      quizAnswer: "完全一致で開通",
       description: story.message,
       bg: story.display_position === 'left' 
         ? "bg-amber-50/40 border-amber-200/80" 
@@ -184,7 +184,7 @@ export const SuccessStoriesPage = () => {
               奇跡の再会報告（体験談）
             </h1>
             <p className="text-xs sm:text-sm text-slate-600 font-sans leading-relaxed pt-1">
-              大切な思い出を共有していた特定の個人同士が、想い出クイズによって安全にふたたび巡り会えた喜びのエピソードをご紹介します。
+              大切な思い出を持つ人同士が、時を超えてふたたび巡り会えた温かい再会のエピソードをご紹介します。
             </p>
           </div>
         </div>
@@ -201,7 +201,7 @@ export const SuccessStoriesPage = () => {
         </div>
       </div>
 
-      {/* 提案 ③: カテゴリ絞り込みピル（タブフィルター） */}
+      {/* カテゴリ絞り込みピル（タブフィルター） */}
       <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
         {categories.map((cat) => (
           <button
@@ -254,20 +254,7 @@ export const SuccessStoriesPage = () => {
                   </p>
                 </div>
 
-                {/* 提案 ②: 想い出クイズのハイライト枠 */}
-                {highlightedStory.quizQuestion && (
-                  <div className="p-3.5 sm:p-4 bg-amber-50/80 border border-amber-200 rounded-2xl space-y-1.5 text-xs text-amber-950 font-sans">
-                    <div className="flex items-center gap-1.5 font-bold text-amber-850">
-                      <Key size={14} className="text-amber-600 shrink-0" />
-                      <span>再会の決め手となった「想い出クイズ」</span>
-                    </div>
-                    <p className="text-slate-800 leading-relaxed pl-5 font-medium">
-                      Q. {highlightedStory.quizQuestion}
-                    </p>
-                  </div>
-                )}
-
-                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-sans border-t border-slate-100 pt-4 font-serif italic bg-slate-50/50 p-4 rounded-2xl">
+                <p className="text-xs sm:text-sm text-slate-750 leading-relaxed font-sans border-t border-slate-100 pt-4 font-serif italic bg-slate-50/50 p-4 rounded-2xl">
                   &ldquo;{highlightedStory.description}&rdquo;
                 </p>
               </div>
@@ -286,7 +273,7 @@ export const SuccessStoriesPage = () => {
             </h3>
           )}
 
-          {/* 提案 ④: カードパディングと文字組みのレスポンシブ最適化 */}
+          {/* カード一覧 */}
           {filteredStories.length === 0 ? (
             <div className="bg-white rounded-3xl p-10 text-center border border-slate-100 space-y-3">
               <p className="text-sm font-bold text-slate-600">
@@ -325,19 +312,6 @@ export const SuccessStoriesPage = () => {
                     👤 ご紹介：{story.participants}
                   </p>
                 </div>
-
-                {/* 提案 ②: 想い出クイズのハイライト枠 */}
-                {story.quizQuestion && (
-                  <div className="p-3.5 sm:p-4 bg-amber-50/70 border border-amber-200/80 rounded-2xl space-y-1 text-xs text-amber-950 font-sans">
-                    <div className="flex items-center gap-1.5 font-bold text-amber-800">
-                      <Key size={13} className="text-amber-600 shrink-0" />
-                      <span>再会の決め手となった「想い出クイズ」</span>
-                    </div>
-                    <p className="text-slate-800 leading-relaxed pl-5 font-medium">
-                      Q. {story.quizQuestion}
-                    </p>
-                  </div>
-                )}
 
                 <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-sans border-t border-slate-100 pt-3.5">
                   {story.description}
