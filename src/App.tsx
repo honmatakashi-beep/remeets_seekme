@@ -9,6 +9,7 @@ import { EditPostPage, CreatePostPage, ChatComponent, ScrollToTop, ScrollToTopBu
 import { SuccessStoriesPage, AdminDeploymentGuideBlock, AdminDeploymentGuidePage, ManualContent, LocalInlineGuidePage, ManualPage } from './pages/MiscPages';
 import { AdminManualContent, OldAdminManualContent, RegionalMatrix, FunnelChart, HeatmapChart, AdminLiveSystemMonitor, AdminDashboard, AdminInfoPage, SitemapPage, ContactPage, ConfirmModal, AuroraAmbientGlow, MessagesPage, PageViewTracker, PageViewChart } from './pages/AdminDashboard';
 import { WarningMessage, BottleLoader, Navbar, Footer, ProtectedRoute, GoogleSearchResultPreview } from './components/SharedComponents';
+import { PaymentPreviewPage } from './pages/PaymentPreviewPage';
 import { HomePage } from './pages/HomePage';
 import React, { useState, useEffect, createContext, useContext, useRef, Component } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useParams, Navigate, useLocation, useSearchParams } from 'react-router-dom';
@@ -159,6 +160,8 @@ export default function App() {
                 <Route path="/contact" element={<ContactPage />} />
                 <Route path="/deletion-request" element={<DeletionRequestPage />} />
                 <Route path="/sitemap" element={<SitemapPage />} />
+                <Route path="/payment-preview" element={<PaymentPreviewPage />} />
+                <Route path="/admin/payments-preview" element={<PaymentPreviewPage />} />
               </Routes>
             </main>
             <Footer />

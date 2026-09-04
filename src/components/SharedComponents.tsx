@@ -551,11 +551,17 @@ export const Footer = () => {
           <li><Link to="/manual" className="hover:text-brand-primary">ご利用マニュアル</Link></li>
           <li><Link to="/contact" className="hover:text-brand-primary">お問い合わせ</Link></li>
           <li><Link to="/deletion-request" className="hover:text-brand-primary">投稿の削除依頼</Link></li>
+          <li><Link to="/payment-preview" className="hover:text-brand-primary text-indigo-700 font-bold flex items-center gap-1">💳 決済プレビュー（確認用）</Link></li>
         </ul>
       </div>
     </div>
-    <div className="max-w-7xl mx-auto px-6 pt-8 mt-8 border-t border-brand-border/40 text-center text-[10px] text-brand-dark/40 font-mono">
-      &copy; {new Date().getFullYear()} ReMEETs. All rights reserved.
+    <div className="max-w-7xl mx-auto px-6 pt-8 mt-8 border-t border-brand-border/40 flex flex-col sm:flex-row items-center justify-between text-[10px] text-brand-dark/40 font-mono gap-2">
+      <div>&copy; {new Date().getFullYear()} ReMEETs. All rights reserved.</div>
+      <div>
+        <Link to="/payment-preview" className="text-indigo-600/80 hover:text-indigo-900 hover:underline">
+          💳 全決済画面UIショールーム
+        </Link>
+      </div>
     </div>
   </footer>
   );
