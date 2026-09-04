@@ -3248,8 +3248,9 @@ export const RecipientSafetyGuide = ({
         <div className="space-y-1.5 max-w-xl">
           <div className="flex items-center gap-2">
             <span className="text-xl">🤝</span>
-            <h3 className="text-base md:text-lg font-extrabold text-slate-900 tracking-tight">
-              初めてこの手紙を見つけた方へ ── ReMEETsの安心再会システム
+            <h3 className="text-base md:text-lg font-extrabold text-slate-900 tracking-tight leading-snug">
+              <span className="inline-block">初めてこの手紙を見つけた方へ</span>
+              <span className="inline-block sm:ml-1.5 text-teal-950">── ReMEETsの安心再会システム</span>
             </h3>
           </div>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-medium">
@@ -3346,7 +3347,7 @@ export const RecipientSafetyGuide = ({
                   STEP 03
                 </span>
                 <span className="text-[11px] font-bold text-orange-800 bg-orange-100/70 px-2 py-0.5 rounded-md border border-orange-300/60">
-                  実費 600円〜1,200円
+                  600円 / 1,200円
                 </span>
               </div>
               <div className="flex items-center gap-2.5 pt-0.5">
