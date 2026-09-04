@@ -3683,9 +3683,9 @@ export const RevealContactModal = ({
               </div>
 
               <div className="p-4 bg-gradient-to-br from-amber-50/90 via-orange-50/80 to-amber-50/90 border border-amber-200/90 rounded-2xl text-xs space-y-2.5 font-sans shadow-sm">
-                <div className="font-bold text-amber-950 flex items-center gap-1.5 text-sm border-b border-amber-200/80 pb-2">
-                  <Sparkles size={18} className="text-amber-600 shrink-0" />
-                  <span>たった600円で叶う、一生モノの再会ストーリー</span>
+                <div className="font-bold text-amber-950 flex items-center gap-2 text-sm border-b border-amber-200/80 pb-2">
+                  <ShieldCheck size={18} className="text-amber-700 shrink-0" />
+                  <span>安全な照合を経て、お相手の手紙と連絡先をお届けします</span>
                 </div>
                 <ul className="space-y-2 text-slate-800 text-xs leading-relaxed font-medium">
                   <li className="flex items-start gap-2 bg-white/80 p-2.5 rounded-xl border border-amber-100">
