@@ -732,8 +732,8 @@ const seedData = async () => {
     const sampleTxs = [
       {
         tx_id: "tx_pay_1001",
-        user_id: userIds[0] || 1,
-        post_id: 1,
+        user_id: userIds[0] || null,
+        post_id: null,
         type: "chat_unlock",
         status: "completed",
         ekyc_status: "passed",
@@ -750,8 +750,8 @@ const seedData = async () => {
       },
       {
         tx_id: "tx_pay_1002",
-        user_id: userIds[1] || 2,
-        post_id: 2,
+        user_id: userIds[1] || null,
+        post_id: null,
         type: "chat_unlock",
         status: "pending",
         ekyc_status: "rejected",
@@ -764,12 +764,12 @@ const seedData = async () => {
         net_profit: 368,
         refund_reason: null,
         refunded_at: null,
-        created_at: new Date(now.getTime() - 86400000 * 1).toISOString().replace('T', ' ').substring(0, 19)
+        created_at: new Date(now.getTime() - 3600000 * 2).toISOString().replace('T', ' ').substring(0, 19)
       },
       {
         tx_id: "tx_pay_1003",
-        user_id: userIds[2] || 3,
-        post_id: 3,
+        user_id: userIds[2] || null,
+        post_id: null,
         type: "chat_unlock",
         status: "pending",
         ekyc_status: "rejected",
@@ -786,8 +786,8 @@ const seedData = async () => {
       },
       {
         tx_id: "tx_pay_1004",
-        user_id: userIds[3] || 4,
-        post_id: 4,
+        user_id: userIds[3] || null,
+        post_id: null,
         type: "chat_unlock",
         status: "refunded",
         ekyc_status: "rejected",
@@ -804,7 +804,7 @@ const seedData = async () => {
       },
       {
         tx_id: "tx_pay_1005",
-        user_id: userIds[4] || 5,
+        user_id: userIds[4] || null,
         post_id: null,
         type: "donation",
         status: "completed",
@@ -4387,11 +4387,11 @@ async function startServer() {
   app.get("/api/admin/age-verification-logs", authenticateToken, isAdmin, (req, res) => {
     try {
       const logs = db.prepare(`
-        SELECT l.*, u.username
+        SELECT l.*, u.username, u.full_name, u.email, u.is_ekyc_verified, u.ekyc_document_type, u.ekyc_verified_at
         FROM age_verification_logs l
         LEFT JOIN users u ON l.user_id = u.id
         ORDER BY l.created_at DESC
-        LIMIT 200
+        LIMIT 500
       `).all();
       res.json(logs);
     } catch (err) {
