@@ -3979,33 +3979,11 @@ async function startServer() {
           db.prepare("DELETE FROM failed_attempts WHERE id = ?").run(attempt.id);
         }
 
-        // Update status to resolved to increase reunion counter
-        db.prepare("UPDATE posts SET status = 'resolved', verified_by = ? WHERE id = ?").run(req.user ? req.user.id : null, postId);
-
-        // If verified by a logged-in user, create the initial message in the messages table
-        // to start the chat flow naturally
-        if (req.user) {
-          try {
-            // Check if initial message already exists to avoid duplicates
-            const existing = db.prepare("SELECT id FROM messages WHERE post_id = ? AND sender_id = ? AND receiver_id = ? AND content = ?").get(
-              postId, post.user_id, req.user.id, post.message
-            );
-            
-            if (!existing) {
-              db.prepare("INSERT INTO messages (post_id, sender_id, receiver_id, content) VALUES (?, ?, ?, ?)").run(
-                postId, post.user_id, req.user.id, post.message
-              );
-            }
-          } catch (err) {
-            console.error("Failed to insert initial chat message:", err);
-          }
-        }
-
-        // Notify the author
+        // Notify the author that secret questions were answered correctly
         createNotification(
           post.user_id,
-          "reunion",
-          `「${post.target_name}」さんのボトルメールで、秘密の質問が正解されました！`,
+          "quiz_passed",
+          `「${post.target_name}」さんのボトルメールで、秘密の質問が正解されました。（開封手続き待機中）`,
           `/account`
         );
 
@@ -4018,11 +3996,11 @@ async function startServer() {
         }
 
         res.json({ 
+          quizPassed: true,
           searcherId: post.user_id,
           searcherName: post.searcher_name,
           searcherFullName: post.searcher_full_name,
           verifiedByUser: verifiedByUser,
-          message: post.message,
           targetSchool: post.target_school,
           targetHometown: post.target_hometown
         });

@@ -4537,8 +4537,9 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
   };
 
   const isOwner = !!(user && post && user.id === post.user_id);
-  const isVerifiedFinder = !!(post && !isOwner && (searcherId === post.user_id || post.verified_by === user?.id));
-  const showDetails = !!(post && (isOwner || isVerifiedFinder || post.status === 'resolved'));
+  const isVerifiedFinder = !!(post && !isOwner && ((post.is_verified_finder || post.verified_by === user?.id) && (post.status === 'resolved' || revealedContact)));
+  const isRevealed = !!(revealedContact || (post && post.status === 'resolved' && (isOwner || isVerifiedFinder || post.contact_id)));
+  const showDetails = !!(post && (isOwner || isRevealed));
 
   useEffect(() => {
     if (revealedContact) {
@@ -4798,7 +4799,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
           setVerifiedByUser(data.verified_by_user || null);
           
           // Restore verification states, searcherId, searcherName, and revealedContact if the logged in user is owner, verified finder, or contact info is available
-          const isResolvedOrVerified = !!(data.is_verified_finder || data.is_owner || data.status === 'resolved' || data.verified_by || data.searcher_full_name || data.contact_id);
+          const isResolvedOrVerified = !!(data.is_verified_finder || data.is_owner || (data.status === 'resolved' && (data.contact_id || data.is_verified_finder)));
           if (isResolvedOrVerified) {
             setIsQuestionVerified(true);
             setIsAgeVerified(true);
@@ -4928,18 +4929,15 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
 
 
   const applyVerification = (data: any) => {
-    setSearcherId(data.searcherId);
-    setSearcherName(data.searcherName);
-    setSearcherFullName(data.searcherFullName);
+    if (data.searcherId) setSearcherId(data.searcherId);
+    if (data.searcherName) setSearcherName(data.searcherName);
+    if (data.searcherFullName) setSearcherFullName(data.searcherFullName);
     setVerifiedByUser(data.verifiedByUser || null);
-    if (data.message) {
+    if (data.targetSchool || data.targetHometown) {
       setPost((prev: any) => ({ 
         ...prev, 
-        message: data.message, 
-        status: 'resolved', 
-        verified_by_user: data.verifiedByUser,
-        target_school: data.targetSchool || prev.target_school,
-        target_hometown: data.targetHometown || prev.target_hometown
+        target_school: data.targetSchool || prev?.target_school,
+        target_hometown: data.targetHometown || prev?.target_hometown
       }));
     }
     // 秘密の質問正解後は「思い出の鍵が繋がりました！」が見えるように上部にスクロール
@@ -4974,10 +4972,15 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
         setTempVerificationData(data);
         setIsAttemptsLocked(false);
         setRemainingAttempts(5);
+        if (data.searcherId) setSearcherId(data.searcherId);
         if (data.searcherName) setSearcherName(data.searcherName);
         if (data.searcherFullName) setSearcherFullName(data.searcherFullName);
-        if (data.message) {
-          setPost((prev: any) => ({ ...prev, message: data.message }));
+        if (data.targetSchool || data.targetHometown) {
+          setPost((prev: any) => ({
+            ...prev,
+            target_school: data.targetSchool || prev?.target_school,
+            target_hometown: data.targetHometown || prev?.target_hometown
+          }));
         }
         if (isUserAlreadyVerified || isAgeVerified) {
           setIsAgeVerified(true);
@@ -6570,7 +6573,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
 
         <div className="lg:col-span-5" ref={questionsSectionRef}>
           <div className="sticky top-32 space-y-8">
-            {!searcherId && !isOwner && isQuestionVerified && !revealedContact && !showDetails && post.status !== 'resolved' && (
+            {!isOwner && isQuestionVerified && !revealedContact && !showDetails && post.status !== 'resolved' && (
               <div className="glass-card p-6 md:p-8 space-y-6 font-sans transition-all duration-500 border-2 border-emerald-500/30 bg-white shadow-xl rounded-[32px]">
                 <div ref={ageVerificationRef} className="space-y-6 animate-fade-in scroll-mt-24">
                   {/* ヘッダー＆次のステップ案内 */}
@@ -6672,7 +6675,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                                 【第一推奨】安心・返信率大幅UP
                               </span>
                               <span className="text-xs font-extrabold text-indigo-700">
-                                600円<span className="text-[10px] text-slate-500 font-normal">（税込）</span>
+                                1,200円<span className="text-[10px] text-slate-500 font-normal">（税込）</span>
                               </span>
                             </div>
                             <p className="text-xs text-slate-700 leading-relaxed font-medium">
@@ -6689,7 +6692,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                               className="w-full py-3.5 px-4 bg-gradient-to-r from-indigo-600 via-indigo-700 to-purple-700 hover:from-indigo-700 hover:to-purple-800 text-white font-extrabold text-xs md:text-sm rounded-xl shadow-md hover:scale-[1.01] active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer font-sans"
                             >
                               <ShieldCheck size={16} />
-                              <span>公的証明バッジを取得して開封（600円 税込）</span>
+                              <span>公的証明バッジを取得して開封（1,200円 税込）</span>
                             </button>
                           </div>
 
@@ -6745,7 +6748,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               </div>
             )}
 
-            {(isQuestionVerified || searcherId || post?.status === 'resolved' || revealedContact || showDetails) && (
+            {(revealedContact || (showDetails && post?.status === 'resolved')) && (
               <motion.div 
                 id="revealed-contact-section"
                 ref={chatSectionRef}
