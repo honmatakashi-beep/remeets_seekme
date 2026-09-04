@@ -3241,7 +3241,7 @@ export const RecipientSafetyGuide = ({
   return (
     <div 
       ref={roadmapSectionRef}
-      className="scroll-mt-24 bg-white border border-teal-200/90 rounded-[32px] p-5 sm:p-7 md:p-9 font-sans shadow-sm space-y-7 text-left overflow-hidden"
+      className="scroll-mt-24 bg-white border-2 border-teal-200/90 rounded-[32px] p-5 sm:p-7 md:p-9 font-sans shadow-md space-y-7 text-left overflow-hidden"
     >
       {/* 1. ヘッダー：安心宣言＆プラットフォーム概要 */}
       <div className="border-b border-slate-100 pb-4 text-left space-y-1.5">
@@ -3256,26 +3256,33 @@ export const RecipientSafetyGuide = ({
         </p>
       </div>
 
-      {/* 2. 【フロー進行型】手紙を開封するまでのシンプルな 3ステップ（横長3段積み） */}
-      <div className="space-y-3.5">
-        <div className="border-b border-slate-100 pb-2">
-          <h4 className="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-teal-600 shrink-0"></span>
-            <span>手紙を開封し連絡先を受け取るまでの流れ（3ステップ）</span>
-          </h4>
+      {/* 2. 【フロー進行型】手紙を開封するまでのシンプルな 3ステップ（上品なローズ/ピンク調コンテナ） */}
+      <div className="bg-gradient-to-br from-rose-50/90 via-pink-50/70 to-rose-100/50 border border-rose-200/80 rounded-2xl p-5 md:p-6 shadow-xs space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-rose-200/70 pb-3">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-rose-500 text-white flex items-center justify-center shadow-2xs shrink-0">
+              <Mail size={16} />
+            </div>
+            <h4 className="text-xs md:text-sm font-extrabold text-rose-950 tracking-wide">
+              手紙を開封し連絡先を受け取るまでの流れ（3ステップ）
+            </h4>
+          </div>
+          <span className="text-[11px] font-bold text-rose-900 bg-white/95 px-2.5 py-0.5 rounded-full border border-rose-300/80 shrink-0 self-start sm:self-auto shadow-2xs">
+            ✨ かんたん3分
+          </span>
         </div>
 
         {/* 横長 3段積みステップカード */}
         <div className="flex flex-col gap-3">
           {/* STEP 1 */}
-          <div className="p-4 sm:p-5 rounded-2xl bg-slate-50/80 border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-left hover:bg-slate-50 transition-colors">
+          <div className="p-4 sm:p-4.5 rounded-xl bg-white/95 border border-rose-200/70 shadow-2xs flex items-center justify-between gap-3 text-left hover:border-rose-300 transition-colors">
             <div className="flex items-start sm:items-center gap-3.5">
-              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-teal-100 text-teal-800 flex items-center justify-center shrink-0 shadow-inner">
-                <Search size={20} />
+              <div className="w-10 h-10 rounded-xl bg-rose-100/80 text-rose-800 flex items-center justify-center shrink-0 border border-rose-200/60">
+                <Search size={18} />
               </div>
               <div className="space-y-1">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[11px] font-black tracking-wider uppercase px-2.5 py-0.5 rounded-md bg-teal-700 text-white shadow-2xs">
+                  <span className="text-[11px] font-black tracking-wider uppercase px-2.5 py-0.5 rounded-md bg-rose-600 text-white shadow-2xs">
                     STEP 01
                   </span>
                   <h5 className="font-bold text-sm sm:text-base text-slate-900">
@@ -3290,23 +3297,17 @@ export const RecipientSafetyGuide = ({
                 </p>
               </div>
             </div>
-            <div className="shrink-0 self-start sm:self-center">
-              <span className="text-[11px] text-teal-800 font-bold bg-white px-3 py-1.5 rounded-xl border border-slate-200/80 flex items-center gap-1.5 shadow-2xs whitespace-nowrap">
-                <CheckCircle2 size={13} className="text-teal-600 shrink-0" />
-                <span>このページで今すぐ確認</span>
-              </span>
-            </div>
           </div>
 
           {/* STEP 2 */}
-          <div className="p-4 sm:p-5 rounded-2xl bg-slate-50/80 border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-left hover:bg-slate-50 transition-colors">
+          <div className="p-4 sm:p-4.5 rounded-xl bg-white/95 border border-rose-200/70 shadow-2xs flex items-center justify-between gap-3 text-left hover:border-rose-300 transition-colors">
             <div className="flex items-start sm:items-center gap-3.5">
-              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-teal-100 text-teal-800 flex items-center justify-center shrink-0 shadow-inner">
-                <Key size={20} />
+              <div className="w-10 h-10 rounded-xl bg-rose-100/80 text-rose-800 flex items-center justify-center shrink-0 border border-rose-200/60">
+                <Key size={18} />
               </div>
               <div className="space-y-1">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[11px] font-black tracking-wider uppercase px-2.5 py-0.5 rounded-md bg-teal-700 text-white shadow-2xs">
+                  <span className="text-[11px] font-black tracking-wider uppercase px-2.5 py-0.5 rounded-md bg-rose-600 text-white shadow-2xs">
                     STEP 02
                   </span>
                   <h5 className="font-bold text-sm sm:text-base text-slate-900">
@@ -3321,23 +3322,17 @@ export const RecipientSafetyGuide = ({
                 </p>
               </div>
             </div>
-            <div className="shrink-0 self-start sm:self-center">
-              <span className="text-[11px] text-teal-800 font-bold bg-white px-3 py-1.5 rounded-xl border border-slate-200/80 flex items-center gap-1.5 shadow-2xs whitespace-nowrap">
-                <Lock size={13} className="text-teal-600 shrink-0" />
-                <span>正解者のみ進行</span>
-              </span>
-            </div>
           </div>
 
           {/* STEP 3 */}
-          <div className="p-4 sm:p-5 rounded-2xl bg-slate-50/80 border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-left hover:bg-slate-50 transition-colors">
+          <div className="p-4 sm:p-4.5 rounded-xl bg-white/95 border border-rose-200/70 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-left hover:border-rose-300 transition-colors">
             <div className="flex items-start sm:items-center gap-3.5">
-              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0 shadow-inner">
-                <Mail size={20} />
+              <div className="w-10 h-10 rounded-xl bg-rose-100/80 text-rose-800 flex items-center justify-center shrink-0 border border-rose-200/60">
+                <Mail size={18} />
               </div>
               <div className="space-y-1">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[11px] font-black tracking-wider uppercase px-2.5 py-0.5 rounded-md bg-teal-700 text-white shadow-2xs">
+                  <span className="text-[11px] font-black tracking-wider uppercase px-2.5 py-0.5 rounded-md bg-rose-600 text-white shadow-2xs">
                     STEP 03
                   </span>
                   <h5 className="font-bold text-sm sm:text-base text-slate-900">
@@ -3362,69 +3357,57 @@ export const RecipientSafetyGuide = ({
         </div>
       </div>
 
-      {/* 3. 【セキュリティ保証バッジ帯】ReMEETsが約束する 3つの安心・安全保証（上品なエメラルド＆アイボリー調） */}
-      <div className="bg-gradient-to-br from-teal-50/70 via-emerald-50/40 to-slate-50/90 border border-teal-200/80 rounded-2xl p-5 md:p-6 shadow-2xs space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-teal-100/80 pb-3">
+      {/* 3. 【セキュリティ保証バッジ帯】ReMEETsが約束する 3つの安心・安全保証（上品で落ち着いたブルー調） */}
+      <div className="bg-gradient-to-br from-sky-100/90 via-blue-100/70 to-indigo-100/60 border border-sky-300/80 rounded-2xl p-5 md:p-6 shadow-xs space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-sky-200/70 pb-3">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-teal-600 text-white flex items-center justify-center shadow-2xs shrink-0">
+            <div className="w-7 h-7 rounded-lg bg-sky-600 text-white flex items-center justify-center shadow-2xs shrink-0">
               <ShieldCheck size={16} />
             </div>
-            <h4 className="text-xs md:text-sm font-bold text-teal-950 tracking-wide">
+            <h4 className="text-xs md:text-sm font-extrabold text-sky-950 tracking-wide">
               安心をお約束する ReMEETs セキュリティ＆公式保証
             </h4>
           </div>
-          <span className="text-[11px] font-bold text-teal-800 bg-white/80 px-2.5 py-0.5 rounded-full border border-teal-200/70 shrink-0 self-start sm:self-auto">
+          <span className="text-[11px] font-bold text-sky-900 bg-white/95 px-2.5 py-0.5 rounded-full border border-sky-300/80 shrink-0 self-start sm:self-auto shadow-2xs">
             🛡️ 厳格な安全基準に準拠
           </span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-xs">
           {/* 保証1 */}
-          <div className="flex items-start gap-3 bg-white/95 p-3.5 rounded-xl border border-teal-100 shadow-2xs hover:border-teal-300 transition-colors">
-            <div className="w-8 h-8 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center shrink-0 mt-0.5 border border-teal-100/60">
-              <Lock size={16} />
+          <div className="bg-white/95 p-4 rounded-xl border border-sky-200/70 shadow-2xs hover:border-sky-400 transition-colors space-y-2 text-left">
+            <div className="border-b border-sky-200/70 pb-1.5">
+              <h5 className="font-black text-xs sm:text-sm text-slate-900 leading-snug">
+                第三者覗き見防止
+              </h5>
             </div>
-            <div className="space-y-1">
-              <div className="font-bold text-slate-900 flex items-center gap-1.5 text-xs">
-                <span>第三者覗き見防止</span>
-                <Check size={14} className="text-emerald-600 font-bold" />
-              </div>
-              <p className="text-slate-600 text-[11px] leading-relaxed">
-                正解者以外には手紙本文・連絡先は一切開示されず、暗号化で保護されます。
-              </p>
-            </div>
+            <p className="text-xs text-slate-600 leading-relaxed font-medium">
+              正解者以外には手紙本文・連絡先は一切開示されず、暗号化で保護されます。
+            </p>
           </div>
 
           {/* 保証2 */}
-          <div className="flex items-start gap-3 bg-white/95 p-3.5 rounded-xl border border-teal-100 shadow-2xs hover:border-teal-300 transition-colors">
-            <div className="w-8 h-8 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center shrink-0 mt-0.5 border border-teal-100/60">
-              <UserCheck size={16} />
+          <div className="bg-white/95 p-4 rounded-xl border border-sky-200/70 shadow-2xs hover:border-sky-400 transition-colors space-y-2 text-left">
+            <div className="border-b border-sky-200/70 pb-1.5">
+              <h5 className="font-black text-xs sm:text-sm text-slate-900 leading-snug">
+                eKYCによる身元確認
+              </h5>
             </div>
-            <div className="space-y-1">
-              <div className="font-bold text-slate-900 flex items-center gap-1.5 text-xs">
-                <span>公的eKYCによる身元確認</span>
-                <Check size={14} className="text-emerald-600 font-bold" />
-              </div>
-              <p className="text-slate-600 text-[11px] leading-relaxed">
-                なりすましや悪質なストーカー・営業行為を未然に徹底遮断します。
-              </p>
-            </div>
+            <p className="text-xs text-slate-600 leading-relaxed font-medium">
+              なりすましや悪質なストーカー・営業行為を未然に徹底遮断します。
+            </p>
           </div>
 
           {/* 保証3 */}
-          <div className="flex items-start gap-3 bg-white/95 p-3.5 rounded-xl border border-teal-100 shadow-2xs hover:border-teal-300 transition-colors">
-            <div className="w-8 h-8 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center shrink-0 mt-0.5 border border-teal-100/60">
-              <CreditCard size={16} />
+          <div className="bg-white/95 p-4 rounded-xl border border-sky-200/70 shadow-2xs hover:border-sky-400 transition-colors space-y-2 text-left">
+            <div className="border-b border-sky-200/70 pb-1.5">
+              <h5 className="font-black text-xs sm:text-sm text-slate-900 leading-snug">
+                全額自動返金保証
+              </h5>
             </div>
-            <div className="space-y-1">
-              <div className="font-bold text-slate-900 flex items-center gap-1.5 text-xs">
-                <span>全額自動返金保証</span>
-                <Check size={14} className="text-emerald-600 font-bold" />
-              </div>
-              <p className="text-slate-600 text-[11px] leading-relaxed">
-                万が一審査不合格や照合不一致の場合は、手数料を即時全額自動返金します。
-              </p>
-            </div>
+            <p className="text-xs text-slate-600 leading-relaxed font-medium">
+              万が一審査不合格や照合不一致の場合は、手数料を即時全額自動返金します。
+            </p>
           </div>
         </div>
       </div>
