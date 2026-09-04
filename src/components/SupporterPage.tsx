@@ -54,7 +54,7 @@ export const SupporterPage: React.FC = () => {
             個人運営のボトルメールプラットフォームです。
           </p>
 
-          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="pt-2 flex flex-col items-center justify-center gap-3">
             <button
               onClick={() => setIsDonateModalOpen(true)}
               className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-sky-600 via-teal-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 text-white font-extrabold text-base rounded-2xl shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center gap-2.5 cursor-pointer"
@@ -62,11 +62,13 @@ export const SupporterPage: React.FC = () => {
               <Coffee size={18} className="text-white shrink-0" />
               <span>ReMEETsを応援（寄付）</span>
             </button>
-          </div>
 
-          <p className="text-xs text-slate-400">
-            ※ 1口 500円（コーヒー1杯分）からの単発寄付です。自動で月額課金されることはありません。
-          </p>
+            {/* 提案 ④: 1回きりの安心保証バッジ */}
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100/90 border border-slate-200 text-slate-700 text-[11px] font-medium shadow-2xs">
+              <ShieldCheck size={14} className="text-teal-600 shrink-0" />
+              <span>1口 500円〜の都度寄付（月額サブスクではありません・自動課金なし）</span>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -110,7 +112,7 @@ export const SupporterPage: React.FC = () => {
           </div>
         </section>
 
-        {/* 2. 寄付金の使い道（透明性） */}
+        {/* 2. 寄付金の使い道（透明性・提案 ⑤ 拡充版） */}
         <section className="bg-white rounded-3xl p-6 md:p-10 shadow-xl border border-slate-100 space-y-6">
           <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
             <div className="w-10 h-10 rounded-2xl bg-sky-100 text-sky-700 flex items-center justify-center font-bold shrink-0">
@@ -119,33 +121,42 @@ export const SupporterPage: React.FC = () => {
             <div>
               <span className="text-[11px] font-bold text-sky-700 uppercase tracking-wider block">TRANSPARENCY</span>
               <h2 className="text-xl md:text-2xl font-black font-serif text-slate-900">
-                ご寄付いただいた資金の使い道
+                ご寄付いただいた資金の使い道（透明性レポート）
               </h2>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-5 bg-slate-50/80 rounded-2xl border border-slate-200/80 space-y-2">
-              <div className="w-8 h-8 rounded-xl bg-teal-500 text-white flex items-center justify-center font-bold text-xs">01</div>
+            <div className="p-5 bg-slate-50/90 rounded-2xl border border-slate-200/80 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <div className="w-8 h-8 rounded-xl bg-teal-600 text-white flex items-center justify-center font-bold text-xs">01</div>
+                <span className="text-[10px] font-bold text-teal-800 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200">AI検閲・防衛</span>
+              </div>
               <h3 className="font-bold text-slate-900 text-sm md:text-base font-serif">AI安全防衛エンジンの運用費</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                誹謗中傷や個人情報の漏洩をリアルタイムで検知・隔離するAIセキュリティシステムのAPI利用料金に充当されます。
+              <p className="text-xs text-slate-600 leading-relaxed font-sans">
+                誹謗中傷、個人情報（実名・詳細住所）の漏洩、ストーカー兆候を24時間体制で水際検知・安全隔離するAIモデレーションシステム（Gemini API）のAPI利用料金に充当されます。
               </p>
             </div>
 
-            <div className="p-5 bg-slate-50/80 rounded-2xl border border-slate-200/80 space-y-2">
-              <div className="w-8 h-8 rounded-xl bg-indigo-500 text-white flex items-center justify-center font-bold text-xs">02</div>
-              <h3 className="font-bold text-slate-900 text-sm md:text-base font-serif">高セキュリティDB・サーバー維持</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                大切な思い出の手紙やマッチングデータを安全に保管するための、暗号化クラウドデータベースおよび高速サーバー運用費。
+            <div className="p-5 bg-slate-50/90 rounded-2xl border border-slate-200/80 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <div className="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-xs">02</div>
+                <span className="text-[10px] font-bold text-indigo-800 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-200">暗号化保管</span>
+              </div>
+              <h3 className="font-bold text-slate-900 text-sm md:text-base font-serif">暗号化DB・高可用性サーバー維持</h3>
+              <p className="text-xs text-slate-600 leading-relaxed font-sans">
+                あなたとお相手の大切な思い出の手紙やマッチングデータを将来にわたって安全に保管するための、暗号化クラウドデータベースおよび高速サーバー運用インフラ費に充当されます。
               </p>
             </div>
 
-            <div className="p-5 bg-slate-50/80 rounded-2xl border border-slate-200/80 space-y-2">
-              <div className="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center font-bold text-xs">03</div>
+            <div className="p-5 bg-slate-50/90 rounded-2xl border border-slate-200/80 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <div className="w-8 h-8 rounded-xl bg-amber-600 text-white flex items-center justify-center font-bold text-xs">03</div>
+                <span className="text-[10px] font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">厳格身元確認</span>
+              </div>
               <h3 className="font-bold text-slate-900 text-sm md:text-base font-serif">eKYC・本人確認インフラ補助</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                なりすまし防止のための公的本人確認（eKYC）やSMS認証コード送信における従量原価の補填に活用されます。
+              <p className="text-xs text-slate-600 leading-relaxed font-sans">
+                なりすましや悪質行為を徹底排除するための、公的身分証明書（運転免許証等）のAI・目視審査およびSMS認証コード送信における従量原価の補填に活用されます。
               </p>
             </div>
           </div>
