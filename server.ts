@@ -5843,14 +5843,31 @@ async function startServer() {
       let analyzedCount = 0;
 
       for (const p of posts) {
-        const fullContent = `【差出人名】${p.searcher_name || ''}\n【対象者名】${p.target_name || ''}\n【対象者本名】${p.target_last_name || ''} ${p.target_first_name || ''}\n【学校・所属】${p.target_school || ''}\n【地域】${p.target_hometown || ''}\n【年代・カテゴリ】${p.era || ''} ${p.category || ''}\n【想い出の手紙・メッセージ】${p.message || ''}\n【合言葉・秘密の質問】${p.secret_question || ''}\n【回答】${p.secret_answer_plain || p.secret_answer || ''}`;
-        const diagnosis = await diagnosePost(fullContent);
+        const result = await evaluateContentSafety(p.searcher_name, p.target_name, p.message);
         
         db.prepare(`
           UPDATE posts 
           SET ai_diagnosed = 1, ai_flagged = ?, ai_reason = ? 
           WHERE id = ?
-        `).run(diagnosis.flagged ? 1 : 0, diagnosis.reason, p.id);
+        `).run(result.is_flagged ? 1 : 0, result.reason || null, p.id);
+
+        if (result.is_flagged) {
+          const existingReport = db.prepare("SELECT id FROM reports WHERE target_type = 'post' AND target_id = ? AND reporter_id = 0").get(p.id);
+          if (!existingReport) {
+            db.prepare(`
+              INSERT INTO reports (reporter_id, target_type, target_id, report_type, reason, contact_info, status)
+              VALUES (?, ?, ?, ?, ?, ?, ?)
+            `).run(
+              0,
+              'post',
+              p.id,
+              'ai_flagged',
+              `【AI一括安全診断・安全隔離】\nボトルメールID: #${p.id}（宛先: ${p.target_name || '不明'}様）がAI安全分析により不適切・ストーカー・プライバシー侵害の疑いで自動非公開（隔離）されました。\n\nAI判定理由:\n${result.reason || '不適切な表現またはプライバシー過度露出'}\n\n投稿本文:\n"${p.message || ''}"`,
+              null,
+              'priority'
+            );
+          }
+        }
         analyzedCount++;
       }
 
