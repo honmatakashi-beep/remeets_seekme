@@ -6437,7 +6437,7 @@ async function startServer() {
   app.get("/api/admin/moderation-queue", authenticateToken, isAdmin, (req, res) => {
     try {
       const flaggedPosts = db.prepare(`
-        SELECT p.*, u.username as author_username, u.is_blocked as author_is_blocked 
+        SELECT p.*, u.username as author_username, u.full_name as author_full_name, u.is_blocked as author_is_blocked, u.is_ekyc_verified as author_is_ekyc_verified
         FROM posts p
         LEFT JOIN users u ON p.user_id = u.id
         WHERE p.ai_flagged = 1 OR p.status = 'flagged'
@@ -6447,6 +6447,45 @@ async function startServer() {
     } catch (err) {
       console.error("Failed to fetch moderation-queue:", err);
       res.status(500).json({ error: "Failed to fetch moderation queue" });
+    }
+  });
+
+  // 個別ボトルのAIフラグ解除・承認公開
+  app.post("/api/admin/moderation/approve", authenticateToken, isAdmin, (req, res) => {
+    try {
+      const { postId } = req.body;
+      if (!postId) return res.status(400).json({ error: "Post ID is required" });
+
+      db.prepare("UPDATE posts SET ai_flagged = 0, status = 'active', ai_diagnosed = 1 WHERE id = ?").run(postId);
+      logAction((req as any).user.id, "MODERATION_APPROVED", `Post #${postId} approved and published by admin`, req.ip);
+      res.json({ success: true, message: `ボトル #${postId} を承認・公開しました` });
+    } catch (err) {
+      console.error("Failed to approve post:", err);
+      res.status(500).json({ error: "Failed to approve post" });
+    }
+  });
+
+  // 複数ボトルのAIフラグ一括解除・承認公開
+  app.post("/api/admin/moderation/batch-approve", authenticateToken, isAdmin, (req, res) => {
+    try {
+      const { postIds } = req.body;
+      if (!Array.isArray(postIds) || postIds.length === 0) {
+        return res.status(400).json({ error: "Post IDs array is required" });
+      }
+
+      const stmt = db.prepare("UPDATE posts SET ai_flagged = 0, status = 'active', ai_diagnosed = 1 WHERE id = ?");
+      const transaction = db.transaction((ids: number[]) => {
+        for (const id of ids) {
+          stmt.run(id);
+        }
+      });
+      transaction(postIds);
+
+      logAction((req as any).user.id, "MODERATION_BATCH_APPROVED", `Batch approved ${postIds.length} posts by admin`, req.ip);
+      res.json({ success: true, count: postIds.length, message: `${postIds.length}件のボトルを一括承認・公開しました` });
+    } catch (err) {
+      console.error("Failed to batch approve posts:", err);
+      res.status(500).json({ error: "Failed to batch approve posts" });
     }
   });
 
