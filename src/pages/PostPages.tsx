@@ -3097,22 +3097,16 @@ export const SeoPreviewModal = ({ isOpen, onClose, post }: { isOpen: boolean, on
                           <span className="text-[10px] font-bold text-zinc-400 block uppercase tracking-wider">思い出解答 {idx + 1}</span>
                           <div className="text-sm font-bold text-zinc-900 w-full whitespace-pre-wrap">{q.answer_plain || q.answer || '（ハッシュ化保護）'}</div>
                         </div>
-                        {q.hint && (
-                          <div className="text-[10px] text-zinc-500 pt-1">
-                            <b>ヒント:</b> {q.hint}
-                          </div>
-                        )}
                       </div>
                     ))
                   ) : (
                     <>
                       <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-xl space-y-1">
-                        <span className="text-[10px] font-bold text-zinc-400 block uppercase tracking-wider">思い出質問 1 (メイン)</span>
+                        <span className="text-[10px] font-bold text-zinc-400 block uppercase tracking-wider">思い出質問 (秘密の質問)</span>
                         <strong className="text-sm text-zinc-800 font-serif">{post.secret_question}</strong>
-                        {post.secret_question_hint && <div className="text-[10px] text-zinc-500 pt-1"><b>ヒント:</b> {post.secret_question_hint}</div>}
                       </div>
                       <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-xl space-y-1">
-                        <span className="text-[10px] font-bold text-zinc-400 block uppercase tracking-wider">思い出解答 1 (メイン)</span>
+                        <span className="text-[10px] font-bold text-zinc-400 block uppercase tracking-wider">思い出解答 (正解)</span>
                         <strong className="text-sm text-zinc-800 font-bold">{post.secret_answer_plain || post.secret_answer}</strong>
                       </div>
                     </>
@@ -3200,7 +3194,7 @@ export const FlowExplanation = () => (
   <div className="flex flex-col gap-6 mt-10 max-w-xl mx-auto relative pl-6 border-l-2 border-dashed border-brand-primary/30">
     {[
       { icon: <PlusCircle size={18} />, text: "想いを綴る", sub: "あの日言えなかった言葉をボトルに託す" },
-      { icon: <Search size={18} />, text: "海を漂う", sub: "実名とヒントだけが検索エンジンに届く" },
+      { icon: <Search size={18} />, text: "海を漂う", sub: "実名と思い出の手がかりだけが検索エンジンに届く" },
       { icon: <Globe size={18} />, text: "本人が発見", sub: "エゴサーチでお相手がこのページを見つける" },
       { icon: <Unlock size={18} />, text: "記憶で繋がる", sub: "二人だけの秘密の質問で再会を果たす" }
     ].map((step, i) => (
@@ -6131,29 +6125,19 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                             <span className="text-[10px] font-bold text-zinc-400 block">思い出解答 {idx + 1}</span>
                             <span className="text-sm text-zinc-800 font-bold">{q.answer_plain || q.answer || '（ハッシュ化保護）'}</span>
                           </div>
-                          {q.hint && (
-                            <div className="text-[10px] text-zinc-500 pt-1">
-                              <b>ヒント:</b> {q.hint}
-                            </div>
-                          )}
                         </div>
                       ))
                     ) : (
                       <>
                         <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-2xl space-y-2">
                           <div>
-                            <span className="text-[10px] font-bold text-zinc-400 block">思い出質問 1 (メイン)</span>
+                            <span className="text-[10px] font-bold text-zinc-400 block">思い出質問 (秘密の質問)</span>
                             <span className="text-sm text-zinc-850 font-serif">{post.secret_question}</span>
                           </div>
                           <div className="pt-2 border-t border-zinc-200/50">
-                            <span className="text-[10px] font-bold text-zinc-400 block">思い出解答 1 (メイン)</span>
-                            <span className="text-sm text-zinc-800 font-bold">{post.secret_answer_plain || post.secret_answer}</span>
+                            <span className="text-[10px] font-bold text-zinc-400 block">思い出解答 (正解)</span>
+                            <span className="text-sm text-zinc-850 font-bold">{post.secret_answer_plain || post.secret_answer}</span>
                           </div>
-                          {post.secret_question_hint && (
-                            <div className="text-[10px] text-zinc-500 pt-1">
-                              <b>ヒント:</b> {post.secret_question_hint}
-                            </div>
-                          )}
                         </div>
                       </>
                     )}

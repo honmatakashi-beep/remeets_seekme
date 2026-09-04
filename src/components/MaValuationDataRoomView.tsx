@@ -163,7 +163,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
    幼馴染・昔の恩師・同級生など「過去に縁のあった特定の大切な人」と、
    二人の共有記憶（秘密の質問）を手がかりに再会できる日本発のデジタルボトルメール。
 2. ビジネスモデル:
-   完全無料投函 ＋ 照合成功時チャット開通手数料モデル（単価: ${formatPlainYen(feePerOpening)}）
+   完全無料投函 ＋ 照合成功時手紙開封・連絡先開示手数料モデル（単価: ${formatPlainYen(feePerOpening)}）
    Stripe即時決済 & 自動返金、公的eKYC、SMS認証が完全連動。
 3. 財務ハイライト:
    - 粗利益率: ${simulationResults.grossMarginPercent}%（1開通手取り: ${formatPlainYen(simulationResults.grossProfitPerOpening)}）

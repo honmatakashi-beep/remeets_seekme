@@ -25,7 +25,9 @@ import {
   FileText, 
   Zap,
   Wrench,
-  Check
+  Check,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 
 interface BroadcastItem {
@@ -68,7 +70,7 @@ const PRESET_TEMPLATES: PresetTemplate[] = [
 ■ メンテナンス実施予定日時:
 2026年9月15日(火) 午前 2:00 〜 午前 5:00 (JST)
 
-※ メンテナンス実施中は、Webサイトへのアクセス、想い出のボトルメール検索・投稿、およびチャット機能が一時的にご利用いただけなくなります。
+※ メンテナンス実施中は、Webサイトへのアクセス、想い出のボトルメール検索・投稿、および連絡先開示機能が一時的にご利用いただけなくなります。
 ご利用の皆様にはご不便をおかけいたしますが、何卒ご理解とご協力のほどよろしくお願い申し上げます。`,
     link: '',
     channels: { inApp: true, email: true },
@@ -105,7 +107,7 @@ const PRESET_TEMPLATES: PresetTemplate[] = [
 
 ■ 今回のアップデート内容:
 ・都道府県・学校名・年代による絞り込み検索の精度と表示速度の向上
-・想い出クイズ回答時の安全ヒント機能の追加
+・想い出クイズ（秘密の質問）の入力サポート機能の追加
 ・通知一覧およびマイページの視認性・操作性改善
 
 ぜひ、あなたの懐かしい想い出のボトルメールを探してみてください。`,
@@ -170,6 +172,8 @@ export const AdminBroadcastView: React.FC = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCategory, setFilterCategory] = useState<string>('all');
+  const [broadcastPage, setBroadcastPage] = useState<number>(1);
+  const [broadcastPerPage, setBroadcastPerPage] = useState<number>(10);
   const [copiedId, setCopiedId] = useState<string | number | null>(null);
 
   const token = localStorage.getItem('token');
@@ -357,6 +361,13 @@ export const AdminBroadcastView: React.FC = () => {
     });
   }, [broadcasts, searchQuery, filterCategory]);
 
+  const totalBroadcastPages = Math.max(1, Math.ceil(filteredBroadcasts.length / broadcastPerPage));
+  const safeBroadcastPage = Math.min(Math.max(1, broadcastPage), totalBroadcastPages);
+  const paginatedBroadcasts = useMemo(() => {
+    const start = (safeBroadcastPage - 1) * broadcastPerPage;
+    return filteredBroadcasts.slice(start, start + broadcastPerPage);
+  }, [filteredBroadcasts, safeBroadcastPage, broadcastPerPage]);
+
   // Helper labels & icons
   const getCategoryBadge = (cat: string) => {
     switch (cat) {
@@ -393,7 +404,7 @@ export const AdminBroadcastView: React.FC = () => {
       case 'active_posts':
         return '📮 ボトル投稿・利用中ユーザー';
       case 'active_chat':
-        return '💬 チャット開通済みユーザー';
+        return '💌 照合・連絡先開示済みユーザー';
       default:
         return '🌐 全登録ユーザー';
     }
@@ -657,7 +668,7 @@ export const AdminBroadcastView: React.FC = () => {
                 <option value="verified">🪪 本人確認 (eKYC) 完了ユーザー (Verified Only)</option>
                 <option value="unverified">⏳ 本人確認未完了ユーザー (Unverified Only)</option>
                 <option value="active_posts">📮 ボトルメール投稿者・利用中ユーザー (Active Posters)</option>
-                <option value="active_chat">💬 チャット開通済みユーザー (Active Chat Users)</option>
+                <option value="active_chat">💌 照合・連絡先開示済みユーザー (Disclosure Completed)</option>
               </select>
             </div>
 
@@ -990,7 +1001,7 @@ export const AdminBroadcastView: React.FC = () => {
               <input
                 type="text"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => { setSearchQuery(e.target.value); setBroadcastPage(1); }}
                 placeholder="履歴を検索..."
                 className="pl-8 pr-3 py-1.5 rounded-xl text-xs bg-slate-50 border border-slate-200 text-slate-800 focus:outline-none focus:ring-1 focus:ring-indigo-500 w-40 sm:w-48"
               />
@@ -998,7 +1009,7 @@ export const AdminBroadcastView: React.FC = () => {
 
             <select
               value={filterCategory}
-              onChange={(e) => setFilterCategory(e.target.value)}
+              onChange={(e) => { setFilterCategory(e.target.value); setBroadcastPage(1); }}
               className="py-1.5 px-2.5 rounded-xl text-xs bg-slate-50 border border-slate-200 text-slate-800 focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer"
             >
               <option value="all">全カテゴリ</option>
@@ -1008,6 +1019,21 @@ export const AdminBroadcastView: React.FC = () => {
               <option value="security">セキュリティ</option>
               <option value="campaign">キャンペーン</option>
             </select>
+
+            {/* Page Size Select */}
+            <div className="flex items-center gap-1 bg-slate-50 border border-slate-200 px-2.5 py-1.5 rounded-xl text-xs">
+              <span className="text-slate-500 text-[11px]">表示:</span>
+              <select
+                value={broadcastPerPage}
+                onChange={(e) => { setBroadcastPerPage(Number(e.target.value)); setBroadcastPage(1); }}
+                className="bg-transparent text-slate-800 font-bold outline-none cursor-pointer text-xs"
+              >
+                <option value={10}>10件</option>
+                <option value={25}>25件</option>
+                <option value={50}>50件</option>
+                <option value={100}>100件</option>
+              </select>
+            </div>
           </div>
         </div>
 
@@ -1024,7 +1050,7 @@ export const AdminBroadcastView: React.FC = () => {
           </div>
         ) : (
           <div className="space-y-4">
-            {filteredBroadcasts.map((item, idx) => {
+            {paginatedBroadcasts.map((item, idx) => {
               const readRate = item.user_count > 0 ? Math.round((item.read_count / item.user_count) * 100) : 0;
               const catBadge = getCategoryBadge(item.category);
               const priBadge = getPriorityBadge(item.priority);
@@ -1126,6 +1152,62 @@ export const AdminBroadcastView: React.FC = () => {
                 </div>
               );
             })}
+
+            {/* Pagination Controls */}
+            {filteredBroadcasts.length > 0 && (
+              <div className="pt-4 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-600">
+                <div className="flex items-center gap-3">
+                  <span>
+                    全 <span className="font-bold text-slate-900">{filteredBroadcasts.length}</span> 件中{' '}
+                    <span className="font-bold text-slate-900">{(safeBroadcastPage - 1) * broadcastPerPage + 1}</span> -{' '}
+                    <span className="font-bold text-slate-900">{Math.min(safeBroadcastPage * broadcastPerPage, filteredBroadcasts.length)}</span> 件を表示
+                  </span>
+                  <div className="flex items-center gap-1 bg-slate-50 px-2 py-1 rounded-lg border border-slate-200 text-xs">
+                    <span className="text-slate-500 text-[11px]">表示:</span>
+                    <select
+                      value={broadcastPerPage}
+                      onChange={(e) => { setBroadcastPerPage(Number(e.target.value)); setBroadcastPage(1); }}
+                      className="bg-transparent text-slate-800 font-medium outline-none cursor-pointer text-xs"
+                    >
+                      <option value={10}>10件</option>
+                      <option value={25}>25件</option>
+                      <option value={50}>50件</option>
+                      <option value={100}>100件</option>
+                    </select>
+                  </div>
+                </div>
+
+                {totalBroadcastPages > 1 && (
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      disabled={safeBroadcastPage <= 1}
+                      onClick={() => setBroadcastPage(prev => Math.max(1, prev - 1))}
+                      className="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 disabled:opacity-30 disabled:pointer-events-none transition-colors font-medium flex items-center gap-1 cursor-pointer"
+                    >
+                      <ChevronLeft size={14} />
+                      <span>前へ</span>
+                    </button>
+
+                    <div className="flex items-center gap-1 px-2 font-mono font-bold text-slate-900">
+                      <span>{safeBroadcastPage}</span>
+                      <span>/</span>
+                      <span>{totalBroadcastPages}</span>
+                    </div>
+
+                    <button
+                      type="button"
+                      disabled={safeBroadcastPage >= totalBroadcastPages}
+                      onClick={() => setBroadcastPage(prev => Math.min(totalBroadcastPages, prev + 1))}
+                      className="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 disabled:opacity-30 disabled:pointer-events-none transition-colors font-medium flex items-center gap-1 cursor-pointer"
+                    >
+                      <span>次へ</span>
+                      <ChevronRight size={14} />
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
       </div>

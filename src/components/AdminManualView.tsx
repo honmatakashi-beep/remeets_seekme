@@ -701,7 +701,7 @@ export const AdminManualView: React.FC = () => {
                 <li><b>管理画面「ボトル管理」タブ</b> を開きます。</li>
                 <li>キーワード、差出人ニックネーム、宛名、またはボトルIDで検索します。</li>
                 <li>対象レコードの「編集」ボタンをクリックし、編集モーダルを開きます。</li>
-                <li>誤字脱字、宛名の表記揺れ、またはクイズの回答ヒントを修正します。</li>
+                <li>誤字脱字、宛名の表記揺れ、または秘密の質問を修正します。</li>
                 <li>「保存して反映」をクリックすると、監査ログに <code>POST_UPDATED_BY_ADMIN</code> が記録され、即座に画面へ反映されます。</li>
               </ol>
             </div>
@@ -947,7 +947,7 @@ export const AdminManualView: React.FC = () => {
                     </tr>
                     <tr>
                       <td className="p-2 border border-brand-border font-bold text-amber-700">🟡 通常 (Medium)</td>
-                      <td className="p-2 border border-brand-border">eKYC再審査依頼、クイズ回答のヒント問い合わせ、手紙削除依頼</td>
+                      <td className="p-2 border border-brand-border">eKYC再審査依頼、秘密の質問に関する問い合わせ、手紙削除依頼</td>
                       <td className="p-2 border border-brand-border font-bold">12時間以内</td>
                       <td className="p-2 border border-brand-border">モデレーター (Moderator)</td>
                     </tr>

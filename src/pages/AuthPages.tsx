@@ -562,7 +562,7 @@ export const QuestionSampleModal = ({ isOpen, onClose, onSelect }: { isOpen: boo
               <BookOpen size={24} />
             </div>
             <div>
-              <h3 className="font-bold text-black text-xl">質問のヒント・サンプル</h3>
+              <h3 className="font-bold text-black text-xl">秘密の質問の文例・サンプル</h3>
               <p className="text-xs text-black/60">二人だけが知る思い出を選んでください</p>
             </div>
           </div>

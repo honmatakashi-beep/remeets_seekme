@@ -105,6 +105,7 @@ export const AdminPaymentManagementBlock: React.FC = () => {
   const [transactions, setTransactions] = useState<PaymentTransaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState<number>(10);
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
 
@@ -171,7 +172,7 @@ export const AdminPaymentManagementBlock: React.FC = () => {
       const token = localStorage.getItem('token') || sessionStorage.getItem('token');
       const params = new URLSearchParams({
         page: page.toString(),
-        limit: '10'
+        limit: pageSize.toString()
       });
       if (statusFilter !== 'all') params.append('status', statusFilter);
       if (typeFilter !== 'all') params.append('type', typeFilter);
@@ -339,7 +340,7 @@ export const AdminPaymentManagementBlock: React.FC = () => {
     fetchTransactions();
     fetchAnalytics();
     fetchEkycLogs();
-  }, [page, statusFilter, typeFilter, ekycFilter]);
+  }, [page, pageSize, statusFilter, typeFilter, ekycFilter]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -902,6 +903,21 @@ export const AdminPaymentManagementBlock: React.FC = () => {
                 <option value="rejected">⚠️ 審査不合格</option>
                 <option value="pending">⏳ 審査中</option>
               </select>
+
+              {/* Page Size Select */}
+              <div className="flex items-center gap-1 bg-slate-50 border border-brand-border px-2.5 py-2 rounded-xl text-xs">
+                <span className="text-black/50 text-[11px]">表示:</span>
+                <select
+                  value={pageSize}
+                  onChange={(e) => { setPageSize(Number(e.target.value)); setPage(1); }}
+                  className="bg-transparent text-black font-bold outline-none cursor-pointer text-xs"
+                >
+                  <option value={10}>10件</option>
+                  <option value={25}>25件</option>
+                  <option value={50}>50件</option>
+                  <option value={100}>100件</option>
+                </select>
+              </div>
             </div>
           </div>
 
@@ -1045,24 +1061,45 @@ export const AdminPaymentManagementBlock: React.FC = () => {
             </div>
 
             {/* Pagination Bar */}
-            <div className="p-4 bg-slate-50 border-t border-brand-border flex items-center justify-between text-xs text-black/70">
-              <span>全 {totalCount} 件中 {(page - 1) * 10 + 1} - {Math.min(page * 10, totalCount)} 件を表示</span>
-              <div className="flex items-center gap-1">
+            <div className="p-4 bg-slate-50 border-t border-brand-border flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-black/70">
+              <div className="flex items-center gap-3">
+                <span>全 {totalCount} 件中 {totalCount > 0 ? (page - 1) * pageSize + 1 : 0} - {Math.min(page * pageSize, totalCount)} 件を表示</span>
+                <div className="flex items-center gap-1 bg-white px-2 py-1 rounded-lg border border-brand-border text-xs">
+                  <span className="text-black/50 text-[11px]">表示:</span>
+                  <select
+                    value={pageSize}
+                    onChange={(e) => { setPageSize(Number(e.target.value)); setPage(1); }}
+                    className="bg-transparent text-black font-medium outline-none cursor-pointer text-xs"
+                  >
+                    <option value={10}>10件</option>
+                    <option value={25}>25件</option>
+                    <option value={50}>50件</option>
+                    <option value={100}>100件</option>
+                  </select>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5">
                 <button
                   type="button"
                   onClick={() => setPage(Math.max(1, page - 1))}
                   disabled={page <= 1}
-                  className="p-1.5 rounded-lg border border-brand-border bg-white disabled:opacity-40 cursor-pointer"
+                  className="px-2.5 py-1.5 rounded-lg border border-brand-border bg-white hover:bg-slate-100 disabled:opacity-30 disabled:pointer-events-none transition-colors font-medium flex items-center gap-1 cursor-pointer"
                 >
                   <ChevronLeft size={14} />
+                  <span>前へ</span>
                 </button>
-                <span className="px-3 font-mono font-bold text-black">{page} / {totalPages}</span>
+                <div className="flex items-center gap-1 px-2 font-mono font-bold text-black">
+                  <span>{page}</span>
+                  <span>/</span>
+                  <span>{totalPages}</span>
+                </div>
                 <button
                   type="button"
                   onClick={() => setPage(Math.min(totalPages, page + 1))}
                   disabled={page >= totalPages}
-                  className="p-1.5 rounded-lg border border-brand-border bg-white disabled:opacity-40 cursor-pointer"
+                  className="px-2.5 py-1.5 rounded-lg border border-brand-border bg-white hover:bg-slate-100 disabled:opacity-30 disabled:pointer-events-none transition-colors font-medium flex items-center gap-1 cursor-pointer"
                 >
+                  <span>次へ</span>
                   <ChevronRight size={14} />
                 </button>
               </div>

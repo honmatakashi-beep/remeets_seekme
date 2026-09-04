@@ -2070,6 +2070,8 @@ export const AdminDashboard = () => {
   const [successStories, setSuccessStories] = useState<any[]>([]);
   const [editingStoryId, setEditingStoryId] = useState<number | null>(null);
   const [storyCategoryFilter, setStoryCategoryFilter] = useState<string>('all');
+  const [storyPage, setStoryPage] = useState<number>(1);
+  const [storyPerPage, setStoryPerPage] = useState<number>(10);
   const [editStoryForm, setEditStoryForm] = useState<{ title: string; message: string; era: string; gender: string; category: string }>({ 
     title: '', 
     message: '', 
@@ -2695,11 +2697,11 @@ export const AdminDashboard = () => {
       [],
       ["1. 基本情報", "", ""],
       ["レポート発行日時", new Date().toLocaleString(), "システムログより自動生成"],
-      ["プラットフォーム名", "ReMEETs (再会の海)", "実名とヒントによる再会自動マッチング"],
+      ["プラットフォーム名", "ReMEETs (再会の海)", "実名と秘密の質問による再会自動マッチング"],
       [],
       ["2. 主要集客・成果メトリクス (KPI)", "", ""],
       ["指標項目", "実績数値", "買い手企業へのバリュー証明・解説"],
-      ["累計PV (ページビュー) 数", `${totalPV} PV`, "検索エンジン（お相手の氏名＋ヒント）で検索上位を獲得し、高確率での自然流入を実証"],
+      ["累計PV (ページビュー) 数", `${totalPV} PV`, "検索エンジン（お相手の氏名＋思い出の手がかり）で検索上位を獲得し、高確率での自然流入を実証"],
       ["月間アクティブユーザー (MAU)", `${estimatedMAU} ユーザー`, "バイラル拡散時、SNS・ブログ・メディア露出の規模感を担保可能"],
       ["累積投函ボトルメール数", `${totalPosts} 通`, "ユーザーが魂を込めて投函したメッセージ資産の価値。複製困難な無形資産"],
       ["再会成立組数", `${totalReunions} 組`, "実名＋秘密の質問のフローが実際に機能し、ユーザー間の再会を引き起こした証拠"],
@@ -5351,6 +5353,10 @@ export const AdminDashboard = () => {
               return cat === storyCategoryFilter;
             });
 
+            const totalStoryPages = Math.max(1, Math.ceil(filteredStories.length / storyPerPage));
+            const safeStoryPage = Math.min(Math.max(1, storyPage), totalStoryPages);
+            const paginatedStories = filteredStories.slice((safeStoryPage - 1) * storyPerPage, safeStoryPage * storyPerPage);
+
             const featuredCount = successStories.filter(s => s.is_featured === 1).length;
             const publicCount = successStories.filter(s => s.is_all_page === 1 && s.is_public === 1).length;
 
@@ -5717,21 +5723,38 @@ export const AdminDashboard = () => {
                     </div>
                   </div>
 
-                  {/* カテゴリ切り替えフィルター */}
-                  <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-                    {categories.map((cat) => (
-                      <button
-                        key={cat.id}
-                        onClick={() => setStoryCategoryFilter(cat.id)}
-                        className={`px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
-                          storyCategoryFilter === cat.id
-                            ? 'bg-slate-900 text-white shadow-2xs'
-                            : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
-                        }`}
+                  {/* カテゴリ切り替えフィルター & 表示件数 */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+                      {categories.map((cat) => (
+                        <button
+                          key={cat.id}
+                          onClick={() => { setStoryCategoryFilter(cat.id); setStoryPage(1); }}
+                          className={`px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+                            storyCategoryFilter === cat.id
+                              ? 'bg-slate-900 text-white shadow-2xs'
+                              : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+                          }`}
+                        >
+                          {cat.label}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Page Size Select */}
+                    <div className="flex items-center gap-1 bg-white px-2.5 py-1.5 rounded-xl border border-slate-200 text-xs shrink-0 self-end sm:self-auto shadow-2xs">
+                      <span className="text-slate-500 text-[11px]">表示:</span>
+                      <select
+                        value={storyPerPage}
+                        onChange={(e) => { setStoryPerPage(Number(e.target.value)); setStoryPage(1); }}
+                        className="bg-transparent text-slate-800 font-bold outline-none cursor-pointer text-xs"
                       >
-                        {cat.label}
-                      </button>
-                    ))}
+                        <option value={10}>10件</option>
+                        <option value={25}>25件</option>
+                        <option value={50}>50件</option>
+                        <option value={100}>100件</option>
+                      </select>
+                    </div>
                   </div>
 
                   {/* カードリスト */}
@@ -5741,7 +5764,7 @@ export const AdminDashboard = () => {
                         該当するストーリーはありません
                       </div>
                     ) : (
-                      filteredStories.map((story) => {
+                      paginatedStories.map((story) => {
                         const isEditing = editingStoryId === story.id;
                         const cat = story.category || (story.era ? (story.era.includes('80') ? 'classmate' : story.era.includes('90') ? 'mentor' : 'colleague') : 'classmate');
                         const badge = getCategoryBadge(cat);
@@ -5959,6 +5982,62 @@ export const AdminDashboard = () => {
                           </div>
                         );
                       })
+                    )}
+
+                    {/* Pagination Controls */}
+                    {filteredStories.length > 0 && (
+                      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-2 pt-4 border-t border-slate-200/80 text-xs text-slate-600">
+                        <div className="flex items-center gap-3">
+                          <span>
+                            全 <span className="font-bold text-slate-900">{filteredStories.length}</span> 件中{' '}
+                            <span className="font-bold text-slate-900">{(safeStoryPage - 1) * storyPerPage + 1}</span> -{' '}
+                            <span className="font-bold text-slate-900">{Math.min(safeStoryPage * storyPerPage, filteredStories.length)}</span> 件を表示
+                          </span>
+                          <div className="flex items-center gap-1 bg-white px-2 py-1 rounded-lg border border-slate-200 text-xs">
+                            <span className="text-slate-500 text-[11px]">表示:</span>
+                            <select
+                              value={storyPerPage}
+                              onChange={(e) => { setStoryPerPage(Number(e.target.value)); setStoryPage(1); }}
+                              className="bg-transparent text-slate-800 font-medium outline-none cursor-pointer text-xs"
+                            >
+                              <option value={10}>10件</option>
+                              <option value={25}>25件</option>
+                              <option value={50}>50件</option>
+                              <option value={100}>100件</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        {totalStoryPages > 1 && (
+                          <div className="flex items-center gap-1.5">
+                            <button
+                              type="button"
+                              disabled={safeStoryPage <= 1}
+                              onClick={() => setStoryPage(prev => Math.max(1, prev - 1))}
+                              className="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 disabled:opacity-30 disabled:pointer-events-none transition-colors font-medium flex items-center gap-1 cursor-pointer"
+                            >
+                              <ChevronLeft size={14} />
+                              <span>前へ</span>
+                            </button>
+
+                            <div className="flex items-center gap-1 px-2 font-mono font-bold text-slate-900">
+                              <span>{safeStoryPage}</span>
+                              <span>/</span>
+                              <span>{totalStoryPages}</span>
+                            </div>
+
+                            <button
+                              type="button"
+                              disabled={safeStoryPage >= totalStoryPages}
+                              onClick={() => setStoryPage(prev => Math.min(totalStoryPages, prev + 1))}
+                              className="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 disabled:opacity-30 disabled:pointer-events-none transition-colors font-medium flex items-center gap-1 cursor-pointer"
+                            >
+                              <span>次へ</span>
+                              <ChevronRight size={14} />
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     )}
                   </div>
                 </div>
@@ -6883,8 +6962,11 @@ export const AdminDashboard = () => {
             <div className="space-y-6">
               {/* 1. Top 4 Metric Cards */}
               {(() => {
+                const isSampleUser = (u: any) => u.username?.startsWith('sample_') || u.email?.includes('example.com') || u.email?.includes('sample.local') || u.email?.includes('sample.remeets.jp');
+                const isAdminStaff = (u: any) => ['admin', 'super_admin', 'moderator', 'cs_support', 'auditor'].includes(u.role);
+
                 const totalUsersCount = users.length;
-                const sampleUsersCount = users.filter(u => u.username.startsWith('sample_') || u.email?.includes('example.com') || u.email?.includes('sample.local')).length;
+                const sampleUsersCount = users.filter(isSampleUser).length;
                 const realUsersCount = totalUsersCount - sampleUsersCount;
                 const ekycCount = users.filter(u => !!u.is_ekyc_verified).length;
                 const ekycRate = totalUsersCount > 0 ? Math.round((ekycCount / totalUsersCount) * 100) : 0;
@@ -6984,9 +7066,9 @@ export const AdminDashboard = () => {
                     { id: 'ekyc', label: '🛡️ eKYC済', count: users.filter(u => !!u.is_ekyc_verified).length },
                     { id: 'self', label: '📝 自己申告', count: users.filter(u => !u.is_ekyc_verified).length },
                     { id: 'blocked', label: '🚫 凍結中', count: users.filter(u => !!u.is_blocked).length },
-                    { id: 'admin', label: '🔑 スタッフ/管理者', count: users.filter(u => u.role === 'admin').length },
-                    { id: 'real', label: '👤 本番アカウント', count: users.filter(u => !u.username.startsWith('sample_') && !u.email?.includes('example.com') && !u.email?.includes('sample.local')).length },
-                    { id: 'sample', label: '🤖 サンプル', count: users.filter(u => u.username.startsWith('sample_') || u.email?.includes('example.com') || u.email?.includes('sample.local')).length }
+                    { id: 'admin', label: '🔑 スタッフ/管理者', count: users.filter(u => ['admin', 'super_admin', 'moderator', 'cs_support', 'auditor'].includes(u.role)).length },
+                    { id: 'real', label: '👤 本番アカウント', count: users.filter(u => !u.username.startsWith('sample_') && !u.email?.includes('example.com') && !u.email?.includes('sample.local') && !u.email?.includes('sample.remeets.jp')).length },
+                    { id: 'sample', label: '🤖 サンプル', count: users.filter(u => u.username.startsWith('sample_') || u.email?.includes('example.com') || u.email?.includes('sample.local') || u.email?.includes('sample.remeets.jp')).length }
                   ].map(tab => (
                     <button
                       key={tab.id}
@@ -7141,15 +7223,18 @@ export const AdminDashboard = () => {
 
               {/* 3. User Table Section */}
               {(() => {
+                const isSampleUser = (u: any) => u.username?.startsWith('sample_') || u.email?.includes('example.com') || u.email?.includes('sample.local') || u.email?.includes('sample.remeets.jp');
+                const isAdminStaff = (u: any) => ['admin', 'super_admin', 'moderator', 'cs_support', 'auditor'].includes(u.role);
+
                 // Filter users
                 const filteredUsers = users.filter(u => {
                   // Status Filter
                   if (userStatusFilter === 'ekyc' && !u.is_ekyc_verified) return false;
                   if (userStatusFilter === 'self' && u.is_ekyc_verified) return false;
                   if (userStatusFilter === 'blocked' && !u.is_blocked) return false;
-                  if (userStatusFilter === 'admin' && u.role !== 'admin') return false;
-                  if (userStatusFilter === 'sample' && (!u.username.startsWith('sample_') && !u.email?.includes('example.com') && !u.email?.includes('sample.local'))) return false;
-                  if (userStatusFilter === 'real' && (u.username.startsWith('sample_') || u.email?.includes('example.com') || u.email?.includes('sample.local'))) return false;
+                  if (userStatusFilter === 'admin' && !isAdminStaff(u)) return false;
+                  if (userStatusFilter === 'sample' && !isSampleUser(u)) return false;
+                  if (userStatusFilter === 'real' && isSampleUser(u)) return false;
 
                   // Search term
                   if (!userSearchTerm) return true;

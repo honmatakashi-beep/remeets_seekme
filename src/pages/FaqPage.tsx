@@ -208,11 +208,11 @@ export const FaqPage: React.FC = () => {
             クイズの回答は何回かやり直すことができますが、辞書攻撃や総当たり（当てずっぽうの連続入力）を防ぐため、<strong className="text-slate-900 font-bold">短時間に複数回連続で間違えると一定時間（数分〜数時間）回答がロック</strong> されます。
           </p>
           <p className="text-xs md:text-sm text-slate-500 leading-relaxed font-sans m-0">
-            ※どうしても答えの漢字や表記が思い出せない場合は、差出人が設定した「ヒント」をご確認いただくか、時間を置いて正確な想い出を振り返ってご入力ください。
+            ※どうしても答えの漢字や表記が思い出せない場合は、時間を置いて正確な想い出を振り返ってご入力いただくか、ひらがな・カタカナ等での入力をお試しください（表記揺れは自動救済されます）。
           </p>
         </>
       ),
-      tags: ['誤答', 'ロック', '総当たり', 'ヒント']
+      tags: ['誤答', 'ロック', '総当たり', '照合']
     },
     {
       id: 'q-quiz-3',
@@ -225,7 +225,7 @@ export const FaqPage: React.FC = () => {
             ReMEETsでは、アプリ内でメッセージを永続させるのではなく、<strong className="text-slate-900 font-bold">「お相手のLINE IDやメールアドレスを安全に引き渡し、プラットフォームの役割を完結」</strong> させるモデルを採用しています。
           </p>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            開通完了画面に表示される「LINEを開く」や「メールを送る」ボタンから、普段使い慣れた連絡手段で直接お相手へ温かい再会のメッセージをお送りいただけます。同時に、差出人へも「あなたの手紙がお相手に届きました」と自動メール通知が届きます。
+            開示完了画面に表示される「LINEを開く」や「メールを送る」ボタンから、普段使い慣れた連絡手段で直接お相手へ温かい再会のメッセージをお送りいただけます。同時に、差出人へも「あなたの手紙がお相手に届きました」と自動メール通知が届きます。
           </p>
         </>
       ),
@@ -239,7 +239,7 @@ export const FaqPage: React.FC = () => {
       answer: (
         <>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            手紙を一度流しておけば、<strong className="text-slate-900 font-bold">インターネット上の海（Google検索）に宛名と想い出のヒントが安全にインデックス</strong> されます。
+            手紙を一度流しておけば、<strong className="text-slate-900 font-bold">インターネット上の海（Google検索）に宛名と想い出のキーワードが安全にインデックス</strong> されます。
           </p>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
             お相手がふと自分の名前や出身校を検索（エゴサーチ）した際や、知人から「ReMEETsであなた宛の手紙が流れているよ」とシェアされた際にいつでも手紙を見つけることができます。手紙はあなたが削除しない限り、何年間でも海を漂い続けます。
@@ -261,7 +261,7 @@ export const FaqPage: React.FC = () => {
             ご安心ください。一般公開されるタイムラインや検索一覧には、本名や詳細な住所・連絡先などの個人情報は一切表示されません。
           </p>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            手紙の宛名（あだ名やイニシャル可）と、想い出の年代・ゆかりの都道府県、そしてクイズのヒントのみが漂流します。手紙の本文全文やお互いの連絡先は、<strong className="text-slate-900 font-bold">「想い出クイズ完全一致 ＋ 手紙開封・本人確認決済」</strong> を完了した当事者2名にのみ暗号化復号されて表示されます。
+            手紙の宛名（あだ名やイニシャル可）と、想い出の年代・ゆかりの都道府県、そして秘密の質問の設問文のみが漂流します。手紙の本文全文やお互いの連絡先は、<strong className="text-slate-900 font-bold">「想い出クイズ完全一致 ＋ 手紙開封・本人確認決済」</strong> を完了した当事者2名にのみ暗号化復号されて表示されます。
           </p>
         </>
       ),

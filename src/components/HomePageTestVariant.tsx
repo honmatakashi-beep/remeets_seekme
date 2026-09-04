@@ -77,7 +77,7 @@ const GALLERY_BOTTLES = [
     location: '東京都世田谷区',
     relationship: '中学の部活仲間',
     excerpt: 'あの夏の最後の大会、僕のパスからゴールを決めてくれたこと今でも鮮明に覚えています。みんな元気にしていますか？',
-    questionHint: '大会の帰りにみんなで食べたアイスの種類は？',
+    secretQuestion: '大会の帰りにみんなで食べたアイスの種類は？',
     createdTime: '漂流 3日前',
     tagBg: 'bg-teal-100 text-teal-800 border-teal-200'
   },
@@ -88,7 +88,7 @@ const GALLERY_BOTTLES = [
     location: '神奈川県横浜市',
     relationship: '恩師・先生',
     excerpt: '学校に行けなかった時期、否定せずに話を聞いてくれた先生の優しさに救われました。私も今では小学校の教員になりました。',
-    questionHint: '先生の保健室のデスクに置いてあった小さな観葉植物の名前は？',
+    secretQuestion: '先生の保健室のデスクに置いてあった小さな観葉植物の名前は？',
     createdTime: '漂流 昨日',
     tagBg: 'bg-sky-100 text-sky-800 border-sky-200'
   },
@@ -99,7 +99,7 @@ const GALLERY_BOTTLES = [
     location: '京都府京都市',
     relationship: '初恋・サークルの先輩',
     excerpt: '卒業ライブの日に渡せなかった手紙がずっと部屋にありました。またあのギターの音色が聴きたいです。',
-    questionHint: '学園祭で最後に演奏した曲のバンド名は？',
+    secretQuestion: '学園祭で最後に演奏した曲のバンド名は？',
     createdTime: '漂流 本日',
     tagBg: 'bg-rose-100 text-rose-800 border-rose-200'
   },
@@ -110,7 +110,7 @@ const GALLERY_BOTTLES = [
     location: '福岡県博多区',
     relationship: '旅先での恩人',
     excerpt: '一銭もなく途方に暮れていた高校生の私に電車代を貸して下さり本当にありがとうございました。ずっとお礼が言いたかったです。',
-    questionHint: '駅前の喫茶店でご馳走していただいたあたたかい飲み物は？',
+    secretQuestion: '駅前の喫茶店でご馳走していただいたあたたかい飲み物は？',
     createdTime: '漂流 5日前',
     tagBg: 'bg-emerald-100 text-emerald-800 border-emerald-200'
   },
@@ -121,7 +121,7 @@ const GALLERY_BOTTLES = [
     location: '北海道札幌市',
     relationship: '昔のバンド仲間',
     excerpt: '上京するときに交わした約束を果たせぬまま年月が経ってしまいました。もう一度アコースティックギターを合わせませんか。',
-    questionHint: '初めてスタジオで作ったオリジナル曲のタイトルは？',
+    secretQuestion: '初めてスタジオで作ったオリジナル曲のタイトルは？',
     createdTime: '漂流 1週間前',
     tagBg: 'bg-amber-100 text-amber-800 border-amber-200'
   }
@@ -1055,10 +1055,10 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
 
               <div className="space-y-1.5 bg-amber-50/80 p-4 rounded-2xl border border-amber-200/80">
                 <span className="text-xs font-bold text-amber-900 font-sans flex items-center gap-1.5">
-                  <Key size={14} className="text-amber-600" /> 秘密の質問ヒント
+                  <Key size={14} className="text-amber-600" /> 秘密の質問（思い出の合言葉）
                 </span>
                 <p className="text-xs text-amber-950 font-sans leading-relaxed">
-                  {selectedBottle.questionHint}
+                  {selectedBottle.secretQuestion}
                 </p>
               </div>
 
