@@ -131,18 +131,18 @@ export const FaqPage: React.FC = () => {
       answer: (
         <>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            世界標準の決済プラットフォーム <strong className="text-slate-900 font-bold">Stripe（ストライプ）</strong> を採用しており、以下の安全なお支払い方法に対応しています。
+            世界中で数百万社が利用する最高水準のオンライン決済代行システム <strong className="text-slate-900 font-bold">Stripe（ストライプ社）</strong> を導入しており、以下の安全なお支払い方法に対応しています。
           </p>
           <ul className="list-disc pl-5 space-y-1 text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
             <li>主要クレジットカード（VISA, Mastercard, JCB, American Express, Diners Club）</li>
             <li>Apple Pay / Google Pay（スマートフォンからのワンタップ決済）</li>
           </ul>
           <p className="text-xs md:text-sm text-slate-500 leading-relaxed font-sans m-0">
-            ※クレジットカード情報はStripeの最高水準セキュリティサーバー（PCI-DSS Level 1）で直接処理され、当サービスのサーバーには一切保管されません。
+            ※クレジットカード情報はStripe社の最高峰セキュリティサーバー（国際基準PCI-DSS Level 1）にて安全に直接処理され、当サービスのサーバーにはカード番号などの機密情報は一切保管されません。
           </p>
         </>
       ),
-      tags: ['クレジットカード', 'Apple Pay', 'Google Pay', '決済方法']
+      tags: ['クレジットカード', 'Apple Pay', 'Google Pay', '決済方法', 'Stripe', 'セキュリティ']
     },
     {
       id: 'q-pricing-4',
@@ -150,11 +150,16 @@ export const FaqPage: React.FC = () => {
       categoryName: '料金・お支払い',
       question: '領収書や利用明細は発行されますか？',
       answer: (
-        <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-          はい。決済完了時に、ご登録のメールアドレス宛てに <strong className="text-slate-900 font-bold">「Stripe公式電子領収書（インボイス制度対応）」</strong> が自動送付されます。決済IDや取引日時が明記されており、経費精算にもご利用いただけます。
-        </p>
+        <>
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
+            はい。決済が完了すると同時に、決済代行会社（Stripe社）よりご登録のメールアドレス宛てに <strong className="text-slate-900 font-bold">「公式電子領収書（決済完了メール）」</strong> が即座に自動送付されます。
+          </p>
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
+            メール内には「お支払い日時」「金額」「決済取引ID」が明記されており、クレジットカード会社のご利用明細書と合わせて、お支払いの正式な証明書として大切に保管・ご利用いただけます。
+          </p>
+        </>
       ),
-      tags: ['領収書', '明細', 'インボイス']
+      tags: ['領収書', '明細', '電子レシート', 'Stripe']
     },
     {
       id: 'q-pricing-5',
