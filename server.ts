@@ -4074,8 +4074,10 @@ async function startServer() {
   app.get("/api/admin/users", authenticateToken, isAdmin, (req, res) => {
     try {
       const users = db.prepare(`
-        SELECT u.id, u.username, u.email, u.full_name, u.last_name, u.first_name, u.nickname, u.maiden_name, u.role, u.is_blocked, u.is_ekyc_verified, u.ekyc_document_type, u.ekyc_verified_at, u.ekyc_name, u.created_at,
-               (SELECT COUNT(*) FROM posts p WHERE p.user_id = u.id) as posts_count
+        SELECT u.id, u.username, u.email, u.full_name, u.last_name, u.first_name, u.nickname, u.maiden_name, u.birthdate, u.role, u.is_blocked, u.is_ekyc_verified, u.ekyc_document_type, u.ekyc_verified_at, u.ekyc_name, u.contact_type, u.contact_id, u.created_at,
+               (SELECT COUNT(*) FROM posts p WHERE p.user_id = u.id) as posts_count,
+               (SELECT COUNT(*) FROM posts p WHERE p.user_id = u.id AND (p.status = 'resolved' OR p.is_resolved = 1)) as resolved_posts_count,
+               (SELECT COUNT(*) FROM reports r WHERE r.target_user_id = u.id) as reports_received_count
         FROM users u
         ORDER BY u.created_at DESC
       `).all();
@@ -4120,12 +4122,8 @@ async function startServer() {
       const userId = req.params.id;
       const user = db.prepare("SELECT * FROM users WHERE id = ?").get(userId) as any;
       if (!user) {
-        return res.status(404).json({ error: "ユーザーが見つかりません。" });
+        return res.status(404).json({ error: "指定されたユーザーが見つかりません。" });
       }
-
-      // Remove sensitive password hash from disclosure output
-      delete user.password;
-      delete user.reset_token;
 
       let ageLogs: any[] = [];
       try {
@@ -4204,6 +4202,70 @@ async function startServer() {
       res.json({ success: true });
     } catch (err) {
       res.status(500).json({ error: "Failed to delete user" });
+    }
+  });
+
+  const handleResetEkycEndpoint = (req: any, res: any) => {
+    try {
+      db.prepare("UPDATE users SET is_ekyc_verified = 0, ekyc_document_type = NULL, ekyc_verified_at = NULL, ekyc_name = NULL WHERE id = ?").run(req.params.id);
+      logAction(req.user.id, "USER_RESET_EKYC", `User ID: ${req.params.id}`, req.ip);
+      res.json({ success: true });
+    } catch (err) {
+      res.status(500).json({ error: "eKYCステータスのリセットに失敗しました" });
+    }
+  };
+  app.patch("/api/admin/users/:id/reset-ekyc", authenticateToken, requirePermission('manage_users'), handleResetEkycEndpoint);
+  app.post("/api/admin/users/:id/reset-ekyc", authenticateToken, requirePermission('manage_users'), handleResetEkycEndpoint);
+
+  app.post("/api/admin/users/batch-status", authenticateToken, requirePermission('manage_users'), (req: any, res) => {
+    const userIds = req.body.userIds || req.body.ids;
+    const { is_blocked } = req.body;
+    if (!Array.isArray(userIds) || userIds.length === 0) {
+      return res.status(400).json({ error: "対象ユーザーが指定されていません" });
+    }
+    try {
+      const placeholders = userIds.map(() => '?').join(',');
+      const stmt = db.prepare(`UPDATE users SET is_blocked = ? WHERE id IN (${placeholders}) AND role != 'admin'`);
+      const result = stmt.run(is_blocked ? 1 : 0, ...userIds);
+      logAction(req.user.id, is_blocked ? "BATCH_USERS_BLOCKED" : "BATCH_USERS_UNBLOCKED", `User IDs: ${userIds.join(', ')} (${result.changes}件)`, req.ip);
+      res.json({ success: true, count: result.changes });
+    } catch (err) {
+      console.error("Batch update user status error:", err);
+      res.status(500).json({ error: "一括ステータス更新に失敗しました" });
+    }
+  });
+
+  app.post("/api/admin/users/batch-reset-ekyc", authenticateToken, requirePermission('manage_users'), (req: any, res) => {
+    const userIds = req.body.userIds || req.body.ids;
+    if (!Array.isArray(userIds) || userIds.length === 0) {
+      return res.status(400).json({ error: "対象ユーザーが指定されていません" });
+    }
+    try {
+      const placeholders = userIds.map(() => '?').join(',');
+      const stmt = db.prepare(`UPDATE users SET is_ekyc_verified = 0, ekyc_document_type = NULL, ekyc_verified_at = NULL, ekyc_name = NULL WHERE id IN (${placeholders})`);
+      const result = stmt.run(...userIds);
+      logAction(req.user.id, "BATCH_USERS_RESET_EKYC", `User IDs: ${userIds.join(', ')} (${result.changes}件)`, req.ip);
+      res.json({ success: true, count: result.changes });
+    } catch (err) {
+      console.error("Batch reset ekyc error:", err);
+      res.status(500).json({ error: "一括eKYCリセットに失敗しました" });
+    }
+  });
+
+  app.post("/api/admin/users/batch-delete", authenticateToken, requirePermission('manage_users'), (req: any, res) => {
+    const userIds = req.body.userIds || req.body.ids;
+    if (!Array.isArray(userIds) || userIds.length === 0) {
+      return res.status(400).json({ error: "対象ユーザーが指定されていません" });
+    }
+    try {
+      const placeholders = userIds.map(() => '?').join(',');
+      const stmt = db.prepare(`DELETE FROM users WHERE id IN (${placeholders}) AND role != 'admin'`);
+      const result = stmt.run(...userIds);
+      logAction(req.user.id, "BATCH_USERS_DELETED", `User IDs: ${userIds.join(', ')} (${result.changes}件)`, req.ip);
+      res.json({ success: true, count: result.changes });
+    } catch (err) {
+      console.error("Batch delete users error:", err);
+      res.status(500).json({ error: "一括削除に失敗しました" });
     }
   });
 
