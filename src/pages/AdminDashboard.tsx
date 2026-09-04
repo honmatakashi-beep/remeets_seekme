@@ -4851,7 +4851,7 @@ export const AdminDashboard = () => {
           {activeTab === 'stats' && stats && (
             <div className="space-y-10 animate-fade-in font-sans">
               
-              {/* 提案 ④: 概要ヘッダー ＆ リアルタイム稼働状況（ヘルスチェックバッジ） */}
+              {/* 概要ヘッダー ＆ リアルタイム稼働状況（ヘルスチェックバッジ） */}
               <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-2xl bg-teal-50 border border-teal-200 text-teal-700 flex items-center justify-center shrink-0 shadow-2xs mt-0.5">
@@ -4887,7 +4887,7 @@ export const AdminDashboard = () => {
                 </div>
               </div>
 
-              {/* 提案 ①: 最上部に「🚨 運営の要対応タスク（クイックアラートバー）」 */}
+              {/* 最上部に「🚨 運営の要対応タスク（クイックアラートバー）」 */}
               {(() => {
                 const pendingReports = reports?.filter((r: any) => !r.resolved)?.length || 0;
                 const unreadContacts = contacts?.filter((c: any) => c.status === 'unread' || c.status === 'pending')?.length || 0;
@@ -4983,7 +4983,7 @@ export const AdminDashboard = () => {
                 );
               })()}
 
-              {/* 提案 ②: 5大主要KPIサマリーカード（拡充＆数値整理） */}
+              {/* 5大主要KPIサマリーカード */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                 {/* 1. 登録ユーザー総数 */}
                 <div className="bg-white p-6 rounded-3xl border border-slate-150 shadow-sm relative overflow-hidden space-y-3">
@@ -5086,10 +5086,125 @@ export const AdminDashboard = () => {
                 </div>
               </div>
 
-              {/* 提案 ③: 大量のグラフを「3つのテーマ」にグループ分け・整理 */}
+              {/* 提案 ②: KPI直下に配置！【リアルタイム速報: 本日の新規投函 ＆ 最近の再会成立（コンパクト5件表示）】 */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* 本日の新規投函ボトル（直近5件） */}
+                <div className="bg-white p-6 sm:p-7 rounded-3xl border border-slate-100 shadow-sm space-y-5">
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-3.5">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center border border-teal-200">
+                        <PlusCircle size={16} />
+                      </div>
+                      <h3 className="text-base font-serif font-bold text-slate-900">
+                        本日の新規投函ボトル
+                      </h3>
+                    </div>
+                    <span className="text-[10px] font-bold text-teal-800 bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-200">
+                      TODAY'S POSTS
+                    </span>
+                  </div>
+                  <div className="space-y-2.5">
+                    {!stats?.postsToday || stats.postsToday.length === 0 ? (
+                      <div className="py-8 text-center text-slate-400 font-sans text-xs">本日の投函はまだありません</div>
+                    ) : (
+                      <>
+                        {stats.postsToday.slice(0, 5).map((p: any) => (
+                          <button 
+                            key={p.id} 
+                            onClick={() => handleViewPost(p)}
+                            className="w-full text-left group p-3.5 rounded-2xl border border-slate-200/80 hover:border-teal-400 hover:shadow-xs transition-all hover:bg-teal-50/20 cursor-pointer"
+                          >
+                            <div className="flex justify-between items-start mb-1.5">
+                              <span className="font-serif font-bold text-xs sm:text-sm text-slate-900 group-hover:text-teal-800 transition-colors">
+                                {p.target_name} さんへのボトルメール
+                              </span>
+                              <span className="text-[9.5px] font-bold bg-teal-50 text-teal-700 px-2 py-0.5 rounded-full border border-teal-200">
+                                New
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-3 text-[10.5px] text-slate-500 font-sans">
+                              <div className="flex items-center gap-1">
+                                <UserIcon size={12} /> {p.searcher_username}
+                              </div>
+                              <span>•</span>
+                              <div className="flex items-center gap-1">
+                                <Activity size={12} /> {new Date(p.created_at).toLocaleTimeString()}
+                              </div>
+                            </div>
+                          </button>
+                        ))}
+                        <button 
+                          onClick={() => setActiveTab('posts')}
+                          className="w-full py-2.5 text-center text-teal-700 font-bold hover:bg-teal-50 rounded-xl transition-colors flex items-center justify-center gap-1.5 text-xs cursor-pointer border border-teal-200/60"
+                        >
+                          <span>ボトル管理で全件を確認 ({posts?.length || stats.summary.totalPosts || 0}件)</span>
+                          <ArrowRight size={13} />
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
 
-              {/* ─── セクション A: 💌 ボトル＆再会マッチング分析 ─── */}
-              <div className="space-y-6">
+                {/* 最近の再会成立ボトル（直近5件） */}
+                <div className="bg-white p-6 sm:p-7 rounded-3xl border border-slate-100 shadow-sm space-y-5">
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-3.5">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center border border-rose-200">
+                        <Heart size={16} />
+                      </div>
+                      <h3 className="text-base font-serif font-bold text-slate-900">
+                        最近の再会成立ボトル
+                      </h3>
+                    </div>
+                    <span className="text-[10px] font-bold text-rose-800 bg-rose-50 px-2.5 py-0.5 rounded-full border border-rose-200">
+                      RESOLVED
+                    </span>
+                  </div>
+                  <div className="space-y-2.5">
+                    {!stats?.recentReunions || stats.recentReunions.length === 0 ? (
+                      <div className="py-8 text-center text-slate-400 font-sans text-xs">まだ再会データはありません</div>
+                    ) : (
+                      <>
+                        {stats.recentReunions.slice(0, 5).map((p: any) => (
+                          <button 
+                            key={p.id} 
+                            onClick={() => handleViewPost(p)}
+                            className="w-full text-left group p-3.5 rounded-2xl border border-slate-200/80 hover:border-rose-300 hover:shadow-xs transition-all hover:bg-rose-50/20 cursor-pointer"
+                          >
+                            <div className="flex justify-between items-start mb-1.5">
+                              <span className="font-serif font-bold text-xs sm:text-sm text-slate-900 group-hover:text-rose-700 transition-colors">
+                                {p.target_name} さんへのボトルメール
+                              </span>
+                              <span className="text-[9.5px] font-bold bg-rose-50 text-rose-700 px-2 py-0.5 rounded-full border border-rose-200">
+                                再会成功
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-3 text-[10.5px] text-slate-500 font-sans">
+                              <div className="flex items-center gap-1">
+                                <UserIcon size={12} /> {p.searcher_username}
+                              </div>
+                              <span>•</span>
+                              <div className="flex items-center gap-1">
+                                <Activity size={12} /> {new Date(p.created_at).toLocaleDateString()}
+                              </div>
+                            </div>
+                          </button>
+                        ))}
+                        <button 
+                          onClick={() => setActiveTab('successStories')}
+                          className="w-full py-2.5 text-center text-rose-700 font-bold hover:bg-rose-50 rounded-xl transition-colors flex items-center justify-center gap-1.5 text-xs cursor-pointer border border-rose-200/60"
+                        >
+                          <span>奇跡の再会報告（体験談）の管理へ</span>
+                          <ArrowRight size={13} />
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* 提案 A: ボトル＆再会マッチング分析 */}
+              <div className="space-y-6 pt-2">
                 <div className="flex items-center gap-3 border-b border-slate-200/80 pb-3">
                   <div className="w-9 h-9 rounded-xl bg-teal-50 border border-teal-200 text-teal-700 flex items-center justify-center shrink-0">
                     <Mail size={18} />
@@ -5501,117 +5616,6 @@ export const AdminDashboard = () => {
                         </LineChart>
                       </ResponsiveContainer>
                     </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* ─── 最下部: 本日の新規投函 ＆ 最近の再会 ─── */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-4">
-                <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-100 shadow-sm space-y-6">
-                  <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-                    <h3 className="text-base sm:text-lg font-serif font-bold text-slate-900 flex items-center gap-2.5">
-                      <PlusCircle size={18} className="text-teal-700" />
-                      <span>本日の新規投函ボトル</span>
-                    </h3>
-                    <span className="text-[10.5px] font-bold text-teal-800 bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-200">
-                      NEW ENTRIES
-                    </span>
-                  </div>
-                  <div className="space-y-3">
-                    {!stats?.postsToday || stats.postsToday.length === 0 ? (
-                      <div className="py-12 text-center text-slate-400 font-sans text-xs">本日の投函はまだありません</div>
-                    ) : (
-                      <>
-                        {stats.postsToday.slice(0, 10).map((p: any) => (
-                          <button 
-                            key={p.id} 
-                            onClick={() => handleViewPost(p)}
-                            className="w-full text-left group p-4 rounded-2xl border border-slate-200/80 hover:border-teal-400 hover:shadow-xs transition-all hover:bg-teal-50/20 cursor-pointer"
-                          >
-                            <div className="flex justify-between items-start mb-2">
-                              <span className="font-serif font-bold text-sm text-slate-900 group-hover:text-teal-800 transition-colors">
-                                {p.target_name} さんへのボトルメール
-                              </span>
-                              <span className="text-[10px] font-bold bg-teal-50 text-teal-700 px-2 py-0.5 rounded-full border border-teal-200">
-                                New
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-3 text-[11px] text-slate-500 font-sans">
-                              <div className="flex items-center gap-1">
-                                <UserIcon size={12} /> {p.searcher_username}
-                              </div>
-                              <span>•</span>
-                              <div className="flex items-center gap-1">
-                                <Activity size={12} /> {new Date(p.created_at).toLocaleTimeString()}
-                              </div>
-                            </div>
-                          </button>
-                        ))}
-                        {stats?.postsToday && stats.postsToday.length > 10 && (
-                          <button 
-                            onClick={() => setActiveTab('posts')}
-                            className="w-full py-3 text-center text-teal-700 font-bold hover:bg-teal-50 rounded-xl transition-colors flex items-center justify-center gap-1.5 text-xs cursor-pointer"
-                          >
-                            <span>すべてのボトルを表示 ({stats.postsToday.length}件)</span>
-                            <ArrowRight size={14} />
-                          </button>
-                        )}
-                      </>
-                    )}
-                  </div>
-                </div>
-
-                <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-100 shadow-sm space-y-6">
-                  <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-                    <h3 className="text-base sm:text-lg font-serif font-bold text-slate-900 flex items-center gap-2.5">
-                      <Heart size={18} className="text-rose-600" />
-                      <span>最近の再会成立ボトル</span>
-                    </h3>
-                    <span className="text-[10.5px] font-bold text-rose-800 bg-rose-50 px-2.5 py-0.5 rounded-full border border-rose-200">
-                      RESOLVED
-                    </span>
-                  </div>
-                  <div className="space-y-3">
-                    {!stats?.recentReunions || stats.recentReunions.length === 0 ? (
-                      <div className="py-12 text-center text-slate-400 font-sans text-xs">まだ再会データはありません</div>
-                    ) : (
-                      <>
-                        {stats.recentReunions.slice(0, 10).map((p: any) => (
-                          <button 
-                            key={p.id} 
-                            onClick={() => handleViewPost(p)}
-                            className="w-full text-left group p-4 rounded-2xl border border-slate-200/80 hover:border-rose-300 hover:shadow-xs transition-all hover:bg-rose-50/20 cursor-pointer"
-                          >
-                            <div className="flex justify-between items-start mb-2">
-                              <span className="font-serif font-bold text-sm text-slate-900 group-hover:text-rose-700 transition-colors">
-                                {p.target_name} さんへのボトルメール
-                              </span>
-                              <span className="text-[10px] font-bold bg-rose-50 text-rose-700 px-2 py-0.5 rounded-full border border-rose-200">
-                                再会成功
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-3 text-[11px] text-slate-500 font-sans">
-                              <div className="flex items-center gap-1">
-                                <UserIcon size={12} /> {p.searcher_username}
-                              </div>
-                              <span>•</span>
-                              <div className="flex items-center gap-1">
-                                <Activity size={12} /> {new Date(p.created_at).toLocaleDateString()}
-                              </div>
-                            </div>
-                          </button>
-                        ))}
-                        {stats?.recentReunions && stats.recentReunions.length > 10 && (
-                          <button 
-                            onClick={() => setActiveTab('posts')}
-                            className="w-full py-3 text-center text-rose-700 font-bold hover:bg-rose-50 rounded-xl transition-colors flex items-center justify-center gap-1.5 text-xs cursor-pointer"
-                          >
-                            <span>すべての再会済みボトルを表示 ({stats.recentReunions.length}件)</span>
-                            <ArrowRight size={14} />
-                          </button>
-                        )}
-                      </>
-                    )}
                   </div>
                 </div>
               </div>
