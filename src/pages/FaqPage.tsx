@@ -86,11 +86,11 @@ export const FaqPage: React.FC = () => {
       question: '無料で使える範囲はどこまでですか？',
       answer: (
         <>
-          <p className="text-xs leading-relaxed text-black font-sans m-0">
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
             ボトルメール（手紙）を海へ流すこと、手紙を検索して一覧を見ること、想い出クイズへ挑戦することは完全無料（0円）です。
           </p>
-          <p className="text-xs leading-relaxed text-black font-sans m-0">
-            費用が発生するのは、二人だけの共通の想い出クイズに正解し、「お相手の連絡先（LINE IDやメールアドレス）を開示して実際に繋がる瞬間」の <span className="font-bold text-black">600円（税込）買い切りのみ</span> です。
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
+            費用が発生するのは、二人だけの共通の想い出クイズに正解し、「お相手の連絡先（LINE IDやメールアドレス）を開示して実際に繋がる瞬間」の <strong className="text-slate-900 font-bold">600円（税込）買い切りのみ</strong> です。
           </p>
         </>
       ),
@@ -103,10 +103,10 @@ export const FaqPage: React.FC = () => {
       question: '月額料金や後からの追加請求（サブスクリプション）はありますか？',
       answer: (
         <>
-          <p className="text-xs leading-relaxed text-black font-sans m-0">
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
             いいえ、月額料金や自動更新・後からの追加請求は一切ございません。
           </p>
-          <p className="text-xs leading-relaxed text-black font-sans m-0">
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
             一般的なマッチングアプリのような月額会員制（サブスク）ではなく、手紙1通の開通につき600円ポッキリの完全買い切りモデルです。使わない月に勝手に引き落とされる心配は100%ありません。
           </p>
         </>
@@ -120,14 +120,14 @@ export const FaqPage: React.FC = () => {
       question: 'どのような支払い方法に対応していますか？',
       answer: (
         <>
-          <p className="text-xs leading-relaxed text-black font-sans m-0">
-            世界標準の決済プラットフォーム <span className="font-bold text-black">Stripe（ストライプ）</span> を採用しており、以下の安全なお支払い方法に対応しています。
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
+            世界標準の決済プラットフォーム <strong className="text-slate-900 font-bold">Stripe（ストライプ）</strong> を採用しており、以下の安全なお支払い方法に対応しています。
           </p>
-          <ul className="list-disc pl-5 space-y-1 text-xs leading-relaxed text-black font-sans m-0">
+          <ul className="list-disc pl-5 space-y-1 text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
             <li>主要クレジットカード（VISA, Mastercard, JCB, American Express, Diners Club）</li>
             <li>Apple Pay / Google Pay（スマートフォンからのワンタップ決済）</li>
           </ul>
-          <p className="text-xs leading-relaxed text-black/60 font-sans m-0">
+          <p className="text-xs md:text-sm text-slate-500 leading-relaxed font-sans m-0">
             ※クレジットカード情報はStripeの最高水準セキュリティサーバー（PCI-DSS Level 1）で直接処理され、当サービスのサーバーには一切保管されません。
           </p>
         </>
@@ -140,8 +140,8 @@ export const FaqPage: React.FC = () => {
       categoryName: '料金・お支払い',
       question: '領収書や利用明細は発行されますか？',
       answer: (
-        <p className="text-xs leading-relaxed text-black font-sans m-0">
-          はい。決済完了時に、ご登録のメールアドレス宛てに <span className="font-bold text-black">「Stripe公式電子領収書（インボイス制度対応）」</span> が自動送付されます。決済IDや取引日時が明記されており、経費精算にもご利用いただけます。
+        <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
+          はい。決済完了時に、ご登録のメールアドレス宛てに <strong className="text-slate-900 font-bold">「Stripe公式電子領収書（インボイス制度対応）」</strong> が自動送付されます。決済IDや取引日時が明記されており、経費精算にもご利用いただけます。
         </p>
       ),
       tags: ['領収書', '明細', 'インボイス']
@@ -152,8 +152,8 @@ export const FaqPage: React.FC = () => {
       categoryName: '料金・お支払い',
       question: '差出人と受け取る側のどちらがお金を払うのですか？',
       answer: (
-        <p className="text-xs leading-relaxed text-black font-sans m-0">
-          手紙を見つけてクイズに正解し、<span className="font-bold text-black">「お相手の連絡先を開示したい」と希望した側（開封者）</span> が開通手数料（600円）をお支払いいただきます。手紙を最初に流した側（差出人）は、投函時も開通通知を受け取る時も費用はかかりません。
+        <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
+          手紙を見つけてクイズに正解し、<strong className="text-slate-900 font-bold">「お相手の連絡先を開示したい」と希望した側（開封者）</strong> が開通手数料（600円）をお支払いいただきます。手紙を最初に流した側（差出人）は、投函時も開通通知を受け取る時も費用はかかりません。
         </p>
       ),
       tags: ['差出人', '受取人', '負担']
@@ -167,15 +167,15 @@ export const FaqPage: React.FC = () => {
       question: '「想い出クイズ」とは何ですか？なぜ必要なのですか？',
       answer: (
         <>
-          <p className="text-xs leading-relaxed text-black font-sans m-0">
-            想い出クイズは、<span className="font-bold text-black">「差出人と受け取る人の二人だけが知っている共通の記憶（合言葉）」</span> を照合の鍵とするReMEETs独自の仕組みです。
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
+            想い出クイズは、<strong className="text-slate-900 font-bold">「差出人と受け取る人の二人だけが知っている共通の記憶（合言葉）」</strong> を照合の鍵とするReMEETs独自の仕組みです。
           </p>
-          <div className="p-3 bg-zinc-50 rounded-xl border border-brand-border space-y-1 text-xs leading-relaxed text-black font-sans">
-            <span className="font-bold text-black block">【クイズの出題例】</span>
-            <p className="text-xs text-black font-sans m-0">・「高校の文化祭で一緒に作った巨大モザイク画のテーマは何だった？」</p>
-            <p className="text-xs text-black font-sans m-0">・「放課後によく二人で買い食いした駄菓子屋のおばちゃんの名前は？」</p>
+          <div className="p-3.5 bg-zinc-50 rounded-xl border border-brand-border space-y-1.5 text-xs md:text-sm text-slate-600 leading-relaxed font-sans">
+            <strong className="text-slate-900 block font-bold">【クイズの出題例】</strong>
+            <p className="text-xs md:text-sm text-slate-600 font-sans m-0">・「高校の文化祭で一緒に作った巨大モザイク画のテーマは何だった？」</p>
+            <p className="text-xs md:text-sm text-slate-600 font-sans m-0">・「放課後によく二人で買い食いした駄菓子屋のおばちゃんの名前は？」</p>
           </div>
-          <p className="text-xs leading-relaxed text-black font-sans m-0">
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
             これにより、同姓同名の別人や悪意ある第三者が手紙を勝手に開封したり、連絡先を取得したりすることを完全に遮断しています。
           </p>
         </>
@@ -189,10 +189,10 @@ export const FaqPage: React.FC = () => {
       question: 'クイズの答えを間違えたらどうなりますか？',
       answer: (
         <>
-          <p className="text-xs leading-relaxed text-black font-sans m-0">
-            クイズの回答は何回かやり直すことができますが、辞書攻撃や総当たり（当てずっぽうの連続入力）を防ぐため、<span className="font-bold text-black">短時間に複数回連続で間違えると一定時間（数分〜数時間）回答がロック</span> されます。
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
+            クイズの回答は何回かやり直すことができますが、辞書攻撃や総当たり（当てずっぽうの連続入力）を防ぐため、<strong className="text-slate-900 font-bold">短時間に複数回連続で間違えると一定時間（数分〜数時間）回答がロック</strong> されます。
           </p>
-          <p className="text-xs leading-relaxed text-black/60 font-sans m-0">
+          <p className="text-xs md:text-sm text-slate-500 leading-relaxed font-sans m-0">
             ※どうしても答えの漢字や表記が思い出せない場合は、差出人が設定した「ヒント」をご確認いただくか、時間を置いて正確な想い出を振り返ってご入力ください。
           </p>
         </>
@@ -206,10 +206,10 @@ export const FaqPage: React.FC = () => {
       question: 'マッチングした後はどのように連絡を取り合いますか？',
       answer: (
         <>
-          <p className="text-xs leading-relaxed text-black font-sans m-0">
-            ReMEETsでは、アプリ内でメッセージを永続させるのではなく、<span className="font-bold text-black">「お相手のLINE IDやメールアドレスを安全に引き渡し、プラットフォームの役割を完結」</span> させるモデルを採用しています。
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
+            ReMEETsでは、アプリ内でメッセージを永続させるのではなく、<strong className="text-slate-900 font-bold">「お相手のLINE IDやメールアドレスを安全に引き渡し、プラットフォームの役割を完結」</strong> させるモデルを採用しています。
           </p>
-          <p className="text-xs leading-relaxed text-black font-sans m-0">
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
             開通完了画面に表示される「LINEを開く」や「メールを送る」ボタンから、普段使い慣れた連絡手段で直接お相手へ温かい再会のメッセージをお送りいただけます。同時に、差出人へも「あなたの手紙がお相手に届きました」と自動メール通知が届きます。
           </p>
         </>
@@ -223,10 +223,10 @@ export const FaqPage: React.FC = () => {
       question: '探している相手がまだReMEETsを知らない・登録していない場合は？',
       answer: (
         <>
-          <p className="text-xs leading-relaxed text-black font-sans m-0">
-            手紙を一度流しておけば、<span className="font-bold text-black">インターネット上の海（Google検索）に宛名と想い出のヒントが安全にインデックス</span> されます。
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
+            手紙を一度流しておけば、<strong className="text-slate-900 font-bold">インターネット上の海（Google検索）に宛名と想い出のヒントが安全にインデックス</strong> されます。
           </p>
-          <p className="text-xs leading-relaxed text-black font-sans m-0">
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
             お相手がふと自分の名前や出身校を検索（エゴサーチ）した際や、知人から「ReMEETsであなた宛の手紙が流れているよ」とシェアされた際にいつでも手紙を見つけることができます。手紙はあなたが削除しない限り、何年間でも海を漂い続けます。
           </p>
         </>
@@ -242,11 +242,11 @@ export const FaqPage: React.FC = () => {
       question: '自分の本名や住所が赤の他人にバレる心配はありませんか？',
       answer: (
         <>
-          <p className="text-xs leading-relaxed text-black font-sans m-0">
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
             ありません。一般公開されるタイムライン上には、本名や詳細な住所・連絡先は一切表示されません。
           </p>
-          <p className="text-xs leading-relaxed text-black font-sans m-0">
-            手紙の宛名（あだ名やイニシャル可）と、想い出の年代・ゆかりの都道府県、そしてクイズのヒントのみが漂流します。手紙の本文全文やお互いの連絡先は、<span className="font-bold text-black">「想い出クイズ完全一致 ＋ 600円決済 ＋ 本人確認」</span> を完了した当事者2名にのみ暗号化復号されて表示されます。
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
+            手紙の宛名（あだ名やイニシャル可）と、想い出の年代・ゆかりの都道府県、そしてクイズのヒントのみが漂流します。手紙の本文全文やお互いの連絡先は、<strong className="text-slate-900 font-bold">「想い出クイズ完全一致 ＋ 600円決済 ＋ 本人確認」</strong> を完了した当事者2名にのみ暗号化復号されて表示されます。
           </p>
         </>
       ),
@@ -259,10 +259,10 @@ export const FaqPage: React.FC = () => {
       question: 'AIによる自動診断・検閲（安全防衛システム）とは何ですか？',
       answer: (
         <>
-          <p className="text-xs leading-relaxed text-black font-sans m-0">
-            ReMEETsでは、Googleの最新鋭AI <span className="font-bold text-black">Gemini API</span> をバックエンドに常時接続し、すべての投稿テキストを24時間365日自律監視しています。
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
+            ReMEETsでは、Googleの最新鋭AI <strong className="text-slate-900 font-bold">Gemini API</strong> をバックエンドに常時接続し、すべての投稿テキストを24時間365日自律監視しています。
           </p>
-          <p className="text-xs leading-relaxed text-black font-sans m-0">
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
             ストーカー目的の監視メッセージ、金銭トラブルの要求、誹謗中傷、不当な個人情報の晒し行為、性的な出会い目的のワードが含まれている場合、AIが投稿の瞬間に自動検知し、タイムラインへの流出を未然に遮断（隔離・非公開化）します。
           </p>
         </>
@@ -276,10 +276,10 @@ export const FaqPage: React.FC = () => {
       question: '出会い系サイトやマッチングアプリとは何が違うのですか？',
       answer: (
         <>
-          <p className="text-xs leading-relaxed text-black font-sans m-0">
-            ReMEETsは不特定多数の異性との出会いを目的としたサービスではなく、<span className="font-bold text-black">「過去に実在した同級生・恩師・旧友・かつての仲間」との再会に特化したWebプラットフォーム</span> です。
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
+            ReMEETsは不特定多数の異性との出会いを目的としたサービスではなく、<strong className="text-slate-900 font-bold">「過去に実在した同級生・恩師・旧友・かつての仲間」との再会に特化したWebプラットフォーム</strong> です。
           </p>
-          <p className="text-xs leading-relaxed text-black font-sans m-0">
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
             「二人だけの共通の想い出クイズ」に正解しない限り絶対に連絡先が開示されない厳格なセキュリティ設計となっており、無差別なナンパや営業目的の利用は一切不可能です。
           </p>
         </>
@@ -295,10 +295,10 @@ export const FaqPage: React.FC = () => {
       question: 'なぜ公的身分証による本人確認（eKYC）が必要なのですか？',
       answer: (
         <>
-          <p className="text-xs leading-relaxed text-black font-sans m-0">
-            安心・安全な再会を実現し、なりすましや犯罪行為を根絶するため、<span className="font-bold text-black">お相手の連絡先を開示する最終ステップでのみ</span> 公的身分証明書（運転免許証、マイナンバーカード等）による本人確認を実施しています。
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
+            安心・安全な再会を実現し、なりすましや犯罪行為を根絶するため、<strong className="text-slate-900 font-bold">お相手の連絡先を開示する最終ステップでのみ</strong> 公的身分証明書（運転免許証、マイナンバーカード等）による本人確認を実施しています。
           </p>
-          <p className="text-xs leading-relaxed text-black/60 font-sans m-0">
+          <p className="text-xs md:text-sm text-slate-500 leading-relaxed font-sans m-0">
             ※身分証画像データは日本の法基準に準拠した認証インフラで安全に照合され、確認完了後は即座に安全破棄されます。当サービスのサーバー内に画像が恒久保管されることはありません。
           </p>
         </>
@@ -311,8 +311,8 @@ export const FaqPage: React.FC = () => {
       categoryName: '本人確認・返金保証',
       question: '本人確認（eKYC）で不合格になった場合、600円はどうなりますか？',
       answer: (
-        <p className="text-xs leading-relaxed text-black font-sans m-0">
-          <span className="font-bold text-black">全額自動で即時返金（決済取消）されます。</span><br />
+        <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
+          <strong className="text-slate-900 font-bold">全額自動で即時返金（決済取消）されます。</strong><br />
           ReMEETsの決済は、本人確認が完了するまで「仮売上（オーソリ）」として保持されます。身分証の不鮮明や審査不合格となった場合は、システムが即座にStripe経由で請求を完全キャンセル（0円返金）するため、無駄な費用が発生することは一切ありません。
         </p>
       ),
@@ -324,7 +324,7 @@ export const FaqPage: React.FC = () => {
       categoryName: '本人確認・返金保証',
       question: '本人確認にはどんな書類が使えますか？',
       answer: (
-        <ul className="list-disc pl-5 space-y-1 text-xs leading-relaxed text-black font-sans m-0">
+        <ul className="list-disc pl-5 space-y-1 text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
           <li>運転免許証 / 運転経歴証明書</li>
           <li>マイナンバーカード（個人番号カード表面）</li>
           <li>在留カード / 特別永住者証明書</li>
@@ -342,10 +342,10 @@ export const FaqPage: React.FC = () => {
       question: 'パスワードを設定した覚えがありません。どうやってログインしますか？',
       answer: (
         <>
-          <p className="text-xs leading-relaxed text-black font-sans m-0">
-            ReMEETsでは、面倒なパスワード管理やパスワード流出被害を根本から防ぐため、<span className="font-bold text-black">LINEログインおよびGoogleアカウント連携</span> を採用しています。
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
+            ReMEETsでは、面倒なパスワード管理やパスワード流出被害を根本から防ぐため、<strong className="text-slate-900 font-bold">LINEログインおよびGoogleアカウント連携</strong> を採用しています。
           </p>
-          <p className="text-xs leading-relaxed text-black font-sans m-0">
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
             ログイン画面で「LINEでログイン」または「Googleでログイン」をタップするだけで、ワンタップで安全にご利用いただけます。
           </p>
         </>
@@ -358,8 +358,8 @@ export const FaqPage: React.FC = () => {
       categoryName: '登録・ログイン・通知',
       question: '手紙にお相手から返信や開封があったら、どのように通知されますか？',
       answer: (
-        <p className="text-xs leading-relaxed text-black font-sans m-0">
-          あなた宛ての手紙が見つかった際や、あなたが流した手紙にお相手から開封アクションがあった際は、アカウントにご登録いただいた <span className="font-bold text-black">メールアドレス宛てに「再会開通お知らせメール」</span> がリアルタイムで届きます。
+        <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
+          あなた宛ての手紙が見つかった際や、あなたが流した手紙にお相手から開封アクションがあった際は、アカウントにご登録いただいた <strong className="text-slate-900 font-bold">メールアドレス宛てに「再会開通お知らせメール」</strong> がリアルタイムで届きます。
         </p>
       ),
       tags: ['通知', 'メール', '開通通知']
@@ -373,10 +373,10 @@ export const FaqPage: React.FC = () => {
       question: '流した手紙の内容を修正したり、後から消すことはできますか？',
       answer: (
         <>
-          <p className="text-xs leading-relaxed text-black font-sans m-0">
-            はい、いつでも可能です。ログイン後、マイページの「流したボトルメール一覧」から、該当の手紙の <span className="font-bold text-black">「編集」または「海から引き上げる（完全削除）」</span> をワンタップで実行できます。
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
+            はい、いつでも可能です。ログイン後、マイページの「流したボトルメール一覧」から、該当の手紙の <strong className="text-slate-900 font-bold">「編集」または「海から引き上げる（完全削除）」</strong> をワンタップで実行できます。
           </p>
-          <p className="text-xs leading-relaxed text-black font-sans m-0">
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
             削除を実行した手紙はデータベースから物理的に完全抹消され、海（検索一覧・タイムライン）からも即座に消去されます。
           </p>
         </>
@@ -389,7 +389,7 @@ export const FaqPage: React.FC = () => {
       categoryName: '手紙の編集・削除・退会',
       question: '退会したい場合はどのように手続きすればいいですか？',
       answer: (
-        <p className="text-xs leading-relaxed text-black font-sans m-0">
+        <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
           マイページの「アカウント設定」内にある「退会・データ完全消去」よりいつでもご自身で即時退会いただけます。退会と同時に、流した手紙・プロフィール・認証履歴などの全データが安全に物理消去されます。
         </p>
       ),
@@ -401,7 +401,7 @@ export const FaqPage: React.FC = () => {
       categoryName: '手紙の編集・削除・退会',
       question: '海外在住ですが、利用することはできますか？',
       answer: (
-        <p className="text-xs leading-relaxed text-black font-sans m-0">
+        <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
           はい、世界中どこからでもインターネット接続があればWebブラウザからご利用いただけます。Stripe決済は海外発行の主要クレジットカードにも対応しています。
         </p>
       ),
@@ -562,10 +562,10 @@ export const FaqPage: React.FC = () => {
                             className="w-full p-4 text-left flex items-start justify-between gap-3 hover:bg-zinc-100/60 transition-colors cursor-pointer"
                           >
                             <div className="flex items-start gap-2.5 flex-1 min-w-0">
-                              <span className="text-xs font-bold text-teal-700 font-mono shrink-0">
+                              <span className="text-xs md:text-sm font-bold text-teal-700 font-mono shrink-0">
                                 Q.
                               </span>
-                              <h3 className="font-bold text-xs text-black font-sans leading-relaxed flex-1">
+                              <h3 className="font-bold text-xs md:text-sm text-slate-900 font-sans leading-relaxed flex-1">
                                 {faq.question}
                               </h3>
                             </div>
@@ -584,10 +584,10 @@ export const FaqPage: React.FC = () => {
                               >
                                 <div className="px-4 pb-4 pt-1 border-t border-zinc-200/60 bg-white">
                                   <div className="flex items-start gap-2.5 pt-3">
-                                    <span className="text-xs font-bold text-emerald-700 font-mono shrink-0 leading-relaxed">
+                                    <span className="text-xs md:text-sm font-bold text-emerald-700 font-mono shrink-0 leading-relaxed">
                                       A.
                                     </span>
-                                    <div className="flex-1 text-black font-sans leading-relaxed space-y-2 text-xs">
+                                    <div className="flex-1 text-slate-600 font-sans leading-relaxed space-y-2 text-xs md:text-sm">
                                       {faq.answer}
                                     </div>
                                   </div>
