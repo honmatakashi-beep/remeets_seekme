@@ -12,6 +12,7 @@ import rateLimit from "express-rate-limit";
 import nodemailer from "nodemailer";
 import crypto from "crypto";
 import { GoogleGenAI } from "@google/genai";
+import { execSync } from "child_process";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -1660,9 +1661,13 @@ async function startServer() {
         comment TEXT NOT NULL,
         size INTEGER DEFAULT 0,
         created_by INTEGER,
+        git_commit TEXT,
+        git_branch TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       );
     `);
+    try { db.exec("ALTER TABLE system_versions ADD COLUMN git_commit TEXT"); } catch (e) {}
+    try { db.exec("ALTER TABLE system_versions ADD COLUMN git_branch TEXT"); } catch (e) {}
     try { db.exec("ALTER TABLE users ADD COLUMN contact_type TEXT"); } catch (e) {}
     try { db.exec("ALTER TABLE users ADD COLUMN contact_id TEXT"); } catch (e) {}
     try { db.exec("ALTER TABLE users ADD COLUMN is_ekyc_verified INTEGER DEFAULT 0"); } catch (e) {}
@@ -5943,6 +5948,70 @@ async function startServer() {
     }
   });
 
+  // Helper to safely get Git repository information
+  const getCurrentGitInfo = () => {
+    let branch = 'main';
+    let commit = 'unknown';
+    let commitHash = 'unknown';
+    let commitMessage = '';
+    let commitDate = '';
+    let commitAuthor = '';
+    try {
+      branch = execSync('git rev-parse --abbrev-ref HEAD', { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
+      commit = execSync('git rev-parse --short HEAD', { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
+      commitHash = execSync('git rev-parse HEAD', { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
+      commitMessage = execSync('git log -1 --pretty=%B', { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'ignore'] }).trim().split('\n')[0];
+      commitDate = execSync('git log -1 --pretty=%cd --date=iso', { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
+      commitAuthor = execSync('git log -1 --pretty=%an', { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'ignore'] }).trim();
+    } catch (e) {
+      // Git command fallback
+    }
+    return { branch, commit, commitHash, commitMessage, commitDate, commitAuthor };
+  };
+
+  // System & Git Runtime Info Endpoint
+  app.get("/api/admin/system/git-info", authenticateToken, isAdmin, (req, res) => {
+    try {
+      const git = getCurrentGitInfo();
+      let appVersion = '1.2.4-RELEASE';
+      try {
+        const pkgPath = path.join(process.cwd(), 'package.json');
+        if (fs.existsSync(pkgPath)) {
+          const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'));
+          if (pkg.version) appVersion = `v${pkg.version}`;
+        }
+      } catch (e) {}
+
+      let dbSizeBytes = 0;
+      try {
+        const dbPath = path.join(process.cwd(), "kizuna.db");
+        if (fs.existsSync(dbPath)) {
+          dbSizeBytes = fs.statSync(dbPath).size;
+        }
+      } catch (e) {}
+
+      let totalSnapshots = 0;
+      try {
+        const countRow = db.prepare("SELECT count(*) as count FROM system_versions").get() as any;
+        totalSnapshots = countRow?.count || 0;
+      } catch (e) {}
+
+      res.json({
+        ...git,
+        appVersion,
+        nodeVersion: process.version,
+        platform: process.platform,
+        uptimeSec: Math.floor(process.uptime()),
+        dbSizeBytes,
+        totalSnapshots,
+        serverTime: new Date().toISOString()
+      });
+    } catch (err) {
+      console.error("Failed to fetch git & system info:", err);
+      res.status(500).json({ error: "Failed to fetch system info" });
+    }
+  });
+
   // Version Snapshot History Management
   app.get("/api/admin/versions", authenticateToken, isAdmin, (req, res) => {
     try {
@@ -5951,7 +6020,7 @@ async function startServer() {
         fs.mkdirSync(backupsDir, { recursive: true });
       }
       const versions = db.prepare(`
-        SELECT id, filename, comment, size, created_at as timestamp 
+        SELECT id, filename, comment, size, git_commit, git_branch, created_at as timestamp 
         FROM system_versions 
         ORDER BY id DESC
       `).all();
@@ -5991,20 +6060,24 @@ async function startServer() {
         size = fs.statSync(backupPath).size;
       }
 
+      const git = getCurrentGitInfo();
+
       const info = db.prepare(`
-        INSERT INTO system_versions (filename, comment, size, created_by, created_at)
-        VALUES (?, ?, ?, ?, datetime('now', 'localtime'))
-      `).run(filename, snapshotComment, size, req.user?.id || null);
+        INSERT INTO system_versions (filename, comment, size, created_by, git_commit, git_branch, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, datetime('now', 'localtime'))
+      `).run(filename, snapshotComment, size, req.user?.id || null, git.commit !== 'unknown' ? git.commit : null, git.branch || null);
 
       const newVersion = {
         id: info.lastInsertRowid,
         filename,
         comment: snapshotComment,
         size,
+        git_commit: git.commit !== 'unknown' ? git.commit : null,
+        git_branch: git.branch || null,
         timestamp: new Date().toISOString()
       };
 
-      logAction(req.user?.id || 1, "VERSION_CREATED", `スナップショット作成: ${snapshotComment}`, req.ip);
+      logAction(req.user?.id || 1, "VERSION_CREATED", `スナップショット作成: ${snapshotComment} (Git: ${git.commit})`, req.ip);
 
       res.json({ success: true, version: newVersion });
     } catch (err) {
@@ -6039,10 +6112,11 @@ async function startServer() {
           fs.copyFileSync(mainDbPath, preRestorePath);
         }
         const preSize = fs.existsSync(preRestorePath) ? fs.statSync(preRestorePath).size : 0;
+        const currentGit = getCurrentGitInfo();
         db.prepare(`
-          INSERT INTO system_versions (filename, comment, size, created_by, created_at)
-          VALUES (?, ?, ?, ?, datetime('now', 'localtime'))
-        `).run(preRestoreFilename, `復元前自動バックアップ (${targetVersion.comment} への復元直前)`, preSize, req.user?.id || null);
+          INSERT INTO system_versions (filename, comment, size, created_by, git_commit, git_branch, created_at)
+          VALUES (?, ?, ?, ?, ?, ?, datetime('now', 'localtime'))
+        `).run(preRestoreFilename, `復元前自動バックアップ (${targetVersion.comment} への復元直前)`, preSize, req.user?.id || null, currentGit.commit !== 'unknown' ? currentGit.commit : null, currentGit.branch || null);
       } catch (autoBackupErr) {
         console.warn("Pre-restore auto backup warning:", autoBackupErr);
       }

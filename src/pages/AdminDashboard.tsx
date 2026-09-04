@@ -10,16 +10,16 @@ import {
   Activity, AlertCircle, AlertTriangle, ArrowDown, ArrowLeft, ArrowRight,
   ArrowUp, Award, BarChart2, Bell, BookOpen, Bot, Brain, Calendar, Camera, Check,
   CheckCircle, CheckCircle2, CheckSquare, ChevronDown, ChevronLeft,
-  ChevronRight, ChevronUp, Clock, Coins, Copy, CreditCard, Database,
+  ChevronRight, ChevronUp, Clock, Code2, Coins, Copy, CreditCard, Database,
   DollarSign, Download, Edit, Edit2, Edit3, ExternalLink, Eye, EyeOff,
-  FileSpreadsheet, FileText, FileWarning, Filter, Flag, Globe, HardDrive, Heart,
+  FileSpreadsheet, FileText, FileWarning, Filter, Flag, GitBranch, GitCommit, GitPullRequest, Globe, HardDrive, Heart,
   HelpCircle, Home, Image as ImageIcon, Inbox, Info, Key, Lock, LogIn,
   LogOut, Mail, MapPin, Menu, MessageCircle, MessageSquare, MoreVertical,
   Palette, PlusCircle, Presentation, Printer, Radio, RefreshCw, RotateCcw,
-  School, Search, Send, Settings, Shield, ShieldAlert, ShieldCheck, Sparkles,
+  School, Search, Send, Server, Settings, Shield, ShieldAlert, ShieldCheck, Sparkles,
   Star, Tag, Terminal, Trash2, Unlock, Upload, User, User as UserIcon, UserCheck,
   Plus, TrendingUp, History, Users, Wifi, Wind, X, Zap, ArrowUpDown, UserX,
-  FileCheck, ArrowUpRight
+  FileCheck, ArrowUpRight, Cpu
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { cn, PageHeader, getPostUrl, formatEraLabel, getCategoryText, PREFECTURES } from '../lib/utils';
@@ -2158,6 +2158,22 @@ export const AdminDashboard = () => {
   const [reunionFunnel, setReunionFunnel] = useState<any[]>([]);
   const [reunionDurationStats, setReunionDurationStats] = useState<any[]>([]);
   const [dbVersions, setDbVersions] = useState<any[]>([]);
+  const [gitInfo, setGitInfo] = useState<{
+    branch: string;
+    commit: string;
+    commitHash: string;
+    commitMessage: string;
+    commitDate: string;
+    commitAuthor: string;
+    appVersion: string;
+    nodeVersion: string;
+    platform: string;
+    uptimeSec: number;
+    dbSizeBytes: number;
+    totalSnapshots: number;
+    serverTime: string;
+  } | null>(null);
+  const [isLoadingGitInfo, setIsLoadingGitInfo] = useState<boolean>(false);
   const [isCreatingVersion, setIsCreatingVersion] = useState(false);
   const [newVersionComment, setNewVersionComment] = useState('');
   const [selectedVersionIds, setSelectedVersionIds] = useState<number[]>([]);
@@ -2392,6 +2408,22 @@ export const AdminDashboard = () => {
     }
   };
 
+  const fetchGitInfo = async () => {
+    setIsLoadingGitInfo(true);
+    try {
+      const res = await fetch('/api/admin/system/git-info', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        setGitInfo(await res.json());
+      }
+    } catch (err) {
+      console.error("Failed to fetch Git info:", err);
+    } finally {
+      setIsLoadingGitInfo(false);
+    }
+  };
+
   const fetchDbVersions = async () => {
     try {
       const res = await fetch('/api/admin/versions', {
@@ -2580,7 +2612,7 @@ export const AdminDashboard = () => {
       return;
     }
 
-    const headers = ['ID', 'バージョン番号', 'コメント', '種別', 'ファイルサイズ(Byte)', 'ファイルサイズ(MB)', '作成日時', 'ファイル名'];
+    const headers = ['ID', 'バージョン番号', 'コメント', '種別', '連動Gitコミット', 'Gitブランチ', 'ファイルサイズ(Byte)', 'ファイルサイズ(MB)', '作成日時', 'ファイル名'];
     const rows = dbVersions.map((v, index) => {
       const isPreRestore = (v.comment || '').includes('復元前自動バックアップ');
       const mbSize = v.size ? (v.size / (1024 * 1024)).toFixed(3) : '0';
@@ -2589,6 +2621,8 @@ export const AdminDashboard = () => {
         `"#${dbVersions.length - index}"`,
         `"${(v.comment || '').replace(/"/g, '""')}"`,
         isPreRestore ? '復元前自動退避' : '手動スナップショット',
+        `"${v.git_commit || '-'}"`,
+        `"${v.git_branch || '-'}"`,
         v.size || 0,
         mbSize,
         `"${new Date(v.timestamp).toLocaleString('ja-JP').replace(/"/g, '""')}"`,
@@ -3081,6 +3115,7 @@ export const AdminDashboard = () => {
     }
     if (activeTab === 'versions') {
       fetchDbVersions();
+      fetchGitInfo();
     }
   }, [activeTab]);
 
@@ -13815,7 +13850,7 @@ export const AdminDashboard = () => {
                 if (versionTypeFilter === 'pre_restore' && !v.isPreRestore) return false;
                 if (versionSearchQuery.trim()) {
                   const q = versionSearchQuery.toLowerCase();
-                  const matchText = `${v.comment || ''} ${v.filename || ''} ${v.id || ''}`.toLowerCase();
+                  const matchText = `${v.comment || ''} ${v.filename || ''} ${v.git_commit || ''} ${v.git_branch || ''} ${v.id || ''}`.toLowerCase();
                   if (!matchText.includes(q)) return false;
                 }
                 return true;
@@ -13829,6 +13864,16 @@ export const AdminDashboard = () => {
               const currentPageIds = paginatedVersions.map(v => v.id);
               const isAllPageSelected = currentPageIds.length > 0 && currentPageIds.every(id => selectedVersionIds.includes(id));
 
+              // Format uptime
+              const formatUptime = (sec: number = 0) => {
+                const days = Math.floor(sec / 86400);
+                const hours = Math.floor((sec % 86400) / 3600);
+                const mins = Math.floor((sec % 3600) / 60);
+                if (days > 0) return `${days}日 ${hours}時間 ${mins}分`;
+                if (hours > 0) return `${hours}時間 ${mins}分`;
+                return `${mins}分 ${sec % 60}秒`;
+              };
+
               return (
                 <div className="space-y-6">
                   {/* Header */}
@@ -13836,14 +13881,20 @@ export const AdminDashboard = () => {
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
                         <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-brand-primary/10 text-brand-primary uppercase tracking-widest border border-brand-primary/20">
-                          Database Snapshot Backups & Restore Control
+                          Git Runtime Inspector & Database Snapshots
                         </span>
+                        {gitInfo?.commit && (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            Git: {gitInfo.commit}
+                          </span>
+                        )}
                       </div>
                       <h2 className="text-xl md:text-2xl font-serif font-bold text-brand-dark">
-                        バージョン履歴・システム復元 (Versions)
+                        稼働コード確認 ＆ DBスナップショット管理 (Versions)
                       </h2>
                       <p className="text-xs md:text-sm text-brand-dark/70 font-sans max-w-3xl">
-                        データベース全体の完全スナップショット（ユーザー・ボトル・お問い合わせ・各種検閲ログ・アクセス履歴等）を保存し、万が一のデータ消失やメンテナンス時に1クリックで安全にロールバック（復旧）できます。
+                        現在実際に稼働しているGitソースコードの情報（ブランチ・コミット）を常時モニタリング。さらにそのGitコミット時点のDB全データ（会員・ボトル・eKYC・決済）をスナップショット保存し、運用メモと共に安全にロールバック・ダウンロードできます。
                       </p>
                     </div>
 
@@ -13857,12 +13908,126 @@ export const AdminDashboard = () => {
                         <span className="whitespace-nowrap">CSV出力</span>
                       </button>
                       <button
-                        onClick={() => fetchDbVersions()}
+                        onClick={() => {
+                          fetchDbVersions();
+                          fetchGitInfo();
+                        }}
                         className="p-2.5 rounded-xl bg-white border border-brand-border text-brand-dark hover:bg-brand-light/50 transition-colors shadow-xs cursor-pointer shrink-0"
-                        title="最新のバージョン履歴を取得"
+                        title="Git情報および最新のバージョン履歴を取得"
                       >
-                        <RefreshCw size={14} />
+                        <RefreshCw size={14} className={cn(isLoadingGitInfo && "animate-spin text-brand-primary")} />
                       </button>
+                    </div>
+                  </div>
+
+                  {/* 🌐 Git Runtime Inspector Hero Card */}
+                  <div className="glass-card p-6 rounded-3xl border border-brand-border shadow-sm bg-gradient-to-br from-slate-900 via-slate-850 to-slate-900 text-white relative overflow-hidden">
+                    <div className="absolute top-0 right-0 -mt-8 -mr-8 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                    <div className="absolute bottom-0 left-0 -mb-8 -ml-8 w-64 h-64 bg-brand-primary/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                    <div className="relative z-10 space-y-5">
+                      {/* Top Bar of Git Inspector */}
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-white/10">
+                        <div className="flex items-center gap-3 flex-wrap">
+                          <div className="p-2 rounded-xl bg-white/10 border border-white/15 text-emerald-400 shrink-0">
+                            <GitBranch size={20} />
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="text-xs font-bold text-white/60 tracking-wider uppercase">現在稼働中のGitブランチ</span>
+                              <span className="px-2 py-0.5 rounded-md text-xs font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                                {gitInfo?.branch || 'main'}
+                              </span>
+                              <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-white/10 text-white/80 border border-white/15">
+                                {gitInfo?.appVersion || 'v1.2.4-RELEASE'}
+                              </span>
+                            </div>
+                            <h3 className="text-base sm:text-lg font-bold text-white mt-0.5 flex items-center gap-2">
+                              <span>コミット:</span>
+                              <span className="font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30">
+                                {gitInfo?.commit || '確認中...'}
+                              </span>
+                              {gitInfo?.commit && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(gitInfo.commitHash || gitInfo.commit);
+                                    setStatusMsg({ type: 'success', text: `コミットハッシュ "${gitInfo.commit}" をコピーしました` });
+                                    setTimeout(() => setStatusMsg(null), 3000);
+                                  }}
+                                  className="p-1 text-white/50 hover:text-white hover:bg-white/10 rounded transition-colors cursor-pointer"
+                                  title="フルコミットハッシュをコピー"
+                                >
+                                  <Copy size={13} />
+                                </button>
+                              )}
+                            </h3>
+                          </div>
+                        </div>
+
+                        {/* Status Pills */}
+                        <div className="flex items-center gap-2 flex-wrap text-xs text-white/70">
+                          <div className="px-3 py-1 rounded-xl bg-white/5 border border-white/10 flex items-center gap-1.5">
+                            <Clock size={12} className="text-sky-400 shrink-0" />
+                            <span>稼働時間:</span>
+                            <span className="font-mono font-bold text-white">{formatUptime(gitInfo?.uptimeSec)}</span>
+                          </div>
+                          <div className="px-3 py-1 rounded-xl bg-white/5 border border-white/10 flex items-center gap-1.5">
+                            <Database size={12} className="text-amber-400 shrink-0" />
+                            <span>DB容量:</span>
+                            <span className="font-mono font-bold text-white">
+                              {gitInfo?.dbSizeBytes ? (gitInfo.dbSizeBytes / (1024 * 1024)).toFixed(2) : '0.00'} MB
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Commit Message & Author info */}
+                      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+                        <div className="md:col-span-8 p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-1.5">
+                          <div className="text-[11px] font-bold text-white/50 uppercase tracking-wider flex items-center gap-1.5">
+                            <GitCommit size={13} className="text-emerald-400 shrink-0" />
+                            <span>最新コミット内容 (Latest Commit Message)</span>
+                          </div>
+                          <p className="text-xs sm:text-sm font-mono text-white/90 truncate" title={gitInfo?.commitMessage || 'No message'}>
+                            {gitInfo?.commitMessage || 'コミットメッセージ取得中...'}
+                          </p>
+                          <div className="text-[10px] text-white/50 flex items-center gap-3 flex-wrap">
+                            {gitInfo?.commitAuthor && <span>コミッター: <b className="text-white/80">{gitInfo.commitAuthor}</b></span>}
+                            {gitInfo?.commitDate && <span>日時: <b className="text-white/80">{new Date(gitInfo.commitDate).toLocaleString('ja-JP')}</b></span>}
+                          </div>
+                        </div>
+
+                        {/* System Specs Pill */}
+                        <div className="md:col-span-4 p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-1.5">
+                          <div className="text-[11px] font-bold text-white/50 uppercase tracking-wider flex items-center gap-1.5">
+                            <Server size={13} className="text-purple-400 shrink-0" />
+                            <span>実行ランタイム環境</span>
+                          </div>
+                          <div className="text-xs font-mono text-white/90 space-y-0.5">
+                            <div className="flex justify-between">
+                              <span className="text-white/50">Node.js:</span>
+                              <span className="font-bold">{gitInfo?.nodeVersion || 'v20.x'}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-white/50">OS Platform:</span>
+                              <span className="font-bold">{gitInfo?.platform || 'darwin'}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Guide Banner */}
+                      <div className="p-3 rounded-2xl bg-emerald-950/40 border border-emerald-500/20 text-emerald-200/90 text-xs flex items-start gap-2.5">
+                        <Info size={16} className="text-emerald-400 shrink-0 mt-0.5" />
+                        <div className="space-y-0.5">
+                          <span className="font-bold text-white">💡 GitとDBスナップショットの役割分担について:</span>
+                          <p className="text-[11px] text-emerald-200/80 leading-relaxed">
+                            <b>Git</b> はプログラムコード（画面やロジック）のバージョンを管理しています。一方、会員情報や想い出ボトル・本人確認・決済データなどの実データは <b>データベース（SQLite）</b> に保存されています。本機能では、スナップショット保存時に「どのGitコミットの時のデータか」を自動記録し、不具合発生時にも安全に指定バージョンへロールバックできるように設計されています。
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
@@ -13890,6 +14055,18 @@ export const AdminDashboard = () => {
                       <div className="text-[10px] mt-1 opacity-70 whitespace-nowrap">最終更新日時</div>
                     </div>
 
+                    {/* Active Git Commit */}
+                    <div className="p-4 rounded-2xl border bg-white border-brand-border/80 text-brand-dark shadow-xs">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[11px] font-bold uppercase tracking-wider opacity-70 whitespace-nowrap">稼働中Gitコミット</span>
+                        <GitCommit size={16} className="text-emerald-600" />
+                      </div>
+                      <div className="text-lg md:text-xl font-mono font-bold text-emerald-900 truncate">
+                        {gitInfo?.commit || '-'}
+                      </div>
+                      <div className="text-[10px] mt-1 opacity-70 whitespace-nowrap">ブランチ: {gitInfo?.branch || 'main'}</div>
+                    </div>
+
                     {/* Total Disk Size */}
                     <div className="p-4 rounded-2xl border bg-white border-brand-border/80 text-brand-dark shadow-xs">
                       <div className="flex items-center justify-between mb-2">
@@ -13899,35 +14076,36 @@ export const AdminDashboard = () => {
                       <div className="text-2xl md:text-3xl font-mono font-bold text-sky-950">{totalSizeMb} <span className="text-sm font-normal">MB</span></div>
                       <div className="text-[10px] mt-1 opacity-70 whitespace-nowrap">ディスク使用量</div>
                     </div>
-
-                    {/* Pre-restore Auto Backups */}
-                    <div className="p-4 rounded-2xl border bg-white border-brand-border/80 text-brand-dark shadow-xs">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-[11px] font-bold uppercase tracking-wider opacity-70 whitespace-nowrap">復元前自動セーフティ</span>
-                        <ShieldCheck size={16} className="text-purple-600" />
-                      </div>
-                      <div className="text-2xl md:text-3xl font-mono font-bold text-purple-950">{preRestoreCount}</div>
-                      <div className="text-[10px] mt-1 opacity-70 whitespace-nowrap">ロールバック直前退避</div>
-                    </div>
                   </div>
 
                   {/* Create Snapshot Panel */}
                   <div className="glass-card p-5 rounded-2xl border border-brand-border shadow-xs bg-gradient-to-r from-brand-light/40 to-white">
-                    <h3 className="text-xs font-bold text-brand-dark uppercase tracking-wider mb-3 flex items-center gap-1.5">
-                      <PlusCircle size={14} className="text-brand-primary" />
-                      <span>現在の状態でスナップショットを即時作成</span>
-                    </h3>
+                    <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+                      <h3 className="text-xs font-bold text-brand-dark uppercase tracking-wider flex items-center gap-1.5">
+                        <PlusCircle size={14} className="text-brand-primary" />
+                        <span>現在の状態でスナップショットを即時作成</span>
+                      </h3>
+                      {gitInfo?.commit && (
+                        <span className="text-[11px] text-brand-dark/60 font-mono flex items-center gap-1">
+                          <GitBranch size={12} className="text-emerald-600" />
+                          連動記録コミット: <b className="text-emerald-700">{gitInfo.commit}</b> ({gitInfo.branch})
+                        </span>
+                      )}
+                    </div>
                     <div className="flex flex-col sm:flex-row items-center gap-2.5">
                       <input 
                         type="text"
-                        placeholder="スナップショットの解説・記憶メモ（例: データ復旧完了時、本番公開前など）..."
+                        placeholder="スナップショットの解説・運用メモ（例: 本番デプロイ前退避、問い合わせデータ復元後など）..."
                         value={newVersionComment}
                         onChange={(e) => setNewVersionComment(e.target.value)}
                         className="w-full flex-1 px-4 py-2.5 bg-white border border-brand-border rounded-xl text-xs outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/10 transition-all text-brand-dark placeholder:text-brand-dark/40"
                       />
                       <button
                         type="button"
-                        onClick={handleCreateVersion}
+                        onClick={async () => {
+                          await handleCreateVersion();
+                          fetchGitInfo();
+                        }}
                         disabled={isCreatingVersion}
                         className="w-full sm:w-auto px-5 py-2.5 bg-brand-dark text-white rounded-xl text-xs font-bold hover:bg-brand-dark/90 active:scale-95 transition-all shadow-sm flex items-center justify-center gap-1.5 disabled:opacity-50 cursor-pointer whitespace-nowrap shrink-0"
                       >
@@ -14015,7 +14193,7 @@ export const AdminDashboard = () => {
                           type="text"
                           value={versionSearchQuery}
                           onChange={(e) => { setVersionSearchQuery(e.target.value); setVersionCurrentPage(1); }}
-                          placeholder="コメント・ファイル名・バージョンIDで検索..."
+                          placeholder="コメント・メモ・Gitコミット・ファイル名で検索..."
                           className="w-full pl-9 pr-8 py-2 bg-white border border-brand-border rounded-xl text-xs outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/10 transition-all text-brand-dark placeholder:text-brand-dark/40"
                         />
                         {versionSearchQuery && (
@@ -14083,7 +14261,8 @@ export const AdminDashboard = () => {
                             </th>
                             <th className="px-3 text-[11px] font-bold uppercase tracking-widest text-brand-dark/75 whitespace-nowrap align-middle">世代 #</th>
                             <th className="px-3 text-[11px] font-bold uppercase tracking-widest text-brand-dark/75 whitespace-nowrap align-middle">種別</th>
-                            <th className="px-3 text-[11px] font-bold uppercase tracking-widest text-brand-dark/75 whitespace-nowrap align-middle min-w-[240px]">コメント・記憶メモ</th>
+                            <th className="px-3 text-[11px] font-bold uppercase tracking-widest text-brand-dark/75 whitespace-nowrap align-middle min-w-[240px]">コメント・運用メモ</th>
+                            <th className="px-3 text-[11px] font-bold uppercase tracking-widest text-brand-dark/75 whitespace-nowrap align-middle">連動Gitコミット</th>
                             <th className="px-3 text-[11px] font-bold uppercase tracking-widest text-brand-dark/75 whitespace-nowrap align-middle">作成日時</th>
                             <th className="px-3 text-[11px] font-bold uppercase tracking-widest text-brand-dark/75 whitespace-nowrap align-middle">容量</th>
                             <th className="px-3 text-[11px] font-bold uppercase tracking-widest text-brand-dark/75 text-right whitespace-nowrap align-middle pr-4">操作</th>
@@ -14147,6 +14326,19 @@ export const AdminDashboard = () => {
                                   </div>
                                 </td>
 
+                                {/* Git Commit Badge */}
+                                <td className="px-3 align-middle whitespace-nowrap">
+                                  {v.git_commit ? (
+                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-mono font-bold bg-slate-100 text-slate-800 border border-slate-300">
+                                      <GitCommit size={11} className="text-emerald-600 shrink-0" />
+                                      <span>{v.git_commit}</span>
+                                      {v.git_branch && <span className="text-[9px] text-slate-500 font-normal">({v.git_branch})</span>}
+                                    </span>
+                                  ) : (
+                                    <span className="text-xs text-brand-dark/30 font-mono">-</span>
+                                  )}
+                                </td>
+
                                 {/* Timestamp */}
                                 <td className="px-3 align-middle text-[11px] text-brand-dark/75 font-mono whitespace-nowrap">
                                   {new Date(v.timestamp).toLocaleString('ja-JP', { 
@@ -14201,7 +14393,7 @@ export const AdminDashboard = () => {
 
                           {paginatedVersions.length === 0 && (
                             <tr>
-                              <td colSpan={7} className="py-16 text-center text-brand-dark/50 font-serif">
+                              <td colSpan={8} className="py-16 text-center text-brand-dark/50 font-serif">
                                 <div className="max-w-xs mx-auto space-y-2">
                                   <History size={32} className="mx-auto text-brand-dark/30" />
                                   <p className="text-sm font-bold text-brand-dark/80">該当するバージョン履歴はありません</p>
