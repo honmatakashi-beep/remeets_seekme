@@ -83,22 +83,28 @@ export const FaqPage: React.FC = () => {
       id: 'q-pricing-1',
       category: 'pricing',
       categoryName: '料金・お支払い',
-      question: '無料で使える範囲はどこまでですか？費用が発生するタイミングを教えてください。',
+      question: '無料で使える範囲はどこまでですか？費用が発生する項目と金額を教えてください。',
       answer: (
         <>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
             ボトルメール（手紙）を海へ流すこと、手紙を検索して一覧を見ること、想い出クイズへ挑戦することは<strong className="text-slate-900 font-bold">完全無料（0円）</strong>です。
           </p>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            費用が発生するのは、以下の2つの機能を利用する際のそれぞれ<strong className="text-slate-900 font-bold">600円（税込 / 完全買い切り・都度決済）</strong>のみです。
+            費用が発生するのは、以下の2つの機能を利用する際のそれぞれ<strong className="text-slate-900 font-bold">600円（税込 / 完全買い切り型）</strong>です。両方を同時にご利用いただく場合の合計決済額は <strong className="text-slate-900 font-bold">1,200円（税込）</strong> となります。
           </p>
-          <ul className="list-disc pl-5 space-y-1 text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            <li><strong className="text-slate-900">① 手紙開封 ＆ 連絡先開示（1通 600円）</strong>：クイズ正解後、手紙全文を閲覧しお相手の連絡先（LINE IDやメールアドレス）を開示して繋がる際</li>
-            <li><strong className="text-slate-900">② 公的本人確認（eKYC）審査（1回 600円）</strong>：運転免許証やマイナンバーカード等による身元照合を行う際（※審査不合格時は100%全額即時自動返金）</li>
+          <ul className="list-disc pl-5 space-y-1.5 text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
+            <li>
+              <strong className="text-slate-900">① 手紙開封 ＆ 連絡先開示手数料（1通 600円 税込）</strong><br />
+              二人だけの想い出クイズに正解後、手紙全文を閲覧しお相手の連絡先（LINE IDやメールアドレス）を開示して実際に繋がる際の手数料です。
+            </li>
+            <li>
+              <strong className="text-slate-900">② 公的本人確認（eKYC）審査手数料（1回 600円 税込）</strong><br />
+              運転免許証やマイナンバーカード等を用いた安全な公的本人確認を行う際の手数料です。（※書類不備や年齢不一致で審査不承認となった場合は、Stripe仮売上により全額100%自動返金されます）
+            </li>
           </ul>
         </>
       ),
-      tags: ['無料', '料金', '投函', '検索', 'eKYC', '開封手数料']
+      tags: ['無料', '料金', '投函', '検索', 'eKYC', '開封手数料', '1200円']
     },
     {
       id: 'q-pricing-2',
