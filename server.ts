@@ -5796,6 +5796,72 @@ async function startServer() {
     }
   });
 
+  app.patch("/api/admin/posts/:id/status", authenticateToken, isAdmin, (req: any, res) => {
+    const { status } = req.body;
+    if (!status || !['active', 'resolved', 'archived'].includes(status)) {
+      return res.status(400).json({ error: "無効なステータスです" });
+    }
+    try {
+      db.prepare("UPDATE posts SET status = ? WHERE id = ?").run(status, req.params.id);
+      logAction(req.user.id, "POST_STATUS_UPDATED", `Post ID: ${req.params.id} -> ${status}`, req.ip);
+      res.json({ success: true });
+    } catch (err) {
+      console.error("Failed to update post status:", err);
+      res.status(500).json({ error: "ステータス更新に失敗しました" });
+    }
+  });
+
+  app.post("/api/admin/posts/batch-status", authenticateToken, isAdmin, (req: any, res) => {
+    const postIds = req.body.postIds || req.body.ids;
+    const { status } = req.body;
+    if (!Array.isArray(postIds) || postIds.length === 0) {
+      return res.status(400).json({ error: "対象ボトルメールが指定されていません" });
+    }
+    if (!status || !['active', 'resolved', 'archived'].includes(status)) {
+      return res.status(400).json({ error: "無効なステータスです" });
+    }
+    try {
+      const placeholders = postIds.map(() => '?').join(',');
+      const stmt = db.prepare(`UPDATE posts SET status = ? WHERE id IN (${placeholders})`);
+      const result = stmt.run(status, ...postIds);
+      logAction(req.user.id, "BATCH_POSTS_STATUS_UPDATED", `Post IDs: ${postIds.join(', ')} -> ${status} (${result.changes}件)`, req.ip);
+      res.json({ success: true, count: result.changes });
+    } catch (err) {
+      console.error("Batch update post status error:", err);
+      res.status(500).json({ error: "一括ステータス更新に失敗しました" });
+    }
+  });
+
+  app.post("/api/admin/posts/batch-ai-analyze", authenticateToken, isAdmin, async (req: any, res) => {
+    const postIds = req.body.postIds || req.body.ids;
+    if (!Array.isArray(postIds) || postIds.length === 0) {
+      return res.status(400).json({ error: "対象ボトルメールが指定されていません" });
+    }
+    try {
+      const placeholders = postIds.map(() => '?').join(',');
+      const posts = db.prepare(`SELECT * FROM posts WHERE id IN (${placeholders})`).all(...postIds) as any[];
+      let analyzedCount = 0;
+
+      for (const p of posts) {
+        const fullContent = `【差出人名】${p.searcher_name || ''}\n【対象者名】${p.target_name || ''}\n【対象者本名】${p.target_last_name || ''} ${p.target_first_name || ''}\n【学校・所属】${p.target_school || ''}\n【地域】${p.target_hometown || ''}\n【年代・カテゴリ】${p.era || ''} ${p.category || ''}\n【想い出の手紙・メッセージ】${p.message || ''}\n【合言葉・秘密の質問】${p.secret_question || ''}\n【回答】${p.secret_answer_plain || p.secret_answer || ''}`;
+        const diagnosis = await diagnosePost(fullContent);
+        
+        db.prepare(`
+          UPDATE posts 
+          SET ai_diagnosed = 1, ai_flagged = ?, ai_reason = ? 
+          WHERE id = ?
+        `).run(diagnosis.flagged ? 1 : 0, diagnosis.reason, p.id);
+        analyzedCount++;
+      }
+
+      logAction(req.user.id, "BATCH_POSTS_AI_ANALYZED", `Post IDs: ${postIds.join(', ')} (${analyzedCount}件診断完了)`, req.ip);
+      res.json({ success: true, count: analyzedCount });
+    } catch (err) {
+      console.error("Batch AI analyze error:", err);
+      res.status(500).json({ error: "一括AI診断の実行中にエラーが発生しました" });
+    }
+  });
+
   app.get("/api/admin/deleted-posts-archive", authenticateToken, isAdmin, (req, res) => {
     try {
       const archive = db.prepare("SELECT * FROM deleted_posts_archive ORDER BY deleted_at DESC").all();
