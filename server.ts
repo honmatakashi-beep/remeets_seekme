@@ -6171,6 +6171,63 @@ async function startServer() {
     }
   });
 
+  // System Environment & External API Status Endpoint
+  app.get("/api/admin/system/env-status", authenticateToken, isAdmin, (req, res) => {
+    try {
+      const dbPath = path.join(process.cwd(), "kizuna.db");
+      let dbSizeBytes = 0;
+      if (fs.existsSync(dbPath)) {
+        dbSizeBytes = fs.statSync(dbPath).size;
+      }
+
+      res.json({
+        gemini: Boolean(process.env.GEMINI_API_KEY),
+        stripe: Boolean(process.env.STRIPE_SECRET_KEY),
+        resend: Boolean(process.env.RESEND_API_KEY),
+        line: Boolean(process.env.LINE_CHANNEL_ID || process.env.LINE_CHANNEL_SECRET),
+        google: Boolean(process.env.GOOGLE_CLIENT_ID || process.env.GOOGLE_CLIENT_SECRET),
+        databaseUrl: Boolean(process.env.DATABASE_URL),
+        databaseEngine: process.env.DATABASE_URL ? 'PostgreSQL (Cloud SQL / Supabase)' : 'SQLite (better-sqlite3 / kizuna.db)',
+        nodeEnv: process.env.NODE_ENV || 'development',
+        nodeVersion: process.version,
+        platform: process.platform,
+        uptime: Math.floor(process.uptime()),
+        memoryUsage: process.memoryUsage(),
+        dbSizeBytes,
+        serverTime: new Date().toISOString()
+      });
+    } catch (err) {
+      console.error("Failed to fetch env status:", err);
+      res.status(500).json({ error: "Failed to fetch env status" });
+    }
+  });
+
+  // Database VACUUM & Optimize Endpoint
+  app.post("/api/admin/system/vacuum", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      db.exec("VACUUM;");
+      db.exec("PRAGMA optimize;");
+      
+      const dbPath = path.join(process.cwd(), 'kizuna.db');
+      let sizeBytes = 0;
+      if (fs.existsSync(dbPath)) {
+        sizeBytes = fs.statSync(dbPath).size;
+      }
+      const sizeMB = (sizeBytes / (1024 * 1024)).toFixed(2) + ' MB';
+
+      logAction(req.user?.id || 1, "SYSTEM_DB_VACUUM", `Database VACUUM and optimize executed. New size: ${sizeMB}`, req.ip);
+
+      res.json({
+        success: true,
+        message: "データベースの最適化（VACUUM / PRAGMA optimize）が正常に完了しました。",
+        size: sizeMB
+      });
+    } catch (err) {
+      console.error("Database VACUUM error:", err);
+      res.status(500).json({ error: "データベースの最適化に失敗しました。" });
+    }
+  });
+
   // Version Snapshot History Management
   app.get("/api/admin/versions", authenticateToken, isAdmin, (req, res) => {
     try {

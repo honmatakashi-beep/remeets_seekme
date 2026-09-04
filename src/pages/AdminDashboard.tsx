@@ -40,6 +40,7 @@ import { AdminEmailTemplatesView } from '../components/AdminEmailTemplatesView';
 import { AdminBroadcastView } from '../components/AdminBroadcastView';
 import { AdminLogsView } from '../components/AdminLogsView';
 import { AdminSecurityCenterView } from '../components/AdminSecurityCenterView';
+import { AdminSystemCenterView } from '../components/AdminSystemCenterView';
 import {
   classifyTicket,
   TicketCategory,
@@ -11812,168 +11813,10 @@ export const AdminDashboard = () => {
           
 
           ) : activeTab === 'system' ? (
-            <div className="space-y-8">
-              <AdminLiveSystemMonitor token={token} />
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="glass-card p-8 space-y-6">
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-xl font-serif text-black flex items-center gap-3">
-                        <Activity size={20} className="text-black" />
-                        データベース健康診断
-                      </h3>
-                      <div className="flex gap-2">
-                        <button 
-                          onClick={handleResetData}
-                          className="px-4 py-2 bg-red-50 text-red-600 border border-red-100 rounded-xl text-[12px] font-bold uppercase tracking-widest hover:bg-red-600 hover:text-white transition-all"
-                        >
-                          データリセット
-                        </button>
-                        <button 
-                          onClick={handleDbHealthCheck}
-                          className="px-4 py-2 bg-black text-white rounded-xl text-[12px] font-bold uppercase tracking-widest hover:bg-black/80 transition-all"
-                        >
-                          診断を実行
-                        </button>
-                      </div>
-                    </div>
-                  
-                  {dbHealth ? (
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between p-4 bg-brand-light/50 rounded-xl border border-brand-border">
-                        <span className="text-sm font-bold text-black/60 uppercase tracking-widest">ステータス</span>
-                        <span className={`text-sm font-bold uppercase tracking-widest px-3 py-1 rounded-full ${dbHealth.status === 'healthy' ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'}`}>
-                          {dbHealth.status === 'healthy' ? '正常' : '異常あり'}
-                        </span>
-                      </div>
-                      <div className="p-4 bg-brand-light/50 rounded-xl border border-brand-border space-y-2">
-                        <span className="text-sm font-bold text-black/60 uppercase tracking-widest block">詳細メッセージ</span>
-                        <p className="text-sm font-serif text-black leading-relaxed">{dbHealth.message}</p>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="p-4 bg-brand-light/50 rounded-xl border border-brand-border">
-                          <span className="text-[10px] font-bold text-black/40 uppercase tracking-widest block mb-1">テーブル数</span>
-                          <span className="text-xl font-serif font-bold text-black">{dbHealth.tables}</span>
-                        </div>
-                        <div className="p-4 bg-brand-light/50 rounded-xl border border-brand-border">
-                          <span className="text-[10px] font-bold text-black/40 uppercase tracking-widest block mb-1">DBサイズ</span>
-                          <span className="text-xl font-serif font-bold text-black">{dbHealth.size}</span>
-                        </div>
-                      </div>
-                      {dbHealth.counts && (
-                        <div className="p-4 bg-brand-light/50 rounded-xl border border-brand-border space-y-3">
-                          <span className="text-[10px] font-bold text-black/60 uppercase tracking-widest block">テーブル別レコード数</span>
-                          <div className="grid grid-cols-2 gap-x-6 gap-y-2">
-                            {Object.entries(dbHealth.counts).map(([table, count]: [string, any]) => (
-                              <div key={table} className="flex items-center justify-between border-b border-brand-border/50 pb-1">
-                                <span className="text-[11px] font-mono text-black/60">{table}</span>
-                                <span className="text-[11px] font-bold text-black">{count.toLocaleString()}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="py-12 text-center text-black/30 font-serif">
-                      診断を実行してください。
-                    </div>
-                  )}
-                </div>
-
-                <div className="glass-card p-8 space-y-6">
-                  <h3 className="text-xl font-serif text-black flex items-center gap-3">
-                    <Shield size={20} className="text-black" />
-                    システム構成
-                  </h3>
-                  <div className="space-y-4">
-                    <div className="flex justify-between py-3 border-b border-brand-border">
-                      <span className="text-sm text-black/60 font-bold uppercase tracking-widest">環境</span>
-                      <span className="text-sm font-mono font-bold text-black">{process.env.NODE_ENV || 'development'}</span>
-                    </div>
-                    <div className="flex justify-between py-3 border-b border-brand-border">
-                      <span className="text-sm text-black/60 font-bold uppercase tracking-widest">プラットフォーム</span>
-                      <span className="text-sm font-mono font-bold text-black">Cloud Run</span>
-                    </div>
-                    <div className="flex justify-between py-3 border-b border-brand-border">
-                      <span className="text-sm text-black/60 font-bold uppercase tracking-widest">データベース</span>
-                      <span className="text-sm font-mono font-bold text-black">Firebase Firestore (NoSQL)</span>
-                    </div>
-                    <div className="flex justify-between py-3 border-b border-brand-border">
-                      <span className="text-sm text-black/60 font-bold uppercase tracking-widest">APIバージョン</span>
-                      <span className="text-sm font-mono font-bold text-black">v1.2.4</span>
-                    </div>
-                  </div>
-
-                  {/* 一般公開設定 */}
-                  <div className="pt-6 border-t border-brand-border space-y-4">
-                    <h4 className="text-sm font-bold text-black uppercase tracking-widest flex items-center gap-2">
-                      <Eye size={16} className="text-black/60" />
-                      一般公開設定（ホーム画面）
-                    </h4>
-                    <div className="p-4 bg-brand-light/40 rounded-xl border border-brand-border/60">
-                      <div className="flex items-center justify-between">
-                        <div className="space-y-1 pr-4">
-                          <span className="text-xs font-bold text-black block">ホームページ統計情報の表示</span>
-                          <span className="text-[10px] text-black/50 font-serif block leading-relaxed">
-                            「流されたボトルメール数」「再会成功数」「本日の投函数」グリッドを表示・非表示にします。利用者が集まる初期フェーズでの運用に適しています。
-                          </span>
-                        </div>
-                        <button
-                          onClick={handleToggleHomeStats}
-                          className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                            statsEnabled ? 'bg-[#5ea5ad]' : 'bg-black/10'
-                          }`}
-                        >
-                          <span
-                            className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                              statsEnabled ? 'translate-x-5' : 'translate-x-0'
-                            }`}
-                          />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="glass-card p-8">
-                <h3 className="text-xl font-serif text-black mb-8 flex items-center gap-3">
-                  <Terminal size={20} className="text-black" />
-                  システム監査ログ (直近50件)
-                </h3>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse">
-                    <thead>
-                      <tr className="border-b border-brand-border bg-brand-light/50">
-                        <th className="px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-black/75">日時</th>
-                        <th className="px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-black/75">タイプ</th>
-                        <th className="px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-black/75">詳細</th>
-                        <th className="px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-black/75">IP</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {auditLogs.slice(0, 50).map((log, idx) => (
-                        <tr key={idx} className="border-b border-brand-border last:border-0 hover:bg-brand-light/30 transition-colors">
-                          <td className="px-3 py-1 text-[12px] text-black/75 whitespace-nowrap">
-                            {new Date(log.created_at).toLocaleString()}
-                          </td>
-                          <td className="px-3 py-1 whitespace-nowrap">
-                            <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full ${
-                              log.action.includes('failure') || log.action.includes('blocked') ? 'bg-red-50 text-red-600' : 'bg-black/5 text-black'
-                            }`}>
-                              {log.action}
-                            </span>
-                          </td>
-                          <td className="px-3 py-1 text-[12px] text-black/70 font-serif">{log.details}</td>
-                          <td className="px-3 py-1 text-[12px] font-mono text-black/50">{log.ip_address}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
+            <AdminSystemCenterView
+              token={token}
+              onNavigateTab={(tab) => setActiveTab(tab)}
+            />
           ) : activeTab === 'versions' ? (
             (() => {
               const enrichedVersions = dbVersions.map((v, index) => {
