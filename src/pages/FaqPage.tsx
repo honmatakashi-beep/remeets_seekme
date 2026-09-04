@@ -491,8 +491,8 @@ export const FaqPage: React.FC = () => {
           )}
         </div>
 
-        {/* 🗂️ Category Pills Navigation */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar">
+        {/* 🗂️ Category Pills Navigation (全表示・折り返しレイアウト) */}
+        <div className="flex flex-wrap items-center gap-2 pt-1">
           {categories.map((cat) => {
             const Icon = cat.icon;
             const isSelected = selectedCategory === cat.id;
@@ -501,7 +501,7 @@ export const FaqPage: React.FC = () => {
                 key={cat.id}
                 type="button"
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer border ${
+                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
                   isSelected
                     ? 'bg-teal-700 text-white border-teal-700 shadow-sm'
                     : 'bg-zinc-50 text-black/70 hover:bg-zinc-100 hover:text-black border-brand-border'
