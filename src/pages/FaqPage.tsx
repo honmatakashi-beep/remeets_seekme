@@ -5,7 +5,6 @@ import {
   HelpCircle,
   Search,
   ChevronDown,
-  ChevronUp,
   CreditCard,
   HeartHandshake,
   ShieldCheck,
@@ -13,8 +12,8 @@ import {
   Smartphone,
   Trash2,
   Mail,
-  ArrowLeft,
-  MessageSquare
+  MessageSquare,
+  Sparkles
 } from 'lucide-react';
 import { PageHeader } from '../lib/utils';
 
@@ -87,11 +86,11 @@ export const FaqPage: React.FC = () => {
       question: '無料で使える範囲はどこまでですか？',
       answer: (
         <>
-          <p>
+          <p className="text-[13px] leading-relaxed text-slate-700 font-sans m-0">
             ボトルメール（手紙）を海へ流すこと、手紙を検索して一覧を見ること、想い出クイズへ挑戦することは完全無料（0円）です。
           </p>
-          <p>
-            費用が発生するのは、二人だけの共通の想い出クイズに正解し、お相手の連絡先（LINE IDやメールアドレス）を開示して実際に繋がる瞬間の <b>600円（税込）買い切りのみ</b> です。
+          <p className="text-[13px] leading-relaxed text-slate-700 font-sans m-0">
+            費用が発生するのは、二人だけの共通の想い出クイズに正解し、「お相手の連絡先（LINE IDやメールアドレス）を開示して実際に繋がる瞬間」の <span className="font-bold text-slate-900">600円（税込）買い切りのみ</span> です。
           </p>
         </>
       ),
@@ -104,10 +103,10 @@ export const FaqPage: React.FC = () => {
       question: '月額料金や後からの追加請求（サブスクリプション）はありますか？',
       answer: (
         <>
-          <p>
+          <p className="text-[13px] leading-relaxed text-slate-700 font-sans m-0">
             いいえ、月額料金や自動更新・後からの追加請求は一切ございません。
           </p>
-          <p>
+          <p className="text-[13px] leading-relaxed text-slate-700 font-sans m-0">
             一般的なマッチングアプリのような月額会員制（サブスク）ではなく、手紙1通の開通につき600円ポッキリの完全買い切りモデルです。使わない月に勝手に引き落とされる心配は100%ありません。
           </p>
         </>
@@ -121,14 +120,14 @@ export const FaqPage: React.FC = () => {
       question: 'どのような支払い方法に対応していますか？',
       answer: (
         <>
-          <p>
-            世界標準の決済プラットフォーム <b>Stripe（ストライプ）</b> を採用しており、以下の安全なお支払い方法に対応しています。
+          <p className="text-[13px] leading-relaxed text-slate-700 font-sans m-0">
+            世界標準の決済プラットフォーム <span className="font-bold text-slate-900">Stripe（ストライプ）</span> を採用しており、以下の安全なお支払い方法に対応しています。
           </p>
-          <ul className="list-disc pl-5 space-y-1">
+          <ul className="list-disc pl-5 space-y-1 text-[13px] leading-relaxed text-slate-700 font-sans m-0">
             <li>主要クレジットカード（VISA, Mastercard, JCB, American Express, Diners Club）</li>
             <li>Apple Pay / Google Pay（スマートフォンからのワンタップ決済）</li>
           </ul>
-          <p className="opacity-75">
+          <p className="text-[13px] leading-relaxed text-slate-500 font-sans m-0">
             ※クレジットカード情報はStripeの最高水準セキュリティサーバー（PCI-DSS Level 1）で直接処理され、当サービスのサーバーには一切保管されません。
           </p>
         </>
@@ -141,8 +140,8 @@ export const FaqPage: React.FC = () => {
       categoryName: '料金・お支払い',
       question: '領収書や利用明細は発行されますか？',
       answer: (
-        <p>
-          はい。決済完了時に、ご登録のメールアドレス宛てに <b>「Stripe公式電子領収書（インボイス制度対応）」</b> が自動送付されます。決済IDや取引日時が明記されており、経費精算にもご利用いただけます。
+        <p className="text-[13px] leading-relaxed text-slate-700 font-sans m-0">
+          はい。決済完了時に、ご登録のメールアドレス宛てに <span className="font-bold text-slate-900">「Stripe公式電子領収書（インボイス制度対応）」</span> が自動送付されます。決済IDや取引日時が明記されており、経費精算にもご利用いただけます。
         </p>
       ),
       tags: ['領収書', '明細', 'インボイス']
@@ -153,8 +152,8 @@ export const FaqPage: React.FC = () => {
       categoryName: '料金・お支払い',
       question: '差出人と受け取る側のどちらがお金を払うのですか？',
       answer: (
-        <p>
-          手紙を見つけてクイズに正解し、<b>「お相手の連絡先を開示したい」と希望した側（開封者）</b> が開通手数料（600円）をお支払いいただきます。手紙を最初に流した側（差出人）は、投函時も開通通知を受け取る時も費用はかかりません。
+        <p className="text-[13px] leading-relaxed text-slate-700 font-sans m-0">
+          手紙を見つけてクイズに正解し、<span className="font-bold text-slate-900">「お相手の連絡先を開示したい」と希望した側（開封者）</span> が開通手数料（600円）をお支払いいただきます。手紙を最初に流した側（差出人）は、投函時も開通通知を受け取る時も費用はかかりません。
         </p>
       ),
       tags: ['差出人', '受取人', '負担']
@@ -168,16 +167,16 @@ export const FaqPage: React.FC = () => {
       question: '「想い出クイズ」とは何ですか？なぜ必要なのですか？',
       answer: (
         <>
-          <p>
-            想い出クイズは、<b>「差出人と受け取る人の二人だけが知っている共通の記憶（合言葉）」</b> を照合の鍵とするReMEETs独自の特許的仕組みです。
+          <p className="text-[13px] leading-relaxed text-slate-700 font-sans m-0">
+            想い出クイズは、<span className="font-bold text-slate-900">「差出人と受け取る人の二人だけが知っている共通の記憶（合言葉）」</span> を照合の鍵とするReMEETs独自の仕組みです。
           </p>
-          <div className="p-3 bg-zinc-50 rounded-xl border border-zinc-200 space-y-1">
-            <b>【クイズの出題例】</b>
-            <p>・「高校の文化祭で一緒に作った巨大モザイク画のテーマは何だった？」</p>
-            <p>・「放課後によく二人で買い食いした駄菓子屋のおばちゃんの名前は？」</p>
+          <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1 text-[13px] leading-relaxed text-slate-700 font-sans">
+            <span className="font-bold text-slate-900 block">【クイズの出題例】</span>
+            <p className="text-[13px] text-slate-700 font-sans m-0">・「高校の文化祭で一緒に作った巨大モザイク画のテーマは何だった？」</p>
+            <p className="text-[13px] text-slate-700 font-sans m-0">・「放課後によく二人で買い食いした駄菓子屋のおばちゃんの名前は？」</p>
           </div>
-          <p>
-            これにより、同姓同名の別人や悪意ある第三者が手紙を勝手に開封したり、連絡先を取得したりすることを100%物理的に遮断しています。
+          <p className="text-[13px] leading-relaxed text-slate-700 font-sans m-0">
+            これにより、同姓同名の別人や悪意ある第三者が手紙を勝手に開封したり、連絡先を取得したりすることを完全に遮断しています。
           </p>
         </>
       ),
@@ -190,10 +189,10 @@ export const FaqPage: React.FC = () => {
       question: 'クイズの答えを間違えたらどうなりますか？',
       answer: (
         <>
-          <p>
-            クイズの回答は何回かやり直すことができますが、辞書攻撃や総当たり（当てずっぽうの連続入力）を防ぐため、<b>短時間に複数回連続で間違えると一定時間（数分〜数時間）回答がロック</b> されます。
+          <p className="text-[13px] leading-relaxed text-slate-700 font-sans m-0">
+            クイズの回答は何回かやり直すことができますが、辞書攻撃や総当たり（当てずっぽうの連続入力）を防ぐため、<span className="font-bold text-slate-900">短時間に複数回連続で間違えると一定時間（数分〜数時間）回答がロック</span> されます。
           </p>
-          <p className="opacity-75">
+          <p className="text-[13px] leading-relaxed text-slate-500 font-sans m-0">
             ※どうしても答えの漢字や表記が思い出せない場合は、差出人が設定した「ヒント」をご確認いただくか、時間を置いて正確な想い出を振り返ってご入力ください。
           </p>
         </>
@@ -207,10 +206,10 @@ export const FaqPage: React.FC = () => {
       question: 'マッチングした後はどのように連絡を取り合いますか？',
       answer: (
         <>
-          <p>
-            ReMEETsでは、アプリ内でダラダラとチャットを続けさせるのではなく、<b>「お相手のLINE IDやメールアドレスを安全に引き渡し、プラットフォームの役割を完結」</b> させるモデルを採用しています。
+          <p className="text-[13px] leading-relaxed text-slate-700 font-sans m-0">
+            ReMEETsでは、アプリ内でメッセージを永続させるのではなく、<span className="font-bold text-slate-900">「お相手のLINE IDやメールアドレスを安全に引き渡し、プラットフォームの役割を完結」</span> させるモデルを採用しています。
           </p>
-          <p>
+          <p className="text-[13px] leading-relaxed text-slate-700 font-sans m-0">
             開通完了画面に表示される「LINEを開く」や「メールを送る」ボタンから、普段使い慣れた連絡手段で直接お相手へ温かい再会のメッセージをお送りいただけます。同時に、差出人へも「あなたの手紙がお相手に届きました」と自動メール通知が届きます。
           </p>
         </>
@@ -224,11 +223,11 @@ export const FaqPage: React.FC = () => {
       question: '探している相手がまだReMEETsを知らない・登録していない場合は？',
       answer: (
         <>
-          <p>
-            手紙を一度流しておけば、<b>インターネット上の海（Google検索）に宛名と想い出のヒントが安全にインデックス</b> されます。
+          <p className="text-[13px] leading-relaxed text-slate-700 font-sans m-0">
+            手紙を一度流しておけば、<span className="font-bold text-slate-900">インターネット上の海（Google検索）に宛名と想い出のヒントが安全にインデックス</span> されます。
           </p>
-          <p>
-            お相手がふと自分の名前や出身校を検索（エゴサーチ）した際や、同級生から「ReMEETsであなた宛の手紙が流れているよ」とシェアされた際にいつでも手紙を見つけることができます。手紙はあなたが削除しない限り、何年間でも海を漂い続けます。
+          <p className="text-[13px] leading-relaxed text-slate-700 font-sans m-0">
+            お相手がふと自分の名前や出身校を検索（エゴサーチ）した際や、知人から「ReMEETsであなた宛の手紙が流れているよ」とシェアされた際にいつでも手紙を見つけることができます。手紙はあなたが削除しない限り、何年間でも海を漂い続けます。
           </p>
         </>
       ),
@@ -243,166 +242,127 @@ export const FaqPage: React.FC = () => {
       question: '自分の本名や住所が赤の他人にバレる心配はありませんか？',
       answer: (
         <>
-          <p>
+          <p className="text-[13px] leading-relaxed text-slate-700 font-sans m-0">
             ありません。一般公開されるタイムライン上には、本名や詳細な住所・連絡先は一切表示されません。
           </p>
-          <p>
-            手紙の宛名（あだ名やイニシャル可）と、想い出の年代・ゆかりの都道府県、そしてクイズのヒントのみが漂流します。手紙の本文全文やお互いの連絡先は、<b>「想い出クイズ完全一致 ＋ 600円決済 ＋ 本人確認」</b> を完了した当事者2名にのみ暗号化復号されて表示されます。
+          <p className="text-[13px] leading-relaxed text-slate-700 font-sans m-0">
+            手紙の宛名（あだ名やイニシャル可）と、想い出の年代・ゆかりの都道府県、そしてクイズのヒントのみが漂流します。手紙の本文全文やお互いの連絡先は、<span className="font-bold text-slate-900">「想い出クイズ完全一致 ＋ 600円決済 ＋ 本人確認」</span> を完了した当事者2名にのみ暗号化復号されて表示されます。
           </p>
         </>
       ),
-      tags: ['本名', '住所', 'プライバシー', '非公開']
+      tags: ['本名', '匿名性', '住所', 'プライバシー保護']
     },
     {
       id: 'q-safety-2',
       category: 'safety',
       categoryName: '安全性・プライバシー',
-      question: 'ストーカーや誹謗中傷、怨恨への安全対策はどうなっていますか？',
+      question: 'AIによる自動診断・検閲（安全防衛システム）とは何ですか？',
       answer: (
         <>
-          <p>
-            ReMEETsは <b>Google Gemini AI（人工知能）によるリアルタイム文脈検閲エンジン</b> を搭載しています。
+          <p className="text-[13px] leading-relaxed text-slate-700 font-sans m-0">
+            ReMEETsでは、Googleの最新鋭AI <span className="font-bold text-slate-900">Gemini API</span> をバックエンドに常時接続し、すべての投稿テキストを24時間365日自律監視しています。
           </p>
-          <ul className="list-disc pl-5 space-y-1">
-            <li>手紙投函時にAIが「執着・監視性」「脅迫・恨み言」「不当な出会い目的」を自動解析。</li>
-            <li>危険と判定された手紙は即座に隔離（非公開化）され、一般の海へは1秒も流れません。</li>
-            <li>万が一の通報時も、管理スタッフが24時間以内にアカウント凍結および法的証跡保全を行います。</li>
-          </ul>
+          <p className="text-[13px] leading-relaxed text-slate-700 font-sans m-0">
+            ストーカー目的の監視メッセージ、金銭トラブルの要求、誹謗中傷、不当な個人情報の晒し行為、性的な出会い目的のワードが含まれている場合、AIが投稿の瞬間に自動検知し、タイムラインへの流出を未然に遮断（隔離・非公開化）します。
+          </p>
         </>
       ),
-      tags: ['ストーカー', 'AI検閲', 'Gemini', '安全対策']
+      tags: ['AI検閲', 'Gemini', 'ストーカー対策', '誹謗中傷防止']
     },
     {
       id: 'q-safety-3',
       category: 'safety',
       categoryName: '安全性・プライバシー',
-      question: 'Google検索に自分の手紙や名前が載るのですか？',
+      question: '出会い系サイトやマッチングアプリとは何が違うのですか？',
       answer: (
         <>
-          <p>
-            Google等の検索エンジンには、<b>「宛名（例: 佐藤健 様）」と「ゆかりの地・年代」「クイズのヒント」のみ</b> が掲載されます。
+          <p className="text-[13px] leading-relaxed text-slate-700 font-sans m-0">
+            ReMEETsは不特定多数の異性との出会いを目的としたサービスではなく、<span className="font-bold text-slate-900">「過去に実在した同級生・恩師・旧友・かつての仲間」との再会に特化したWebプラットフォーム</span> です。
           </p>
-          <p>
-            手紙の本文全文、秘密の合言葉の答え、差出人の連絡先はGoogleには一切インデックスされません。お相手が検索で見つけやすくしつつ、プライバシーは鉄壁に保護されます。
+          <p className="text-[13px] leading-relaxed text-slate-700 font-sans m-0">
+            「二人だけの共通の想い出クイズ」に正解しない限り絶対に連絡先が開示されない厳格なセキュリティ設計となっており、無差別なナンパや営業目的の利用は一切不可能です。
           </p>
         </>
       ),
-      tags: ['Google検索', 'インデックス', 'SEO']
-    },
-    {
-      id: 'q-safety-4',
-      category: 'safety',
-      categoryName: '安全性・プライバシー',
-      question: '運転免許証やマイナンバーカードの画像を提出しても安全ですか？',
-      answer: (
-        <>
-          <p>
-            極めて安全です。当サービスのWebサーバーには身分証原本画像は一切保存されません（ゼロ保持設計）。
-          </p>
-          <p>
-            本人確認（eKYC）は、メガバンクや大手金融機関が採用する国内公認のeKYC専門機関（TRUSTDOCK等）の専用セキュアサーバーへ直接送信され暗号化審査されます。当社サーバーを通過・保管しないため、画像流出のリスクを根本から排除しています。
-          </p>
-        </>
-      ),
-      tags: ['eKYC', '身分証', '免許証', 'ゼロデータ保持']
+      tags: ['出会い系との違い', '健全性', '同級生探し']
     },
 
-    // 4. 本人確認（eKYC）＆ 返金保証
+    // 4. 本人確認（eKYC）・返金保証
     {
       id: 'q-ekyc-1',
       category: 'ekyc',
       categoryName: '本人確認・返金保証',
-      question: '公的本人確認（eKYC）は必ず行わなければなりませんか？',
+      question: 'なぜ公的身分証による本人確認（eKYC）が必要なのですか？',
       answer: (
-        <p>
-          基本利用（手紙の投函・検索・クイズ挑戦）は、無料のSNS認証（LINE / Googleログイン）のみで手軽にご利用いただけます。ただし、お相手と連絡先を開示し合う開通ステップでは、なりすましやサクラを防ぐため、携帯電話番号認証（SMS）および公的本人確認（eKYC）を推奨・実施しております。
-        </p>
+        <>
+          <p className="text-[13px] leading-relaxed text-slate-700 font-sans m-0">
+            安心・安全な再会を実現し、なりすましや犯罪行為を根絶するため、<span className="font-bold text-slate-900">お相手の連絡先を開示する最終ステップでのみ</span> 公的身分証明書（運転免許証、マイナンバーカード等）による本人確認を実施しています。
+          </p>
+          <p className="text-[13px] leading-relaxed text-slate-500 font-sans m-0">
+            ※身分証画像データは日本の法基準に準拠した認証インフラで安全に照合され、確認完了後は即座に安全破棄されます。当サービスのサーバー内に画像が恒久保管されることはありません。
+          </p>
+        </>
       ),
-      tags: ['本人確認', '必須', 'SMS認証']
+      tags: ['eKYC', '身分証明書', '本人確認', '安全性']
     },
     {
       id: 'q-ekyc-2',
       category: 'ekyc',
       categoryName: '本人確認・返金保証',
-      question: 'もし本人確認審査に通らなかった場合、600円は返金されますか？',
+      question: '本人確認（eKYC）で不合格になった場合、600円はどうなりますか？',
       answer: (
-        <>
-          <p>
-            はい、100%全額が自動的に即時返金（決済お取り消し）されます。
-          </p>
-          <p>
-            ReMEETsの決済は、審査がすべて合格するまで売上を確定させない「Stripe仮売上（オーソリ）方式」を採用しています。身分証の不鮮明等で審査に通らなかった場合や、開通を辞退された場合は、システムが自動で即座に600円を全額キャンセル・返金いたします。
-          </p>
-        </>
+        <p className="text-[13px] leading-relaxed text-slate-700 font-sans m-0">
+          <span className="font-bold text-slate-900">全額自動で即時返金（決済取消）されます。</span><br />
+          ReMEETsの決済は、本人確認が完了するまで「仮売上（オーソリ）」として保持されます。身分証の不鮮明や審査不合格となった場合は、システムが即座にStripe経由で請求を完全キャンセル（0円返金）するため、無駄な費用が発生することは一切ありません。
+        </p>
       ),
-      tags: ['返金', '自動返金', '仮売上', '保証']
+      tags: ['返金保証', '即時返金', '仮売上', 'Stripe']
     },
     {
       id: 'q-ekyc-3',
       category: 'ekyc',
       categoryName: '本人確認・返金保証',
-      question: '返金されたお金はいつクレジットカードに反映されますか？',
+      question: '本人確認にはどんな書類が使えますか？',
       answer: (
-        <p>
-          システムの返金処理は即座に完了しますが、お客様のクレジットカード明細への反映タイミングは、ご利用のカード会社（楽天、三井住友、JCB等）の締め日や処理サイクルによって異なります。通常は数日〜数週間程度で請求金額から相殺または口座へ返金されます。
-        </p>
+        <ul className="list-disc pl-5 space-y-1 text-[13px] leading-relaxed text-slate-700 font-sans m-0">
+          <li>運転免許証 / 運転経歴証明書</li>
+          <li>マイナンバーカード（個人番号カード表面）</li>
+          <li>在留カード / 特別永住者証明書</li>
+          <li>日本国パスポート（所持人記入欄があるもの）</li>
+        </ul>
       ),
-      tags: ['返金時期', 'カード明細', '反映']
-    },
-    {
-      id: 'q-ekyc-4',
-      category: 'ekyc',
-      categoryName: '本人確認・返金保証',
-      question: '画面上で手書き電子署名（自筆サイン）を書くのはなぜですか？',
-      answer: (
-        <p>
-          「お相手の連絡先をいたずらや商業目的で悪用しない」「健全な想い出の再会として誠実に連絡する」という <b>利用者の安全宣誓（紳士協定）</b> をデジタル証跡として記録するためです。この署名により、双方が安心して連絡先を交換できる心理的信頼を担保しています。
-        </p>
-      ),
-      tags: ['電子署名', '手書き', 'サイン', '信頼']
+      tags: ['本人確認書類', '運転免許証', 'マイナンバーカード']
     },
 
-    // 5. 登録・ログイン・通知設定
+    // 5. 登録・ログイン・通知
     {
       id: 'q-account-1',
       category: 'account',
       categoryName: '登録・ログイン・通知',
-      question: '面倒なパスワード設定や管理は必要ですか？',
+      question: 'パスワードを設定した覚えがありません。どうやってログインしますか？',
       answer: (
-        <p>
-          いいえ、パスワードは不要です。日本国内で最も信頼性の高い <b>LINE Login</b> または <b>Googleログイン</b> を使ってワンタップで安全にログインできます。パスワード忘れやパスワード漏洩のリスクは一切ありません。
-        </p>
+        <>
+          <p className="text-[13px] leading-relaxed text-slate-700 font-sans m-0">
+            ReMEETsでは、面倒なパスワード管理やパスワード流出被害を根本から防ぐため、<span className="font-bold text-slate-900">LINEログインおよびGoogleアカウント連携</span> を採用しています。
+          </p>
+          <p className="text-[13px] leading-relaxed text-slate-700 font-sans m-0">
+            ログイン画面で「LINEでログイン」または「Googleでログイン」をタップするだけで、ワンタップで安全にご利用いただけます。
+          </p>
+        </>
       ),
-      tags: ['パスワード不要', 'LINEログイン', 'Googleログイン']
+      tags: ['ログイン', 'LINE', 'Google', 'パスワード不要']
     },
     {
       id: 'q-account-2',
       category: 'account',
       categoryName: '登録・ログイン・通知',
-      question: '通知メール（手紙の開封通知など）が届きません',
+      question: '手紙にお相手から返信や開封があったら、どのように通知されますか？',
       answer: (
-        <>
-          <p>以下の点をご確認ください。</p>
-          <ul className="list-disc pl-5 space-y-1">
-            <li>迷惑メールフォルダや「プロモーション」タブに振り分けられていないか確認する。</li>
-            <li>ドメイン指定受信を設定されている場合は、<code>@remeets.jp</code> からのメールを受信許可する。</li>
-            <li>登録時のメールアドレス（LINE/Google連携アドレス）に誤りがないかマイページで確認する。</li>
-          </ul>
-        </>
-      ),
-      tags: ['メール不達', '通知', '迷惑メール']
-    },
-    {
-      id: 'q-account-3',
-      category: 'account',
-      categoryName: '登録・ログイン・通知',
-      question: '電話番号認証（SMS）の認証コードが届きません',
-      answer: (
-        <p>
-          携帯キャリア（docomo, au, SoftBank, 楽天モバイル等）の迷惑SMS拒否設定で「海外からのSMS拒否」が有効になっていると、認証コード（Twilio/EZSMS）が届かない場合があります。設定を一時解除して再送信をお試しください（1日最大3回までリトライ可能）。
+        <p className="text-[13px] leading-relaxed text-slate-700 font-sans m-0">
+          あなた宛ての手紙が見つかった際や、あなたが流した手紙にお相手から開封アクションがあった際は、アカウントにご登録いただいた <span className="font-bold text-slate-900">メールアドレス宛てに「再会開通お知らせメール」</span> がリアルタイムで届きます。
         </p>
       ),
-      tags: ['SMS', '認証コード', '電話番号']
+      tags: ['通知', 'メール', '開通通知']
     },
 
     // 6. 手紙の編集・削除・退会
@@ -410,33 +370,28 @@ export const FaqPage: React.FC = () => {
       id: 'q-edit-1',
       category: 'edit',
       categoryName: '手紙の編集・削除・退会',
-      question: '一度流した手紙の内容を後から修正・削除できますか？',
+      question: '流した手紙の内容を修正したり、後から消すことはできますか？',
       answer: (
         <>
-          <p>
-            はい。ログイン後、マイページ（アカウント画面）からいつでも手紙の編集や削除が可能です。
+          <p className="text-[13px] leading-relaxed text-slate-700 font-sans m-0">
+            はい、いつでも可能です。ログイン後、マイページの「流したボトルメール一覧」から、該当の手紙の <span className="font-bold text-slate-900">「編集」または「海から引き上げる（完全削除）」</span> をワンタップで実行できます。
           </p>
-          <p>
-            誤字脱字の修正、想い出クイズのヒント追加、公開/非公開の切り替え、または手紙の完全削除をワンクリックで行っていただけます。削除された手紙は即座に海から引き揚げられ、誰からも検索できなくなります。
+          <p className="text-[13px] leading-relaxed text-slate-700 font-sans m-0">
+            削除を実行した手紙はデータベースから物理的に完全抹消され、海（検索一覧・タイムライン）からも即座に消去されます。
           </p>
         </>
       ),
-      tags: ['手紙修正', '削除', 'マイページ', '非公開']
+      tags: ['手紙の編集', '削除', '手紙の消去']
     },
     {
       id: 'q-edit-2',
       category: 'edit',
       categoryName: '手紙の編集・削除・退会',
-      question: '退会したい場合の手続きと、退会後の手紙データの扱いはどうなりますか？',
+      question: '退会したい場合はどのように手続きすればいいですか？',
       answer: (
-        <>
-          <p>
-            マイページ内の「アカウント設定」より、いつでも即座に退会（アカウント削除）が可能です。
-          </p>
-          <p>
-            退会申請と同時に、ご登録いただいたSNS連携データ、メールアドレス、投函された手紙データはデータベースから <b>完全に物理削除（抹消）</b> されます。
-          </p>
-        </>
+        <p className="text-[13px] leading-relaxed text-slate-700 font-sans m-0">
+          マイページの「アカウント設定」内にある「退会・データ完全消去」よりいつでもご自身で即時退会いただけます。退会と同時に、流した手紙・プロフィール・認証履歴などの全データが安全に物理消去されます。
+        </p>
       ),
       tags: ['退会', 'アカウント削除', 'データ抹消']
     },
@@ -444,261 +399,254 @@ export const FaqPage: React.FC = () => {
       id: 'q-edit-3',
       category: 'edit',
       categoryName: '手紙の編集・削除・退会',
-      question: '海外に住んでいても利用できますか？',
+      question: '海外在住ですが、利用することはできますか？',
       answer: (
-        <p>
-          はい、世界中どこからでもご利用いただけます。海外在住の方でもGoogleログインや国際クレジットカード（VISA/Master等）を通じて手紙の投函・検索・開通が可能です（日本国内の想い出をお持ちの方同士の再会にご利用いただいております）。
+        <p className="text-[13px] leading-relaxed text-slate-700 font-sans m-0">
+          はい、世界中どこからでもインターネット接続があればWebブラウザからご利用いただけます。Stripe決済は海外発行の主要クレジットカードにも対応しています。
         </p>
       ),
-      tags: ['海外利用', '国際決済']
-    }
+      tags: ['海外利用', '国際対応', 'クレジットカード']
+    },
   ];
 
   // 検索フィルタリング
   const filteredFaqs = useMemo(() => {
-    if (!searchQuery.trim()) return faqList;
-    const q = searchQuery.toLowerCase();
-    return faqList.filter(item => {
-      return (
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return faqList;
+    return faqList.filter(
+      (item) =>
         item.question.toLowerCase().includes(q) ||
         item.categoryName.toLowerCase().includes(q) ||
-        (item.tags && item.tags.some(t => t.toLowerCase().includes(q)))
-      );
-    });
+        item.tags?.some((t) => t.toLowerCase().includes(q))
+    );
   }, [searchQuery, faqList]);
 
   // カテゴリごとにグループ化
   const groupedFaqs = useMemo(() => {
-    const map: Record<string, FaqItem[]> = {};
-    categories.forEach(cat => {
-      map[cat.id] = filteredFaqs.filter(item => item.category === cat.id);
+    const map = new Map<string, FaqItem[]>();
+    categories.forEach((cat) => map.set(cat.id, []));
+    filteredFaqs.forEach((item) => {
+      const arr = map.get(item.category) || [];
+      arr.push(item);
+      map.set(item.category, arr);
     });
     return map;
-  }, [categories, filteredFaqs]);
-
-  const isItemOpen = (id: string) => {
-    if (searchQuery.trim().length > 0) return true;
-    return !!openItems[id];
-  };
+  }, [filteredFaqs, categories]);
 
   const toggleItem = (id: string) => {
-    setOpenItems(prev => ({ ...prev, [id]: !prev[id] }));
+    setOpenItems((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
   };
 
-  const isAllOpen = useMemo(() => {
-    if (filteredFaqs.length === 0) return false;
-    return filteredFaqs.every(f => isItemOpen(f.id));
-  }, [filteredFaqs, openItems, searchQuery]);
+  const isItemOpen = (id: string) => !!openItems[id];
 
-  const toggleAll = () => {
-    if (isAllOpen) {
-      setOpenItems(prev => {
-        const next = { ...prev };
-        filteredFaqs.forEach(f => {
-          next[f.id] = false;
-        });
-        return next;
-      });
-    } else {
-      setOpenItems(prev => {
-        const next = { ...prev };
-        filteredFaqs.forEach(f => {
-          next[f.id] = true;
-        });
-        return next;
-      });
-    }
+  const handleExpandAll = () => {
+    const nextState: Record<string, boolean> = {};
+    filteredFaqs.forEach((item) => {
+      nextState[item.id] = true;
+    });
+    setOpenItems(nextState);
+  };
+
+  const handleCollapseAll = () => {
+    setOpenItems({});
   };
 
   const scrollToCategory = (categoryId: string) => {
     setActiveCategory(categoryId);
-    const element = document.getElementById(`faq-section-${categoryId}`);
-    if (element) {
-      const yOffset = -80;
-      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+    const el = document.getElementById(`category-${categoryId}`);
+    if (el) {
+      const yOffset = -120;
+      const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
       window.scrollTo({ top: y, behavior: 'smooth' });
     }
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-12 md:py-16 font-sans text-black animate-in fade-in duration-300">
-      {/* 🧭 Back Link */}
-      <Link
-        to="/"
-        className="inline-flex items-center gap-2 text-sm opacity-60 hover:opacity-100 mb-6 font-sans text-black transition-opacity"
-      >
-        <ArrowLeft size={16} />
-        <span>トップへ戻る</span>
-      </Link>
+    <div className="min-h-screen bg-slate-50 text-slate-900 pb-20 font-sans">
+      <PageHeader
+        title="よくあるご質問（FAQ）"
+        backTo="/"
+        backLabel="トップページへ戻る"
+      />
 
-      {/* 🏛️ Standard Unified Glass Card */}
-      <div className="glass-card p-6 sm:p-8 md:p-12 bg-white rounded-3xl border border-brand-border shadow-sm space-y-8">
-        {/* 🌟 Unified PageHeader */}
-        <PageHeader
-          icon={<HelpCircle size={26} className="text-teal-700" />}
-          iconBoxClassName="bg-teal-50 text-teal-700 border border-teal-200"
-          category="Help Center & FAQ"
-          title="よくあるご質問（FAQ）"
-          description="料金の仕組み、想い出クイズ、プライバシー保護、本人確認（eKYC）など、皆様から多く寄せられるご質問を分かりやすくまとめました。"
-        />
-
-        {/* 🔍 Search Input */}
-        <div className="relative">
-          <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-black/40" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="キーワードで検索... (例: 料金, クイズ, 返金, 免許証, 退会)"
-            className="w-full pl-11 pr-10 py-3 bg-zinc-50 border border-brand-border rounded-2xl text-sm text-black focus:bg-white focus:border-teal-600 focus:outline-none transition-all placeholder:text-black/40 shadow-inner font-sans"
-          />
-          {searchQuery && (
-            <button
-              type="button"
-              onClick={() => setSearchQuery('')}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-black/40 hover:text-black font-sans cursor-pointer"
-            >
-              クリア
-            </button>
-          )}
+      <div className="max-w-4xl mx-auto px-4 pt-6 space-y-8">
+        {/* 🌟 Intro Hero Banner */}
+        <div className="bg-white rounded-2xl p-6 md:p-8 border border-slate-200/80 shadow-xs relative overflow-hidden">
+          <div className="relative z-10 space-y-3">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-teal-50 text-teal-800 rounded-full text-xs font-bold border border-teal-200">
+              <Sparkles size={13} className="text-teal-600" />
+              <span>ReMEETs サポートセンター</span>
+            </div>
+            <h1 className="text-xl md:text-2xl font-bold text-slate-900 tracking-tight font-sans">
+              疑問や不安を解消して、安心して再会へ
+            </h1>
+            <p className="text-[13px] leading-relaxed text-slate-600 font-sans max-w-2xl">
+              手紙の流し方、料金システム（完全無料〜600円買い切り）、想い出クイズの仕組み、プライバシー保護とAI検閲など、ReMEETsのご利用に関する疑問にお答えします。
+            </p>
+          </div>
         </div>
 
-        {/* 🗂️ In-Page Category Navigation */}
-        <div className="space-y-2">
-          <div className="text-xs font-bold text-slate-500 flex items-center justify-between px-1">
-            <span>カテゴリ見出しへジャンプ：</span>
-            {filteredFaqs.length > 0 && (
+        {/* 🔍 Search Bar & Controls */}
+        <div className="space-y-3">
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="知りたいキーワードを入力（例：無料、料金、クイズ、退会、LINE）"
+              className="w-full pl-11 pr-4 py-3.5 bg-white rounded-xl border border-slate-300 text-[13px] text-slate-900 placeholder:text-slate-400 focus:outline-hidden focus:border-teal-600 shadow-2xs font-sans transition-all"
+            />
+            {searchQuery && (
               <button
                 type="button"
-                onClick={toggleAll}
-                className="inline-flex items-center gap-1 text-xs font-bold text-teal-800 hover:text-teal-950 transition-colors cursor-pointer"
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600 bg-slate-100 px-2 py-1 rounded-md font-sans"
               >
-                {isAllOpen ? (
-                  <>
-                    <ChevronUp size={13} />
-                    <span>すべて閉じる</span>
-                  </>
-                ) : (
-                  <>
-                    <ChevronDown size={13} />
-                    <span>すべて開く</span>
-                  </>
-                )}
+                クリア
               </button>
             )}
           </div>
-          <div className="flex flex-wrap items-center gap-2 pt-0.5">
-            {categories.map((cat) => {
-              const Icon = cat.icon;
-              const count = groupedFaqs[cat.id]?.length || 0;
-              const isCurrent = activeCategory === cat.id;
 
-              return (
-                <button
-                  key={cat.id}
-                  type="button"
-                  onClick={() => scrollToCategory(cat.id)}
-                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
-                    isCurrent
-                      ? 'bg-teal-700 text-white border-teal-700 shadow-sm'
-                      : 'bg-zinc-50 text-slate-700 hover:bg-zinc-100 hover:text-slate-900 border-brand-border'
-                  }`}
-                >
-                  <Icon size={14} className={isCurrent ? 'text-white' : 'text-teal-700'} />
-                  <span>{cat.label}</span>
-                  {count > 0 && (
-                    <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
-                      isCurrent ? 'bg-white/20 text-white' : 'bg-zinc-200/80 text-slate-600'
-                    }`}>
-                      {count}
-                    </span>
-                  )}
-                </button>
-              );
-            })}
+          {/* 一括開閉 ＆ 件数表示 */}
+          <div className="flex items-center justify-between text-xs text-slate-500 px-1 font-sans">
+            <span className="font-sans">
+              該当件数: <b className="text-slate-900 font-bold">{filteredFaqs.length}</b> 件
+            </span>
+            <div className="flex items-center gap-2 font-sans">
+              <button
+                type="button"
+                onClick={handleExpandAll}
+                className="text-teal-700 hover:text-teal-900 font-bold hover:underline font-sans cursor-pointer"
+              >
+                すべて開く
+              </button>
+              <span>・</span>
+              <button
+                type="button"
+                onClick={handleCollapseAll}
+                className="text-slate-600 hover:text-slate-900 hover:underline font-sans cursor-pointer"
+              >
+                すべて閉じる
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* 📑 FAQ Sections List */}
-        <div className="space-y-10 pt-2 text-sm text-brand-dark/90 leading-relaxed font-sans text-black">
-          {filteredFaqs.length > 0 ? (
+        {/* 🏷️ Quick Jump Category Tabs */}
+        {!searchQuery && (
+          <div className="sticky top-16 z-20 bg-slate-50/95 backdrop-blur-md py-2 border-b border-slate-200">
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+              {categories.map((cat) => {
+                const Icon = cat.icon;
+                const count = (groupedFaqs.get(cat.id) || []).length;
+                const isActive = activeCategory === cat.id;
+                return (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => scrollToCategory(cat.id)}
+                    className={`shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer font-sans ${
+                      isActive
+                        ? 'bg-teal-700 text-white shadow-xs'
+                        : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+                    }`}
+                  >
+                    <Icon size={14} />
+                    <span>{cat.label}</span>
+                    <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${isActive ? 'bg-teal-800 text-teal-100' : 'bg-slate-100 text-slate-600'}`}>
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* 📚 FAQ Categories & Accordion List */}
+        <div className="space-y-10">
+          {categories.some((cat) => (groupedFaqs.get(cat.id) || []).length > 0) ? (
             categories.map((cat) => {
-              const items = groupedFaqs[cat.id] || [];
+              const items = groupedFaqs.get(cat.id) || [];
               if (items.length === 0) return null;
               const Icon = cat.icon;
 
               return (
                 <section
                   key={cat.id}
-                  id={`faq-section-${cat.id}`}
-                  className="space-y-4 scroll-mt-24 pt-2"
+                  id={`category-${cat.id}`}
+                  className="space-y-3.5 scroll-mt-28"
                 >
-                  {/* 🏷️ Section Header */}
-                  <div className="flex items-center justify-between border-b-2 border-teal-600/30 pb-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-xl bg-teal-50 border border-teal-200 text-teal-800 flex items-center justify-center shrink-0 shadow-2xs">
-                        <Icon size={18} />
+                  {/* 📌 Category Header */}
+                  <div className="flex items-center justify-between pb-2 border-b-2 border-teal-700/80">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-lg bg-teal-100 text-teal-900 flex items-center justify-center shrink-0">
+                        <Icon size={17} />
                       </div>
                       <div>
-                        <h2 className="text-base sm:text-lg font-bold text-slate-900 font-sans tracking-tight">
+                        <h2 className="text-base font-bold text-slate-900 font-sans tracking-tight">
                           {cat.label}
                         </h2>
-                        <p className="text-xs text-slate-500 font-sans">
+                        <p className="text-xs text-slate-500 font-sans hidden sm:block">
                           {cat.description}
                         </p>
                       </div>
                     </div>
-                    <span className="text-xs font-bold text-teal-800 bg-teal-50 border border-teal-200 px-2.5 py-1 rounded-full font-sans shadow-2xs">
+                    <span className="text-xs font-bold text-teal-800 bg-teal-50 border border-teal-200 px-2.5 py-0.5 rounded-full font-sans">
                       {items.length}問
                     </span>
                   </div>
 
                   {/* ❓ Question & Answer Accordion List */}
-                  <div className="space-y-3">
+                  <div className="space-y-2.5">
                     {items.map((faq) => {
                       const isOpen = isItemOpen(faq.id);
                       return (
                         <div
                           key={faq.id}
-                          className="rounded-2xl border border-teal-100/90 hover:border-teal-200 shadow-2xs overflow-hidden bg-white transition-all"
+                          className="rounded-xl border border-slate-200/90 shadow-2xs overflow-hidden bg-white transition-all"
                         >
-                          {/* 🟢 質問バー（クリックで開閉） */}
+                          {/* 🟢 質問ボタン（クリックで開閉） */}
                           <button
                             type="button"
                             onClick={() => toggleItem(faq.id)}
-                            className={`w-full p-4 text-left flex items-start justify-between gap-3.5 transition-colors cursor-pointer ${
+                            className={`w-full p-3.5 text-left flex items-center justify-between gap-3 transition-colors cursor-pointer ${
                               isOpen
-                                ? 'bg-teal-50/80 border-b border-teal-100'
-                                : 'bg-teal-50/40 hover:bg-teal-50/80'
+                                ? 'bg-teal-50/70 border-b border-teal-100'
+                                : 'bg-white hover:bg-slate-50'
                             }`}
                           >
-                            <div className="flex items-start gap-3 flex-1 min-w-0">
-                              <span className="text-sm font-bold text-teal-800 shrink-0 font-sans">
+                            <div className="flex items-center gap-2.5 flex-1 min-w-0">
+                              <span className="text-[13px] font-bold text-teal-800 shrink-0 font-sans leading-none">
                                 Q.
                               </span>
-                              <span className="font-bold text-sm text-teal-950 font-sans leading-snug flex-1">
+                              <span className="text-[13px] font-bold text-slate-900 font-sans leading-relaxed flex-1">
                                 {faq.question}
                               </span>
                             </div>
-                            <div className={`p-1 rounded-lg text-teal-800 transition-transform duration-200 mt-0.5 shrink-0 ${isOpen ? 'rotate-180 text-teal-950' : ''}`}>
+                            <div className={`text-slate-500 transition-transform duration-200 shrink-0 ${isOpen ? 'rotate-180 text-teal-800' : ''}`}>
                               <ChevronDown size={16} />
                             </div>
                           </button>
 
-                          {/* ⚪ 回答エリア（展開時表示・本文と同じ標準テキスト） */}
+                          {/* ⚪ 回答エリア（展開時表示） */}
                           <AnimatePresence initial={false}>
                             {isOpen && (
                               <motion.div
                                 initial={{ height: 0, opacity: 0 }}
                                 animate={{ height: 'auto', opacity: 1 }}
                                 exit={{ height: 0, opacity: 0 }}
-                                transition={{ duration: 0.2 }}
+                                transition={{ duration: 0.18 }}
                               >
-                                <div className="p-4 md:p-5 bg-white text-sm text-black/80 font-sans leading-relaxed flex items-start gap-3">
-                                  <span className="text-sm font-bold text-emerald-700 shrink-0 font-sans">
+                                <div className="p-3.5 md:p-4 bg-slate-50/40 text-[13px] leading-relaxed text-slate-700 font-sans flex items-start gap-2.5">
+                                  <span className="text-[13px] font-bold text-emerald-700 shrink-0 font-sans leading-relaxed">
                                     A.
                                   </span>
-                                  <div className="flex-1 space-y-2">
+                                  <div className="flex-1 space-y-2 text-[13px] leading-relaxed text-slate-700 font-sans">
                                     {faq.answer}
                                   </div>
                                 </div>
@@ -713,27 +661,27 @@ export const FaqPage: React.FC = () => {
               );
             })
           ) : (
-            <div className="p-12 text-center bg-zinc-50 rounded-2xl border border-brand-border space-y-2">
-              <HelpCircle size={28} className="text-black/30 mx-auto" />
-              <p className="font-bold text-sm text-black font-sans">該当するご質問が見つかりませんでした</p>
-              <p className="text-xs text-black/60 font-sans leading-relaxed">
-                検索キーワードを変えていただくか、以下の個別お問い合わせ窓口よりお気軽にご質問ください。
+            <div className="p-12 text-center bg-white rounded-2xl border border-slate-200 space-y-2">
+              <HelpCircle size={28} className="text-slate-400 mx-auto" />
+              <p className="font-bold text-sm text-slate-800 font-sans">該当するご質問が見つかりませんでした</p>
+              <p className="text-xs text-slate-500 font-sans leading-relaxed">
+                検索キーワードを変えていただくか、以下のお問い合わせ窓口よりお気軽にご質問ください。
               </p>
             </div>
           )}
         </div>
 
-        {/* 💬 Support / Contact Callout Banner */}
-        <div className="p-6 bg-gradient-to-br from-slate-900 to-teal-950 text-white rounded-2xl shadow-sm flex flex-col md:flex-row items-center justify-between gap-5 font-sans">
+        {/* 💬 Support / Contact Banner */}
+        <div className="p-6 bg-slate-900 text-white rounded-2xl shadow-sm flex flex-col md:flex-row items-center justify-between gap-5 font-sans">
           <div className="space-y-1.5 text-center md:text-left">
             <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-teal-500/20 text-teal-300 rounded-full text-[10px] font-bold border border-teal-500/30 font-sans">
               <MessageSquare size={12} />
               <span>お困りの際はお気軽にお問い合わせください</span>
             </div>
-            <h3 className="text-base md:text-lg font-sans font-bold text-white">
+            <h3 className="text-base font-sans font-bold text-white">
               解決しない疑問やご不安はございますか？
             </h3>
-            <p className="text-xs md:text-sm text-white/80 leading-relaxed max-w-lg font-sans">
+            <p className="text-xs text-slate-300 leading-relaxed max-w-lg font-sans">
               ReMEETs カスタマーサポート事務局が、手紙の流し方や決済、操作方法について丁寧にご案内いたします。
             </p>
           </div>
