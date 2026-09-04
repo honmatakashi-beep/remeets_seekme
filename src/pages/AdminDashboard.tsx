@@ -6448,10 +6448,10 @@ export const AdminDashboard = () => {
                   <div className="space-y-4">
                     <div className="glass-card overflow-hidden rounded-2xl border border-brand-border/70 shadow-xs" style={{ touchAction: 'pan-y', overscrollBehaviorY: 'auto' }}>
                       <div className="overflow-x-auto" style={{ touchAction: 'pan-y', overscrollBehaviorY: 'auto' }}>
-                        <table className="w-full text-left border-collapse min-w-[920px]">
+                        <table className="w-full text-left border-collapse min-w-[960px]">
                           <thead>
                             <tr className="border-b border-brand-border bg-slate-50/80 text-[11px] font-bold uppercase tracking-wider text-black/70">
-                              <th className="px-3.5 py-3 w-10 text-center">
+                              <th className="px-3 py-2.5 w-10 text-center whitespace-nowrap">
                                 <input
                                   type="checkbox"
                                   checked={allSelectedOnPage}
@@ -6466,15 +6466,15 @@ export const AdminDashboard = () => {
                                   className="rounded border-brand-border text-brand-primary focus:ring-brand-primary cursor-pointer w-4 h-4"
                                 />
                               </th>
-                              <th className="px-2.5 py-3 w-14">ID</th>
-                              <th className="px-3.5 py-3">ユーザー情報</th>
-                              <th className="px-3 py-3">氏名 / 旧姓</th>
-                              <th className="px-3 py-3">連絡先 / SNS</th>
-                              <th className="px-3 py-3 text-center">活動状況</th>
-                              <th className="px-3 py-3 text-center">認証状況</th>
-                              <th className="px-3 py-3 text-center">状態</th>
-                              <th className="px-3 py-3">登録日</th>
-                              <th className="px-3.5 py-3 text-right">操作</th>
+                              <th className="px-2.5 py-2.5 w-14 whitespace-nowrap">ID</th>
+                              <th className="px-3 py-2.5 whitespace-nowrap">ユーザー情報</th>
+                              <th className="px-3 py-2.5 whitespace-nowrap">氏名 / 旧姓</th>
+                              <th className="px-3 py-2.5 whitespace-nowrap">連絡先 / SNS</th>
+                              <th className="px-3 py-2.5 text-center whitespace-nowrap">活動状況</th>
+                              <th className="px-3 py-2.5 text-center whitespace-nowrap">認証状況</th>
+                              <th className="px-3 py-2.5 text-center whitespace-nowrap">状態</th>
+                              <th className="px-3 py-2.5 whitespace-nowrap">登録日</th>
+                              <th className="px-3 py-2.5 text-right whitespace-nowrap">操作</th>
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-brand-border/50 text-xs">
@@ -6497,12 +6497,12 @@ export const AdminDashboard = () => {
                                   <tr
                                     key={u.id}
                                     onClick={() => handleViewUser(u)}
-                                    className={`hover:bg-white/60 transition-colors cursor-pointer group ${
+                                    className={`h-12 hover:bg-white/60 transition-colors cursor-pointer group ${
                                       isSelected ? 'bg-brand-primary/5' : ''
                                     } ${u.is_blocked ? 'bg-red-50/30' : ''}`}
                                   >
                                     {/* Checkbox */}
-                                    <td className="px-3.5 py-2.5 text-center" onClick={(e) => e.stopPropagation()}>
+                                    <td className="px-3 py-2 text-center whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
                                       <input
                                         type="checkbox"
                                         checked={isSelected}
@@ -6518,84 +6518,75 @@ export const AdminDashboard = () => {
                                     </td>
 
                                     {/* ID */}
-                                    <td className="px-2.5 py-2.5 font-mono text-black/60 font-bold text-[11px]">
+                                    <td className="px-2.5 py-2 font-mono text-black/60 font-bold text-xs whitespace-nowrap">
                                       #{u.id}
                                     </td>
 
-                                    {/* User Info (Avatar + Username + Nickname) */}
-                                    <td className="px-3.5 py-2.5">
-                                      <div className="flex items-center gap-2.5">
-                                        <div className={`w-8 h-8 rounded-xl flex items-center justify-center font-black text-xs shrink-0 ${
+                                    {/* User Info (Avatar + Username + Nickname in single horizontal line) */}
+                                    <td className="px-3 py-2 whitespace-nowrap">
+                                      <div className="flex items-center gap-2">
+                                        <div className={`w-7 h-7 rounded-lg flex items-center justify-center font-black text-xs shrink-0 ${
                                           u.role === 'admin' 
-                                            ? 'bg-black text-white shadow-xs' 
+                                            ? 'bg-black text-white' 
                                             : isSample 
                                               ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' 
                                               : 'bg-brand-primary/10 text-brand-dark'
                                         }`}>
                                           {(u.nickname || u.username || '?')[0].toUpperCase()}
                                         </div>
-                                        <div className="min-w-0">
-                                          <div className="flex items-center gap-1.5">
-                                            <span className="font-bold text-black text-xs truncate max-w-[130px]">{u.username}</span>
-                                            {u.role === 'admin' && (
-                                              <span className="text-[9px] bg-black text-white px-1.5 py-0.2 rounded-md font-bold tracking-wider">
-                                                ADMIN
-                                              </span>
-                                            )}
-                                            {isSample && (
-                                              <span className="text-[9px] bg-indigo-50 text-indigo-700 border border-indigo-200 px-1 py-0.2 rounded font-medium">
-                                                SAMPLE
-                                              </span>
-                                            )}
-                                          </div>
-                                          <div className="text-[11px] text-black/50 truncate max-w-[140px]">
-                                            {u.nickname ? `表示名: ${u.nickname}` : 'ニックネーム未設定'}
-                                          </div>
-                                        </div>
+                                        <span className="font-bold text-black text-xs">{u.username}</span>
+                                        {u.nickname && (
+                                          <span className="text-[11px] text-black/50">（{u.nickname}）</span>
+                                        )}
+                                        {u.role === 'admin' && (
+                                          <span className="text-[9px] bg-black text-white px-1.5 py-0.2 rounded font-bold tracking-wider">
+                                            ADMIN
+                                          </span>
+                                        )}
+                                        {isSample && (
+                                          <span className="text-[9px] bg-indigo-50 text-indigo-700 border border-indigo-200 px-1 py-0.2 rounded font-medium">
+                                            SAMPLE
+                                          </span>
+                                        )}
                                       </div>
                                     </td>
 
-                                    {/* Full Name & Maiden Name & Birthdate */}
-                                    <td className="px-3 py-2.5">
-                                      <div className="space-y-0.5">
-                                        <div className="font-bold text-black/85 text-xs">
+                                    {/* Full Name & Maiden Name & Birthdate in single horizontal line */}
+                                    <td className="px-3 py-2 whitespace-nowrap">
+                                      <div className="flex items-center gap-2">
+                                        <span className="font-bold text-black/85 text-xs">
                                           {u.full_name || (u.last_name || u.first_name ? `${u.last_name || ''} ${u.first_name || ''}`.trim() : <span className="text-black/30 font-normal">未登録</span>)}
-                                        </div>
+                                        </span>
                                         {u.maiden_name && (
-                                          <div className="text-[10px]">
-                                            <span className="bg-amber-50 text-amber-850 px-1.5 py-0.2 rounded border border-amber-200 font-medium">
-                                              旧姓: {u.maiden_name}
-                                            </span>
-                                          </div>
+                                          <span className="bg-amber-50 text-amber-850 px-1.5 py-0.2 rounded border border-amber-200 text-[10px] font-medium">
+                                            旧姓: {u.maiden_name}
+                                          </span>
                                         )}
                                         {u.birthdate && (
-                                          <div className="text-[10px] text-black/40">
-                                            生年月日: {u.birthdate}
-                                          </div>
+                                          <span className="text-[10px] text-black/40 font-mono">
+                                            ({u.birthdate})
+                                          </span>
                                         )}
                                       </div>
                                     </td>
 
-                                    {/* Email & Contact */}
-                                    <td className="px-3 py-2.5">
-                                      <div className="space-y-0.5 max-w-[180px]">
-                                        <div className="font-mono text-[11px] text-black/75 truncate" title={u.email}>
+                                    {/* Email & Contact in single horizontal line */}
+                                    <td className="px-3 py-2 whitespace-nowrap">
+                                      <div className="flex items-center gap-2">
+                                        <span className="font-mono text-[11px] text-black/75">
                                           {u.email || <span className="text-black/30 font-sans">メール未登録</span>}
-                                        </div>
+                                        </span>
                                         {u.contact_type && u.contact_id && (
-                                          <div className="flex items-center gap-1 text-[10px] text-black/60 truncate">
-                                            <span className="px-1 py-0.2 rounded bg-slate-100 font-medium text-black/70">
-                                              {u.contact_type.toUpperCase()}
-                                            </span>
-                                            <span className="font-mono truncate">{u.contact_id}</span>
-                                          </div>
+                                          <span className="inline-flex items-center gap-1 text-[10px] text-black/60 bg-slate-100 px-1.5 py-0.2 rounded font-mono">
+                                            <span className="font-bold text-black/70">{u.contact_type.toUpperCase()}</span>: {u.contact_id}
+                                          </span>
                                         )}
                                       </div>
                                     </td>
 
-                                    {/* Activities (Posts, Reunions, Reports) */}
-                                    <td className="px-3 py-2.5 text-center">
-                                      <div className="flex items-center justify-center gap-1.5 flex-wrap">
+                                    {/* Activities in single horizontal line */}
+                                    <td className="px-3 py-2 text-center whitespace-nowrap">
+                                      <div className="flex items-center justify-center gap-1.5">
                                         <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
                                           (u.posts_count || 0) > 0
                                             ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
@@ -6616,22 +6607,22 @@ export const AdminDashboard = () => {
                                       </div>
                                     </td>
 
-                                    {/* eKYC Verification Badge */}
-                                    <td className="px-3 py-2.5 text-center">
+                                    {/* eKYC Verification Badge in single horizontal line */}
+                                    <td className="px-3 py-2 text-center whitespace-nowrap">
                                       {u.is_ekyc_verified ? (
-                                        <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-2xs" title={`eKYC認証完了 (${u.ekyc_document_type || '公的身分証'})`}>
+                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-2xs" title={`eKYC認証完了 (${u.ekyc_document_type || '公的身分証'})`}>
                                           <ShieldCheck size={12} className="text-emerald-700" />
                                           <span>eKYC済</span>
-                                        </div>
+                                        </span>
                                       ) : (
-                                        <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-black/60 border border-slate-200" title="自己申告・誓約書署名のみ">
+                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-black/60 border border-slate-200" title="自己申告・誓約書署名のみ">
                                           <span>📝 自己申告</span>
-                                        </div>
+                                        </span>
                                       )}
                                     </td>
 
-                                    {/* Status Badge */}
-                                    <td className="px-3 py-2.5 text-center">
+                                    {/* Status Badge in single horizontal line */}
+                                    <td className="px-3 py-2 text-center whitespace-nowrap">
                                       {u.is_blocked ? (
                                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-700 border border-rose-200">
                                           <Lock size={10} />
@@ -6644,13 +6635,13 @@ export const AdminDashboard = () => {
                                       )}
                                     </td>
 
-                                    {/* Created Date */}
-                                    <td className="px-3 py-2.5 text-black/60 text-[11px] whitespace-nowrap">
+                                    {/* Created Date in single horizontal line */}
+                                    <td className="px-3 py-2 text-black/60 text-[11px] whitespace-nowrap font-mono">
                                       {u.created_at ? new Date(u.created_at).toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' }) : '-'}
                                     </td>
 
-                                    {/* Actions Group - Always visible & Mobile Friendly */}
-                                    <td className="px-3.5 py-2.5 text-right" onClick={(e) => e.stopPropagation()}>
+                                    {/* Actions Group - in single horizontal line */}
+                                    <td className="px-3 py-2 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
                                       <div className="flex items-center justify-end gap-1">
                                         {/* View Details */}
                                         <button
