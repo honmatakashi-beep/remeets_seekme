@@ -36,7 +36,7 @@ export const detectCardBrand = (number: string): CardBrand => {
 ========================================================================= */
 
 // 1. VISA 公式ロゴ
-export const VisaLogo: React.FC<{ className?: string }> = ({ className = "h-4" }) => (
+export const VisaLogo: React.FC<{ className?: string }> = ({ className = "h-6 sm:h-7" }) => (
   <svg viewBox="0 0 48 32" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
     <rect width="48" height="32" rx="4" fill="#FFFFFF"/>
     <path d="M19.45 20.88L21.84 9.12H25.66L23.27 20.88H19.45Z" fill="#1434CB"/>
@@ -48,7 +48,7 @@ export const VisaLogo: React.FC<{ className?: string }> = ({ className = "h-4" }
 );
 
 // 2. Mastercard 公式ロゴ
-export const MastercardLogo: React.FC<{ className?: string }> = ({ className = "h-4" }) => (
+export const MastercardLogo: React.FC<{ className?: string }> = ({ className = "h-6 sm:h-7" }) => (
   <svg viewBox="0 0 48 32" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
     <rect width="48" height="32" rx="4" fill="#FFFFFF"/>
     <circle cx="19" cy="16" r="10" fill="#EB001B"/>
@@ -58,7 +58,7 @@ export const MastercardLogo: React.FC<{ className?: string }> = ({ className = "
 );
 
 // 3. JCB 公式3色エンブレムロゴ
-export const JcbLogo: React.FC<{ className?: string }> = ({ className = "h-4" }) => (
+export const JcbLogo: React.FC<{ className?: string }> = ({ className = "h-6 sm:h-7" }) => (
   <svg viewBox="0 0 48 32" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
     <rect width="48" height="32" rx="4" fill="#FFFFFF"/>
     {/* Blue Bar */}
@@ -75,7 +75,7 @@ export const JcbLogo: React.FC<{ className?: string }> = ({ className = "h-4" })
 );
 
 // 4. American Express 公式ロゴ
-export const AmexLogo: React.FC<{ className?: string }> = ({ className = "h-4" }) => (
+export const AmexLogo: React.FC<{ className?: string }> = ({ className = "h-6 sm:h-7" }) => (
   <svg viewBox="0 0 48 32" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
     <rect width="48" height="32" rx="4" fill="#006FCF"/>
     <text x="24" y="14" fontFamily="Arial, Helvetica, sans-serif" fontWeight="900" fontSize="6.5" fill="#FFFFFF" textAnchor="middle" letterSpacing="0.8">AMERICAN</text>
@@ -84,7 +84,7 @@ export const AmexLogo: React.FC<{ className?: string }> = ({ className = "h-4" }
 );
 
 // 5. Diners Club 公式ロゴ
-export const DinersLogo: React.FC<{ className?: string }> = ({ className = "h-4" }) => (
+export const DinersLogo: React.FC<{ className?: string }> = ({ className = "h-6 sm:h-7" }) => (
   <svg viewBox="0 0 48 32" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
     <rect width="48" height="32" rx="4" fill="#FFFFFF"/>
     <circle cx="24" cy="16" r="11" fill="#004A97"/>
@@ -93,7 +93,7 @@ export const DinersLogo: React.FC<{ className?: string }> = ({ className = "h-4"
 );
 
 // 6. Discover 公式ロゴ
-export const DiscoverLogo: React.FC<{ className?: string }> = ({ className = "h-4" }) => (
+export const DiscoverLogo: React.FC<{ className?: string }> = ({ className = "h-6 sm:h-7" }) => (
   <svg viewBox="0 0 48 32" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
     <rect width="48" height="32" rx="4" fill="#FFFFFF"/>
     <text x="14" y="19" fontFamily="Arial, Helvetica, sans-serif" fontWeight="900" fontSize="8" fill="#1C1C1C" textAnchor="middle">DISC</text>
@@ -186,7 +186,7 @@ export const CreditCardPaymentForm: React.FC<CreditCardPaymentFormProps> = ({
         <div className="grid grid-cols-6 gap-1.5 sm:gap-2">
           {/* VISA */}
           <div
-            className={`h-8 sm:h-9 rounded-lg border flex items-center justify-center p-1 transition-all duration-300 shadow-2xs bg-white ${
+            className={`h-11 sm:h-12 rounded-xl border flex items-center justify-center p-1 transition-all duration-300 shadow-2xs bg-white ${
               detectedBrand === 'visa'
                 ? 'border-blue-600 ring-2 ring-blue-500/40 scale-105 shadow-md -translate-y-0.5'
                 : detectedBrand !== 'unknown'
@@ -195,12 +195,12 @@ export const CreditCardPaymentForm: React.FC<CreditCardPaymentFormProps> = ({
             }`}
             title="VISAカード対応"
           >
-            <VisaLogo className="h-4 sm:h-5 w-auto" />
+            <VisaLogo className="h-6 sm:h-7 w-auto" />
           </div>
 
           {/* Mastercard */}
           <div
-            className={`h-8 sm:h-9 rounded-lg border flex items-center justify-center p-1 transition-all duration-300 shadow-2xs bg-white ${
+            className={`h-11 sm:h-12 rounded-xl border flex items-center justify-center p-1 transition-all duration-300 shadow-2xs bg-white ${
               detectedBrand === 'mastercard'
                 ? 'border-red-600 ring-2 ring-red-500/40 scale-105 shadow-md -translate-y-0.5'
                 : detectedBrand !== 'unknown'
@@ -209,12 +209,12 @@ export const CreditCardPaymentForm: React.FC<CreditCardPaymentFormProps> = ({
             }`}
             title="Mastercard対応"
           >
-            <MastercardLogo className="h-4 sm:h-5 w-auto" />
+            <MastercardLogo className="h-6 sm:h-7 w-auto" />
           </div>
 
           {/* JCB */}
           <div
-            className={`h-8 sm:h-9 rounded-lg border flex items-center justify-center p-1 transition-all duration-300 shadow-2xs bg-white ${
+            className={`h-11 sm:h-12 rounded-xl border flex items-center justify-center p-1 transition-all duration-300 shadow-2xs bg-white ${
               detectedBrand === 'jcb'
                 ? 'border-emerald-600 ring-2 ring-emerald-500/40 scale-105 shadow-md -translate-y-0.5'
                 : detectedBrand !== 'unknown'
@@ -223,12 +223,12 @@ export const CreditCardPaymentForm: React.FC<CreditCardPaymentFormProps> = ({
             }`}
             title="JCBカード対応（日本国内発行カード全般）"
           >
-            <JcbLogo className="h-4 sm:h-5 w-auto" />
+            <JcbLogo className="h-6 sm:h-7 w-auto" />
           </div>
 
           {/* AMEX */}
           <div
-            className={`h-8 sm:h-9 rounded-lg border flex items-center justify-center p-1 transition-all duration-300 shadow-2xs bg-white ${
+            className={`h-11 sm:h-12 rounded-xl border flex items-center justify-center p-1 transition-all duration-300 shadow-2xs bg-white ${
               detectedBrand === 'amex'
                 ? 'border-cyan-600 ring-2 ring-cyan-500/40 scale-105 shadow-md -translate-y-0.5'
                 : detectedBrand !== 'unknown'
@@ -237,12 +237,12 @@ export const CreditCardPaymentForm: React.FC<CreditCardPaymentFormProps> = ({
             }`}
             title="American Express対応"
           >
-            <AmexLogo className="h-4 sm:h-5 w-auto" />
+            <AmexLogo className="h-6 sm:h-7 w-auto" />
           </div>
 
           {/* Diners */}
           <div
-            className={`h-8 sm:h-9 rounded-lg border flex items-center justify-center p-1 transition-all duration-300 shadow-2xs bg-white ${
+            className={`h-11 sm:h-12 rounded-xl border flex items-center justify-center p-1 transition-all duration-300 shadow-2xs bg-white ${
               detectedBrand === 'diners'
                 ? 'border-indigo-600 ring-2 ring-indigo-500/40 scale-105 shadow-md -translate-y-0.5'
                 : detectedBrand !== 'unknown'
@@ -251,12 +251,12 @@ export const CreditCardPaymentForm: React.FC<CreditCardPaymentFormProps> = ({
             }`}
             title="Diners Club対応"
           >
-            <DinersLogo className="h-4 sm:h-5 w-auto" />
+            <DinersLogo className="h-6 sm:h-7 w-auto" />
           </div>
 
           {/* Discover */}
           <div
-            className={`h-8 sm:h-9 rounded-lg border flex items-center justify-center p-1 transition-all duration-300 shadow-2xs bg-white ${
+            className={`h-11 sm:h-12 rounded-xl border flex items-center justify-center p-1 transition-all duration-300 shadow-2xs bg-white ${
               detectedBrand === 'discover'
                 ? 'border-orange-600 ring-2 ring-orange-500/40 scale-105 shadow-md -translate-y-0.5'
                 : detectedBrand !== 'unknown'
@@ -265,7 +265,7 @@ export const CreditCardPaymentForm: React.FC<CreditCardPaymentFormProps> = ({
             }`}
             title="Discoverカード対応"
           >
-            <DiscoverLogo className="h-4 sm:h-5 w-auto" />
+            <DiscoverLogo className="h-6 sm:h-7 w-auto" />
           </div>
         </div>
       </div>
@@ -290,16 +290,16 @@ export const CreditCardPaymentForm: React.FC<CreditCardPaymentFormProps> = ({
               value={cardNumber}
               onChange={handleNumberChange}
               placeholder="4242 •••• •••• 4242"
-              className="w-full h-11 px-3.5 pr-14 bg-slate-50/70 border border-slate-300 rounded-xl text-xs sm:text-sm font-mono text-slate-900 focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all tracking-wider"
+              className="w-full h-11 px-3.5 pr-16 bg-slate-50/70 border border-slate-300 rounded-xl text-xs sm:text-sm font-mono text-slate-900 focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all tracking-wider"
             />
             {/* 入力枠右端のブランドインジケーター */}
             <div className="absolute right-3 flex items-center pointer-events-none">
-              {detectedBrand === 'visa' && <VisaLogo className="h-4 w-auto shadow-2xs" />}
-              {detectedBrand === 'mastercard' && <MastercardLogo className="h-4 w-auto shadow-2xs" />}
-              {detectedBrand === 'jcb' && <JcbLogo className="h-4 w-auto shadow-2xs" />}
-              {detectedBrand === 'amex' && <AmexLogo className="h-4 w-auto shadow-2xs" />}
-              {detectedBrand === 'diners' && <DinersLogo className="h-4 w-auto shadow-2xs" />}
-              {detectedBrand === 'discover' && <DiscoverLogo className="h-4 w-auto shadow-2xs" />}
+              {detectedBrand === 'visa' && <VisaLogo className="h-6 w-auto shadow-sm" />}
+              {detectedBrand === 'mastercard' && <MastercardLogo className="h-6 w-auto shadow-sm" />}
+              {detectedBrand === 'jcb' && <JcbLogo className="h-6 w-auto shadow-sm" />}
+              {detectedBrand === 'amex' && <AmexLogo className="h-6 w-auto shadow-sm" />}
+              {detectedBrand === 'diners' && <DinersLogo className="h-6 w-auto shadow-sm" />}
+              {detectedBrand === 'discover' && <DiscoverLogo className="h-6 w-auto shadow-sm" />}
               {detectedBrand === 'unknown' && <Lock size={14} className="text-slate-400" />}
             </div>
           </div>

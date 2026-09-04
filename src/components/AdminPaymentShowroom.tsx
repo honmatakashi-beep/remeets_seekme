@@ -164,18 +164,18 @@ export const AdminPaymentShowroom: React.FC = () => {
                 key={card.brand}
                 type="button"
                 onClick={() => applyPresetAndOpenModal(card)}
-                className="bg-white hover:bg-slate-50 text-slate-900 p-2.5 rounded-2xl border border-slate-300 shadow-md hover:shadow-lg transition-all flex flex-col items-center justify-center gap-1.5 cursor-pointer active:scale-95 group"
+                className="bg-white hover:bg-slate-50 text-slate-900 p-3.5 sm:p-4 rounded-2xl border border-slate-300 shadow-md hover:shadow-lg transition-all flex flex-col items-center justify-center gap-1.5 cursor-pointer active:scale-95 group"
                 title={card.brandName + 'のテスト情報を注入して決済モーダルを即座に開く'}
               >
-                <div className="h-6 flex items-center justify-center">
-                  {card.brand === 'visa' && <VisaLogo className="h-5 w-auto" />}
-                  {card.brand === 'mastercard' && <MastercardLogo className="h-5 w-auto" />}
-                  {card.brand === 'jcb' && <JcbLogo className="h-5 w-auto" />}
-                  {card.brand === 'amex' && <AmexLogo className="h-5 w-auto" />}
-                  {card.brand === 'diners' && <DinersLogo className="h-5 w-auto" />}
-                  {card.brand === 'discover' && <DiscoverLogo className="h-5 w-auto" />}
+                <div className="h-9 sm:h-10 flex items-center justify-center">
+                  {card.brand === 'visa' && <VisaLogo className="h-7 sm:h-8 w-auto" />}
+                  {card.brand === 'mastercard' && <MastercardLogo className="h-7 sm:h-8 w-auto" />}
+                  {card.brand === 'jcb' && <JcbLogo className="h-7 sm:h-8 w-auto" />}
+                  {card.brand === 'amex' && <AmexLogo className="h-7 sm:h-8 w-auto" />}
+                  {card.brand === 'diners' && <DinersLogo className="h-7 sm:h-8 w-auto" />}
+                  {card.brand === 'discover' && <DiscoverLogo className="h-7 sm:h-8 w-auto" />}
                 </div>
-                <div className="text-[10px] font-bold text-indigo-700 flex items-center gap-1 group-hover:underline">
+                <div className="text-xs font-bold text-indigo-700 flex items-center gap-1 group-hover:underline">
                   <span>{card.brandName}で開く</span>
                   <ArrowRight size={10} className="group-hover:translate-x-0.5 transition-transform" />
                 </div>
@@ -291,7 +291,7 @@ export const AdminPaymentShowroom: React.FC = () => {
         <div className="lg:col-span-7 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
           <div className="flex items-center justify-between border-b border-slate-150 pb-3">
             <div>
-              <span className="text-[10px] font-bold text-indigo-700 uppercase tracking-widest block font-sans">Live Component Preview</span>
+              <span className="text-xs font-bold text-indigo-700 uppercase tracking-widest block font-sans">Live Component Preview</span>
               <h3 className="text-base font-bold text-slate-900 font-serif">
                 {currentScenario === 'letter_reveal' && '① 通常手紙開示・連絡先交換（600円）'}
                 {currentScenario === 'letter_with_ekyc' && '② 手紙開示 ＋ 公的本人確認eKYC（1,200円）'}
@@ -537,7 +537,7 @@ export const AdminPaymentShowroom: React.FC = () => {
                     <CreditCard size={18} />
                   </div>
                   <div>
-                    <span className="text-[10px] font-bold text-indigo-700 uppercase tracking-widest block font-sans">Modal Viewport Simulator</span>
+                    <span className="text-xs font-bold text-indigo-700 uppercase tracking-widest block font-sans">Modal Viewport Simulator</span>
                     <h3 className="text-base font-bold text-slate-900 font-serif">
                       実機決済モーダル（本番同様UI）
                     </h3>
