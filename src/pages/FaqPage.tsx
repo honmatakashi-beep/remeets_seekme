@@ -496,7 +496,7 @@ export const FaqPage: React.FC = () => {
         </div>
 
         {/* 🗂️ Category Pills Navigation */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar">
+        <div className="flex flex-wrap items-center gap-2">
           {categories.map((cat) => {
             const Icon = cat.icon;
             const isSelected = activeCategory === cat.id;
@@ -533,16 +533,21 @@ export const FaqPage: React.FC = () => {
                   className="space-y-3.5 scroll-mt-24"
                 >
                   {/* 📌 Category Section Header */}
-                  <div className="flex items-center justify-between pb-2 border-b border-brand-border">
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-lg bg-teal-50 text-teal-700 border border-teal-200/80 flex items-center justify-center shrink-0">
-                        <Icon size={15} />
+                  <div className="flex items-center justify-between pb-3 border-b-2 border-teal-700/70 pt-2">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-xl bg-teal-50 text-teal-800 border border-teal-200 flex items-center justify-center shrink-0 shadow-2xs">
+                        <Icon size={18} />
                       </div>
-                      <h2 className="text-sm font-bold text-black font-serif">
-                        {cat.label}
-                      </h2>
+                      <div>
+                        <h2 className="text-base md:text-lg font-bold text-slate-900 font-serif tracking-tight">
+                          {cat.label}
+                        </h2>
+                        <p className="text-[11px] md:text-xs text-slate-500 font-sans hidden sm:block mt-0.5">
+                          {cat.description}
+                        </p>
+                      </div>
                     </div>
-                    <span className="text-[11px] font-bold text-teal-800 bg-teal-50 border border-teal-200 px-2 py-0.5 rounded-full font-sans">
+                    <span className="text-xs font-bold text-teal-800 bg-teal-50 border border-teal-200 px-2.5 py-1 rounded-full font-sans shadow-2xs">
                       {items.length}問
                     </span>
                   </div>
