@@ -1,0 +1,8 @@
+# ReMEETs robots.txt
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /account/
+
+Sitemap: https://remeets.jp/sitemap.xml

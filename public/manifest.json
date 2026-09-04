@@ -1,0 +1,22 @@
+{
+  "short_name": "ReMEETs",
+  "name": "ReMEETs（再会のボトルメール）",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/logo2.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#FAF7F2",
+  "theme_color": "#F27D26",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "description": "昭和・平成の想い出を紡ぐ、安全・安心な再会・感謝マッチングプラットフォーム"
+}

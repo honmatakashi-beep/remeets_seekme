@@ -12,6 +12,7 @@ import { cn, formatEraLabel, getPostUrl, getCategoryText, PREFECTURES } from '..
 import { SupportBanner } from './SupportBanner';
 import { SupportModal } from './SupportModal';
 import { WaterRippleRainbowText } from './WaterRippleRainbowText';
+import { LanguageSwitcher, useLanguage } from '../contexts/LanguageContext';
 
 export const WarningMessage = ({ message }: { message: string }) => {
   if (!message) return null;
@@ -237,8 +238,11 @@ export const Navbar = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) 
               className="h-5.5 sm:h-6.5 md:h-7.5 w-auto object-contain transition-transform group-hover:scale-[1.02]" 
             />
           </Link>
-
+          
           <div className="flex items-center gap-2 sm:gap-3">
+            {/* 言語切り替えボタン (JP / EN) */}
+            <LanguageSwitcher />
+
           {/* 運営応援寄付ボタン (デスクトップ・PC画面のみ表示、モバイルでは非表示) */}
           <Link
             to="/supporter"

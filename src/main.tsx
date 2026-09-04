@@ -117,3 +117,13 @@ createRoot(document.getElementById('root')!).render(
   </StrictMode>,
 );
 
+// Register PWA Service Worker in production / supported environments
+if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch((err) => {
+      console.debug('Service Worker registration skipped/failed:', err);
+    });
+  });
+}
+
+

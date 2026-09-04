@@ -4007,7 +4007,7 @@ export const AdminDashboard = () => {
           setSelectedDeletionRequest({ ...selectedDeletionRequest, status: 'approved' });
         }
         // Refresh posts to reflect the deleted bottle
-        fetchPosts();
+        fetchData();
       }
     } catch (err) {
       console.error(err);
@@ -4047,7 +4047,7 @@ export const AdminDashboard = () => {
       if (res.ok) {
         setDeletionRequests(prev => prev.map(r => selectedDeletionIds.includes(r.id) ? { ...r, status: 'approved' } : r));
         setSelectedDeletionIds([]);
-        fetchPosts();
+        fetchData();
       }
     } catch (err) {
       console.error(err);
@@ -9841,7 +9841,7 @@ export const AdminDashboard = () => {
                       </button>
                     </div>
                     <p className="text-[11px] text-slate-400 leading-relaxed">
-                      ※ 通常の単語のほか、正規表現（例: <code className="text-slate-600 bg-slate-100 px-1 py-0.5 rounded">\d{2,4}-\d{4}</code> や <code className="text-slate-600 bg-slate-100 px-1 py-0.5 rounded">死ね|殺す</code>）も自動認識されます。
+                      ※ 通常の単語のほか、正規表現（例: <code className="text-slate-600 bg-slate-100 px-1 py-0.5 rounded">{`\\d{2,4}-\\d{4}`}</code> や <code className="text-slate-600 bg-slate-100 px-1 py-0.5 rounded">死ね|殺す</code>）も自動認識されます。
                     </p>
                   </form>
                 </div>

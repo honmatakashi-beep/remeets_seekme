@@ -913,7 +913,7 @@ export const AdminManualView: React.FC = () => {
                 <ul className="list-disc pl-4 space-y-1 text-black/70">
                   <li><b>完全一致 (Exact):</b> 指定した文字列がそのまま含まれる場合に遮断。</li>
                   <li><b>部分一致 (Partial):</b> ひらがな・カタカナの表記揺れを含めて検知。</li>
-                  <li><b>正規表現 (Regex):</b> 電話番号パターン（<code>\d{2,4}-\d{2,4}-\d{4}</code>）やSNS IDパターンを高度に遮断。</li>
+                  <li><b>正規表現 (Regex):</b> 電話番号パターン（<code>{`\\d{2,4}-\\d{2,4}-\\d{4}`}</code>）やSNS IDパターンを高度に遮断。</li>
                 </ul>
               </div>
             </div>
