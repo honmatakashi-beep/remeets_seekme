@@ -42,6 +42,7 @@ import { AdminLogsView } from '../components/AdminLogsView';
 import { AdminSecurityCenterView } from '../components/AdminSecurityCenterView';
 import { AdminSystemCenterView } from '../components/AdminSystemCenterView';
 import { AdminMasterKnowledgeBase } from '../components/AdminMasterKnowledgeBase';
+import { AdminManualView } from '../components/AdminManualView';
 import {
   classifyTicket,
   TicketCategory,
@@ -12432,7 +12433,7 @@ export const AdminDashboard = () => {
               );
             })()
           ) : activeTab === 'manual' ? (
-            <AdminManualContent />
+            <AdminManualView />
           ) : activeTab === 'designSystem' ? (
             <AdminDesignSystem />
           ) : activeTab === 'valuation' ? (
