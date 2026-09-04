@@ -3246,14 +3246,14 @@ export const RecipientSafetyGuide = ({
       {/* 1. ヘッダー：安心宣言＆プラットフォーム概要 */}
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 border-b border-slate-100 pb-5">
         <div className="space-y-1.5 max-w-xl">
-          <div className="flex items-center gap-2">
-            <span className="text-xl">🤝</span>
-            <h3 className="text-base md:text-lg font-extrabold text-slate-900 tracking-tight leading-snug">
-              <span className="inline-block">初めてこの手紙を見つけた方へ</span>
-              <span className="inline-block sm:ml-1.5 text-teal-950">── ReMEETsの安心再会システム</span>
+          <div className="flex items-start gap-2">
+            <span className="text-xl mt-0.5">🤝</span>
+            <h3 className="text-base sm:text-lg md:text-xl font-extrabold text-slate-900 tracking-tight leading-snug">
+              <span className="block">初めてこの手紙を見つけた方へ ──</span>
+              <span className="block text-teal-900 mt-0.5">ReMEETsの安心再会システム</span>
             </h3>
           </div>
-          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-medium">
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-medium pt-1">
             お名前は検索エンジンで見つかりますが、手紙本文とお互いの連絡先は<strong className="text-teal-900 font-bold">「二人だけの思い出クイズ」を解いたご本人のみに安全に開示</strong>されます。
           </p>
         </div>
@@ -3347,7 +3347,7 @@ export const RecipientSafetyGuide = ({
                   STEP 03
                 </span>
                 <span className="text-[11px] font-bold text-orange-800 bg-orange-100/70 px-2 py-0.5 rounded-md border border-orange-300/60">
-                  600円 / 1,200円
+                  600円/1,200円
                 </span>
               </div>
               <div className="flex items-center gap-2.5 pt-0.5">
@@ -3370,66 +3370,66 @@ export const RecipientSafetyGuide = ({
         </div>
       </div>
 
-      {/* 3. 【セキュリティ保証バッジ帯】ReMEETsが約束する 3つの安心・安全保証 */}
-      <div className="bg-gradient-to-r from-slate-900 via-slate-850 to-slate-900 text-white rounded-2xl p-5 md:p-6 shadow-md space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+      {/* 3. 【セキュリティ保証バッジ帯】ReMEETsが約束する 3つの安心・安全保証（上品なエメラルド＆アイボリー調） */}
+      <div className="bg-gradient-to-br from-teal-50/70 via-emerald-50/40 to-slate-50/90 border border-teal-200/80 rounded-2xl p-5 md:p-6 shadow-2xs space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-teal-100/80 pb-3">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-lg bg-teal-500/20 text-teal-400 flex items-center justify-center">
-              <Shield size={15} />
+            <div className="w-7 h-7 rounded-lg bg-teal-600 text-white flex items-center justify-center shadow-2xs shrink-0">
+              <ShieldCheck size={16} />
             </div>
-            <h4 className="text-xs md:text-sm font-bold text-white tracking-wide">
+            <h4 className="text-xs md:text-sm font-bold text-teal-950 tracking-wide">
               安心をお約束する ReMEETs セキュリティ＆公式保証
             </h4>
           </div>
-          <span className="text-[11px] text-teal-400 font-medium">
+          <span className="text-[11px] font-bold text-teal-800 bg-white/80 px-2.5 py-0.5 rounded-full border border-teal-200/70 shrink-0 self-start sm:self-auto">
             🛡️ 厳格な安全基準に準拠
           </span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-xs">
           {/* 保証1 */}
-          <div className="flex items-start gap-3 bg-white/5 p-3.5 rounded-xl border border-white/10 hover:bg-white/10 transition-colors">
-            <div className="w-8 h-8 rounded-lg bg-teal-500/20 text-teal-300 flex items-center justify-center shrink-0 mt-0.5">
+          <div className="flex items-start gap-3 bg-white/95 p-3.5 rounded-xl border border-teal-100 shadow-2xs hover:border-teal-300 transition-colors">
+            <div className="w-8 h-8 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center shrink-0 mt-0.5 border border-teal-100/60">
               <Lock size={16} />
             </div>
             <div className="space-y-1">
-              <div className="font-bold text-slate-100 flex items-center gap-1.5 text-xs">
+              <div className="font-bold text-slate-900 flex items-center gap-1.5 text-xs">
                 <span>第三者覗き見防止</span>
-                <Check size={13} className="text-teal-400" />
+                <Check size={14} className="text-emerald-600 font-bold" />
               </div>
-              <p className="text-slate-400 text-[11px] leading-relaxed">
+              <p className="text-slate-600 text-[11px] leading-relaxed">
                 正解者以外には手紙本文・連絡先は一切開示されず、暗号化で保護されます。
               </p>
             </div>
           </div>
 
           {/* 保証2 */}
-          <div className="flex items-start gap-3 bg-white/5 p-3.5 rounded-xl border border-white/10 hover:bg-white/10 transition-colors">
-            <div className="w-8 h-8 rounded-lg bg-teal-500/20 text-teal-300 flex items-center justify-center shrink-0 mt-0.5">
+          <div className="flex items-start gap-3 bg-white/95 p-3.5 rounded-xl border border-teal-100 shadow-2xs hover:border-teal-300 transition-colors">
+            <div className="w-8 h-8 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center shrink-0 mt-0.5 border border-teal-100/60">
               <UserCheck size={16} />
             </div>
             <div className="space-y-1">
-              <div className="font-bold text-slate-100 flex items-center gap-1.5 text-xs">
+              <div className="font-bold text-slate-900 flex items-center gap-1.5 text-xs">
                 <span>公的eKYCによる身元確認</span>
-                <Check size={13} className="text-teal-400" />
+                <Check size={14} className="text-emerald-600 font-bold" />
               </div>
-              <p className="text-slate-400 text-[11px] leading-relaxed">
+              <p className="text-slate-600 text-[11px] leading-relaxed">
                 なりすましや悪質なストーカー・営業行為を未然に徹底遮断します。
               </p>
             </div>
           </div>
 
           {/* 保証3 */}
-          <div className="flex items-start gap-3 bg-white/5 p-3.5 rounded-xl border border-white/10 hover:bg-white/10 transition-colors">
-            <div className="w-8 h-8 rounded-lg bg-teal-500/20 text-teal-300 flex items-center justify-center shrink-0 mt-0.5">
+          <div className="flex items-start gap-3 bg-white/95 p-3.5 rounded-xl border border-teal-100 shadow-2xs hover:border-teal-300 transition-colors">
+            <div className="w-8 h-8 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center shrink-0 mt-0.5 border border-teal-100/60">
               <CreditCard size={16} />
             </div>
             <div className="space-y-1">
-              <div className="font-bold text-slate-100 flex items-center gap-1.5 text-xs">
+              <div className="font-bold text-slate-900 flex items-center gap-1.5 text-xs">
                 <span>全額自動返金保証</span>
-                <Check size={13} className="text-teal-400" />
+                <Check size={14} className="text-emerald-600 font-bold" />
               </div>
-              <p className="text-slate-400 text-[11px] leading-relaxed">
+              <p className="text-slate-600 text-[11px] leading-relaxed">
                 万が一審査不合格や照合不一致の場合は、手数料を即時全額自動返金します。
               </p>
             </div>
