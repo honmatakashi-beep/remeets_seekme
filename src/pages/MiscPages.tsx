@@ -25,6 +25,7 @@ export const SuccessStoriesPage = () => {
   const { user } = useAuth();
   const [dbStories, setDbStories] = React.useState<any[]>([]);
   const [loading, setLoading] = React.useState<boolean>(true);
+  const [selectedCategory, setSelectedCategory] = React.useState<string>('all');
   const [searchParams] = useSearchParams();
   const targetId = searchParams.get('id');
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -46,79 +47,144 @@ export const SuccessStoriesPage = () => {
     fetchStories();
   }, []);
 
+  const categories = [
+    { id: 'all', label: 'すべて表示' },
+    { id: 'classmate', label: '🏫 同級生' },
+    { id: 'mentor', label: '🌸 恩師・部活' },
+    { id: 'journey', label: '🧭 旅・一期一会' },
+    { id: 'neighbor', label: '🏡 幼馴染・ご近所' },
+    { id: 'colleague', label: '💼 元同僚・仲間' },
+  ];
+
   const defaultStories = [
     {
       id: "def-1",
+      category: "classmate",
       tag: "同級生との再会",
       era: "1980年代後半",
-      relationship: "中学時代の親友",
+      relationship: "中学時代の親友（陸上部）",
       title: "「思い出クイズ」が結びつけた、35年越しの奇跡の再会",
       participants: "佐藤 健 様（52歳）＆ 鈴木 信一郎 様（51歳）",
-      description: "中学の卒業式以来、お互いに引越しを重ねてしまい連絡先が分からなくなっていました。他のSNSでは同姓同名が多く、確信が持てずにいましたが、鈴木様が流した『1980年代後半の〇〇中学校陸上部』のボトルを発見。『顧問の〇〇先生から最後に贈られた激励 of 言葉は？』という当事者しか絶対に知り得ないクイズに佐藤様が正解。安全に、そして懐かしい思い出に包まれながら、35年ぶりの想い出照合が成功し、安全に連絡先が引き渡されました。",
-      bg: "bg-amber-50/40 border-amber-200"
+      quizQuestion: "顧問の〇〇先生から卒業式で最後に全員に贈られた激励の言葉は？",
+      quizAnswer: "「迷ったら一歩前へ」",
+      description: "中学の卒業式以来、お互いに引越しを重ねてしまい連絡先が分からなくなっていました。他のSNSでは同姓同名が多く、確信が持てずにいましたが、鈴木様が流した『1980年代後半の〇〇中学校陸上部』のボトルを発見。当事者しか絶対に知り得ないクイズに佐藤様が正解。35年ぶりに旧交を温め、今では年に一度集まる仲に戻りました。",
+      bg: "bg-amber-50/40 border-amber-200/80"
     },
     {
       id: "def-2",
-      tag: "恩師との絆",
+      category: "mentor",
+      tag: "恩師への感謝",
       era: "1990年代半ば",
-      relationship: "高校時代の部活の顧問、部員",
-      title: "定年退職された恩師に、あの頃の感謝を届けたい",
+      relationship: "高校吹奏楽部の顧問と元部長",
+      title: "定年退職された恩師に、30年越しの感謝を届けたい",
       participants: "高橋 由美子 様（45歳）＆ 山本 栄治 先生（71歳）",
-      description: "山本先生の定年退職のニュースを聞き、当時の部活（吹奏楽部）のメンバーで記念に連絡を取りたいと考えました。先生の実名は入れず、あだ名である『やまおに先生』と、1990年代に優勝した近畿大会の金賞エピソードを宛先ヒントにしてボトルを流しました。ある日、先生の娘さんがこのボトルを見つけ、お父様（山本先生）に伝えてクイズに挑戦。クイズは『当時のコンテストで演奏した自由曲の和名。そして金賞受賞後に先生が泣きながらメンバー全員に奢ってくれたアイスは？』というものでした。完全一致によってメッセージが開通。今は当時のメンバー一同で、先生を囲む同窓会を企画しています。",
-      bg: "bg-indigo-50/30 border-indigo-200/50"
+      quizQuestion: "近畿大会で金賞を受賞した直後、先生が泣きながら部員全員に奢ってくれたアイスの名前は？",
+      quizAnswer: "「ホームランバー」",
+      description: "山本先生の定年退職の噂を聞き、当時の部活仲間で感謝を伝えたいと考えました。先生の実名は伏せ、あだ名である『やまおに先生』と金賞エピソードを宛先ヒントにしてボトルを投函。先生の娘さんが偶然ボトルを見つけ、お父様へ。クイズの一致でメッセージが開通し、当時の部員一同で先生を囲む温かい同窓会が実現しました。",
+      bg: "bg-indigo-50/30 border-indigo-200/60"
     },
     {
       id: "def-3",
+      category: "journey",
+      tag: "旅・一期一会",
+      era: "1990年代初頭",
+      relationship: "北海道一人旅で同宿だった旅人仲間",
+      title: "あの夏の北海道。夜通し夢を語り合った旅の友へ",
+      participants: "中村 慎吾 様（54歳）＆ 井上 拓也 様（53歳）",
+      quizQuestion: "富良野のユースホステルで豪雨の夜、二人でギターを弾きながら歌った曲の名前は？",
+      quizAnswer: "「乾杯」",
+      description: "学生時代、バイクで北海道を一周した際に偶然同じ宿になり、将来の夢について朝まで語り合いました。連絡先メモを紛失してしまい後悔していましたが、『1992年夏・富良野のユースホステル』として手紙を漂流。3年越しに井上様が検索で見つけてくださり、当時の情熱を昨日のことのように語り合うことができました。",
+      bg: "bg-teal-50/35 border-teal-200/60"
+    },
+    {
+      id: "def-4",
+      category: "neighbor",
+      tag: "幼馴染・ご近所",
+      era: "1980年代初頭",
+      relationship: "小学校時代の幼馴染",
+      title: "急な引っ越しで『さようなら』が言えなかった親友へ",
+      participants: "松田 恵美 様（48歳）＆ 川上 陽子 様（48歳）",
+      quizQuestion: "近所の神社裏の秘密基地に二人で埋めた缶の中身は？",
+      quizAnswer: "「ガラス玉と手作りの押し花」",
+      description: "親の急な転勤で、手紙を渡せないまま離れ離れになってしまった親友。大人になりずっと心残りでしたが、『緑町公園のシーソー』をキーワードに投函。川上様が思い出のフレーズから検索して見つけてくださり、40年ぶりに当時の『ごめんね』と『ありがとう』を直接伝え合えました。",
+      bg: "bg-rose-50/30 border-rose-200/60"
+    },
+    {
+      id: "def-5",
+      category: "colleague",
       tag: "元職場の同僚",
       era: "2000年代初頭",
       relationship: "ベンチャー企業の創業メンバー",
       title: "会社統合で散り散りになった創業メンバーが再集結",
       participants: "渡辺 直樹 様（42歳）＆ 小林 誠 様（43歳）",
-      description: "20年前、共に徹夜を乗り越えてサービスを作った創業期の仲間。会社が大手企業に吸収合併され、それぞれのキャリアへ進んだ後、連絡が途絶えていました。インターネットの海に、渡辺様が『2000年代初頭に渋谷区桜丘町の雑居ビルで一緒に働いていたエンジニアへ』と投函。クイズは『深夜3時、サーバーがクラッシュした時に全員で行った近くの神社の名前は？』。小林様が数年越しに見つけて正解。お互いの現在地から、お互いの家族のこと、最新のキャリアについて和やかに連絡を取り合い、旧交を温めています。",
-      bg: "bg-emerald-50/30 border-emerald-200/50"
+      quizQuestion: "深夜3時にサーバーがダウンした時、全員で願掛けに行った近くの神社の名前は？",
+      quizAnswer: "「金王八幡宮」",
+      description: "20年前、雑居ビルで共に徹夜を乗り越えてサービスを作った創業期の仲間。会社統合でそれぞれの道を歩んだ後、連絡が途絶えていましたが、渡辺様の投函を小林様が発見。今ではお互いの家族やキャリアについて和やかに連絡を取り合い、旧交を温めています。",
+      bg: "bg-emerald-50/30 border-emerald-200/60"
     }
   ];
 
   const dbStoriesMapped = dbStories.map((story) => {
     return {
       id: `db-${story.id}`,
+      category: story.era ? (story.era.includes('80') ? 'classmate' : story.era.includes('90') ? 'mentor' : 'colleague') : 'classmate',
       tag: story.era ? `${story.era}年代の再会` : "再会の物語",
-      era: story.era ? `${story.era}年代` : "不明",
-      relationship: story.gender ? `再会者（${story.gender === 'male' || story.gender === '男性' ? '男性' : story.gender === 'female' || story.gender === '女性' ? '女性' : 'その他'}）` : "再会のご報告",
+      era: story.era ? `${story.era}年代` : "想い出の年代",
+      relationship: story.gender ? `再会のご報告（${story.gender === 'male' || story.gender === '男性' ? '男性' : story.gender === 'female' || story.gender === '女性' ? '女性' : 'その他'}）` : "再会のご報告",
       title: story.title || "「思い出クイズ」が結びつけた、奇跡の再会",
       participants: `${story.username || "匿名のユーザー"} 様`,
+      quizQuestion: story.quiz_question || "当事者同士しか知らない特別な想い出キーワード",
+      quizAnswer: "完全一致で開通",
       description: story.message,
       bg: story.display_position === 'left' 
-        ? "bg-amber-50/40 border-amber-200" 
+        ? "bg-amber-50/40 border-amber-200/80" 
         : story.display_position === 'center'
-        ? "bg-emerald-50/30 border-emerald-200/50"
-        : "bg-indigo-50/30 border-indigo-200/50"
+        ? "bg-emerald-50/30 border-emerald-200/60"
+        : "bg-indigo-50/30 border-indigo-200/60"
     };
   });
 
   const displayStories = [...dbStoriesMapped, ...defaultStories];
+  
+  // カテゴリ絞り込み
+  const categoryFiltered = selectedCategory === 'all' 
+    ? displayStories 
+    : displayStories.filter(s => s.category === selectedCategory);
+
   const highlightedStory = targetId ? displayStories.find(s => s.id === targetId) : null;
-  const filteredStories = highlightedStory ? displayStories.filter(s => s.id !== highlightedStory.id) : displayStories;
+  const filteredStories = highlightedStory ? categoryFiltered.filter(s => s.id !== highlightedStory.id) : categoryFiltered;
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-12 md:py-24 space-y-12">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 md:py-16 space-y-8 font-sans text-slate-800">
       {/* 成功ストーリー投稿モーダル */}
       <SuccessStoryModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
 
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-brand-border pb-8">
+      {/* 提案 ①: 最上部に「トップへ戻る」ナビゲーション */}
+      <div className="pt-2 pb-1">
+        <Link 
+          to="/" 
+          className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-900 font-sans transition-colors group cursor-pointer"
+        >
+          <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
+          <span>トップへ戻る</span>
+        </Link>
+      </div>
+
+      {/* ページヘッダー */}
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-500 shrink-0 shadow-sm mt-1">
-            <HeartHandshake size={26} />
+          <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-200 text-rose-600 flex items-center justify-center shrink-0 shadow-2xs mt-0.5">
+            <HeartHandshake size={24} />
           </div>
-          <div>
-            <span className="text-[10px] md:text-xs font-bold text-brand-primary uppercase tracking-[0.3em] block mb-0.5 font-sans">
+          <div className="space-y-1">
+            <span className="text-[10.5px] font-bold text-rose-700 uppercase tracking-widest block font-sans">
               ReMEETs Stories
             </span>
-            <h1 className="text-2xl md:text-3xl font-serif font-bold text-brand-dark tracking-widest leading-tight">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-serif font-bold text-slate-900 tracking-wide">
               奇跡の再会報告（体験談）
             </h1>
-            <p className="text-xs md:text-sm text-brand-dark/60 font-sans leading-relaxed mt-1">
-              現実世界で大切な思い出を共有していた特定の個人同士だけが、多層セーフティによって100%安全にふたたび繋がることができた喜びのエピソードをご紹介します。
+            <p className="text-xs sm:text-sm text-slate-600 font-sans leading-relaxed pt-1">
+              大切な思い出を共有していた特定の個人同士が、想い出クイズによって安全にふたたび巡り会えた喜びのエピソードをご紹介します。
             </p>
           </div>
         </div>
@@ -127,147 +193,223 @@ export const SuccessStoriesPage = () => {
         <div className="shrink-0 flex items-center">
           <button
             onClick={() => setIsModalOpen(true)}
-            className="w-full md:w-auto px-5 py-3 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-bold text-xs rounded-2xl shadow-lg shadow-amber-900/15 flex items-center justify-center gap-2 transition-all hover:scale-[1.02] cursor-pointer"
+            className="w-full md:w-auto px-6 py-3.5 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-extrabold text-xs sm:text-sm rounded-2xl shadow-sm hover:shadow-md hover:scale-[1.02] active:scale-98 flex items-center justify-center gap-2 transition-all cursor-pointer"
           >
-            <Sparkles size={16} className="text-amber-200" />
+            <Sparkles size={16} className="text-amber-200 shrink-0" />
             <span>再会エピソードを投稿する</span>
           </button>
         </div>
       </div>
 
+      {/* 提案 ③: カテゴリ絞り込みピル（タブフィルター） */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+        {categories.map((cat) => (
+          <button
+            key={cat.id}
+            onClick={() => setSelectedCategory(cat.id)}
+            className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+              selectedCategory === cat.id
+                ? 'bg-slate-900 text-white shadow-xs scale-[1.02]'
+                : 'bg-white text-slate-600 border border-slate-200/80 hover:bg-slate-50 hover:text-slate-900'
+            }`}
+          >
+            {cat.label}
+          </button>
+        ))}
+      </div>
+
       {loading ? (
         <div className="flex justify-center items-center py-20">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-primary"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600"></div>
         </div>
       ) : (
-        <div className="space-y-8 animate-fade-in">
+        <div className="space-y-6 animate-fade-in">
           {/* 選択されたエピソードのハイライト表示 */}
           {highlightedStory && (
-            <div className="space-y-4 animate-fade-in mb-12">
-              <div className="flex items-center gap-2 text-teal-800 font-serif font-bold text-sm">
-                <Sparkles size={16} className="text-teal-500/80 animate-pulse" />
-                <span>あなたが選択した再会のエピソード</span>
+            <div className="space-y-3 animate-fade-in mb-8">
+              <div className="flex items-center gap-2 text-teal-800 font-serif font-bold text-xs sm:text-sm">
+                <Sparkles size={15} className="text-teal-600 animate-pulse" />
+                <span>あなたが選択した再会エピソード</span>
               </div>
-              <div className={`p-8 border-2 border-teal-200/80 rounded-3xl space-y-4 ${highlightedStory.bg} shadow-md ring-4 ring-teal-500/5 relative overflow-hidden bg-gradient-to-br from-[#fffdfa] via-white to-teal-50/20`}>
-                <div className="absolute top-0 right-0 p-4 pointer-events-none">
-                  <Sparkles size={120} className="text-teal-400/35" />
-                </div>
-                
-                <div className="flex flex-wrap items-center justify-between gap-3 relative z-10">
+              
+              <div className={`p-5 sm:p-7 md:p-8 border-2 border-teal-300 rounded-3xl space-y-4 ${highlightedStory.bg} shadow-md relative overflow-hidden bg-white`}>
+                <div className="flex flex-wrap items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-bold text-teal-900 bg-teal-100/80 border border-teal-200/80 px-3 py-1 rounded-full font-sans uppercase tracking-widest">
+                    <span className="text-[10px] font-bold text-teal-800 bg-teal-50 border border-teal-200 px-3 py-1 rounded-full uppercase tracking-wider font-sans">
                       {highlightedStory.tag} (選択中)
                     </span>
-                    <span className="text-[10px] font-bold text-brand-dark/50 font-mono">
+                    <span className="text-[11px] font-medium text-slate-500 font-sans">
                       年代：{highlightedStory.era} / 関係：{highlightedStory.relationship}
                     </span>
                   </div>
-                  <span className="text-xs font-serif text-teal-800 font-bold">Episode #{highlightedStory.id}</span>
+                  <span className="text-xs font-mono text-teal-700 font-bold">Episode #{highlightedStory.id}</span>
                 </div>
 
-                <div className="space-y-2 relative z-10">
-                  <h2 className="text-2xl md:text-3xl font-serif font-bold text-brand-dark">
+                <div className="space-y-1.5">
+                  <h2 className="text-lg sm:text-xl md:text-2xl font-serif font-bold text-slate-900 leading-snug">
                     {highlightedStory.title}
                   </h2>
-                  <p className="text-xs font-bold text-brand-dark/70 font-sans">
+                  <p className="text-xs font-bold text-slate-700 font-sans">
                     👤 ご紹介：{highlightedStory.participants}
                   </p>
                 </div>
 
-                <p className="text-sm md:text-base text-brand-dark/95 leading-relaxed font-sans border-t border-brand-border/30 pt-4 relative z-10 font-serif italic bg-teal-50/30 p-4 rounded-2xl">
+                {/* 提案 ②: 想い出クイズのハイライト枠 */}
+                {highlightedStory.quizQuestion && (
+                  <div className="p-3.5 sm:p-4 bg-amber-50/80 border border-amber-200 rounded-2xl space-y-1.5 text-xs text-amber-950 font-sans">
+                    <div className="flex items-center gap-1.5 font-bold text-amber-850">
+                      <Key size={14} className="text-amber-600 shrink-0" />
+                      <span>再会の決め手となった「想い出クイズ」</span>
+                    </div>
+                    <p className="text-slate-800 leading-relaxed pl-5 font-medium">
+                      Q. {highlightedStory.quizQuestion}
+                    </p>
+                  </div>
+                )}
+
+                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-sans border-t border-slate-100 pt-4 font-serif italic bg-slate-50/50 p-4 rounded-2xl">
                   &ldquo;{highlightedStory.description}&rdquo;
                 </p>
               </div>
-              <div className="border-b border-brand-border/40 pb-6 text-center">
-                <Link to="/success-stories" className="text-xs text-brand-primary font-bold hover:underline flex items-center justify-center gap-1">
-                  すべての物語一覧に戻る
+
+              <div className="text-center pt-2 pb-4">
+                <Link to="/success-stories" className="text-xs text-teal-700 font-bold hover:underline inline-flex items-center gap-1">
+                  ← すべての物語一覧に戻る
                 </Link>
               </div>
             </div>
           )}
 
           {highlightedStory && filteredStories.length > 0 && (
-            <h3 className="text-sm font-bold text-zinc-400 uppercase tracking-widest border-b border-brand-border pb-2 block">
-              他の再会エピソード一覧
+            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest border-b border-slate-200 pb-2">
+              他の再会エピソード一覧 ({filteredStories.length}件)
             </h3>
           )}
 
-          {filteredStories.map(story => (
-            <div key={story.id} className={`p-8 border rounded-3xl space-y-4 ${story.bg} shadow-sm hover:shadow transition-all group`}>
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-bold text-brand-primary bg-brand-primary/5 border border-brand-primary/10 px-3 py-1 rounded-full font-sans uppercase tracking-widest">
-                    {story.tag}
-                  </span>
-                  <span className="text-[10px] font-bold text-brand-dark/40 font-mono">
-                    年代：{story.era} / 関係：{story.relationship}
-                  </span>
+          {/* 提案 ④: カードパディングと文字組みのレスポンシブ最適化 */}
+          {filteredStories.length === 0 ? (
+            <div className="bg-white rounded-3xl p-10 text-center border border-slate-100 space-y-3">
+              <p className="text-sm font-bold text-slate-600">
+                このカテゴリの再会エピソードはまだありません
+              </p>
+              <button
+                onClick={() => setSelectedCategory('all')}
+                className="text-xs text-teal-700 font-bold hover:underline"
+              >
+                すべてのエピソードを表示する
+              </button>
+            </div>
+          ) : (
+            filteredStories.map(story => (
+              <div 
+                key={story.id} 
+                className={`p-5 sm:p-7 md:p-8 border rounded-3xl space-y-4 ${story.bg} shadow-xs hover:shadow-md transition-all group bg-white`}
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-bold text-slate-700 bg-slate-100 border border-slate-200/80 px-2.5 py-0.5 rounded-full uppercase tracking-wider font-sans">
+                      {story.tag}
+                    </span>
+                    <span className="text-[11px] font-medium text-slate-500 font-sans">
+                      年代：{story.era} / 関係：{story.relationship}
+                    </span>
+                  </div>
+                  <span className="text-xs font-mono text-slate-400">Episode #{story.id}</span>
                 </div>
-                <span className="text-xs font-serif text-brand-dark/50 italic">Episode #{story.id}</span>
-              </div>
 
-              <div className="space-y-2">
-                <h2 className="text-xl md:text-2xl font-serif font-bold text-brand-dark group-hover:text-brand-primary transition-colors">
-                  {story.title}
-                </h2>
-                <p className="text-xs font-bold text-brand-dark/70 font-sans">
-                  👤 ご紹介：{story.participants}
+                <div className="space-y-1.5">
+                  <h2 className="text-base sm:text-lg md:text-xl font-serif font-bold text-slate-900 group-hover:text-teal-800 transition-colors leading-snug">
+                    {story.title}
+                  </h2>
+                  <p className="text-xs font-bold text-slate-700 font-sans">
+                    👤 ご紹介：{story.participants}
+                  </p>
+                </div>
+
+                {/* 提案 ②: 想い出クイズのハイライト枠 */}
+                {story.quizQuestion && (
+                  <div className="p-3.5 sm:p-4 bg-amber-50/70 border border-amber-200/80 rounded-2xl space-y-1 text-xs text-amber-950 font-sans">
+                    <div className="flex items-center gap-1.5 font-bold text-amber-800">
+                      <Key size={13} className="text-amber-600 shrink-0" />
+                      <span>再会の決め手となった「想い出クイズ」</span>
+                    </div>
+                    <p className="text-slate-800 leading-relaxed pl-5 font-medium">
+                      Q. {story.quizQuestion}
+                    </p>
+                  </div>
+                )}
+
+                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-sans border-t border-slate-100 pt-3.5">
+                  {story.description}
                 </p>
               </div>
-
-              <p className="text-xs md:text-sm text-brand-dark/80 leading-relaxed font-sans border-t border-brand-border/30 pt-4">
-                {story.description}
-              </p>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       )}
 
       {/* ページ下部CTA（ログイン状態に応じて表示切り替え） */}
-      <div className="text-center py-12 bg-zinc-50 rounded-3xl border border-brand-border/40 p-8 space-y-6 max-w-2xl mx-auto shadow-xs">
-        <div className="w-10 h-10 bg-amber-100 text-amber-700 rounded-2xl flex items-center justify-center mx-auto mb-2">
-          <Sparkles size={20} />
+      <div className="text-center py-10 bg-white rounded-3xl border border-slate-100 p-6 sm:p-8 space-y-5 max-w-2xl mx-auto shadow-xs">
+        <div className="w-12 h-12 bg-amber-50 border border-amber-200 text-amber-700 rounded-2xl flex items-center justify-center mx-auto shadow-2xs">
+          <Sparkles size={22} />
         </div>
-        <h3 className="text-xl font-serif font-bold text-brand-dark">
-          {user ? "あなたの想い出も海へ流してみませんか？" : "心の中で漂流している思い出はありませんか？"}
-        </h3>
-        <p className="text-xs text-brand-dark/60 leading-relaxed max-w-md mx-auto font-sans">
-          もう二度と会えないかもしれない、そう思っている昔の友人や恩師へ。
-          ReMEETsの暗号化された安全なボトルメールに想いを託して、静かに海へ流してみましょう。
-        </p>
+        <div className="space-y-1.5">
+          <h3 className="text-lg sm:text-xl font-serif font-bold text-slate-900">
+            {user ? "あなたの想い出も海へ流してみませんか？" : "心の中で漂流している思い出はありませんか？"}
+          </h3>
+          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-md mx-auto font-sans">
+            もう二度と会えないかもしれない、そう思っている昔の友人や恩師へ。<br className="hidden sm:inline" />
+            ReMEETsの暗号化された安全なボトルメールに想いを託して、静かに海へ流してみましょう。
+          </p>
+        </div>
 
         <div className="flex flex-wrap justify-center gap-3 pt-2">
           {user ? (
             <>
-              <Link to="/create" className="btn-primary text-xs px-6 py-3 flex items-center gap-2">
+              <Link 
+                to="/create" 
+                className="px-6 py-3 bg-gradient-to-r from-sky-600 via-teal-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 text-white font-extrabold text-xs sm:text-sm rounded-2xl shadow-sm hover:shadow-md hover:scale-[1.02] active:scale-98 transition-all flex items-center gap-2 cursor-pointer"
+              >
                 <Mail size={15} />
                 <span>手紙を海へ流す（新規投函）</span>
               </Link>
               <button 
                 onClick={() => setIsModalOpen(true)} 
-                className="px-5 py-3 bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 font-bold text-xs rounded-xl flex items-center gap-2 transition-colors cursor-pointer"
+                className="px-5 py-3 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-bold text-xs sm:text-sm rounded-2xl flex items-center gap-1.5 transition-all hover:scale-[1.02] cursor-pointer"
               >
-                <Sparkles size={15} className="text-amber-700" />
+                <Sparkles size={15} className="text-amber-600" />
                 <span>再会エピソードを投稿する</span>
               </button>
-              <Link to="/search" className="btn-secondary text-xs px-5 py-3 bg-white">
-                手紙を探す
+              <Link 
+                to="/search" 
+                className="px-5 py-3 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 font-bold text-xs sm:text-sm rounded-2xl flex items-center gap-1.5 transition-all"
+              >
+                <Search size={15} />
+                <span>手紙を探す</span>
               </Link>
             </>
           ) : (
             <>
-              <Link to="/register" className="btn-primary text-xs px-6 py-3">
-                無料会員登録して手紙を流す
+              <Link 
+                to="/register" 
+                className="px-6 py-3 bg-gradient-to-r from-sky-600 via-teal-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 text-white font-extrabold text-xs sm:text-sm rounded-2xl shadow-sm hover:shadow-md hover:scale-[1.02] active:scale-98 transition-all flex items-center gap-2 cursor-pointer"
+              >
+                <Mail size={15} />
+                <span>無料会員登録して手紙を流す</span>
               </Link>
               <button 
                 onClick={() => setIsModalOpen(true)} 
-                className="px-5 py-3 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-bold text-xs rounded-xl flex items-center gap-1.5 transition-colors cursor-pointer"
+                className="px-5 py-3 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-bold text-xs sm:text-sm rounded-2xl flex items-center gap-1.5 transition-all hover:scale-[1.02] cursor-pointer"
               >
-                <Sparkles size={14} className="text-amber-600" />
+                <Sparkles size={15} className="text-amber-600" />
                 <span>エピソードを投稿する</span>
               </button>
-              <Link to="/search" className="btn-secondary text-xs px-6 py-3 bg-white">
-                誰かの手紙を探してみる
+              <Link 
+                to="/search" 
+                className="px-5 py-3 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 font-bold text-xs sm:text-sm rounded-2xl flex items-center gap-1.5 transition-all"
+              >
+                <Search size={15} />
+                <span>誰かの手紙を探してみる</span>
               </Link>
             </>
           )}
