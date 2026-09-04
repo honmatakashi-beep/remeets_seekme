@@ -597,7 +597,7 @@ export const PricingPage = () => {
           </p>
           <p className="text-xs md:text-sm text-slate-700 font-sans leading-relaxed">
             手紙の投函・検索・思い出クイズ回答は<strong>いつでも完全無料（0円）</strong>。<br className="hidden sm:inline" />
-            お相手の手紙を開封するときだけ<strong>1通600円（税込・買い切り）</strong>でご利用いただけます。
+            お相手の手紙を開封するときだけ<strong>600円〜1,200円（税込・買い切り / eKYC選択制）</strong>でご利用いただけます。
           </p>
         </div>
 

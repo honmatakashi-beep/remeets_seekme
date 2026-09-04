@@ -3767,7 +3767,7 @@ export const RevealContactModal = ({
                   </li>
                 </ul>
                 <p className="text-[11px] text-amber-900 font-medium pt-1 border-t border-amber-200/60">
-                  ※ 開封手数料は初回のみの買い切り価格（600円/税込）です。月額課金・追加費用は一切発生いたしません。
+                  ※ 開封手数料は初回のみの買い切り価格（通常開封600円 / 公的本人確認eKYC付き1,200円 税込）です。月額課金・自動更新は一切発生いたしません。
                 </p>
               </div>
 

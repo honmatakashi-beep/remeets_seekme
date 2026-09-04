@@ -87,24 +87,24 @@ export const FaqPage: React.FC = () => {
       answer: (
         <>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            ボトルメール（手紙）を海へ流すこと、手紙を検索して一覧を見ること、想い出クイズへ挑戦することは<strong className="text-slate-900 font-bold">完全無料（0円）</strong>です。
+            ボトルメール（手紙）を海へ流すこと、手紙を検索して一覧を見ること、想い出クイズへ挑戦すること、および会員登録・維持は<strong className="text-slate-900 font-bold">完全無料（0円）</strong>です。
           </p>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            費用が発生するのは、以下の2つの機能を利用する際のそれぞれ<strong className="text-slate-900 font-bold">600円（税込 / 完全買い切り型）</strong>です。両方を同時にご利用いただく場合の合計決済額は <strong className="text-slate-900 font-bold">1,200円（税込）</strong> となります。
+            費用が発生するのは、二人だけの想い出クイズに正解し、<strong className="text-slate-900 font-bold">「手紙を開封してお相手の連絡先を開示する瞬間」</strong>のみ（完全買い切り型・都度決済）です。ご希望の確認方法に応じて以下の明瞭な料金となっております。
           </p>
           <ul className="list-disc pl-5 space-y-1.5 text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
             <li>
-              <strong className="text-slate-900">① 手紙開封 ＆ 連絡先開示手数料（1通 600円 税込）</strong><br />
-              二人だけの想い出クイズに正解後、手紙全文を閲覧しお相手の連絡先（LINE IDやメールアドレス）を開示して実際に繋がる際の手数料です。
+              <strong className="text-slate-900">① 通常の手紙開封（無料の年齢誓約を利用する場合）: 総額 600円（税込）</strong><br />
+              想い出クイズ正解後、手紙全文を閲覧し、お相手の連絡先（LINE IDやメールアドレス）を開示して直接繋がることができます。
             </li>
             <li>
-              <strong className="text-slate-900">② 公的本人確認（eKYC）審査手数料（1回 600円 税込）</strong><br />
-              運転免許証やマイナンバーカード等を用いた安全な公的本人確認を行う際の手数料です。（※書類不備や年齢不一致で審査不承認となった場合は、Stripe仮売上により全額100%自動返金されます）
+              <strong className="text-slate-900">② 公的本人確認付き手紙開封（eKYC公的身分証認証を行う場合）: 総額 1,200円（税込）</strong><br />
+              手紙開封手数料（600円）＋ 運転免許証やマイナンバーカード等による公的本人確認審査手数料（600円）の合計金額となります。プロフィールに「🛡️ 公的本人確認済」バッジが付与され、お相手に最高の安心・信頼を届けて再会できます。（※eKYC審査で書類不備等により不合格となった場合は、Stripe仮売上により全額100%即時自動返金されます）
             </li>
           </ul>
         </>
       ),
-      tags: ['無料', '料金', '投函', '検索', 'eKYC', '開封手数料', '1200円']
+      tags: ['無料', '料金', '投函', '検索', 'eKYC', '開封手数料', '600円', '1200円']
     },
     {
       id: 'q-pricing-2',

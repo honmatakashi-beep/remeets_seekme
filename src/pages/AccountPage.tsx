@@ -2098,7 +2098,7 @@ export const AccountPage = () => {
                         </div>
                         <div className="bg-white/95 border border-teal-200 px-3.5 py-1.5 rounded-xl text-center shrink-0 shadow-2xs">
                           <span className="text-[10px] text-slate-400 font-bold block">利用・事前確認</span>
-                          <span className="text-xs font-bold text-teal-800 font-sans">完全無料（手紙開通時のみ600円）</span>
+                          <span className="text-xs font-bold text-teal-800 font-sans">完全無料（手紙開封時 600円〜1,200円）</span>
                         </div>
                       </div>
 
