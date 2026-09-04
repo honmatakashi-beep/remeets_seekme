@@ -41,16 +41,7 @@
     }
   }
 
-  /* Global visibility improvements for small text */
-  .text-\[10px\] {
-    font-size: 0.8125rem !important; /* 13px */
-  }
-  .text-\[11px\] {
-    font-size: 0.875rem !important; /* 14px */
-  }
-  .text-xs {
-    font-size: 0.9375rem !important; /* 15px */
-  }
+
 
   /* --- Universal Enclosed Borders for ALL Input Forms Site-Wide --- */
   input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="color"]):not([type="range"]):not([type="file"]),
