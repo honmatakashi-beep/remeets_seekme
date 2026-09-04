@@ -184,7 +184,7 @@ export const FaqPage: React.FC = () => {
           <p className="text-slate-800">
             想い出クイズは、<b>「差出人と受け取る人の二人だけが知っている共通の記憶（合言葉）」</b> を照合の鍵とするReMEETs独自の特許的仕組みです。
           </p>
-          <div className="p-3.5 bg-teal-50/80 rounded-xl border border-teal-200 text-teal-950 space-y-1 text-xs sm:text-sm">
+          <div className="p-3 bg-teal-50/80 rounded-xl border border-teal-200 text-teal-950 space-y-1 text-xs font-sans">
             <b>【クイズの出題例】</b>
             <p>・「高校の文化祭で一緒に作った巨大モザイク画のテーマは何だった？」</p>
             <p>・「放課後によく二人で買い食いした駄菓子屋のおばちゃんの名前は？」</p>
@@ -680,10 +680,10 @@ export const FaqPage: React.FC = () => {
                             }`}
                           >
                             <div className="flex items-start gap-3 flex-1 min-w-0">
-                              <span className="w-6 h-6 rounded-lg bg-teal-800 text-white flex items-center justify-center text-xs font-bold shrink-0 font-sans shadow-2xs mt-0.5">
+                              <span className="w-5 h-5 rounded-md bg-teal-800 text-white flex items-center justify-center text-[10px] font-bold shrink-0 font-sans shadow-2xs mt-0.5">
                                 Q
                               </span>
-                              <h3 className="font-bold text-sm text-teal-950 font-sans leading-snug flex-1">
+                              <h3 className="font-bold text-xs text-teal-950 font-sans leading-relaxed flex-1">
                                 {faq.question}
                               </h3>
                             </div>
@@ -703,10 +703,10 @@ export const FaqPage: React.FC = () => {
                               >
                                 <div className="p-5 md:p-6 bg-white">
                                   <div className="flex items-start gap-3.5">
-                                    <span className="w-6 h-6 rounded-lg bg-emerald-700 text-white flex items-center justify-center text-xs font-bold shrink-0 font-sans shadow-2xs mt-0.5">
+                                    <span className="w-5 h-5 rounded-md bg-emerald-700 text-white flex items-center justify-center text-[10px] font-bold shrink-0 font-sans shadow-2xs mt-0.5">
                                       A
                                     </span>
-                                    <div className="flex-1 text-sm text-slate-800 font-sans leading-relaxed space-y-2">
+                                    <div className="flex-1 text-xs text-slate-800 font-sans leading-relaxed space-y-2">
                                       {faq.answer}
                                     </div>
                                   </div>
@@ -724,7 +724,7 @@ export const FaqPage: React.FC = () => {
           ) : (
             <div className="p-12 text-center bg-zinc-50 rounded-2xl border border-brand-border space-y-2">
               <HelpCircle size={28} className="text-black/30 mx-auto" />
-              <p className="font-bold text-sm text-black font-sans">該当するご質問が見つかりませんでした</p>
+              <p className="font-bold text-xs text-black font-sans">該当するご質問が見つかりませんでした</p>
               <p className="text-xs text-black/60 font-sans leading-relaxed">
                 検索キーワードを変えていただくか、以下の個別お問い合わせ窓口よりお気軽にご質問ください。
               </p>
