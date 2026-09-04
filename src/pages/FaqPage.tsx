@@ -64,11 +64,11 @@ export const FaqPage: React.FC = () => {
       categoryName: '料金・お支払い',
       question: '無料で使える範囲はどこまでですか？',
       answer: (
-        <div className="space-y-2">
+        <div className="space-y-2 text-xs">
           <p>
             <b>ボトルメール（手紙）を海へ流すこと、手紙を検索して一覧を見ること、想い出クイズへ挑戦することは完全無料です。</b>
           </p>
-          <p className="text-black/70 leading-relaxed text-xs">
+          <p className="text-black/70 leading-relaxed text-[11.5px]">
             費用が発生するのは、二人だけの共通の想い出クイズに正解し、<b>「お相手の連絡先（LINE IDやメールアドレス）を開示して実際に繋がる瞬間」</b>の <b>600円（税込）買い切りのみ</b> です。
           </p>
         </div>
@@ -81,11 +81,11 @@ export const FaqPage: React.FC = () => {
       categoryName: '料金・お支払い',
       question: '月額料金や後からの追加請求（サブスクリプション）はありますか？',
       answer: (
-        <div className="space-y-2">
+        <div className="space-y-2 text-xs">
           <p className="font-bold text-emerald-800">
             いいえ、月額料金や自動更新・後からの追加請求は一切ございません。
           </p>
-          <p className="text-black/70 leading-relaxed text-xs">
+          <p className="text-black/70 leading-relaxed text-[11.5px]">
             一般的なマッチングアプリのような月額会員制（サブスク）ではなく、手紙1通の開通につき600円ポッキリの完全買い切りモデルです。使わない月に勝手に引き落とされる心配は100%ありません。
           </p>
         </div>
@@ -98,11 +98,11 @@ export const FaqPage: React.FC = () => {
       categoryName: '料金・お支払い',
       question: 'どのような支払い方法に対応していますか？',
       answer: (
-        <div className="space-y-2">
-          <p className="text-black/80 text-xs leading-relaxed">
+        <div className="space-y-2 text-xs">
+          <p className="text-black/80 leading-relaxed">
             世界標準の決済プラットフォーム <b>Stripe（ストライプ）</b> を採用しており、以下の安全なお支払い方法に対応しています。
           </p>
-          <ul className="list-disc pl-5 space-y-1 text-black/70 text-xs">
+          <ul className="list-disc pl-5 space-y-1 text-black/70 text-[11.5px]">
             <li>主要クレジットカード（VISA, Mastercard, JCB, American Express, Diners Club）</li>
             <li>Apple Pay / Google Pay（スマートフォンからのワンタップ決済）</li>
           </ul>
@@ -154,7 +154,7 @@ export const FaqPage: React.FC = () => {
             <p>・「高校の文化祭で一緒に作った巨大モザイク画のテーマは何だった？」</p>
             <p>・「放課後によく二人で買い食いした駄菓子屋のおばちゃんの名前は？」</p>
           </div>
-          <p className="text-black/70">
+          <p className="text-black/70 text-[11.5px]">
             これにより、同姓同名の別人や悪意ある第三者が手紙を勝手に開封したり、連絡先を取得したりすることを100%物理的に遮断しています。
           </p>
         </div>
@@ -188,7 +188,7 @@ export const FaqPage: React.FC = () => {
           <p>
             ReMEETsでは、アプリ内でダラダラとチャットを続けさせるのではなく、<b>「お相手のLINE IDやメールアドレスを安全に引き渡し、プラットフォームの役割を完結」</b> させるモデルを採用しています。
           </p>
-          <p className="text-black/70">
+          <p className="text-black/70 text-[11.5px]">
             開通完了画面に表示される「LINEを開く」や「メールを送る」ボタンから、普段使い慣れた連絡手段で直接お相手へ温かい再会のメッセージをお送りいただけます。同時に、差出人へも「あなたの手紙がお相手に届きました」と自動メール通知が届きます。
           </p>
         </div>
@@ -205,7 +205,7 @@ export const FaqPage: React.FC = () => {
           <p>
             手紙を一度流しておけば、<b>インターネット上の海（Google検索）に宛名と想い出のヒントが安全にインデックス</b> されます。
           </p>
-          <p className="text-black/70">
+          <p className="text-black/70 text-[11.5px]">
             お相手がふと自分の名前や出身校を検索（エゴサーチ）した際や、同級生から「ReMEETsであなた宛の手紙が流れているよ」とシェアされた際にいつでも手紙を見つけることができます。手紙はあなたが削除しない限り、何年間でも海を漂い続けます。
           </p>
         </div>
@@ -224,7 +224,7 @@ export const FaqPage: React.FC = () => {
           <p className="font-bold text-emerald-800">
             ありません。一般公開されるタイムライン上には、本名や詳細な住所・連絡先は一切表示されません。
           </p>
-          <p className="text-black/70">
+          <p className="text-black/70 text-[11.5px]">
             手紙の宛名（あだ名やイニシャル可）と、想い出の年代・ゆかりの都道府県、そしてクイズのヒントのみが漂流します。手紙の本文全文やお互いの連絡先は、<b>「想い出クイズ完全一致 ＋ 600円決済 ＋ 本人確認」</b> を完了した当事者2名にのみ暗号化復号されて表示されます。
           </p>
         </div>
@@ -241,7 +241,7 @@ export const FaqPage: React.FC = () => {
           <p>
             ReMEETsは <b>Google Gemini AI（人工知能）によるリアルタイム文脈検閲エンジン</b> を搭載しています。
           </p>
-          <ul className="list-disc pl-5 space-y-1 text-black/70">
+          <ul className="list-disc pl-5 space-y-1 text-black/70 text-[11.5px]">
             <li>手紙投函時にAIが「執着・監視性」「脅迫・恨み言」「不当な出会い目的」を自動解析。</li>
             <li>危険と判定された手紙は即座に隔離（非公開化）され、一般の海へは1秒も流れません。</li>
             <li>万が一の通報時も、管理スタッフが24時間以内にアカウント凍結および法的証跡保全を行います。</li>
@@ -260,7 +260,7 @@ export const FaqPage: React.FC = () => {
           <p>
             Google等の検索エンジンには、<b>「宛名（例: 佐藤健 様）」と「ゆかりの地・年代」「クイズのヒント」のみ</b> が掲載されます。
           </p>
-          <p className="text-black/70">
+          <p className="text-black/70 text-[11.5px]">
             手紙の本文全文、秘密の合言葉の答え、差出人の連絡先はGoogleには一切インデックスされません。お相手が検索で見つけやすくしつつ、プライバシーは鉄壁に保護されます。
           </p>
         </div>
@@ -277,7 +277,7 @@ export const FaqPage: React.FC = () => {
           <p className="font-bold text-teal-900">
             極めて安全です。当サービスのWebサーバーには身分証原本画像は一切保存されません（ゼロ保持設計）。
           </p>
-          <p className="text-black/70">
+          <p className="text-black/70 text-[11.5px]">
             本人確認（eKYC）は、メガバンクや大手金融機関が採用する国内公認のeKYC専門機関（TRUSTDOCK等）の専用セキュアサーバーへ直接送信され暗号化審査されます。当社サーバーを通過・保管しないため、画像流出のリスクを根本から排除しています。
           </p>
         </div>
@@ -308,7 +308,7 @@ export const FaqPage: React.FC = () => {
           <p className="font-bold text-emerald-800">
             はい、100%全額が自動的に即時返金（決済お取り消し）されます。
           </p>
-          <p className="text-black/70">
+          <p className="text-black/70 text-[11.5px]">
             ReMEETsの決済は、審査がすべて合格するまで売上を確定させない「Stripe仮売上（オーソリ）方式」を採用しています。身分証の不鮮明等で審査に通らなかった場合や、開通を辞退された場合は、システムが自動で即座に600円を全額キャンセル・返金いたします。
           </p>
         </div>
@@ -361,7 +361,7 @@ export const FaqPage: React.FC = () => {
       answer: (
         <div className="space-y-2 text-xs text-black/80 leading-relaxed">
           <p>以下の点をご確認ください。</p>
-          <ul className="list-disc pl-5 space-y-1 text-black/70">
+          <ul className="list-disc pl-5 space-y-1 text-black/70 text-[11.5px]">
             <li>迷惑メールフォルダや「プロモーション」タブに振り分けられていないか確認する。</li>
             <li>ドメイン指定受信を設定されている場合は、<code>@remeets.jp</code> からのメールを受信許可する。</li>
             <li>登録時のメールアドレス（LINE/Google連携アドレス）に誤りがないかマイページで確認する。</li>
@@ -394,7 +394,7 @@ export const FaqPage: React.FC = () => {
           <p className="font-bold text-teal-900">
             はい。ログイン後、マイページ（アカウント画面）からいつでも手紙の編集や削除が可能です。
           </p>
-          <p className="text-black/70">
+          <p className="text-black/70 text-[11.5px]">
             誤字脱字の修正、想い出クイズのヒント追加、公開/非公開の切り替え、または手紙の完全削除をワンクリックで行っていただけます。削除された手紙は即座に海から引き揚げられ、誰からも検索できなくなります。
           </p>
         </div>
@@ -411,7 +411,7 @@ export const FaqPage: React.FC = () => {
           <p>
             マイページ内の「アカウント設定」より、いつでも即座に退会（アカウント削除）が可能です。
           </p>
-          <p className="text-black/70">
+          <p className="text-black/70 text-[11.5px]">
             退会申請と同時に、ご登録いただいたSNS連携データ、メールアドレス、投函された手紙データはデータベースから <b>完全に物理削除（抹消）</b> されます。
           </p>
         </div>
@@ -449,54 +449,48 @@ export const FaqPage: React.FC = () => {
   }, [selectedCategory, searchQuery, faqList]);
 
   return (
-    <div className="min-h-screen pb-24 text-black font-sans animate-in fade-in duration-300">
-      {/* 🧭 Top Hero Banner */}
-      <div className="bg-gradient-to-b from-teal-50/80 via-zinc-50/50 to-white border-b border-brand-border/60 py-12 md:py-16 px-6">
-        <div className="max-w-4xl mx-auto text-center space-y-4">
-          <Link
-            to="/"
-            className="inline-flex items-center gap-1.5 text-xs text-black/60 hover:text-black mb-2 transition-colors font-serif"
-          >
-            <ArrowLeft size={14} />
-            <span>トップページへ戻る</span>
-          </Link>
+    <div className="max-w-4xl mx-auto px-6 py-12 md:py-16 font-sans text-black animate-in fade-in duration-300">
+      {/* 🧭 Back Link */}
+      <Link
+        to="/"
+        className="inline-flex items-center gap-2 text-sm opacity-60 hover:opacity-100 mb-6 font-serif text-black transition-opacity"
+      >
+        <ArrowLeft size={16} />
+        <span>トップへ戻る</span>
+      </Link>
 
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-teal-100/70 text-teal-950 rounded-full text-xs font-bold border border-teal-200">
-            <HelpCircle size={14} className="text-teal-700" />
-            <span>ReMEETs 公式ヘルプセンター</span>
-          </div>
+      {/* 🏛️ Standard Unified Glass Card */}
+      <div className="glass-card p-6 sm:p-8 md:p-12 bg-white rounded-3xl border border-brand-border shadow-sm space-y-8">
+        {/* 🌟 Unified PageHeader (タイトルの横にアイコン配置) */}
+        <PageHeader
+          icon={<HelpCircle size={26} className="text-teal-700" />}
+          iconBoxClassName="bg-teal-50 text-teal-700 border border-teal-200"
+          category="Help Center & FAQ"
+          title="よくあるご質問（FAQ）"
+          description="料金の仕組み、想い出クイズ、プライバシー保護、本人確認（eKYC）など、皆様から多く寄せられるご質問を分かりやすくまとめました。"
+        />
 
-          <h1 className="text-2xl md:text-4xl font-bold font-serif text-black tracking-tight">
-            よくあるご質問（FAQ）
-          </h1>
-          <p className="text-xs md:text-sm text-black/70 max-w-xl mx-auto leading-relaxed">
-            料金の仕組み、想い出クイズ、プライバシー保護、本人確認（eKYC）など、皆様から多く寄せられるご質問を分かりやすくまとめました。
-          </p>
-
-          {/* 🔍 Search Input */}
-          <div className="max-w-xl mx-auto pt-4 relative">
-            <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-black/40" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="キーワードで検索... (例: 料金, クイズ, 返金, 免許証, 退会)"
-              className="w-full pl-12 pr-10 py-3.5 bg-white border-2 border-brand-border rounded-2xl text-xs md:text-sm text-black shadow-sm focus:border-teal-600 focus:outline-none transition-all placeholder:text-black/40"
-            />
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={() => setSearchQuery('')}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-black/40 hover:text-black"
-              >
-                クリア
-              </button>
-            )}
-          </div>
+        {/* 🔍 Search Input */}
+        <div className="relative">
+          <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-black/40" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="キーワードで検索... (例: 料金, クイズ, 返金, 免許証, 退会)"
+            className="w-full pl-11 pr-10 py-3 bg-zinc-50 border border-brand-border rounded-2xl text-xs md:text-sm text-black focus:bg-white focus:border-teal-600 focus:outline-none transition-all placeholder:text-black/40 shadow-inner"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery('')}
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-black/40 hover:text-black"
+            >
+              クリア
+            </button>
+          )}
         </div>
-      </div>
 
-      <div className="max-w-4xl mx-auto px-6 pt-8 space-y-8">
         {/* 🗂️ Category Pills Navigation */}
         <div className="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar">
           {categories.map((cat) => {
@@ -507,10 +501,10 @@ export const FaqPage: React.FC = () => {
                 key={cat.id}
                 type="button"
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer border ${
+                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer border ${
                   isSelected
                     ? 'bg-teal-700 text-white border-teal-700 shadow-sm'
-                    : 'bg-white text-black/70 hover:bg-zinc-50 hover:text-black border-brand-border'
+                    : 'bg-zinc-50 text-black/70 hover:bg-zinc-100 hover:text-black border-brand-border'
                 }`}
               >
                 <Icon size={14} className={isSelected ? 'text-white' : 'text-teal-700'} />
@@ -528,12 +522,12 @@ export const FaqPage: React.FC = () => {
               return (
                 <div
                   key={faq.id}
-                  className="bg-white rounded-2xl border border-brand-border shadow-xs overflow-hidden transition-all"
+                  className="bg-zinc-50/50 rounded-2xl border border-brand-border/80 shadow-2xs overflow-hidden transition-all"
                 >
                   <button
                     type="button"
                     onClick={() => toggleItem(faq.id)}
-                    className="w-full p-4 md:p-5 text-left flex items-start justify-between gap-4 hover:bg-zinc-50/60 transition-colors cursor-pointer"
+                    className="w-full p-4 text-left flex items-start justify-between gap-4 hover:bg-zinc-100/60 transition-colors cursor-pointer"
                   >
                     <div className="space-y-1.5 flex-1">
                       <div className="flex items-center gap-2">
@@ -559,7 +553,7 @@ export const FaqPage: React.FC = () => {
                         exit={{ height: 0, opacity: 0 }}
                         transition={{ duration: 0.2 }}
                       >
-                        <div className="px-5 pb-5 pt-1 text-xs border-t border-zinc-100 bg-zinc-50/40">
+                        <div className="px-4 pb-4 pt-1 text-xs border-t border-zinc-200/60 bg-white">
                           <div className="flex items-start gap-2 pt-3">
                             <span className="text-xs font-bold text-emerald-700 font-mono shrink-0">A.</span>
                             <div className="flex-1 text-black/80 leading-relaxed">
@@ -574,10 +568,10 @@ export const FaqPage: React.FC = () => {
               );
             })
           ) : (
-            <div className="p-12 text-center bg-white rounded-3xl border border-brand-border space-y-3">
-              <HelpCircle size={32} className="text-black/30 mx-auto" />
-              <p className="font-bold text-sm text-black">該当するご質問が見つかりませんでした</p>
-              <p className="text-xs text-black/60">
+            <div className="p-12 text-center bg-zinc-50 rounded-2xl border border-brand-border space-y-2">
+              <HelpCircle size={28} className="text-black/30 mx-auto" />
+              <p className="font-bold text-xs text-black">該当するご質問が見つかりませんでした</p>
+              <p className="text-[11px] text-black/60">
                 検索キーワードを変えていただくか、以下の個別お問い合わせ窓口よりお気軽にご質問ください。
               </p>
             </div>
@@ -585,31 +579,31 @@ export const FaqPage: React.FC = () => {
         </div>
 
         {/* 💬 Support / Contact Callout Banner */}
-        <div className="p-6 md:p-8 bg-gradient-to-br from-slate-900 to-teal-950 text-white rounded-3xl shadow-md flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="space-y-2 text-center md:text-left">
-            <div className="inline-flex items-center gap-1.5 px-3 py-0.5 bg-teal-500/20 text-teal-300 rounded-full text-[11px] font-bold border border-teal-500/30">
-              <MessageSquare size={13} />
+        <div className="p-6 bg-gradient-to-br from-slate-900 to-teal-950 text-white rounded-2xl shadow-sm flex flex-col md:flex-row items-center justify-between gap-5">
+          <div className="space-y-1.5 text-center md:text-left">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-teal-500/20 text-teal-300 rounded-full text-[10px] font-bold border border-teal-500/30">
+              <MessageSquare size={12} />
               <span>お困りの際はお気軽にお問い合わせください</span>
             </div>
-            <h3 className="text-lg md:text-xl font-serif font-bold text-white">
+            <h3 className="text-base font-serif font-bold text-white">
               解決しない疑問やご不安はございますか？
             </h3>
-            <p className="text-xs text-white/70 leading-relaxed max-w-xl">
+            <p className="text-[11px] text-white/70 leading-relaxed max-w-lg">
               ReMEETs カスタマーサポート事務局が、手紙の流し方や決済、操作方法について丁寧にご案内いたします。
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0">
+          <div className="flex flex-col sm:flex-row items-center gap-2.5 shrink-0">
             <Link
               to="/contact"
-              className="px-5 py-3 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs shadow-sm transition-all flex items-center gap-2 cursor-pointer"
+              className="px-4 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
             >
-              <Mail size={15} />
+              <Mail size={14} />
               <span>お問い合わせ窓口へ</span>
             </Link>
             <Link
               to="/pricing"
-              className="px-4 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition-all border border-white/20"
+              className="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition-all border border-white/20"
             >
               料金の詳細を見る
             </Link>
