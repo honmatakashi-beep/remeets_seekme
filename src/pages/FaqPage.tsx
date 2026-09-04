@@ -83,18 +83,22 @@ export const FaqPage: React.FC = () => {
       id: 'q-pricing-1',
       category: 'pricing',
       categoryName: '料金・お支払い',
-      question: '無料で使える範囲はどこまでですか？',
+      question: '無料で使える範囲はどこまでですか？費用が発生するタイミングを教えてください。',
       answer: (
         <>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            ボトルメール（手紙）を海へ流すこと、手紙を検索して一覧を見ること、想い出クイズへ挑戦することは完全無料（0円）です。
+            ボトルメール（手紙）を海へ流すこと、手紙を検索して一覧を見ること、想い出クイズへ挑戦することは<strong className="text-slate-900 font-bold">完全無料（0円）</strong>です。
           </p>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            費用が発生するのは、二人だけの共通の想い出クイズに正解し、「お相手の連絡先（LINE IDやメールアドレス）を開示して実際に繋がる瞬間」の <strong className="text-slate-900 font-bold">600円（税込）買い切りのみ</strong> です。
+            費用が発生するのは、以下の2つの機能を利用する際のそれぞれ<strong className="text-slate-900 font-bold">600円（税込 / 完全買い切り・都度決済）</strong>のみです。
           </p>
+          <ul className="list-disc pl-5 space-y-1 text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
+            <li><strong className="text-slate-900">① 手紙開封 ＆ 連絡先開示（1通 600円）</strong>：クイズ正解後、手紙全文を閲覧しお相手の連絡先（LINE IDやメールアドレス）を開示して繋がる際</li>
+            <li><strong className="text-slate-900">② 公的本人確認（eKYC）審査（1回 600円）</strong>：運転免許証やマイナンバーカード等による身元照合を行う際（※審査不合格時は100%全額即時自動返金）</li>
+          </ul>
         </>
       ),
-      tags: ['無料', '料金', '投函', '検索']
+      tags: ['無料', '料金', '投函', '検索', 'eKYC', '開封手数料']
     },
     {
       id: 'q-pricing-2',
@@ -107,7 +111,7 @@ export const FaqPage: React.FC = () => {
             いいえ、月額料金や自動更新・後からの追加請求は一切ございません。
           </p>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            一般的なマッチングアプリのような月額会員制（サブスク）ではなく、手紙1通の開通につき600円ポッキリの完全買い切りモデルです。使わない月に勝手に引き落とされる心配は100%ありません。
+            一般的なマッチングアプリのような月額会員制（サブスク）ではなく、手紙開封（600円）や公的本人確認eKYC（600円）といった1回ごとの都度買い切りモデルです。使わない月に勝手に引き落とされる心配は100%ありません。
           </p>
         </>
       ),
@@ -246,7 +250,7 @@ export const FaqPage: React.FC = () => {
             ありません。一般公開されるタイムライン上には、本名や詳細な住所・連絡先は一切表示されません。
           </p>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            手紙の宛名（あだ名やイニシャル可）と、想い出の年代・ゆかりの都道府県、そしてクイズのヒントのみが漂流します。手紙の本文全文やお互いの連絡先は、<strong className="text-slate-900 font-bold">「想い出クイズ完全一致 ＋ 600円決済 ＋ 本人確認」</strong> を完了した当事者2名にのみ暗号化復号されて表示されます。
+            手紙の宛名（あだ名やイニシャル可）と、想い出の年代・ゆかりの都道府県、そしてクイズのヒントのみが漂流します。手紙の本文全文やお互いの連絡先は、<strong className="text-slate-900 font-bold">「想い出クイズ完全一致 ＋ 手紙開封・本人確認決済」</strong> を完了した当事者2名にのみ暗号化復号されて表示されます。
           </p>
         </>
       ),
