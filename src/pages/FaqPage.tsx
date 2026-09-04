@@ -254,11 +254,11 @@ export const FaqPage: React.FC = () => {
       id: 'q-safety-1',
       category: 'safety',
       categoryName: '安全性・プライバシー',
-      question: '自分の本名や住所が赤の他人にバレる心配はありませんか？',
+      question: '自分の本名や住所などの個人情報が第三者に知られてしまう心配はありませんか？',
       answer: (
         <>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            ありません。一般公開されるタイムライン上には、本名や詳細な住所・連絡先は一切表示されません。
+            ご安心ください。一般公開されるタイムラインや検索一覧には、本名や詳細な住所・連絡先などの個人情報は一切表示されません。
           </p>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
             手紙の宛名（あだ名やイニシャル可）と、想い出の年代・ゆかりの都道府県、そしてクイズのヒントのみが漂流します。手紙の本文全文やお互いの連絡先は、<strong className="text-slate-900 font-bold">「想い出クイズ完全一致 ＋ 手紙開封・本人確認決済」</strong> を完了した当事者2名にのみ暗号化復号されて表示されます。
