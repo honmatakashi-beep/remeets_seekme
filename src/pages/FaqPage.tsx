@@ -100,7 +100,7 @@ export const FaqPage: React.FC = () => {
       question: '無料で使える範囲はどこまでですか？',
       answer: (
         <div className="space-y-2">
-          <p className="font-bold text-slate-900">
+          <p className="text-slate-800">
             ボトルメール（手紙）を海へ流すこと、手紙を検索して一覧を見ること、想い出クイズへ挑戦することは完全無料（0円）です。
           </p>
           <p className="text-slate-700">
@@ -117,7 +117,7 @@ export const FaqPage: React.FC = () => {
       question: '月額料金や後からの追加請求（サブスクリプション）はありますか？',
       answer: (
         <div className="space-y-2">
-          <p className="font-bold text-emerald-800">
+          <p className="text-slate-800">
             いいえ、月額料金や自動更新・後からの追加請求は一切ございません。
           </p>
           <p className="text-slate-700">
@@ -220,7 +220,7 @@ export const FaqPage: React.FC = () => {
       question: 'マッチングした後はどのように連絡を取り合いますか？',
       answer: (
         <div className="space-y-2">
-          <p className="font-bold text-slate-900">
+          <p className="text-slate-800">
             ReMEETsでは、アプリ内でダラダラとチャットを続けさせるのではなく、<b>「お相手のLINE IDやメールアドレスを安全に引き渡し、プラットフォームの役割を完結」</b> させるモデルを採用しています。
           </p>
           <p className="text-slate-700">
@@ -256,7 +256,7 @@ export const FaqPage: React.FC = () => {
       question: '自分の本名や住所が赤の他人にバレる心配はありませんか？',
       answer: (
         <div className="space-y-2">
-          <p className="font-bold text-emerald-800">
+          <p className="text-slate-800">
             ありません。一般公開されるタイムライン上には、本名や詳細な住所・連絡先は一切表示されません。
           </p>
           <p className="text-slate-700">
@@ -273,7 +273,7 @@ export const FaqPage: React.FC = () => {
       question: 'ストーカーや誹謗中傷、怨恨への安全対策はどうなっていますか？',
       answer: (
         <div className="space-y-2">
-          <p className="font-bold text-slate-900">
+          <p className="text-slate-800">
             ReMEETsは <b>Google Gemini AI（人工知能）によるリアルタイム文脈検閲エンジン</b> を搭載しています。
           </p>
           <ul className="list-disc pl-5 space-y-1 text-slate-700">
@@ -309,7 +309,7 @@ export const FaqPage: React.FC = () => {
       question: '運転免許証やマイナンバーカードの画像を提出しても安全ですか？',
       answer: (
         <div className="space-y-2">
-          <p className="font-bold text-teal-900">
+          <p className="text-slate-800">
             極めて安全です。当サービスのWebサーバーには身分証原本画像は一切保存されません（ゼロ保持設計）。
           </p>
           <p className="text-slate-700">
@@ -340,7 +340,7 @@ export const FaqPage: React.FC = () => {
       question: 'もし本人確認審査に通らなかった場合、600円は返金されますか？',
       answer: (
         <div className="space-y-2">
-          <p className="font-bold text-emerald-800">
+          <p className="text-slate-800">
             はい、100%全額が自動的に即時返金（決済お取り消し）されます。
           </p>
           <p className="text-slate-700">
@@ -426,7 +426,7 @@ export const FaqPage: React.FC = () => {
       question: '一度流した手紙の内容を後から修正・削除できますか？',
       answer: (
         <div className="space-y-2">
-          <p className="font-bold text-teal-900">
+          <p className="text-slate-800">
             はい。ログイン後、マイページ（アカウント画面）からいつでも手紙の編集や削除が可能です。
           </p>
           <p className="text-slate-700">
@@ -680,10 +680,10 @@ export const FaqPage: React.FC = () => {
                             }`}
                           >
                             <div className="flex items-start gap-3 flex-1 min-w-0">
-                              <span className="w-5 h-5 rounded-md bg-teal-800 text-white flex items-center justify-center text-xs font-bold shrink-0 font-sans shadow-2xs mt-0.5">
+                              <span className="w-5 h-5 rounded-md bg-teal-800 text-white flex items-center justify-center text-[10px] font-bold shrink-0 font-sans shadow-2xs mt-0.5">
                                 Q
                               </span>
-                              <h3 className="font-bold text-sm text-teal-950 font-sans leading-snug flex-1">
+                              <h3 className="font-bold text-xs text-teal-950 font-sans leading-snug flex-1">
                                 {faq.question}
                               </h3>
                             </div>
@@ -703,10 +703,10 @@ export const FaqPage: React.FC = () => {
                               >
                                 <div className="p-5 md:p-6 bg-white">
                                   <div className="flex items-start gap-3.5">
-                                    <span className="w-5 h-5 rounded-md bg-emerald-700 text-white flex items-center justify-center text-xs font-bold shrink-0 font-sans shadow-2xs mt-0.5">
+                                    <span className="w-5 h-5 rounded-md bg-emerald-700 text-white flex items-center justify-center text-[10px] font-bold shrink-0 font-sans shadow-2xs mt-0.5">
                                       A
                                     </span>
-                                    <div className="flex-1 text-sm text-slate-700 font-sans leading-relaxed space-y-2">
+                                    <div className="flex-1 text-xs text-slate-700 font-sans leading-relaxed space-y-2">
                                       {faq.answer}
                                     </div>
                                   </div>
