@@ -2657,7 +2657,6 @@ export const AdminDashboard = () => {
   const [reportPerPage, setReportPerPage] = useState(15);
   const [selectedReportIds, setSelectedReportIds] = useState<number[]>([]);
   const [isBatchUpdatingReports, setIsBatchUpdatingReports] = useState(false);
-
   const [replyMessage, setReplyMessage] = useState('');
   const [isReplying, setIsReplying] = useState(false);
   const [isGeneratingAiDraft, setIsGeneratingAiDraft] = useState(false);
@@ -3840,7 +3839,7 @@ export const AdminDashboard = () => {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
-        setReports(reports.map(r => r.id === id ? { ...r, status: 'resolved' } : r));
+        setReports(prev => prev.map(r => r.id === id ? { ...r, status: 'resolved' } : r));
         if (selectedReport && selectedReport.id === id) {
           setSelectedReport({ ...selectedReport, status: 'resolved' });
         }
@@ -3857,7 +3856,7 @@ export const AdminDashboard = () => {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
-        setReports(reports.map(r => r.id === id ? { ...r, status: 'dismissed' } : r));
+        setReports(prev => prev.map(r => r.id === id ? { ...r, status: 'dismissed' } : r));
         if (selectedReport && selectedReport.id === id) {
           setSelectedReport({ ...selectedReport, status: 'dismissed' });
         }
@@ -3881,7 +3880,7 @@ export const AdminDashboard = () => {
         body: JSON.stringify({ reportIds: selectedReportIds })
       });
       if (res.ok) {
-        setReports(reports.map(r => selectedReportIds.includes(r.id) ? { ...r, status: 'resolved' } : r));
+        setReports(prev => prev.map(r => selectedReportIds.includes(r.id) ? { ...r, status: 'resolved' } : r));
         setSelectedReportIds([]);
       }
     } catch (err) {
@@ -3905,7 +3904,7 @@ export const AdminDashboard = () => {
         body: JSON.stringify({ reportIds: selectedReportIds })
       });
       if (res.ok) {
-        setReports(reports.map(r => selectedReportIds.includes(r.id) ? { ...r, status: 'dismissed' } : r));
+        setReports(prev => prev.map(r => selectedReportIds.includes(r.id) ? { ...r, status: 'dismissed' } : r));
         setSelectedReportIds([]);
       }
     } catch (err) {
@@ -3914,6 +3913,7 @@ export const AdminDashboard = () => {
       setIsBatchUpdatingReports(false);
     }
   };
+
 
   const [isAiAnalyzing, setIsAiAnalyzing] = useState<number | null>(null);
 
@@ -10025,6 +10025,2051 @@ export const AdminDashboard = () => {
                 </table>
               </div>
             </div>
+          ) : activeTab === 'reports' ? (
+            <div className="space-y-6 text-left font-sans animate-fade-in">
+              {/* 1. 4大通報KPIサマリーカード */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">
+                <div className="bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-700">📋 総通報受付数</span>
+                    <div className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600">
+                      <AlertTriangle size={16} />
+                    </div>
+                  </div>
+                  <div className="mt-2 flex items-baseline gap-2">
+                    <span className="text-2xl font-extrabold text-slate-800">{reports.length}</span>
+                    <span className="text-xs text-slate-500">件</span>
+                  </div>
+                  <div className="mt-1 text-[11px] text-slate-500 font-medium">全期間のユーザー通報</div>
+                </div>
+
+                <div className="bg-white/90 backdrop-blur-md border border-amber-200/80 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-amber-700">⚠️ 未対応（対応待ち）</span>
+                    <div className="w-8 h-8 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
+                      <Clock size={16} />
+                    </div>
+                  </div>
+                  <div className="mt-2 flex items-baseline gap-2">
+                    <span className="text-2xl font-extrabold text-amber-700">
+                      {reports.filter(r => r.status === 'pending').length}
+                    </span>
+                    <span className="text-xs text-amber-500 font-semibold">件</span>
+                  </div>
+                  <div className="mt-1 text-[11px] text-amber-600 font-medium">管理者の対応待ち</div>
+                </div>
+
+                <div className="bg-white/90 backdrop-blur-md border border-rose-200/80 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-rose-700">🚨 緊急・ストーカー疑い</span>
+                    <div className="w-8 h-8 rounded-xl bg-rose-50 flex items-center justify-center text-rose-600">
+                      <ShieldAlert size={16} />
+                    </div>
+                  </div>
+                  <div className="mt-2 flex items-baseline gap-2">
+                    <span className="text-2xl font-extrabold text-rose-700">
+                      {reports.filter(r => {
+                        const reason = (r.reason || '').toLowerCase();
+                        return reason.includes('ストーカー') || reason.includes('脅迫') || reason.includes('晒し') || reason.includes('嫌がらせ') || r.report_type === 'stalking';
+                      }).length}
+                    </span>
+                    <span className="text-xs text-rose-500">件</span>
+                  </div>
+                  <div className="mt-1 text-[11px] text-rose-600 font-medium">警察・法務連携優先事案</div>
+                </div>
+
+                <div className="bg-white/90 backdrop-blur-md border border-emerald-200/80 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-emerald-700">✅ 解決・対応完了</span>
+                    <div className="w-8 h-8 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+                      <CheckCircle2 size={16} />
+                    </div>
+                  </div>
+                  <div className="mt-2 flex items-baseline gap-2">
+                    <span className="text-2xl font-extrabold text-emerald-700">
+                      {reports.filter(r => r.status === 'resolved').length}
+                    </span>
+                    <span className="text-xs text-emerald-600 font-semibold">
+                      ({reports.length > 0 ? Math.round((reports.filter(r => r.status === 'resolved').length / reports.length) * 100) : 0}%)
+                    </span>
+                  </div>
+                  <div className="mt-1 text-[11px] text-emerald-600 font-medium">対処完了済み</div>
+                </div>
+              </div>
+
+              {/* 2. メインデータカード */}
+              <div className="bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden font-sans">
+                {/* Header */}
+                <div className="p-5 border-b border-slate-200/80 bg-slate-50/50 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center shadow-sm">
+                      <AlertTriangle size={18} />
+                    </div>
+                    <div>
+                      <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                        <span>ユーザー通報 ＆ 不適切報告管理</span>
+                        <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-300">
+                          全 {reports.length} 件
+                        </span>
+                      </h3>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        ユーザーから送信された不適切ボトル・迷惑行為・ストーキング通報の調査と対処
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const headers = ["通報ID", "日時", "状態", "対象種別", "対象ID", "対象ユーザー", "通報者", "通報理由"];
+                        const rows = reports.map(r => [
+                          r.id,
+                          `"${new Date(r.created_at).toLocaleString().replace(/"/g, '""')}"`,
+                          r.status,
+                          r.target_type,
+                          r.target_id || '',
+                          `"${(r.target_username || 'Unknown').replace(/"/g, '""')}"`,
+                          `"${(r.reporter_name || '匿名').replace(/"/g, '""')}"`,
+                          `"${(r.reason || '').replace(/"/g, '""')}"`
+                        ]);
+                        const csvContent = "\\uFEFF" + [headers.join(","), ...rows.map(row => row.join(","))].join("\\n");
+                        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement("a");
+                        link.setAttribute("href", url);
+                        link.setAttribute("download", `reports_audit_log_${new Date().toISOString().split('T')[0]}.csv`);
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                      }}
+                      className="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+                    >
+                      <Download size={14} />
+                      <span>通報監査 CSV 出力</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Filter & Search Bar */}
+                <div className="p-4 border-b border-slate-200/80 bg-slate-50/30 space-y-3">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    {/* Status Tabs */}
+                    <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl border border-slate-200/80 text-xs font-bold">
+                      {[
+                        { id: 'all', label: 'すべて', count: reports.length },
+                        { id: 'pending', label: '⚠️ 未対応', count: reports.filter(r => r.status === 'pending').length },
+                        { 
+                          id: 'urgent', 
+                          label: '🚨 緊急・ストーカー', 
+                          count: reports.filter(r => (r.reason || '').includes('ストーカー') || (r.reason || '').includes('脅迫') || r.report_type === 'stalking').length 
+                        },
+                        { id: 'resolved', label: '✅ 解決済', count: reports.filter(r => r.status === 'resolved').length },
+                        { id: 'dismissed', label: '✕ 却下', count: reports.filter(r => r.status === 'dismissed').length },
+                      ].map(t => (
+                        <button
+                          key={t.id}
+                          type="button"
+                          onClick={() => { setReportStatusFilter(t.id as any); setReportPage(1); }}
+                          className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
+                            reportStatusFilter === t.id
+                              ? 'bg-white text-slate-900 shadow-sm font-extrabold border border-slate-200/60'
+                              : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
+                          }`}
+                        >
+                          <span>{t.label}</span>
+                          <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                            reportStatusFilter === t.id ? 'bg-slate-900 text-white' : 'bg-slate-200 text-slate-700'
+                          }`}>
+                            {t.count}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-slate-500 font-bold">表示件数:</span>
+                      <select
+                        value={reportPerPage}
+                        onChange={(e) => { setReportPerPage(Number(e.target.value)); setReportPage(1); }}
+                        className="bg-white border border-slate-200 text-slate-700 text-xs rounded-lg px-2 py-1 font-bold focus:outline-none focus:border-brand-primary"
+                      >
+                        <option value={15}>15件</option>
+                        <option value={30}>30件</option>
+                        <option value={50}>50件</option>
+                        <option value={9999}>全件</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Search input */}
+                  <div className="relative">
+                    <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <input
+                      type="text"
+                      value={reportSearchTerm}
+                      onChange={(e) => { setReportSearchTerm(e.target.value); setReportPage(1); }}
+                      placeholder="通報理由、対象ユーザー名、通報者名、対象種別で検索..."
+                      className="w-full bg-white border border-slate-200 rounded-xl pl-9 pr-8 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-brand-primary transition-all font-medium"
+                    />
+                    {reportSearchTerm && (
+                      <button
+                        type="button"
+                        onClick={() => { setReportSearchTerm(''); setReportPage(1); }}
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5 cursor-pointer"
+                      >
+                        <X size={14} />
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Batch Action Bar */}
+                  {reports.length > 0 && (
+                    <div className="flex items-center justify-between bg-amber-50/70 p-2.5 rounded-xl border border-amber-200/80">
+                      <div className="flex items-center gap-2.5">
+                        <input
+                          type="checkbox"
+                          checked={reports.length > 0 && reports.every(r => selectedReportIds.includes(r.id))}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedReportIds(reports.map(r => r.id));
+                            } else {
+                              setSelectedReportIds([]);
+                            }
+                          }}
+                          className="rounded border-amber-300 text-amber-600 focus:ring-amber-500 cursor-pointer"
+                        />
+                        <span className="text-xs font-bold text-amber-900">
+                          全選択 ({selectedReportIds.length} / {reports.length}件 選択中)
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={handleBatchResolveReports}
+                          disabled={selectedReportIds.length === 0 || isBatchUpdatingReports}
+                          className="flex items-center gap-1 px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all disabled:opacity-40 cursor-pointer shadow-xs"
+                        >
+                          <CheckCircle2 size={13} />
+                          <span>選択一括解決済みにする ({selectedReportIds.length})</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={handleBatchDismissReports}
+                          disabled={selectedReportIds.length === 0 || isBatchUpdatingReports}
+                          className="flex items-center gap-1 px-3 py-1 bg-slate-600 hover:bg-slate-700 text-white rounded-lg text-xs font-bold transition-all disabled:opacity-40 cursor-pointer shadow-xs"
+                        >
+                          <X size={13} />
+                          <span>選択一括却下 ({selectedReportIds.length})</span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Table Component */}
+                <div className="overflow-x-auto">
+                  {(() => {
+                    const filtered = reports.filter(r => {
+                      const reason = (r.reason || '').toLowerCase();
+                      const isUrgent = reason.includes('ストーカー') || reason.includes('脅迫') || reason.includes('晒し') || reason.includes('嫌がらせ') || r.report_type === 'stalking';
+
+                      if (reportStatusFilter === 'pending' && r.status !== 'pending') return false;
+                      if (reportStatusFilter === 'urgent' && !isUrgent) return false;
+                      if (reportStatusFilter === 'resolved' && r.status !== 'resolved') return false;
+                      if (reportStatusFilter === 'dismissed' && r.status !== 'dismissed') return false;
+
+                      if (reportSearchTerm.trim()) {
+                        const q = reportSearchTerm.toLowerCase();
+                        const matchReason = (r.reason || '').toLowerCase().includes(q);
+                        const matchTarget = (r.target_username || '').toLowerCase().includes(q);
+                        const matchReporter = (r.reporter_name || '').toLowerCase().includes(q);
+                        const matchType = (r.target_type || '').toLowerCase().includes(q);
+                        if (!matchReason && !matchTarget && !matchReporter && !matchType) return false;
+                      }
+                      return true;
+                    });
+
+                    const totalPages = Math.ceil(filtered.length / reportPerPage) || 1;
+                    const currentPage = Math.min(reportPage, totalPages);
+                    const paginated = filtered.slice((currentPage - 1) * reportPerPage, currentPage * reportPerPage);
+
+                    if (filtered.length === 0) {
+                      return (
+                        <div className="p-12 text-center text-slate-400">
+                          <CheckCircle2 size={36} className="mx-auto text-emerald-500 mb-2" />
+                          <p className="text-sm font-bold text-slate-700">該当する通報はありません</p>
+                          <p className="text-xs text-slate-400 mt-1">すべての通報が対応完了済みか、クリーンな状態です</p>
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <>
+                        <table className="w-full text-left border-collapse">
+                          <thead>
+                            <tr className="border-b border-slate-200/80 bg-slate-50/80 text-[11px] font-bold uppercase tracking-wider text-slate-600">
+                              <th className="w-8 px-3 py-2.5"></th>
+                              <th className="px-3 py-2.5 whitespace-nowrap">通報日時</th>
+                              <th className="px-3 py-2.5 whitespace-nowrap">ID / 対象種別</th>
+                              <th className="px-3 py-2.5 whitespace-nowrap">対象アカウント</th>
+                              <th className="px-3 py-2.5 whitespace-nowrap">通報理由・詳細</th>
+                              <th className="px-3 py-2.5 whitespace-nowrap">通報者</th>
+                              <th className="px-3 py-2.5 whitespace-nowrap">対応状態</th>
+                              <th className="px-3 py-2.5 text-right whitespace-nowrap">即時アクション</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-100 text-xs">
+                            {paginated.map(report => {
+                              const isChecked = selectedReportIds.includes(report.id);
+                              const isPending = report.status === 'pending';
+                              const isResolved = report.status === 'resolved';
+                              const reason = (report.reason || '').toLowerCase();
+                              const isUrgent = reason.includes('ストーカー') || reason.includes('脅迫') || reason.includes('晒し');
+
+                              return (
+                                <tr key={report.id} className="h-12 hover:bg-slate-50/70 transition-colors group">
+                                  <td className="px-3 py-2">
+                                    <input
+                                      type="checkbox"
+                                      checked={isChecked}
+                                      onChange={(e) => {
+                                        if (e.target.checked) {
+                                          setSelectedReportIds(prev => [...prev, report.id]);
+                                        } else {
+                                          setSelectedReportIds(prev => prev.filter(id => id !== report.id));
+                                        }
+                                      }}
+                                      className="rounded border-slate-300 text-brand-primary focus:ring-brand-primary cursor-pointer"
+                                    />
+                                  </td>
+
+                                  {/* 1. Created At */}
+                                  <td className="px-3 py-2 whitespace-nowrap text-slate-500 font-mono text-[11px]">
+                                    {new Date(report.created_at).toLocaleString('ja-JP', {
+                                      month: '2-digit',
+                                      day: '2-digit',
+                                      hour: '2-digit',
+                                      minute: '2-digit'
+                                    })}
+                                  </td>
+
+                                  {/* 2. Target Type */}
+                                  <td className="px-3 py-2 whitespace-nowrap">
+                                    <div className="flex items-center gap-1.5">
+                                      <span className="font-mono text-slate-400 text-[10px]">#{report.id}</span>
+                                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                                        report.target_type === 'post' 
+                                          ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' 
+                                          : 'bg-teal-50 text-teal-700 border border-teal-200'
+                                      }`}>
+                                        {report.target_type === 'post' ? '✉️ ボトル' : '👤 ユーザー'}
+                                      </span>
+                                      {report.target_id && (
+                                        <span className="font-mono text-slate-400 text-[10px]">ID:{report.target_id}</span>
+                                      )}
+                                    </div>
+                                  </td>
+
+                                  {/* 3. Target User */}
+                                  <td className="px-3 py-2 whitespace-nowrap">
+                                    {report.target_user_id ? (
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          handleViewUser({ id: report.target_user_id, username: report.target_username });
+                                          setActiveTab('users');
+                                        }}
+                                        className="font-bold text-slate-800 hover:text-brand-primary hover:underline cursor-pointer"
+                                      >
+                                        @{report.target_username || `User #${report.target_user_id}`}
+                                      </button>
+                                    ) : (
+                                      <span className="text-slate-400 italic font-medium">{report.target_username || '不明'}</span>
+                                    )}
+                                  </td>
+
+                                  {/* 4. Reason */}
+                                  <td className="px-3 py-2 max-w-xs truncate text-slate-700">
+                                    <div className="flex items-center gap-1.5 truncate">
+                                      {isUrgent && (
+                                        <span className="px-1.5 py-0.2 rounded text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-300 shrink-0">
+                                          🚨 緊急
+                                        </span>
+                                      )}
+                                      <span className="truncate font-serif" title={report.reason}>
+                                        "{report.reason}"
+                                      </span>
+                                    </div>
+                                  </td>
+
+                                  {/* 5. Reporter */}
+                                  <td className="px-3 py-2 whitespace-nowrap text-slate-600">
+                                    <span className="font-medium text-slate-700">
+                                      {report.reporter_name || 'システム自動検知'}
+                                    </span>
+                                  </td>
+
+                                  {/* 6. Status Badge */}
+                                  <td className="px-3 py-2 whitespace-nowrap">
+                                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${
+                                      isPending 
+                                        ? 'bg-amber-100 text-amber-800 border-amber-300 animate-pulse' 
+                                        : isResolved 
+                                        ? 'bg-emerald-100 text-emerald-800 border-emerald-300' 
+                                        : 'bg-slate-100 text-slate-700 border-slate-300'
+                                    }`}>
+                                      {isPending ? <Clock size={10} /> : isResolved ? <CheckCircle2 size={10} /> : <X size={10} />}
+                                      <span>{isPending ? '未対応 (pending)' : isResolved ? '解決済 (resolved)' : '却下 (dismissed)'}</span>
+                                    </span>
+                                  </td>
+
+                                  {/* 7. Action */}
+                                  <td className="px-3 py-2 text-right whitespace-nowrap">
+                                    <div className="flex items-center justify-end gap-1.5">
+                                      {isPending && (
+                                        <button
+                                          type="button"
+                                          onClick={() => handleResolveReport(report.id)}
+                                          className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer shadow-2xs"
+                                          title="この通報を解決済みにする"
+                                        >
+                                          <CheckCircle2 size={12} />
+                                          <span>解決</span>
+                                        </button>
+                                      )}
+
+                                      <button
+                                        type="button"
+                                        onClick={() => setSelectedReport(report)}
+                                        className="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors cursor-pointer"
+                                        title="通報の詳細を確認"
+                                      >
+                                        <Eye size={13} />
+                                      </button>
+
+                                      {report.target_user_id && (
+                                        <button
+                                          type="button"
+                                          onClick={() => handleToggleFreezeUser(report.target_user_id, 0)}
+                                          className="p-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 rounded-lg transition-colors cursor-pointer"
+                                          title="対象ユーザーを即時凍結(BAN)"
+                                        >
+                                          <UserX size={13} />
+                                        </button>
+                                      )}
+
+                                      {isPending && (
+                                        <button
+                                          type="button"
+                                          onClick={() => handleDismissReport(report.id)}
+                                          className="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-lg transition-colors cursor-pointer"
+                                          title="問題なしとして却下"
+                                        >
+                                          <X size={13} />
+                                        </button>
+                                      )}
+                                    </div>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+
+                        {/* Pagination Bar */}
+                        <div className="p-3.5 border-t border-slate-200/80 bg-slate-50/50 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                          <div className="text-slate-500 font-medium">
+                            全 <span className="font-bold text-slate-800">{filtered.length}</span> 件中{' '}
+                            <span className="font-bold text-slate-800">{(currentPage - 1) * reportPerPage + 1}</span> 〜{' '}
+                            <span className="font-bold text-slate-800">{Math.min(currentPage * reportPerPage, filtered.length)}</span> 件を表示
+                          </div>
+
+                          {totalPages > 1 && (
+                            <div className="flex items-center gap-1">
+                              <button
+                                type="button"
+                                disabled={currentPage === 1}
+                                onClick={() => setReportPage(1)}
+                                className="px-2 py-1 rounded-lg border border-slate-200 bg-white text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 font-bold"
+                              >
+                                &laquo;
+                              </button>
+                              <button
+                                type="button"
+                                disabled={currentPage === 1}
+                                onClick={() => setReportPage(prev => Math.max(prev - 1, 1))}
+                                className="px-2.5 py-1 rounded-lg border border-slate-200 bg-white text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 font-bold"
+                              >
+                                &lsaquo;
+                              </button>
+                              
+                              <span className="px-3 py-1 bg-slate-900 text-white rounded-lg font-bold">
+                                {currentPage} / {totalPages}
+                              </span>
+
+                              <button
+                                type="button"
+                                disabled={currentPage === totalPages}
+                                onClick={() => setReportPage(prev => Math.min(prev + 1, totalPages))}
+                                className="px-2.5 py-1 rounded-lg border border-slate-200 bg-white text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 font-bold"
+                              >
+                                &rsaquo;
+                              </button>
+                              <button
+                                type="button"
+                                disabled={currentPage === totalPages}
+                                onClick={() => setReportPage(totalPages)}
+                                className="px-2 py-1 rounded-lg border border-slate-200 bg-white text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 font-bold"
+                              >
+                                &raquo;
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </>
+                    );
+                  })()}
+                </div>
+              </div>
+            </div>
+          ) : activeTab === 'ngWords' ? (
+            <div className="space-y-6">
+              <div className="glass-card p-6">
+                <h3 className="text-[14px] font-bold text-black uppercase tracking-[0.2em] mb-4">NGワード追加</h3>
+                <div className="flex gap-4">
+                  <input
+                    type="text"
+                    value={newNgWord}
+                    onChange={(e) => setNewNgWord(e.target.value)}
+                    placeholder="NGワードを入力..."
+                    className="flex-1 bg-brand-light/50 border border-brand-border rounded-xl px-4 py-3 text-sm font-serif focus:outline-none focus:ring-1 focus:ring-brand-primary transition-all"
+                  />
+                  <button
+                    onClick={handleAddNgWord}
+                    className="px-8 py-3 bg-black text-white rounded-xl text-[12px] font-bold uppercase tracking-widest hover:bg-black/80 transition-all shadow-lg shadow-black/20"
+                  >
+                    追加
+                  </button>
+                </div>
+                <p className="mt-4 text-[12px] text-black/50 font-serif">
+                  ※ 正規表現も使用可能です（例: \d{3}-\d{4}）。
+                </p>
+              </div>
+
+              <div className="glass-card overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className="border-b border-brand-border bg-brand-light/50">
+                        <th className="px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-black/75 whitespace-nowrap">ID</th>
+                        <th className="px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-black/75 whitespace-nowrap">ワード / パターン</th>
+                        <th className="px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-black/75 text-right whitespace-nowrap">操作</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {ngWords.map((word: any) => (
+                        <tr key={word.id} className="border-b border-brand-border last:border-0 hover:bg-brand-light/30 transition-colors group">
+                          <td className="px-3 py-1 text-[12px] font-mono text-black/75 whitespace-nowrap">#{word.id}</td>
+                          <td className="px-3 py-1 whitespace-nowrap">
+                            <span className="text-[12px] font-serif text-black">{word.word}</span>
+                          </td>
+                          <td className="px-3 py-1 text-right whitespace-nowrap">
+                            <button
+                              onClick={() => handleDeleteNgWord(word.id)}
+                              className="text-[11px] font-bold uppercase tracking-widest text-red-500 hover:text-red-700 transition-colors"
+                            >
+                              削除
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          ) : activeTab === 'contacts' ? (
+            (() => {
+              const enrichedContacts = contacts.map(c => {
+                const cl = classifyTicket(c.subject || '', c.message || '');
+                return {
+                  ...c,
+                  classification: cl,
+                  category: cl.category,
+                  categoryEn: cl.categoryEn,
+                  categoryLabel: cl.categoryLabel,
+                  matchedKeywords: cl.matchedKeywords,
+                  priorityScore: cl.priorityScore,
+                  triageTip: cl.triageTip
+                };
+              });
+
+              const urgentCount = enrichedContacts.filter(c => c.category === 'urgent').length;
+              const technicalCount = enrichedContacts.filter(c => c.category === 'technical').length;
+              const accountCount = enrichedContacts.filter(c => c.category === 'account').length;
+              const generalCount = enrichedContacts.filter(c => c.category === 'general').length;
+              const pendingCount = enrichedContacts.filter(c => c.status === 'pending').length;
+              const urgentPendingCount = enrichedContacts.filter(c => c.category === 'urgent' && c.status === 'pending').length;
+
+              const filteredContacts = enrichedContacts
+                .filter(c => {
+                  if (contactCategoryFilter !== 'all' && c.category !== contactCategoryFilter) return false;
+                  if (contactStatusFilter !== 'all' && c.status !== contactStatusFilter) return false;
+                  if (contactSearchQuery.trim()) {
+                    const q = contactSearchQuery.toLowerCase();
+                    const matchText = `${c.name || ''} ${c.email || ''} ${c.subject || ''} ${c.message || ''} ${c.matchedKeywords.join(' ')}`.toLowerCase();
+                    if (!matchText.includes(q)) return false;
+                  }
+                  return true;
+                })
+                .sort((a, b) => {
+                  if (contactSortBy === 'priority') {
+                    if (b.priorityScore !== a.priorityScore) return b.priorityScore - a.priorityScore;
+                    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+                  }
+                  if (contactSortBy === 'newest') {
+                    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+                  }
+                  if (contactSortBy === 'oldest') {
+                    return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+                  }
+                  return 0;
+                });
+
+              return (
+                <div className="space-y-6">
+                  {/* Triage Header */}
+                  <div className="glass-card p-6 rounded-3xl border border-brand-border/60 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-brand-primary/10 text-brand-primary uppercase tracking-widest border border-brand-primary/20">
+                          Automated Ticket Triage
+                        </span>
+                        {urgentPendingCount > 0 && (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-700 border border-rose-200 animate-pulse">
+                            <AlertTriangle size={12} />
+                            <span>🚨 至急対応 {urgentPendingCount} 件</span>
+                          </span>
+                        )}
+                      </div>
+                      <h2 className="text-xl md:text-2xl font-serif font-bold text-brand-dark">
+                        お問い合わせ自動分類・トリアージ管理
+                      </h2>
+                      <p className="text-xs md:text-sm text-brand-dark/70 font-sans max-w-3xl">
+                        キーワード解析により全チケットを <strong className="text-rose-700 font-bold">Urgent (緊急)</strong>・<strong className="text-sky-700 font-bold">Technical (技術・不具合)</strong>・<strong className="text-purple-700 font-bold">Account-related (アカウント)</strong> に即座に自動判別。最優先対応を可視化します。
+                      </p>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-2 shrink-0">
+                      <button
+                        onClick={handleSeedSampleContacts}
+                        disabled={isSeedingContacts}
+                        id="btn-seed-sample-contacts"
+                        className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-brand-primary to-brand-dark text-white text-xs font-bold shadow-sm hover:opacity-90 active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                        title="検証用に各分類（緊急・技術・アカウント・一般）のサンプルチケットを投入します"
+                      >
+                        <Sparkles size={14} className="text-brand-accent" />
+                        <span>{isSeedingContacts ? '投入中...' : '分類サンプル投入 (8件)'}</span>
+                      </button>
+                      <button
+                        onClick={() => fetchData()}
+                        className="p-2.5 rounded-xl bg-white border border-brand-border text-brand-dark hover:bg-brand-light/50 transition-colors shadow-xs"
+                        title="最新のお問い合わせを取得"
+                      >
+                        <RefreshCw size={14} />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* 5-Card Triage KPI Overview */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
+                    {/* All Tickets */}
+                    <button
+                      onClick={() => { setContactCategoryFilter('all'); setContactStatusFilter('all'); }}
+                      className={cn(
+                        "p-4 rounded-2xl border text-left transition-all relative overflow-hidden group cursor-pointer",
+                        contactCategoryFilter === 'all' && contactStatusFilter === 'all'
+                          ? "bg-brand-dark text-white border-brand-dark shadow-md"
+                          : "bg-white border-brand-border/80 hover:border-brand-primary/50 text-brand-dark"
+                      )}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[11px] font-bold uppercase tracking-wider opacity-70">全チケット</span>
+                        <Mail size={16} className={contactCategoryFilter === 'all' && contactStatusFilter === 'all' ? "text-brand-accent" : "text-brand-dark/40"} />
+                      </div>
+                      <div className="text-2xl md:text-3xl font-mono font-bold">{enrichedContacts.length}</div>
+                      <div className="text-[10px] mt-1 opacity-70">総受信数</div>
+                    </button>
+
+                    {/* Urgent Tickets */}
+                    <button
+                      onClick={() => setContactCategoryFilter(contactCategoryFilter === 'urgent' ? 'all' : 'urgent')}
+                      className={cn(
+                        "p-4 rounded-2xl border text-left transition-all relative overflow-hidden group cursor-pointer",
+                        contactCategoryFilter === 'urgent'
+                          ? "bg-rose-600 text-white border-rose-700 shadow-md ring-2 ring-rose-300"
+                          : "bg-rose-50/60 border-rose-200/80 hover:border-rose-300 text-rose-900"
+                      )}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[11px] font-bold uppercase tracking-wider flex items-center gap-1">
+                          <AlertTriangle size={12} className={contactCategoryFilter === 'urgent' ? "text-white animate-pulse" : "text-rose-600 animate-pulse"} />
+                          <span>🚨 Urgent</span>
+                        </span>
+                        <span className="text-[9px] px-1.5 py-0.5 rounded-full font-bold bg-rose-200/80 text-rose-800">最優先</span>
+                      </div>
+                      <div className="text-2xl md:text-3xl font-mono font-bold text-rose-950 dark:text-white">{urgentCount}</div>
+                      <div className="text-[10px] mt-1 opacity-80">緊急・被害・返金</div>
+                    </button>
+
+                    {/* Technical Tickets */}
+                    <button
+                      onClick={() => setContactCategoryFilter(contactCategoryFilter === 'technical' ? 'all' : 'technical')}
+                      className={cn(
+                        "p-4 rounded-2xl border text-left transition-all relative overflow-hidden group cursor-pointer",
+                        contactCategoryFilter === 'technical'
+                          ? "bg-sky-600 text-white border-sky-700 shadow-md ring-2 ring-sky-300"
+                          : "bg-sky-50/60 border-sky-200/80 hover:border-sky-300 text-sky-900"
+                      )}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[11px] font-bold uppercase tracking-wider flex items-center gap-1">
+                          <Terminal size={12} className={contactCategoryFilter === 'technical' ? "text-white" : "text-sky-600"} />
+                          <span>⚙️ Technical</span>
+                        </span>
+                        <span className="text-[9px] px-1.5 py-0.5 rounded-full font-bold bg-sky-200/80 text-sky-800">技術</span>
+                      </div>
+                      <div className="text-2xl md:text-3xl font-mono font-bold text-sky-950 dark:text-white">{technicalCount}</div>
+                      <div className="text-[10px] mt-1 opacity-80">エラー・不具合・障害</div>
+                    </button>
+
+                    {/* Account Tickets */}
+                    <button
+                      onClick={() => setContactCategoryFilter(contactCategoryFilter === 'account' ? 'all' : 'account')}
+                      className={cn(
+                        "p-4 rounded-2xl border text-left transition-all relative overflow-hidden group cursor-pointer",
+                        contactCategoryFilter === 'account'
+                          ? "bg-purple-600 text-white border-purple-700 shadow-md ring-2 ring-purple-300"
+                          : "bg-purple-50/60 border-purple-200/80 hover:border-purple-300 text-purple-900"
+                      )}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[11px] font-bold uppercase tracking-wider flex items-center gap-1">
+                          <UserCheck size={12} className={contactCategoryFilter === 'account' ? "text-white" : "text-purple-600"} />
+                          <span>👤 Account</span>
+                        </span>
+                        <span className="text-[9px] px-1.5 py-0.5 rounded-full font-bold bg-purple-200/80 text-purple-800">アカウント</span>
+                      </div>
+                      <div className="text-2xl md:text-3xl font-mono font-bold text-purple-950 dark:text-white">{accountCount}</div>
+                      <div className="text-[10px] mt-1 opacity-80">認証・退会・eKYC</div>
+                    </button>
+
+                    {/* Pending Tickets */}
+                    <button
+                      onClick={() => setContactStatusFilter(contactStatusFilter === 'pending' ? 'all' : 'pending')}
+                      className={cn(
+                        "p-4 rounded-2xl border text-left transition-all relative overflow-hidden group cursor-pointer col-span-2 sm:col-span-1",
+                        contactStatusFilter === 'pending'
+                          ? "bg-amber-600 text-white border-amber-700 shadow-md ring-2 ring-amber-300"
+                          : "bg-amber-50/60 border-amber-200/80 hover:border-amber-300 text-amber-900"
+                      )}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[11px] font-bold uppercase tracking-wider flex items-center gap-1">
+                          <Clock size={12} className={contactStatusFilter === 'pending' ? "text-white" : "text-amber-600"} />
+                          <span>⏳ 未対応</span>
+                        </span>
+                        <span className="text-[9px] px-1.5 py-0.5 rounded-full font-bold bg-amber-200/80 text-amber-800">要返信</span>
+                      </div>
+                      <div className="text-2xl md:text-3xl font-mono font-bold text-amber-950 dark:text-white">{pendingCount}</div>
+                      <div className="text-[10px] mt-1 opacity-80">返信待ちチケット</div>
+                    </button>
+                  </div>
+
+                  {/* Filter Toolbar & Search Bar */}
+                  <div className="glass-card p-4 rounded-2xl border border-brand-border space-y-3">
+                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+                      {/* Category Pills */}
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <span className="text-[11px] font-bold text-brand-dark/50 uppercase tracking-wider mr-1">分類:</span>
+                        <button
+                          onClick={() => setContactCategoryFilter('all')}
+                          className={cn(
+                            "px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer",
+                            contactCategoryFilter === 'all'
+                              ? "bg-brand-dark text-white shadow-xs"
+                              : "bg-brand-light/60 text-brand-dark/70 hover:bg-brand-light"
+                          )}
+                        >
+                          <span>すべて</span>
+                          <span className="px-1.5 py-0.2 rounded-full bg-black/10 text-[10px] font-mono">{enrichedContacts.length}</span>
+                        </button>
+
+                        <button
+                          onClick={() => setContactCategoryFilter('urgent')}
+                          className={cn(
+                            "px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer",
+                            contactCategoryFilter === 'urgent'
+                              ? "bg-rose-600 text-white shadow-xs"
+                              : "bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200"
+                          )}
+                        >
+                          <AlertTriangle size={12} className="animate-pulse" />
+                          <span>🚨 Urgent (緊急)</span>
+                          <span className="px-1.5 py-0.2 rounded-full bg-rose-200 text-rose-800 text-[10px] font-mono font-bold">{urgentCount}</span>
+                        </button>
+
+                        <button
+                          onClick={() => setContactCategoryFilter('technical')}
+                          className={cn(
+                            "px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer",
+                            contactCategoryFilter === 'technical'
+                              ? "bg-sky-600 text-white shadow-xs"
+                              : "bg-sky-50 text-sky-700 hover:bg-sky-100 border border-sky-200"
+                          )}
+                        >
+                          <Terminal size={12} />
+                          <span>⚙️ Technical (技術)</span>
+                          <span className="px-1.5 py-0.2 rounded-full bg-sky-200 text-sky-800 text-[10px] font-mono font-bold">{technicalCount}</span>
+                        </button>
+
+                        <button
+                          onClick={() => setContactCategoryFilter('account')}
+                          className={cn(
+                            "px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer",
+                            contactCategoryFilter === 'account'
+                              ? "bg-purple-600 text-white shadow-xs"
+                              : "bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200"
+                          )}
+                        >
+                          <UserCheck size={12} />
+                          <span>👤 Account (アカウント)</span>
+                          <span className="px-1.5 py-0.2 rounded-full bg-purple-200 text-purple-800 text-[10px] font-mono font-bold">{accountCount}</span>
+                        </button>
+
+                        <button
+                          onClick={() => setContactCategoryFilter('general')}
+                          className={cn(
+                            "px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer",
+                            contactCategoryFilter === 'general'
+                              ? "bg-slate-700 text-white shadow-xs"
+                              : "bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200"
+                          )}
+                        >
+                          <Mail size={12} />
+                          <span>💬 General (一般)</span>
+                          <span className="px-1.5 py-0.2 rounded-full bg-slate-200 text-slate-800 text-[10px] font-mono font-bold">{generalCount}</span>
+                        </button>
+                      </div>
+
+                      {/* Status filter toggle */}
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] font-bold text-brand-dark/50 uppercase tracking-wider">状態:</span>
+                        <div className="inline-flex bg-brand-light/60 p-0.5 rounded-xl border border-brand-border">
+                          <button
+                            onClick={() => setContactStatusFilter('all')}
+                            className={cn(
+                              "px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer",
+                              contactStatusFilter === 'all' ? "bg-white text-brand-dark shadow-xs" : "text-brand-dark/60 hover:text-brand-dark"
+                            )}
+                          >
+                            すべて
+                          </button>
+                          <button
+                            onClick={() => setContactStatusFilter('pending')}
+                            className={cn(
+                              "px-2.5 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer",
+                              contactStatusFilter === 'pending' ? "bg-amber-500 text-white shadow-xs" : "text-amber-800 hover:text-amber-900"
+                            )}
+                          >
+                            <span>未対応</span>
+                            <span className="text-[10px] font-mono font-bold">({pendingCount})</span>
+                          </button>
+                          <button
+                            onClick={() => setContactStatusFilter('replied')}
+                            className={cn(
+                              "px-2.5 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer",
+                              contactStatusFilter === 'replied' ? "bg-emerald-600 text-white shadow-xs" : "text-emerald-800 hover:text-emerald-900"
+                            )}
+                          >
+                            <span>返信済</span>
+                            <span className="text-[10px] font-mono font-bold">({enrichedContacts.length - pendingCount})</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 border-t border-brand-border/50">
+                      {/* Search Bar */}
+                      <div className="relative w-full sm:w-80">
+                        <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-brand-dark/40" />
+                        <input
+                          type="text"
+                          value={contactSearchQuery}
+                          onChange={(e) => setContactSearchQuery(e.target.value)}
+                          placeholder="件名・本文・送信者・#キーワードで検索..."
+                          className="w-full pl-9 pr-8 py-2 bg-white border border-brand-border rounded-xl text-xs outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/10 transition-all text-brand-dark placeholder:text-brand-dark/40"
+                        />
+                        {contactSearchQuery && (
+                          <button
+                            onClick={() => setContactSearchQuery('')}
+                            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-brand-dark/40 hover:text-brand-dark text-xs"
+                          >
+                            ×
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Sort Selector & Result count */}
+                      <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+                        <span className="text-xs text-brand-dark/60 font-mono">
+                          表示: <strong className="text-brand-dark font-bold">{filteredContacts.length}</strong> / {enrichedContacts.length} 件
+                        </span>
+
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[11px] text-brand-dark/50 font-bold whitespace-nowrap">並び順:</span>
+                          <select
+                            value={contactSortBy}
+                            onChange={(e: any) => setContactSortBy(e.target.value)}
+                            className="px-2.5 py-1.5 bg-white border border-brand-border rounded-xl text-xs font-bold text-brand-dark outline-none focus:border-brand-primary cursor-pointer"
+                          >
+                            <option value="priority">🚨 優先度順 (Urgent優先)</option>
+                            <option value="newest">🕒 受信日時 (新しい順)</option>
+                            <option value="oldest">📅 受信日時 (古い順)</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Contacts Table with Classification Badges */}
+                  <div className="glass-card overflow-hidden rounded-3xl border border-brand-border shadow-sm">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr className="border-b border-brand-border bg-brand-light/60">
+                            <th className="px-4 py-2.5 text-[11px] font-bold uppercase tracking-widest text-brand-dark/75 whitespace-nowrap">自動分類 (Category)</th>
+                            <th className="px-4 py-2.5 text-[11px] font-bold uppercase tracking-widest text-brand-dark/75 whitespace-nowrap">ステータス</th>
+                            <th className="px-4 py-2.5 text-[11px] font-bold uppercase tracking-widest text-brand-dark/75 whitespace-nowrap">受信日時</th>
+                            <th className="px-4 py-2.5 text-[11px] font-bold uppercase tracking-widest text-brand-dark/75 whitespace-nowrap">送信者</th>
+                            <th className="px-4 py-2.5 text-[11px] font-bold uppercase tracking-widest text-brand-dark/75 whitespace-nowrap">件名・本文抜粋</th>
+                            <th className="px-4 py-2.5 text-[11px] font-bold uppercase tracking-widest text-brand-dark/75 text-right whitespace-nowrap">操作</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-brand-border/60">
+                          {filteredContacts.map(c => {
+                            const isUrgent = c.category === 'urgent';
+                            const isTechnical = c.category === 'technical';
+                            const isAccount = c.category === 'account';
+
+                            return (
+                              <tr 
+                                key={c.id} 
+                                className={cn(
+                                  "transition-colors",
+                                  isUrgent 
+                                    ? "bg-rose-50/40 hover:bg-rose-50/80" 
+                                    : "hover:bg-brand-light/30"
+                                )}
+                              >
+                                {/* Automated Category Badge & Keywords */}
+                                <td className="px-4 py-3 align-top whitespace-nowrap">
+                                  <div className="space-y-1">
+                                    {isUrgent && (
+                                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-rose-100 text-rose-800 border border-rose-300 shadow-2xs">
+                                        <AlertTriangle size={12} className="text-rose-600 animate-pulse" />
+                                        <span>🚨 Urgent (緊急)</span>
+                                      </span>
+                                    )}
+                                    {isTechnical && (
+                                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-sky-100 text-sky-800 border border-sky-300 shadow-2xs">
+                                        <Terminal size={12} className="text-sky-600" />
+                                        <span>⚙️ Technical (技術)</span>
+                                      </span>
+                                    )}
+                                    {isAccount && (
+                                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-purple-100 text-purple-800 border border-purple-300 shadow-2xs">
+                                        <UserCheck size={12} className="text-purple-600" />
+                                        <span>👤 Account-related</span>
+                                      </span>
+                                    )}
+                                    {!isUrgent && !isTechnical && !isAccount && (
+                                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-100 text-slate-700 border border-slate-200 shadow-2xs">
+                                        <Mail size={12} className="text-slate-500" />
+                                        <span>💬 General (一般)</span>
+                                      </span>
+                                    )}
+
+                                    {/* Keyword Tags */}
+                                    {c.matchedKeywords && c.matchedKeywords.length > 0 && (
+                                      <div className="flex flex-wrap gap-1 max-w-[150px]">
+                                        {c.matchedKeywords.slice(0, 3).map((kw: string, i: number) => (
+                                          <span key={i} className="text-[9px] px-1.5 py-0.2 bg-black/5 text-black/60 rounded font-mono">
+                                            #{kw}
+                                          </span>
+                                        ))}
+                                      </div>
+                                    )}
+                                  </div>
+                                </td>
+
+                                {/* Status */}
+                                <td className="px-4 py-3 align-top whitespace-nowrap">
+                                  {c.status === 'replied' ? (
+                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                                      <CheckCircle2 size={10} />
+                                      <span>返信済</span>
+                                    </span>
+                                  ) : (
+                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-100 text-amber-800 border border-amber-200 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                                      <Clock size={10} />
+                                      <span>未対応</span>
+                                    </span>
+                                  )}
+                                </td>
+
+                                {/* Date */}
+                                <td className="px-4 py-3 align-top text-[11px] text-brand-dark/75 font-mono whitespace-nowrap">
+                                  {new Date(c.created_at).toLocaleString('ja-JP', { 
+                                    month: 'numeric', 
+                                    day: 'numeric', 
+                                    hour: '2-digit', 
+                                    minute: '2-digit' 
+                                  })}
+                                </td>
+
+                                {/* Sender */}
+                                <td className="px-4 py-3 align-top whitespace-nowrap">
+                                  <div className="font-bold text-xs text-brand-dark">{c.name}</div>
+                                  <div className="text-[11px] text-brand-dark/60 font-mono truncate max-w-[160px]">{c.email}</div>
+                                </td>
+
+                                {/* Subject & Message Preview */}
+                                <td className="px-4 py-3 align-top min-w-[280px]">
+                                  <div className={cn(
+                                    "font-bold text-xs line-clamp-1 mb-0.5",
+                                    isUrgent ? "text-rose-900" : "text-brand-dark"
+                                  )}>
+                                    {c.subject}
+                                  </div>
+                                  <div className="text-[11px] text-brand-dark/70 line-clamp-2 leading-relaxed">
+                                    {c.message}
+                                  </div>
+                                </td>
+
+                                {/* Action */}
+                                <td className="px-4 py-3 align-top text-right whitespace-nowrap">
+                                  <button 
+                                    onClick={() => setSelectedContact(c)}
+                                    className={cn(
+                                      "py-1.5 px-3 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition-all shadow-xs cursor-pointer",
+                                      isUrgent && c.status !== 'replied'
+                                        ? "bg-rose-600 hover:bg-rose-700 text-white ring-2 ring-rose-200"
+                                        : "bg-brand-primary hover:bg-brand-dark text-white"
+                                    )}
+                                  >
+                                    <Mail size={12} />
+                                    <span>{c.status === 'replied' ? '詳細確認' : '確認・返信'}</span>
+                                  </button>
+                                </td>
+                              </tr>
+                            );
+                          })}
+
+                          {filteredContacts.length === 0 && (
+                            <tr>
+                              <td colSpan={6} className="py-16 text-center text-brand-dark/50 font-serif">
+                                <div className="max-w-xs mx-auto space-y-2">
+                                  <Mail size={32} className="mx-auto text-brand-dark/30" />
+                                  <p className="text-sm font-bold text-brand-dark/80">条件に合致するお問い合わせはありません</p>
+                                  <p className="text-xs text-brand-dark/50">フィルターを解除するか、上部の「分類サンプル投入」ボタンをお試しください。</p>
+                                  <button
+                                    onClick={() => { setContactCategoryFilter('all'); setContactStatusFilter('all'); setContactSearchQuery(''); }}
+                                    className="px-3 py-1.5 bg-brand-light text-brand-dark text-xs font-bold rounded-lg hover:bg-brand-light/80 transition-colors cursor-pointer"
+                                  >
+                                    フィルターを初期化
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()
+          ) : activeTab === 'emailTemplates' ? (
+            <AdminEmailTemplatesView />
+          ) : activeTab === 'notifications' ? (
+            <div className="max-w-2xl mx-auto">
+              <div className="glass-card p-8 space-y-8">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 bg-black/5 rounded-2xl flex items-center justify-center text-black">
+                    <Bell size={24} />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-serif text-black">一括お知らせ配信</h3>
+                    <p className="text-sm text-black/50 font-serif">全ユーザーにシステム通知を送信します</p>
+                  </div>
+                </div>
+
+                <form onSubmit={(e) => {
+                  e.preventDefault();
+                  const formData = new FormData(e.currentTarget);
+                  handleSendBulkNotification(
+                    formData.get('content') as string,
+                    formData.get('link') as string
+                  );
+                  e.currentTarget.reset();
+                }} className="space-y-6">
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-black uppercase tracking-widest">通知内容</label>
+                    <textarea 
+                      name="content"
+                      required
+                      placeholder="通知するメッセージを入力してください..."
+                      className="w-full bg-brand-light/50 border border-brand-border rounded-2xl px-6 py-4 text-lg font-serif focus:outline-none focus:ring-2 focus:ring-black/10 transition-all min-h-[150px]"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-black uppercase tracking-widest">リンクURL (任意)</label>
+                    <input 
+                      name="link"
+                      type="text"
+                      placeholder="https://... (任意)"
+                      className="w-full bg-brand-light/50 border border-brand-border rounded-2xl px-6 py-4 text-lg font-serif focus:outline-none focus:ring-2 focus:ring-black/10 transition-all"
+                    />
+                    <p className="text-[10px] text-black/40">※ URLを入力する場合は http:// または https:// から入力してください</p>
+                  </div>
+
+                  <button 
+                    type="submit"
+                    disabled={isSending}
+                    className={cn(
+                      "w-full py-4 rounded-2xl text-lg font-bold uppercase tracking-widest transition-all shadow-xl flex items-center justify-center gap-3",
+                      isSending ? "bg-black/50 cursor-not-allowed" : "bg-black text-white hover:bg-black/80 shadow-black/20"
+                    )}
+                  >
+                    {isSending ? (
+                      <RefreshCw size={20} className="animate-spin" />
+                    ) : (
+                      <Bell size={20} />
+                    )}
+                    {isSending ? "送信中..." : "通知を送信する"}
+                  </button>
+                </form>
+
+                <AnimatePresence>
+                  {showBulkConfirm && pendingNotification && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                      <motion.div 
+                        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                        className="bg-white rounded-[32px] shadow-2xl border border-brand-border w-full max-w-lg overflow-hidden"
+                      >
+                        <div className="p-8 space-y-6">
+                          <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 bg-black/5 rounded-2xl flex items-center justify-center text-black">
+                              <Bell size={24} />
+                            </div>
+                            <div>
+                              <h3 className="text-xl font-serif text-black">配信内容の確認</h3>
+                              <p className="text-sm text-black/50 font-serif">全ユーザーに以下を送信します</p>
+                            </div>
+                          </div>
+
+                          <div className="space-y-4 bg-brand-light/50 p-6 rounded-2xl border border-brand-border">
+                            <div className="space-y-1">
+                              <span className="text-[10px] font-bold text-black/40 uppercase tracking-widest">通知内容</span>
+                              <p className="text-black font-serif whitespace-pre-wrap">{pendingNotification.content}</p>
+                            </div>
+                            {pendingNotification.link && (
+                              <div className="space-y-1 pt-4 border-t border-brand-border">
+                                <span className="text-[10px] font-bold text-black/40 uppercase tracking-widest">リンクURL</span>
+                                <p className="text-black text-xs font-mono break-all">{pendingNotification.link}</p>
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                            <button 
+                              onClick={() => setShowBulkConfirm(false)}
+                              className="flex-1 py-4 rounded-2xl text-sm font-bold uppercase tracking-widest text-black bg-brand-light border border-brand-border hover:bg-brand-border transition-all"
+                            >
+                              キャンセル
+                            </button>
+                            <button 
+                              onClick={executeBulkNotification}
+                              className="flex-1 py-4 rounded-2xl text-sm font-bold uppercase tracking-widest text-white bg-black hover:bg-black/80 shadow-xl shadow-black/20 transition-all"
+                            >
+                              配信を実行する
+                            </button>
+                          </div>
+                        </div>
+                      </motion.div>
+                    </div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              <div className="glass-card p-8 space-y-8 mt-8">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 bg-black/5 rounded-2xl flex items-center justify-center text-black">
+                    <History size={24} />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-serif text-black">送信済みのお知らせ</h3>
+                    <p className="text-sm text-black/50 font-serif">過去に送信した一括通知の一覧です</p>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  {broadcasts.length === 0 ? (
+                    <div className="py-12 text-center text-black/30 font-serif border border-dashed border-brand-border rounded-2xl">
+                      送信済みのお知らせはありません
+                    </div>
+                  ) : (
+                    broadcasts.map((broadcast, idx) => (
+                      <div key={idx} className="p-6 rounded-2xl bg-brand-light/10 border border-brand-border group hover:border-black/30 transition-all">
+                        <div className="flex justify-between items-start mb-4">
+                          <div className="flex items-center gap-3">
+                            <span className="text-[10px] font-bold text-black uppercase tracking-widest px-2 py-1 bg-black/5 rounded-lg">
+                              {broadcast.user_count} 名に送信
+                            </span>
+                            <span className="text-[10px] text-black/40 font-mono">
+                              {new Date(broadcast.created_at).toLocaleString()}
+                            </span>
+                          </div>
+                          <button 
+                            onClick={() => handleDeleteBroadcast(broadcast)}
+                            className="p-2 text-black/20 hover:text-red-500 transition-colors"
+                            title="削除"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                        <p className="text-black font-serif leading-relaxed mb-2">{broadcast.content}</p>
+                        {broadcast.link && (
+                          <a 
+                            href={broadcast.link} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-[10px] font-bold text-black uppercase tracking-widest hover:underline flex items-center gap-1"
+                          >
+                            <ExternalLink size={10} />
+                            リンク先を表示
+                          </a>
+                        )}
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </div>
+          ) : activeTab === 'moderation' ? (
+            <div className="space-y-6 text-left font-sans animate-fade-in">
+              {/* 1. 4大AI検閲KPIサマリーカード */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">
+                <div className="bg-white/90 backdrop-blur-md border border-rose-200/80 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-rose-700">🤖 AI検知保留中キュー</span>
+                    <div className="w-8 h-8 rounded-xl bg-rose-50 flex items-center justify-center text-rose-600">
+                      <Bot size={16} />
+                    </div>
+                  </div>
+                  <div className="mt-2 flex items-baseline gap-2">
+                    <span className="text-2xl font-extrabold text-rose-700">{moderationQueue.length}</span>
+                    <span className="text-xs text-rose-500">件</span>
+                  </div>
+                  <div className="mt-1 text-[11px] text-rose-600 font-medium">目視確認待ちの隔離ボトル</div>
+                </div>
+
+                <div className="bg-white/90 backdrop-blur-md border border-amber-200/80 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-amber-700">🚨 ストーキング・脅迫疑い</span>
+                    <div className="w-8 h-8 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
+                      <ShieldAlert size={16} />
+                    </div>
+                  </div>
+                  <div className="mt-2 flex items-baseline gap-2">
+                    <span className="text-2xl font-extrabold text-amber-700">
+                      {moderationQueue.filter(p => {
+                        const r = (p.ai_reason || '').toLowerCase();
+                        return r.includes('ストーカー') || r.includes('脅迫') || r.includes('住所') || r.includes('個人情報');
+                      }).length}
+                    </span>
+                    <span className="text-xs text-amber-500">件</span>
+                  </div>
+                  <div className="mt-1 text-[11px] text-amber-600 font-medium">重大コンプライアンスリスク</div>
+                </div>
+
+                <div className="bg-white/90 backdrop-blur-md border border-blue-200/80 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-blue-700">📱 連絡先・NGワード</span>
+                    <div className="w-8 h-8 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
+                      <Shield size={16} />
+                    </div>
+                  </div>
+                  <div className="mt-2 flex items-baseline gap-2">
+                    <span className="text-2xl font-extrabold text-blue-700">
+                      {moderationQueue.filter(p => {
+                        const r = (p.ai_reason || '').toLowerCase();
+                        return r.includes('line') || r.includes('電話') || r.includes('メール') || r.includes('ng') || r.includes('ワード');
+                      }).length}
+                    </span>
+                    <span className="text-xs text-blue-500">件</span>
+                  </div>
+                  <div className="mt-1 text-[11px] text-blue-600 font-medium">禁止ワード・外部誘導検知</div>
+                </div>
+
+                <div className="bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-700">📁 削除監査アーカイブ</span>
+                    <div className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600">
+                      <FileText size={16} />
+                    </div>
+                  </div>
+                  <div className="mt-2 flex items-baseline gap-2">
+                    <span className="text-2xl font-extrabold text-slate-800">{deletedPostsArchive.length}</span>
+                    <span className="text-xs text-slate-500">件</span>
+                  </div>
+                  <div className="mt-1 text-[11px] text-slate-600 font-medium">物理削除・証跡保全ログ</div>
+                </div>
+              </div>
+
+              {/* 2. メインデータカード */}
+              <div className="bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden font-sans">
+                {/* Header */}
+                <div className="p-5 border-b border-slate-200/80 bg-slate-50/50 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center shadow-sm">
+                      <Bot size={18} />
+                    </div>
+                    <div>
+                      <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                        <span>規約監視・AIリスク防衛センター</span>
+                        <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-300">
+                          {moderationSubTab === 'queue' ? `保留キュー ${moderationQueue.length}件` : `削除ログ ${deletedPostsArchive.length}件`}
+                        </span>
+                      </h3>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        AI安全エンジンによる不適切・ストーキング表現の自動隔離検知 ＆ 監査ルーム
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={handleSeedModeration}
+                      className="px-3 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+                    >
+                      <Sparkles size={13} className="text-amber-400" />
+                      <span>AI検知テストデータを生成</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Sub Tab Navigation */}
+                <div className="px-5 pt-3 border-b border-slate-200/80 bg-slate-50/30 flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => { setModerationSubTab('queue'); setModPage(1); }}
+                    className={`pb-3 px-3 text-xs font-bold flex items-center gap-1.5 border-b-2 transition-all cursor-pointer ${
+                      moderationSubTab === 'queue'
+                        ? 'border-brand-primary text-brand-primary font-extrabold'
+                        : 'border-transparent text-slate-500 hover:text-slate-800'
+                    }`}
+                  >
+                    <AlertTriangle size={14} className={moderationQueue.length > 0 ? "text-rose-500 animate-pulse" : ""} />
+                    <span>AI検知保留キュー</span>
+                    <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                      moderationSubTab === 'queue' ? 'bg-brand-primary/10 text-brand-primary' : 'bg-slate-200 text-slate-600'
+                    }`}>
+                      {moderationQueue.length}
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => { setModerationSubTab('archive'); setArchivePage(1); }}
+                    className={`pb-3 px-3 text-xs font-bold flex items-center gap-1.5 border-b-2 transition-all cursor-pointer ${
+                      moderationSubTab === 'archive'
+                        ? 'border-brand-primary text-brand-primary font-extrabold'
+                        : 'border-transparent text-slate-500 hover:text-slate-800'
+                    }`}
+                  >
+                    <FileText size={14} />
+                    <span>削除監査履歴ログ</span>
+                    <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                      moderationSubTab === 'archive' ? 'bg-brand-primary/10 text-brand-primary' : 'bg-slate-200 text-slate-600'
+                    }`}>
+                      {deletedPostsArchive.length}
+                    </span>
+                  </button>
+                </div>
+
+                {/* SUB TAB 1: QUEUE */}
+                {moderationSubTab === 'queue' && (() => {
+                  const filtered = moderationQueue.filter((p: any) => {
+                    const r = (p.ai_reason || '').toLowerCase();
+                    if (modReasonFilter === 'stalking' && !(r.includes('ストーカー') || r.includes('脅迫') || r.includes('住所') || r.includes('個人情報'))) return false;
+                    if (modReasonFilter === 'contact' && !(r.includes('line') || r.includes('電話') || r.includes('メール') || r.includes('ng') || r.includes('ワード'))) return false;
+                    if (modReasonFilter === 'other' && (r.includes('ストーカー') || r.includes('脅迫') || r.includes('line') || r.includes('電話'))) return false;
+
+                    if (modSearchTerm.trim()) {
+                      const q = modSearchTerm.toLowerCase();
+                      const matchTarget = (p.target_name || '').toLowerCase().includes(q);
+                      const matchSearcher = (p.searcher_name || '').toLowerCase().includes(q);
+                      const matchAuthor = (p.author_username || '').toLowerCase().includes(q);
+                      const matchMsg = (p.message || p.content || '').toLowerCase().includes(q);
+                      const matchReason = (p.ai_reason || '').toLowerCase().includes(q);
+                      if (!matchTarget && !matchSearcher && !matchAuthor && !matchMsg && !matchReason) return false;
+                    }
+                    return true;
+                  });
+
+                  const totalPages = Math.ceil(filtered.length / modPerPage) || 1;
+                  const currentPage = Math.min(modPage, totalPages);
+                  const paginated = filtered.slice((currentPage - 1) * modPerPage, currentPage * modPerPage);
+
+                  return (
+                    <div>
+                      {/* Search & Reason Filter Bar */}
+                      <div className="p-4 border-b border-slate-200/80 bg-slate-50/30 space-y-3">
+                        <div className="flex items-center justify-between flex-wrap gap-2">
+                          <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl border border-slate-200/80 text-xs font-bold">
+                            {[
+                              { id: 'all', label: 'すべて', count: moderationQueue.length },
+                              { 
+                                id: 'stalking', 
+                                label: '🚨 ストーカー・脅迫疑い', 
+                                count: moderationQueue.filter(p => (p.ai_reason || '').includes('ストーカー') || (p.ai_reason || '').includes('脅迫') || (p.ai_reason || '').includes('住所')).length 
+                              },
+                              { 
+                                id: 'contact', 
+                                label: '📱 連絡先・NGワード', 
+                                count: moderationQueue.filter(p => (p.ai_reason || '').includes('LINE') || (p.ai_reason || '').includes('電話') || (p.ai_reason || '').includes('NG')).length 
+                              },
+                              { 
+                                id: 'other', 
+                                label: '⚠️ その他疑い', 
+                                count: moderationQueue.filter(p => !((p.ai_reason || '').includes('ストーカー') || (p.ai_reason || '').includes('LINE'))).length 
+                              },
+                            ].map(t => (
+                              <button
+                                key={t.id}
+                                type="button"
+                                onClick={() => { setModReasonFilter(t.id as any); setModPage(1); }}
+                                className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
+                                  modReasonFilter === t.id
+                                    ? 'bg-white text-slate-900 shadow-sm font-extrabold border border-slate-200/60'
+                                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
+                                }`}
+                              >
+                                <span>{t.label}</span>
+                                <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                                  modReasonFilter === t.id ? 'bg-slate-900 text-white' : 'bg-slate-200 text-slate-700'
+                                }`}>
+                                  {t.count}
+                                </span>
+                              </button>
+                            ))}
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-slate-500 font-bold">表示件数:</span>
+                            <select
+                              value={modPerPage}
+                              onChange={(e) => { setModPerPage(Number(e.target.value)); setModPage(1); }}
+                              className="bg-white border border-slate-200 text-slate-700 text-xs rounded-lg px-2 py-1 font-bold focus:outline-none focus:border-brand-primary"
+                            >
+                              <option value={15}>15件</option>
+                              <option value={30}>30件</option>
+                              <option value={50}>50件</option>
+                              <option value={9999}>全件</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        {/* Search input */}
+                        <div className="relative">
+                          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                          <input
+                            type="text"
+                            value={modSearchTerm}
+                            onChange={(e) => { setModSearchTerm(e.target.value); setModPage(1); }}
+                            placeholder="宛先名、差出人、本文、AI判定理由、ユーザー名で検索..."
+                            className="w-full bg-white border border-slate-200 rounded-xl pl-9 pr-8 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-brand-primary transition-all font-medium"
+                          />
+                          {modSearchTerm && (
+                            <button
+                              type="button"
+                              onClick={() => { setModSearchTerm(''); setModPage(1); }}
+                              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5 cursor-pointer"
+                            >
+                              <X size={14} />
+                            </button>
+                          )}
+                        </div>
+
+                        {/* Batch Action Bar */}
+                        {moderationQueue.length > 0 && (
+                          <div className="flex items-center justify-between bg-rose-50/70 p-2.5 rounded-xl border border-rose-200/80">
+                            <div className="flex items-center gap-2.5">
+                              <input
+                                type="checkbox"
+                                checked={moderationQueue.length > 0 && moderationQueue.every(p => selectedModPostIds.includes(p.id))}
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setSelectedModPostIds(moderationQueue.map(p => p.id));
+                                  } else {
+                                    setSelectedModPostIds([]);
+                                  }
+                                }}
+                                className="rounded border-rose-300 text-rose-600 focus:ring-rose-500 cursor-pointer"
+                              />
+                              <span className="text-xs font-bold text-rose-900">
+                                全選択 ({selectedModPostIds.length} / {moderationQueue.length}件 選択中)
+                              </span>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                              <button
+                                type="button"
+                                onClick={handleBatchApproveModPosts}
+                                disabled={selectedModPostIds.length === 0 || isBatchApprovingModPosts}
+                                className="flex items-center gap-1 px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all disabled:opacity-40 cursor-pointer shadow-xs"
+                              >
+                                <CheckCircle2 size={13} />
+                                <span>選択一括承認・公開 ({selectedModPostIds.length})</span>
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={handleBatchDeleteModPosts}
+                                disabled={selectedModPostIds.length === 0 || isBatchDeletingModPosts}
+                                className="flex items-center gap-1 px-3 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold transition-all disabled:opacity-40 cursor-pointer shadow-xs"
+                              >
+                                <Trash2 size={13} />
+                                <span>選択一括削除 ({selectedModPostIds.length})</span>
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Queue Table */}
+                      <div className="overflow-x-auto">
+                        {filtered.length === 0 ? (
+                          <div className="p-12 text-center text-slate-400">
+                            <CheckCircle2 size={36} className="mx-auto text-emerald-500 mb-2" />
+                            <p className="text-sm font-bold text-slate-700">保留中のAI検知ボトルはありません</p>
+                            <p className="text-xs text-slate-400 mt-1">すべての手紙がクリーンまたは対応完了済みです</p>
+                          </div>
+                        ) : (
+                          <>
+                            <table className="w-full text-left border-collapse">
+                              <thead>
+                                <tr className="border-b border-slate-200/80 bg-slate-50/80 text-[11px] font-bold uppercase tracking-wider text-slate-600">
+                                  <th className="w-8 px-3 py-2.5"></th>
+                                  <th className="px-3 py-2.5 whitespace-nowrap">投函日時</th>
+                                  <th className="px-3 py-2.5 whitespace-nowrap">宛先 / 差出人</th>
+                                  <th className="px-3 py-2.5 whitespace-nowrap">投函アカウント</th>
+                                  <th className="px-3 py-2.5 whitespace-nowrap">AI自動判定理由</th>
+                                  <th className="px-3 py-2.5 whitespace-nowrap">手紙本文（要約）</th>
+                                  <th className="px-3 py-2.5 text-right whitespace-nowrap">即時アクション</th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-slate-100 text-xs">
+                                {paginated.map((post: any) => {
+                                  const isChecked = selectedModPostIds.includes(post.id);
+                                  const r = (post.ai_reason || '').toLowerCase();
+                                  const isStalking = r.includes('ストーカー') || r.includes('脅迫') || r.includes('住所') || r.includes('個人情報');
+
+                                  return (
+                                    <tr key={post.id} className="h-12 hover:bg-slate-50/70 transition-colors group">
+                                      <td className="px-3 py-2">
+                                        <input
+                                          type="checkbox"
+                                          checked={isChecked}
+                                          onChange={(e) => {
+                                            if (e.target.checked) {
+                                              setSelectedModPostIds(prev => [...prev, post.id]);
+                                            } else {
+                                              setSelectedModPostIds(prev => prev.filter(id => id !== post.id));
+                                            }
+                                          }}
+                                          className="rounded border-slate-300 text-brand-primary focus:ring-brand-primary cursor-pointer"
+                                        />
+                                      </td>
+
+                                      {/* 1. Created At */}
+                                      <td className="px-3 py-2 whitespace-nowrap text-slate-500 font-mono text-[11px]">
+                                        {new Date(post.created_at).toLocaleString('ja-JP', {
+                                          month: '2-digit',
+                                          day: '2-digit',
+                                          hour: '2-digit',
+                                          minute: '2-digit'
+                                        })}
+                                      </td>
+
+                                      {/* 2. Target & Searcher */}
+                                      <td className="px-3 py-2 whitespace-nowrap">
+                                        <div className="flex items-center gap-1.5">
+                                          <span className="font-mono text-slate-400 text-[10px]">#{post.id}</span>
+                                          <span className="font-bold text-slate-900">{post.target_name || '無題'} 様宛</span>
+                                          <span className="text-slate-400 text-[10px]">({post.searcher_name || '差出人不明'})</span>
+                                        </div>
+                                      </td>
+
+                                      {/* 3. Author Profile */}
+                                      <td className="px-3 py-2 whitespace-nowrap">
+                                        <div className="flex items-center gap-1.5">
+                                          {post.user_id ? (
+                                            <button
+                                              type="button"
+                                              onClick={() => {
+                                                handleViewUser({ id: post.user_id, username: post.author_username });
+                                                setActiveTab('users');
+                                              }}
+                                              className="font-bold text-slate-700 hover:text-brand-primary hover:underline cursor-pointer"
+                                            >
+                                              @{post.author_username || `User #${post.user_id}`}
+                                            </button>
+                                          ) : (
+                                            <span className="text-slate-400 italic">Guest (未登録)</span>
+                                          )}
+
+                                          {post.user_id && (
+                                            <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded border ${
+                                              post.author_is_blocked === 1
+                                                ? 'bg-rose-100 text-rose-800 border-rose-300'
+                                                : 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                            }`}>
+                                              {post.author_is_blocked === 1 ? '🚨 凍結中' : '通常'}
+                                            </span>
+                                          )}
+                                        </div>
+                                      </td>
+
+                                      {/* 4. AI Reason Badge */}
+                                      <td className="px-3 py-2 whitespace-nowrap max-w-xs truncate">
+                                        <div className="flex items-center gap-1.5 truncate">
+                                          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border shrink-0 ${
+                                            isStalking 
+                                              ? 'bg-rose-100 text-rose-800 border-rose-300' 
+                                              : 'bg-amber-100 text-amber-800 border-amber-300'
+                                          }`}>
+                                            <Bot size={11} />
+                                            <span>{isStalking ? '🚨 ストーカー疑い' : '⚠️ 表現注意'}</span>
+                                          </span>
+                                          <span className="text-slate-600 text-[11px] truncate font-medium" title={post.ai_reason}>
+                                            {post.ai_reason || 'AI安全判定による隔離'}
+                                          </span>
+                                        </div>
+                                      </td>
+
+                                      {/* 5. Message Snippet */}
+                                      <td className="px-3 py-2 max-w-sm truncate text-slate-600">
+                                        <span className="truncate block font-serif" title={post.message || post.content}>
+                                          "{post.message || post.content}"
+                                        </span>
+                                      </td>
+
+                                      {/* 6. Action */}
+                                      <td className="px-3 py-2 text-right whitespace-nowrap">
+                                        <div className="flex items-center justify-end gap-1.5">
+                                          <button
+                                            type="button"
+                                            onClick={() => handleApproveModPost(post.id)}
+                                            className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer shadow-2xs"
+                                            title="AIフラグを解除して通常公開する"
+                                          >
+                                            <CheckCircle2 size={12} />
+                                            <span>承認・公開</span>
+                                          </button>
+
+                                          <button
+                                            type="button"
+                                            onClick={() => setSelectedModPostModal(post)}
+                                            className="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors cursor-pointer"
+                                            title="手紙とAI判定の詳細を確認"
+                                          >
+                                            <Eye size={13} />
+                                          </button>
+
+                                          {post.user_id && (
+                                            <button
+                                              type="button"
+                                              onClick={() => handleToggleFreezeUser(post.user_id, post.author_is_blocked || 0)}
+                                              className={`p-1.5 rounded-lg border transition-colors cursor-pointer ${
+                                                post.author_is_blocked === 1
+                                                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
+                                                  : 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100'
+                                              }`}
+                                              title={post.author_is_blocked === 1 ? "凍結解除" : "投函ユーザーを即時凍結(BAN)"}
+                                            >
+                                              <UserX size={13} />
+                                            </button>
+                                          )}
+
+                                          <button
+                                            type="button"
+                                            onClick={() => triggerDeletePost(post.id)}
+                                            className="p-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-lg transition-colors cursor-pointer"
+                                            title="手紙を削除してアーカイブ保管"
+                                          >
+                                            <Trash2 size={13} />
+                                          </button>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  );
+                                })}
+                              </tbody>
+                            </table>
+
+                            {/* Pagination Bar */}
+                            <div className="p-3.5 border-t border-slate-200/80 bg-slate-50/50 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                              <div className="text-slate-500 font-medium">
+                                全 <span className="font-bold text-slate-800">{filtered.length}</span> 件中{' '}
+                                <span className="font-bold text-slate-800">{(currentPage - 1) * modPerPage + 1}</span> 〜{' '}
+                                <span className="font-bold text-slate-800">{Math.min(currentPage * modPerPage, filtered.length)}</span> 件を表示
+                              </div>
+
+                              {totalPages > 1 && (
+                                <div className="flex items-center gap-1">
+                                  <button
+                                    type="button"
+                                    disabled={currentPage === 1}
+                                    onClick={() => setModPage(1)}
+                                    className="px-2 py-1 rounded-lg border border-slate-200 bg-white text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 font-bold"
+                                  >
+                                    &laquo;
+                                  </button>
+                                  <button
+                                    type="button"
+                                    disabled={currentPage === 1}
+                                    onClick={() => setModPage(prev => Math.max(prev - 1, 1))}
+                                    className="px-2.5 py-1 rounded-lg border border-slate-200 bg-white text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 font-bold"
+                                  >
+                                    &lsaquo;
+                                  </button>
+                                  
+                                  <span className="px-3 py-1 bg-slate-900 text-white rounded-lg font-bold">
+                                    {currentPage} / {totalPages}
+                                  </span>
+
+                                  <button
+                                    type="button"
+                                    disabled={currentPage === totalPages}
+                                    onClick={() => setModPage(prev => Math.min(prev + 1, totalPages))}
+                                    className="px-2.5 py-1 rounded-lg border border-slate-200 bg-white text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 font-bold"
+                                  >
+                                    &rsaquo;
+                                  </button>
+                                  <button
+                                    type="button"
+                                    disabled={currentPage === totalPages}
+                                    onClick={() => setModPage(totalPages)}
+                                    className="px-2 py-1 rounded-lg border border-slate-200 bg-white text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 font-bold"
+                                  >
+                                    &raquo;
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                {/* SUB TAB 2: ARCHIVE */}
+                {moderationSubTab === 'archive' && (() => {
+                  const filtered = deletedPostsArchive.filter((a: any) => {
+                    if (archiveSearchTerm.trim()) {
+                      const q = archiveSearchTerm.toLowerCase();
+                      const matchTarget = (a.target_name || '').toLowerCase().includes(q);
+                      const matchSearcher = (a.searcher_name || '').toLowerCase().includes(q);
+                      const matchAuthor = (a.username || '').toLowerCase().includes(q);
+                      const matchMsg = (a.message || '').toLowerCase().includes(q);
+                      const matchReason = (a.reason || a.ai_reason || '').toLowerCase().includes(q);
+                      const matchDeletedBy = (a.deleted_by_name || '').toLowerCase().includes(q);
+                      if (!matchTarget && !matchSearcher && !matchAuthor && !matchMsg && !matchReason && !matchDeletedBy) return false;
+                    }
+                    return true;
+                  });
+
+                  const totalPages = Math.ceil(filtered.length / archivePerPage) || 1;
+                  const currentPage = Math.min(archivePage, totalPages);
+                  const paginated = filtered.slice((currentPage - 1) * archivePerPage, currentPage * archivePerPage);
+
+                  return (
+                    <div>
+                      {/* Search & Export Bar */}
+                      <div className="p-4 border-b border-slate-200/80 bg-slate-50/30 space-y-3">
+                        <div className="flex items-center justify-between flex-wrap gap-2">
+                          <div className="text-xs font-bold text-slate-600">
+                            物理削除・保全ログアーカイブ ({deletedPostsArchive.length}件)
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-slate-500 font-bold">表示件数:</span>
+                            <select
+                              value={archivePerPage}
+                              onChange={(e) => { setArchivePerPage(Number(e.target.value)); setArchivePage(1); }}
+                              className="bg-white border border-slate-200 text-slate-700 text-xs rounded-lg px-2 py-1 font-bold focus:outline-none focus:border-brand-primary"
+                            >
+                              <option value={15}>15件</option>
+                              <option value={30}>30件</option>
+                              <option value={50}>50件</option>
+                              <option value={9999}>全件</option>
+                            </select>
+
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const headers = ["ID", "ポストID", "投函したUID", "アカウント名", "差出人名", "お相手名", "本文", "AI判定状態", "AI理由", "管理者削除理由", "削除日時"];
+                                const rows = deletedPostsArchive.map(a => [
+                                  a.id, a.post_id, a.user_id, a.username, a.searcher_name, a.target_name, `"${(a.message || '').replace(/"/g, '""')}"`,
+                                  a.ai_flagged ? "Flagged" : "Normal", a.ai_reason || "", a.reason || "", a.deleted_at
+                                ]);
+                                const csvContent = "\\uFEFF" + [headers.join(","), ...rows.map(r => r.join(","))].join("\\n");
+                                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                                const url = URL.createObjectURL(blob);
+                                const link = document.createElement("a");
+                                link.setAttribute("href", url);
+                                link.setAttribute("download", `remeets_deleted_audit_log_${new Date().toISOString().split('T')[0]}.csv`);
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
+                              }}
+                              className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+                            >
+                              <Download size={13} />
+                              <span>削除監査ログ CSV</span>
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Search input */}
+                        <div className="relative">
+                          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                          <input
+                            type="text"
+                            value={archiveSearchTerm}
+                            onChange={(e) => { setArchiveSearchTerm(e.target.value); setArchivePage(1); }}
+                            placeholder="宛先名、差出人、本文、削除理由、実行者で検索..."
+                            className="w-full bg-white border border-slate-200 rounded-xl pl-9 pr-8 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-brand-primary transition-all font-medium"
+                          />
+                          {archiveSearchTerm && (
+                            <button
+                              type="button"
+                              onClick={() => { setArchiveSearchTerm(''); setArchivePage(1); }}
+                              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5 cursor-pointer"
+                            >
+                              <X size={14} />
+                            </button>
+                          )}
+                        </div>
+
+                        {/* Batch Action Bar */}
+                        {deletedPostsArchive.length > 0 && (
+                          <div className="flex items-center justify-between bg-slate-100/90 p-2.5 rounded-xl border border-slate-200">
+                            <div className="flex items-center gap-2.5">
+                              <input
+                                type="checkbox"
+                                checked={deletedPostsArchive.length > 0 && deletedPostsArchive.every(a => selectedArchiveIds.includes(a.id))}
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setSelectedArchiveIds(deletedPostsArchive.map(a => a.id));
+                                  } else {
+                                    setSelectedArchiveIds([]);
+                                  }
+                                }}
+                                className="rounded border-slate-300 text-slate-700 focus:ring-slate-500 cursor-pointer"
+                              />
+                              <span className="text-xs font-bold text-slate-700">
+                                全選択 ({selectedArchiveIds.length} / {deletedPostsArchive.length}件 選択中)
+                              </span>
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={handleBatchDeleteArchive}
+                              disabled={selectedArchiveIds.length === 0 || isBatchDeletingArchive}
+                              className="flex items-center gap-1 px-3 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold transition-all disabled:opacity-40 cursor-pointer shadow-xs"
+                            >
+                              <Trash2 size={13} />
+                              <span>選択一括完全消去 ({selectedArchiveIds.length})</span>
+                            </button>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Archive Table */}
+                      <div className="overflow-x-auto">
+                        {filtered.length === 0 ? (
+                          <div className="p-12 text-center text-slate-400">
+                            <FileText size={36} className="mx-auto text-slate-300 mb-2" />
+                            <p className="text-sm font-bold text-slate-700">削除監査ログはありません</p>
+                          </div>
+                        ) : (
+                          <>
+                            <table className="w-full text-left border-collapse">
+                              <thead>
+                                <tr className="border-b border-slate-200/80 bg-slate-50/80 text-[11px] font-bold uppercase tracking-wider text-slate-600">
+                                  <th className="w-8 px-3 py-2.5"></th>
+                                  <th className="px-3 py-2.5 whitespace-nowrap">削除日時</th>
+                                  <th className="px-3 py-2.5 whitespace-nowrap">ポスト旧ID / 宛先</th>
+                                  <th className="px-3 py-2.5 whitespace-nowrap">投函主 (UID)</th>
+                                  <th className="px-3 py-2.5 whitespace-nowrap">削除実行者</th>
+                                  <th className="px-3 py-2.5 whitespace-nowrap">削除理由 / AI判定</th>
+                                  <th className="px-3 py-2.5 whitespace-nowrap">手紙本文（保全データ）</th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-slate-100 text-xs">
+                                {paginated.map((archive: any) => {
+                                  const isChecked = selectedArchiveIds.includes(archive.id);
+
+                                  return (
+                                    <tr key={archive.id} className="h-12 hover:bg-slate-50/70 transition-colors group">
+                                      <td className="px-3 py-2">
+                                        <input
+                                          type="checkbox"
+                                          checked={isChecked}
+                                          onChange={(e) => {
+                                            if (e.target.checked) {
+                                              setSelectedArchiveIds(prev => [...prev, archive.id]);
+                                            } else {
+                                              setSelectedArchiveIds(prev => prev.filter(id => id !== archive.id));
+                                            }
+                                          }}
+                                          className="rounded border-slate-300 text-brand-primary focus:ring-brand-primary cursor-pointer"
+                                        />
+                                      </td>
+
+                                      {/* 1. Deleted At */}
+                                      <td className="px-3 py-2 whitespace-nowrap text-slate-500 font-mono text-[11px]">
+                                        {new Date(archive.deleted_at).toLocaleString('ja-JP', {
+                                          month: '2-digit',
+                                          day: '2-digit',
+                                          hour: '2-digit',
+                                          minute: '2-digit'
+                                        })}
+                                      </td>
+
+                                      {/* 2. Target */}
+                                      <td className="px-3 py-2 whitespace-nowrap">
+                                        <div className="flex items-center gap-1.5">
+                                          <span className="font-mono text-slate-400 text-[10px]">#{archive.post_id}</span>
+                                          <span className="font-bold text-slate-900">{archive.target_name || '無題'} 様宛</span>
+                                          <span className="text-slate-400 text-[10px]">({archive.searcher_name || '-'})</span>
+                                        </div>
+                                      </td>
+
+                                      {/* 3. Author */}
+                                      <td className="px-3 py-2 whitespace-nowrap">
+                                        <span className="font-bold text-slate-700 font-mono">
+                                          @{archive.username || '不詳'} (UID:{archive.user_id || '-'})
+                                        </span>
+                                      </td>
+
+                                      {/* 4. Deleted By */}
+                                      <td className="px-3 py-2 whitespace-nowrap">
+                                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                                          {archive.deleted_by_name || 'Admin'}
+                                        </span>
+                                      </td>
+
+                                      {/* 5. Reason */}
+                                      <td className="px-3 py-2 max-w-xs truncate text-slate-600">
+                                        <span className="truncate block" title={archive.reason || archive.ai_reason}>
+                                          {archive.reason || archive.ai_reason || '管理者判断による削除'}
+                                        </span>
+                                      </td>
+
+                                      {/* 6. Message Snippet */}
+                                      <td className="px-3 py-2 max-w-sm truncate text-slate-500">
+                                        <span className="truncate block font-serif italic" title={archive.message}>
+                                          "{archive.message}"
+                                        </span>
+                                      </td>
+                                    </tr>
+                                  );
+                                })}
+                              </tbody>
+                            </table>
+
+                            {/* Pagination Bar */}
+                            <div className="p-3.5 border-t border-slate-200/80 bg-slate-50/50 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                              <div className="text-slate-500 font-medium">
+                                全 <span className="font-bold text-slate-800">{filtered.length}</span> 件中{' '}
+                                <span className="font-bold text-slate-800">{(currentPage - 1) * archivePerPage + 1}</span> 〜{' '}
+                                <span className="font-bold text-slate-800">{Math.min(currentPage * archivePerPage, filtered.length)}</span> 件を表示
+                              </div>
+
+                              {totalPages > 1 && (
+                                <div className="flex items-center gap-1">
+                                  <button
+                                    type="button"
+                                    disabled={currentPage === 1}
+                                    onClick={() => setArchivePage(1)}
+                                    className="px-2 py-1 rounded-lg border border-slate-200 bg-white text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 font-bold"
+                                  >
+                                    &laquo;
+                                  </button>
+                                  <button
+                                    type="button"
+                                    disabled={currentPage === 1}
+                                    onClick={() => setArchivePage(prev => Math.max(prev - 1, 1))}
+                                    className="px-2.5 py-1 rounded-lg border border-slate-200 bg-white text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 font-bold"
+                                  >
+                                    &lsaquo;
+                                  </button>
+                                  
+                                  <span className="px-3 py-1 bg-slate-900 text-white rounded-lg font-bold">
+                                    {currentPage} / {totalPages}
+                                  </span>
+
+                                  <button
+                                    type="button"
+                                    disabled={currentPage === totalPages}
+                                    onClick={() => setArchivePage(prev => Math.min(prev + 1, totalPages))}
+                                    className="px-2.5 py-1 rounded-lg border border-slate-200 bg-white text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 font-bold"
+                                  >
+                                    &rsaquo;
+                                  </button>
+                                  <button
+                                    type="button"
+                                    disabled={currentPage === totalPages}
+                                    onClick={() => setArchivePage(totalPages)}
+                                    className="px-2 py-1 rounded-lg border border-slate-200 bg-white text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 font-bold"
+                                  >
+                                    &raquo;
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+            </div>
+          
+
           ) : activeTab === 'system' ? (
             <div className="space-y-8">
               <AdminLiveSystemMonitor token={token} />
@@ -12027,26 +14072,15 @@ export const AdminDashboard = () => {
                 </div>
 
                 {selectedReport.status === 'pending' && (
-                  <div className="pt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="pt-4">
                     <button 
                       onClick={() => {
                         handleResolveReport(selectedReport.id);
                         setSelectedReport(null);
                       }}
-                      className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-emerald-600/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                      className="w-full py-4 bg-black text-white rounded-2xl font-bold uppercase tracking-widest hover:bg-black/80 shadow-xl shadow-black/20 transition-all"
                     >
-                      <CheckCircle2 size={16} />
                       解決済みにする
-                    </button>
-                    <button 
-                      onClick={() => {
-                        handleDismissReport(selectedReport.id);
-                        setSelectedReport(null);
-                      }}
-                      className="w-full py-3.5 bg-slate-600 hover:bg-slate-700 text-white rounded-2xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-slate-600/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
-                    >
-                      <X size={16} />
-                      問題なしとして却下
                     </button>
                   </div>
                 )}
