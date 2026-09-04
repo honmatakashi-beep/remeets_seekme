@@ -11969,23 +11969,23 @@ export const AdminDashboard = () => {
                         onClick={handleSeedSampleContacts}
                         disabled={isSeedingContacts}
                         id="btn-seed-sample-contacts"
-                        className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-brand-primary to-brand-dark text-white text-xs font-bold shadow-sm hover:opacity-90 active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                        className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-brand-primary to-brand-dark text-white text-xs font-bold shadow-sm hover:opacity-90 active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50 whitespace-nowrap shrink-0"
                         title="検証用に各分類（緊急・技術・アカウント・一般）のサンプルチケットを投入します"
                       >
-                        <Sparkles size={14} className="text-brand-accent" />
-                        <span>{isSeedingContacts ? '投入中...' : '分類サンプル投入 (8件)'}</span>
+                        <Sparkles size={14} className="text-brand-accent shrink-0" />
+                        <span className="whitespace-nowrap">{isSeedingContacts ? '投入中...' : '分類サンプル投入 (8件)'}</span>
                       </button>
                       <button
                         onClick={handleExportContactsCsv}
-                        className="px-3.5 py-2.5 rounded-xl bg-white border border-brand-border text-brand-dark text-xs font-bold hover:bg-brand-light/50 transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer"
+                        className="px-3.5 py-2.5 rounded-xl bg-white border border-brand-border text-brand-dark text-xs font-bold hover:bg-brand-light/50 transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0"
                         title="全お問い合わせ履歴をCSVファイルでダウンロードします"
                       >
-                        <FileSpreadsheet size={14} className="text-emerald-600" />
-                        <span>CSV出力</span>
+                        <FileSpreadsheet size={14} className="text-emerald-600 shrink-0" />
+                        <span className="whitespace-nowrap">CSV出力</span>
                       </button>
                       <button
                         onClick={() => fetchData()}
-                        className="p-2.5 rounded-xl bg-white border border-brand-border text-brand-dark hover:bg-brand-light/50 transition-colors shadow-xs cursor-pointer"
+                        className="p-2.5 rounded-xl bg-white border border-brand-border text-brand-dark hover:bg-brand-light/50 transition-colors shadow-xs cursor-pointer shrink-0"
                         title="最新のお問い合わせを取得"
                       >
                         <RefreshCw size={14} />
@@ -12006,11 +12006,11 @@ export const AdminDashboard = () => {
                       )}
                     >
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-[11px] font-bold uppercase tracking-wider opacity-70">全チケット</span>
+                        <span className="text-[11px] font-bold uppercase tracking-wider opacity-70 whitespace-nowrap">全チケット</span>
                         <Mail size={16} className={contactCategoryFilter === 'all' && contactStatusFilter === 'all' ? "text-brand-accent" : "text-brand-dark/40"} />
                       </div>
                       <div className="text-2xl md:text-3xl font-mono font-bold">{enrichedContacts.length}</div>
-                      <div className="text-[10px] mt-1 opacity-70">総受信数</div>
+                      <div className="text-[10px] mt-1 opacity-70 whitespace-nowrap">総受信数</div>
                     </button>
 
                     {/* Urgent Tickets */}
@@ -12024,14 +12024,14 @@ export const AdminDashboard = () => {
                       )}
                     >
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-[11px] font-bold uppercase tracking-wider flex items-center gap-1">
+                        <span className="text-[11px] font-bold uppercase tracking-wider flex items-center gap-1 whitespace-nowrap">
                           <AlertTriangle size={12} className={contactCategoryFilter === 'urgent' ? "text-white animate-pulse" : "text-rose-600 animate-pulse"} />
                           <span>🚨 Urgent</span>
                         </span>
-                        <span className="text-[9px] px-1.5 py-0.5 rounded-full font-bold bg-rose-200/80 text-rose-800">最優先</span>
+                        <span className="text-[9px] px-1.5 py-0.5 rounded-full font-bold bg-rose-200/80 text-rose-800 whitespace-nowrap">最優先</span>
                       </div>
                       <div className="text-2xl md:text-3xl font-mono font-bold text-rose-950 dark:text-white">{urgentCount}</div>
-                      <div className="text-[10px] mt-1 opacity-80">緊急・被害・返金</div>
+                      <div className="text-[10px] mt-1 opacity-80 whitespace-nowrap">緊急・被害・返金</div>
                     </button>
 
                     {/* Technical Tickets */}
@@ -12045,14 +12045,14 @@ export const AdminDashboard = () => {
                       )}
                     >
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-[11px] font-bold uppercase tracking-wider flex items-center gap-1">
+                        <span className="text-[11px] font-bold uppercase tracking-wider flex items-center gap-1 whitespace-nowrap">
                           <Terminal size={12} className={contactCategoryFilter === 'technical' ? "text-white" : "text-sky-600"} />
                           <span>⚙️ Technical</span>
                         </span>
-                        <span className="text-[9px] px-1.5 py-0.5 rounded-full font-bold bg-sky-200/80 text-sky-800">技術</span>
+                        <span className="text-[9px] px-1.5 py-0.5 rounded-full font-bold bg-sky-200/80 text-sky-800 whitespace-nowrap">技術</span>
                       </div>
                       <div className="text-2xl md:text-3xl font-mono font-bold text-sky-950 dark:text-white">{technicalCount}</div>
-                      <div className="text-[10px] mt-1 opacity-80">エラー・不具合・障害</div>
+                      <div className="text-[10px] mt-1 opacity-80 whitespace-nowrap">エラー・不具合・障害</div>
                     </button>
 
                     {/* Account Tickets */}
@@ -12066,14 +12066,14 @@ export const AdminDashboard = () => {
                       )}
                     >
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-[11px] font-bold uppercase tracking-wider flex items-center gap-1">
+                        <span className="text-[11px] font-bold uppercase tracking-wider flex items-center gap-1 whitespace-nowrap">
                           <UserCheck size={12} className={contactCategoryFilter === 'account' ? "text-white" : "text-purple-600"} />
                           <span>👤 Account</span>
                         </span>
-                        <span className="text-[9px] px-1.5 py-0.5 rounded-full font-bold bg-purple-200/80 text-purple-800">アカウント</span>
+                        <span className="text-[9px] px-1.5 py-0.5 rounded-full font-bold bg-purple-200/80 text-purple-800 whitespace-nowrap">アカウント</span>
                       </div>
                       <div className="text-2xl md:text-3xl font-mono font-bold text-purple-950 dark:text-white">{accountCount}</div>
-                      <div className="text-[10px] mt-1 opacity-80">認証・退会・eKYC</div>
+                      <div className="text-[10px] mt-1 opacity-80 whitespace-nowrap">認証・退会・eKYC</div>
                     </button>
 
                     {/* Pending Tickets */}
@@ -12087,14 +12087,14 @@ export const AdminDashboard = () => {
                       )}
                     >
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-[11px] font-bold uppercase tracking-wider flex items-center gap-1">
+                        <span className="text-[11px] font-bold uppercase tracking-wider flex items-center gap-1 whitespace-nowrap">
                           <Clock size={12} className={contactStatusFilter === 'pending' ? "text-white" : "text-amber-600"} />
                           <span>⏳ 未対応</span>
                         </span>
-                        <span className="text-[9px] px-1.5 py-0.5 rounded-full font-bold bg-amber-200/80 text-amber-800">要返信</span>
+                        <span className="text-[9px] px-1.5 py-0.5 rounded-full font-bold bg-amber-200/80 text-amber-800 whitespace-nowrap">要返信</span>
                       </div>
                       <div className="text-2xl md:text-3xl font-mono font-bold text-amber-950 dark:text-white">{pendingCount}</div>
-                      <div className="text-[10px] mt-1 opacity-80">返信待ちチケット</div>
+                      <div className="text-[10px] mt-1 opacity-80 whitespace-nowrap">返信待ちチケット</div>
                     </button>
                   </div>
 
@@ -12103,85 +12103,85 @@ export const AdminDashboard = () => {
                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
                       {/* Category Pills */}
                       <div className="flex flex-wrap items-center gap-1.5">
-                        <span className="text-[11px] font-bold text-brand-dark/50 uppercase tracking-wider mr-1">分類:</span>
+                        <span className="text-[11px] font-bold text-brand-dark/50 uppercase tracking-wider mr-1 whitespace-nowrap shrink-0">分類:</span>
                         <button
                           onClick={() => { setContactCategoryFilter('all'); setContactCurrentPage(1); }}
                           className={cn(
-                            "px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer",
+                            "px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap shrink-0",
                             contactCategoryFilter === 'all'
                               ? "bg-brand-dark text-white shadow-xs"
                               : "bg-brand-light/60 text-brand-dark/70 hover:bg-brand-light"
                           )}
                         >
-                          <span>すべて</span>
+                          <span className="whitespace-nowrap">すべて</span>
                           <span className="px-1.5 py-0.2 rounded-full bg-black/10 text-[10px] font-mono">{enrichedContacts.length}</span>
                         </button>
 
                         <button
                           onClick={() => { setContactCategoryFilter('urgent'); setContactCurrentPage(1); }}
                           className={cn(
-                            "px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer",
+                            "px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap shrink-0",
                             contactCategoryFilter === 'urgent'
                               ? "bg-rose-600 text-white shadow-xs"
                               : "bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200"
                           )}
                         >
-                          <AlertTriangle size={12} className="animate-pulse" />
-                          <span>🚨 Urgent (緊急)</span>
+                          <AlertTriangle size={12} className="animate-pulse shrink-0" />
+                          <span className="whitespace-nowrap">🚨 Urgent (緊急)</span>
                           <span className="px-1.5 py-0.2 rounded-full bg-rose-200 text-rose-800 text-[10px] font-mono font-bold">{urgentCount}</span>
                         </button>
 
                         <button
                           onClick={() => { setContactCategoryFilter('technical'); setContactCurrentPage(1); }}
                           className={cn(
-                            "px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer",
+                            "px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap shrink-0",
                             contactCategoryFilter === 'technical'
                               ? "bg-sky-600 text-white shadow-xs"
                               : "bg-sky-50 text-sky-700 hover:bg-sky-100 border border-sky-200"
                           )}
                         >
-                          <Terminal size={12} />
-                          <span>⚙️ Technical (技術)</span>
+                          <Terminal size={12} className="shrink-0" />
+                          <span className="whitespace-nowrap">⚙️ Technical (技術)</span>
                           <span className="px-1.5 py-0.2 rounded-full bg-sky-200 text-sky-800 text-[10px] font-mono font-bold">{technicalCount}</span>
                         </button>
 
                         <button
                           onClick={() => { setContactCategoryFilter('account'); setContactCurrentPage(1); }}
                           className={cn(
-                            "px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer",
+                            "px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap shrink-0",
                             contactCategoryFilter === 'account'
                               ? "bg-purple-600 text-white shadow-xs"
                               : "bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200"
                           )}
                         >
-                          <UserCheck size={12} />
-                          <span>👤 Account (アカウント)</span>
+                          <UserCheck size={12} className="shrink-0" />
+                          <span className="whitespace-nowrap">👤 Account (アカウント)</span>
                           <span className="px-1.5 py-0.2 rounded-full bg-purple-200 text-purple-800 text-[10px] font-mono font-bold">{accountCount}</span>
                         </button>
 
                         <button
                           onClick={() => { setContactCategoryFilter('general'); setContactCurrentPage(1); }}
                           className={cn(
-                            "px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer",
+                            "px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap shrink-0",
                             contactCategoryFilter === 'general'
                               ? "bg-slate-700 text-white shadow-xs"
                               : "bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200"
                           )}
                         >
-                          <Mail size={12} />
-                          <span>💬 General (一般)</span>
+                          <Mail size={12} className="shrink-0" />
+                          <span className="whitespace-nowrap">💬 General (一般)</span>
                           <span className="px-1.5 py-0.2 rounded-full bg-slate-200 text-slate-800 text-[10px] font-mono font-bold">{generalCount}</span>
                         </button>
                       </div>
 
-                      {/* Status filter toggle */}
-                      <div className="flex items-center gap-2">
-                        <span className="text-[11px] font-bold text-brand-dark/50 uppercase tracking-wider">状態:</span>
-                        <div className="inline-flex bg-brand-light/60 p-0.5 rounded-xl border border-brand-border">
+                      {/* Status filter toggle - Horizontal single row */}
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="text-[11px] font-bold text-brand-dark/50 uppercase tracking-wider whitespace-nowrap shrink-0">状態:</span>
+                        <div className="inline-flex flex-row items-center bg-brand-light/60 p-0.5 rounded-xl border border-brand-border shrink-0">
                           <button
                             onClick={() => { setContactStatusFilter('all'); setContactCurrentPage(1); }}
                             className={cn(
-                              "px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer",
+                              "px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap shrink-0",
                               contactStatusFilter === 'all' ? "bg-white text-brand-dark shadow-xs" : "text-brand-dark/60 hover:text-brand-dark"
                             )}
                           >
@@ -12190,21 +12190,21 @@ export const AdminDashboard = () => {
                           <button
                             onClick={() => { setContactStatusFilter('pending'); setContactCurrentPage(1); }}
                             className={cn(
-                              "px-2.5 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer",
+                              "px-3 py-1 rounded-lg text-xs font-bold transition-all flex flex-row items-center gap-1 cursor-pointer whitespace-nowrap shrink-0",
                               contactStatusFilter === 'pending' ? "bg-amber-500 text-white shadow-xs" : "text-amber-800 hover:text-amber-900"
                             )}
                           >
-                            <span>未対応</span>
+                            <span className="whitespace-nowrap">未対応</span>
                             <span className="text-[10px] font-mono font-bold">({pendingCount})</span>
                           </button>
                           <button
                             onClick={() => { setContactStatusFilter('replied'); setContactCurrentPage(1); }}
                             className={cn(
-                              "px-2.5 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer",
+                              "px-3 py-1 rounded-lg text-xs font-bold transition-all flex flex-row items-center gap-1 cursor-pointer whitespace-nowrap shrink-0",
                               contactStatusFilter === 'replied' ? "bg-emerald-600 text-white shadow-xs" : "text-emerald-800 hover:text-emerald-900"
                             )}
                           >
-                            <span>返信済</span>
+                            <span className="whitespace-nowrap">返信済</span>
                             <span className="text-[10px] font-mono font-bold">({enrichedContacts.length - pendingCount})</span>
                           </button>
                         </div>
@@ -12234,12 +12234,12 @@ export const AdminDashboard = () => {
 
                       {/* Items per page & Sort Selector */}
                       <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end flex-wrap">
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex items-center gap-1.5 whitespace-nowrap shrink-0">
                           <span className="text-[11px] text-brand-dark/50 font-bold whitespace-nowrap">表示件数:</span>
                           <select
                             value={contactItemsPerPage}
                             onChange={(e) => { setContactItemsPerPage(Number(e.target.value)); setContactCurrentPage(1); }}
-                            className="px-2 py-1.5 bg-white border border-brand-border rounded-xl text-xs font-bold text-brand-dark outline-none focus:border-brand-primary cursor-pointer"
+                            className="px-2 py-1.5 bg-white border border-brand-border rounded-xl text-xs font-bold text-brand-dark outline-none focus:border-brand-primary cursor-pointer whitespace-nowrap"
                           >
                             <option value={10}>10件</option>
                             <option value={25}>25件</option>
@@ -12248,12 +12248,12 @@ export const AdminDashboard = () => {
                           </select>
                         </div>
 
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex items-center gap-1.5 whitespace-nowrap shrink-0">
                           <span className="text-[11px] text-brand-dark/50 font-bold whitespace-nowrap">並び順:</span>
                           <select
                             value={contactSortBy}
                             onChange={(e: any) => setContactSortBy(e.target.value)}
-                            className="px-2.5 py-1.5 bg-white border border-brand-border rounded-xl text-xs font-bold text-brand-dark outline-none focus:border-brand-primary cursor-pointer"
+                            className="px-2.5 py-1.5 bg-white border border-brand-border rounded-xl text-xs font-bold text-brand-dark outline-none focus:border-brand-primary cursor-pointer whitespace-nowrap"
                           >
                             <option value="priority">🚨 優先度順 (Urgent優先)</option>
                             <option value="newest">🕒 受信日時 (新しい順)</option>
@@ -12272,11 +12272,11 @@ export const AdminDashboard = () => {
                       exit={{ opacity: 0, y: -10 }}
                       className="p-3 bg-brand-dark text-white rounded-2xl shadow-lg flex flex-wrap items-center justify-between gap-3 border border-brand-border/20"
                     >
-                      <div className="flex items-center gap-2">
-                        <span className="px-2.5 py-1 rounded-lg bg-white/20 text-xs font-mono font-bold">
+                      <div className="flex items-center gap-2 whitespace-nowrap shrink-0">
+                        <span className="px-2.5 py-1 rounded-lg bg-white/20 text-xs font-mono font-bold whitespace-nowrap">
                           {selectedContactIds.length} 件選択中
                         </span>
-                        <span className="text-xs text-white/70 hidden sm:inline">
+                        <span className="text-xs text-white/70 hidden sm:inline whitespace-nowrap">
                           選択したお問い合わせに対する一括操作:
                         </span>
                       </div>
@@ -12285,30 +12285,30 @@ export const AdminDashboard = () => {
                         <button
                           onClick={() => handleBatchUpdateContactStatus('replied')}
                           disabled={isBatchProcessingContacts}
-                          className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-xs cursor-pointer disabled:opacity-50"
+                          className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-xs cursor-pointer disabled:opacity-50 whitespace-nowrap shrink-0"
                         >
-                          <CheckCircle2 size={13} />
-                          <span>一括対応済 (解決)</span>
+                          <CheckCircle2 size={13} className="shrink-0" />
+                          <span className="whitespace-nowrap">一括対応済 (解決)</span>
                         </button>
                         <button
                           onClick={() => handleBatchUpdateContactStatus('pending')}
                           disabled={isBatchProcessingContacts}
-                          className="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-xs cursor-pointer disabled:opacity-50"
+                          className="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-xs cursor-pointer disabled:opacity-50 whitespace-nowrap shrink-0"
                         >
-                          <Clock size={13} />
-                          <span>一括未対応にする</span>
+                          <Clock size={13} className="shrink-0" />
+                          <span className="whitespace-nowrap">一括未対応にする</span>
                         </button>
                         <button
                           onClick={handleBatchDeleteContacts}
                           disabled={isBatchProcessingContacts}
-                          className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-xs cursor-pointer disabled:opacity-50"
+                          className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-xs cursor-pointer disabled:opacity-50 whitespace-nowrap shrink-0"
                         >
-                          <Trash2 size={13} />
-                          <span>一括削除</span>
+                          <Trash2 size={13} className="shrink-0" />
+                          <span className="whitespace-nowrap">一括削除</span>
                         </button>
                         <button
                           onClick={() => setSelectedContactIds([])}
-                          className="px-2.5 py-1.5 bg-white/10 hover:bg-white/20 text-white/80 rounded-xl text-xs font-medium transition-all cursor-pointer"
+                          className="px-2.5 py-1.5 bg-white/10 hover:bg-white/20 text-white/80 rounded-xl text-xs font-medium transition-all cursor-pointer whitespace-nowrap shrink-0"
                         >
                           選択解除
                         </button>
@@ -12460,25 +12460,25 @@ export const AdminDashboard = () => {
 
                                 {/* Action */}
                                 <td className="px-3 align-middle text-right whitespace-nowrap pr-4">
-                                  <div className="flex items-center justify-end gap-1.5">
+                                  <div className="flex items-center justify-end gap-1.5 whitespace-nowrap shrink-0">
                                     <button 
                                       onClick={() => setSelectedContact(c)}
                                       className={cn(
-                                        "py-1 px-2.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition-all shadow-2xs cursor-pointer",
+                                        "py-1 px-2.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition-all shadow-2xs cursor-pointer whitespace-nowrap shrink-0",
                                         isUrgent && c.status !== 'replied'
                                           ? "bg-rose-600 hover:bg-rose-700 text-white ring-2 ring-rose-200"
                                           : "bg-brand-primary hover:bg-brand-dark text-white"
                                       )}
                                     >
-                                      <Mail size={12} />
-                                      <span>{c.status === 'replied' ? '詳細' : '返信'}</span>
+                                      <Mail size={12} className="shrink-0" />
+                                      <span className="whitespace-nowrap">{c.status === 'replied' ? '詳細' : '返信'}</span>
                                     </button>
                                     <button
                                       onClick={() => handleDeleteSingleContact(c.id)}
-                                      className="p-1 rounded-lg text-brand-dark/40 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                                      className="p-1 rounded-lg text-brand-dark/40 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer shrink-0"
                                       title="このお問い合わせを削除"
                                     >
-                                      <Trash2 size={13} />
+                                      <Trash2 size={13} className="shrink-0" />
                                     </button>
                                   </div>
                                 </td>
@@ -15211,20 +15211,20 @@ export const AdminDashboard = () => {
                               setAiDraftTone(t.key as any);
                               handleGenerateAiDraft(t.key as any);
                             }}
-                            className={`text-[11px] px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                            className={`text-[11px] px-2.5 py-1 rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                               aiDraftTone === t.key
                                 ? 'bg-emerald-700 text-white shadow-xs font-bold'
                                 : 'bg-white/80 text-black/70 hover:bg-white hover:text-black border border-black/5 font-medium'
                             }`}
                           >
-                            {t.label}
+                            <span className="whitespace-nowrap">{t.label}</span>
                           </button>
                         ))}
                       </div>
 
                       {/* Quick Template Palette */}
                       <div className="p-2.5 bg-brand-light/50 rounded-xl border border-brand-border/60 space-y-1.5">
-                        <span className="text-[11px] font-bold text-brand-dark/60 block pl-0.5">📋 よく使う定型文テンプレート (ワンクリック挿入):</span>
+                        <span className="text-[11px] font-bold text-brand-dark/60 block pl-0.5 whitespace-nowrap">📋 よく使う定型文テンプレート (ワンクリック挿入):</span>
                         <div className="flex flex-wrap gap-1.5">
                           {[
                             {
@@ -15252,9 +15252,9 @@ export const AdminDashboard = () => {
                               key={i}
                               type="button"
                               onClick={() => setReplyMessage(tpl.text)}
-                              className="text-[11px] px-2.5 py-1 rounded-lg bg-white border border-brand-border text-brand-dark hover:bg-brand-primary hover:text-white hover:border-brand-primary transition-all shadow-2xs font-bold cursor-pointer"
+                              className="text-[11px] px-2.5 py-1 rounded-lg bg-white border border-brand-border text-brand-dark hover:bg-brand-primary hover:text-white hover:border-brand-primary transition-all shadow-2xs font-bold cursor-pointer whitespace-nowrap shrink-0"
                             >
-                              {tpl.title}
+                              <span className="whitespace-nowrap">{tpl.title}</span>
                             </button>
                           ))}
                         </div>
