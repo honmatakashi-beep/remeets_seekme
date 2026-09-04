@@ -243,57 +243,24 @@ export const SupporterPage: React.FC = () => {
           </div>
         </section>
 
-        {/* 5. 最下部CTA（寄付アクション） */}
-        <section className="bg-gradient-to-r from-sky-600 via-teal-600 to-indigo-700 rounded-3xl p-8 md:p-10 text-white shadow-xl text-center space-y-5">
-          <div className="w-12 h-12 rounded-2xl bg-white/20 border border-white/30 backdrop-blur-md flex items-center justify-center mx-auto shadow-inner">
-            <Heart size={24} className="text-rose-200 fill-rose-200/30" />
-          </div>
-          <div className="space-y-2">
-            <h2 className="text-xl md:text-2xl font-black font-serif text-white">
+        {/* 5. 最下部CTA（上品で自然なセンタリングデザイン） */}
+        <div className="pt-6 pb-4 text-center space-y-4">
+          <div className="space-y-1.5">
+            <h3 className="text-base md:text-lg font-bold font-serif text-slate-800">
               温かいご支援を心よりお待ちしております
-            </h2>
-            <p className="text-xs md:text-sm text-sky-100 max-w-xl mx-auto leading-relaxed">
-              大切な人への想い出の手紙を、誰でも無料で流せる海であり続けるために。<br className="hidden sm:inline" />
-              皆様の温かい1杯のコーヒー代のご支援を力に、誠心誠意運営してまいります。
+            </h3>
+            <p className="text-xs text-slate-500 font-sans">
+              1口 500円〜の都度寄付（月額自動課金なし・Stripe暗号化決済）
             </p>
           </div>
-          <div className="pt-2 flex flex-col items-center justify-center gap-3">
-            <button
-              onClick={() => setIsDonateModalOpen(true)}
-              className="w-full sm:w-auto px-8 py-3.5 bg-white text-teal-800 hover:bg-slate-50 font-extrabold text-base rounded-2xl shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center gap-2.5 cursor-pointer"
-            >
-              <Coffee size={18} className="text-teal-700 shrink-0" />
-              <span>ReMEETsを応援（寄付）</span>
-            </button>
-            <span className="text-[11px] text-sky-100/90 font-medium">
-              1口 500円〜の都度寄付（月額自動課金なし・Stripe暗号化決済）
-            </span>
-          </div>
-        </section>
 
-        {/* 安心・法務・関連リンクナビゲーション */}
-        <div className="pt-6 border-t border-slate-200/80 space-y-4 text-center">
-          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-slate-500 font-medium">
-            <Link to="/company" className="hover:text-teal-700 transition-colors">
-              特定商取引法に基づく表記
-            </Link>
-            <span className="text-slate-300">|</span>
-            <Link to="/terms" className="hover:text-teal-700 transition-colors">
-              利用規約
-            </Link>
-            <span className="text-slate-300">|</span>
-            <Link to="/privacy" className="hover:text-teal-700 transition-colors">
-              プライバシーポリシー
-            </Link>
-            <span className="text-slate-300">|</span>
-            <Link to="/contact" className="hover:text-teal-700 transition-colors">
-              お問い合わせ・ご意見
-            </Link>
-          </div>
-          <p className="text-[11px] text-slate-400 font-sans flex items-center justify-center gap-1.5">
-            <ShieldCheck size={13} className="text-teal-600" />
-            <span>ReMEETsはプライバシー保護と安心・安全な想い出の再会プラットフォームを目指しています</span>
-          </p>
+          <button
+            onClick={() => setIsDonateModalOpen(true)}
+            className="px-8 py-3 bg-gradient-to-r from-sky-600 via-teal-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 text-white font-extrabold text-sm rounded-2xl shadow-sm hover:shadow-md hover:scale-[1.02] active:scale-98 transition-all inline-flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <Coffee size={16} className="text-white shrink-0" />
+            <span>ReMEETsを応援（寄付）</span>
+          </button>
         </div>
 
       </main>
