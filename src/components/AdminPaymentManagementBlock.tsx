@@ -614,58 +614,186 @@ export const AdminPaymentManagementBlock: React.FC = () => {
         </div>
       </div>
 
-      {/* 🧭 Subtabs Navigation */}
-      <div className="flex flex-wrap items-center gap-2 p-1.5 bg-zinc-100 rounded-2xl border border-brand-border/60">
+      {/* 🧭 Subtabs Navigation (Rich Interactive Cards) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        {/* TAB 1: Ledger */}
         <button
           type="button"
           onClick={() => setActiveSubTab('ledger')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+          className={`group relative flex flex-col justify-between p-4 rounded-2xl border text-left transition-all cursor-pointer ${
             activeSubTab === 'ledger'
-              ? 'bg-white text-black shadow-sm'
-              : 'text-black/60 hover:text-black hover:bg-white/50'
+              ? 'bg-white border-teal-600 shadow-md ring-2 ring-teal-500/10'
+              : 'bg-zinc-50/80 hover:bg-white border-brand-border/80 hover:border-zinc-300'
           }`}
         >
-          <Receipt size={15} className={activeSubTab === 'ledger' ? 'text-teal-700' : ''} />
-          <span>💳 決済トランザクション台帳</span>
+          <div>
+            <div className="flex items-center justify-between gap-2 mb-2.5">
+              <div className="flex items-center gap-2">
+                <div className={`w-8 h-8 rounded-xl flex items-center justify-center font-mono font-bold text-xs transition-colors ${
+                  activeSubTab === 'ledger' ? 'bg-teal-700 text-white shadow-sm' : 'bg-zinc-200 text-black/70 group-hover:bg-teal-100 group-hover:text-teal-900'
+                }`}>
+                  <Receipt size={16} />
+                </div>
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-black/40">
+                  STEP 01
+                </span>
+              </div>
+              {activeSubTab === 'ledger' ? (
+                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200 animate-pulse">
+                  ● 表示中
+                </span>
+              ) : (
+                <span className="text-[11px] font-mono font-bold text-black/60 bg-zinc-200/70 px-2 py-0.5 rounded-full">
+                  {stats.completedCount} 件
+                </span>
+              )}
+            </div>
+            <div className="font-bold text-sm text-black flex items-center gap-1">
+              決済履歴・入出金台帳
+            </div>
+            <p className="text-xs text-black/60 mt-1 line-clamp-2 leading-relaxed font-sans">
+              全入出金の一覧・個別返金・詳細監査・CSV出力
+            </p>
+          </div>
+          <div className="mt-3 pt-2.5 border-t border-zinc-100 flex items-center justify-between text-[11px]">
+            <span className="text-black/50">売上総額</span>
+            <span className="font-mono font-bold text-teal-800">{formatYen(stats.grossTotal)}</span>
+          </div>
         </button>
 
+        {/* TAB 2: Analytics */}
         <button
           type="button"
           onClick={() => setActiveSubTab('analytics')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+          className={`group relative flex flex-col justify-between p-4 rounded-2xl border text-left transition-all cursor-pointer ${
             activeSubTab === 'analytics'
-              ? 'bg-white text-black shadow-sm'
-              : 'text-black/60 hover:text-black hover:bg-white/50'
+              ? 'bg-white border-emerald-600 shadow-md ring-2 ring-emerald-500/10'
+              : 'bg-zinc-50/80 hover:bg-white border-brand-border/80 hover:border-zinc-300'
           }`}
         >
-          <BarChart3 size={15} className={activeSubTab === 'analytics' ? 'text-emerald-600' : ''} />
-          <span>📈 売上＆返金推移アナリティクス</span>
+          <div>
+            <div className="flex items-center justify-between gap-2 mb-2.5">
+              <div className="flex items-center gap-2">
+                <div className={`w-8 h-8 rounded-xl flex items-center justify-center font-mono font-bold text-xs transition-colors ${
+                  activeSubTab === 'analytics' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-zinc-200 text-black/70 group-hover:bg-emerald-100 group-hover:text-emerald-900'
+                }`}>
+                  <BarChart3 size={16} />
+                </div>
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-black/40">
+                  STEP 02
+                </span>
+              </div>
+              {activeSubTab === 'analytics' ? (
+                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 animate-pulse">
+                  ● 表示中
+                </span>
+              ) : (
+                <span className="text-[11px] font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
+                  純利集計
+                </span>
+              )}
+            </div>
+            <div className="font-bold text-sm text-black flex items-center gap-1">
+              売上＆粗利アナリティクス
+            </div>
+            <p className="text-xs text-black/60 mt-1 line-clamp-2 leading-relaxed font-sans">
+              日次推移グラフ・Stripe/eKYC原価・返金率
+            </p>
+          </div>
+          <div className="mt-3 pt-2.5 border-t border-zinc-100 flex items-center justify-between text-[11px]">
+            <span className="text-black/50">純利益 (粗利)</span>
+            <span className="font-mono font-bold text-emerald-800">{formatYen(stats.netTotal)}</span>
+          </div>
         </button>
 
+        {/* TAB 3: eKYC Audit */}
         <button
           type="button"
           onClick={() => setActiveSubTab('ekycAudit')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+          className={`group relative flex flex-col justify-between p-4 rounded-2xl border text-left transition-all cursor-pointer ${
             activeSubTab === 'ekycAudit'
-              ? 'bg-white text-black shadow-sm'
-              : 'text-black/60 hover:text-black hover:bg-white/50'
+              ? 'bg-white border-sky-600 shadow-md ring-2 ring-sky-500/10'
+              : 'bg-zinc-50/80 hover:bg-white border-brand-border/80 hover:border-zinc-300'
           }`}
         >
-          <ShieldCheck size={15} className={activeSubTab === 'ekycAudit' ? 'text-sky-600' : ''} />
-          <span>🪪 eKYC身元確認 ＆ 年齢認証監査</span>
+          <div>
+            <div className="flex items-center justify-between gap-2 mb-2.5">
+              <div className="flex items-center gap-2">
+                <div className={`w-8 h-8 rounded-xl flex items-center justify-center font-mono font-bold text-xs transition-colors ${
+                  activeSubTab === 'ekycAudit' ? 'bg-sky-600 text-white shadow-sm' : 'bg-zinc-200 text-black/70 group-hover:bg-sky-100 group-hover:text-sky-900'
+                }`}>
+                  <ShieldCheck size={16} />
+                </div>
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-black/40">
+                  STEP 03
+                </span>
+              </div>
+              {activeSubTab === 'ekycAudit' ? (
+                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-sky-700 bg-sky-50 px-2 py-0.5 rounded-full border border-sky-200 animate-pulse">
+                  ● 表示中
+                </span>
+              ) : (
+                <span className="text-[11px] font-mono font-bold text-sky-700 bg-sky-50 px-2 py-0.5 rounded-full border border-sky-100">
+                  {stats.ekycVerifiedCount} 名承認
+                </span>
+              )}
+            </div>
+            <div className="font-bold text-sm text-black flex items-center gap-1">
+              eKYC本人・年齢認証監査
+            </div>
+            <p className="text-xs text-black/60 mt-1 line-clamp-2 leading-relaxed font-sans">
+              運転免許証/マイナンバー審査・照合ログ・法令管理
+            </p>
+          </div>
+          <div className="mt-3 pt-2.5 border-t border-zinc-100 flex items-center justify-between text-[11px]">
+            <span className="text-black/50">本人確認完了</span>
+            <span className="font-mono font-bold text-sky-800">{stats.ekycVerifiedCount} 件合格</span>
+          </div>
         </button>
 
+        {/* TAB 4: Stripe Sandbox */}
         <button
           type="button"
           onClick={() => setActiveSubTab('stripeSimulator')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+          className={`group relative flex flex-col justify-between p-4 rounded-2xl border text-left transition-all cursor-pointer ${
             activeSubTab === 'stripeSimulator'
-              ? 'bg-white text-black shadow-sm'
-              : 'text-black/60 hover:text-black hover:bg-white/50'
+              ? 'bg-white border-amber-500 shadow-md ring-2 ring-amber-500/10'
+              : 'bg-zinc-50/80 hover:bg-white border-brand-border/80 hover:border-zinc-300'
           }`}
         >
-          <Zap size={15} className={activeSubTab === 'stripeSimulator' ? 'text-amber-500' : ''} />
-          <span>⚡ Stripe Sandbox & 決済シミュレータ</span>
+          <div>
+            <div className="flex items-center justify-between gap-2 mb-2.5">
+              <div className="flex items-center gap-2">
+                <div className={`w-8 h-8 rounded-xl flex items-center justify-center font-mono font-bold text-xs transition-colors ${
+                  activeSubTab === 'stripeSimulator' ? 'bg-amber-500 text-white shadow-sm' : 'bg-zinc-200 text-black/70 group-hover:bg-amber-100 group-hover:text-amber-900'
+                }`}>
+                  <Zap size={16} />
+                </div>
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-black/40">
+                  STEP 04
+                </span>
+              </div>
+              {activeSubTab === 'stripeSimulator' ? (
+                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200 animate-pulse">
+                  ● 表示中
+                </span>
+              ) : (
+                <span className="text-[11px] font-mono font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-100">
+                  Sandbox
+                </span>
+              )}
+            </div>
+            <div className="font-bold text-sm text-black flex items-center gap-1">
+              Stripe 模擬決済シミュレータ
+            </div>
+            <p className="text-xs text-black/60 mt-1 line-clamp-2 leading-relaxed font-sans">
+              ワンクリック模擬決済・合否分岐・即時返金テスト
+            </p>
+          </div>
+          <div className="mt-3 pt-2.5 border-t border-zinc-100 flex items-center justify-between text-[11px]">
+            <span className="text-black/50">接続ステータス</span>
+            <span className="font-mono font-bold text-amber-700">即時疎通可</span>
+          </div>
         </button>
       </div>
 
