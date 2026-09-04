@@ -680,19 +680,19 @@ export const FaqPage: React.FC = () => {
                             }`}
                           >
                             <div className="flex items-start gap-3 flex-1 min-w-0">
-                              <span className="w-6 h-6 rounded-lg bg-teal-800 text-white flex items-center justify-center text-xs font-bold shrink-0 font-sans shadow-2xs mt-0.5">
+                              <span className="w-5 h-5 rounded-md bg-teal-800 text-white flex items-center justify-center text-xs font-bold shrink-0 font-sans shadow-2xs mt-0.5">
                                 Q
                               </span>
-                              <h3 className="font-bold text-sm sm:text-base text-teal-950 font-sans leading-snug flex-1">
+                              <h3 className="font-bold text-sm text-teal-950 font-sans leading-snug flex-1">
                                 {faq.question}
                               </h3>
                             </div>
                             <div className={`p-1.5 rounded-lg bg-white border border-teal-200/80 text-teal-800 transition-transform duration-200 mt-0.5 shrink-0 ${isOpen ? 'rotate-180 bg-teal-800 text-white' : ''}`}>
-                              <ChevronDown size={16} />
+                              <ChevronDown size={15} />
                             </div>
                           </button>
 
-                          {/* ⚪ 回答エリア（クリック時に展開される白背景＋統一フォントサイズ） */}
+                          {/* ⚪ 回答エリア（質問と全く同じtext-smフォントサイズ） */}
                           <AnimatePresence initial={false}>
                             {isOpen && (
                               <motion.div
@@ -703,10 +703,10 @@ export const FaqPage: React.FC = () => {
                               >
                                 <div className="p-5 md:p-6 bg-white">
                                   <div className="flex items-start gap-3.5">
-                                    <span className="w-6 h-6 rounded-lg bg-emerald-700 text-white flex items-center justify-center text-xs font-bold shrink-0 font-sans shadow-2xs mt-0.5">
+                                    <span className="w-5 h-5 rounded-md bg-emerald-700 text-white flex items-center justify-center text-xs font-bold shrink-0 font-sans shadow-2xs mt-0.5">
                                       A
                                     </span>
-                                    <div className="flex-1 text-xs sm:text-[13px] text-slate-800 font-sans leading-relaxed space-y-2">
+                                    <div className="flex-1 text-sm text-slate-700 font-sans leading-relaxed space-y-2">
                                       {faq.answer}
                                     </div>
                                   </div>
