@@ -4442,753 +4442,153 @@ export const AdminDeploymentGuidePage = () => {
 
 
 export const ManualContent = () => (
-  <div className="text-black font-serif">
-    <section className="mb-10">
-      <h3 className="text-xl font-bold mb-4 border-b-2 border-black/20 pb-3 flex items-center gap-4">
-        <span className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center text-xs">01</span>
+  <div className="space-y-8 text-slate-800 font-sans">
+    <section className="space-y-3">
+      <h3 className="text-base md:text-lg font-bold font-serif text-slate-900 flex items-center gap-3 border-b border-slate-100 pb-2">
+        <span className="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-sans shrink-0">01</span>
         記憶をつづる（ボトルの投函）
       </h3>
-      <p className="text-base leading-relaxed mb-4">「ボトルメールを流す」ボタンから、探している相手へのメッセージを作成できます。あなたの想いが相手に届くよう、以下の項目を丁寧に入力しましょう。</p>
-      <div className="bg-brand-light/50 p-6 rounded-3xl border border-brand-border">
-        <div className="space-y-3">
-          <p className="text-lg font-bold text-black">入力項目の詳細：</p>
-          <ul className="list-disc pl-6 space-y-2 text-base leading-relaxed">
-            <li><strong>相手の名前：</strong> 姓と名を分けて正確に入力してください。旧姓や、当時呼んでいた名前など、相手が検索しそうな名前を入力するのがコツです。</li>
-            <li><strong>出身地・ゆかりの地：</strong> 相手の出身地や、二人が出会った場所などを入力します。公開されるのは「都道府県」までとなりますが、市区町村まで入力することで検索精度が向上します。</li>
-            <li><strong>交流のあった年代：</strong> 相手と過ごした時代（例：1990年代）を選択します。</li>
-            <li><strong>あなたの表示名：</strong> 当時のあだ名や、二人の間だけで通じる呼び名を使用してください。</li>
-            <li><strong>秘密の質問：</strong> 本人確認のための重要なステップです。<strong>必ず2問</strong>設定してください。第三者が推測しにくい具体的なエピソード（例：当時の担任の先生の名字、通学路にあったお店の名前など）を質問にすることを強く推奨します。</li>
-            <li><strong>開示用SNS・連絡先：</strong> 質問にすべて正解し、開示手続きを行ったお相手だけに公開されるSNS ID（LINE ID、Instagram、メールアドレスなど）を設定します。手紙の本文欄には直接書き込まず、こちらの専用欄にご入力ください。</li>
-            <li><strong>メッセージ：</strong> 相手が質問に正解した後に表示される手紙本文です。</li>
-            <li><strong>AIによる検閲：</strong> 投稿内容はAIによって自動的に解析され、不適切な表現や個人情報の過度な露出がある場合は投稿が制限されることがあります。</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <section className="mb-10">
-      <h3 className="text-xl font-bold mb-4 border-b-2 border-black/20 pb-3 flex items-center gap-4">
-        <span className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center text-xs">02</span>
-        奇跡を拾う（自分宛ての手紙を探す）
-      </h3>
-      <p className="text-base leading-relaxed mb-4">「自分宛ての手紙を探す」ページでは、ご自身宛てのメッセージが届いていないかを、自身の名前やゆかりの地のキーワードで簡単に見つけることができます。検索エンジンを頼りにしたエゴサーチ等を通じてこのページに偶然たどり着いた方や、心当たりのある方は、ぜひご自身宛てに流されたボトルメールを探してみてください。</p>
-      <div className="bg-brand-primary/5 p-6 rounded-3xl border border-brand-primary/10">
-        <p className="text-lg text-black font-bold mb-2">自分宛ての手紙を見つけるヒント：</p>
-        <ul className="list-disc pl-6 space-y-2 text-base leading-relaxed">
-          <li>ご自身の姓、名、あるいは旧姓などの漢字やひらがなで検索をお試しください。</li>
-          <li>お相手と出会った地域や、思い出のゆかりの地などで絞り込むと、届いたボトルが非常に見つかりやすくなります。</li>
-          <li>年代や関係性（部活動、同級生、元同僚など）を指定することで、効率よく自分宛ての手紙を絞り込めます。</li>
+      <p className="text-xs md:text-sm text-slate-700 leading-relaxed">
+        「ボトルメールを流す」ボタンから、探している相手へのメッセージを作成できます。あなたの想いが相手に届くよう、以下の項目を丁寧に入力しましょう。
+      </p>
+      <div className="bg-slate-50 p-4 md:p-5 rounded-2xl border border-slate-200/80 space-y-2">
+        <p className="text-xs font-bold text-slate-900">入力項目の詳細：</p>
+        <ul className="list-disc pl-5 space-y-1.5 text-xs text-slate-700 leading-relaxed">
+          <li><strong>相手の名前：</strong> 姓と名を分けて正確に入力してください。旧姓や、当時呼んでいた名前など、相手が検索しそうな名前を入力するのがコツです。</li>
+          <li><strong>出身地・ゆかりの地：</strong> 相手の出身地や、二人が出会った場所などを入力します。公開されるのは「都道府県」までとなりますが、市区町村まで入力することで検索精度が向上します。</li>
+          <li><strong>交流のあった年代：</strong> 相手と過ごした時代（例：1990年代）を選択します。</li>
+          <li><strong>あなたの表示名：</strong> 当時のあだ名や、二人の間だけで通じる呼び名を使用してください。</li>
+          <li><strong>秘密の質問：</strong> 本人確認のための重要なステップです。<strong>秘密の質問（1問＋思い出のヒント）</strong>を設定してください。第三者が推測しにくい二人の記憶に基づく具体的なエピソードを質問にすることを強く推奨します。</li>
+          <li><strong>開示用SNS・連絡先：</strong> 質問に正解し、開示手続きを行ったお相手だけに公開されるSNS ID（LINE ID、Instagram、メールアドレスなど）を設定します。手紙の本文欄には直接書き込まず、こちらの専用欄にご入力ください。</li>
+          <li><strong>メッセージ：</strong> 相手が質問に正解した後に表示される手紙本文です。</li>
+          <li><strong>AIによる検閲：</strong> 投稿内容はAIによって自動的に解析され、不適切な表現や個人情報の過度な露出がある場合は投稿が制限されることがあります。</li>
         </ul>
       </div>
     </section>
 
-    <section className="mb-10">
-      <h3 className="text-xl font-bold mb-4 border-b-2 border-black/20 pb-3 flex items-center gap-4">
-        <span className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center text-xs">03</span>
+    <section className="space-y-3">
+      <h3 className="text-base md:text-lg font-bold font-serif text-slate-900 flex items-center gap-3 border-b border-slate-100 pb-2">
+        <span className="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-sans shrink-0">02</span>
+        奇跡を拾う（自分宛ての手紙を探す ＆ 新着入荷通知アラート）
+      </h3>
+      <p className="text-xs md:text-sm text-slate-700 leading-relaxed">
+        「自分宛ての手紙を探す」ページでは、ご自身宛てのメッセージが届いていないかを、自身の名前やゆかりの地のキーワードで簡単に見つけることができます。検索エンジンを頼りにしたエゴサーチ等を通じてこのページに偶然たどり着いた方や、心当たりのある方は、ぜひご自身宛てに流されたボトルメールを探してみてください。
+      </p>
+      <div className="bg-teal-50/60 p-4 md:p-5 rounded-2xl border border-teal-200/80 space-y-3">
+        <div>
+          <p className="text-xs font-bold text-teal-900">自分宛ての手紙を見つけるヒント：</p>
+          <ul className="list-disc pl-5 space-y-1.5 text-xs text-teal-800 leading-relaxed mt-1">
+            <li>ご自身の姓、名、あるいは旧姓などの漢字やひらがなで検索をお試しください。</li>
+            <li>お相手と出会った地域や、思い出のゆかりの地などで絞り込むと、届いたボトルが非常に見つかりやすくなります。</li>
+            <li>年代や関係性（部活動、同級生、元同僚など）を指定することで、効率よく自分宛ての手紙を絞り込めます。</li>
+          </ul>
+        </div>
+
+        <div className="border-t border-teal-200/80 pt-3">
+          <p className="text-xs font-bold text-teal-950 flex items-center gap-1.5">
+            <span className="px-2 py-0.5 bg-teal-600 text-white text-[10px] rounded-md font-bold">便利機能</span>
+            🔔 自分宛ての手紙が投稿されたらメールで受け取る（新着入荷通知アラート）
+          </p>
+          <p className="text-xs text-teal-900/90 leading-relaxed mt-1 font-sans">
+            検索画面であなたのお名前やゆかりの地を設定し、「この条件でメール通知を受け取る」を保存しておくと、今後あなたを探しているお相手が新しくボトルメールを投函した際に、システムから自動でメール通知が届きます。<br />
+            保存した通知条件は、ログイン後の<strong>「マイページ」→「通知・アラート」タブ</strong>からいつでも確認・削除・管理が可能です。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section className="space-y-3">
+      <h3 className="text-base md:text-lg font-bold font-serif text-slate-900 flex items-center gap-3 border-b border-slate-100 pb-2">
+        <span className="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-sans shrink-0">03</span>
         再会への一歩（本人確認とSNS連絡先の開示）
       </h3>
-      <p className="text-base leading-relaxed mb-4">自分宛てと思われるボトルメールを見つけたら、詳細を確認します。メッセージ本文と連絡先を開示するには、差出人が設定した「秘密の質問」に答える必要があります。</p>
-      <div className="bg-brand-accent/5 p-6 rounded-2xl border border-brand-accent/10">
-        <p className="text-black font-bold mb-2">再会のプロセス：</p>
-        <ol className="list-decimal pl-5 space-y-2 text-base leading-relaxed">
-          <li><strong>質問に回答：</strong> 2つの秘密の質問に正解すると、ロックが解除されます。</li>
-          <li><strong>手紙の開封と開示手続き：</strong> 差出人からの手紙本文を確認し、開示手続き（600円）を行います。</li>
+      <p className="text-xs md:text-sm text-slate-700 leading-relaxed">
+        自分宛てと思われるボトルメールを見つけたら、詳細を確認します。メッセージ本文と連絡先を開示するには、差出人が設定した「秘密の質問」に答える必要があります。
+      </p>
+      <div className="bg-amber-50/60 p-4 md:p-5 rounded-2xl border border-amber-200/80 space-y-2">
+        <p className="text-xs font-bold text-amber-900">再会のプロセス：</p>
+        <ol className="list-decimal pl-5 space-y-1.5 text-xs text-amber-800 leading-relaxed">
+          <li><strong>質問に回答：</strong> 秘密の質問に正解すると、ロックが解除されます。</li>
+          <li><strong>手紙の開封と開示手続き：</strong> 差出人からの手紙本文を確認し、開示手続き（600円 / eKYC認証付き1,200円）を行います。</li>
           <li><strong>SNS連絡先の開示：</strong> 差出人が設定したSNS ID（LINE ID、Instagram等）および連絡先が表示されます。</li>
-          <li><strong>直接連絡・再会成功：</strong> 開示されたSNS IDをコピーし、差出人へ直接メッセージをお送りいただくことで再会が果たせます（サイト内のクローズドチャットを介さない安全な接続モデルです）。</li>
+          <li><strong>直接連絡・再会成功：</strong> 開示されたSNS IDをコピーし、差出人へ直接メッセージをお送りいただくことで再会が果たせます（サイト内のクローズドチャットを介さない安全な直接接続モデルです）。</li>
         </ol>
       </div>
     </section>
 
-    <section>
-      <h3 className="text-xl font-bold mb-4 border-b-2 border-black/20 pb-3 flex items-center gap-4">
-        <span className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center text-xs">04</span>
+    <section className="space-y-3">
+      <h3 className="text-base md:text-lg font-bold font-serif text-slate-900 flex items-center gap-3 border-b border-slate-100 pb-2">
+        <span className="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-sans shrink-0">04</span>
         開示情報の確認と管理
       </h3>
-      <p className="text-base leading-relaxed text-black">開示手続きが完了したお手紙やSNS連絡先は、マイアカウントの「開封済みのお手紙」からいつでも再確認できます。</p>
+      <p className="text-xs md:text-sm text-slate-700 leading-relaxed">
+        開示手続きが完了したお手紙やSNS連絡先は、マイアカウントの「開封済みのお手紙」からいつでも再確認できます。
+      </p>
     </section>
+
+    <section className="space-y-3">
+      <h3 className="text-base md:text-lg font-bold font-serif text-slate-900 flex items-center gap-3 border-b border-slate-100 pb-2">
+        <span className="w-7 h-7 rounded-full bg-rose-600 text-white flex items-center justify-center text-xs font-sans shrink-0">05</span>
+        相手からの回答・正解通知とメール設定
+      </h3>
+      <p className="text-xs md:text-sm text-slate-700 leading-relaxed">
+        あなたが流したボトルがお相手に見つけられ、質問回答やクイズ正解などのアクションが起こると、以下の2つの方法で自分宛てに通知されます。
+      </p>
+      <div className="p-4 md:p-5 bg-rose-50/70 border border-rose-200/80 rounded-2xl space-y-3">
+        <div className="space-y-2">
+          <p className="text-xs font-bold text-rose-950 flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-rose-600"></span>
+            ① サイト内通知（画面右上のベルアイコン 🔔）
+          </p>
+          <p className="text-xs text-rose-900/80 leading-relaxed pl-3.5">
+            サイトにログイン時、画面右上の 🔔（ベルマーク）に赤いバッジが点灯し、回答・正解されたボトルの状況がリアルタイムで届きます。
+          </p>
+        </div>
+
+        <div className="space-y-2 border-t border-rose-200/60 pt-2.5">
+          <p className="text-xs font-bold text-rose-950 flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-rose-600"></span>
+            ② 登録メールアドレスへの即時メール通知
+          </p>
+          <p className="text-xs text-rose-900/80 leading-relaxed pl-3.5">
+            お相手がクイズに答えた時や全問正解して手紙を開封した際、ご登録のメールアドレス宛に自動的にお知らせメールが送信されます。メール内のリンクからすぐに結果画面を確認できます。
+          </p>
+        </div>
+
+        <div className="space-y-2 border-t border-rose-200/60 pt-2.5">
+          <p className="text-xs font-bold text-rose-950 flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-rose-600"></span>
+            ③ メール通知のON/OFF切り替え
+          </p>
+          <p className="text-xs text-rose-900/80 leading-relaxed pl-3.5">
+            「マイアカウント」→「プロフィール設定」から、メール通知の受信（ON/OFF）をいつでも変更できます。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* Dedicated Pricing & Safety Links */}
+    <div className="p-5 bg-gradient-to-r from-amber-50/90 via-orange-50/40 to-amber-50/90 border border-amber-200/90 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="text-xs text-slate-700">
+        <strong className="text-amber-950 font-bold block text-sm mb-0.5">💰 ご利用料金の詳細について</strong>
+        基本機能は完全無料（0円）。手紙開封・SNS開示のみ600円（買い切り）です。
+      </div>
+      <Link
+        to="/pricing"
+        className="px-4 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition-all whitespace-nowrap shadow-xs"
+      >
+        利用料金表を見る →
+      </Link>
+    </div>
   </div>
 );
 
-export const LocalInlineGuidePage = () => {
-  const [activeModal, setActiveModal] = React.useState<'scene1' | 'scene2' | 'scene3' | 'scene4' | null>(null);
-  const modalBodyRef = React.useRef<HTMLDivElement>(null);
-
-  React.useEffect(() => {
-    if (activeModal !== null && modalBodyRef.current) {
-      modalBodyRef.current.scrollTop = 0;
-    }
-  }, [activeModal]);
-
-  return (
-    <div className="min-h-screen bg-brand-light py-10 md:py-16 font-sans text-brand-dark">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 space-y-12">
-        {/* Header Section */}
-        <div className="flex items-center gap-4 border-b border-brand-border/60 pb-8">
-          <div className="w-12 h-12 rounded-2xl bg-brand-primary/10 flex items-center justify-center text-brand-primary shrink-0 shadow-sm">
-            <BookOpen size={26} />
-          </div>
-          <div>
-            <span className="text-[10px] md:text-xs font-bold text-brand-primary uppercase tracking-[0.3em] block mb-0.5 font-sans">
-              Reunion Journey
-            </span>
-            <h1 className="text-2xl md:text-3xl font-serif font-bold text-brand-dark tracking-widest leading-tight">
-              ReMEETs ご利用ガイド
-            </h1>
-            <p className="text-xs md:text-sm text-brand-dark/60 font-sans leading-relaxed mt-1">
-              手紙が海を漂い、お相手がふと見つけ、ふたりだけの秘密の質問で心が通い合う——。<br className="hidden sm:inline" />
-              ReMEETsで思い出が現実の再会へと繋がる4ステップのストーリーをご紹介します。
-            </p>
-          </div>
-        </div>
-
-        {/* 4 Scene Flow Section */}
-        <div className="space-y-8">
-          <div className="text-center space-y-1">
-            <span className="text-[10px] font-extrabold text-teal-700 bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-200">
-              STORY & FLOW
-            </span>
-            <h2 className="text-xl md:text-2xl font-bold font-serif text-slate-900">
-              再会へと繋がる 4つのストーリー
-            </h2>
-            <p className="text-xs text-slate-500 font-sans">
-              手紙の投函から、奇跡の発見、質問の解読、そして安全な連絡先の開示まで
-            </p>
-          </div>
-
-          <div className="space-y-6">
-            {/* SCENE 01 */}
-            <motion.div 
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="bg-white p-6 md:p-8 rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-md transition-all relative overflow-hidden group"
-            >
-              {/* 背景イラスト（ReMEETs応援ページスタイルの右側淡い色＆周囲グラデーションフェード） */}
-              <div className="absolute top-0 right-0 bottom-0 w-full sm:w-7/12 md:w-1/2 pointer-events-none overflow-hidden select-none">
-                <div className="relative w-full h-full opacity-45">
-                  <img 
-                    src={guideScene01Soft} 
-                    alt="ボトルを海へ流すイラスト" 
-                    className="w-full h-full object-cover object-right group-hover:scale-105 transition-transform duration-700 ease-out"
-                  />
-                  {/* 左右グラデーション（テキスト部に向かって自然な白フェード） */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-white via-white/75 via-35% to-transparent" />
-                  {/* 上下グラデーション */}
-                  <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-white/20" />
-                </div>
-              </div>
-
-              <div className="space-y-3 relative z-10 max-w-xl">
-                <div className="flex items-center gap-2">
-                  <span className="px-3 py-1 bg-teal-600 text-white rounded-xl text-xs font-bold font-serif shadow-2xs">
-                    Scene 01
-                  </span>
-                  <span className="text-[10px] font-bold text-teal-800 bg-teal-50 border border-teal-200 px-2.5 py-0.5 rounded-full">
-                    費用: 0円（完全無料）
-                  </span>
-                </div>
-                <h3 className="text-lg md:text-xl font-bold font-serif text-slate-900">
-                  想いと「秘密の質問」を込め、ボトルを海へ流す
-                </h3>
-                <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans">
-                  探したいお相手の名前（例: 藤井 裕太 様）、思い出の地域（愛知県）、そして<strong className="text-slate-900">「二人しか答えられない秘密の質問」</strong>をボトルに詰めて投稿します。<br />
-                  投稿内容は利用規約の遵守と誠実な宣誓のもとでWebの大海原へ解き放たれます。
-                </p>
-
-                <div className="pt-1">
-                  <button
-                    onClick={() => setActiveModal('scene1')}
-                    className="px-3.5 py-1.5 bg-white/90 hover:bg-teal-50 text-teal-700 border border-teal-600 rounded-lg text-xs font-bold shadow-2xs hover:shadow-xs transition-all cursor-pointer inline-flex items-center gap-1.5 group/btn"
-                  >
-                    <Eye size={14} className="group-hover/btn:scale-110 transition-transform text-teal-600" />
-                    <span>投稿サンプル</span>
-                    <ChevronRight size={13} className="text-teal-600 opacity-70 group-hover/btn:translate-x-0.5 transition-transform" />
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* SCENE 02 */}
-            <motion.div 
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="bg-white p-6 md:p-8 rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-md transition-all relative overflow-hidden group"
-            >
-              {/* 背景イラスト（ReMEETs応援ページスタイルの右側淡い色＆周囲グラデーションフェード） */}
-              <div className="absolute top-0 right-0 bottom-0 w-full sm:w-7/12 md:w-1/2 pointer-events-none overflow-hidden select-none">
-                <div className="relative w-full h-full opacity-45">
-                  <img 
-                    src={guideScene02Soft} 
-                    alt="手紙を発見するイラスト" 
-                    className="w-full h-full object-cover object-right group-hover:scale-105 transition-transform duration-700 ease-out"
-                  />
-                  {/* 左右グラデーション */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-white via-white/75 via-35% to-transparent" />
-                  {/* 上下グラデーション */}
-                  <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-white/20" />
-                </div>
-              </div>
-
-              <div className="space-y-3 relative z-10 max-w-xl">
-                <div className="flex items-center gap-2">
-                  <span className="px-3 py-1 bg-blue-600 text-white rounded-xl text-xs font-bold font-serif shadow-2xs">
-                    Scene 02
-                  </span>
-                  <span className="text-[10px] font-bold text-blue-800 bg-blue-50 border border-blue-200 px-2.5 py-0.5 rounded-full">
-                    費用: 0円（偶然の発見）
-                  </span>
-                </div>
-                <h3 className="text-lg md:text-xl font-bold font-serif text-slate-900">
-                  ふとエゴサーチしたお相手が、手紙を発見！
-                </h3>
-                <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans">
-                  お相手がふとGoogle等で自分の名前（エゴサーチ）やゆかりの地を検索した際、あなたの流した手紙ページが偶然ヒット！<br />
-                  「あおいさんが私を探している…！？」と気づき、懐かしい思い出が蘇ります。
-                </p>
-
-                <div className="pt-1">
-                  <button
-                    onClick={() => setActiveModal('scene2')}
-                    className="px-3.5 py-1.5 bg-white/90 hover:bg-blue-50 text-blue-700 border border-blue-600 rounded-lg text-xs font-bold shadow-2xs hover:shadow-xs transition-all cursor-pointer inline-flex items-center gap-1.5 group/btn"
-                  >
-                    <Eye size={14} className="group-hover/btn:scale-110 transition-transform text-blue-600" />
-                    <span>検索サンプル</span>
-                    <ChevronRight size={13} className="text-blue-600 opacity-70 group-hover/btn:translate-x-0.5 transition-transform" />
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* SCENE 03 */}
-            <motion.div 
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="bg-white p-6 md:p-8 rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-md transition-all relative overflow-hidden group"
-            >
-              {/* 背景イラスト（ReMEETs応援ページスタイルの右側淡い色＆周囲グラデーションフェード） */}
-              <div className="absolute top-0 right-0 bottom-0 w-full sm:w-7/12 md:w-1/2 pointer-events-none overflow-hidden select-none">
-                <div className="relative w-full h-full opacity-45">
-                  <img 
-                    src={guideScene03Soft} 
-                    alt="秘密の質問に答えるイラスト" 
-                    className="w-full h-full object-cover object-right group-hover:scale-105 transition-transform duration-700 ease-out"
-                  />
-                  {/* 左右グラデーション */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-white via-white/75 via-35% to-transparent" />
-                  {/* 上下グラデーション */}
-                  <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-white/20" />
-                </div>
-              </div>
-
-              <div className="space-y-3 relative z-10 max-w-xl">
-                <div className="flex items-center gap-2">
-                  <span className="px-3 py-1 bg-amber-600 text-white rounded-xl text-xs font-bold font-serif shadow-2xs">
-                    Scene 03
-                  </span>
-                  <span className="text-[10px] font-bold text-amber-900 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-full">
-                    費用: 0円（秘密の解読）
-                  </span>
-                </div>
-                <h3 className="text-lg md:text-xl font-bold font-serif text-slate-900">
-                  ふたりだけの「秘密の質問」に答えて心がつながる
-                </h3>
-                <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans">
-                  手紙を見つけたお相手は、あなたが出題した「二人の記憶に基づく秘密の質問」に回答します。<br />
-                  第三者やサクラには絶対に回答できない合言葉が一致することで、正当な本人であることが即座に証明されます。
-                </p>
-
-                <div className="pt-1">
-                  <button
-                    onClick={() => setActiveModal('scene3')}
-                    className="px-3.5 py-1.5 bg-white/90 hover:bg-amber-50 text-amber-800 border border-amber-600 rounded-lg text-xs font-bold shadow-2xs hover:shadow-xs transition-all cursor-pointer inline-flex items-center gap-1.5 group/btn"
-                  >
-                    <Eye size={14} className="group-hover/btn:scale-110 transition-transform text-amber-600" />
-                    <span>照合サンプル</span>
-                    <ChevronRight size={13} className="text-amber-600 opacity-70 group-hover/btn:translate-x-0.5 transition-transform" />
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* SCENE 04 */}
-            <motion.div 
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="bg-white p-6 md:p-8 rounded-3xl border-2 border-indigo-200 shadow-sm hover:shadow-md transition-all relative overflow-hidden group"
-            >
-              {/* 背景イラスト（ReMEETs応援ページスタイルの右側淡い色＆周囲グラデーションフェード） */}
-              <div className="absolute top-0 right-0 bottom-0 w-full sm:w-7/12 md:w-1/2 pointer-events-none overflow-hidden select-none">
-                <div className="relative w-full h-full opacity-45">
-                  <img 
-                    src={guideScene04Soft} 
-                    alt="手紙開封と再会イラスト" 
-                    className="w-full h-full object-cover object-right group-hover:scale-105 transition-transform duration-700 ease-out"
-                  />
-                  {/* 左右グラデーション */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-white via-white/75 via-35% to-transparent" />
-                  {/* 上下グラデーション */}
-                  <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-white/20" />
-                </div>
-              </div>
-
-              <div className="space-y-3 relative z-10 max-w-xl">
-                <div className="flex items-center gap-2">
-                  <span className="px-3 py-1 bg-indigo-600 text-white rounded-xl text-xs font-bold font-serif shadow-2xs">
-                    Scene 04
-                  </span>
-                  <span className="text-[10px] font-bold text-indigo-900 bg-indigo-50 border border-indigo-200 px-2.5 py-0.5 rounded-full">
-                    開封手数料: 600円（買い切り）
-                  </span>
-                </div>
-                <h3 className="text-lg md:text-xl font-bold font-serif text-slate-900">
-                  🛡️ お互いの身元を公的証明し、手紙の開封＆SNS連絡先の開示！
-                </h3>
-                <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans">
-                  探されたお相手も安心してやり取りできるよう、お互いに<strong className="text-indigo-900">「公的本人確認（eKYC）」</strong>と<strong className="text-indigo-900">「手書き誓約署名」</strong>を実施。<br />
-                  1回限りの開封手数料（600円）により、差出人のSNS IDが開示され、直接連絡を取り合うことができます！
-                </p>
-
-                <div className="pt-1">
-                  <button
-                    onClick={() => setActiveModal('scene4')}
-                    className="px-3.5 py-1.5 bg-white/90 hover:bg-indigo-50 text-indigo-800 border border-indigo-600 rounded-lg text-xs font-bold shadow-2xs hover:shadow-xs transition-all cursor-pointer inline-flex items-center gap-1.5 group/btn"
-                  >
-                    <Eye size={14} className="group-hover/btn:scale-110 transition-transform text-indigo-600" />
-                    <span>開通サンプル</span>
-                    <ChevronRight size={13} className="text-indigo-600 opacity-70 group-hover/btn:translate-x-0.5 transition-transform" />
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-
-        {/* 本人確認（eKYC）の目的と安心設計の追記 */}
-        <div className="bg-gradient-to-br from-amber-50/90 via-slate-50 to-white p-6 md:p-8 rounded-3xl border-2 border-amber-300 shadow-sm space-y-5">
-          <div className="flex items-center gap-3 border-b border-amber-200/80 pb-4">
-            <div className="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center shadow-xs shrink-0">
-              <ShieldCheck size={26} />
-            </div>
-            <div>
-              <span className="text-[10px] font-bold text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full uppercase tracking-wider font-sans border border-amber-300/60">
-                Security & Trust Purpose
-              </span>
-              <h2 className="text-lg md:text-xl font-bold font-serif text-slate-900 mt-1">
-                ReMEETs の安心・安全な仕組みと連絡先開示（接続）について
-              </h2>
-            </div>
-          </div>
-
-          <div className="space-y-4 text-xs md:text-sm text-slate-800 font-sans leading-relaxed">
-            <p className="bg-white/90 p-4 md:p-5 rounded-2xl border border-amber-200/80 text-xs md:text-sm font-medium text-slate-900 shadow-2xs leading-relaxed">
-              「ReMEETsは、大切な旧友や恩師と『もう一度つながる』ための特別な場所です。登録・手紙の投函・検索・秘密の質問回答はすべて<strong className="text-amber-900 font-bold">無料（0円）</strong>でご利用いただけます。不適切な利用や嫌がらせを防止するため、ソーシャル認証による基本年齢確認や自動モデレーションを導入しています。秘密の質問正解後の開示手続き（600円）により、差出人のSNS ID（LINE ID等）が開示され、直接連絡を取ることで安心かつスムーズに再会を果たせます。」
-            </p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
-              <div className="p-3.5 bg-white rounded-xl border border-slate-200/80 space-y-1 shadow-2xs">
-                <span className="font-bold text-amber-900 text-xs font-serif flex items-center gap-1">
-                  <CheckCircle size={14} className="text-amber-600 shrink-0" />
-                  ストーカー・スパム100%排除
-                </span>
-                <p className="text-[11px] text-slate-600 leading-snug">
-                  マイナンバーカードや免許証の公的照合により、悪質な使い捨てアカウントをシャットアウト。
-                </p>
-              </div>
-
-              <div className="p-3.5 bg-white rounded-xl border border-slate-200/80 space-y-1 shadow-2xs">
-                <span className="font-bold text-amber-900 text-xs font-serif flex items-center gap-1">
-                  <CheckCircle size={14} className="text-amber-600 shrink-0" />
-                  探されたお相手へ最大の安心を
-                </span>
-                <p className="text-[11px] text-slate-600 leading-snug">
-                  「探されたお相手」が不安なく手紙を開き、安心して秘密の質問に返答できる環境を保障。
-                </p>
-              </div>
-
-              <div className="p-3.5 bg-white rounded-xl border border-slate-200/80 space-y-1 shadow-2xs">
-                <span className="font-bold text-amber-900 text-xs font-serif flex items-center gap-1">
-                  <CheckCircle size={14} className="text-amber-600 shrink-0" />
-                  買い切り600円・月額ゼロ
-                </span>
-                <p className="text-[11px] text-slate-600 leading-snug">
-                  サブスクなし。手紙開封時（600円 / eKYC認証付き1,200円）の完全買い切り型で、サーバー維持や公的照合システムを安全運用します。
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Navigation Links */}
-        <div className="text-center pt-4 font-sans">
-          <div className="flex justify-center gap-4 text-xs text-slate-500">
-            <Link to="/manual" className="hover:text-brand-primary underline">
-              詳細な「ご利用マニュアル」はこちら
-            </Link>
-            <span>•</span>
-            <Link to="/safety" className="hover:text-brand-primary underline">
-              安心・安全対策の詳細はこちら
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* INTERACTIVE SAMPLE INLINE VIEWER */}
-      {activeModal && (
-        <div className="w-full my-8 bg-white rounded-3xl shadow-xl border-2 border-teal-500/40 overflow-hidden font-sans animate-fade-in text-slate-800">
-            {/* Header Banner with Gradient - exact match to Supporter modal style */}
-            <div className={`p-5 sm:p-6 text-white text-center relative border-b border-white/10 ${
-              activeModal === 'scene1' ? 'bg-gradient-to-r from-teal-600 via-sky-600 to-teal-700' :
-              activeModal === 'scene2' ? 'bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-700' :
-              activeModal === 'scene3' ? 'bg-gradient-to-r from-amber-600 via-emerald-600 to-teal-700' :
-              'bg-gradient-to-r from-indigo-600 via-purple-600 to-slate-800'
-            }`}>
-              <button
-                onClick={() => setActiveModal(null)}
-                className="absolute top-3 right-3 sm:top-4 sm:right-4 p-2 text-white/80 hover:text-white bg-white/15 hover:bg-white/25 rounded-full transition-all cursor-pointer shadow-xs z-10"
-                aria-label="閉じる"
-              >
-                <X size={18} />
-              </button>
-
-              <span className="text-[10px] font-extrabold uppercase tracking-widest bg-white/20 text-white border border-white/30 px-3 py-1 rounded-full shadow-2xs inline-block mb-1.5">
-                ReMEETs REAL DEMO REPRODUCTION
-              </span>
-              <h2 className="text-lg sm:text-xl font-bold font-serif text-white flex items-center justify-center gap-2">
-                {activeModal === 'scene1' && '【投稿サンプル】実際のボトルレター詳細画面'}
-                {activeModal === 'scene2' && '【検索サンプル】Google検索＆サイト内発見画面'}
-                {activeModal === 'scene3' && '【照合サンプル】合言葉（秘密の質問）回答画面'}
-                {activeModal === 'scene4' && '【開通サンプル】手紙の全文開封・連絡先開示画面'}
-              </h2>
-            </div>
-
-            {/* Scrollable Modal Content */}
-            <div ref={modalBodyRef} className="p-4 sm:p-6 space-y-5 bg-white text-slate-800 font-sans">
-              {/* MODAL CONTENT: SCENE 01 */}
-              {activeModal === 'scene1' && (
-                <div className="space-y-4">
-                  <div className="p-4 md:p-5 bg-slate-50/80 rounded-2xl border border-teal-200 space-y-4 relative overflow-hidden">
-                    {/* 背景イラスト（ReMEETs応援ページスタイルの背景＆フェードグラデーション） */}
-                    <div className="absolute inset-0 flex justify-center items-center pointer-events-none overflow-hidden select-none">
-                      <div className="relative w-full h-full opacity-35">
-                        <img 
-                          src={guideScene01Soft} 
-                          alt="ボトルを海へ流すイラスト" 
-                          className="w-full h-full object-cover object-center"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-r from-slate-50 via-slate-50/30 to-slate-50" />
-                        <div className="absolute inset-0 bg-gradient-to-b from-slate-50 via-transparent via-50% to-slate-50" />
-                      </div>
-                    </div>
-
-                    <div className="relative z-10 space-y-4">
-                    {/* Top Meta Bar */}
-                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3">
-                      <span className="text-[11px] font-bold text-teal-800 bg-teal-100/80 px-3 py-1 rounded-full border border-teal-200 flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse" />
-                        海流漂流中（公開中）
-                      </span>
-                      <div className="text-[11px] text-slate-500 font-mono space-x-2">
-                        <span>管理番号: BTL-88920</span>
-                        <span>•</span>
-                        <span>投函日: 2026年7月15日</span>
-                      </div>
-                    </div>
-
-                    {/* Recipient Title */}
-                    <div className="space-y-1">
-                      <span className="text-xs font-bold text-slate-500">お届け先のお相手</span>
-                      <h3 className="text-xl md:text-2xl font-black font-serif text-slate-900">
-                        「藤井 裕太」様へ届いている思い出の手紙
-                      </h3>
-                      <p className="text-xs text-teal-800 font-medium flex items-center gap-1">
-                        <ShieldCheck size={14} className="text-teal-600" />
-                        差出人：あおい（公的本人確認・宣誓署名完了済み）
-                      </p>
-                    </div>
-
-                    {/* Detail Metadata Grid */}
-                    <div className="grid grid-cols-2 gap-2 text-xs bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-2xs">
-                      <div><span className="text-slate-400 font-medium">お名前:</span> <strong className="text-slate-800">藤井 裕太 様</strong></div>
-                      <div><span className="text-slate-400 font-medium">カテゴリ:</span> <strong className="text-slate-800">🏠 幼馴染・同級生</strong></div>
-                      <div><span className="text-slate-400 font-medium">記憶の年代:</span> <strong className="text-slate-800">1990年代</strong></div>
-                      <div><span className="text-slate-400 font-medium">ゆかりの地:</span> <strong className="text-slate-800">愛知県（市以下非公開）</strong></div>
-                    </div>
-
-                    {/* Handwritten Letter Body Reproduction */}
-                    <div className="p-4 bg-amber-50/50 rounded-2xl border border-amber-200/80 space-y-2">
-                      <div className="flex items-center gap-2 text-xs font-bold text-amber-900 border-b border-amber-200/60 pb-2">
-                        <Heart size={15} className="text-rose-500 fill-rose-500" />
-                        <span>あおいさんからの想い出の手紙</span>
-                      </div>
-                      <p className="text-xs md:text-sm text-slate-800 leading-relaxed font-serif whitespace-pre-line p-2">
-                        {`小学校の時の幼馴染の裕太くんへ。
-
-放課後はいつも駄菓子屋の『きくや商店』でベビースターラーメンを買って、近くの公園で秘密基地を作って遊んでいたのを覚えていますか？
-
-引っ越しで離れてしまってから、ずっとどうしているか気になっていました。
-もしこの手紙を見つけたら、また昔みたいにお話ししたいです。
-
-あおいより`}
-                      </p>
-                    </div>
-
-                    {/* Clue / Secret Question hint block */}
-                    <div className="p-4 bg-amber-100/70 rounded-2xl border border-amber-300 space-y-2">
-                      <div className="flex items-center gap-2 text-xs font-bold text-amber-950">
-                        <Lock size={15} className="text-amber-700" />
-                        <span>合言葉（秘密の質問）設定済み</span>
-                      </div>
-                      <p className="text-xs text-amber-900 leading-snug">
-                        <strong>Q: 「小学生の時に放課後一緒によく通っていた駄菓子屋の名前は？」</strong>
-                      </p>
-                      <p className="text-[11px] text-amber-800">
-                        ※二人だけしか知り得ない記憶の答え（合言葉）を入力して照合します。
-                      </p>
-                    </div>
-
-                    {/* Simulated Interactive Button */}
-                    <button
-                      onClick={() => setActiveModal('scene3')}
-                      className="w-full py-3 bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
-                    >
-                      <span>あなたが「藤井 裕太」さんですか？（合言葉に答えて照合する）</span>
-                      <ArrowRight size={14} />
-                    </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* MODAL CONTENT: SCENE 02 */}
-              {activeModal === 'scene2' && (
-                <div className="space-y-4">
-                  <div className="p-4 md:p-5 bg-slate-50/80 rounded-2xl border border-blue-200 space-y-4 relative overflow-hidden">
-                    {/* 背景イラスト（ReMEETs応援ページスタイルの背景＆フェードグラデーション） */}
-                    <div className="absolute inset-0 flex justify-center items-center pointer-events-none overflow-hidden select-none">
-                      <div className="relative w-full h-full opacity-35">
-                        <img 
-                          src={guideScene02Soft} 
-                          alt="手紙を発見するイラスト" 
-                          className="w-full h-full object-cover object-center"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-r from-slate-50 via-slate-50/30 to-slate-50" />
-                        <div className="absolute inset-0 bg-gradient-to-b from-slate-50 via-transparent via-50% to-slate-50" />
-                      </div>
-                    </div>
-
-                    <div className="relative z-10 space-y-4">
-                    {/* Google Browser Mockup */}
-                    <div className="bg-white rounded-xl border border-slate-300 p-3 shadow-xs space-y-2">
-                      <div className="text-[10px] font-bold text-slate-400 font-mono flex items-center gap-1.5">
-                        <Search size={12} className="text-blue-600" /> Google 検索ヒット再現
-                      </div>
-                      <div className="bg-slate-100 px-3 py-2 rounded-lg text-xs font-mono font-bold text-slate-800 flex items-center gap-2 border border-slate-200">
-                        <Search size={14} className="text-slate-400 shrink-0" />
-                        <span>藤井裕太 1990年代 愛知県 幼馴染</span>
-                      </div>
-                    </div>
-
-                    {/* Google SERP Card */}
-                    <div className="bg-white p-4 rounded-xl border border-blue-200 shadow-2xs space-y-1.5">
-                      <div className="text-[11px] text-slate-500 font-mono">https://remeets.app › bottle › btl-88920</div>
-                      <h4 className="text-base font-bold text-blue-700 hover:underline cursor-pointer font-serif">
-                        ReMEETs | 「藤井 裕太」様へ届いている思い出の手紙（あおいより）
-                      </h4>
-                      <p className="text-xs text-slate-600 leading-relaxed font-sans">
-                        愛知県 1990年代 幼馴染。「小学校の時の幼馴染の裕太くんへ。放課後いつも駄菓子屋のきくや商店で...」あおいさんがあなたを探しています。合言葉に答えて手紙を開封してください。
-                      </p>
-                    </div>
-
-                    {/* In-App Search Console Replica */}
-                    <div className="p-4 bg-white rounded-xl border border-slate-200 space-y-3">
-                      <div className="text-xs font-bold text-slate-800 flex items-center justify-between border-b border-slate-100 pb-2">
-                        <span className="flex items-center gap-1.5 text-blue-900">
-                          <Sparkles size={14} className="text-blue-600" />
-                          サイト内検索条件とヒット結果
-                        </span>
-                        <span className="text-[10px] bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded-full">1件 ヒット</span>
-                      </div>
-
-                      <div className="grid grid-cols-3 gap-2 text-[11px] text-slate-600 bg-slate-50 p-2.5 rounded-lg border border-slate-200">
-                        <div>氏名: <strong className="text-slate-900">藤井 裕太</strong></div>
-                        <div>地域: <strong className="text-slate-900">愛知県</strong></div>
-                        <div>年代: <strong className="text-slate-900">1990年代</strong></div>
-                      </div>
-
-                      <button
-                        onClick={() => setActiveModal('scene1')}
-                        className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg transition-all shadow-xs flex items-center justify-center gap-2 cursor-pointer"
-                      >
-                        <span>見つかったボトルレター詳細を見る</span>
-                        <ArrowRight size={14} />
-                      </button>
-                    </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* MODAL CONTENT: SCENE 03 */}
-              {activeModal === 'scene3' && (
-                <div className="space-y-4">
-                  <div className="p-4 md:p-5 bg-slate-50/80 rounded-2xl border border-amber-200 space-y-4 relative overflow-hidden">
-                    {/* 背景イラスト（ReMEETs応援ページスタイルの背景＆フェードグラデーション） */}
-                    <div className="absolute inset-0 flex justify-center items-center pointer-events-none overflow-hidden select-none">
-                      <div className="relative w-full h-full opacity-35">
-                        <img 
-                          src={guideScene03Soft} 
-                          alt="秘密の質問・照合イラスト" 
-                          className="w-full h-full object-cover object-center"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-r from-slate-50 via-slate-50/30 to-slate-50" />
-                        <div className="absolute inset-0 bg-gradient-to-b from-slate-50 via-transparent via-50% to-slate-50" />
-                      </div>
-                    </div>
-
-                    <div className="relative z-10 space-y-4">
-                      {/* Target Info */}
-                      <div className="bg-white/90 p-3.5 rounded-xl border border-amber-200/80 flex items-center justify-between text-xs backdrop-blur-2xs">
-                        <div>
-                          <span className="text-[10px] text-amber-800 font-bold block">対象の手紙</span>
-                          <span className="font-bold text-slate-900">BTL-88920 (藤井 裕太 様宛)</span>
-                        </div>
-                        <span className="text-xs text-slate-600">差出人: <strong>あおい</strong></span>
-                      </div>
-
-                      {/* Question Box */}
-                      <div className="bg-white/90 p-4 rounded-xl border border-amber-300 space-y-2 backdrop-blur-2xs">
-                        <span className="text-[10px] font-bold text-amber-800 uppercase tracking-wider block">SECRET QUESTION</span>
-                        <h4 className="text-sm font-bold text-slate-900 font-serif">
-                          Q: 小学校の時に放課後よく通った駄菓子屋の名前は？
-                        </h4>
-                      </div>
-
-                      {/* Simulated Answer Input */}
-                      <div className="space-y-2 bg-white/90 p-4 rounded-xl border border-slate-200 backdrop-blur-2xs">
-                        <label className="text-xs font-bold text-slate-700 block">あなたの回答（合言葉）</label>
-                        <div className="flex gap-2 items-center">
-                          <input
-                            type="text"
-                            readOnly
-                            value="きくや商店"
-                            className="flex-1 px-3 py-2.5 bg-emerald-50 text-emerald-950 font-bold text-sm rounded-xl border-2 border-emerald-400 font-sans shadow-2xs"
-                          />
-                          <span className="px-3 py-2.5 bg-emerald-600 text-white text-xs font-bold rounded-xl shrink-0 flex items-center gap-1 shadow-xs">
-                            <CheckCircle2 size={15} /> 完全一致
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Success Banner */}
-                      <div className="p-3.5 bg-emerald-50/90 rounded-xl border border-emerald-300 text-xs text-emerald-900 space-y-1 backdrop-blur-2xs">
-                        <div className="font-bold flex items-center gap-1.5 text-emerald-950">
-                          <Sparkles size={16} className="text-emerald-600" />
-                          <span>合言葉が一致しました！照合成功</span>
-                        </div>
-                        <p className="text-[11px] text-emerald-800 leading-relaxed">
-                          お互いしか知らなかった思い出の照合に成功しました。差出人のあおいさんに通知され、公的本人確認（eKYC）後に連絡先が開示されます。
-                        </p>
-                      </div>
-
-                      <button
-                        onClick={() => setActiveModal('scene4')}
-                        className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
-                      >
-                        <span>本人確認・連絡先開示画面へ進む</span>
-                        <ArrowRight size={14} />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* MODAL CONTENT: SCENE 04 */}
-              {activeModal === 'scene4' && (
-                <div className="space-y-4">
-                  <div className="p-4 md:p-5 bg-slate-50/80 rounded-2xl border border-indigo-200 space-y-4 relative overflow-hidden">
-                    {/* 背景イラスト（ReMEETs応援ページスタイルの背景＆フェードグラデーション） */}
-                    <div className="absolute inset-0 flex justify-center items-center pointer-events-none overflow-hidden select-none">
-                      <div className="relative w-full h-full opacity-35">
-                        <img 
-                          src={guideScene04Soft} 
-                          alt="開通・連絡先開示イラスト" 
-                          className="w-full h-full object-cover object-center"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-r from-slate-50 via-slate-50/30 to-slate-50" />
-                        <div className="absolute inset-0 bg-gradient-to-b from-slate-50 via-transparent via-50% to-slate-50" />
-                      </div>
-                    </div>
-
-                    <div className="relative z-10 space-y-4">
-                      {/* Success Badge Banner */}
-                      <div className="p-3.5 bg-emerald-100/90 border border-emerald-300 rounded-xl flex items-center justify-between text-xs font-bold text-emerald-950 backdrop-blur-2xs">
-                        <div className="flex items-center gap-2">
-                          <ShieldCheck size={18} className="text-emerald-700 shrink-0" />
-                          <span>照合 ＆ 公的本人確認（eKYC）完了</span>
-                        </div>
-                        <span className="bg-emerald-600 text-white text-[10px] px-2.5 py-0.5 rounded-full font-mono font-bold">開示成功</span>
-                      </div>
-
-                    {/* Disclosed Contact Box */}
-                    <div className="bg-white p-4 rounded-xl border border-slate-200 space-y-3">
-                      <div className="text-xs font-bold text-slate-800 border-b border-slate-100 pb-2 flex items-center justify-between">
-                        <span>開示された連絡先情報</span>
-                        <span className="text-[10px] text-teal-700 font-bold">差出人：あおい</span>
-                      </div>
-
-                      <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
-                        <span className="text-[10px] text-slate-500 font-bold block">LINE ID（または各種SNS ID）</span>
-                        <div className="font-mono text-sm font-bold text-slate-900 flex items-center justify-between">
-                          <span>@aoi_yuta_90s</span>
-                          <span className="text-[10px] bg-slate-900 text-white px-2.5 py-1 rounded-lg font-sans font-bold cursor-pointer hover:bg-slate-800">IDコピー</span>
-                        </div>
-                      </div>
-
-                      <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
-                        <span className="text-[10px] text-slate-500 font-bold block">登録メールアドレス</span>
-                        <div className="font-mono text-xs font-bold text-slate-800">
-                          aoi.memories.90s@example.com
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Special Direct Message from Sender */}
-                    <div className="p-4 bg-amber-50/80 rounded-xl border border-amber-200 space-y-1.5">
-                      <span className="text-xs font-bold text-amber-900 flex items-center gap-1.5">
-                        <Heart size={14} className="text-rose-500 fill-rose-500" />
-                        あおいさんからのメッセージ：
-                      </span>
-                      <p className="font-serif italic leading-relaxed text-slate-800 text-xs md:text-sm p-2 bg-white rounded-lg border border-amber-100">
-                        「裕太くん！手紙を見つけてくれて、合言葉を答えてくれて本当にありがとう！奇跡みたいに嬉しいです。LINEかメールを追加して、またあの頃みたいにお話ししようね！」
-                      </p>
-                    </div>
-
-                    <div className="p-3 bg-slate-100 rounded-xl text-[11px] text-slate-600 text-center">
-                      ※本開示は公的身分証（eKYC）による本人確認と、特定商取引法に基づく開示手続完了後に提供されています。
-                    </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Footer Button */}
-            <div className="p-4 border-t border-slate-100 bg-white text-center shrink-0">
-              <button
-                onClick={() => setActiveModal(null)}
-                className="w-full sm:w-auto px-8 py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold text-xs transition-colors cursor-pointer shadow-md"
-              >
-                サンプル画面を閉じる
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  };
+// Compatibility alias for GuidePage
+export const LocalInlineGuidePage = () => (
+  <div className="max-w-4xl mx-auto px-6 py-12">
+    <ManualContent />
+  </div>
+);
 
 export const ManualPage = () => (
   <div className="max-w-4xl mx-auto px-6 py-12 text-black font-sans">

@@ -82,7 +82,7 @@ export const GuideSampleInlineViewer: React.FC<GuideSampleInlineViewerProps> = (
           {activeScene === 1 && '【Scene 01 投稿サンプル】実際のボトルレター詳細画面'}
           {activeScene === 2 && '【Scene 02 検索サンプル】Google検索＆サイト内発見画面'}
           {activeScene === 3 && '【Scene 03 照合サンプル】合言葉（秘密の質問）回答画面'}
-          {activeScene === 4 && '【Scene 04 開通サンプル】連絡先開示・メッセージ開通画面'}
+          {activeScene === 4 && '【Scene 04 開封・開示サンプル】手紙開封・SNS連絡先開示画面'}
         </h2>
 
         {/* Scene Switcher Tabs */}
@@ -308,14 +308,14 @@ export const GuideSampleInlineViewer: React.FC<GuideSampleInlineViewerProps> = (
           </div>
         )}
 
-        {/* SCENE 04: 開通サンプル */}
+        {/* SCENE 04: 開封・開示サンプル */}
         {activeScene === 4 && (
           <div className="space-y-4">
             <div className="p-4 md:p-6 bg-white rounded-2xl border border-indigo-200 shadow-sm space-y-4">
               <div className="p-3.5 bg-emerald-100 border border-emerald-300 rounded-xl flex items-center justify-between text-xs font-bold text-emerald-950">
                 <div className="flex items-center gap-2">
                   <ShieldCheck size={18} className="text-emerald-700 shrink-0" />
-                  <span>照合 ＆ 公的本人確認（eKYC）完了</span>
+                  <span>照合 ＆ 手紙開封・SNS連絡先開示完了</span>
                 </div>
                 <span className="bg-emerald-600 text-white text-[10px] px-2.5 py-0.5 rounded-full font-mono font-bold">開示成功</span>
               </div>
@@ -359,7 +359,7 @@ export const GuideSampleInlineViewer: React.FC<GuideSampleInlineViewerProps> = (
               </div>
 
               <div className="p-3 bg-slate-100 rounded-xl text-[11px] text-slate-600 text-center">
-                ※本開示は公的身分証（eKYC）による本人確認と、特定商取引法に基づく開示手続完了後に提供されています。
+                ※本開示は特定商取引法に基づく開示手続完了（600円）後に安全に提供されています。（公的本人確認eKYCは任意オプション）
               </div>
             </div>
           </div>

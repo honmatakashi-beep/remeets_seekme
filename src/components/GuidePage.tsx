@@ -328,15 +328,15 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
                   Scene 04
                 </span>
                 <span className="text-[10px] font-bold text-indigo-900 bg-indigo-50 border border-indigo-200 px-2.5 py-0.5 rounded-full">
-                  開示手数料: 600円（買い切り）
+                  手紙開封・SNS開示: 600円（買い切り / 任意eKYC対応）
                 </span>
               </div>
               <h3 className="text-lg md:text-xl font-bold font-serif text-slate-900">
                 手紙を開封し、差出人のSNS・連絡先を開示！
               </h3>
               <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans">
-                秘密の質問にすべて正解後、手紙の開封・開示手続き（600円）を実施。<br />
-                差出人が設定した<strong className="text-indigo-900">SNS ID（LINE ID, Instagram等）や連絡先</strong>が画面上に開示されます。IDをコピーして直接メッセージを送ることで、確実に再会を果たせます！
+                秘密の質問に正解後、手紙の開封・SNS開示手続き（600円）を実施。<br />
+                差出人が設定した<strong className="text-indigo-900">SNS ID（LINE ID, Instagram等）や連絡先</strong>が画面上に開示されます。IDをコピーして直接メッセージを送ることで、確実に再会を果たせます！（※公的本人確認eKYCは任意オプション+600円）
               </p>
 
               <div className="pt-1">
@@ -412,7 +412,7 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
                 開示費 600円・月額ゼロ
               </span>
               <p className="text-[11px] text-slate-600 leading-snug">
-                サブスクなし。手紙開封・SNS開示時（1通あたり600円買い切り）のみで、安全な通信とシステムを運用します。
+                サブスクなし。手紙開封・SNS開示時（600円 / 任意eKYC付き1,200円）の買い切り型で安全に運用します。
               </p>
             </div>
           </div>
@@ -450,8 +450,8 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
                 <li><strong>出身地・ゆかりの地：</strong> 相手の出身地や、二人が出会った場所などを入力します。公開されるのは「都道府県」までとなりますが、市区町村まで入力することで検索精度が向上します。</li>
                 <li><strong>交流のあった年代：</strong> 相手と過ごした時代（例：1990年代）を選択します。</li>
                 <li><strong>あなたの表示名：</strong> 当時のあだ名や、二人の間だけで通じる呼び名を使用してください。</li>
-                <li><strong>秘密の質問：</strong> 本人確認のための重要なステップです。<strong>必ず2問</strong>設定してください。第三者が推測しにくい具体的なエピソードを質問にすることを強く推奨します。</li>
-                <li><strong>開示用SNS・連絡先：</strong> 質問にすべて正解し、開示手続きを行ったお相手だけに公開されるSNS ID（LINE ID、Instagram、メールアドレスなど）を設定します。手紙の本文欄には直接書き込まず、こちらの専用欄にご入力ください。</li>
+                <li><strong>秘密の質問：</strong> 本人確認のための重要なステップです。<strong>秘密の質問（1問＋思い出のヒント）</strong>を設定してください。第三者が推測しにくい二人の記憶に基づく具体的なエピソードを質問にすることを強く推奨します。</li>
+                <li><strong>開示用SNS・連絡先：</strong> 質問に正解し、開示手続きを行ったお相手だけに公開されるSNS ID（LINE ID、Instagram、メールアドレスなど）を設定します。手紙の本文欄には直接書き込まず、こちらの専用欄にご入力ください。</li>
                 <li><strong>メッセージ：</strong> 相手が質問に正解した後に表示される手紙本文です。</li>
                 <li><strong>AIによる検閲：</strong> 投稿内容はAIによって自動的に解析され、不適切な表現や個人情報の過度な露出がある場合は投稿が制限されることがあります。</li>
               </ul>
@@ -500,10 +500,10 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
             <div className="bg-amber-50/60 p-4 md:p-5 rounded-2xl border border-amber-200/80 space-y-2">
               <p className="text-xs font-bold text-amber-900">再会のプロセス：</p>
               <ol className="list-decimal pl-5 space-y-1.5 text-xs text-amber-800 leading-relaxed">
-                <li><strong>質問に回答：</strong> 2つの秘密の質問に正解すると、ロックが解除されます。</li>
-                <li><strong>手紙の開封と開示手続き：</strong> 差出人からの手紙本文を確認し、開示手続き（600円）を行います。</li>
+                <li><strong>質問に回答：</strong> 秘密の質問に正解すると、ロックが解除されます。</li>
+                <li><strong>手紙の開封と開示手続き：</strong> 差出人からの手紙本文を確認し、開示手続き（600円 / eKYC認証付き1,200円）を行います。</li>
                 <li><strong>SNS連絡先の開示：</strong> 差出人が設定したSNS ID（LINE ID、Instagram等）および連絡先が表示されます。</li>
-                <li><strong>直接連絡・再会成功：</strong> 開示されたSNS IDをコピーし、差出人へ直接メッセージをお送りいただくことで再会が果たせます。</li>
+                <li><strong>直接連絡・再会成功：</strong> 開示されたSNS IDをコピーし、差出人へ直接メッセージをお送りいただくことで再会が果たせます（サイト内のクローズドチャットを介さない安全な直接接続モデルです）。</li>
               </ol>
             </div>
           </section>
