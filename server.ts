@@ -7526,6 +7526,70 @@ ReMEETs カスタマーサポート運営事務局
     }
   });
 
+  // Admin Contacts: Update Status
+  app.patch("/api/admin/contacts/:id/status", authenticateToken, isAdmin, (req: any, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+    if (!status || !['pending', 'replied'].includes(status)) {
+      return res.status(400).json({ error: "Invalid status (must be 'pending' or 'replied')" });
+    }
+    try {
+      db.prepare("UPDATE contacts SET status = ? WHERE id = ?").run(status, id);
+      logAction(req.user?.id || 1, "ADMIN_CONTACT_STATUS_UPDATE", `Updated contact ID ${id} status to ${status}`, req.ip);
+      res.json({ success: true, message: "Status updated" });
+    } catch (err) {
+      console.error("Status update error:", err);
+      res.status(500).json({ error: "Failed to update contact status" });
+    }
+  });
+
+  // Admin Contacts: Single Delete
+  app.delete("/api/admin/contacts/:id", authenticateToken, isAdmin, (req: any, res) => {
+    const { id } = req.params;
+    try {
+      db.prepare("DELETE FROM contacts WHERE id = ?").run(id);
+      logAction(req.user?.id || 1, "ADMIN_CONTACT_DELETE", `Deleted contact ID ${id}`, req.ip);
+      res.json({ success: true, message: "Contact deleted" });
+    } catch (err) {
+      console.error("Delete contact error:", err);
+      res.status(500).json({ error: "Failed to delete contact" });
+    }
+  });
+
+  // Admin Contacts: Batch Status Update
+  app.post("/api/admin/contacts/batch-status", authenticateToken, isAdmin, (req: any, res) => {
+    const { ids, status } = req.body;
+    if (!Array.isArray(ids) || ids.length === 0 || !['pending', 'replied'].includes(status)) {
+      return res.status(400).json({ error: "Invalid request (ids array and valid status required)" });
+    }
+    try {
+      const placeholders = ids.map(() => '?').join(',');
+      db.prepare(`UPDATE contacts SET status = ? WHERE id IN (${placeholders})`).run(status, ...ids);
+      logAction(req.user?.id || 1, "ADMIN_CONTACT_BATCH_STATUS", `Batch updated ${ids.length} contacts to status ${status}`, req.ip);
+      res.json({ success: true, count: ids.length, message: `${ids.length}件のお問い合わせのステータスを一括更新しました` });
+    } catch (err) {
+      console.error("Batch status error:", err);
+      res.status(500).json({ error: "Failed to batch update contacts" });
+    }
+  });
+
+  // Admin Contacts: Batch Delete
+  app.post("/api/admin/contacts/batch-delete", authenticateToken, isAdmin, (req: any, res) => {
+    const { ids } = req.body;
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({ error: "Invalid request (ids array required)" });
+    }
+    try {
+      const placeholders = ids.map(() => '?').join(',');
+      db.prepare(`DELETE FROM contacts WHERE id IN (${placeholders})`).run(...ids);
+      logAction(req.user?.id || 1, "ADMIN_CONTACT_BATCH_DELETE", `Batch deleted ${ids.length} contacts`, req.ip);
+      res.json({ success: true, count: ids.length, message: `${ids.length}件のお問い合わせを一括削除しました` });
+    } catch (err) {
+      console.error("Batch delete error:", err);
+      res.status(500).json({ error: "Failed to batch delete contacts" });
+    }
+  });
+
   // Admin Email Templates: Send Test Email
   app.post("/api/admin/email-templates/send-test", authenticateToken, isAdmin, async (req: any, res) => {
     const { templateId, toEmail, subject, bodyText } = req.body;

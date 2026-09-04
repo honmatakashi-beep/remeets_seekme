@@ -2057,6 +2057,10 @@ export const AdminDashboard = () => {
   const [contactSearchQuery, setContactSearchQuery] = useState('');
   const [contactSortBy, setContactSortBy] = useState<'priority' | 'newest' | 'oldest'>('priority');
   const [isSeedingContacts, setIsSeedingContacts] = useState(false);
+  const [selectedContactIds, setSelectedContactIds] = useState<number[]>([]);
+  const [contactCurrentPage, setContactCurrentPage] = useState<number>(1);
+  const [contactItemsPerPage, setContactItemsPerPage] = useState<number>(25);
+  const [isBatchProcessingContacts, setIsBatchProcessingContacts] = useState<boolean>(false);
   const [successStories, setSuccessStories] = useState<any[]>([]);
   const [editingStoryId, setEditingStoryId] = useState<number | null>(null);
   const [storyCategoryFilter, setStoryCategoryFilter] = useState<string>('all');
@@ -4251,6 +4255,176 @@ export const AdminDashboard = () => {
     } finally {
       setIsSeedingContacts(false);
     }
+  };
+
+  const handleToggleSelectAllContacts = (currentIds: number[]) => {
+    if (selectedContactIds.length === currentIds.length && currentIds.length > 0) {
+      setSelectedContactIds([]);
+    } else {
+      setSelectedContactIds(currentIds);
+    }
+  };
+
+  const handleToggleSelectContact = (id: number) => {
+    setSelectedContactIds(prev => 
+      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+    );
+  };
+
+  const handleBatchUpdateContactStatus = async (status: 'replied' | 'pending') => {
+    if (!token || selectedContactIds.length === 0) return;
+    const label = status === 'replied' ? '返信済（解決）' : '未対応';
+    if (!confirm(`選択した ${selectedContactIds.length} 件のお問い合わせを「${label}」に一括変更しますか？`)) return;
+
+    setIsBatchProcessingContacts(true);
+    try {
+      const response = await fetch('/api/admin/contacts/batch-status', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ ids: selectedContactIds, status })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setStatusMsg({ text: `✨ ${data.message || '一括更新が完了しました。'}`, type: 'success' });
+        setSelectedContactIds([]);
+        fetchData();
+        setTimeout(() => setStatusMsg(null), 3000);
+      } else {
+        const errData = await response.json().catch(() => ({}));
+        setStatusMsg({ text: errData.error || '一括更新に失敗しました。', type: 'error' });
+      }
+    } catch (err) {
+      console.error("Batch status error:", err);
+      setStatusMsg({ text: '通信エラーが発生しました。', type: 'error' });
+    } finally {
+      setIsBatchProcessingContacts(false);
+    }
+  };
+
+  const handleBatchDeleteContacts = async () => {
+    if (!token || selectedContactIds.length === 0) return;
+    if (!confirm(`⚠️ 警告: 選択した ${selectedContactIds.length} 件のお問い合わせを完全に削除しますか？この操作は取り消せません。`)) return;
+
+    setIsBatchProcessingContacts(true);
+    try {
+      const response = await fetch('/api/admin/contacts/batch-delete', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ ids: selectedContactIds })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setStatusMsg({ text: `🗑️ ${data.message || '一括削除が完了しました。'}`, type: 'success' });
+        setSelectedContactIds([]);
+        fetchData();
+        setTimeout(() => setStatusMsg(null), 3000);
+      } else {
+        const errData = await response.json().catch(() => ({}));
+        setStatusMsg({ text: errData.error || '一括削除に失敗しました。', type: 'error' });
+      }
+    } catch (err) {
+      console.error("Batch delete error:", err);
+      setStatusMsg({ text: '通信エラーが発生しました。', type: 'error' });
+    } finally {
+      setIsBatchProcessingContacts(false);
+    }
+  };
+
+  const handleUpdateSingleContactStatus = async (id: number, status: 'replied' | 'pending') => {
+    if (!token) return;
+    try {
+      const response = await fetch(`/api/admin/contacts/${id}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ status })
+      });
+
+      if (response.ok) {
+        setStatusMsg({ text: `ステータスを「${status === 'replied' ? '返信済' : '未対応'}」に変更しました。`, type: 'success' });
+        fetchData();
+        setTimeout(() => setStatusMsg(null), 2500);
+      } else {
+        const errData = await response.json().catch(() => ({}));
+        setStatusMsg({ text: errData.error || '更新に失敗しました。', type: 'error' });
+      }
+    } catch (err) {
+      console.error("Status update error:", err);
+      setStatusMsg({ text: '通信エラーが発生しました。', type: 'error' });
+    }
+  };
+
+  const handleDeleteSingleContact = async (id: number) => {
+    if (!token) return;
+    if (!confirm('このお問い合わせを削除しますか？')) return;
+    try {
+      const response = await fetch(`/api/admin/contacts/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        setStatusMsg({ text: 'お問い合わせを削除しました。', type: 'success' });
+        setSelectedContactIds(prev => prev.filter(i => i !== id));
+        fetchData();
+        setTimeout(() => setStatusMsg(null), 2500);
+      } else {
+        const errData = await response.json().catch(() => ({}));
+        setStatusMsg({ text: errData.error || '削除に失敗しました。', type: 'error' });
+      }
+    } catch (err) {
+      console.error("Delete contact error:", err);
+      setStatusMsg({ text: '通信エラーが発生しました。', type: 'error' });
+    }
+  };
+
+  const handleExportContactsCsv = () => {
+    if (!contacts || contacts.length === 0) {
+      alert('エクスポートするお問い合わせデータがありません。');
+      return;
+    }
+
+    const headers = ['ID', '自動分類', 'ステータス', '優先スコア', '検知キーワード', '受信日時', '氏名', 'メールアドレス', '件名', '本文', '返信日時', '返信内容'];
+    const rows = contacts.map(c => {
+      const cl = classifyTicket(c.subject || '', c.message || '');
+      return [
+        c.id,
+        cl.categoryLabel,
+        c.status === 'replied' ? '返信済' : '未対応',
+        cl.priorityScore,
+        `"${(cl.matchedKeywords || []).join('; ')}"`,
+        `"${new Date(c.created_at).toLocaleString('ja-JP').replace(/"/g, '""')}"`,
+        `"${(c.name || '').replace(/"/g, '""')}"`,
+        `"${(c.email || '').replace(/"/g, '""')}"`,
+        `"${(c.subject || '').replace(/"/g, '""')}"`,
+        `"${(c.message || '').replace(/"/g, '""')}"`,
+        c.replied_at ? `"${new Date(c.replied_at).toLocaleString('ja-JP').replace(/"/g, '""')}"` : '""',
+        `"${(c.reply_message || '').replace(/"/g, '""')}"`
+      ];
+    });
+
+    const csvContent = '\\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `remeets_contacts_ledger_${new Date().toISOString().slice(0,10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   const handleViewPost = async (post: any) => {
@@ -11739,7 +11913,7 @@ export const AdminDashboard = () => {
                   if (contactStatusFilter !== 'all' && c.status !== contactStatusFilter) return false;
                   if (contactSearchQuery.trim()) {
                     const q = contactSearchQuery.toLowerCase();
-                    const matchText = `${c.name || ''} ${c.email || ''} ${c.subject || ''} ${c.message || ''} ${c.matchedKeywords.join(' ')}`.toLowerCase();
+                    const matchText = `${c.name || ''} ${c.email || ''} ${c.subject || ''} ${c.message || ''} ${(c.matchedKeywords || []).join(' ')}`.toLowerCase();
                     if (!matchText.includes(q)) return false;
                   }
                   return true;
@@ -11757,6 +11931,14 @@ export const AdminDashboard = () => {
                   }
                   return 0;
                 });
+
+              // Pagination calculations
+              const totalPages = Math.max(1, Math.ceil(filteredContacts.length / contactItemsPerPage));
+              const safeCurrentPage = Math.min(contactCurrentPage, totalPages);
+              const startIndex = (safeCurrentPage - 1) * contactItemsPerPage;
+              const paginatedContacts = filteredContacts.slice(startIndex, startIndex + contactItemsPerPage);
+              const currentPageIds = paginatedContacts.map(c => c.id);
+              const isAllPageSelected = currentPageIds.length > 0 && currentPageIds.every(id => selectedContactIds.includes(id));
 
               return (
                 <div className="space-y-6">
@@ -11778,7 +11960,7 @@ export const AdminDashboard = () => {
                         お問い合わせ自動分類・トリアージ管理
                       </h2>
                       <p className="text-xs md:text-sm text-brand-dark/70 font-sans max-w-3xl">
-                        キーワード解析により全チケットを <strong className="text-rose-700 font-bold">Urgent (緊急)</strong>・<strong className="text-sky-700 font-bold">Technical (技術・不具合)</strong>・<strong className="text-purple-700 font-bold">Account-related (アカウント)</strong> に即座に自動判別。最優先対応を可視化します。
+                        AI・キーワード解析により全チケットを <strong className="text-rose-700 font-bold">Urgent (緊急)</strong>・<strong className="text-sky-700 font-bold">Technical (技術・不具合)</strong>・<strong className="text-purple-700 font-bold">Account (アカウント)</strong> に即座に自動判別。最優先対応を可視化します。
                       </p>
                     </div>
 
@@ -11794,8 +11976,16 @@ export const AdminDashboard = () => {
                         <span>{isSeedingContacts ? '投入中...' : '分類サンプル投入 (8件)'}</span>
                       </button>
                       <button
+                        onClick={handleExportContactsCsv}
+                        className="px-3.5 py-2.5 rounded-xl bg-white border border-brand-border text-brand-dark text-xs font-bold hover:bg-brand-light/50 transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer"
+                        title="全お問い合わせ履歴をCSVファイルでダウンロードします"
+                      >
+                        <FileSpreadsheet size={14} className="text-emerald-600" />
+                        <span>CSV出力</span>
+                      </button>
+                      <button
                         onClick={() => fetchData()}
-                        className="p-2.5 rounded-xl bg-white border border-brand-border text-brand-dark hover:bg-brand-light/50 transition-colors shadow-xs"
+                        className="p-2.5 rounded-xl bg-white border border-brand-border text-brand-dark hover:bg-brand-light/50 transition-colors shadow-xs cursor-pointer"
                         title="最新のお問い合わせを取得"
                       >
                         <RefreshCw size={14} />
@@ -11807,7 +11997,7 @@ export const AdminDashboard = () => {
                   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
                     {/* All Tickets */}
                     <button
-                      onClick={() => { setContactCategoryFilter('all'); setContactStatusFilter('all'); }}
+                      onClick={() => { setContactCategoryFilter('all'); setContactStatusFilter('all'); setContactCurrentPage(1); }}
                       className={cn(
                         "p-4 rounded-2xl border text-left transition-all relative overflow-hidden group cursor-pointer",
                         contactCategoryFilter === 'all' && contactStatusFilter === 'all'
@@ -11825,7 +12015,7 @@ export const AdminDashboard = () => {
 
                     {/* Urgent Tickets */}
                     <button
-                      onClick={() => setContactCategoryFilter(contactCategoryFilter === 'urgent' ? 'all' : 'urgent')}
+                      onClick={() => { setContactCategoryFilter(contactCategoryFilter === 'urgent' ? 'all' : 'urgent'); setContactCurrentPage(1); }}
                       className={cn(
                         "p-4 rounded-2xl border text-left transition-all relative overflow-hidden group cursor-pointer",
                         contactCategoryFilter === 'urgent'
@@ -11846,7 +12036,7 @@ export const AdminDashboard = () => {
 
                     {/* Technical Tickets */}
                     <button
-                      onClick={() => setContactCategoryFilter(contactCategoryFilter === 'technical' ? 'all' : 'technical')}
+                      onClick={() => { setContactCategoryFilter(contactCategoryFilter === 'technical' ? 'all' : 'technical'); setContactCurrentPage(1); }}
                       className={cn(
                         "p-4 rounded-2xl border text-left transition-all relative overflow-hidden group cursor-pointer",
                         contactCategoryFilter === 'technical'
@@ -11867,7 +12057,7 @@ export const AdminDashboard = () => {
 
                     {/* Account Tickets */}
                     <button
-                      onClick={() => setContactCategoryFilter(contactCategoryFilter === 'account' ? 'all' : 'account')}
+                      onClick={() => { setContactCategoryFilter(contactCategoryFilter === 'account' ? 'all' : 'account'); setContactCurrentPage(1); }}
                       className={cn(
                         "p-4 rounded-2xl border text-left transition-all relative overflow-hidden group cursor-pointer",
                         contactCategoryFilter === 'account'
@@ -11888,7 +12078,7 @@ export const AdminDashboard = () => {
 
                     {/* Pending Tickets */}
                     <button
-                      onClick={() => setContactStatusFilter(contactStatusFilter === 'pending' ? 'all' : 'pending')}
+                      onClick={() => { setContactStatusFilter(contactStatusFilter === 'pending' ? 'all' : 'pending'); setContactCurrentPage(1); }}
                       className={cn(
                         "p-4 rounded-2xl border text-left transition-all relative overflow-hidden group cursor-pointer col-span-2 sm:col-span-1",
                         contactStatusFilter === 'pending'
@@ -11915,7 +12105,7 @@ export const AdminDashboard = () => {
                       <div className="flex flex-wrap items-center gap-1.5">
                         <span className="text-[11px] font-bold text-brand-dark/50 uppercase tracking-wider mr-1">分類:</span>
                         <button
-                          onClick={() => setContactCategoryFilter('all')}
+                          onClick={() => { setContactCategoryFilter('all'); setContactCurrentPage(1); }}
                           className={cn(
                             "px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer",
                             contactCategoryFilter === 'all'
@@ -11928,7 +12118,7 @@ export const AdminDashboard = () => {
                         </button>
 
                         <button
-                          onClick={() => setContactCategoryFilter('urgent')}
+                          onClick={() => { setContactCategoryFilter('urgent'); setContactCurrentPage(1); }}
                           className={cn(
                             "px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer",
                             contactCategoryFilter === 'urgent'
@@ -11942,7 +12132,7 @@ export const AdminDashboard = () => {
                         </button>
 
                         <button
-                          onClick={() => setContactCategoryFilter('technical')}
+                          onClick={() => { setContactCategoryFilter('technical'); setContactCurrentPage(1); }}
                           className={cn(
                             "px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer",
                             contactCategoryFilter === 'technical'
@@ -11956,7 +12146,7 @@ export const AdminDashboard = () => {
                         </button>
 
                         <button
-                          onClick={() => setContactCategoryFilter('account')}
+                          onClick={() => { setContactCategoryFilter('account'); setContactCurrentPage(1); }}
                           className={cn(
                             "px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer",
                             contactCategoryFilter === 'account'
@@ -11970,7 +12160,7 @@ export const AdminDashboard = () => {
                         </button>
 
                         <button
-                          onClick={() => setContactCategoryFilter('general')}
+                          onClick={() => { setContactCategoryFilter('general'); setContactCurrentPage(1); }}
                           className={cn(
                             "px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer",
                             contactCategoryFilter === 'general'
@@ -11989,7 +12179,7 @@ export const AdminDashboard = () => {
                         <span className="text-[11px] font-bold text-brand-dark/50 uppercase tracking-wider">状態:</span>
                         <div className="inline-flex bg-brand-light/60 p-0.5 rounded-xl border border-brand-border">
                           <button
-                            onClick={() => setContactStatusFilter('all')}
+                            onClick={() => { setContactStatusFilter('all'); setContactCurrentPage(1); }}
                             className={cn(
                               "px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer",
                               contactStatusFilter === 'all' ? "bg-white text-brand-dark shadow-xs" : "text-brand-dark/60 hover:text-brand-dark"
@@ -11998,7 +12188,7 @@ export const AdminDashboard = () => {
                             すべて
                           </button>
                           <button
-                            onClick={() => setContactStatusFilter('pending')}
+                            onClick={() => { setContactStatusFilter('pending'); setContactCurrentPage(1); }}
                             className={cn(
                               "px-2.5 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer",
                               contactStatusFilter === 'pending' ? "bg-amber-500 text-white shadow-xs" : "text-amber-800 hover:text-amber-900"
@@ -12008,7 +12198,7 @@ export const AdminDashboard = () => {
                             <span className="text-[10px] font-mono font-bold">({pendingCount})</span>
                           </button>
                           <button
-                            onClick={() => setContactStatusFilter('replied')}
+                            onClick={() => { setContactStatusFilter('replied'); setContactCurrentPage(1); }}
                             className={cn(
                               "px-2.5 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer",
                               contactStatusFilter === 'replied' ? "bg-emerald-600 text-white shadow-xs" : "text-emerald-800 hover:text-emerald-900"
@@ -12028,25 +12218,35 @@ export const AdminDashboard = () => {
                         <input
                           type="text"
                           value={contactSearchQuery}
-                          onChange={(e) => setContactSearchQuery(e.target.value)}
+                          onChange={(e) => { setContactSearchQuery(e.target.value); setContactCurrentPage(1); }}
                           placeholder="件名・本文・送信者・#キーワードで検索..."
                           className="w-full pl-9 pr-8 py-2 bg-white border border-brand-border rounded-xl text-xs outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/10 transition-all text-brand-dark placeholder:text-brand-dark/40"
                         />
                         {contactSearchQuery && (
                           <button
-                            onClick={() => setContactSearchQuery('')}
-                            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-brand-dark/40 hover:text-brand-dark text-xs"
+                            onClick={() => { setContactSearchQuery(''); setContactCurrentPage(1); }}
+                            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-brand-dark/40 hover:text-brand-dark text-xs cursor-pointer"
                           >
                             ×
                           </button>
                         )}
                       </div>
 
-                      {/* Sort Selector & Result count */}
-                      <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
-                        <span className="text-xs text-brand-dark/60 font-mono">
-                          表示: <strong className="text-brand-dark font-bold">{filteredContacts.length}</strong> / {enrichedContacts.length} 件
-                        </span>
+                      {/* Items per page & Sort Selector */}
+                      <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end flex-wrap">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[11px] text-brand-dark/50 font-bold whitespace-nowrap">表示件数:</span>
+                          <select
+                            value={contactItemsPerPage}
+                            onChange={(e) => { setContactItemsPerPage(Number(e.target.value)); setContactCurrentPage(1); }}
+                            className="px-2 py-1.5 bg-white border border-brand-border rounded-xl text-xs font-bold text-brand-dark outline-none focus:border-brand-primary cursor-pointer"
+                          >
+                            <option value={10}>10件</option>
+                            <option value={25}>25件</option>
+                            <option value={50}>50件</option>
+                            <option value={100}>100件</option>
+                          </select>
+                        </div>
 
                         <div className="flex items-center gap-1.5">
                           <span className="text-[11px] text-brand-dark/50 font-bold whitespace-nowrap">並び順:</span>
@@ -12064,94 +12264,170 @@ export const AdminDashboard = () => {
                     </div>
                   </div>
 
-                  {/* Contacts Table with Classification Badges */}
+                  {/* Floating Batch Actions Bar */}
+                  {selectedContactIds.length > 0 && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="p-3 bg-brand-dark text-white rounded-2xl shadow-lg flex flex-wrap items-center justify-between gap-3 border border-brand-border/20"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="px-2.5 py-1 rounded-lg bg-white/20 text-xs font-mono font-bold">
+                          {selectedContactIds.length} 件選択中
+                        </span>
+                        <span className="text-xs text-white/70 hidden sm:inline">
+                          選択したお問い合わせに対する一括操作:
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <button
+                          onClick={() => handleBatchUpdateContactStatus('replied')}
+                          disabled={isBatchProcessingContacts}
+                          className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-xs cursor-pointer disabled:opacity-50"
+                        >
+                          <CheckCircle2 size={13} />
+                          <span>一括対応済 (解決)</span>
+                        </button>
+                        <button
+                          onClick={() => handleBatchUpdateContactStatus('pending')}
+                          disabled={isBatchProcessingContacts}
+                          className="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-xs cursor-pointer disabled:opacity-50"
+                        >
+                          <Clock size={13} />
+                          <span>一括未対応にする</span>
+                        </button>
+                        <button
+                          onClick={handleBatchDeleteContacts}
+                          disabled={isBatchProcessingContacts}
+                          className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-xs cursor-pointer disabled:opacity-50"
+                        >
+                          <Trash2 size={13} />
+                          <span>一括削除</span>
+                        </button>
+                        <button
+                          onClick={() => setSelectedContactIds([])}
+                          className="px-2.5 py-1.5 bg-white/10 hover:bg-white/20 text-white/80 rounded-xl text-xs font-medium transition-all cursor-pointer"
+                        >
+                          選択解除
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {/* Modern h-12 Table */}
                   <div className="glass-card overflow-hidden rounded-3xl border border-brand-border shadow-sm">
                     <div className="overflow-x-auto">
                       <table className="w-full text-left border-collapse">
                         <thead>
-                          <tr className="border-b border-brand-border bg-brand-light/60">
-                            <th className="px-4 py-2.5 text-[11px] font-bold uppercase tracking-widest text-brand-dark/75 whitespace-nowrap">自動分類 (Category)</th>
-                            <th className="px-4 py-2.5 text-[11px] font-bold uppercase tracking-widest text-brand-dark/75 whitespace-nowrap">ステータス</th>
-                            <th className="px-4 py-2.5 text-[11px] font-bold uppercase tracking-widest text-brand-dark/75 whitespace-nowrap">受信日時</th>
-                            <th className="px-4 py-2.5 text-[11px] font-bold uppercase tracking-widest text-brand-dark/75 whitespace-nowrap">送信者</th>
-                            <th className="px-4 py-2.5 text-[11px] font-bold uppercase tracking-widest text-brand-dark/75 whitespace-nowrap">件名・本文抜粋</th>
-                            <th className="px-4 py-2.5 text-[11px] font-bold uppercase tracking-widest text-brand-dark/75 text-right whitespace-nowrap">操作</th>
+                          <tr className="border-b border-brand-border bg-brand-light/70 h-10">
+                            <th className="w-10 px-3 text-center align-middle">
+                              <input
+                                type="checkbox"
+                                checked={isAllPageSelected}
+                                onChange={() => handleToggleSelectAllContacts(currentPageIds)}
+                                className="rounded border-brand-border text-brand-primary focus:ring-brand-primary/20 cursor-pointer"
+                                title="このページの全件を選択/解除"
+                              />
+                            </th>
+                            <th className="px-3 text-[11px] font-bold uppercase tracking-widest text-brand-dark/75 whitespace-nowrap align-middle">分類 (Category)</th>
+                            <th className="px-3 text-[11px] font-bold uppercase tracking-widest text-brand-dark/75 whitespace-nowrap align-middle">ステータス</th>
+                            <th className="px-3 text-[11px] font-bold uppercase tracking-widest text-brand-dark/75 whitespace-nowrap align-middle">受信日時</th>
+                            <th className="px-3 text-[11px] font-bold uppercase tracking-widest text-brand-dark/75 whitespace-nowrap align-middle">送信者</th>
+                            <th className="px-3 text-[11px] font-bold uppercase tracking-widest text-brand-dark/75 whitespace-nowrap align-middle min-w-[260px]">件名・本文抜粋</th>
+                            <th className="px-3 text-[11px] font-bold uppercase tracking-widest text-brand-dark/75 text-right whitespace-nowrap align-middle pr-4">操作</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-brand-border/60">
-                          {filteredContacts.map(c => {
+                        <tbody className="divide-y divide-brand-border/60 font-sans">
+                          {paginatedContacts.map(c => {
                             const isUrgent = c.category === 'urgent';
                             const isTechnical = c.category === 'technical';
                             const isAccount = c.category === 'account';
+                            const isSelected = selectedContactIds.includes(c.id);
 
                             return (
                               <tr 
                                 key={c.id} 
                                 className={cn(
-                                  "transition-colors",
-                                  isUrgent 
+                                  "h-12 transition-colors",
+                                  isSelected
+                                    ? "bg-brand-primary/10"
+                                    : isUrgent && c.status !== 'replied'
                                     ? "bg-rose-50/40 hover:bg-rose-50/80" 
                                     : "hover:bg-brand-light/30"
                                 )}
                               >
+                                {/* Checkbox */}
+                                <td className="px-3 text-center align-middle">
+                                  <input
+                                    type="checkbox"
+                                    checked={isSelected}
+                                    onChange={() => handleToggleSelectContact(c.id)}
+                                    className="rounded border-brand-border text-brand-primary focus:ring-brand-primary/20 cursor-pointer"
+                                  />
+                                </td>
+
                                 {/* Automated Category Badge & Keywords */}
-                                <td className="px-4 py-3 align-top whitespace-nowrap">
-                                  <div className="space-y-1">
+                                <td className="px-3 align-middle whitespace-nowrap">
+                                  <div className="flex items-center gap-1.5">
                                     {isUrgent && (
-                                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-rose-100 text-rose-800 border border-rose-300 shadow-2xs">
-                                        <AlertTriangle size={12} className="text-rose-600 animate-pulse" />
-                                        <span>🚨 Urgent (緊急)</span>
+                                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-300">
+                                        <AlertTriangle size={11} className="text-rose-600 animate-pulse" />
+                                        <span>Urgent</span>
                                       </span>
                                     )}
                                     {isTechnical && (
-                                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-sky-100 text-sky-800 border border-sky-300 shadow-2xs">
-                                        <Terminal size={12} className="text-sky-600" />
-                                        <span>⚙️ Technical (技術)</span>
+                                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-sky-100 text-sky-800 border border-sky-300">
+                                        <Terminal size={11} className="text-sky-600" />
+                                        <span>Technical</span>
                                       </span>
                                     )}
                                     {isAccount && (
-                                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-purple-100 text-purple-800 border border-purple-300 shadow-2xs">
-                                        <UserCheck size={12} className="text-purple-600" />
-                                        <span>👤 Account-related</span>
+                                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-purple-100 text-purple-800 border border-purple-300">
+                                        <UserCheck size={11} className="text-purple-600" />
+                                        <span>Account</span>
                                       </span>
                                     )}
                                     {!isUrgent && !isTechnical && !isAccount && (
-                                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-100 text-slate-700 border border-slate-200 shadow-2xs">
-                                        <Mail size={12} className="text-slate-500" />
-                                        <span>💬 General (一般)</span>
+                                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                                        <Mail size={11} className="text-slate-500" />
+                                        <span>General</span>
                                       </span>
                                     )}
 
-                                    {/* Keyword Tags */}
+                                    {/* Keyword Tag (first one only for compact table) */}
                                     {c.matchedKeywords && c.matchedKeywords.length > 0 && (
-                                      <div className="flex flex-wrap gap-1 max-w-[150px]">
-                                        {c.matchedKeywords.slice(0, 3).map((kw: string, i: number) => (
-                                          <span key={i} className="text-[9px] px-1.5 py-0.2 bg-black/5 text-black/60 rounded font-mono">
-                                            #{kw}
-                                          </span>
-                                        ))}
-                                      </div>
+                                      <span className="text-[9px] px-1.5 py-0.5 bg-black/5 text-black/60 rounded font-mono hidden md:inline">
+                                        #{c.matchedKeywords[0]}
+                                      </span>
                                     )}
                                   </div>
                                 </td>
 
-                                {/* Status */}
-                                <td className="px-4 py-3 align-top whitespace-nowrap">
-                                  {c.status === 'replied' ? (
-                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-full text-[10px] font-bold uppercase tracking-wider">
-                                      <CheckCircle2 size={10} />
-                                      <span>返信済</span>
-                                    </span>
-                                  ) : (
-                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-100 text-amber-800 border border-amber-200 rounded-full text-[10px] font-bold uppercase tracking-wider">
-                                      <Clock size={10} />
-                                      <span>未対応</span>
-                                    </span>
-                                  )}
+                                {/* Status Toggle */}
+                                <td className="px-3 align-middle whitespace-nowrap">
+                                  <button
+                                    onClick={() => handleUpdateSingleContactStatus(c.id, c.status === 'replied' ? 'pending' : 'replied')}
+                                    className="cursor-pointer group"
+                                    title="クリックでステータスを切り替え"
+                                  >
+                                    {c.status === 'replied' ? (
+                                      <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-100 group-hover:bg-emerald-200 text-emerald-800 border border-emerald-200 rounded-full text-[10px] font-bold uppercase tracking-wider transition-colors">
+                                        <CheckCircle2 size={10} />
+                                        <span>返信済</span>
+                                      </span>
+                                    ) : (
+                                      <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-100 group-hover:bg-amber-200 text-amber-800 border border-amber-200 rounded-full text-[10px] font-bold uppercase tracking-wider transition-colors">
+                                        <Clock size={10} />
+                                        <span>未対応</span>
+                                      </span>
+                                    )}
+                                  </button>
                                 </td>
 
                                 {/* Date */}
-                                <td className="px-4 py-3 align-top text-[11px] text-brand-dark/75 font-mono whitespace-nowrap">
+                                <td className="px-3 align-middle text-[11px] text-brand-dark/75 font-mono whitespace-nowrap">
                                   {new Date(c.created_at).toLocaleString('ja-JP', { 
                                     month: 'numeric', 
                                     day: 'numeric', 
@@ -12161,52 +12437,64 @@ export const AdminDashboard = () => {
                                 </td>
 
                                 {/* Sender */}
-                                <td className="px-4 py-3 align-top whitespace-nowrap">
-                                  <div className="font-bold text-xs text-brand-dark">{c.name}</div>
-                                  <div className="text-[11px] text-brand-dark/60 font-mono truncate max-w-[160px]">{c.email}</div>
+                                <td className="px-3 align-middle whitespace-nowrap max-w-[150px]">
+                                  <div className="font-bold text-xs text-brand-dark truncate">{c.name}</div>
+                                  <div className="text-[10px] text-brand-dark/60 font-mono truncate">{c.email}</div>
                                 </td>
 
-                                {/* Subject & Message Preview */}
-                                <td className="px-4 py-3 align-top min-w-[280px]">
-                                  <div className={cn(
-                                    "font-bold text-xs line-clamp-1 mb-0.5",
-                                    isUrgent ? "text-rose-900" : "text-brand-dark"
-                                  )}>
-                                    {c.subject}
-                                  </div>
-                                  <div className="text-[11px] text-brand-dark/70 line-clamp-2 leading-relaxed">
-                                    {c.message}
+                                {/* Subject & Message preview (1-line) */}
+                                <td className="px-3 align-middle max-w-[320px]">
+                                  <div className="flex items-center gap-1.5 truncate">
+                                    <span className={cn(
+                                      "font-bold text-xs shrink-0 max-w-[140px] truncate",
+                                      isUrgent ? "text-rose-900" : "text-brand-dark"
+                                    )}>
+                                      {c.subject}
+                                    </span>
+                                    <span className="text-brand-dark/30 text-xs">—</span>
+                                    <span className="text-[11px] text-brand-dark/60 truncate">
+                                      {c.message}
+                                    </span>
                                   </div>
                                 </td>
 
                                 {/* Action */}
-                                <td className="px-4 py-3 align-top text-right whitespace-nowrap">
-                                  <button 
-                                    onClick={() => setSelectedContact(c)}
-                                    className={cn(
-                                      "py-1.5 px-3 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition-all shadow-xs cursor-pointer",
-                                      isUrgent && c.status !== 'replied'
-                                        ? "bg-rose-600 hover:bg-rose-700 text-white ring-2 ring-rose-200"
-                                        : "bg-brand-primary hover:bg-brand-dark text-white"
-                                    )}
-                                  >
-                                    <Mail size={12} />
-                                    <span>{c.status === 'replied' ? '詳細確認' : '確認・返信'}</span>
-                                  </button>
+                                <td className="px-3 align-middle text-right whitespace-nowrap pr-4">
+                                  <div className="flex items-center justify-end gap-1.5">
+                                    <button 
+                                      onClick={() => setSelectedContact(c)}
+                                      className={cn(
+                                        "py-1 px-2.5 rounded-lg text-xs font-bold inline-flex items-center gap-1 transition-all shadow-2xs cursor-pointer",
+                                        isUrgent && c.status !== 'replied'
+                                          ? "bg-rose-600 hover:bg-rose-700 text-white ring-2 ring-rose-200"
+                                          : "bg-brand-primary hover:bg-brand-dark text-white"
+                                      )}
+                                    >
+                                      <Mail size={12} />
+                                      <span>{c.status === 'replied' ? '詳細' : '返信'}</span>
+                                    </button>
+                                    <button
+                                      onClick={() => handleDeleteSingleContact(c.id)}
+                                      className="p-1 rounded-lg text-brand-dark/40 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                                      title="このお問い合わせを削除"
+                                    >
+                                      <Trash2 size={13} />
+                                    </button>
+                                  </div>
                                 </td>
                               </tr>
                             );
                           })}
 
-                          {filteredContacts.length === 0 && (
+                          {paginatedContacts.length === 0 && (
                             <tr>
-                              <td colSpan={6} className="py-16 text-center text-brand-dark/50 font-serif">
+                              <td colSpan={7} className="py-16 text-center text-brand-dark/50 font-serif">
                                 <div className="max-w-xs mx-auto space-y-2">
                                   <Mail size={32} className="mx-auto text-brand-dark/30" />
                                   <p className="text-sm font-bold text-brand-dark/80">条件に合致するお問い合わせはありません</p>
                                   <p className="text-xs text-brand-dark/50">フィルターを解除するか、上部の「分類サンプル投入」ボタンをお試しください。</p>
                                   <button
-                                    onClick={() => { setContactCategoryFilter('all'); setContactStatusFilter('all'); setContactSearchQuery(''); }}
+                                    onClick={() => { setContactCategoryFilter('all'); setContactStatusFilter('all'); setContactSearchQuery(''); setContactCurrentPage(1); }}
                                     className="px-3 py-1.5 bg-brand-light text-brand-dark text-xs font-bold rounded-lg hover:bg-brand-light/80 transition-colors cursor-pointer"
                                   >
                                     フィルターを初期化
@@ -12218,6 +12506,39 @@ export const AdminDashboard = () => {
                         </tbody>
                       </table>
                     </div>
+
+                    {/* Pagination Bar */}
+                    {filteredContacts.length > 0 && (
+                      <div className="p-3 bg-brand-light/40 border-t border-brand-border flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-brand-dark/70">
+                        <div className="font-mono text-[11px]">
+                          全 <strong className="text-brand-dark font-bold">{filteredContacts.length}</strong> 件中 {startIndex + 1} - {Math.min(startIndex + contactItemsPerPage, filteredContacts.length)} 件を表示
+                        </div>
+
+                        {totalPages > 1 && (
+                          <div className="flex items-center gap-1">
+                            <button
+                              onClick={() => setContactCurrentPage(prev => Math.max(1, prev - 1))}
+                              disabled={safeCurrentPage === 1}
+                              className="px-2.5 py-1 rounded-lg bg-white border border-brand-border font-bold text-xs hover:bg-brand-light transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                            >
+                              前へ
+                            </button>
+                            <div className="flex items-center gap-1 font-mono font-bold text-[11px] px-2">
+                              <span>{safeCurrentPage}</span>
+                              <span className="opacity-40">/</span>
+                              <span>{totalPages}</span>
+                            </div>
+                            <button
+                              onClick={() => setContactCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                              disabled={safeCurrentPage === totalPages}
+                              className="px-2.5 py-1 rounded-lg bg-white border border-brand-border font-bold text-xs hover:bg-brand-light transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                            >
+                              次へ
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               );
@@ -14871,33 +15192,73 @@ export const AdminDashboard = () => {
                       </button>
                     </div>
 
-                    {/* Tone selector pills */}
-                    <div className="flex flex-wrap items-center gap-1.5 p-2 bg-black/[0.03] rounded-xl border border-black/5">
-                      <span className="text-[11px] font-bold text-black/50 pl-1">トーン指定:</span>
-                      {[
-                        { key: 'standard', label: '標準・丁寧' },
-                        { key: 'guide', label: '仕様・使い方案内' },
-                        { key: 'apology', label: 'お詫び・調査' },
-                        { key: 'gratitude', label: '感謝・共感' },
-                        { key: 'concise', label: '要点簡潔' },
-                      ].map((t) => (
-                        <button
-                          key={t.key}
-                          type="button"
-                          disabled={isGeneratingAiDraft}
-                          onClick={() => {
-                            setAiDraftTone(t.key as any);
-                            handleGenerateAiDraft(t.key as any);
-                          }}
-                          className={`text-[11px] px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
-                            aiDraftTone === t.key
-                              ? 'bg-emerald-700 text-white shadow-xs font-bold'
-                              : 'bg-white/80 text-black/70 hover:bg-white hover:text-black border border-black/5 font-medium'
-                          }`}
-                        >
-                          {t.label}
-                        </button>
-                      ))}
+                    {/* Tone selector pills & Quick Templates */}
+                    <div className="space-y-2">
+                      <div className="flex flex-wrap items-center gap-1.5 p-2 bg-black/[0.03] rounded-xl border border-black/5">
+                        <span className="text-[11px] font-bold text-black/50 pl-1">トーン指定:</span>
+                        {[
+                          { key: 'standard', label: '標準・丁寧' },
+                          { key: 'guide', label: '仕様・使い方案内' },
+                          { key: 'apology', label: 'お詫び・調査' },
+                          { key: 'gratitude', label: '感謝・共感' },
+                          { key: 'concise', label: '要点簡潔' },
+                        ].map((t) => (
+                          <button
+                            key={t.key}
+                            type="button"
+                            disabled={isGeneratingAiDraft}
+                            onClick={() => {
+                              setAiDraftTone(t.key as any);
+                              handleGenerateAiDraft(t.key as any);
+                            }}
+                            className={`text-[11px] px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                              aiDraftTone === t.key
+                                ? 'bg-emerald-700 text-white shadow-xs font-bold'
+                                : 'bg-white/80 text-black/70 hover:bg-white hover:text-black border border-black/5 font-medium'
+                            }`}
+                          >
+                            {t.label}
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* Quick Template Palette */}
+                      <div className="p-2.5 bg-brand-light/50 rounded-xl border border-brand-border/60 space-y-1.5">
+                        <span className="text-[11px] font-bold text-brand-dark/60 block pl-0.5">📋 よく使う定型文テンプレート (ワンクリック挿入):</span>
+                        <div className="flex flex-wrap gap-1.5">
+                          {[
+                            {
+                              title: '🪪 本人確認(eKYC)案内',
+                              text: `いつもReMEETsをご利用いただきありがとうございます。\nReMEETs運営事務局サポートチームです。\n\n本人確認（eKYC）の手順についてご案内いたします。\nマイページ右上の「設定・本人確認」より、運転免許証またはマイナンバーカードの撮影画面にお進みいただき、表面・厚み・裏面を明るい場所で撮影してご提出ください。\n\n通常、提出から数分〜数時間以内に照合が完了いたします。\nご不明な点がございましたらお気軽にお問い合わせください。`
+                            },
+                            {
+                              title: '💳 決済・返金調査',
+                              text: `いつもReMEETsをご利用いただきありがとうございます。\nReMEETs運営事務局サポートチームです。\n\n決済・料金に関するお問い合わせをいただきありがとうございます。\nいただいた内容に基づき、決済代行システム（Stripe）およびサーバーログとの照合・調査を開始いたしました。\n\n調査結果が判明次第、迅速にご案内または返金処理のご報告を差し上げます。今しばらくお待ちくださいますようお願い申し上げます。`
+                            },
+                            {
+                              title: '👤 退会・データ削除',
+                              text: `いつもReMEETsをご利用いただきありがとうございます。\nReMEETs運営事務局サポートチームです。\n\n退会および登録データの削除についてご案内いたします。\nマイページの「アカウント設定」最下部にある「退会手続き」より、いつでも即座にアカウントの退会および個人データの完全消去が可能です。\n\nこれまでReMEETsをご利用いただき、心より感謝申し上げます。`
+                            },
+                            {
+                              title: '💌 ボトルの使い方案内',
+                              text: `いつもReMEETsをご利用いただきありがとうございます。\nReMEETs運営事務局サポートチームです。\n\n想い出ボトルメールの仕様についてご案内いたします。\nReMEETsでは、当時の時代・都道府県・学校名・想い出クイズを設定してボトルを海へ流します。お相手がクイズに正答し、相互合意と本人確認（eKYC）を完了することで、安全に連絡先の開示・再会が実現します。\n\nぜひ素敵な再会のきっかけとしてご活用ください。`
+                            },
+                            {
+                              title: '🛡️ 迷惑行為・ブロック案内',
+                              text: `いつもReMEETsをご利用いただきありがとうございます。\nReMEETs運営事務局サポートチームです。\n\n不快な思いをおかけし大変申し訳ございません。\nReMEETsでは、不適切な言動を行うユーザーを通報・ブロックする機能を備えております。通報を受けたアカウントは運営にて厳重に監査し、利用規約に基づき利用停止等の対処を行います。\n\n安心してご利用いただける環境維持に努めてまいります。`
+                            }
+                          ].map((tpl, i) => (
+                            <button
+                              key={i}
+                              type="button"
+                              onClick={() => setReplyMessage(tpl.text)}
+                              className="text-[11px] px-2.5 py-1 rounded-lg bg-white border border-brand-border text-brand-dark hover:bg-brand-primary hover:text-white hover:border-brand-primary transition-all shadow-2xs font-bold cursor-pointer"
+                            >
+                              {tpl.title}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
                     </div>
 
                     <div className="relative">
@@ -14905,7 +15266,7 @@ export const AdminDashboard = () => {
                         required
                         value={replyMessage}
                         onChange={(e) => setReplyMessage(e.target.value)}
-                        placeholder="返信内容を入力してください...（上の「AI返信下書きを作成」を押すと、お問い合わせに応じた文面が自動生成されます）"
+                        placeholder="返信内容を入力してください...（上の「AI返信下書きを作成」または「定型文テンプレート」を押すと文面が自動反映されます）"
                         className="w-full bg-brand-light/50 border border-brand-border rounded-2xl px-6 py-4 text-base font-serif focus:outline-none focus:ring-2 focus:ring-black/20 transition-all min-h-[220px] leading-relaxed"
                       />
                       {replyMessage && (
