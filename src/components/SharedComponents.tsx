@@ -5,7 +5,7 @@ import {
   AlertTriangle, ArrowRight, BookOpen, Check, Coffee, Copy, CreditCard,
   HeartHandshake, LogIn, LogOut, Mail, Menu, Search, Send, Shield,
   ShieldCheck, Sparkles, User as UserIcon, X, Heart, MapPin, Plus,
-  ChevronDown, ChevronUp, Bell, Settings, Shield as ShieldIcon
+  ChevronDown, ChevronUp, Bell, Settings, Shield as ShieldIcon, HelpCircle
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { cn, formatEraLabel, getPostUrl, getCategoryText, PREFECTURES } from '../lib/utils';
