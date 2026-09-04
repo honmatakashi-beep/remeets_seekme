@@ -12,7 +12,6 @@ import { WarningMessage, BottleLoader, Navbar, Footer, ProtectedRoute, GoogleSea
 import { PaymentPreviewPage } from './pages/PaymentPreviewPage';
 import { PaymentPreviewFloatingButton } from './components/PaymentPreviewFloatingButton';
 import { HomePage } from './pages/HomePage';
-import { LanguageProvider } from './contexts/LanguageContext';
 import React, { useState, useEffect, createContext, useContext, useRef, Component } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useParams, Navigate, useLocation, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -120,9 +119,8 @@ export default function App() {
   };
 
   return (
-    <LanguageProvider>
-      <AuthProvider>
-        <ConfirmContext.Provider value={{ showConfirm }}>
+    <AuthProvider>
+      <ConfirmContext.Provider value={{ showConfirm }}>
         <Router>
           <PageViewTracker />
           <ScrollToTop />
@@ -181,7 +179,6 @@ export default function App() {
         </Router>
       </ConfirmContext.Provider>
     </AuthProvider>
-  </LanguageProvider>
   );
 }
 
