@@ -4656,64 +4656,7 @@ export const AdminDashboard = () => {
           )}
 
           {activeTab === 'liveAlerts' && (
-            <div className="space-y-6">
-              <div className="glass-card p-6 rounded-3xl space-y-6 bg-white border border-brand-border">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-brand-border pb-4">
-                  <div className="space-y-1">
-                    <h3 className="text-xl font-serif text-brand-dark flex items-center gap-2.5">
-                      <Radio size={22} className="text-emerald-500 animate-pulse" />
-                      <span>運営リアルタイム警報 ＆ 大量投稿スパム監視センター</span>
-                    </h3>
-                    <p className="text-xs text-neutral-500 font-sans">
-                      Web Audio API による高精度シンセサイザー警報音と、HTML5 Web Notification によるバックグラウンドデスクトップ通知を統合管理します。
-                    </p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-sans">
-                  <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200/80 space-y-2">
-                    <div className="flex items-center gap-2 text-rose-800 font-bold">
-                      <ShieldAlert size={18} className="text-rose-600" />
-                      <span>🚨 緊急通報警報 (CRITICAL)</span>
-                    </div>
-                    <p className="text-rose-950/80 leading-relaxed text-[11px]">
-                      ユーザーから「ストーキング・脅迫・個人情報晒し」等の緊急通報を受信した際、二重パルス警報音（救急音）と画面ポップアップで即時通知します。
-                    </p>
-                  </div>
-
-                  <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200/80 space-y-2">
-                    <div className="flex items-center gap-2 text-amber-800 font-bold">
-                      <AlertTriangle size={18} className="text-amber-600" />
-                      <span>⚠️ 大量連続投稿スパム (HIGH)</span>
-                    </div>
-                    <p className="text-amber-950/80 leading-relaxed text-[11px]">
-                      同一IPまたは同一ユーザーから15分以内に3件以上の連投が行われた場合、トリプルビープ音で荒らし・ボット攻撃を検知します。
-                    </p>
-                  </div>
-
-                  <div className="p-4 rounded-2xl bg-teal-50 border border-teal-200/80 space-y-2">
-                    <div className="flex items-center gap-2 text-teal-800 font-bold">
-                      <Bot size={18} className="text-teal-600" />
-                      <span>🤖 AI安全防衛 ＆ 総当たり遮断</span>
-                    </div>
-                    <p className="text-teal-950/80 leading-relaxed text-[11px]">
-                      AI安全エンジンによる不適切ボトルの自動隔離（ai_flagged=1）や、5回連続クイズ誤答による24時間アクセスロックをリアルタイムにトラッキングします。
-                    </p>
-                  </div>
-                </div>
-
-                <div className="p-5 rounded-2xl bg-neutral-50 border border-neutral-200/80 space-y-3">
-                  <h4 className="text-xs font-bold text-neutral-700 uppercase tracking-wider font-sans">
-                    💡 デスクトップ通知運用のコツ
-                  </h4>
-                  <ul className="text-xs text-neutral-600 space-y-1.5 list-disc list-inside leading-relaxed font-sans">
-                    <li>ブラウザ通知（Desktop Notification）をONにしておくと、管理者ダッシュボードを別タブで開いたまま他の作業をしていても、画面右下にポップアップ通知が届きます。</li>
-                    <li>通知バナーをクリックすると、自動的にReMEETsの画面が最前面にフォーカスされ、該当の通報やボトル管理画面が開きます。</li>
-                    <li>上部の「通報シミュレーション」「連投スパムシミュレーション」ボタンを押すことで、いつでも実運用前の音声・通知テストを実施できます。</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
+            <AdminLiveAlertMonitor token={token} onNavigateTab={(tab) => setActiveTab(tab)} />
           )}
 
           {activeTab === 'successStories' && (() => {
