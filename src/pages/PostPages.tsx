@@ -3227,6 +3227,187 @@ export const FlowExplanation = () => (
   </div>
 );
 
+export const RecipientSafetyGuide = ({
+  roadmapSectionRef,
+  onStartQuiz,
+  onOpenGuide
+}: {
+  roadmapSectionRef?: React.RefObject<HTMLDivElement | null>;
+  onStartQuiz?: () => void;
+  onOpenGuide?: () => void;
+}) => {
+  const navigate = useNavigate();
+
+  return (
+    <div 
+      ref={roadmapSectionRef}
+      className="scroll-mt-24 bg-gradient-to-b from-teal-50/60 via-white to-slate-50 border border-teal-200/90 rounded-3xl p-5 md:p-8 font-sans shadow-xs space-y-6 text-left"
+    >
+      {/* 1. ヘッダー：安心宣言＆プラットフォーム概要 */}
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 border-b border-teal-100 pb-4">
+        <div className="space-y-1.5">
+          <div className="flex items-center gap-2">
+            <span className="text-xl">🤝</span>
+            <h3 className="text-base md:text-lg font-bold text-slate-900 tracking-tight">
+              初めてこの手紙を見つけた方へ ── ReMEETsの安心再会システム
+            </h3>
+          </div>
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-medium">
+            お名前は検索エンジンで見つかりますが、手紙本文とお互いの連絡先は<strong className="text-teal-900 font-bold">「二人だけの思い出クイズ」を解いたご本人のみに安全に開示</strong>されます。
+          </p>
+        </div>
+        <div className="flex items-center gap-2 shrink-0 self-start sm:self-auto">
+          <span className="text-[11px] font-bold text-teal-800 bg-teal-100/80 px-2.5 py-1 rounded-lg border border-teal-300/60 flex items-center gap-1">
+            <ShieldCheck size={14} className="text-teal-700" />
+            プライバシー保護
+          </span>
+          <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100/80 px-2.5 py-1 rounded-lg border border-emerald-300/60 flex items-center gap-1">
+            <CheckCircle2 size={14} className="text-emerald-700" />
+            全額返金保証付
+          </span>
+        </div>
+      </div>
+
+      {/* 2. 再会へのシンプルな3ステップ・インフォグラフィック */}
+      <div className="space-y-3">
+        <h4 className="text-xs font-bold text-slate-700 uppercase tracking-widest flex items-center gap-1.5">
+          <Sparkles size={14} className="text-teal-600" />
+          <span>手紙を開封し連絡先を受け取るまでの 3ステップ</span>
+        </h4>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+          {/* STEP 1 */}
+          <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-2 relative overflow-hidden flex flex-col justify-between">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-teal-100 text-teal-800">
+                  STEP 1
+                </span>
+                <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                  無料（登録不要）
+                </span>
+              </div>
+              <div className="flex items-center gap-2 pt-1">
+                <div className="w-8 h-8 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center shrink-0">
+                  <Search size={16} />
+                </div>
+                <h5 className="font-bold text-sm text-slate-900">手がかり・思い出を確認</h5>
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                差出人との出会いやエピソードから、心当たりがあるかお相手を思い出します。
+              </p>
+            </div>
+          </div>
+
+          {/* STEP 2 */}
+          <div className="p-4 rounded-2xl bg-white border border-teal-300/80 shadow-2xs space-y-2 relative overflow-hidden flex flex-col justify-between ring-1 ring-teal-200/50">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-teal-700 text-white shadow-2xs">
+                  STEP 2
+                </span>
+                <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                  無料
+                </span>
+              </div>
+              <div className="flex items-center gap-2 pt-1">
+                <div className="w-8 h-8 rounded-xl bg-teal-100 text-teal-800 flex items-center justify-center shrink-0">
+                  <Key size={16} />
+                </div>
+                <h5 className="font-bold text-sm text-teal-950">二人だけの思い出クイズ</h5>
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                差出人が設定した思い出の質問に正解し、ご本人であることを証明します。
+              </p>
+            </div>
+          </div>
+
+          {/* STEP 3 */}
+          <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-2 relative overflow-hidden flex flex-col justify-between">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-slate-200 text-slate-800">
+                  STEP 3
+                </span>
+                <span className="text-[11px] font-bold text-orange-800 bg-orange-50 px-2 py-0.5 rounded border border-orange-200">
+                  実費 600円〜1,200円
+                </span>
+              </div>
+              <div className="flex items-center gap-2 pt-1">
+                <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0">
+                  <Mail size={16} />
+                </div>
+                <h5 className="font-bold text-sm text-slate-900">手紙開封・連絡先受け取り</h5>
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                公的eKYC審査と手紙開封を行い、差出人のLINEや連絡先を安全に取得します。
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 3. 信頼性を担保する 3大安心・安全保証 */}
+      <div className="bg-slate-50/90 rounded-2xl p-4 md:p-5 border border-slate-200/80 space-y-3">
+        <h4 className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+          <Shield size={14} className="text-teal-700" />
+          <span>ReMEETsが約束する 3つの安心・安全保証</span>
+        </h4>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+          <div className="p-3 bg-white rounded-xl border border-slate-200/70 space-y-1">
+            <div className="font-bold text-slate-900 flex items-center gap-1.5">
+              <Lock size={13} className="text-teal-600" />
+              <span>第三者覗き見防止</span>
+            </div>
+            <p className="text-slate-600 text-[11px] leading-relaxed">
+              クイズ正解者以外には、手紙の本文や連絡先は一切開示されず暗号化保護されます。
+            </p>
+          </div>
+          <div className="p-3 bg-white rounded-xl border border-slate-200/70 space-y-1">
+            <div className="font-bold text-slate-900 flex items-center gap-1.5">
+              <UserCheck size={13} className="text-teal-600" />
+              <span>厳格な公的eKYC</span>
+            </div>
+            <p className="text-slate-600 text-[11px] leading-relaxed">
+              身元確認を行い、悪質ななりすましやストーカー行為を未然に徹底遮断します。
+            </p>
+          </div>
+          <div className="p-3 bg-white rounded-xl border border-slate-200/70 space-y-1">
+            <div className="font-bold text-slate-900 flex items-center gap-1.5">
+              <CreditCard size={13} className="text-teal-600" />
+              <span>全額自動返金保証</span>
+            </div>
+            <p className="text-slate-600 text-[11px] leading-relaxed">
+              万が一審査落ちや照合不一致が発生した場合は、手数料は即時全額自動返金されます。
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* 4. アクション導線（クイズへ進む ＆ ガイドへ） */}
+      <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-teal-100">
+        <button
+          onClick={onOpenGuide || (() => navigate('/guide'))}
+          className="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-teal-800 transition-colors py-2 px-3 rounded-xl hover:bg-teal-50/60 cursor-pointer"
+        >
+          <BookOpen size={14} className="text-teal-700" />
+          <span>詳しいご利用ガイドとQ&Aを見る</span>
+          <ArrowRight size={12} className="text-slate-400" />
+        </button>
+
+        {onStartQuiz && (
+          <button
+            onClick={onStartQuiz}
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-teal-700 hover:bg-teal-800 text-white text-xs md:text-sm font-bold rounded-2xl shadow-md hover:shadow-lg transition-all cursor-pointer group"
+          >
+            <span>心当たりがある方は「思い出クイズ」へ進む（無料）</span>
+            <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
+          </button>
+        )}
+      </div>
+    </div>
+  );
+};
+
 export const RevealContactModal = ({ 
   isOpen, 
   onClose, 
@@ -5866,87 +6047,13 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               </div>
             </div>
 
-            {/* 2. 【手続き・料金ガイド】4ステップ進行度インジケーター */}
-            {!isOwner && post.status !== 'resolved' && (
-              <div ref={roadmapSectionRef} className="scroll-mt-24 bg-white border border-slate-200/90 rounded-3xl p-5 md:p-6 font-sans shadow-xs space-y-4 text-left">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
-                  <div className="flex items-center gap-2 text-slate-900 font-bold text-xs md:text-sm">
-                    <ShieldCheck size={18} className="text-teal-600 shrink-0" />
-                    <span>🔐 再会の手続きと料金ガイド</span>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 relative">
-                  {[
-                    { label: "手がかりを確認", desc: "差出人との出会い・思い出から相手を思い出す", prices: ["無料"] },
-                    { label: "秘密の質問に回答", desc: "お互いの思い出の質問に正解して本人確認", prices: ["無料"] },
-                    { label: "年齢・本人確認", desc: "無料の年齢誓約 または 公的身分証(eKYC)認証", prices: ["無料", "600円"] },
-                    { label: "手紙開封・連絡先開示", desc: "隠された手紙を開封 ＆ 差出人の連絡先を取得", prices: ["600円"] },
-                  ].map((step, idx) => {
-                    const stepNum = idx + 1;
-                    return (
-                      <div 
-                        key={idx} 
-                        className="relative flex flex-col p-3.5 md:p-4 rounded-2xl border border-teal-200/90 bg-gradient-to-br from-teal-50/70 via-emerald-50/40 to-slate-50 text-slate-800 shadow-2xs hover:shadow-xs transition-all"
-                      >
-                        <div className="flex items-center justify-between gap-2 mb-2 text-xs">
-                          <div className="flex items-center gap-2 min-w-0">
-                            <span className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold bg-teal-700 text-white shrink-0 shadow-2xs">
-                              {stepNum}
-                            </span>
-                            <span className="font-bold text-left text-xs md:text-sm leading-snug text-teal-950 whitespace-nowrap">{step.label}</span>
-                          </div>
-                          <div className="flex items-center gap-1.5 shrink-0">
-                            {step.prices.map((p, pIdx) => (
-                              <span 
-                                key={pIdx}
-                                className={`text-[10px] font-bold px-2 py-0.5 rounded whitespace-nowrap ${
-                                  p === "無料" 
-                                    ? "bg-emerald-100 text-emerald-800 border border-emerald-300/70" 
-                                    : "bg-orange-100 text-orange-800 border border-orange-300/70"
-                                }`}
-                              >
-                                {p}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                        <p className="text-xs text-left leading-relaxed text-slate-600 font-medium">{step.desc}</p>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* 3. 【初めての方へ・ガイド導線】 */}
+            {/* 2. 【受取人様のための安心再会ガイド（一体型プレミアムカード）】 */}
             {!isOwner && post.status !== 'resolved' && !showDetails && (
-              <div className="p-5 bg-slate-50 border border-slate-200/90 rounded-2xl text-left space-y-3 font-sans">
-                <div className="flex items-center justify-between gap-2 border-b border-slate-200/80 pb-2.5">
-                  <div className="flex items-center gap-2">
-                    <span className="text-base">🤝</span>
-                    <h4 className="text-sm font-bold text-slate-900">
-                      初めての方へ：ReMEETs（リミーツ）とは？
-                    </h4>
-                  </div>
-                  <span className="text-[10px] font-bold text-teal-800 bg-teal-100 px-2 py-0.5 rounded-md">
-                    安心の再会設計
-                  </span>
-                </div>
-                <p className="text-xs text-slate-700 leading-relaxed font-medium">
-                  ReMEETsは、昔の知人・ご友人・大切な方と安全に再会するための「思い出照合プラットフォーム」です。第三者への情報流出を防ぐため、二人だけの「思い出クイズ」に正解したご本人のみに手紙本文および差出人の連絡先が開示されます。
-                </p>
-                <div className="pt-1 flex flex-wrap gap-2">
-                  <button
-                    onClick={() => navigate('/guide')}
-                    className="inline-flex items-center gap-2 px-3.5 py-2 bg-white hover:bg-slate-100 border border-slate-300 text-slate-800 text-xs font-bold rounded-xl shadow-2xs transition-all cursor-pointer"
-                  >
-                    <BookOpen size={15} className="text-teal-700" />
-                    <span>かんたんご利用ガイド・仕組みを見る</span>
-                    <ArrowRight size={13} className="text-slate-400" />
-                  </button>
-                </div>
-              </div>
+              <RecipientSafetyGuide 
+                roadmapSectionRef={roadmapSectionRef}
+                onStartQuiz={handleStartContact}
+                onOpenGuide={() => navigate('/guide')}
+              />
             )}
 
             {isOwner && (
@@ -6037,30 +6144,6 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                   </div>
                 </div>
               </div>
-            )}
-
-            {/* 各種利用ガイド */}
-            {!showDetails && (
-              <section className="mt-12 pt-12 border-t border-brand-border/30 text-left">
-                <div className="flex items-center gap-4 mb-6">
-                  <span className="w-12 h-[1px] bg-brand-primary/30"></span>
-                  <h2 className="text-sm font-bold text-black uppercase tracking-[0.3em] font-sans">
-                    ReMEETsの再会システム
-                  </h2>
-                </div>
-                <div className="bg-brand-primary/5 rounded-[32px] p-8 md:p-10 relative overflow-hidden shadow-sm">
-                  <div className="relative z-10 space-y-4">
-                    <h3 className="text-lg md:text-xl font-serif text-black font-bold font-serif leading-tight">
-                      プライバシー第一の再会プラットフォーム
-                    </h3>
-                    <p className="text-xs md:text-sm text-black/60 leading-relaxed font-sans">
-                      本名は検索エンジンに掲載されますが、メッセージの内容は「二人だけの思い出」を解かない限り開けません。
-                      悪意ある第三者への情報流出を防ぎながら、お互いが安全に繋がれる可能性を追求した設計です。
-                    </p>
-                    <FlowExplanation />
-                  </div>
-                </div>
-              </section>
             )}
           </motion.div>
         )}
@@ -6515,31 +6598,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
             </div>
           )}
 
-          {/* How it works for public visitors */}
-          {!showDetails && (
-            <section className="mt-16 pt-16 border-t border-brand-border/30">
-              <div className="flex items-center gap-4 mb-8">
-                <span className="w-12 h-[1px] bg-brand-primary/30"></span>
-                <h2 className="text-sm font-bold text-black uppercase tracking-[0.3em]">
-                  ReMEETsの再会システム
-                </h2>
-              </div>
-              <div className="bg-brand-primary/5 rounded-[40px] p-8 md:p-12 relative overflow-hidden">
-                <div className="relative z-10">
-                  <div className="max-w-2xl">
-                    <h3 className="text-xl md:text-2xl font-serif text-black mb-4">
-                      プライバシー第一の再会プラットフォーム
-                    </h3>
-                    <p className="text-sm text-black/60 leading-relaxed mb-8">
-                      本名は検索エンジンに登録されますが、メッセージの内容は「二人だけの思い出」がないと開けません。
-                      悪意のある第三者からあなたを守り、かつ再会の可能性を最大化するための設計です。
-                    </p>
-                    <FlowExplanation />
-                  </div>
-                </div>
-              </div>
-            </section>
-          )}
+
 
           {isOwner && (
             <div className="glass-card p-6 md:p-12 border-brand-primary/20 text-center space-y-8">
