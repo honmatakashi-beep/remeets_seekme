@@ -3269,33 +3269,33 @@ export const RecipientSafetyGuide = ({
       </div>
 
       {/* 2. 【フロー進行型】手紙を開封するまでのシンプルな 3ステップ */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <h4 className="text-xs font-extrabold text-slate-800 uppercase tracking-widest flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-teal-600 animate-pulse"></span>
+      <div className="space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-b border-slate-100 pb-2">
+          <h4 className="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-teal-600 shrink-0"></span>
             <span>手紙を開封し連絡先を受け取るまでの流れ（3ステップ）</span>
           </h4>
-          <span className="text-[11px] text-slate-400 font-medium hidden sm:inline">左から順にお進みください</span>
+          <span className="text-xs text-slate-500 font-medium">3つのステップで安全に再会できます</span>
         </div>
 
-        {/* タイムライン・ステップ進行カード */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 relative">
+        {/* タイムライン・ステップ進行カード（3ステップ均等デザイン） */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 relative">
           {/* STEP 1 */}
-          <div className="relative p-4 rounded-2xl bg-teal-50/50 border-2 border-teal-300/80 shadow-2xs flex flex-col justify-between group transition-all hover:bg-teal-50/80">
+          <div className="relative p-4 sm:p-5 rounded-2xl bg-slate-50/80 border border-slate-200/90 shadow-2xs flex flex-col justify-between space-y-3">
             <div className="space-y-2.5">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-black tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-teal-700 text-white shadow-2xs">
+                <span className="text-[11px] font-black tracking-wider uppercase px-2.5 py-1 rounded-lg bg-teal-700 text-white shadow-2xs">
                   STEP 01
                 </span>
-                <span className="text-[11px] font-bold text-emerald-800 bg-white/90 px-2 py-0.5 rounded-md border border-emerald-200/80">
+                <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100/70 px-2 py-0.5 rounded-md border border-emerald-300/60">
                   無料（登録不要）
                 </span>
               </div>
               <div className="flex items-center gap-2.5 pt-0.5">
-                <div className="w-9 h-9 rounded-xl bg-teal-100 text-teal-800 flex items-center justify-center shrink-0 shadow-inner">
-                  <Search size={18} />
+                <div className="w-10 h-10 rounded-xl bg-teal-100 text-teal-800 flex items-center justify-center shrink-0 shadow-inner">
+                  <Search size={20} />
                 </div>
-                <h5 className="font-bold text-sm text-slate-900 leading-snug">
+                <h5 className="font-bold text-sm sm:text-base text-slate-900 leading-snug">
                   手がかり・思い出を確認
                 </h5>
               </div>
@@ -3303,24 +3303,28 @@ export const RecipientSafetyGuide = ({
                 差出人との出会いやエピソードから、心当たりがあるかお相手を思い出します。
               </p>
             </div>
+            <div className="text-[11px] text-teal-800 font-bold bg-white p-2 rounded-xl border border-slate-200/80 flex items-center gap-1.5">
+              <CheckCircle2 size={13} className="text-teal-600 shrink-0" />
+              <span>このページで今すぐ確認できます</span>
+            </div>
           </div>
 
           {/* STEP 2 */}
-          <div className="relative p-4 rounded-2xl bg-white border border-slate-200/90 shadow-2xs flex flex-col justify-between group transition-all hover:border-teal-300">
+          <div className="relative p-4 sm:p-5 rounded-2xl bg-slate-50/80 border border-slate-200/90 shadow-2xs flex flex-col justify-between space-y-3">
             <div className="space-y-2.5">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-black tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700">
+                <span className="text-[11px] font-black tracking-wider uppercase px-2.5 py-1 rounded-lg bg-teal-700 text-white shadow-2xs">
                   STEP 02
                 </span>
-                <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100/70 px-2 py-0.5 rounded-md border border-emerald-300/60">
                   無料
                 </span>
               </div>
               <div className="flex items-center gap-2.5 pt-0.5">
-                <div className="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
-                  <Key size={18} />
+                <div className="w-10 h-10 rounded-xl bg-teal-100 text-teal-800 flex items-center justify-center shrink-0 shadow-inner">
+                  <Key size={20} />
                 </div>
-                <h5 className="font-bold text-sm text-slate-900 leading-snug">
+                <h5 className="font-bold text-sm sm:text-base text-slate-900 leading-snug">
                   思い出クイズに回答
                 </h5>
               </div>
@@ -3328,30 +3332,38 @@ export const RecipientSafetyGuide = ({
                 差出人が設定した思い出の質問に正解し、ご本人であることを証明します。
               </p>
             </div>
+            <div className="text-[11px] text-teal-800 font-bold bg-white p-2 rounded-xl border border-slate-200/80 flex items-center gap-1.5">
+              <Lock size={13} className="text-teal-600 shrink-0" />
+              <span>正解者のみ次のステップへ進行</span>
+            </div>
           </div>
 
           {/* STEP 3 */}
-          <div className="relative p-4 rounded-2xl bg-white border border-slate-200/90 shadow-2xs flex flex-col justify-between group transition-all hover:border-teal-300">
+          <div className="relative p-4 sm:p-5 rounded-2xl bg-slate-50/80 border border-slate-200/90 shadow-2xs flex flex-col justify-between space-y-3">
             <div className="space-y-2.5">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-black tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700">
+                <span className="text-[11px] font-black tracking-wider uppercase px-2.5 py-1 rounded-lg bg-teal-700 text-white shadow-2xs">
                   STEP 03
                 </span>
-                <span className="text-[11px] font-bold text-orange-800 bg-orange-50 px-2 py-0.5 rounded-md border border-orange-200">
+                <span className="text-[11px] font-bold text-orange-800 bg-orange-100/70 px-2 py-0.5 rounded-md border border-orange-300/60">
                   実費 600円〜1,200円
                 </span>
               </div>
               <div className="flex items-center gap-2.5 pt-0.5">
-                <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0">
-                  <Mail size={18} />
+                <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0 shadow-inner">
+                  <Mail size={20} />
                 </div>
-                <h5 className="font-bold text-sm text-slate-900 leading-snug">
+                <h5 className="font-bold text-sm sm:text-base text-slate-900 leading-snug">
                   手紙開封・連絡先受取
                 </h5>
               </div>
               <p className="text-xs text-slate-600 leading-relaxed font-medium">
                 公的eKYC審査と手紙開封を行い、差出人のLINEや連絡先を安全に取得します。
               </p>
+            </div>
+            <div className="text-[11px] text-emerald-800 font-bold bg-white p-2 rounded-xl border border-slate-200/80 flex items-center gap-1.5">
+              <ShieldCheck size={13} className="text-emerald-600 shrink-0" />
+              <span>全額自動返金保証付き</span>
             </div>
           </div>
         </div>
