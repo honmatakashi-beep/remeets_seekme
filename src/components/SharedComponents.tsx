@@ -508,14 +508,14 @@ export const Navbar = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) 
 
 export const Footer = () => {
   return (
-    <footer className="border-t border-brand-border bg-brand-light/10 py-12">
-      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8">
-      <div className="space-y-4">
+    <footer className="border-t border-brand-border bg-brand-light/10 py-10 sm:py-12">
+      <div className="max-w-7xl mx-auto px-5 sm:px-6 grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
+      <div className="col-span-2 md:col-span-1 space-y-3 sm:space-y-4">
         <div className="flex items-center gap-2">
           <img 
             src="/logo.png" 
             alt="ReMEETs" 
-            className="h-6 md:h-7 w-auto object-contain" 
+            className="h-5.5 sm:h-6 md:h-7 w-auto object-contain" 
           />
         </div>
         <p className="text-xs text-brand-dark/60 leading-relaxed font-serif">
@@ -525,33 +525,33 @@ export const Footer = () => {
           運営: ReMEETs TEAM
         </p>
       </div>
-      <div className="space-y-3">
-        <h4 className="text-xs font-bold text-brand-dark/80 tracking-widest uppercase">サービス</h4>
-        <ul className="space-y-2 text-xs text-brand-dark/60">
+      <div className="space-y-2.5 sm:space-y-3">
+        <h4 className="text-[11px] sm:text-xs font-bold text-brand-dark/80 tracking-widest uppercase">サービス</h4>
+        <ul className="space-y-1.5 sm:space-y-2 text-xs text-brand-dark/60">
           <li><Link to="/create" className="hover:text-brand-primary">ボトルメールを流す</Link></li>
           <li><Link to="/search" className="hover:text-brand-primary">ボトルメールを探す</Link></li>
           <li><Link to="/pricing" className="hover:text-brand-primary">利用料金表</Link></li>
-          <li><Link to="/supporter" className="hover:text-brand-primary">ReMEETsを応援（寄付）</Link></li>
-          <li><Link to="/success-stories" className="hover:text-brand-primary">奇跡の再会報告（体験談）</Link></li>
+          <li><Link to="/supporter" className="hover:text-brand-primary">ReMEETsを応援</Link></li>
+          <li><Link to="/success-stories" className="hover:text-brand-primary">奇跡の再会体験談</Link></li>
         </ul>
       </div>
-      <div className="space-y-3">
-        <h4 className="text-xs font-bold text-brand-dark/80 tracking-widest uppercase">規約・ガイドライン</h4>
-        <ul className="space-y-2 text-xs text-brand-dark/60">
+      <div className="space-y-2.5 sm:space-y-3">
+        <h4 className="text-[11px] sm:text-xs font-bold text-brand-dark/80 tracking-widest uppercase">規約・法務</h4>
+        <ul className="space-y-1.5 sm:space-y-2 text-xs text-brand-dark/60">
           <li><Link to="/terms" className="hover:text-brand-primary">利用規約</Link></li>
           <li><Link to="/privacy" className="hover:text-brand-primary">プライバシーポリシー</Link></li>
-          <li><Link to="/company" className="hover:text-brand-primary">特定商取引法・運営主体</Link></li>
+          <li><Link to="/company" className="hover:text-brand-primary">特定商取引法表記</Link></li>
           <li><Link to="/guidelines" className="hover:text-brand-primary">投稿ガイドライン</Link></li>
         </ul>
       </div>
-      <div className="space-y-3">
-        <h4 className="text-xs font-bold text-brand-dark/80 tracking-widest uppercase">サポート</h4>
-        <ul className="space-y-2 text-xs text-brand-dark/60">
-          <li><Link to="/faq" className="hover:text-brand-primary">よくあるご質問（FAQ）</Link></li>
+      <div className="space-y-2.5 sm:space-y-3">
+        <h4 className="text-[11px] sm:text-xs font-bold text-brand-dark/80 tracking-widest uppercase">サポート</h4>
+        <ul className="space-y-1.5 sm:space-y-2 text-xs text-brand-dark/60">
+          <li><Link to="/faq" className="hover:text-brand-primary">よくあるご質問</Link></li>
           <li><Link to="/manual" className="hover:text-brand-primary">ご利用マニュアル</Link></li>
           <li><Link to="/contact" className="hover:text-brand-primary">お問い合わせ</Link></li>
-          <li><Link to="/deletion-request" className="hover:text-brand-primary">投稿の削除依頼</Link></li>
-          <li><Link to="/payment-preview" className="hover:text-brand-primary text-indigo-700 font-bold flex items-center gap-1">💳 決済プレビュー（確認用）</Link></li>
+          <li><Link to="/deletion-request" className="hover:text-brand-primary">手紙の削除依頼</Link></li>
+          <li><Link to="/payment-preview" className="hover:text-brand-primary text-indigo-700 font-bold flex items-center gap-1">💳 決済プレビュー</Link></li>
         </ul>
       </div>
     </div>

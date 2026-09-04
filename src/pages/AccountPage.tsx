@@ -1424,39 +1424,39 @@ export const AccountPage = () => {
               <button
                 type="button"
                 onClick={() => handleTabChange('profile')}
-                className={`py-3 px-3 md:px-4 text-xs md:text-sm font-bold transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 whitespace-nowrap rounded-xl relative ${
+                className={`py-2.5 sm:py-3 px-2 sm:px-4 text-[11px] sm:text-xs md:text-sm font-bold transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 sm:gap-2 rounded-xl relative ${
                   activeSubTab === 'profile'
                     ? 'bg-white text-slate-900 shadow-md ring-1 ring-slate-900/10 font-serif'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-white/60 font-sans'
                 }`}
               >
-                <span className={`p-1.5 rounded-lg transition-colors shrink-0 ${
+                <span className={`p-1 sm:p-1.5 rounded-lg transition-colors shrink-0 ${
                   activeSubTab === 'profile' ? 'bg-teal-700 text-white shadow-2xs' : 'bg-slate-300/60 text-slate-500'
                 }`}>
-                  <ShieldCheck size={14} />
+                  <ShieldCheck size={13} />
                 </span>
-                <span>本人確認・応援</span>
+                <span className="truncate">本人確認・応援</span>
                 {activeSubTab === 'profile' && (
-                  <span className="absolute -top-1 -right-1 w-3 h-3 bg-teal-500 border-2 border-white rounded-full shadow-2xs animate-pulse" />
+                  <span className="absolute -top-1 -right-1 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-teal-500 border-2 border-white rounded-full shadow-2xs animate-pulse" />
                 )}
               </button>
 
               <button
                 type="button"
                 onClick={() => handleTabChange('chats')}
-                className={`py-3 px-3 md:px-4 text-xs md:text-sm font-bold transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 whitespace-nowrap rounded-xl relative ${
+                className={`py-2.5 sm:py-3 px-2 sm:px-4 text-[11px] sm:text-xs md:text-sm font-bold transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 sm:gap-2 rounded-xl relative ${
                   activeSubTab === 'chats'
                     ? 'bg-white text-slate-900 shadow-md ring-1 ring-slate-900/10 font-serif'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-white/60 font-sans'
                 }`}
               >
-                <span className={`p-1.5 rounded-lg transition-colors shrink-0 ${
+                <span className={`p-1 sm:p-1.5 rounded-lg transition-colors shrink-0 ${
                   activeSubTab === 'chats' ? 'bg-emerald-600 text-white shadow-2xs' : 'bg-slate-300/60 text-slate-500'
                 }`}>
-                  <MessageSquare size={14} />
+                  <MessageSquare size={13} />
                 </span>
-                <span>出会えた人</span>
-                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold transition-all ${
+                <span className="truncate">出会えた人</span>
+                <span className={`text-[9.5px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full font-bold transition-all shrink-0 ${
                   connectedPosts.length > 0
                     ? (activeSubTab === 'chats' ? 'bg-emerald-600 text-white shadow-2xs' : 'bg-emerald-100 text-emerald-800 border border-emerald-300')
                     : (activeSubTab === 'chats' ? 'bg-slate-200 text-slate-700 font-normal' : 'bg-slate-300/80 text-slate-600 font-normal')
@@ -1464,26 +1464,26 @@ export const AccountPage = () => {
                   {connectedPosts.length}通
                 </span>
                 {activeSubTab === 'chats' && (
-                  <span className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full shadow-2xs animate-pulse" />
+                  <span className="absolute -top-1 -right-1 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-emerald-500 border-2 border-white rounded-full shadow-2xs animate-pulse" />
                 )}
               </button>
               
               <button
                 type="button"
                 onClick={() => handleTabChange('sent')}
-                className={`py-3 px-3 md:px-4 text-xs md:text-sm font-bold transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 whitespace-nowrap rounded-xl relative ${
+                className={`py-2.5 sm:py-3 px-2 sm:px-4 text-[11px] sm:text-xs md:text-sm font-bold transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 sm:gap-2 rounded-xl relative ${
                   activeSubTab === 'sent'
                     ? 'bg-white text-slate-900 shadow-md ring-1 ring-slate-900/10 font-serif'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-white/60 font-sans'
                 }`}
               >
-                <span className={`p-1.5 rounded-lg transition-colors shrink-0 ${
+                <span className={`p-1 sm:p-1.5 rounded-lg transition-colors shrink-0 ${
                   activeSubTab === 'sent' ? 'bg-teal-600 text-white shadow-2xs' : 'bg-slate-300/60 text-slate-500'
                 }`}>
-                  <Send size={13} />
+                  <Send size={12} />
                 </span>
-                <span>流したボトル</span>
-                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold transition-all ${
+                <span className="truncate">流したボトル</span>
+                <span className={`text-[9.5px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full font-bold transition-all shrink-0 ${
                   myPosts.length > 0
                     ? (activeSubTab === 'sent' ? 'bg-teal-600 text-white shadow-2xs' : 'bg-teal-100 text-teal-800 border border-teal-300')
                     : (activeSubTab === 'sent' ? 'bg-slate-200 text-slate-700 font-normal' : 'bg-slate-300/80 text-slate-600 font-normal')
@@ -1491,7 +1491,7 @@ export const AccountPage = () => {
                   {myPosts.length}通
                 </span>
                 {activeSubTab === 'sent' && (
-                  <span className="absolute -top-1 -right-1 w-3 h-3 bg-teal-500 border-2 border-white rounded-full shadow-2xs animate-pulse" />
+                  <span className="absolute -top-1 -right-1 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-teal-500 border-2 border-white rounded-full shadow-2xs animate-pulse" />
                 )}
               </button>
 
@@ -1501,27 +1501,27 @@ export const AccountPage = () => {
                   handleTabChange('notifications');
                   fetchNotifications();
                 }}
-                className={`py-3 px-3 md:px-4 text-xs md:text-sm font-bold transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 whitespace-nowrap rounded-xl relative ${
+                className={`py-2.5 sm:py-3 px-2 sm:px-4 text-[11px] sm:text-xs md:text-sm font-bold transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 sm:gap-2 rounded-xl relative ${
                   activeSubTab === 'notifications'
                     ? 'bg-white text-slate-900 shadow-md ring-1 ring-slate-900/10 font-serif'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-white/60 font-sans'
                 }`}
               >
-                <span className={`p-1.5 rounded-lg transition-colors shrink-0 ${
+                <span className={`p-1 sm:p-1.5 rounded-lg transition-colors shrink-0 ${
                   activeSubTab === 'notifications' ? 'bg-rose-600 text-white shadow-2xs' : 'bg-slate-300/60 text-slate-500'
                 }`}>
-                  <Bell size={14} />
+                  <Bell size={13} />
                 </span>
-                <span>通知ログ</span>
-                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold transition-all ${
+                <span className="truncate">通知ログ</span>
+                <span className={`text-[9.5px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full font-bold transition-all shrink-0 ${
                   notifications.filter(n => !n.is_read).length > 0
                     ? (activeSubTab === 'notifications' ? 'bg-rose-600 text-white shadow-2xs' : 'bg-rose-100 text-rose-700 border border-rose-200')
                     : (activeSubTab === 'notifications' ? 'bg-slate-200 text-slate-700 font-normal' : 'bg-slate-300/80 text-slate-600 font-normal')
                 }`}>
-                  {notifications.filter(n => !n.is_read).length > 0 ? `${notifications.filter(n => !n.is_read).length}件未読` : `${notifications.length}件`}
+                  {notifications.filter(n => !n.is_read).length > 0 ? `${notifications.filter(n => !n.is_read).length}件` : `${notifications.length}件`}
                 </span>
                 {activeSubTab === 'notifications' && (
-                  <span className="absolute -top-1 -right-1 w-3 h-3 bg-rose-500 border-2 border-white rounded-full shadow-2xs animate-pulse" />
+                  <span className="absolute -top-1 -right-1 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-rose-500 border-2 border-white rounded-full shadow-2xs animate-pulse" />
                 )}
               </button>
             </div>

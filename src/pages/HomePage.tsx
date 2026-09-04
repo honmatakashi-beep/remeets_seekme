@@ -501,11 +501,11 @@ export const HomePage = ({ onOpenOnboarding, heroCopyStyle }: { onOpenOnboarding
 
           {/* 3 Step Flow Guide for Sending */}
           <div className="pt-6 border-t border-brand-border/60 space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-brand-primary uppercase tracking-wider block font-sans whitespace-nowrap">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 text-left">
+              <span className="text-xs font-bold text-brand-primary uppercase tracking-wider block font-sans">
                 ボトルメールで「あの人」と再会する3つのステップ
               </span>
-              <span className="text-[11px] text-slate-500 font-sans flex items-center gap-1">
+              <span className="text-[11px] text-slate-500 font-sans flex items-center gap-1 shrink-0">
                 <Sparkles size={12} className="text-amber-500" />
                 <span>想いを残すシンプルな流れ</span>
               </span>
@@ -531,10 +531,10 @@ export const HomePage = ({ onOpenOnboarding, heroCopyStyle }: { onOpenOnboarding
                     />
                   </div>
                   <div className="space-y-1">
-                    <h5 className="font-extrabold text-slate-900 text-sm sm:text-base font-serif flex items-center gap-1.5 whitespace-nowrap">
+                    <h5 className="font-extrabold text-slate-900 text-sm sm:text-base font-serif flex items-center gap-1.5 leading-snug">
                       <span>ボトルに思い出を託す</span>
                     </h5>
-                    <p className="text-[11.5px] text-slate-600 leading-relaxed font-sans">
+                    <p className="text-xs text-slate-600 leading-relaxed font-sans">
                       お相手のお名前と、お二人しか知らない「思い出の質問（クイズ）」を設定して投稿します。
                     </p>
                   </div>
@@ -559,10 +559,10 @@ export const HomePage = ({ onOpenOnboarding, heroCopyStyle }: { onOpenOnboarding
                     />
                   </div>
                   <div className="space-y-1">
-                    <h5 className="font-extrabold text-slate-900 text-sm sm:text-base font-serif flex items-center gap-1.5 whitespace-nowrap">
+                    <h5 className="font-extrabold text-slate-900 text-sm sm:text-base font-serif flex items-center gap-1.5 leading-snug">
                       <span>ネットの海をめぐる</span>
                     </h5>
-                    <p className="text-[11.5px] text-slate-600 leading-relaxed font-sans">
+                    <p className="text-xs text-slate-600 leading-relaxed font-sans">
                       誰かが探すその日まで、プライバシーを守りながら安全な海（Web）に静かに漂います。
                     </p>
                   </div>
@@ -587,10 +587,10 @@ export const HomePage = ({ onOpenOnboarding, heroCopyStyle }: { onOpenOnboarding
                     />
                   </div>
                   <div className="space-y-1">
-                    <h5 className="font-extrabold text-slate-900 text-sm sm:text-base font-serif flex items-center gap-1.5 whitespace-nowrap">
+                    <h5 className="font-extrabold text-slate-900 text-sm sm:text-base font-serif flex items-center gap-1.5 leading-snug">
                       <span>秘密の質問で再会・SNS開示</span>
                     </h5>
-                    <p className="text-[11.5px] text-slate-600 leading-relaxed font-sans">
+                    <p className="text-xs text-slate-600 leading-relaxed font-sans">
                       お相手が検索で見つけ、秘密の質問に正解すると手紙が開封され、LINEやSNS連絡先が開示されて直接つながれます。
                     </p>
                   </div>

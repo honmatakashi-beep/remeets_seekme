@@ -755,7 +755,9 @@ export const PricingPage = () => {
               差出人と受取人のご負担比較
             </h2>
           </div>
-          <div className="overflow-x-auto rounded-2xl border border-slate-200 shadow-2xs">
+
+          {/* デスクトップ用テーブル表示 */}
+          <div className="hidden sm:block overflow-x-auto rounded-2xl border border-slate-200 shadow-2xs">
             <table className="w-full text-xs text-left text-slate-700 font-sans">
               <thead className="text-[11px] uppercase bg-slate-100/90 text-slate-800 font-serif border-b border-slate-200">
                 <tr>
@@ -791,6 +793,41 @@ export const PricingPage = () => {
                 </tr>
               </tbody>
             </table>
+          </div>
+
+          {/* スマホ用カード表示 */}
+          <div className="sm:hidden space-y-3 font-sans text-xs">
+            {/* 差出人カード */}
+            <div className="p-4 bg-white rounded-2xl border border-emerald-200 shadow-2xs space-y-2">
+              <div className="flex items-center justify-between border-b border-emerald-100 pb-2">
+                <div className="flex items-center gap-2 font-bold text-slate-900">
+                  <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold flex items-center justify-center shrink-0">送</span>
+                  <span>手紙を書いた人（差出人）</span>
+                </div>
+                <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[11px]">
+                  0 円（完全無料）
+                </span>
+              </div>
+              <p className="text-slate-600 leading-relaxed text-[11.5px]">
+                手紙の投稿、ボトル流し、事前eKYC登録、お返事の受信まで一切費用はかかりません。
+              </p>
+            </div>
+
+            {/* 受取人カード */}
+            <div className="p-4 bg-white rounded-2xl border border-indigo-200 shadow-2xs space-y-2">
+              <div className="flex items-center justify-between border-b border-indigo-100 pb-2">
+                <div className="flex items-center gap-2 font-bold text-slate-900">
+                  <span className="w-6 h-6 rounded-full bg-indigo-100 text-indigo-800 text-[10px] font-bold flex items-center justify-center shrink-0">受</span>
+                  <span>手紙を開封する人（受取人）</span>
+                </div>
+                <span className="px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-900 font-bold text-[11px]">
+                  600 円（税込）
+                </span>
+              </div>
+              <p className="text-slate-600 leading-relaxed text-[11.5px]">
+                思い出クイズに正解し、手紙と連絡先を開示するときのみお支払いいただきます（買い切り・全額返金保証付）。
+              </p>
+            </div>
           </div>
         </div>
 

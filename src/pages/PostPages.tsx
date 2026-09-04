@@ -3854,8 +3854,8 @@ export const RevealContactModal = ({
                     }}
                     className="w-full py-4 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold text-sm md:text-base rounded-2xl shadow-xl hover:shadow-2xl transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98 font-sans ring-4 ring-emerald-200"
                   >
-                    <Heart size={20} className="fill-current text-rose-300 animate-pulse" />
-                    <span>【{searcherFullName || searcherName}】さんの手紙と連絡先を開封する（次へ進む） →</span>
+                    <Heart size={18} className="fill-current text-rose-300 animate-pulse shrink-0" />
+                    <span>【{searcherFullName || searcherName}】さんの手紙を開封する →</span>
                   </button>
                   <p className="text-[11px] text-slate-500 font-sans">
                     ※ ボタンをクリックすると手紙本文と開示された連絡先の詳細画面へ進みます
@@ -6029,22 +6029,22 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                     <ShieldAlert size={16} className="text-slate-400 shrink-0" />
                     <span className="font-bold text-slate-700">安心・プライバシー保護の窓口:</span>
                   </div>
-                  <div className="flex items-center gap-2 font-sans">
+                  <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 font-sans">
                     <button 
                       onClick={() => setReportTarget({ type: 'post', id: post.id })}
-                      className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 text-xs text-slate-600 hover:text-red-600 transition-colors bg-white hover:bg-red-50 px-3 py-2 rounded-xl border border-slate-200 hover:border-red-200 cursor-pointer font-bold shadow-2xs"
+                      className="flex items-center justify-center gap-1.5 text-xs text-slate-600 hover:text-red-600 transition-colors bg-white hover:bg-red-50 px-3 py-2 rounded-xl border border-slate-200 hover:border-red-200 cursor-pointer font-bold shadow-2xs"
                       title="誹謗中傷や不適切なコンテンツを通報"
                     >
-                      <ShieldAlert size={14} className="text-red-500" />
-                      <span>不適切な内容を報告</span>
+                      <ShieldAlert size={14} className="text-red-500 shrink-0" />
+                      <span className="truncate">不適切な内容を通報</span>
                     </button>
                     <Link 
                       to={`/deletion-request?id=${post.id}&name=${encodeURIComponent(post.target_name || '')}&content=${encodeURIComponent(`宛先:${post.target_name || ''}様 / ${post.searcher_profile || ''}`)}`}
-                      className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 text-xs text-slate-600 hover:text-rose-700 transition-colors bg-white hover:bg-rose-50 px-3 py-2 rounded-xl border border-slate-200 hover:border-rose-200 cursor-pointer font-bold shadow-2xs"
+                      className="flex items-center justify-center gap-1.5 text-xs text-slate-600 hover:text-rose-700 transition-colors bg-white hover:bg-rose-50 px-3 py-2 rounded-xl border border-slate-200 hover:border-rose-200 cursor-pointer font-bold shadow-2xs"
                       title="この手紙の削除・非公開を申請（手紙ID自動入力）"
                     >
-                      <Trash2 size={14} className="text-rose-500" />
-                      <span>手紙の削除依頼</span>
+                      <Trash2 size={14} className="text-rose-500 shrink-0" />
+                      <span className="truncate">手紙の削除依頼</span>
                     </Link>
                   </div>
                 </div>

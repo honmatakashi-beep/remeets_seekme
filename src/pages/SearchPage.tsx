@@ -149,20 +149,19 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
     } catch (err) {
       console.error(err);
       setAlertMessage({ type: 'error', text: '通信障害が発生しました。再度お試しください。' });
-    } finally {
       setAlertSubmitting(false);
     }
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-12 md:py-24 space-y-12 animate-fade-in">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 md:py-16 space-y-8 md:space-y-12 animate-fade-in">
       {searchParams.get('alert_verified') === 'true' && (
-        <div className="bg-green-50 border border-green-200 p-6 rounded-3xl text-sm text-green-800 space-y-2 animate-fade-in">
-          <div className="flex items-center gap-2 font-bold text-base">
-            <CheckCircle2 className="text-green-600" size={20} />
+        <div className="bg-green-50 border border-green-200 p-4 sm:p-6 rounded-2xl sm:rounded-3xl text-sm text-green-800 space-y-2 animate-fade-in">
+          <div className="flex items-center gap-2 font-bold text-sm sm:text-base">
+            <CheckCircle2 className="text-green-600 shrink-0" size={20} />
             メール通知（検索アラート）の認証に成功しました！
           </div>
-          <p className="text-green-700 font-sans">
+          <p className="text-xs sm:text-sm text-green-700 font-sans">
             あなたを探しているお相手からの新着ボトルメール（あなたの名前や出身校・ゆかりの地域宛ての手紙）が投函された際、このメールアドレス宛てにすぐに自動通知されます。あなたの個人情報は完全に保護されます。
           </p>
         </div>
@@ -175,17 +174,17 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
         description="ご自身のお名前や、ゆかりの深い地域などで検索し、あなたを探している大切な人から届いているボトルメール（手紙）と出会うことができます。"
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 sm:gap-8">
         {/* Filter Panel */}
         <div className="lg:col-span-1 space-y-5">
-          <div className="space-y-6 bg-brand-light/10 p-6 rounded-3xl border border-brand-border">
-            <h3 className="text-xs font-bold text-brand-dark/80 uppercase tracking-widest border-b border-brand-border pb-3 flex items-center gap-2 font-sans">
+          <div className="space-y-4 sm:space-y-6 bg-brand-light/10 p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-brand-border">
+            <h3 className="text-xs font-bold text-brand-dark/80 uppercase tracking-widest border-b border-brand-border pb-2.5 flex items-center gap-2 font-sans">
               <Info size={14} />
               <span>絞り込み</span>
             </h3>
 
-            <div className="space-y-4">
-              <div className="space-y-2">
+            <div className="grid grid-cols-2 lg:grid-cols-1 gap-3 sm:space-y-4">
+              <div className="space-y-1.5">
                 <label className="text-[10px] font-bold text-brand-dark/60 uppercase tracking-widest block font-sans">年代</label>
                 <select 
                   value={eraFilter}
@@ -204,7 +203,7 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
                 </select>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <label className="text-[10px] font-bold text-brand-dark/60 uppercase tracking-widest block font-sans">カテゴリー</label>
                 <select 
                   value={categoryFilter}
@@ -222,7 +221,7 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
           </div>
 
           {/* 🔔 新着通知（入荷アラート）小型カード */}
-          <div className="p-5 bg-gradient-to-br from-teal-50/90 via-sky-50/50 to-white rounded-3xl border-2 border-teal-200/90 shadow-xs space-y-3 font-sans">
+          <div className="p-4 sm:p-5 bg-gradient-to-br from-teal-50/90 via-sky-50/50 to-white rounded-2xl sm:rounded-3xl border-2 border-teal-200/90 shadow-xs space-y-3 font-sans">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="p-1.5 bg-teal-600 text-white rounded-xl shadow-2xs">
@@ -248,29 +247,23 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
                 </p>
 
                 <div className="pt-1 flex items-center justify-between bg-white/90 p-2.5 rounded-2xl border border-teal-200/80">
-                  <span className="text-xs font-bold text-slate-700">
-                    {notifyEnabled ? 'メール通知 有効中' : 'メール通知 停止中'}
-                  </span>
+                  <div className="text-[11px]">
+                    <span className="text-slate-500 block text-[10px]">通知先アドレス</span>
+                    <span className="font-mono text-slate-800 font-bold truncate block max-w-[170px]">
+                      {user.email || '未設定'}
+                    </span>
+                  </div>
                   <button
                     type="button"
                     onClick={handleToggleNotify}
                     disabled={isUpdatingNotify}
-                    className={`w-11 h-6 flex items-center rounded-full p-0.5 transition-colors duration-300 cursor-pointer shadow-inner ${
-                      notifyEnabled ? 'bg-teal-600' : 'bg-slate-300'
+                    className={`px-3 py-1.5 rounded-xl font-bold text-xs transition-all cursor-pointer shadow-xs ${
+                      notifyEnabled
+                        ? 'bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100'
+                        : 'bg-teal-600 text-white hover:bg-teal-700'
                     }`}
-                    title={notifyEnabled ? '通知を停止する' : '通知を有効にする'}
                   >
-                    <div
-                      className={`bg-white w-5 h-5 rounded-full shadow-md transform transition-transform duration-300 flex items-center justify-center ${
-                        notifyEnabled ? 'translate-x-5' : 'translate-x-0'
-                      }`}
-                    >
-                      {notifyEnabled ? (
-                        <CheckCircle2 size={11} className="text-teal-600" />
-                      ) : (
-                        <X size={11} className="text-slate-400" />
-                      )}
-                    </div>
+                    {isUpdatingNotify ? '更新中...' : notifyEnabled ? '通知解除' : '通知ON'}
                   </button>
                 </div>
               </>
@@ -293,18 +286,18 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
 
         {/* Results Area */}
         <div className="lg:col-span-3 space-y-6">
-          <form onSubmit={handleSearch} className="flex gap-3">
+          <form onSubmit={handleSearch} className="flex gap-2 sm:gap-3">
             <div className="relative flex-grow">
               <input 
                 type="text"
                 value={query}
                 onChange={e => setQuery(e.target.value)}
                 placeholder="あなたのお名前（苗字・旧姓・ニックネーム）、ゆかりの都道府県など..."
-                className="w-full pl-5 pr-12 py-3 border border-brand-border rounded-xl bg-white focus:border-brand-primary outline-none focus:ring-1 focus:ring-brand-primary transition-all font-sans placeholder:text-brand-dark/30 text-black shadow-sm"
+                className="w-full pl-4 sm:pl-5 pr-10 sm:pr-12 py-2.5 sm:py-3 text-xs sm:text-sm border border-brand-border rounded-xl bg-white focus:border-brand-primary outline-none focus:ring-1 focus:ring-brand-primary transition-all font-sans placeholder:text-brand-dark/30 text-black shadow-sm"
               />
-              <Search className="absolute right-4 top-3.5 text-brand-dark/30" size={18} />
+              <Search className="absolute right-3.5 top-3 sm:top-3.5 text-brand-dark/30" size={16} />
             </div>
-            <button type="submit" className="btn-primary animate-none">検索する</button>
+            <button type="submit" className="btn-primary px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm whitespace-nowrap animate-none shrink-0">検索する</button>
           </form>
 
           {/* NULL検索（未入力）時の案内バナー */}
