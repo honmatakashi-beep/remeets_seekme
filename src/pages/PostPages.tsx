@@ -3245,15 +3245,14 @@ export const RecipientSafetyGuide = ({
     >
       {/* 1. ヘッダー：安心宣言＆プラットフォーム概要 */}
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 border-b border-slate-100 pb-5">
-        <div className="space-y-1.5 max-w-xl">
-          <div className="flex items-start gap-2">
-            <span className="text-xl mt-0.5">🤝</span>
+        <div className="space-y-1.5 max-w-2xl">
+          <div className="flex items-center gap-2">
+            <span className="text-xl">🤝</span>
             <h3 className="text-base sm:text-lg md:text-xl font-extrabold text-slate-900 tracking-tight leading-snug">
-              <span className="block">初めてこの手紙を見つけた方へ ──</span>
-              <span className="block text-teal-900 mt-0.5">ReMEETsの安心再会システム</span>
+              初めてこの手紙を見つけた方へ ── ReMEETsの安心再会システム
             </h3>
           </div>
-          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-medium pt-1">
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-medium">
             お名前は検索エンジンで見つかりますが、手紙本文とお互いの連絡先は<strong className="text-teal-900 font-bold">「二人だけの思い出クイズ」を解いたご本人のみに安全に開示</strong>されます。
           </p>
         </div>
@@ -3269,102 +3268,107 @@ export const RecipientSafetyGuide = ({
         </div>
       </div>
 
-      {/* 2. 【フロー進行型】手紙を開封するまでのシンプルな 3ステップ */}
-      <div className="space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-b border-slate-100 pb-2">
+      {/* 2. 【フロー進行型】手紙を開封するまでのシンプルな 3ステップ（横長3段積み） */}
+      <div className="space-y-3.5">
+        <div className="border-b border-slate-100 pb-2">
           <h4 className="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2.5">
             <span className="w-2.5 h-2.5 rounded-full bg-teal-600 shrink-0"></span>
             <span>手紙を開封し連絡先を受け取るまでの流れ（3ステップ）</span>
           </h4>
-          <span className="text-xs text-slate-500 font-medium">3つのステップで安全に再会できます</span>
         </div>
 
-        {/* タイムライン・ステップ進行カード（3ステップ均等デザイン） */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 relative">
+        {/* 横長 3段積みステップカード */}
+        <div className="flex flex-col gap-3">
           {/* STEP 1 */}
-          <div className="relative p-4 sm:p-5 rounded-2xl bg-slate-50/80 border border-slate-200/90 shadow-2xs flex flex-col justify-between space-y-3">
-            <div className="space-y-2.5">
-              <div className="flex items-center justify-between">
-                <span className="text-[11px] font-black tracking-wider uppercase px-2.5 py-1 rounded-lg bg-teal-700 text-white shadow-2xs">
-                  STEP 01
-                </span>
-                <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100/70 px-2 py-0.5 rounded-md border border-emerald-300/60">
-                  無料（登録不要）
-                </span>
+          <div className="p-4 sm:p-5 rounded-2xl bg-slate-50/80 border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-left hover:bg-slate-50 transition-colors">
+            <div className="flex items-start sm:items-center gap-3.5">
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-teal-100 text-teal-800 flex items-center justify-center shrink-0 shadow-inner">
+                <Search size={20} />
               </div>
-              <div className="flex items-center gap-2.5 pt-0.5">
-                <div className="w-10 h-10 rounded-xl bg-teal-100 text-teal-800 flex items-center justify-center shrink-0 shadow-inner">
-                  <Search size={20} />
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-[11px] font-black tracking-wider uppercase px-2.5 py-0.5 rounded-md bg-teal-700 text-white shadow-2xs">
+                    STEP 01
+                  </span>
+                  <h5 className="font-bold text-sm sm:text-base text-slate-900">
+                    手がかり・思い出を確認
+                  </h5>
+                  <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100/70 px-2 py-0.5 rounded-md border border-emerald-300/60">
+                    無料（登録不要）
+                  </span>
                 </div>
-                <h5 className="font-bold text-sm sm:text-base text-slate-900 leading-snug">
-                  手がかり・思い出を確認
-                </h5>
+                <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                  差出人との出会いやエピソードから、心当たりがあるかお相手を思い出します。
+                </p>
               </div>
-              <p className="text-xs text-slate-600 leading-relaxed font-medium">
-                差出人との出会いやエピソードから、心当たりがあるかお相手を思い出します。
-              </p>
             </div>
-            <div className="text-[11px] text-teal-800 font-bold bg-white p-2 rounded-xl border border-slate-200/80 flex items-center gap-1.5">
-              <CheckCircle2 size={13} className="text-teal-600 shrink-0" />
-              <span>このページで今すぐ確認できます</span>
+            <div className="shrink-0 self-start sm:self-center">
+              <span className="text-[11px] text-teal-800 font-bold bg-white px-3 py-1.5 rounded-xl border border-slate-200/80 flex items-center gap-1.5 shadow-2xs whitespace-nowrap">
+                <CheckCircle2 size={13} className="text-teal-600 shrink-0" />
+                <span>このページで今すぐ確認</span>
+              </span>
             </div>
           </div>
 
           {/* STEP 2 */}
-          <div className="relative p-4 sm:p-5 rounded-2xl bg-slate-50/80 border border-slate-200/90 shadow-2xs flex flex-col justify-between space-y-3">
-            <div className="space-y-2.5">
-              <div className="flex items-center justify-between">
-                <span className="text-[11px] font-black tracking-wider uppercase px-2.5 py-1 rounded-lg bg-teal-700 text-white shadow-2xs">
-                  STEP 02
-                </span>
-                <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100/70 px-2 py-0.5 rounded-md border border-emerald-300/60">
-                  無料
-                </span>
+          <div className="p-4 sm:p-5 rounded-2xl bg-slate-50/80 border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-left hover:bg-slate-50 transition-colors">
+            <div className="flex items-start sm:items-center gap-3.5">
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-teal-100 text-teal-800 flex items-center justify-center shrink-0 shadow-inner">
+                <Key size={20} />
               </div>
-              <div className="flex items-center gap-2.5 pt-0.5">
-                <div className="w-10 h-10 rounded-xl bg-teal-100 text-teal-800 flex items-center justify-center shrink-0 shadow-inner">
-                  <Key size={20} />
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-[11px] font-black tracking-wider uppercase px-2.5 py-0.5 rounded-md bg-teal-700 text-white shadow-2xs">
+                    STEP 02
+                  </span>
+                  <h5 className="font-bold text-sm sm:text-base text-slate-900">
+                    思い出クイズに回答
+                  </h5>
+                  <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100/70 px-2 py-0.5 rounded-md border border-emerald-300/60">
+                    無料
+                  </span>
                 </div>
-                <h5 className="font-bold text-sm sm:text-base text-slate-900 leading-snug">
-                  思い出クイズに回答
-                </h5>
+                <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                  差出人が設定した思い出の質問に正解し、ご本人であることを証明します。
+                </p>
               </div>
-              <p className="text-xs text-slate-600 leading-relaxed font-medium">
-                差出人が設定した思い出の質問に正解し、ご本人であることを証明します。
-              </p>
             </div>
-            <div className="text-[11px] text-teal-800 font-bold bg-white p-2 rounded-xl border border-slate-200/80 flex items-center gap-1.5">
-              <Lock size={13} className="text-teal-600 shrink-0" />
-              <span>正解者のみ次のステップへ進行</span>
+            <div className="shrink-0 self-start sm:self-center">
+              <span className="text-[11px] text-teal-800 font-bold bg-white px-3 py-1.5 rounded-xl border border-slate-200/80 flex items-center gap-1.5 shadow-2xs whitespace-nowrap">
+                <Lock size={13} className="text-teal-600 shrink-0" />
+                <span>正解者のみ進行</span>
+              </span>
             </div>
           </div>
 
           {/* STEP 3 */}
-          <div className="relative p-4 sm:p-5 rounded-2xl bg-slate-50/80 border border-slate-200/90 shadow-2xs flex flex-col justify-between space-y-3">
-            <div className="space-y-2.5">
-              <div className="flex items-center justify-between">
-                <span className="text-[11px] font-black tracking-wider uppercase px-2.5 py-1 rounded-lg bg-teal-700 text-white shadow-2xs">
-                  STEP 03
-                </span>
-                <span className="text-[11px] font-bold text-orange-800 bg-orange-100/70 px-2 py-0.5 rounded-md border border-orange-300/60">
-                  600円/1,200円
-                </span>
+          <div className="p-4 sm:p-5 rounded-2xl bg-slate-50/80 border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-left hover:bg-slate-50 transition-colors">
+            <div className="flex items-start sm:items-center gap-3.5">
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0 shadow-inner">
+                <Mail size={20} />
               </div>
-              <div className="flex items-center gap-2.5 pt-0.5">
-                <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0 shadow-inner">
-                  <Mail size={20} />
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-[11px] font-black tracking-wider uppercase px-2.5 py-0.5 rounded-md bg-teal-700 text-white shadow-2xs">
+                    STEP 03
+                  </span>
+                  <h5 className="font-bold text-sm sm:text-base text-slate-900">
+                    手紙開封・連絡先受取
+                  </h5>
+                  <span className="text-[11px] font-bold text-orange-800 bg-orange-100/70 px-2 py-0.5 rounded-md border border-orange-300/60">
+                    600円/1,200円
+                  </span>
                 </div>
-                <h5 className="font-bold text-sm sm:text-base text-slate-900 leading-snug">
-                  手紙開封・連絡先受取
-                </h5>
+                <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                  公的eKYC審査と手紙開封を行い、差出人のLINEや連絡先を安全に取得します。
+                </p>
               </div>
-              <p className="text-xs text-slate-600 leading-relaxed font-medium">
-                公的eKYC審査と手紙開封を行い、差出人のLINEや連絡先を安全に取得します。
-              </p>
             </div>
-            <div className="text-[11px] text-emerald-800 font-bold bg-white p-2 rounded-xl border border-slate-200/80 flex items-center gap-1.5">
-              <ShieldCheck size={13} className="text-emerald-600 shrink-0" />
-              <span>全額自動返金保証付き</span>
+            <div className="shrink-0 self-start sm:self-center">
+              <span className="text-[11px] text-emerald-800 font-bold bg-white px-3 py-1.5 rounded-xl border border-slate-200/80 flex items-center gap-1.5 shadow-2xs whitespace-nowrap">
+                <ShieldCheck size={13} className="text-emerald-600 shrink-0" />
+                <span>全額自動返金保証付</span>
+              </span>
             </div>
           </div>
         </div>
@@ -5811,14 +5815,6 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                   <span className="font-bold text-slate-800 bg-white border border-slate-200 px-3 py-1 rounded-xl shadow-2xs">
                     {post.era}年代の記憶
                   </span>
-                  <span className="font-bold text-slate-800 bg-white border border-slate-200 px-3 py-1 rounded-xl shadow-2xs">
-                    {showDetails ? (post.target_hometown || '出身地不明') : `${post.target_hometown?.match(/.*?[都道府県]/)?.[0] || post.target_hometown || '出身地不明'}（市区町村以下非公開）`}
-                  </span>
-                  {post.target_school && (
-                    <span className="font-bold text-slate-800 bg-white border border-slate-200 px-3 py-1 rounded-xl shadow-2xs">
-                      {showDetails ? post.target_school : (post.category === 'work' ? '関連職場（正解後開示）' : '関連学校（正解後開示）')}
-                    </span>
-                  )}
                   {post.status === 'resolved' && (
                     <span className="font-bold bg-emerald-600 text-white px-3 py-1 rounded-xl flex items-center gap-1">
                       <CheckCircle2 size={13} /> 再会済み
@@ -5828,21 +5824,21 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               </div>
 
               {/* カード中部: 差出人を特定するための手がかり（公開エピソード） */}
-              <div className="bg-gradient-to-br from-teal-50/60 via-emerald-50/40 to-slate-50 p-5 sm:p-6 rounded-2xl border border-teal-200/80 space-y-3 text-left">
-                <div className="flex items-center gap-2 text-teal-900 border-b border-teal-200/60 pb-2.5">
-                  <BookOpen size={18} className="text-teal-700 shrink-0" />
-                  <h3 className="text-sm sm:text-base font-bold font-serif text-teal-950">
+              <div className="bg-gradient-to-br from-teal-50/60 via-emerald-50/40 to-slate-50 p-4 sm:p-5 rounded-2xl border border-teal-200/80 space-y-3 text-left">
+                <div className="flex items-center gap-2 text-teal-900 border-b border-teal-200/60 pb-2">
+                  <BookOpen size={16} className="text-teal-700 shrink-0" />
+                  <h3 className="text-xs sm:text-sm font-bold text-teal-950">
                     差出人を特定するための手がかり（ふたりの思い出）
                   </h3>
                 </div>
-                <div className="p-4 bg-white/90 rounded-xl border border-teal-100/80 shadow-2xs">
-                  <p className="text-base sm:text-lg text-slate-900 leading-relaxed font-serif font-semibold">
+                <div className="p-3.5 sm:p-4 bg-white/90 rounded-xl border border-teal-100/80 shadow-2xs">
+                  <p className="text-sm sm:text-base text-slate-800 leading-relaxed font-serif font-medium">
                     「{post.searcher_profile || '（プロフィール情報はありません）'}」
                   </p>
                 </div>
 
-                {/* ゆかりの地 ＆ 所属チラ見せ */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                {/* ゆかりの地 ＆ 当時の所属 */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-0.5">
                   <div className="flex items-center gap-3 p-3 bg-white/80 rounded-xl border border-slate-200/70 text-xs">
                     <div className="w-8 h-8 rounded-lg bg-teal-100 text-teal-800 flex items-center justify-center shrink-0 font-bold">
                       <MapPin size={16} />
