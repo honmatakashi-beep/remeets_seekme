@@ -3244,28 +3244,16 @@ export const RecipientSafetyGuide = ({
       className="scroll-mt-24 bg-white border border-teal-200/90 rounded-[32px] p-5 sm:p-7 md:p-9 font-sans shadow-sm space-y-7 text-left overflow-hidden"
     >
       {/* 1. ヘッダー：安心宣言＆プラットフォーム概要 */}
-      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 border-b border-slate-100 pb-5">
-        <div className="space-y-1.5 max-w-2xl">
-          <div className="flex items-center gap-2">
-            <span className="text-xl">🤝</span>
-            <h3 className="text-base sm:text-lg md:text-xl font-extrabold text-slate-900 tracking-tight leading-snug">
-              初めてこの手紙を見つけた方へ ── ReMEETsの安心再会システム
-            </h3>
-          </div>
-          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-medium">
-            お名前は検索エンジンで見つかりますが、手紙本文とお互いの連絡先は<strong className="text-teal-900 font-bold">「二人だけの思い出クイズ」を解いたご本人のみに安全に開示</strong>されます。
-          </p>
+      <div className="border-b border-slate-100 pb-4 text-left space-y-1.5">
+        <div className="flex items-center gap-2">
+          <span className="text-xl">🤝</span>
+          <h3 className="text-base sm:text-lg md:text-xl font-extrabold text-slate-900 tracking-tight leading-snug">
+            初めてこの手紙を見つけた方へ ── ReMEETsの安心再会システム
+          </h3>
         </div>
-        <div className="flex items-center gap-2 shrink-0 self-start sm:self-auto">
-          <span className="text-[11px] font-bold text-teal-800 bg-teal-50 px-3 py-1 rounded-full border border-teal-200 flex items-center gap-1.5 shadow-2xs">
-            <ShieldCheck size={14} className="text-teal-600" />
-            プライバシー保護
-          </span>
-          <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200 flex items-center gap-1.5 shadow-2xs">
-            <CheckCircle2 size={14} className="text-emerald-600" />
-            全額返金保証付
-          </span>
-        </div>
+        <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-medium">
+          お名前は検索エンジンで見つかりますが、手紙本文とお互いの連絡先は<strong className="text-teal-900 font-bold">「二人だけの思い出クイズ」を解いたご本人のみに安全に開示</strong>されます。
+        </p>
       </div>
 
       {/* 2. 【フロー進行型】手紙を開封するまでのシンプルな 3ステップ（横長3段積み） */}
@@ -3441,27 +3429,22 @@ export const RecipientSafetyGuide = ({
         </div>
       </div>
 
-      {/* 4. アクション導線（クイズへ進む ＆ ガイドへ） */}
-      <div className="pt-1 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-slate-100">
-        <button
-          onClick={onOpenGuide || (() => navigate('/guide'))}
-          className="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-teal-800 transition-colors py-2 px-3 rounded-xl hover:bg-slate-100 cursor-pointer"
-        >
-          <BookOpen size={14} className="text-teal-700" />
-          <span>詳しいご利用ガイドとQ&Aを見る</span>
-          <ArrowRight size={12} className="text-slate-400" />
-        </button>
-
-        {onStartQuiz && (
+      {/* 4. アクション導線（上部ボタンと同サイズ・同タイトルのワイドCTA） */}
+      {onStartQuiz && (
+        <div className="pt-2">
           <button
             onClick={onStartQuiz}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-teal-700 hover:bg-teal-800 text-white text-xs md:text-sm font-bold rounded-2xl shadow-md hover:shadow-lg transition-all cursor-pointer group"
+            className="w-full py-4 bg-teal-700 hover:bg-teal-800 text-white font-bold rounded-2xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2.5 text-sm sm:text-base cursor-pointer hover:scale-[1.01]"
           >
-            <span>心当たりがある方は「思い出クイズ」へ進む（無料）</span>
-            <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
+            <Unlock size={18} />
+            <span>思い出の質問（合言葉）に答えて手紙を開く</span>
+            <ArrowRight size={16} />
           </button>
-        )}
-      </div>
+          <p className="text-[11px] text-slate-500 text-center font-sans mt-2">
+            ※ 会員登録不要ですぐにお答えいただけます（不正利用防止のため暗号化保護されています）。
+          </p>
+        </div>
+      )}
     </div>
   );
 };
