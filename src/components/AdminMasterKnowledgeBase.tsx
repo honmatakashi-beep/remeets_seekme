@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   BookOpen,
@@ -31,7 +31,14 @@ import {
   Phone,
   Send,
   Trash2,
-  FileCheck
+  FileCheck,
+  Printer,
+  FileSpreadsheet,
+  AlertCircle,
+  HelpCircle,
+  Clock,
+  Shield,
+  PhoneCall
 } from 'lucide-react';
 import { AdminDeploymentGuideBlock } from '../pages/MiscPages';
 
@@ -44,10 +51,15 @@ export const AdminMasterKnowledgeBase: React.FC<AdminMasterKnowledgeBaseProps> =
   guideDocType = 'deployment',
   setGuideDocType = () => {}
 }) => {
-  const [viewMode, setViewMode] = useState<'master_memo' | 'legal_docs'>('master_memo');
+  // 3大メインビューモード: 備忘録・決定事項 / 実務書面ライブラリ / 行政届出ポートフォリオ
+  const [viewMode, setViewMode] = useState<'master_memo' | 'templates' | 'legal_docs'>('master_memo');
+  
+  // サブタブ
   const [activeSubTab, setActiveSubTab] = useState<
     'deployment17' | 'auth_costs' | 'police_ekyc' | 'liability_contract' | 'closed_chat_transition' | 'scratchpad'
   >('deployment17');
+
+  const [activeTemplateId, setActiveTemplateId] = useState<string>('tpl-police');
 
   const [searchQuery, setSearchQuery] = useState('');
   const [copiedSection, setCopiedSection] = useState<string | null>(null);
@@ -61,6 +73,37 @@ export const AdminMasterKnowledgeBase: React.FC<AdminMasterKnowledgeBaseProps> =
       return {};
     }
   });
+
+  // Emergency Incident Contacts State (stored in localStorage)
+  const defaultEmergencyContacts = `【ReMEETs 運営緊急エスカレーション連絡網】
+■ 1. 決済インフラ (Stripe Japan)
+- 加盟店サポート窓口: https://support.stripe.com/
+- 緊急不正利用・チャージバック通報窓口: priority-risk@stripe.com
+- アカウントID: acct_1ReMEETsMasterLive
+
+■ 2. eKYC本人確認 (TRUSTDOCK / LIQUID)
+- テクニカルサポート: support@trustdock.io (平日 9:00〜18:00 / 緊急障害 24h)
+- 専任営業担当: 株式会社TRUSTDOCK 営業推進部
+- 障害通知ステータスページ: https://status.trustdock.io/
+
+■ 3. 管轄警察署 (生活安全課・サイバー犯罪対策課)
+- 管轄警察署: 警視庁 本所警察署 生活安全課 防犯係
+- 電話番号: 03-3634-0110 (代表) / 内線 2612
+- 捜査関係事項照会書 FAX送信用: 03-3634-0119 (※事前電話確認必須)
+
+■ 4. インフラ・サーバー監視 (Google Cloud / Supabase)
+- Google Cloud Support: https://console.cloud.google.com/support
+- Supabase Status: https://status.supabase.com/
+- 障害監視Slack通知チャンネル: #alert-production-critical`;
+
+  const [emergencyContacts, setEmergencyContacts] = useState<string>(() => {
+    try {
+      return localStorage.getItem('remeets_emergency_contacts') || defaultEmergencyContacts;
+    } catch {
+      return defaultEmergencyContacts;
+    }
+  });
+  const [contactsSaved, setContactsSaved] = useState(false);
 
   // Custom Scratchpad Note State (stored in localStorage)
   const defaultAuthMemo = `【ReMEETs 本番運用 ＆ 認証設計 決定事項メモ】
@@ -117,6 +160,27 @@ export const AdminMasterKnowledgeBase: React.FC<AdminMasterKnowledgeBaseProps> =
       setScratchpadMemo(defaultAuthMemo);
       try {
         localStorage.setItem('remeets_master_auth_memo', defaultAuthMemo);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  };
+
+  const handleSaveContacts = () => {
+    try {
+      localStorage.setItem('remeets_emergency_contacts', emergencyContacts);
+      setContactsSaved(true);
+      setTimeout(() => setContactsSaved(false), 2500);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleResetContacts = () => {
+    if (window.confirm('緊急連絡網を標準テンプレートに戻しますか？')) {
+      setEmergencyContacts(defaultEmergencyContacts);
+      try {
+        localStorage.setItem('remeets_emergency_contacts', defaultEmergencyContacts);
       } catch (e) {
         console.error(e);
       }
@@ -190,6 +254,170 @@ export const AdminMasterKnowledgeBase: React.FC<AdminMasterKnowledgeBaseProps> =
     }
   ];
 
+  // 📄 実務用公式書面テンプレート集 (Official Templates Library)
+  const officialTemplates = [
+    {
+      id: 'tpl-police',
+      title: '🚔 捜査関係事項照会に対する回答書 (警察・公安提出用)',
+      category: '刑事法務',
+      badge: '刑訴法197条',
+      description: '警察署長・検察官からの照会書に対する正式回答書の鑑文および開示ログ添付フォーマット',
+      content: `令和〇年〇月〇日
+
+〇〇警察署長 殿
+（または 〇〇地方検察庁 検察官 殿）
+
+東京都〇〇区〇〇 1-2-3
+ReMEETs 運営事務局
+個人情報取扱責任者: 〇〇 〇〇 (印)
+
+捜査関係事項照会に対する回答書
+
+拝啓
+貴署より令和〇年〇月〇日付（照会番号: 第〇〇号）にて受領いたしました、刑事訴訟法第197条第2項に基づく捜査関係事項照会について、下記のとおり対象アカウントの登録情報および通信ログを開示・回答申し上げます。
+
+敬具
+
+記
+
+1. 対象アカウント特定情報
+・ユーザー識別ID: usr_8841920482
+・登録表示ニックネーム: たかし
+・連携SNSアカウント: LINE UID (U1234567890abcdef...) / Google Email (user@example.com)
+
+2. 本人確認 (eKYC) 及び認証情報
+・SMS認証携帯電話番号: 090-XXXX-XXXX (認証完了日時: 2026-08-20 14:22:10 JST)
+・公的本人確認ステータス: APPROVED (TRUSTDOCK 照合コード: td_tx_998124)
+・氏名（マスキング解除）: 〇〇 〇〇
+・年齢区分: 18歳以上（成年確認済み）
+
+3. 通信ログ及びアクセス証跡
+・直近ログインIPアドレス: 203.0.113.45 (ホスト名: p113045-ipngnfx01.tokyo.ocn.ne.jp)
+・アクセス日時: 2026-08-25 19:44:02 JST
+・使用ブラウザ (User-Agent): Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X)
+
+4. 投函ボトルメール保全データ
+・ボトルID: post_7741
+・投函日時: 2026-08-21 10:15:30 JST
+・AI安全防衛エンジン判定: ai_flagged = 1 (自動隔離・非公開化済み)
+・原文抜粋: 【保全ログ別紙添付のとおり】
+
+以上`
+    },
+    {
+      id: 'tpl-tos-notice',
+      title: '📢 利用規約・プライバシーポリシー改訂 重要告知文',
+      category: '規約改訂',
+      badge: '全ユーザー配信',
+      description: 'SNS認証連携の本格導入および連絡先開示モデルへの移行に伴う全体配信アナウンス',
+      content: `【重要】利用規約およびプライバシーポリシー改訂のお知らせ
+
+いつも「ReMEETs 〜再会のボトルメール〜」をご利用いただき、誠にありがとうございます。
+
+このたび、ユーザーの皆様により安心・安全かつ快適に想い出の再会をお届けするため、2026年8月15日付で利用規約およびプライバシーポリシーを改訂いたしました。
+
+■ 主な改訂内容
+1. SNSアカウント連携（LINE / Google）による安全な認証基盤の明文化
+- パスワード不要で安全にログインできる仕組みを導入いたしました。
+- アカウント乗っ取りやなりすましを防止するための規約条項を追加しました。
+
+2. 連絡先開示（引き渡し）モデルへの明確化
+- 想い出クイズ完全一致および本人確認（eKYC）完了後、安全にお相手へ連絡先をお渡しして役割を完結させる運用方針を明文化いたしました。
+
+3. 個人情報の厳格なゼロ保持方針
+- クレジットカード情報や運転免許証原本画像をWebサーバー上に一切保管しない安全設計をポリシーに明記いたしました。
+
+改訂後の全文は、アプリ内フッターの「利用規約」「プライバシーポリシー」よりご確認いただけます。
+今後とも ReMEETs をよろしくお願い申し上げます。
+
+ReMEETs 運営事務局`
+    },
+    {
+      id: 'tpl-refund-notice',
+      title: '💳 決済エラー・SMS不達時の自動返金 ＆ お詫び通知',
+      category: 'CS対応',
+      badge: '自動返金',
+      description: '通信障害やシステム不備による開通失敗時にユーザーへ送る自動返金とお詫び文面',
+      content: `【ReMEETs】開通手数料（600円）のご返金手続き完了のお知らせ
+
+ReMEETs をご利用いただき誠にありがとうございます。
+
+お客様が手続きを行われました連絡先開通手数料（¥600）につきまして、通信エラー（またはSMS認証不達）が発生したため、決済のお取り消し（全額返金）処理を完了いたしました。
+
+■ ご返金内容
+・決済ID: {{stripe_payment_id}}
+・ご返金額: ¥600 (税込)
+・返金日時: {{refund_date}}
+・返金方法: ご利用のクレジットカード会社経由でのご返金（または請求相殺）
+
+※ご利用のカード会社の締め日により、明細への反映まで数日から数週間程度かかる場合がございます。
+
+お客様にはご不便とご心配をおかけいたしましたことを、深くお詫び申し上げます。
+ご不明な点がございましたら、本メールへのご返信またはお問い合わせ窓口よりお気軽にご連絡ください。
+
+ReMEETs カスタマーサポート`
+    },
+    {
+      id: 'tpl-legal-scheme',
+      title: '⚖️ インターネット異性紹介事業 非該当性 法的説明書',
+      category: '行政法務',
+      badge: '警察・弁護士用',
+      description: '警察署生活安全課や弁護士・行政書士へ提示する「出会い系規制法適用除外」の論理構成書',
+      content: `ReMEETs サービススキーム及び出会い系サイト規制法非該当性に関する説明書
+
+1. サービスの目的と基本構造
+本サービス「ReMEETs」は、過去に面識のあった同級生、恩師、元同僚等の「既知の人物」との健全な再会・感謝の伝達を支援するプラットフォームです。
+
+2. 出会い系サイト規制法（インターネット異性紹介事業）に非該当である理由
+(1) 不特定多数の異性交際を斡旋しない
+一般的なマッチングアプリと異なり、年齢・容姿・年収等による異性の検索・閲覧機能は一切存在しません。
+(2) 二人だけの想い出クイズによる厳格な合意照合
+手紙の閲覧および連絡先開示には、差出人と受取人のみが知る「想い出クイズ（共通記憶）」の完全一致が必須であり、見知らぬ第三者が偶然マッチングすることは不可能です。
+(3) プラットフォーム内チャットの非提供（引き渡し完結型）
+アプリ内で継続的なメッセージ交換（チャット）を提供せず、照合・本人確認後に連絡先を引き渡して終了するため、出会い系サイト規制法第2条第2号に定める「異性交際の機会を提供する役務」には該当いたしません。
+
+3. 安全防衛体制
+・Google Gemini AI によるストーカー・脅迫表現のリアルタイム自動隔離（ai_flagged = 1）
+・公的本人確認（eKYC）およびSMS携帯電話番号認証の全件実施
+・刑訴法197条照会に対するログ開示体制の完備`
+    }
+  ];
+
+  // 全項目横断検索のフィルタリング
+  const isMatchQuery = (text: string) => {
+    if (!searchQuery.trim()) return true;
+    return text.toLowerCase().includes(searchQuery.toLowerCase());
+  };
+
+  // 17大チェックリストのエクスポート用テキスト生成
+  const generateChecklistExportText = () => {
+    let out = `【ReMEETs 本番デプロイ完了証明書 ＆ 17大チェックリスト】
+`;
+    out += `発行日時: ${new Date().toLocaleString('ja-JP')}
+`;
+    out += `進捗率: ${checklistPercent}% (${completedChecklistCount} / ${totalChecklistCount} 項目完了)
+
+`;
+
+    deploymentSections.forEach(sec => {
+      out += `${sec.group}
+`;
+      sec.items.forEach(item => {
+        const checked = checkedItems[item.id] ? ' [✔ 完了] ' : ' [　未完了] ';
+        out += `${checked}${item.title}
+    詳細: ${item.desc}
+`;
+      });
+      out += `
+`;
+    });
+
+    out += `
+署名: ReMEETs 本番運用統括責任者 ____________________ (印)
+`;
+    return out;
+  };
+
   return (
     <div id="master-knowledge-base-block" className="bg-white rounded-3xl p-6 md:p-8 border border-brand-border shadow-sm space-y-8 font-sans">
       {/* 🧭 Header Banner */}
@@ -197,21 +425,21 @@ export const AdminMasterKnowledgeBase: React.FC<AdminMasterKnowledgeBaseProps> =
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-teal-50 text-teal-900 rounded-full text-xs font-bold mb-2 border border-teal-200">
             <BookOpen size={14} />
-            <span>ReMEETs 統合マスター備忘録 ＆ 運営ナレッジセンター</span>
+            <span>ReMEETs 統合マスター備忘録 ＆ 運営ライブラリセンター</span>
           </div>
           <h3 className="text-xl md:text-2xl font-bold font-serif text-black flex items-center gap-2">
             <span>マスター備忘録 ＆ 運営ライブラリ</span>
             <span className="text-xs font-mono font-normal px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
-              全決定事項・完全集約版
+              公式完全集約版
             </span>
           </h3>
           <p className="text-xs text-black/60 mt-1">
-            本番デプロイ手順、SNS/SMS認証仕様、警察・公安照会基準、法的責任の所在など、散らばっていた全備忘録を1箇所に完全統合しました。
+            本番デプロイ手順、警察照会基準、責任の所在、公式書面テンプレート、緊急エスカレーション連絡網を1箇所に完全統合しました。
           </p>
         </div>
 
-        {/* View Mode Switcher & Actions */}
-        <div className="flex flex-wrap items-center gap-2.5">
+        {/* 3-Mode View Switcher */}
+        <div className="flex flex-wrap items-center gap-2">
           <div className="flex items-center bg-zinc-100 p-1 rounded-xl border border-brand-border/60 text-xs font-bold">
             <button
               type="button"
@@ -220,16 +448,25 @@ export const AdminMasterKnowledgeBase: React.FC<AdminMasterKnowledgeBaseProps> =
                 viewMode === 'master_memo' ? 'bg-white text-black shadow-xs font-bold' : 'text-black/60 hover:text-black'
               }`}
             >
-              📚 マスター備忘録 ＆ 決定事項集
+              📚 決定事項集
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode('templates')}
+              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                viewMode === 'templates' ? 'bg-white text-teal-950 shadow-xs font-bold' : 'text-black/60 hover:text-black'
+              }`}
+            >
+              📄 実務書面ライブラリ
             </button>
             <button
               type="button"
               onClick={() => setViewMode('legal_docs')}
               className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                viewMode === 'legal_docs' ? 'bg-white text-teal-900 shadow-xs font-bold' : 'text-black/60 hover:text-black'
+                viewMode === 'legal_docs' ? 'bg-white text-teal-950 shadow-xs font-bold' : 'text-black/60 hover:text-black'
               }`}
             >
-              🏛️ 行政届出・法務ポートフォリオ
+              🏛️ 行政届出ポートフォリオ
             </button>
           </div>
 
@@ -244,14 +481,180 @@ export const AdminMasterKnowledgeBase: React.FC<AdminMasterKnowledgeBaseProps> =
         </div>
       </div>
 
-      {/* 🏛️ VIEW MODE 2: Formal Legal Documents Portfolio */}
+      {/* 🔍 Universal Search Bar (全項目リアルタイム横断検索) */}
+      <div className="relative">
+        <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-black/40" />
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="備忘録・決定事項・書面テンプレートを横断検索... (例: 197条, 返金, eKYC, 免責, LINE, 366円)"
+          className="w-full pl-10 pr-4 py-2.5 bg-zinc-50 border border-brand-border rounded-2xl text-xs text-black focus:bg-white focus:border-teal-600 focus:outline-none transition-all shadow-inner"
+        />
+        {searchQuery && (
+          <button
+            type="button"
+            onClick={() => setSearchQuery('')}
+            className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-black/40 hover:text-black"
+          >
+            クリア
+          </button>
+        )}
+      </div>
+
+      {/* ========================================================================= */}
+      {/* 📄 VIEW MODE 2: 実務用公式書面テンプレート集 ＆ 緊急連絡網 (新設ライブラリ) */}
+      {/* ========================================================================= */}
+      {viewMode === 'templates' && (
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            {/* Template Selector Left Sidebar */}
+            <div className="lg:col-span-4 bg-zinc-50/80 rounded-2xl p-4 border border-brand-border space-y-2">
+              <h4 className="font-bold text-xs text-black px-2 mb-2 flex items-center gap-1.5">
+                <FileCheck size={15} className="text-teal-700" />
+                <span>公式書面テンプレート一覧</span>
+              </h4>
+              {officialTemplates.map((tpl) => {
+                const isSelected = activeTemplateId === tpl.id;
+                return (
+                  <button
+                    key={tpl.id}
+                    type="button"
+                    onClick={() => setActiveTemplateId(tpl.id)}
+                    className={`w-full text-left p-3 rounded-xl transition-all cursor-pointer flex flex-col gap-1 border ${
+                      isSelected
+                        ? 'bg-white border-teal-600 shadow-sm ring-1 ring-teal-500/20'
+                        : 'bg-transparent border-transparent hover:bg-white/60'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-mono font-bold bg-teal-100 text-teal-900 px-2 py-0.5 rounded">
+                        {tpl.badge}
+                      </span>
+                      <span className="text-[10px] text-black/50">{tpl.category}</span>
+                    </div>
+                    <span className="font-bold text-xs text-black line-clamp-1">{tpl.title}</span>
+                    <p className="text-[11px] text-black/60 line-clamp-1">{tpl.description}</p>
+                  </button>
+                );
+              })}
+
+              {/* Emergency Contacts Button in Sidebar */}
+              <div className="pt-3 border-t border-brand-border/60">
+                <button
+                  type="button"
+                  onClick={() => setActiveTemplateId('emergency-contacts')}
+                  className={`w-full text-left p-3 rounded-xl transition-all cursor-pointer flex flex-col gap-1 border ${
+                    activeTemplateId === 'emergency-contacts'
+                      ? 'bg-rose-50 border-rose-500 shadow-sm text-rose-950'
+                      : 'bg-zinc-100/80 border-transparent hover:bg-zinc-200/60 text-black'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-mono font-bold bg-rose-200 text-rose-900 px-2 py-0.5 rounded">
+                      緊急時対応
+                    </span>
+                    <span className="text-[10px] text-rose-800">SOP</span>
+                  </div>
+                  <span className="font-bold text-xs flex items-center gap-1.5">
+                    <PhoneCall size={13} className="text-rose-600" />
+                    <span>🚨 緊急エスカレーション連絡網</span>
+                  </span>
+                  <p className="text-[11px] text-black/60 line-clamp-1">Stripe / eKYC / 警察署の緊急窓口</p>
+                </button>
+              </div>
+            </div>
+
+            {/* Template Content Right Area */}
+            <div className="lg:col-span-8 bg-white rounded-2xl p-5 border border-brand-border shadow-sm space-y-4">
+              {activeTemplateId === 'emergency-contacts' ? (
+                /* Emergency Contacts Editor */
+                <div className="space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-100 pb-3">
+                    <div>
+                      <h4 className="font-bold text-sm text-black flex items-center gap-2">
+                        <PhoneCall size={16} className="text-rose-600" />
+                        <span>🚨 緊急エスカレーション連絡網 (Incident Contacts)</span>
+                      </h4>
+                      <p className="text-xs text-black/60">重大障害・不正利用・警察照会時の連絡窓口（編集・保存可能）</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={handleResetContacts}
+                        className="px-3 py-1.5 rounded-xl border border-brand-border text-xs font-bold bg-zinc-100 hover:bg-zinc-200 transition-all cursor-pointer"
+                      >
+                        標準に戻す
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleSaveContacts}
+                        className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-teal-700 hover:bg-teal-800 text-white transition-all cursor-pointer shadow-sm"
+                      >
+                        {contactsSaved ? '✔ 保存完了！' : '連絡網を保存'}
+                      </button>
+                    </div>
+                  </div>
+
+                  <textarea
+                    value={emergencyContacts}
+                    onChange={(e) => setEmergencyContacts(e.target.value)}
+                    rows={13}
+                    className="w-full p-4 rounded-xl bg-zinc-50 border border-brand-border text-xs font-mono text-black leading-relaxed focus:bg-white focus:border-teal-600 focus:outline-none transition-all resize-y shadow-inner"
+                  />
+                </div>
+              ) : (
+                /* Formal Document Template Viewer */
+                (() => {
+                  const tpl = officialTemplates.find(t => t.id === activeTemplateId) || officialTemplates[0];
+                  return (
+                    <div className="space-y-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-100 pb-3">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-mono font-bold bg-teal-100 text-teal-900 px-2 py-0.5 rounded">
+                              {tpl.badge}
+                            </span>
+                            <h4 className="font-bold text-sm text-black">{tpl.title}</h4>
+                          </div>
+                          <p className="text-xs text-black/60 mt-0.5">{tpl.description}</p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => copyToClipboard(tpl.content, tpl.id)}
+                          className="flex items-center gap-1 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-teal-50 hover:bg-teal-100 text-teal-900 border border-teal-200 transition-all cursor-pointer self-start sm:self-auto"
+                        >
+                          {copiedSection === tpl.id ? <Check size={14} className="text-emerald-600" /> : <Copy size={14} />}
+                          <span>{copiedSection === tpl.id ? 'コピー完了！' : 'テンプレートをコピー'}</span>
+                        </button>
+                      </div>
+
+                      <div className="relative">
+                        <pre className="p-4 rounded-xl bg-slate-900 text-slate-100 font-mono text-xs leading-relaxed overflow-x-auto whitespace-pre-wrap selection:bg-teal-700 max-h-[480px] overflow-y-auto">
+                          {tpl.content}
+                        </pre>
+                      </div>
+                    </div>
+                  );
+                })()
+              )}
+            </div>
+          </div>
+        </motion.div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* 🏛️ VIEW MODE 3: 行政届出・法務ポートフォリオ                                */}
+      {/* ========================================================================= */}
       {viewMode === 'legal_docs' && (
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
           <AdminDeploymentGuideBlock docType={guideDocType} setDocType={setGuideDocType} />
         </motion.div>
       )}
 
-      {/* 📚 VIEW MODE 1: Master Knowledge Base (Memos & Decisions) */}
+      {/* ========================================================================= */}
+      {/* 📚 VIEW MODE 1: Master Knowledge Base (Memos & Decisions)                 */}
+      {/* ========================================================================= */}
       {viewMode === 'master_memo' && (
         <div className="space-y-6">
           {/* 🧭 6大サブタブ ナビゲーションカード */}
@@ -409,47 +812,62 @@ export const AdminMasterKnowledgeBase: React.FC<AdminMasterKnowledgeBaseProps> =
                     <div className="bg-teal-600 h-full transition-all duration-500" style={{ width: `${checklistPercent}%` }} />
                   </div>
                   <span className="font-mono font-bold text-xs text-teal-900">{checklistPercent}%</span>
+                  <button
+                    type="button"
+                    onClick={() => copyToClipboard(generateChecklistExportText(), 'checklist_export')}
+                    className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold bg-white hover:bg-teal-100 text-teal-900 border border-teal-200 transition-all cursor-pointer shadow-2xs"
+                  >
+                    {copiedSection === 'checklist_export' ? <Check size={13} className="text-emerald-600" /> : <Download size={13} />}
+                    <span>証明書出力</span>
+                  </button>
                 </div>
               </div>
 
               <div className="space-y-6">
-                {deploymentSections.map((sec, idx) => (
-                  <div key={idx} className="bg-zinc-50/60 p-5 rounded-3xl border border-brand-border space-y-3">
-                    <h5 className="text-xs font-bold text-black uppercase tracking-wider">{sec.group}</h5>
-                    <div className="space-y-2">
-                      {sec.items.map((item) => {
-                        const isChecked = !!checkedItems[item.id];
-                        return (
-                          <div
-                            key={item.id}
-                            onClick={() => toggleCheck(item.id)}
-                            className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-start gap-3 ${
-                              isChecked
-                                ? 'bg-emerald-50/70 border-emerald-200 text-emerald-950'
-                                : 'bg-white hover:bg-zinc-50 border-brand-border/80 text-black'
-                            }`}
-                          >
-                            <div className="pt-0.5">
-                              <input
-                                type="checkbox"
-                                checked={isChecked}
-                                onChange={() => {}} // handled by parent div
-                                className="w-4 h-4 accent-emerald-600 rounded cursor-pointer"
-                              />
-                            </div>
-                            <div className="space-y-0.5 flex-1">
-                              <div className="font-bold text-xs flex items-center gap-1.5">
-                                <span>{item.icon}</span>
-                                <span className={isChecked ? 'line-through text-emerald-800' : 'text-black'}>{item.title}</span>
+                {deploymentSections.map((sec, idx) => {
+                  const filteredItems = sec.items.filter(item => 
+                    isMatchQuery(item.title) || isMatchQuery(item.desc) || isMatchQuery(sec.group)
+                  );
+                  if (filteredItems.length === 0) return null;
+
+                  return (
+                    <div key={idx} className="bg-zinc-50/60 p-5 rounded-3xl border border-brand-border space-y-3">
+                      <h5 className="text-xs font-bold text-black uppercase tracking-wider">{sec.group}</h5>
+                      <div className="space-y-2">
+                        {filteredItems.map((item) => {
+                          const isChecked = !!checkedItems[item.id];
+                          return (
+                            <div
+                              key={item.id}
+                              onClick={() => toggleCheck(item.id)}
+                              className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-start gap-3 ${
+                                isChecked
+                                  ? 'bg-emerald-50/70 border-emerald-200 text-emerald-950'
+                                  : 'bg-white hover:bg-zinc-50 border-brand-border/80 text-black'
+                              }`}
+                            >
+                              <div className="pt-0.5">
+                                <input
+                                  type="checkbox"
+                                  checked={isChecked}
+                                  onChange={() => {}} // handled by parent div
+                                  className="w-4 h-4 accent-emerald-600 rounded cursor-pointer"
+                                />
                               </div>
-                              <p className="text-[11px] text-black/60 leading-relaxed font-sans">{item.desc}</p>
+                              <div className="space-y-0.5 flex-1">
+                                <div className="font-bold text-xs flex items-center gap-1.5">
+                                  <span>{item.icon}</span>
+                                  <span className={isChecked ? 'line-through text-emerald-800' : 'text-black'}>{item.title}</span>
+                                </div>
+                                <p className="text-[11px] text-black/60 leading-relaxed font-sans">{item.desc}</p>
+                              </div>
                             </div>
-                          </div>
-                        );
-                      })}
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </motion.div>
           )}
