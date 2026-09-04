@@ -77,13 +77,13 @@ export const SupporterPage: React.FC = () => {
         
         {/* 1. なぜ寄付をお願いしているのか（ストーリー） */}
         <section className="bg-white rounded-3xl p-6 md:p-10 shadow-xl border border-slate-100 space-y-6">
-          <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
-            <div className="w-10 h-10 rounded-2xl bg-teal-100 text-teal-700 flex items-center justify-center font-bold shrink-0">
-              <Anchor size={20} />
+          <div className="flex items-center gap-3.5 border-b border-slate-100 pb-5">
+            <div className="w-12 h-12 rounded-2xl bg-teal-50 border border-teal-200 text-teal-700 flex items-center justify-center shrink-0 shadow-2xs">
+              <Anchor size={24} />
             </div>
             <div>
-              <span className="text-[11px] font-bold text-teal-700 uppercase tracking-wider block">OUR MISSION</span>
-              <h2 className="text-xl md:text-2xl font-black font-serif text-slate-900">
+              <span className="text-[10.5px] font-bold text-teal-700 uppercase tracking-widest block font-sans">OUR MISSION</span>
+              <h2 className="text-xl md:text-2xl font-bold font-serif text-slate-900">
                 なぜ、ボトルメールの投函や検索を無料で行っているのか
               </h2>
             </div>
@@ -114,13 +114,13 @@ export const SupporterPage: React.FC = () => {
 
         {/* 2. 寄付金の使い道（透明性・提案 ⑤ 拡充版） */}
         <section className="bg-white rounded-3xl p-6 md:p-10 shadow-xl border border-slate-100 space-y-6">
-          <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
-            <div className="w-10 h-10 rounded-2xl bg-sky-100 text-sky-700 flex items-center justify-center font-bold shrink-0">
-              <ShieldCheck size={20} />
+          <div className="flex items-center gap-3.5 border-b border-slate-100 pb-5">
+            <div className="w-12 h-12 rounded-2xl bg-sky-50 border border-sky-200 text-sky-700 flex items-center justify-center shrink-0 shadow-2xs">
+              <ShieldCheck size={24} />
             </div>
             <div>
-              <span className="text-[11px] font-bold text-sky-700 uppercase tracking-wider block">TRANSPARENCY</span>
-              <h2 className="text-xl md:text-2xl font-black font-serif text-slate-900">
+              <span className="text-[10.5px] font-bold text-sky-700 uppercase tracking-widest block font-sans">TRANSPARENCY</span>
+              <h2 className="text-xl md:text-2xl font-bold font-serif text-slate-900">
                 ご寄付いただいた資金の使い道（透明性レポート）
               </h2>
             </div>
@@ -164,13 +164,13 @@ export const SupporterPage: React.FC = () => {
 
         {/* 3. 公式サポーター特典 */}
         <section className="bg-gradient-to-br from-amber-500/10 via-rose-500/10 to-indigo-500/10 rounded-3xl p-6 md:p-10 shadow-xl border border-amber-200/80 space-y-6">
-          <div className="flex items-center gap-3 border-b border-amber-200/80 pb-4">
-            <div className="w-10 h-10 rounded-2xl bg-amber-500 text-white flex items-center justify-center font-bold shrink-0">
-              <Award size={20} />
+          <div className="flex items-center gap-3.5 border-b border-amber-200/80 pb-5">
+            <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center shrink-0 shadow-2xs">
+              <Award size={24} />
             </div>
             <div>
-              <span className="text-[11px] font-bold text-amber-800 uppercase tracking-wider block">SUPPORTER REWARDS</span>
-              <h2 className="text-xl md:text-2xl font-black font-serif text-slate-900">
+              <span className="text-[10.5px] font-bold text-amber-800 uppercase tracking-widest block font-sans">SUPPORTER REWARDS</span>
+              <h2 className="text-xl md:text-2xl font-bold font-serif text-slate-900">
                 公式サポーター様にお贈りする特典
               </h2>
             </div>
@@ -198,13 +198,13 @@ export const SupporterPage: React.FC = () => {
 
         {/* 4. よくあるご質問 (FAQ) */}
         <section className="bg-white rounded-3xl p-6 md:p-10 shadow-xl border border-slate-100 space-y-6">
-          <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
-            <div className="w-10 h-10 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold shrink-0">
-              <HelpCircle size={20} />
+          <div className="flex items-center gap-3.5 border-b border-slate-100 pb-5">
+            <div className="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-200 text-indigo-700 flex items-center justify-center shrink-0 shadow-2xs">
+              <HelpCircle size={24} />
             </div>
             <div>
-              <span className="text-[11px] font-bold text-indigo-700 uppercase tracking-wider block">FAQ</span>
-              <h2 className="text-xl md:text-2xl font-black font-serif text-slate-900">
+              <span className="text-[10.5px] font-bold text-indigo-700 uppercase tracking-widest block font-sans">FAQ</span>
+              <h2 className="text-xl md:text-2xl font-bold font-serif text-slate-900">
                 寄付に関するよくあるご質問
               </h2>
             </div>
