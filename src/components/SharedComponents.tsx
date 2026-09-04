@@ -33,8 +33,13 @@ export const BottleLoader = () => (
 export const Navbar = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) => {
   const { user, token, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [copied, setCopied] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location.pathname]);
   const [isDonationModalOpen, setIsDonationModalOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [homeDesign, setHomeDesign] = useState<'v1' | 'v2'>(() => {
@@ -299,11 +304,12 @@ export const Navbar = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) 
             {/* Sliding Dropdown Panel */}
             <motion.div
               ref={dropdownRef}
+              onClick={(e) => e.stopPropagation()}
               initial={{ opacity: 0, y: -10, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.98 }}
               transition={{ duration: 0.15, ease: "easeOut" }}
-              className="absolute top-16 right-3 sm:right-6 w-80 max-w-[calc(100vw-1.5rem)] max-h-[calc(100vh-5rem)] bg-white border border-slate-200/90 rounded-2xl shadow-2xl flex flex-col z-50 overflow-hidden"
+              className="absolute top-16 right-3 sm:right-6 w-80 max-w-[calc(100vw-1.5rem)] max-h-[calc(100vh-5rem)] bg-white border border-slate-200/90 rounded-2xl shadow-2xl flex flex-col z-[101] overflow-hidden"
             >
               {/* Menu Header */}
               <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 bg-slate-50/50 text-[11px] font-bold text-slate-500 uppercase tracking-wider shrink-0">
