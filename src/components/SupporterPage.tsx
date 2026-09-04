@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Heart, ShieldCheck, Sparkles, Award, Coffee, HelpCircle, ArrowRight, CheckCircle2, Lock, Anchor, MessageCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Heart, ShieldCheck, Sparkles, Award, Coffee, HelpCircle, ArrowRight, ArrowLeft, CheckCircle2, Lock, Anchor, MessageCircle } from 'lucide-react';
 import { SupportModal } from './SupportModal';
 import supporterTwilightCool from '../assets/images/supporter_twilight_cool_1785860735348.jpg';
 
@@ -8,8 +9,19 @@ export const SupporterPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-50/50 font-sans text-slate-800 pb-20">
+      {/* 上部ナビゲーション: トップへ戻る */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-6 pb-2">
+        <Link 
+          to="/" 
+          className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-900 font-sans transition-colors group cursor-pointer"
+        >
+          <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
+          <span>トップへ戻る</span>
+        </Link>
+      </div>
+
       {/* ヒーローセクション（中央配置イラスト＆左右・上下ソフトグラデーション） */}
-      <section className="relative overflow-hidden bg-white border-b border-slate-100 text-slate-800 py-12 md:py-16 px-4 sm:px-6">
+      <section className="relative overflow-hidden bg-white border-b border-slate-100 text-slate-800 py-10 md:py-14 px-4 sm:px-6">
         {/* 背景イラスト（センター配置＆左右上下フェードグラデーション） */}
         <div className="absolute inset-0 flex justify-center items-center pointer-events-none overflow-hidden select-none">
           <div className="relative w-full max-w-4xl h-full opacity-65">
@@ -25,19 +37,19 @@ export const SupporterPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="max-w-4xl mx-auto text-center space-y-5 relative z-10">
+        <div className="max-w-4xl mx-auto text-center space-y-4 relative z-10">
           
-          <div className="inline-flex items-center gap-2 bg-teal-50 border border-teal-200 px-4 py-1.5 rounded-full text-xs md:text-sm font-extrabold tracking-wide text-teal-800 shadow-2xs">
-            <Coffee size={15} className="text-teal-600 shrink-0" />
+          <div className="inline-flex items-center gap-2 bg-teal-50 border border-teal-200 px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wide text-teal-800 shadow-2xs">
+            <Coffee size={14} className="text-teal-600 shrink-0" />
             <span>ReMEETs OFFICIAL SUPPORTER PROGRAM</span>
           </div>
 
-          <h1 className="text-[19px] xs:text-[24px] sm:text-[28px] md:text-[34px] lg:text-[42px] xl:text-[48px] font-serif font-extrabold tracking-[0.02em] xs:tracking-[0.04em] sm:tracking-[0.1em] md:tracking-[0.16em] lg:tracking-[0.22em] leading-[1.8] max-w-full mx-auto flex flex-col items-center gap-1.5 md:gap-3 px-2 text-sky-700">
-            <span className="block whitespace-normal md:whitespace-nowrap text-center max-w-full break-words">思い出の海を、</span>
-            <span className="block whitespace-normal md:whitespace-nowrap text-center max-w-full break-words">みんなの温かい心で守る。</span>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[40px] font-serif font-bold tracking-wide sm:tracking-widest leading-relaxed max-w-full mx-auto flex flex-col items-center gap-1 sm:gap-2 px-2 text-sky-850">
+            <span className="block text-center">思い出の海を、</span>
+            <span className="block text-center">みんなの温かい心で守る。</span>
           </h1>
 
-          <p className="text-sm text-slate-700 max-w-2xl mx-auto leading-relaxed font-semibold">
+          <p className="text-xs sm:text-sm text-slate-700 max-w-2xl mx-auto leading-relaxed font-medium">
             ReMEETsは、もう一度会いたい大切な人を探すのを無料でお手伝いする、<br className="hidden md:inline" />
             個人運営のボトルメールプラットフォームです。
           </p>
