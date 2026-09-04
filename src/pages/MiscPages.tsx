@@ -57,11 +57,30 @@ export const SuccessStoriesPage = () => {
     { id: 'rival', label: '⚽ 青春・ライバル' },
   ];
 
+  const getCategoryBadge = (category: string, defaultTag?: string) => {
+    switch (category) {
+      case 'classmate':
+        return { label: '🏫 同級生', style: 'bg-amber-50 text-amber-900 border-amber-200' };
+      case 'mentor':
+        return { label: '🌸 恩師・部活', style: 'bg-indigo-50 text-indigo-900 border-indigo-200' };
+      case 'journey':
+        return { label: '🧭 旅・一期一会', style: 'bg-teal-50 text-teal-900 border-teal-200' };
+      case 'neighbor':
+        return { label: '🏡 幼馴染・ご近所', style: 'bg-rose-50 text-rose-900 border-rose-200' };
+      case 'colleague':
+        return { label: '💼 元同僚・仲間', style: 'bg-emerald-50 text-emerald-900 border-emerald-200' };
+      case 'rival':
+        return { label: '⚽ 青春・ライバル', style: 'bg-sky-50 text-sky-900 border-sky-200' };
+      default:
+        return { label: defaultTag || '✨ 再会の物語', style: 'bg-slate-100 text-slate-700 border-slate-200' };
+    }
+  };
+
   const defaultStories = [
     {
       id: "def-1",
       category: "classmate",
-      tag: "同級生との再会",
+      tag: "🏫 同級生",
       era: "1980年代後半",
       relationship: "中学時代の親友（陸上部）",
       title: "卒業から35年。懐かしいあだ名とお互いの記憶が繋いでくれた奇跡",
@@ -72,7 +91,7 @@ export const SuccessStoriesPage = () => {
     {
       id: "def-2",
       category: "mentor",
-      tag: "恩師への感謝",
+      tag: "🌸 恩師・部活",
       era: "1990年代半ば",
       relationship: "高校吹奏楽部の顧問と元部長",
       title: "定年退職された吹奏楽部の恩師へ。30年越しの『ありがとう』が届いた日",
@@ -83,7 +102,7 @@ export const SuccessStoriesPage = () => {
     {
       id: "def-3",
       category: "journey",
-      tag: "旅・一期一会",
+      tag: "🧭 旅・一期一会",
       era: "1990年代初頭",
       relationship: "北海道一人旅で同宿だった旅人仲間",
       title: "あの夏の北海道。夜通し夢を語り合った旅の友から、3年越しの返信",
@@ -94,7 +113,7 @@ export const SuccessStoriesPage = () => {
     {
       id: "def-4",
       category: "neighbor",
-      tag: "幼馴染・ご近所",
+      tag: "🏡 幼馴染・ご近所",
       era: "1980年代初頭",
       relationship: "小学校時代の幼馴染",
       title: "さよならを言えないまま離れ離れになった幼馴染。40年ぶりの笑顔",
@@ -105,7 +124,7 @@ export const SuccessStoriesPage = () => {
     {
       id: "def-5",
       category: "colleague",
-      tag: "元職場の同僚",
+      tag: "💼 元同僚・仲間",
       era: "2000年代初頭",
       relationship: "ベンチャー企業の創業メンバー",
       title: "20年前、共に徹夜を乗り越えた仲間と再会。お互いの成長を喜び合う",
@@ -116,7 +135,7 @@ export const SuccessStoriesPage = () => {
     {
       id: "def-6",
       category: "rival",
-      tag: "青春・ライバル",
+      tag: "⚽ 青春・ライバル",
       era: "2000年代半ば",
       relationship: "高校サッカー部の他校ライバル",
       title: "高校最後の決勝で競い合った他校のエース。『あの時の握手』をもう一度",
@@ -127,9 +146,10 @@ export const SuccessStoriesPage = () => {
   ];
 
   const dbStoriesMapped = dbStories.map((story) => {
+    const category = story.era ? (story.era.includes('80') ? 'classmate' : story.era.includes('90') ? 'mentor' : 'colleague') : 'classmate';
     return {
       id: `db-${story.id}`,
-      category: story.era ? (story.era.includes('80') ? 'classmate' : story.era.includes('90') ? 'mentor' : 'colleague') : 'classmate',
+      category,
       tag: story.era ? `${story.era}年代の再会` : "再会の物語",
       era: story.era ? `${story.era}年代` : "想い出の年代",
       relationship: story.gender ? `再会のご報告（${story.gender === 'male' || story.gender === '男性' ? '男性' : story.gender === 'female' || story.gender === '女性' ? '女性' : 'その他'}）` : "再会のご報告",
@@ -235,9 +255,14 @@ export const SuccessStoriesPage = () => {
               <div className={`p-5 sm:p-7 md:p-8 border-2 border-teal-300 rounded-3xl space-y-4 ${highlightedStory.bg} shadow-md relative overflow-hidden bg-white`}>
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-bold text-teal-800 bg-teal-50 border border-teal-200 px-3 py-1 rounded-full uppercase tracking-wider font-sans">
-                      {highlightedStory.tag} (選択中)
-                    </span>
+                    {(() => {
+                      const badge = getCategoryBadge(highlightedStory.category, highlightedStory.tag);
+                      return (
+                        <span className={`text-[10.5px] font-bold px-2.5 py-0.5 rounded-full border uppercase tracking-wider font-sans flex items-center gap-1 ${badge.style}`}>
+                          {badge.label} (選択中)
+                        </span>
+                      );
+                    })()}
                     <span className="text-[11px] font-medium text-slate-500 font-sans">
                       年代：{highlightedStory.era} / 関係：{highlightedStory.relationship}
                     </span>
@@ -294,9 +319,14 @@ export const SuccessStoriesPage = () => {
               >
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-bold text-slate-700 bg-slate-100 border border-slate-200/80 px-2.5 py-0.5 rounded-full uppercase tracking-wider font-sans">
-                      {story.tag}
-                    </span>
+                    {(() => {
+                      const badge = getCategoryBadge(story.category, story.tag);
+                      return (
+                        <span className={`text-[10.5px] font-bold px-2.5 py-0.5 rounded-full border uppercase tracking-wider font-sans flex items-center gap-1 ${badge.style}`}>
+                          {badge.label}
+                        </span>
+                      );
+                    })()}
                     <span className="text-[11px] font-medium text-slate-500 font-sans">
                       年代：{story.era} / 関係：{story.relationship}
                     </span>
