@@ -1,6 +1,7 @@
 import { cn, PREFECTURES, formatEraLabel, getCategoryText, getPostUrl, PageHeader } from './lib/utils';
 import { type User, AuthProvider, AuthContext, useAuth, ConfirmContext, useConfirm, useNgFilter } from './contexts/AuthContext';
 import { TermsContent, PrivacyContent, TermsPage, PrivacyPage, GuidelinesPage, CompanyPage, SupporterDonationModal, PricingPage, SafetyPage, DeletionRequestPage } from './pages/StaticPages';
+import { FaqPage } from './pages/FaqPage';
 import { LoginPage, TermsModal, RegisterPage, QuestionSampleModal, VerifyEmailPage, ForgotPasswordPage, ResetPasswordPage } from './pages/AuthPages';
 import { SearchPage, SuccessStoryModal, ThankAdminModal } from './pages/SearchPage';
 import { AccountPage } from './pages/AccountPage';
@@ -153,6 +154,7 @@ export default function App() {
                 <Route path="/pricing" element={<PricingPage />} />
                 <Route path="/supporter" element={<SupporterPage />} />
                 <Route path="/safety" element={<SafetyPage />} />
+                <Route path="/faq" element={<FaqPage />} />
                 <Route path="/manual" element={<ManualPage />} />
                 <Route path="/contact" element={<ContactPage />} />
                 <Route path="/deletion-request" element={<DeletionRequestPage />} />

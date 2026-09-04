@@ -408,6 +408,15 @@ export const Navbar = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) 
                 {/* --- サポート & その他 --- */}
                 <div className="border-t border-slate-100 pt-2 my-1.5 space-y-0.5">
                   <Link
+                    to="/faq"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="flex items-center gap-3 px-3 py-2 text-xs text-slate-700 hover:text-teal-700 hover:bg-teal-50/60 rounded-xl transition-all font-medium text-left"
+                  >
+                    <HelpCircle size={15} className="text-teal-600 shrink-0" />
+                    <span>よくあるご質問（FAQ）</span>
+                  </Link>
+
+                  <Link
                     to="/contact"
                     onClick={() => setIsMenuOpen(false)}
                     className="flex items-center gap-3 px-3 py-2 text-xs text-slate-700 hover:text-blue-700 hover:bg-blue-50/60 rounded-xl transition-all font-medium text-left"
@@ -532,6 +541,7 @@ export const Footer = () => {
       <div className="space-y-3">
         <h4 className="text-xs font-bold text-brand-dark/80 tracking-widest uppercase">サポート</h4>
         <ul className="space-y-2 text-xs text-brand-dark/60">
+          <li><Link to="/faq" className="hover:text-brand-primary text-emerald-800 font-semibold">よくあるご質問（FAQ）</Link></li>
           <li><Link to="/manual" className="hover:text-brand-primary">ご利用マニュアル</Link></li>
           <li><Link to="/contact" className="hover:text-brand-primary">お問い合わせ</Link></li>
           <li><Link to="/deletion-request" className="hover:text-brand-primary">投稿の削除依頼</Link></li>
