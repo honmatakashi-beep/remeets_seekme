@@ -3977,15 +3977,157 @@ async function startServer() {
   app.get("/api/admin/deletion-requests", authenticateToken, isAdmin, (req, res) => {
     try {
       const requests = db.prepare(`
-        SELECT dr.*, p.target_name, u.username as post_author_name, u.id as post_author_id
+        SELECT dr.*, p.target_name, p.searcher_name, u.username as post_author_name, u.id as post_author_id
         FROM deletion_requests dr 
-        JOIN posts p ON dr.post_id = p.id 
-        JOIN users u ON p.user_id = u.id
+        LEFT JOIN posts p ON dr.post_id = p.id 
+        LEFT JOIN users u ON p.user_id = u.id
         ORDER BY dr.created_at DESC
       `).all();
       res.json(requests);
     } catch (err) {
       res.status(500).json({ error: "Failed to fetch deletion requests" });
+    }
+  });
+
+  app.post("/api/admin/deletion-requests/:id/approve", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      const reqId = req.params.id;
+      const request = db.prepare("SELECT * FROM deletion_requests WHERE id = ?").get(reqId) as any;
+      if (!request) return res.status(404).json({ error: "Deletion request not found" });
+
+      db.transaction(() => {
+        db.prepare("UPDATE deletion_requests SET status = 'approved' WHERE id = ?").run(reqId);
+
+        if (request.post_id) {
+          const post = db.prepare(`
+            SELECT p.*, u.username as author_username 
+            FROM posts p 
+            LEFT JOIN users u ON p.user_id = u.id 
+            WHERE p.id = ?
+          `).get(request.post_id) as any;
+
+          if (post) {
+            db.prepare(`
+              INSERT INTO deleted_posts_archive (
+                post_id, user_id, username, searcher_name, target_name, message, ai_flagged, ai_reason, reason, deleted_by_name
+              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `).run(
+              post.id,
+              post.user_id,
+              post.author_username || "Unknown",
+              post.searcher_name,
+              post.target_name,
+              post.message,
+              post.ai_flagged,
+              post.ai_reason,
+              `削除依頼承認 (${request.reason})`,
+              req.user?.username || "Admin"
+            );
+
+            db.prepare("DELETE FROM post_questions WHERE post_id = ?").run(post.id);
+            db.prepare("DELETE FROM messages WHERE post_id = ?").run(post.id);
+            db.prepare("DELETE FROM notifications WHERE link LIKE ?").run(`%/post/${post.id}%`);
+            db.prepare("DELETE FROM reports WHERE target_type = 'post' AND target_id = ?").run(post.id);
+            db.prepare("DELETE FROM failed_attempts WHERE post_id = ?").run(post.id);
+            db.prepare("DELETE FROM posts WHERE id = ?").run(post.id);
+          }
+        }
+      })();
+
+      logAction(req.user.id, "DELETION_APPROVE", `Approved deletion request #${reqId} (Post ID: ${request.post_id})`, req.ip);
+      res.json({ success: true, message: `削除依頼 #${reqId} を承認し、対象ボトルメールを削除しました` });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: "Failed to approve deletion request" });
+    }
+  });
+
+  app.post("/api/admin/deletion-requests/:id/reject", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      const reqId = req.params.id;
+      db.prepare("UPDATE deletion_requests SET status = 'rejected' WHERE id = ?").run(reqId);
+      logAction(req.user.id, "DELETION_REJECT", `Rejected deletion request #${reqId}`, req.ip);
+      res.json({ success: true, message: `削除依頼 #${reqId} を却下しました` });
+    } catch (err) {
+      res.status(500).json({ error: "Failed to reject deletion request" });
+    }
+  });
+
+  app.post("/api/admin/deletion-requests/batch-approve", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      const { requestIds } = req.body;
+      if (!Array.isArray(requestIds) || requestIds.length === 0) {
+        return res.status(400).json({ error: "Request IDs required" });
+      }
+
+      db.transaction(() => {
+        for (const reqId of requestIds) {
+          const request = db.prepare("SELECT * FROM deletion_requests WHERE id = ?").get(reqId) as any;
+          if (request) {
+            db.prepare("UPDATE deletion_requests SET status = 'approved' WHERE id = ?").run(reqId);
+            if (request.post_id) {
+              const post = db.prepare(`
+                SELECT p.*, u.username as author_username 
+                FROM posts p 
+                LEFT JOIN users u ON p.user_id = u.id 
+                WHERE p.id = ?
+              `).get(request.post_id) as any;
+
+              if (post) {
+                db.prepare(`
+                  INSERT INTO deleted_posts_archive (
+                    post_id, user_id, username, searcher_name, target_name, message, ai_flagged, ai_reason, reason, deleted_by_name
+                  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                `).run(
+                  post.id,
+                  post.user_id,
+                  post.author_username || "Unknown",
+                  post.searcher_name,
+                  post.target_name,
+                  post.message,
+                  post.ai_flagged,
+                  post.ai_reason,
+                  `一括削除依頼承認 (${request.reason})`,
+                  req.user?.username || "Admin"
+                );
+
+                db.prepare("DELETE FROM post_questions WHERE post_id = ?").run(post.id);
+                db.prepare("DELETE FROM messages WHERE post_id = ?").run(post.id);
+                db.prepare("DELETE FROM notifications WHERE link LIKE ?").run(`%/post/${post.id}%`);
+                db.prepare("DELETE FROM reports WHERE target_type = 'post' AND target_id = ?").run(post.id);
+                db.prepare("DELETE FROM failed_attempts WHERE post_id = ?").run(post.id);
+                db.prepare("DELETE FROM posts WHERE id = ?").run(post.id);
+              }
+            }
+          }
+        }
+      })();
+
+      logAction(req.user.id, "DELETION_BATCH_APPROVE", `Batch approved ${requestIds.length} deletion requests`, req.ip);
+      res.json({ success: true, count: requestIds.length });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: "Failed to batch approve deletion requests" });
+    }
+  });
+
+  app.post("/api/admin/deletion-requests/batch-reject", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      const { requestIds } = req.body;
+      if (!Array.isArray(requestIds) || requestIds.length === 0) {
+        return res.status(400).json({ error: "Request IDs required" });
+      }
+
+      const stmt = db.prepare("UPDATE deletion_requests SET status = 'rejected' WHERE id = ?");
+      const transaction = db.transaction((ids: number[]) => {
+        for (const id of ids) stmt.run(id);
+      });
+      transaction(requestIds);
+
+      logAction(req.user.id, "DELETION_BATCH_REJECT", `Batch rejected ${requestIds.length} deletion requests`, req.ip);
+      res.json({ success: true, count: requestIds.length });
+    } catch (err) {
+      res.status(500).json({ error: "Failed to batch reject deletion requests" });
     }
   });
 
