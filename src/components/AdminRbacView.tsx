@@ -3,7 +3,7 @@ import {
   ShieldCheck, Shield, Lock, Users, UserCheck, AlertTriangle, 
   CheckCircle2, XCircle, Key, RefreshCw, Radio, Sparkles, 
   ChevronRight, ArrowRight, Eye, UserPlus, FileText, Bot, DollarSign,
-  ShieldAlert, Search
+  ShieldAlert, Search, Download, X
 } from 'lucide-react';
 
 interface RoleInfo {
@@ -111,6 +111,12 @@ export const AdminRbacView: React.FC<AdminRbacViewProps> = ({ token, currentRole
   const [candidateResults, setCandidateResults] = useState<any[]>([]);
   const [isSearchingCandidates, setIsSearchingCandidates] = useState<boolean>(false);
   const [selectedNewRole, setSelectedNewRole] = useState<string>('moderator');
+
+  // 🗂️ スタッフ一覧フィルター＆検索ステート
+  const [staffSearchTerm, setStaffSearchTerm] = useState<string>('');
+  const [staffRoleFilter, setStaffRoleFilter] = useState<'all' | 'super_admin' | 'moderator' | 'cs_support' | 'auditor'>('all');
+  const [staffPage, setStaffPage] = useState<number>(1);
+  const [staffPerPage, setStaffPerPage] = useState<number>(15);
 
   const getEffectiveToken = () => token || localStorage.getItem('token') || '';
 
@@ -236,24 +242,30 @@ export const AdminRbacView: React.FC<AdminRbacViewProps> = ({ token, currentRole
     switch (roleKey) {
       case 'super_admin':
       case 'admin':
-        return <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-800 border border-purple-300">👑 統括最高管理者 (Super Admin)</span>;
+        return <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-purple-100 text-purple-800 border border-purple-300">👑 統括最高管理者</span>;
       case 'moderator':
-        return <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">🛡️ モデレーター (Moderator)</span>;
+        return <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">🛡️ モデレーター</span>;
       case 'cs_support':
-        return <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-sky-100 text-sky-800 border border-sky-300">🎧 CSサポート (CS Support)</span>;
+        return <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-sky-100 text-sky-800 border border-sky-300">🎧 CSサポート</span>;
       case 'auditor':
-        return <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-300">⚖️ 監査・法務 (Auditor)</span>;
+        return <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-300">⚖️ 監査・法務</span>;
       default:
-        return <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-neutral-100 text-neutral-700 border border-neutral-300">一般ユーザー ({roleKey})</span>;
+        return <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-neutral-100 text-neutral-700 border border-neutral-300">一般ユーザー ({roleKey})</span>;
     }
   };
 
   const canManageAdmins = currentRole === 'super_admin' || currentRole === 'admin';
 
+  // Counts for KPIs
+  const superAdminCount = staffList.filter(s => s.role === 'super_admin' || s.role === 'admin').length;
+  const moderatorCount = staffList.filter(s => s.role === 'moderator').length;
+  const csSupportCount = staffList.filter(s => s.role === 'cs_support').length;
+  const auditorCount = staffList.filter(s => s.role === 'auditor').length;
+
   return (
-    <div className="space-y-8 font-sans">
+    <div className="space-y-6 font-sans text-left animate-fade-in">
       {/* 👑 現在のロール状態ヘッダー */}
-      <div className="glass-card p-6 rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white shadow-xl border border-indigo-500/20">
+      <div className="p-6 rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white shadow-xl border border-indigo-500/20">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
             <div className="flex items-center gap-2.5">
@@ -299,29 +311,93 @@ export const AdminRbacView: React.FC<AdminRbacViewProps> = ({ token, currentRole
         </div>
       )}
 
-      {/* 🧪 ロール視点シミュレーター (体験・テスト機能) */}
-      <div className="glass-card p-6 rounded-3xl bg-white border border-brand-border shadow-sm space-y-4">
-        <div className="flex items-center justify-between border-b border-brand-border pb-3">
-          <div className="flex items-center gap-2.5">
-            <Sparkles size={20} className="text-amber-500" />
-            <h3 className="text-base font-serif font-bold text-neutral-900">
-              🧪 ロール視点シミュレーター (即時切り替えテスト)
-            </h3>
+      {/* 1. 4大スタッフ構成KPIサマリーカード */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">
+        <div className="bg-white/90 backdrop-blur-md border border-purple-200/80 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-purple-700">👑 統括最高管理者</span>
+            <div className="w-8 h-8 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600">
+              <ShieldCheck size={16} />
+            </div>
           </div>
-          <span className="text-[11px] text-neutral-500 font-sans">
-            ボタンを押すと即座に対象ロールの権限へ動的切り替えされ、各機能のアクセス制限挙動を確認できます。
-          </span>
+          <div className="mt-2 flex items-baseline gap-2">
+            <span className="text-2xl font-extrabold text-purple-800">{superAdminCount}</span>
+            <span className="text-xs text-purple-500 font-semibold">名</span>
+          </div>
+          <div className="mt-1 text-[11px] text-purple-600 font-medium">全機能・決済・設定統括</div>
+        </div>
+
+        <div className="bg-white/90 backdrop-blur-md border border-emerald-200/80 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-emerald-700">🛡️ 治安モデレーター</span>
+            <div className="w-8 h-8 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+              <Shield size={16} />
+            </div>
+          </div>
+          <div className="mt-2 flex items-baseline gap-2">
+            <span className="text-2xl font-extrabold text-emerald-700">{moderatorCount}</span>
+            <span className="text-xs text-emerald-600 font-semibold">名</span>
+          </div>
+          <div className="mt-1 text-[11px] text-emerald-600 font-medium">ボトル審査・通報・NG対応</div>
+        </div>
+
+        <div className="bg-white/90 backdrop-blur-md border border-sky-200/80 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-sky-700">🎧 CSサポート担当</span>
+            <div className="w-8 h-8 rounded-xl bg-sky-50 flex items-center justify-center text-sky-600">
+              <Users size={16} />
+            </div>
+          </div>
+          <div className="mt-2 flex items-baseline gap-2">
+            <span className="text-2xl font-extrabold text-sky-700">{csSupportCount}</span>
+            <span className="text-xs text-sky-600 font-semibold">名</span>
+          </div>
+          <div className="mt-1 text-[11px] text-sky-600 font-medium">お問い合わせ・eKYC確認</div>
+        </div>
+
+        <div className="bg-white/90 backdrop-blur-md border border-amber-200/80 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-amber-700">⚖️ 監査・法務担当</span>
+            <div className="w-8 h-8 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
+              <Key size={16} />
+            </div>
+          </div>
+          <div className="mt-2 flex items-baseline gap-2">
+            <span className="text-2xl font-extrabold text-amber-700">{auditorCount}</span>
+            <span className="text-xs text-amber-600 font-semibold">名</span>
+          </div>
+          <div className="mt-1 text-[11px] text-amber-600 font-medium">警察照会・監査台帳閲覧</div>
+        </div>
+      </div>
+
+      {/* 2. 🧪 ロール視点シミュレーター (体験・テスト機能) */}
+      <div className="bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200/90 shadow-sm p-6 space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-200 pb-3 gap-2">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+              <Sparkles size={18} />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-slate-900">
+                🧪 ロール視点シミュレーター (権限切り替えテスト)
+              </h3>
+              <p className="text-xs text-slate-500">
+                ボタンを押すと即座に対象ロールの権限へ動的切り替えされ、各画面のアクセス制御挙動を確認できます。
+              </p>
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 pt-1">
           {/* 👑 Super Admin */}
           <button
+            type="button"
             onClick={() => handleSimulateRole('super_admin')}
             disabled={switchingRole !== null || currentRole === 'super_admin'}
-            className={`p-4 rounded-2xl border text-left transition-all ${
+            className={`p-4 rounded-2xl border text-left transition-all cursor-pointer ${
               currentRole === 'super_admin' || currentRole === 'admin'
                 ? 'bg-purple-50/80 border-purple-400 ring-2 ring-purple-200'
-                : 'bg-neutral-50/80 border-neutral-200 hover:border-purple-300 hover:bg-purple-50/30'
+                : 'bg-slate-50/80 border-slate-200 hover:border-purple-300 hover:bg-purple-50/30'
             }`}
           >
             <div className="flex items-center justify-between mb-2">
@@ -332,19 +408,20 @@ export const AdminRbacView: React.FC<AdminRbacViewProps> = ({ token, currentRole
                 <span className="text-[10px] text-purple-600 font-bold flex items-center gap-0.5">切替 <ArrowRight size={12} /></span>
               )}
             </div>
-            <p className="text-[11px] text-neutral-600 leading-relaxed">
+            <p className="text-[11px] text-slate-600 leading-relaxed">
               システム設定、決済返金、スタッフ権限付与、DB初期化を含む全権限。
             </p>
           </button>
 
           {/* 🛡️ Moderator */}
           <button
+            type="button"
             onClick={() => handleSimulateRole('moderator')}
             disabled={switchingRole !== null || currentRole === 'moderator'}
-            className={`p-4 rounded-2xl border text-left transition-all ${
+            className={`p-4 rounded-2xl border text-left transition-all cursor-pointer ${
               currentRole === 'moderator'
                 ? 'bg-emerald-50/80 border-emerald-400 ring-2 ring-emerald-200'
-                : 'bg-neutral-50/80 border-neutral-200 hover:border-emerald-300 hover:bg-emerald-50/30'
+                : 'bg-slate-50/80 border-slate-200 hover:border-emerald-300 hover:bg-emerald-50/30'
             }`}
           >
             <div className="flex items-center justify-between mb-2">
@@ -355,19 +432,20 @@ export const AdminRbacView: React.FC<AdminRbacViewProps> = ({ token, currentRole
                 <span className="text-[10px] text-emerald-600 font-bold flex items-center gap-0.5">切替 <ArrowRight size={12} /></span>
               )}
             </div>
-            <p className="text-[11px] text-neutral-600 leading-relaxed">
+            <p className="text-[11px] text-slate-600 leading-relaxed">
               ボトル審査、通報・削除依頼、NGワード、IP遮断（設定・返金は制限）。
             </p>
           </button>
 
           {/* 🎧 CS Support */}
           <button
+            type="button"
             onClick={() => handleSimulateRole('cs_support')}
             disabled={switchingRole !== null || currentRole === 'cs_support'}
-            className={`p-4 rounded-2xl border text-left transition-all ${
+            className={`p-4 rounded-2xl border text-left transition-all cursor-pointer ${
               currentRole === 'cs_support'
                 ? 'bg-sky-50/80 border-sky-400 ring-2 ring-sky-200'
-                : 'bg-neutral-50/80 border-neutral-200 hover:border-sky-300 hover:bg-sky-50/30'
+                : 'bg-slate-50/80 border-slate-200 hover:border-sky-300 hover:bg-sky-50/30'
             }`}
           >
             <div className="flex items-center justify-between mb-2">
@@ -378,19 +456,20 @@ export const AdminRbacView: React.FC<AdminRbacViewProps> = ({ token, currentRole
                 <span className="text-[10px] text-sky-600 font-bold flex items-center gap-0.5">切替 <ArrowRight size={12} /></span>
               )}
             </div>
-            <p className="text-[11px] text-neutral-600 leading-relaxed">
+            <p className="text-[11px] text-slate-600 leading-relaxed">
               お問い合わせ対応返信、年齢確認ステータス確認（ボトル削除・返金は制限）。
             </p>
           </button>
 
           {/* ⚖️ Auditor */}
           <button
+            type="button"
             onClick={() => handleSimulateRole('auditor')}
             disabled={switchingRole !== null || currentRole === 'auditor'}
-            className={`p-4 rounded-2xl border text-left transition-all ${
+            className={`p-4 rounded-2xl border text-left transition-all cursor-pointer ${
               currentRole === 'auditor'
                 ? 'bg-amber-50/80 border-amber-400 ring-2 ring-amber-200'
-                : 'bg-neutral-50/80 border-neutral-200 hover:border-amber-300 hover:bg-amber-50/30'
+                : 'bg-slate-50/80 border-slate-200 hover:border-amber-300 hover:bg-amber-50/30'
             }`}
           >
             <div className="flex items-center justify-between mb-2">
@@ -401,40 +480,79 @@ export const AdminRbacView: React.FC<AdminRbacViewProps> = ({ token, currentRole
                 <span className="text-[10px] text-amber-600 font-bold flex items-center gap-0.5">切替 <ArrowRight size={12} /></span>
               )}
             </div>
-            <p className="text-[11px] text-neutral-600 leading-relaxed">
+            <p className="text-[11px] text-slate-600 leading-relaxed">
               警察照会データ生成、アクセスログ・台帳監査閲覧（編集・削除・返金不可）。
             </p>
           </button>
         </div>
       </div>
 
-      {/* 👥 管理スタッフ・アカウント一覧 ＆ 権限割当 */}
-      <div className="glass-card p-6 rounded-3xl bg-white border border-brand-border shadow-sm space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-brand-border pb-3">
-          <div className="flex items-center gap-2.5">
-            <Users size={20} className="text-indigo-600" />
+      {/* 3. 👥 管理スタッフ・ロール一覧 ＆ 権限割当メインカード */}
+      <div className="bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden font-sans">
+        {/* Header */}
+        <div className="p-5 border-b border-slate-200/80 bg-slate-50/50 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center shadow-sm">
+              <Users size={18} />
+            </div>
             <div>
-              <h3 className="text-base font-serif font-bold text-neutral-900">
-                👥 管理スタッフ・ロール一覧
+              <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                <span>管理スタッフ ＆ 役職ロール一覧</span>
+                <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-300">
+                  全 {staffList.length} 名
+                </span>
               </h3>
-              <p className="text-xs text-neutral-500">
-                登録されている運営スタッフと割り当てられたロール（統括最高管理者のみロール変更可能）。
+              <p className="text-xs text-slate-500 mt-0.5">
+                登録されている運営スタッフと割り当てられたロール（統括最高管理者のみロール変更可能）
               </p>
             </div>
           </div>
-          <button
-            onClick={fetchRbacData}
-            disabled={loading}
-            className="self-start sm:self-auto px-3 py-1.5 rounded-xl border border-neutral-200 hover:bg-neutral-50 text-xs text-neutral-700 flex items-center gap-1.5 transition-colors"
-          >
-            <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
-            <span>最新データに更新</span>
-          </button>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                const headers = ["スタッフID", "ユーザー名", "氏名", "連絡先メール", "割り当て役職", "最終操作日時", "最終操作種別"];
+                const rows = staffList.map(s => [
+                  s.id,
+                  `"${(s.username || '').replace(/"/g, '""')}"`,
+                  `"${(s.full_name || s.nickname || '').replace(/"/g, '""')}"`,
+                  `"${(s.email || '').replace(/"/g, '""')}"`,
+                  s.role,
+                  `"${s.last_action_at ? new Date(s.last_action_at).toLocaleString().replace(/"/g, '""') : 'なし'}"`,
+                  `"${(s.last_action_type || '').replace(/"/g, '""')}"`
+                ]);
+                const csvContent = "\uFEFF" + [headers.join(","), ...rows.map(row => row.join(","))].join("\n");
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.setAttribute("href", url);
+                link.setAttribute("download", `admin_staff_rbac_registry_${new Date().toISOString().split('T')[0]}.csv`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+              }}
+              className="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+            >
+              <Download size={14} />
+              <span>スタッフ権限台帳 CSV 出力</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={fetchRbacData}
+              disabled={loading}
+              className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer border border-slate-200"
+            >
+              <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
+              <span>更新</span>
+            </button>
+          </div>
         </div>
 
         {/* 🔍 一般ユーザーを検索してスタッフに任命・権限付与するエリア */}
         {canManageAdmins && (
-          <div className="p-4 rounded-2xl bg-indigo-50/50 border border-indigo-100 space-y-3">
+          <div className="p-4 bg-indigo-50/40 border-b border-indigo-100/80 space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-indigo-900 font-bold text-xs">
                 <UserPlus size={16} className="text-indigo-600" />
@@ -445,21 +563,21 @@ export const AdminRbacView: React.FC<AdminRbacViewProps> = ({ token, currentRole
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
               <div className="relative flex-1">
-                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
+                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
                   type="text"
                   placeholder="ユーザー名、ニックネーム、メールアドレス、またはIDで検索..."
                   value={candidateQuery}
                   onChange={(e) => setCandidateQuery(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSearchCandidates()}
-                  className="w-full pl-9 pr-3 py-2 text-xs bg-white border border-indigo-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-neutral-800 placeholder:text-neutral-400"
+                  className="w-full pl-9 pr-3 py-2 text-xs bg-white border border-indigo-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-800 placeholder:text-slate-400"
                 />
               </div>
 
               <select
                 value={selectedNewRole}
                 onChange={(e) => setSelectedNewRole(e.target.value)}
-                className="text-xs bg-white border border-indigo-200 rounded-xl px-3 py-2 text-neutral-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="text-xs bg-white border border-indigo-200 rounded-xl px-3 py-2 text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-bold"
               >
                 <option value="moderator">🛡️ モデレーターに任命</option>
                 <option value="cs_support">🎧 CSサポートに任命</option>
@@ -471,7 +589,7 @@ export const AdminRbacView: React.FC<AdminRbacViewProps> = ({ token, currentRole
                 type="button"
                 onClick={() => handleSearchCandidates()}
                 disabled={isSearchingCandidates}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-colors flex items-center justify-center gap-1.5 shrink-0 shadow-sm"
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-colors flex items-center justify-center gap-1.5 shrink-0 shadow-sm cursor-pointer"
               >
                 {isSearchingCandidates ? <RefreshCw size={14} className="animate-spin" /> : <Search size={14} />}
                 <span>ユーザー検索</span>
@@ -480,12 +598,13 @@ export const AdminRbacView: React.FC<AdminRbacViewProps> = ({ token, currentRole
 
             {/* 検索結果一覧 */}
             {candidateResults.length > 0 && (
-              <div className="mt-3 p-3 bg-white rounded-xl border border-indigo-100 space-y-2 animate-in fade-in">
-                <div className="text-[11px] font-bold text-neutral-500 flex items-center justify-between">
+              <div className="p-3 bg-white rounded-xl border border-indigo-200 space-y-2 animate-in fade-in">
+                <div className="text-[11px] font-bold text-slate-500 flex items-center justify-between">
                   <span>検索結果 ({candidateResults.length}件):</span>
                   <button 
+                    type="button"
                     onClick={() => setCandidateResults([])}
-                    className="text-[10px] text-neutral-400 hover:text-neutral-600 underline"
+                    className="text-[10px] text-slate-400 hover:text-slate-600 underline cursor-pointer"
                   >
                     閉じる
                   </button>
@@ -496,24 +615,25 @@ export const AdminRbacView: React.FC<AdminRbacViewProps> = ({ token, currentRole
                     return (
                       <div 
                         key={u.id} 
-                        className="p-2.5 rounded-lg border border-neutral-100 bg-neutral-50/50 hover:bg-indigo-50/30 flex items-center justify-between gap-2 transition-colors"
+                        className="p-2.5 rounded-lg border border-slate-100 bg-slate-50/50 hover:bg-indigo-50/30 flex items-center justify-between gap-2 transition-colors"
                       >
                         <div className="min-w-0 flex-1">
-                          <div className="font-bold text-xs text-neutral-900 truncate">
+                          <div className="font-bold text-xs text-slate-900 truncate">
                             {u.nickname || u.full_name || u.username}
-                            <span className="ml-1 text-[10px] text-neutral-400 font-mono">(@{u.username} / ID:#{u.id})</span>
+                            <span className="ml-1 text-[10px] text-slate-400 font-mono">(@{u.username} / ID:#{u.id})</span>
                           </div>
-                          <div className="text-[10px] text-neutral-500 truncate font-mono">{u.email || 'メール未登録'}</div>
+                          <div className="text-[10px] text-slate-500 truncate font-mono">{u.email || 'メール未登録'}</div>
                           <div className="text-[10px] text-indigo-600">現在ロール: {u.role}</div>
                         </div>
                         <button
+                          type="button"
                           onClick={async () => {
                             await handleChangeStaffRole(u.id, selectedNewRole);
                             setCandidateResults([]);
                             setCandidateQuery('');
                           }}
                           disabled={updatingStaffId === u.id}
-                          className="px-2.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-[11px] font-bold shrink-0 transition-colors shadow-xs"
+                          className="px-2.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-[11px] font-bold shrink-0 transition-colors shadow-xs cursor-pointer"
                         >
                           {isAlreadyStaff ? '役職を変更' : '任命する'}
                         </button>
@@ -526,90 +646,271 @@ export const AdminRbacView: React.FC<AdminRbacViewProps> = ({ token, currentRole
           </div>
         )}
 
-        <div className="overflow-x-auto rounded-2xl border border-neutral-200">
-          <table className="w-full text-left text-xs border-collapse font-sans">
-            <thead>
-              <tr className="bg-neutral-50/80 border-b border-neutral-200 text-neutral-600">
-                <th className="py-3 px-4 font-bold">ユーザー名 / 氏名</th>
-                <th className="py-3 px-4 font-bold">連絡先メール</th>
-                <th className="py-3 px-4 font-bold">現在の割り当て役職</th>
-                <th className="py-3 px-4 font-bold">最終管理アクション</th>
-                <th className="py-3 px-4 font-bold text-right">ロール変更</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-neutral-100">
-              {staffList.map((staff) => (
-                <tr key={staff.id} className="hover:bg-neutral-50/50 transition-colors">
-                  <td className="py-3.5 px-4">
-                    <div className="font-bold text-neutral-900 flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-full bg-indigo-100 text-indigo-800 flex items-center justify-center font-bold text-[11px] shrink-0">
-                        {staff.username.slice(0, 2).toUpperCase()}
-                      </div>
-                      <div>
-                        <div>{staff.full_name || staff.username}</div>
-                        <div className="text-[10px] text-neutral-400 font-mono">@{staff.username} (ID: #{staff.id})</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="py-3.5 px-4 text-neutral-600 font-mono text-[11px]">
-                    {staff.email || '-'}
-                  </td>
-                  <td className="py-3.5 px-4">
-                    {getRoleBadge(staff.role)}
-                  </td>
-                  <td className="py-3.5 px-4 text-neutral-500 text-[11px]">
-                    {staff.last_action_at ? (
-                      <div>
-                        <div className="font-mono text-neutral-700">{new Date(staff.last_action_at).toLocaleString('ja-JP')}</div>
-                        <div className="text-[10px] text-neutral-400">{staff.last_action_type || '操作実行'}</div>
-                      </div>
-                    ) : (
-                      <span className="text-neutral-400">操作ログなし</span>
-                    )}
-                  </td>
-                  <td className="py-3.5 px-4 text-right">
-                    {canManageAdmins ? (
-                      <select
-                        value={staff.role}
-                        onChange={(e) => handleChangeStaffRole(staff.id, e.target.value)}
-                        disabled={updatingStaffId === staff.id}
-                        className="text-xs bg-neutral-50 border border-neutral-300 rounded-xl px-2.5 py-1 font-sans text-neutral-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                      >
-                        <option value="super_admin">👑 統括最高管理者 (super_admin)</option>
-                        <option value="moderator">🛡️ モデレーター (moderator)</option>
-                        <option value="cs_support">🎧 CSサポート (cs_support)</option>
-                        <option value="auditor">⚖️ 監査・法務 (auditor)</option>
-                        <option value="user">👤 一般ユーザーに降格 (user)</option>
-                      </select>
-                    ) : (
-                      <span className="text-[11px] text-neutral-400 italic">変更権限なし</span>
-                    )}
-                  </td>
-                </tr>
+        {/* Filter & Search Bar */}
+        <div className="p-4 border-b border-slate-200/80 bg-slate-50/30 space-y-3">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            {/* Role Filter Tabs */}
+            <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl border border-slate-200/80 text-xs font-bold">
+              {[
+                { id: 'all', label: 'すべて', count: staffList.length },
+                { id: 'super_admin', label: '👑 最高管理者', count: superAdminCount },
+                { id: 'moderator', label: '🛡️ モデレーター', count: moderatorCount },
+                { id: 'cs_support', label: '🎧 CSサポート', count: csSupportCount },
+                { id: 'auditor', label: '⚖️ 監査・法務', count: auditorCount },
+              ].map(t => (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => { setStaffRoleFilter(t.id as any); setStaffPage(1); }}
+                  className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
+                    staffRoleFilter === t.id
+                      ? 'bg-white text-slate-900 shadow-sm font-extrabold border border-slate-200/60'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
+                  }`}
+                >
+                  <span>{t.label}</span>
+                  <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                    staffRoleFilter === t.id ? 'bg-slate-900 text-white' : 'bg-slate-200 text-slate-700'
+                  }`}>
+                    {t.count}
+                  </span>
+                </button>
               ))}
-            </tbody>
-          </table>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-slate-500 font-bold">表示件数:</span>
+              <select
+                value={staffPerPage}
+                onChange={(e) => { setStaffPerPage(Number(e.target.value)); setStaffPage(1); }}
+                className="bg-white border border-slate-200 text-slate-700 text-xs rounded-lg px-2 py-1 font-bold focus:outline-none focus:border-brand-primary"
+              >
+                <option value={15}>15件</option>
+                <option value={30}>30件</option>
+                <option value={50}>50件</option>
+                <option value={9999}>全件</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Search Input */}
+          <div className="relative">
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <input
+              type="text"
+              value={staffSearchTerm}
+              onChange={(e) => { setStaffSearchTerm(e.target.value); setStaffPage(1); }}
+              placeholder="スタッフユーザー名、氏名、メールアドレスで検索..."
+              className="w-full bg-white border border-slate-200 rounded-xl pl-9 pr-8 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-brand-primary transition-all font-medium"
+            />
+            {staffSearchTerm && (
+              <button
+                type="button"
+                onClick={() => { setStaffSearchTerm(''); setStaffPage(1); }}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5 cursor-pointer"
+              >
+                <X size={14} />
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Table Component */}
+        <div className="overflow-x-auto">
+          {(() => {
+            const filtered = staffList.filter(s => {
+              if (staffRoleFilter === 'super_admin' && s.role !== 'super_admin' && s.role !== 'admin') return false;
+              if (staffRoleFilter === 'moderator' && s.role !== 'moderator') return false;
+              if (staffRoleFilter === 'cs_support' && s.role !== 'cs_support') return false;
+              if (staffRoleFilter === 'auditor' && s.role !== 'auditor') return false;
+
+              if (staffSearchTerm.trim()) {
+                const q = staffSearchTerm.toLowerCase();
+                const matchUser = (s.username || '').toLowerCase().includes(q);
+                const matchName = (s.full_name || s.nickname || '').toLowerCase().includes(q);
+                const matchEmail = (s.email || '').toLowerCase().includes(q);
+                if (!matchUser && !matchName && !matchEmail) return false;
+              }
+              return true;
+            });
+
+            const totalPages = Math.ceil(filtered.length / staffPerPage) || 1;
+            const currentPage = Math.min(staffPage, totalPages);
+            const paginated = filtered.slice((currentPage - 1) * staffPerPage, currentPage * staffPerPage);
+
+            if (filtered.length === 0) {
+              return (
+                <div className="p-12 text-center text-slate-400">
+                  <Users size={36} className="mx-auto text-slate-300 mb-2" />
+                  <p className="text-sm font-bold text-slate-700">該当するスタッフはいません</p>
+                  <p className="text-xs text-slate-400 mt-1">検索条件を変更するか、新しいスタッフを任命してください</p>
+                </div>
+              );
+            }
+
+            return (
+              <>
+                <table className="w-full text-left border-collapse font-sans">
+                  <thead>
+                    <tr className="border-b border-slate-200/80 bg-slate-50/80 text-[11px] font-bold uppercase tracking-wider text-slate-600">
+                      <th className="px-3.5 py-2.5 whitespace-nowrap">スタッフ情報</th>
+                      <th className="px-3.5 py-2.5 whitespace-nowrap">連絡先メール</th>
+                      <th className="px-3.5 py-2.5 whitespace-nowrap">現在の割り当て役職</th>
+                      <th className="px-3.5 py-2.5 whitespace-nowrap">最終管理アクション</th>
+                      <th className="px-3.5 py-2.5 text-right whitespace-nowrap">役職・ロール変更</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 text-xs">
+                    {paginated.map(staff => (
+                      <tr key={staff.id} className="h-12 hover:bg-slate-50/70 transition-colors group">
+                        {/* 1. Staff Info */}
+                        <td className="px-3.5 py-2 whitespace-nowrap">
+                          <div className="flex items-center gap-2">
+                            <div className="w-7 h-7 rounded-xl bg-indigo-100 text-indigo-800 flex items-center justify-center font-bold text-[11px] shrink-0">
+                              {staff.username.slice(0, 2).toUpperCase()}
+                            </div>
+                            <div className="flex flex-col">
+                              <span className="font-bold text-slate-900">{staff.full_name || staff.nickname || staff.username}</span>
+                              <span className="text-[10px] text-slate-400 font-mono">@{staff.username} (ID: #{staff.id})</span>
+                            </div>
+                          </div>
+                        </td>
+
+                        {/* 2. Email */}
+                        <td className="px-3.5 py-2 whitespace-nowrap text-slate-600 font-mono text-[11px]">
+                          {staff.email ? (
+                            <a href={`mailto:${staff.email}`} className="hover:text-brand-primary hover:underline">
+                              {staff.email}
+                            </a>
+                          ) : (
+                            <span className="text-slate-300">-</span>
+                          )}
+                        </td>
+
+                        {/* 3. Role Badge */}
+                        <td className="px-3.5 py-2 whitespace-nowrap">
+                          {getRoleBadge(staff.role)}
+                        </td>
+
+                        {/* 4. Last Action */}
+                        <td className="px-3.5 py-2 whitespace-nowrap text-slate-500 text-[11px]">
+                          {staff.last_action_at ? (
+                            <div className="flex flex-col">
+                              <span className="font-mono text-slate-700">
+                                {new Date(staff.last_action_at).toLocaleString('ja-JP', {
+                                  month: '2-digit',
+                                  day: '2-digit',
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                })}
+                              </span>
+                              <span className="text-[10px] text-slate-400">{staff.last_action_type || '操作実行'}</span>
+                            </div>
+                          ) : (
+                            <span className="text-slate-300 italic">操作履歴なし</span>
+                          )}
+                        </td>
+
+                        {/* 5. Role Switcher */}
+                        <td className="px-3.5 py-2 text-right whitespace-nowrap">
+                          {canManageAdmins ? (
+                            <select
+                              value={staff.role}
+                              onChange={(e) => handleChangeStaffRole(staff.id, e.target.value)}
+                              disabled={updatingStaffId === staff.id}
+                              className="text-xs bg-slate-50 border border-slate-300 rounded-xl px-2.5 py-1 font-sans text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-bold cursor-pointer"
+                            >
+                              <option value="super_admin">👑 統括最高管理者</option>
+                              <option value="moderator">🛡️ モデレーター</option>
+                              <option value="cs_support">🎧 CSサポート</option>
+                              <option value="auditor">⚖️ 監査・法務</option>
+                              <option value="user">👤 一般ユーザーに降格</option>
+                            </select>
+                          ) : (
+                            <span className="text-[11px] text-slate-400 italic">変更権限なし</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+
+                {/* Pagination Bar */}
+                <div className="p-3.5 border-t border-slate-200/80 bg-slate-50/50 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                  <div className="text-slate-500 font-medium">
+                    全 <span className="font-bold text-slate-800">{filtered.length}</span> 名中{' '}
+                    <span className="font-bold text-slate-800">{(currentPage - 1) * staffPerPage + 1}</span> 〜{' '}
+                    <span className="font-bold text-slate-800">{Math.min(currentPage * staffPerPage, filtered.length)}</span> 名を表示
+                  </div>
+
+                  {totalPages > 1 && (
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        disabled={currentPage === 1}
+                        onClick={() => setStaffPage(1)}
+                        className="px-2 py-1 rounded-lg border border-slate-200 bg-white text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 font-bold"
+                      >
+                        &laquo;
+                      </button>
+                      <button
+                        type="button"
+                        disabled={currentPage === 1}
+                        onClick={() => setStaffPage(prev => Math.max(prev - 1, 1))}
+                        className="px-2.5 py-1 rounded-lg border border-slate-200 bg-white text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 font-bold"
+                      >
+                        &lsaquo;
+                      </button>
+                      
+                      <span className="px-3 py-1 bg-slate-900 text-white rounded-lg font-bold">
+                        {currentPage} / {totalPages}
+                      </span>
+
+                      <button
+                        type="button"
+                        disabled={currentPage === totalPages}
+                        onClick={() => setStaffPage(prev => Math.min(prev + 1, totalPages))}
+                        className="px-2.5 py-1 rounded-lg border border-slate-200 bg-white text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 font-bold"
+                      >
+                        &rsaquo;
+                      </button>
+                      <button
+                        type="button"
+                        disabled={currentPage === totalPages}
+                        onClick={() => setStaffPage(totalPages)}
+                        className="px-2 py-1 rounded-lg border border-slate-200 bg-white text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 font-bold"
+                      >
+                        &raquo;
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </>
+            );
+          })()}
         </div>
       </div>
 
-      {/* 📊 権限マトリクス (RBAC Capabilities Matrix) */}
-      <div className="glass-card p-6 rounded-3xl bg-white border border-brand-border shadow-sm space-y-4">
-        <div className="flex items-center gap-2.5 border-b border-brand-border pb-3">
-          <Key size={20} className="text-purple-600" />
+      {/* 4. 📊 権限マトリクス (RBAC Capabilities Matrix) */}
+      <div className="bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200/90 shadow-sm p-6 space-y-4">
+        <div className="flex items-center gap-2.5 border-b border-slate-200 pb-3">
+          <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
+            <Key size={18} />
+          </div>
           <div>
-            <h3 className="text-base font-serif font-bold text-neutral-900">
+            <h3 className="text-sm font-bold text-slate-900">
               📊 権限マトリクス (RBAC Capabilities Matrix)
             </h3>
-            <p className="text-xs text-neutral-500">
+            <p className="text-xs text-slate-500">
               各役職に許可されている実行権限の一覧対照表です。バックエンドのAPIミドルウェア（<code>requirePermission</code>）によって厳密に強制されます。
             </p>
           </div>
         </div>
 
-        <div className="overflow-x-auto rounded-2xl border border-neutral-200">
+        <div className="overflow-x-auto rounded-xl border border-slate-200">
           <table className="w-full text-left text-xs border-collapse font-sans">
             <thead>
-              <tr className="bg-neutral-50/80 border-b border-neutral-200 text-neutral-700">
+              <tr className="bg-slate-50/80 border-b border-slate-200 text-slate-700">
                 <th className="py-3 px-4 font-bold min-w-[200px]">機能・権限スコープ</th>
                 <th className="py-3 px-4 font-bold text-center bg-purple-50/50 text-purple-900 min-w-[130px]">
                   👑 統括最高管理者<br/><span className="text-[10px] font-mono font-normal">super_admin</span>
@@ -625,7 +926,7 @@ export const AdminRbacView: React.FC<AdminRbacViewProps> = ({ token, currentRole
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-100">
+            <tbody className="divide-y divide-slate-100">
               {permissions.map((perm) => {
                 const superAdminHas = roles.find(r => r.key === 'super_admin')?.permissions.includes(perm.key);
                 const moderatorHas = roles.find(r => r.key === 'moderator')?.permissions.includes(perm.key);
@@ -633,16 +934,16 @@ export const AdminRbacView: React.FC<AdminRbacViewProps> = ({ token, currentRole
                 const auditorHas = roles.find(r => r.key === 'auditor')?.permissions.includes(perm.key);
 
                 return (
-                  <tr key={perm.key} className="hover:bg-neutral-50/40 transition-colors">
+                  <tr key={perm.key} className="hover:bg-slate-50/40 transition-colors">
                     <td className="py-3 px-4">
-                      <div className="font-bold text-neutral-900">{perm.label}</div>
-                      <div className="text-[10px] text-neutral-400 font-mono"><code>{perm.key}</code> · カテゴリ: {perm.category}</div>
+                      <div className="font-bold text-slate-900">{perm.label}</div>
+                      <div className="text-[10px] text-slate-400 font-mono"><code>{perm.key}</code> · カテゴリ: {perm.category}</div>
                     </td>
                     <td className="py-3 px-4 text-center bg-purple-50/20">
                       {superAdminHas ? (
                         <span className="inline-flex items-center gap-1 text-purple-700 font-bold text-xs"><CheckCircle2 size={16} /> 許可</span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 text-neutral-300 text-xs"><XCircle size={16} /> 不可</span>
+                        <span className="inline-flex items-center gap-1 text-slate-300 text-xs"><XCircle size={16} /> 不可</span>
                       )}
                     </td>
                     <td className="py-3 px-4 text-center bg-emerald-50/20">
@@ -674,31 +975,31 @@ export const AdminRbacView: React.FC<AdminRbacViewProps> = ({ token, currentRole
         </div>
       </div>
 
-      {/* 🛡️ セキュリティ設計ポリシー ＆ 法的コンプライアンス解説 */}
-      <div className="glass-card p-6 rounded-3xl bg-neutral-900 text-white space-y-4 shadow-md">
-        <div className="flex items-center gap-2.5 border-b border-neutral-800 pb-3">
+      {/* 5. 🛡️ セキュリティ設計ポリシー ＆ 法的コンプライアンス解説 */}
+      <div className="p-6 rounded-3xl bg-slate-900 text-white space-y-4 shadow-md">
+        <div className="flex items-center gap-2.5 border-b border-slate-800 pb-3">
           <ShieldAlert size={20} className="text-amber-400" />
-          <h4 className="text-sm font-serif font-bold text-neutral-100">
+          <h4 className="text-sm font-bold text-slate-100">
             🔒 管理者権限細分化の運用ポリシー（セキュリティ・法的整合性）
           </h4>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-neutral-300 font-sans leading-relaxed">
-          <div className="p-4 rounded-2xl bg-neutral-800/80 border border-neutral-700/60 space-y-1.5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-slate-300 font-sans leading-relaxed">
+          <div className="p-4 rounded-2xl bg-slate-800/80 border border-slate-700/60 space-y-1.5">
             <div className="font-bold text-indigo-300 flex items-center gap-1.5">
               <Lock size={15} />
               <span>1. 捜査開示データ（警察照会）のアクセス制限</span>
             </div>
-            <p className="text-[11px] text-neutral-400">
+            <p className="text-[11px] text-slate-400">
               一般のモデレーターやCSスタッフには刑事訴訟法に基づく警察開示データ（公的身分証ログ、IP履歴、メッセージ送受信全履歴）の閲覧権限を与えず、<code>super_admin</code> または <code>auditor</code> のみに制限することで、個人情報の内部不正持ち出しを完全防止します。
             </p>
           </div>
 
-          <div className="p-4 rounded-2xl bg-neutral-800/80 border border-neutral-700/60 space-y-1.5">
+          <div className="p-4 rounded-2xl bg-slate-800/80 border border-slate-700/60 space-y-1.5">
             <div className="font-bold text-emerald-300 flex items-center gap-1.5">
               <DollarSign size={15} />
               <span>2. 決済・返金処理の権限分離</span>
             </div>
-            <p className="text-[11px] text-neutral-400">
+            <p className="text-[11px] text-slate-400">
               Stripe決済の返金実行（オーソリ失効）や売上台帳の操作は <code>manage_payments</code> 権限を持つ統括管理者のみに限定。サポート担当者による不正な私的返金事故や横領を防止します。
             </p>
           </div>
