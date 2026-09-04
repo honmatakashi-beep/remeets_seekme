@@ -45,6 +45,7 @@ import {
   Area
 } from 'recharts';
 import { EkycProgressTelemetryPanel } from './EkycProgressTelemetryPanel';
+import { AdminPaymentShowroom } from './AdminPaymentShowroom';
 
 interface PaymentStats {
   grossTotal: number;
@@ -89,7 +90,7 @@ interface AnalyticsData {
 }
 
 export const AdminPaymentManagementBlock: React.FC = () => {
-  const [activeSubTab, setActiveSubTab] = useState<'ledger' | 'analytics' | 'ekycAudit' | 'stripeSimulator'>('ledger');
+  const [activeSubTab, setActiveSubTab] = useState<'ledger' | 'analytics' | 'ekycAudit' | 'stripeSimulator' | 'showroom'>('showroom');
 
   const [stats, setStats] = useState<PaymentStats>({
     grossTotal: 0,
@@ -615,7 +616,52 @@ export const AdminPaymentManagementBlock: React.FC = () => {
       </div>
 
       {/* 🧭 Subtabs Navigation (Rich Interactive Cards) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                {/* TAB 0: Showroom */}
+        <button
+          type="button"
+          onClick={() => setActiveSubTab('showroom')}
+          className={`group relative flex flex-col justify-between p-4 rounded-2xl border text-left transition-all cursor-pointer ${
+            activeSubTab === 'showroom'
+              ? 'bg-gradient-to-br from-indigo-900 to-slate-900 border-indigo-500 shadow-md text-white ring-2 ring-indigo-500/20'
+              : 'bg-zinc-50/80 hover:bg-white border-brand-border/80 hover:border-zinc-300'
+          }`}
+        >
+          <div>
+            <div className="flex items-center justify-between gap-2 mb-2.5">
+              <div className="flex items-center gap-2">
+                <div className={`w-8 h-8 rounded-xl flex items-center justify-center font-mono font-bold text-xs transition-colors ${
+                  activeSubTab === 'showroom' ? 'bg-indigo-600 text-white shadow-sm' : 'bg-zinc-200 text-black/70 group-hover:bg-indigo-100 group-hover:text-indigo-900'
+                }`}>
+                  <CreditCard size={16} />
+                </div>
+                <span className={`text-[10px] font-mono font-bold uppercase tracking-wider ${activeSubTab === 'showroom' ? 'text-indigo-300' : 'text-black/40'}`}>
+                  PREVIEW
+                </span>
+              </div>
+              {activeSubTab === 'showroom' ? (
+                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-500 animate-pulse">
+                  ● プレビュー中
+                </span>
+              ) : (
+                <span className="text-[10px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-200">
+                  全5パターン
+                </span>
+              )}
+            </div>
+            <div className={`font-bold text-sm flex items-center gap-1 ${activeSubTab === 'showroom' ? 'text-white' : 'text-black'}`}>
+              💳 決済ショールーム
+            </div>
+            <p className={`text-xs mt-1 line-clamp-2 leading-relaxed font-sans ${activeSubTab === 'showroom' ? 'text-slate-300' : 'text-black/60'}`}>
+              全決済画面の即座プレビュー・カードブランド判定テスト
+            </p>
+          </div>
+          <div className={`mt-3 pt-2.5 border-t flex items-center justify-between text-[11px] ${activeSubTab === 'showroom' ? 'border-slate-800 text-slate-300' : 'border-zinc-100 text-black/50'}`}>
+            <span>確認モード</span>
+            <span className={`font-bold ${activeSubTab === 'showroom' ? 'text-emerald-400' : 'text-indigo-700'}`}>ワンクリック確認</span>
+          </div>
+        </button>
+
         {/* TAB 1: Ledger */}
         <button
           type="button"

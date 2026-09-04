@@ -2917,7 +2917,7 @@ export const AdminDashboard = () => {
       title: 'Finance & eKYC',
       items: [
         { id: 'valuation', label: 'M&A譲渡・企業価値評価\nデータ室', icon: Award },
-        { id: 'payments', label: '決済履歴・eKYC統合管理\n集計システム', icon: CreditCard },
+        { id: 'payments', label: '💳 決済ショールーム ＆\n売上・eKYC管理台帳', icon: CreditCard },
         { id: 'monetization', label: '課金モデル\n収益シミュレーター', icon: DollarSign },
       ]
     },
