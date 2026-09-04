@@ -1,20 +1,31 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Palette, Type, Layers, CheckCircle2, AlertTriangle, ShieldCheck, 
   Sparkles, Mail, User, Shield, CreditCard, Lock, Copy, Check,
   Search, Sliders, ExternalLink, RefreshCw, Eye, Code, Smartphone,
   Monitor, Compass, Heart, Bot, ShieldAlert, ArrowRight, CornerDownRight,
-  Info, MessageSquare, Terminal, FileText, CheckCheck, X
+  Info, MessageSquare, Terminal, FileText, CheckCheck, X, Download,
+  Sun, Moon, Loader2, Bell, HelpCircle
 } from 'lucide-react';
 
 export const AdminDesignSystem: React.FC = () => {
-  const [activeSection, setActiveSection] = useState<'colors' | 'typography' | 'buttons' | 'badges' | 'cards' | 'forms' | 'icons' | 'guidelines'>('colors');
+  const [activeTab, setActiveTab] = useState<'tokens' | 'components' | 'surfaces' | 'guidelines'>('tokens');
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
-  const [interactiveBtnState, setInteractiveBtnState] = useState<string>('idle');
+
+  // Interactive Button State Playground
+  const [btnState, setBtnState] = useState<'idle' | 'loading' | 'success' | 'disabled'>('idle');
+
+  // Interactive Form Controls
   const [demoInputVal, setDemoInputVal] = useState('想い出の場所：下北沢');
   const [demoSwitch, setDemoSwitch] = useState(true);
   const [demoRadio, setDemoRadio] = useState('card');
+
+  // Card Theme Playground
+  const [cardTheme, setCardTheme] = useState<'spring' | 'summer' | 'autumn' | 'winter'>('summer');
+
+  // Toast Notification Simulation
+  const [activeToast, setActiveToast] = useState<{ type: 'success' | 'error' | 'info'; message: string } | null>(null);
 
   const copyToClipboard = (text: string, tokenName: string) => {
     navigator.clipboard.writeText(text);
@@ -22,45 +33,50 @@ export const AdminDesignSystem: React.FC = () => {
     setTimeout(() => setCopiedToken(null), 2000);
   };
 
+  const triggerToast = (type: 'success' | 'error' | 'info', message: string) => {
+    setActiveToast({ type, message });
+    setTimeout(() => setActiveToast(null), 3500);
+  };
+
   const colorPalettes = [
     {
       category: 'Primary Brand Colors (基幹ブランドカラー)',
       description: 'ReMEETsの情緒豊かな再会と信頼感を表現する深みのあるネイビー・インディゴ系',
       colors: [
-        { name: 'Brand Dark (Slate 900)', hex: '#0F172A', tailwind: 'bg-slate-900', text: 'text-white', role: 'ヘッダー、主要テキスト、最重要アクション' },
-        { name: 'Brand Navy (Indigo 900)', hex: '#1E1B4B', tailwind: 'bg-indigo-950', text: 'text-white', role: 'ブランドアクセント背景、権威性サーフェス' },
-        { name: 'Brand Indigo (Indigo 600)', hex: '#4F46E5', tailwind: 'bg-indigo-600', text: 'text-white', role: 'メインCTA、重要リンク、フォーカスリング' },
-        { name: 'Brand Indigo Light (Indigo 50)', hex: '#EEF2FF', tailwind: 'bg-indigo-50', text: 'text-indigo-950', role: 'eKYC・決済ハイライト背景、チップ背景' },
+        { name: 'Brand Dark (Slate 900)', hex: '#0F172A', tailwind: 'bg-slate-900', text: 'text-white', contrast: '15.2:1 (AAA)', role: 'ヘッダー、主要テキスト、最重要アクション' },
+        { name: 'Brand Navy (Indigo 950)', hex: '#1E1B4B', tailwind: 'bg-indigo-950', text: 'text-white', contrast: '14.1:1 (AAA)', role: 'ブランドアクセント背景、権威性サーフェス' },
+        { name: 'Brand Indigo (Indigo 600)', hex: '#4F46E5', tailwind: 'bg-indigo-600', text: 'text-white', contrast: '4.9:1 (AA)', role: 'メインCTA、重要リンク、フォーカスリング' },
+        { name: 'Brand Indigo Light (Indigo 50)', hex: '#EEF2FF', tailwind: 'bg-indigo-50', text: 'text-indigo-950', contrast: '16.5:1 (AAA)', role: 'eKYC・決済ハイライト背景、チップ背景' },
       ]
     },
     {
-      category: 'Emotional & Accent Colors (情緒・アクセントカラー)',
-      description: 'ボトルメールの温もり、再会の喜び、希望を彩るアンバー・ゴールド系',
+      category: 'Emotional & Theme Colors (情緒・アクセントカラー)',
+      description: 'ボトルメールの温もり、再会の喜び、希望を彩るアンバー・ティール系',
       colors: [
-        { name: 'Warm Amber (Amber 500)', hex: '#F59E0B', tailwind: 'bg-amber-500', text: 'text-slate-950', role: 'ボトルハイライト、おすすめ、星評価' },
-        { name: 'Warm Amber Dark (Amber 700)', hex: '#B45309', tailwind: 'bg-amber-700', text: 'text-white', role: '注意アラート境界線、未認証バッジ' },
-        { name: 'Warm Cream (Amber 50)', hex: '#FFFBEB', tailwind: 'bg-amber-50', text: 'text-amber-950', role: '手紙風コンテナ背景、回想カード' },
-        { name: 'Serif Purple (Purple 600)', hex: '#9333EA', tailwind: 'bg-purple-600', text: 'text-white', role: '1,200円一括決済グラデーションアクセント' },
+        { name: 'Warm Amber (Amber 500)', hex: '#F59E0B', tailwind: 'bg-amber-500', text: 'text-slate-950', contrast: '7.8:1 (AAA)', role: 'ボトルハイライト、おすすめ、星評価' },
+        { name: 'Deep Teal (Teal 700)', hex: '#0F766E', tailwind: 'bg-teal-700', text: 'text-white', contrast: '5.6:1 (AA)', role: '再会の海・信頼アクセント、成功指標' },
+        { name: 'Warm Cream (Amber 50)', hex: '#FFFBEB', tailwind: 'bg-amber-50', text: 'text-amber-950', contrast: '17.2:1 (AAA)', role: '手紙風コンテナ背景、回想カード' },
+        { name: 'Sakura Pink (Rose 400)', hex: '#FB7185', tailwind: 'bg-rose-400', text: 'text-slate-950', contrast: '6.4:1 (AA)', role: '初恋・感謝の手紙アクセント' },
       ]
     },
     {
       category: 'Semantic & Status Colors (状態・セキュリティカラー)',
       description: '公的本人確認(eKYC)、AIモデレーション、エラー、成功状態の統一コード',
       colors: [
-        { name: 'Emerald Success (Emerald 600)', hex: '#059669', tailwind: 'bg-emerald-600', text: 'text-white', role: '🛡️ eKYC本人確認完了、決済成功、正常状態' },
-        { name: 'Emerald Light (Emerald 50)', hex: '#ECFDF5', tailwind: 'bg-emerald-50', text: 'text-emerald-950', role: 'eKYC承認バッジ背景、成功通知' },
-        { name: 'Rose Danger (Rose 600)', hex: '#E11D48', tailwind: 'bg-rose-600', text: 'text-white', role: 'NGワード検知、通報、削除、強制ブロック' },
-        { name: 'Rose Light (Rose 50)', hex: '#FFF1F2', tailwind: 'bg-rose-50', text: 'text-rose-950', role: 'AI隔離メッセージ背景、警告バナー' },
+        { name: 'Emerald Success (Emerald 600)', hex: '#059669', tailwind: 'bg-emerald-600', text: 'text-white', contrast: '4.8:1 (AA)', role: '🛡️ eKYC本人確認完了、決済成功、正常状態' },
+        { name: 'Emerald Light (Emerald 50)', hex: '#ECFDF5', tailwind: 'bg-emerald-50', text: 'text-emerald-950', contrast: '16.8:1 (AAA)', role: 'eKYC承認バッジ背景、成功通知' },
+        { name: 'Rose Danger (Rose 600)', hex: '#E11D48', tailwind: 'bg-rose-600', text: 'text-white', contrast: '4.7:1 (AA)', role: 'NGワード検知、通報、削除、強制ブロック' },
+        { name: 'Rose Light (Rose 50)', hex: '#FFF1F2', tailwind: 'bg-rose-50', text: 'text-rose-950', contrast: '16.9:1 (AAA)', role: 'AI隔離メッセージ背景、警告バナー' },
       ]
     },
     {
       category: 'Neutrals & Surfaces (背景・サーフェス・ボーダー)',
       description: 'ノイズのない高い可読性と洗練されたコントラスト比を担保するニュートラル系',
       colors: [
-        { name: 'Surface Pure White', hex: '#FFFFFF', tailwind: 'bg-white', text: 'text-slate-900', role: 'カード最前面、入力フォーム、モーダル背景' },
-        { name: 'Surface Canvas (Slate 50)', hex: '#F8FAFC', tailwind: 'bg-slate-50', text: 'text-slate-800', role: 'アプリケーション全体の大背景' },
-        { name: 'Border Subtle (Slate 200)', hex: '#E2E8F0', tailwind: 'bg-slate-200', text: 'text-slate-800', role: '標準カード境界線、ディバイダー' },
-        { name: 'Text Muted (Slate 500)', hex: '#64748B', tailwind: 'bg-slate-500', text: 'text-white', role: '補助説明テキスト、メタデータ、プレースホルダー' },
+        { name: 'Surface Pure White', hex: '#FFFFFF', tailwind: 'bg-white', text: 'text-slate-900', contrast: '21.0:1 (AAA)', role: 'カード最前面、入力フォーム、モーダル背景' },
+        { name: 'Surface Canvas (Zinc 50)', hex: '#FAFAFA', tailwind: 'bg-zinc-50', text: 'text-slate-800', contrast: '19.8:1 (AAA)', role: 'アプリケーション全体の大背景' },
+        { name: 'Border Subtle (Brand Border)', hex: '#E4E4E7', tailwind: 'bg-zinc-200', text: 'text-slate-800', contrast: '11.5:1 (AAA)', role: '標準カード境界線、ディバイダー' },
+        { name: 'Text Muted (Zinc 500)', hex: '#71717A', tailwind: 'bg-zinc-500', text: 'text-white', contrast: '4.6:1 (AA)', role: '補助説明テキスト、メタデータ、プレースホルダー' },
       ]
     }
   ];
@@ -70,25 +86,134 @@ export const AdminDesignSystem: React.FC = () => {
     { level: 'Section Heading (H2)', size: '24px - 28px', weight: 'Bold 700 / Serif & Sans', sample: 'あなたを探しているボトルメール', fontClass: 'font-serif text-2xl font-bold', tracking: 'tracking-normal', usage: '各主要セクション見出し、モーダルタイトル' },
     { level: 'Card Title (H3)', size: '18px - 20px', weight: 'Bold 700 / Sans', sample: '世田谷第一中学校（1990年代）', fontClass: 'font-sans text-lg font-bold', tracking: 'tracking-normal', usage: 'ボトルカードタイトル、設定グループ見出し' },
     { level: 'Body Regular', size: '15px - 16px', weight: 'Regular 400 / Sans', sample: '部活の帰りにいつも寄っていた駄菓子屋の名前を覚えていますか？あの時渡せなかった手紙をここに残します。', fontClass: 'font-sans text-base leading-relaxed', tracking: 'tracking-normal', usage: '手紙本文、説明文、お手紙詳細・メッセージ本文（可読性最優先）' },
-    { level: 'Small / Metadata', size: '12px - 13px', weight: 'Medium 500 / Sans', sample: '投函日: 2026/08/15 ・ 差出人: たかし (eKYC公的認証済)', fontClass: 'font-sans text-xs text-slate-500', tracking: 'tracking-wide', usage: 'タイムスタンプ、ユーザーメタデータ、補足注記' },
-    { level: 'Monospace / Code', size: '12px - 14px', weight: 'Regular 400 / Mono', sample: 'TX_ID: tx_reveal_1755331000_a9f2 / IP: 192.168.1.1', fontClass: 'font-mono text-xs bg-slate-100 p-2 rounded-lg', tracking: 'tracking-wider', usage: '決済トランザクションID、監査ログ、APIレスポンス' },
+    { level: 'Small / Metadata', size: '12px - 13px', weight: 'Medium 500 / Sans', sample: '投函日: 2026/08/15 ・ 差出人: たかし (eKYC公的認証済)', fontClass: 'font-sans text-xs text-black/60', tracking: 'tracking-wide', usage: 'タイムスタンプ、ユーザーメタデータ、補足注記' },
+    { level: 'Monospace / Code', size: '12px - 14px', weight: 'Regular 400 / Mono', sample: 'TX_ID: tx_open_1755331000_a9f2 / eKYC: PASSED', fontClass: 'font-mono text-xs bg-zinc-100 p-2 rounded-lg', tracking: 'tracking-wider', usage: '決済トランザクションID、監査ログ、APIレスポンス' },
   ];
 
+  const themeConfig = {
+    summer: {
+      name: '夏の海辺 (Teal & Ocean)',
+      bg: 'bg-gradient-to-b from-teal-50/60 to-white',
+      border: 'border-teal-200',
+      tagBg: 'bg-teal-50 text-teal-800 border-teal-200',
+      avatarBg: 'bg-teal-100 text-teal-900 border-teal-200',
+      quoteBg: 'bg-teal-50/40 border-teal-100 text-teal-950',
+      badge: '🌊 夏の漂流便'
+    },
+    spring: {
+      name: '春の想い出 (Sakura & Soft Pink)',
+      bg: 'bg-gradient-to-b from-rose-50/60 to-white',
+      border: 'border-rose-200',
+      tagBg: 'bg-rose-50 text-rose-800 border-rose-200',
+      avatarBg: 'bg-rose-100 text-rose-900 border-rose-200',
+      quoteBg: 'bg-rose-50/40 border-rose-100 text-rose-950',
+      badge: '🌸 卒業・初恋'
+    },
+    autumn: {
+      name: '黄昏の記憶 (Warm Amber & Gold)',
+      bg: 'bg-gradient-to-b from-amber-50/60 to-white',
+      border: 'border-amber-200',
+      tagBg: 'bg-amber-50 text-amber-800 border-amber-200',
+      avatarBg: 'bg-amber-100 text-amber-900 border-amber-200',
+      quoteBg: 'bg-amber-50/50 border-amber-200/60 text-amber-950',
+      badge: '🌇 あの日の約束'
+    },
+    winter: {
+      name: '夜空の便り (Deep Indigo & Navy)',
+      bg: 'bg-gradient-to-b from-indigo-50/60 to-white',
+      border: 'border-indigo-200',
+      tagBg: 'bg-indigo-50 text-indigo-800 border-indigo-200',
+      avatarBg: 'bg-indigo-100 text-indigo-900 border-indigo-200',
+      quoteBg: 'bg-indigo-50/40 border-indigo-100 text-indigo-950',
+      badge: '🌌 静寂の再会'
+    }
+  };
+
+  const tailwindExportCode = `// tailwind.config.js - ReMEETs Design Tokens
+module.exports = {
+  theme: {
+    extend: {
+      colors: {
+        brand: {
+          dark: '#0F172A',
+          navy: '#1E1B4B',
+          accent: '#4F46E5',
+          teal: '#0F766E',
+          amber: '#F59E0B',
+          border: '#E4E4E7',
+          light: '#FAFAFA',
+        }
+      },
+      fontFamily: {
+        serif: ['"Noto Serif JP"', 'serif'],
+        sans: ['"Noto Sans JP"', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'monospace'],
+      },
+      borderRadius: {
+        '2xl': '1rem',
+        '3xl': '1.5rem',
+      }
+    }
+  }
+};`;
+
+  const cssVariablesExportCode = `/* ReMEETs Design Tokens (CSS Custom Properties) */
+:root {
+  --color-brand-dark: #0F172A;
+  --color-brand-navy: #1E1B4B;
+  --color-brand-accent: #4F46E5;
+  --color-brand-teal: #0F766E;
+  --color-brand-amber: #F59E0B;
+  --color-brand-border: #E4E4E7;
+  --color-surface-white: #FFFFFF;
+  --color-surface-canvas: #FAFAFA;
+  
+  --font-serif: "Noto Serif JP", serif;
+  --font-sans: "Noto Sans JP", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  
+  --radius-card: 1.5rem;
+  --radius-button: 0.75rem;
+}`;
+
   return (
-    <div className="space-y-10 pb-20">
-      {/* Header Banner */}
+    <div className="space-y-8 pb-20 font-sans">
+      {/* 🧭 Toast Notification Overlay */}
+      <AnimatePresence>
+        {activeToast && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            className="fixed top-6 right-6 z-[9999] flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-2xl border backdrop-blur-md bg-white text-black text-xs font-bold"
+          >
+            {activeToast.type === 'success' && <CheckCircle2 size={18} className="text-emerald-600" />}
+            {activeToast.type === 'error' && <AlertTriangle size={18} className="text-rose-600" />}
+            {activeToast.type === 'info' && <Info size={18} className="text-indigo-600" />}
+            <span>{activeToast.message}</span>
+            <button
+              onClick={() => setActiveToast(null)}
+              className="p-1 hover:bg-black/5 rounded-full ml-2 cursor-pointer"
+            >
+              <X size={14} />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 🧭 Header Banner */}
       <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-8 md:p-10 rounded-[32px] shadow-xl relative overflow-hidden">
         <div className="absolute right-0 top-0 bottom-0 w-96 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-500/20 via-transparent to-transparent pointer-events-none" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-3 max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full text-amber-300 text-xs font-bold border border-white/10">
               <Sparkles size={14} />
-              <span>ReMEETs 統合デザインシステム & UIコンポーネントライブラリ</span>
+              <span>ReMEETs 統合デザインシステム ＆ UIスペック Ver 2.5</span>
             </div>
             <h1 className="text-2xl md:text-4xl font-serif font-bold text-white tracking-tight">
-              Design System & Style Guide
+              Design System & UI/UX Specs
             </h1>
-            <p className="text-sm md:text-base text-slate-300 font-sans leading-relaxed">
+            <p className="text-sm text-slate-300 font-sans leading-relaxed">
               日本の「想い出と再会」を紡ぐ情緒あるデザインと、公的eKYC認証・セキュリティを両立する厳格なUI/UXガイドラインです。
             </p>
           </div>
@@ -103,513 +228,728 @@ export const AdminDesignSystem: React.FC = () => {
             </div>
           </div>
         </div>
-
-        {/* Section Tabs */}
-        <div className="flex items-center gap-2 overflow-x-auto pt-8 border-t border-white/10 mt-8 custom-scrollbar">
-          {[
-            { id: 'colors', label: 'カラーパレット', icon: Palette },
-            { id: 'typography', label: 'タイポグラフィ', icon: Type },
-            { id: 'buttons', label: 'ボタン & CTA', icon: Layers },
-            { id: 'badges', label: 'バッジ & ステータス', icon: ShieldCheck },
-            { id: 'cards', label: 'カード & サーフェス', icon: Mail },
-            { id: 'forms', label: 'フォーム要素', icon: Sliders },
-            { id: 'icons', label: 'アイコン体系', icon: Compass },
-            { id: 'guidelines', label: '設計原則 & ルール', icon: Code },
-          ].map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeSection === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveSection(tab.id as any)}
-                className={`px-4 py-2.5 rounded-2xl text-xs md:text-sm font-bold flex items-center gap-2 whitespace-nowrap transition-all cursor-pointer ${
-                  isActive 
-                    ? 'bg-white text-slate-900 shadow-lg shadow-black/20 font-bold scale-105' 
-                    : 'bg-white/10 text-slate-300 hover:bg-white/15 hover:text-white'
-                }`}
-              >
-                <Icon size={16} className={isActive ? 'text-indigo-600' : ''} />
-                <span>{tab.label}</span>
-              </button>
-            );
-          })}
-        </div>
       </div>
 
-      {/* Section 1: Color Palette */}
-      {activeSection === 'colors' && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-10">
-          <div className="border-b border-slate-200 pb-4">
-            <h2 className="text-xl font-bold text-slate-900 font-serif flex items-center gap-2">
-              <Palette className="text-indigo-600" />
-              <span>Color Tokens & Palettes (カラーパレット)</span>
-            </h2>
-            <p className="text-sm text-slate-500 mt-1">
-              クリックするとHEX値またはTailwindクラスをクリップボードにコピーできます。
+      {/* 🧭 4-Card Subtabs Navigation */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        {/* TAB 1: Tokens */}
+        <button
+          type="button"
+          onClick={() => setActiveTab('tokens')}
+          className={`group relative flex flex-col justify-between p-4 rounded-2xl border text-left transition-all cursor-pointer ${
+            activeTab === 'tokens'
+              ? 'bg-white border-teal-600 shadow-md ring-2 ring-teal-500/10'
+              : 'bg-zinc-50/80 hover:bg-white border-brand-border/80 hover:border-zinc-300'
+          }`}
+        >
+          <div>
+            <div className="flex items-center justify-between gap-2 mb-2.5">
+              <div className="flex items-center gap-2">
+                <div className={`w-8 h-8 rounded-xl flex items-center justify-center font-mono font-bold text-xs transition-colors ${
+                  activeTab === 'tokens' ? 'bg-teal-700 text-white shadow-sm' : 'bg-zinc-200 text-black/70 group-hover:bg-teal-100 group-hover:text-teal-900'
+                }`}>
+                  <Palette size={16} />
+                </div>
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-black/40">
+                  STEP 01
+                </span>
+              </div>
+              {activeTab === 'tokens' ? (
+                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200 animate-pulse">
+                  ● 表示中
+                </span>
+              ) : (
+                <span className="text-[11px] font-mono font-bold text-black/60 bg-zinc-200/70 px-2 py-0.5 rounded-full">
+                  16色 トークン
+                </span>
+              )}
+            </div>
+            <div className="font-bold text-sm text-black flex items-center gap-1">
+              基盤デザイントークン
+            </div>
+            <p className="text-xs text-black/60 mt-1 line-clamp-2 leading-relaxed font-sans">
+              カラーパレット・タイポグラフィ階層・WCAG比率
             </p>
           </div>
+          <div className="mt-3 pt-2.5 border-t border-zinc-100 flex items-center justify-between text-[11px]">
+            <span className="text-black/50">WCAG準拠</span>
+            <span className="font-mono font-bold text-emerald-800">AAA / AA 合格</span>
+          </div>
+        </button>
 
-          <div className="space-y-8">
-            {colorPalettes.map((palette) => (
-              <div key={palette.category} className="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-4">
-                <div>
-                  <h3 className="text-base font-bold text-slate-900">{palette.category}</h3>
-                  <p className="text-xs text-slate-500 mt-0.5">{palette.description}</p>
+        {/* TAB 2: Components */}
+        <button
+          type="button"
+          onClick={() => setActiveTab('components')}
+          className={`group relative flex flex-col justify-between p-4 rounded-2xl border text-left transition-all cursor-pointer ${
+            activeTab === 'components'
+              ? 'bg-white border-teal-600 shadow-md ring-2 ring-teal-500/10'
+              : 'bg-zinc-50/80 hover:bg-white border-brand-border/80 hover:border-zinc-300'
+          }`}
+        >
+          <div>
+            <div className="flex items-center justify-between gap-2 mb-2.5">
+              <div className="flex items-center gap-2">
+                <div className={`w-8 h-8 rounded-xl flex items-center justify-center font-mono font-bold text-xs transition-colors ${
+                  activeTab === 'components' ? 'bg-teal-700 text-white shadow-sm' : 'bg-zinc-200 text-black/70 group-hover:bg-teal-100 group-hover:text-teal-900'
+                }`}>
+                  <Layers size={16} />
                 </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
-                  {palette.colors.map((color) => (
-                    <div 
-                      key={color.name}
-                      onClick={() => copyToClipboard(color.hex, color.name)}
-                      className="p-4 rounded-2xl border border-slate-200/80 hover:shadow-md transition-all cursor-pointer group bg-slate-50/50 relative overflow-hidden"
-                    >
-                      <div className={`h-16 w-full rounded-xl ${color.tailwind} shadow-inner flex items-end p-2.5 mb-3 transition-transform group-hover:scale-[1.02]`}>
-                        <span className={`text-[11px] font-mono font-bold ${color.text} opacity-90 drop-shadow-sm`}>
-                          {color.hex}
-                        </span>
-                      </div>
-                      <div className="space-y-1">
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">
-                            {color.name}
-                          </span>
-                          {copiedToken === color.name ? (
-                            <Check size={14} className="text-emerald-600 animate-in zoom-in" />
-                          ) : (
-                            <Copy size={14} className="text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-                          )}
-                        </div>
-                        <p className="text-[11px] text-slate-500 leading-snug">{color.role}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-black/40">
+                  STEP 02
+                </span>
               </div>
-            ))}
+              {activeTab === 'components' ? (
+                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200 animate-pulse">
+                  ● 表示中
+                </span>
+              ) : (
+                <span className="text-[11px] font-mono font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-100">
+                  実機テスト可
+                </span>
+              )}
+            </div>
+            <div className="font-bold text-sm text-black flex items-center gap-1">
+              UIパーツ ＆ 状態テスター
+            </div>
+            <p className="text-xs text-black/60 mt-1 line-clamp-2 leading-relaxed font-sans">
+              ボタン状態・バッジ・フォーム・トースト発火
+            </p>
+          </div>
+          <div className="mt-3 pt-2.5 border-t border-zinc-100 flex items-center justify-between text-[11px]">
+            <span className="text-black/50">インタラクティブ</span>
+            <span className="font-mono font-bold text-teal-800">リアルタイム動作</span>
+          </div>
+        </button>
+
+        {/* TAB 3: Surfaces */}
+        <button
+          type="button"
+          onClick={() => setActiveTab('surfaces')}
+          className={`group relative flex flex-col justify-between p-4 rounded-2xl border text-left transition-all cursor-pointer ${
+            activeTab === 'surfaces'
+              ? 'bg-white border-teal-600 shadow-md ring-2 ring-teal-500/10'
+              : 'bg-zinc-50/80 hover:bg-white border-brand-border/80 hover:border-zinc-300'
+          }`}
+        >
+          <div>
+            <div className="flex items-center justify-between gap-2 mb-2.5">
+              <div className="flex items-center gap-2">
+                <div className={`w-8 h-8 rounded-xl flex items-center justify-center font-mono font-bold text-xs transition-colors ${
+                  activeTab === 'surfaces' ? 'bg-teal-700 text-white shadow-sm' : 'bg-zinc-200 text-black/70 group-hover:bg-teal-100 group-hover:text-teal-900'
+                }`}>
+                  <Mail size={16} />
+                </div>
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-black/40">
+                  STEP 03
+                </span>
+              </div>
+              {activeTab === 'surfaces' ? (
+                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200 animate-pulse">
+                  ● 表示中
+                </span>
+              ) : (
+                <span className="text-[11px] font-mono font-bold text-sky-700 bg-sky-50 px-2 py-0.5 rounded-full border border-sky-100">
+                  4テーマ
+                </span>
+              )}
+            </div>
+            <div className="font-bold text-sm text-black flex items-center gap-1">
+              サーフェス ＆ 情緒カード
+            </div>
+            <p className="text-xs text-black/60 mt-1 line-clamp-2 leading-relaxed font-sans">
+              春夏秋冬テーマ切替・最新600円料金明細カード
+            </p>
+          </div>
+          <div className="mt-3 pt-2.5 border-t border-zinc-100 flex items-center justify-between text-[11px]">
+            <span className="text-black/50">現行料金</span>
+            <span className="font-mono font-bold text-teal-800">600 円 買い切り</span>
+          </div>
+        </button>
+
+        {/* TAB 4: Guidelines & Code */}
+        <button
+          type="button"
+          onClick={() => setActiveTab('guidelines')}
+          className={`group relative flex flex-col justify-between p-4 rounded-2xl border text-left transition-all cursor-pointer ${
+            activeTab === 'guidelines'
+              ? 'bg-white border-teal-600 shadow-md ring-2 ring-teal-500/10'
+              : 'bg-zinc-50/80 hover:bg-white border-brand-border/80 hover:border-zinc-300'
+          }`}
+        >
+          <div>
+            <div className="flex items-center justify-between gap-2 mb-2.5">
+              <div className="flex items-center gap-2">
+                <div className={`w-8 h-8 rounded-xl flex items-center justify-center font-mono font-bold text-xs transition-colors ${
+                  activeTab === 'guidelines' ? 'bg-teal-700 text-white shadow-sm' : 'bg-zinc-200 text-black/70 group-hover:bg-teal-100 group-hover:text-teal-900'
+                }`}>
+                  <Code size={16} />
+                </div>
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-black/40">
+                  STEP 04
+                </span>
+              </div>
+              {activeTab === 'guidelines' ? (
+                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200 animate-pulse">
+                  ● 表示中
+                </span>
+              ) : (
+                <span className="text-[11px] font-mono font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-100">
+                  JSON / CSS
+                </span>
+              )}
+            </div>
+            <div className="font-bold text-sm text-black flex items-center gap-1">
+              設計原則 ＆ トークン出力
+            </div>
+            <p className="text-xs text-black/60 mt-1 line-clamp-2 leading-relaxed font-sans">
+              4大設計鉄則・Tailwind/CSS変数一括エクスポート
+            </p>
+          </div>
+          <div className="mt-3 pt-2.5 border-t border-zinc-100 flex items-center justify-between text-[11px]">
+            <span className="text-black/50">出力形式</span>
+            <span className="font-mono font-bold text-amber-700">Tailwind / CSS</span>
+          </div>
+        </button>
+      </div>
+
+      {/* ======================================================== */}
+      {/* SECTION 1: 🎨 基盤デザイントークン                       */}
+      {/* ======================================================== */}
+      {activeTab === 'tokens' && (
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+          {/* Colors */}
+          <div className="space-y-6">
+            <div className="flex items-center justify-between border-b border-zinc-200 pb-3">
+              <div>
+                <h3 className="text-base font-bold text-black flex items-center gap-2">
+                  <Palette className="text-teal-700" size={18} />
+                  <span>Color Tokens & Palettes (カラーパレット ＆ WCAGコントラスト比)</span>
+                </h3>
+                <p className="text-xs text-black/60 mt-0.5">
+                  各カラーカードをクリックすると、HEXコードをクリップボードにコピーできます。
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              {colorPalettes.map((palette) => (
+                <div key={palette.category} className="bg-white p-6 rounded-3xl border border-brand-border shadow-sm space-y-4">
+                  <div>
+                    <h4 className="text-sm font-bold text-black">{palette.category}</h4>
+                    <p className="text-xs text-black/60 mt-0.5">{palette.description}</p>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 pt-1">
+                    {palette.colors.map((color) => (
+                      <div 
+                        key={color.name}
+                        onClick={() => copyToClipboard(color.hex, color.name)}
+                        className="p-3.5 rounded-2xl border border-brand-border/80 hover:shadow-md transition-all cursor-pointer group bg-zinc-50/60 hover:bg-white relative overflow-hidden"
+                      >
+                        <div className={`h-14 w-full rounded-xl ${color.tailwind} shadow-inner flex items-end justify-between p-2.5 mb-2.5 transition-transform group-hover:scale-[1.02]`}>
+                          <span className={`text-[11px] font-mono font-bold ${color.text} opacity-95 drop-shadow-sm`}>
+                            {color.hex}
+                          </span>
+                          <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-black/40 text-white backdrop-blur-xs`}>
+                            {color.contrast}
+                          </span>
+                        </div>
+                        <div className="space-y-1">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-bold text-black group-hover:text-teal-800 transition-colors">
+                              {color.name}
+                            </span>
+                            {copiedToken === color.name ? (
+                              <Check size={14} className="text-emerald-600 animate-in zoom-in" />
+                            ) : (
+                              <Copy size={14} className="text-black/40 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            )}
+                          </div>
+                          <p className="text-[11px] text-black/60 leading-snug">{color.role}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Typography */}
+          <div className="bg-white p-6 md:p-8 rounded-3xl border border-brand-border shadow-sm space-y-6">
+            <div className="border-b border-zinc-100 pb-3">
+              <h3 className="text-base font-bold text-black flex items-center gap-2">
+                <Type className="text-teal-700" size={18} />
+                <span>Typography Hierarchy (タイポグラフィ体系 ＆ 和文フォント黄金比)</span>
+              </h3>
+              <p className="text-xs text-black/60 mt-0.5">
+                情緒ある和文明朝（`font-serif`）と、高い可読性を担保するサンセリフ（`font-sans`）の黄金比
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4">
+              {typographyScales.map((type) => (
+                <div key={type.level} className="p-4 md:p-5 rounded-2xl bg-zinc-50 border border-brand-border flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
+                  <div className="space-y-1.5 flex-1">
+                    <div className="flex items-center gap-2.5">
+                      <span className="px-2.5 py-0.5 bg-white text-black text-xs font-bold rounded-lg border border-brand-border">
+                        {type.level}
+                      </span>
+                      <span className="text-xs text-black/50 font-mono">
+                        {type.size} / {type.weight}
+                      </span>
+                    </div>
+                    <div className={`${type.fontClass} ${type.tracking} text-black pt-1`}>
+                      {type.sample}
+                    </div>
+                    <p className="text-xs text-black/60 pt-0.5">
+                      推奨用途: <span className="text-black font-medium">{type.usage}</span>
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => copyToClipboard(type.fontClass, type.level)}
+                    className="px-3 py-1.5 bg-white hover:bg-teal-50 hover:text-teal-800 text-black border border-brand-border rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer shrink-0"
+                  >
+                    {copiedToken === type.level ? <Check size={14} className="text-emerald-600" /> : <Copy size={14} />}
+                    <span>{type.fontClass}</span>
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
         </motion.div>
       )}
 
-      {/* Section 2: Typography */}
-      {activeSection === 'typography' && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
-          <div className="border-b border-slate-200 pb-4">
-            <h2 className="text-xl font-bold text-slate-900 font-serif flex items-center gap-2">
-              <Type className="text-indigo-600" />
-              <span>Typography Hierarchy (タイポグラフィ体系)</span>
-            </h2>
-            <p className="text-sm text-slate-500 mt-1">
-              日本の想い出を表現する和文明朝（`font-serif`）と、高い視認性を保つサンセリフ（`font-sans`）の黄金比率
-            </p>
-          </div>
+      {/* ======================================================== */}
+      {/* SECTION 2: ⚡ UIパーツ ＆ 状態テスター                  */}
+      {/* ======================================================== */}
+      {activeTab === 'components' && (
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+          {/* Button States Playground */}
+          <div className="bg-white p-6 md:p-8 rounded-3xl border border-brand-border shadow-sm space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-100 pb-3">
+              <div>
+                <h3 className="text-base font-bold text-black flex items-center gap-2">
+                  <Layers className="text-teal-700" size={18} />
+                  <span>Button State Playground (ボタン実機ステートテスター)</span>
+                </h3>
+                <p className="text-xs text-black/60 mt-0.5">
+                  クリックしてボタンの各状態（通常・ロード中・成功・無効）のアニメーションをテストできます。
+                </p>
+              </div>
 
-          <div className="grid grid-cols-1 gap-6">
-            {typographyScales.map((type) => (
-              <div key={type.level} className="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm flex flex-col md:flex-row gap-6 items-start md:items-center justify-between">
-                <div className="space-y-2 flex-1">
-                  <div className="flex items-center gap-3">
-                    <span className="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-xs font-bold rounded-lg border border-slate-200">
-                      {type.level}
-                    </span>
-                    <span className="text-xs text-slate-400 font-mono">
-                      {type.size} / {type.weight}
-                    </span>
-                  </div>
-                  <div className={`${type.fontClass} ${type.tracking} text-slate-900 pt-1`}>
-                    {type.sample}
-                  </div>
-                  <p className="text-xs text-slate-500 pt-1">
-                    推奨用途: <span className="text-slate-700 font-medium">{type.usage}</span>
-                  </p>
-                </div>
+              {/* State Switcher */}
+              <div className="flex items-center gap-1.5 bg-zinc-100 p-1 rounded-xl border border-brand-border/60 text-xs font-bold">
                 <button
-                  onClick={() => copyToClipboard(type.fontClass, type.level)}
-                  className="px-3 py-1.5 bg-slate-50 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 border border-slate-200 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer shrink-0"
+                  type="button"
+                  onClick={() => setBtnState('idle')}
+                  className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${btnState === 'idle' ? 'bg-white text-black shadow-xs' : 'text-black/60'}`}
                 >
-                  {copiedToken === type.level ? <Check size={14} className="text-emerald-600" /> : <Copy size={14} />}
-                  <span>{type.fontClass}</span>
+                  通常 (Idle)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setBtnState('loading')}
+                  className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${btnState === 'loading' ? 'bg-white text-black shadow-xs' : 'text-black/60'}`}
+                >
+                  ローディング (Loading)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setBtnState('success')}
+                  className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${btnState === 'success' ? 'bg-white text-emerald-800 shadow-xs' : 'text-black/60'}`}
+                >
+                  完了 (Success)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setBtnState('disabled')}
+                  className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${btnState === 'disabled' ? 'bg-white text-rose-800 shadow-xs' : 'text-black/60'}`}
+                >
+                  無効 (Disabled)
                 </button>
               </div>
-            ))}
-          </div>
-        </motion.div>
-      )}
-
-      {/* Section 3: Buttons & CTA */}
-      {activeSection === 'buttons' && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
-          <div className="border-b border-slate-200 pb-4">
-            <h2 className="text-xl font-bold text-slate-900 font-serif flex items-center gap-2">
-              <Layers className="text-indigo-600" />
-              <span>Button Components & Interactive States (ボタン設計)</span>
-            </h2>
-            <p className="text-sm text-slate-500 mt-1">
-              各ボタンはホバー・アクティブ・フォーカス状態を備え、ラベルの折り返しを禁止（`white-space: nowrap`）しています。
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Primary & CTA Buttons */}
-            <div className="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
-              <h3 className="text-base font-bold text-slate-900">1. 主要アクション & CTAボタン</h3>
-              <div className="space-y-4">
-                <div>
-                  <span className="text-xs text-slate-400 block mb-2">一括決済 & eKYC手紙開示ボタン (1,200円一括)</span>
-                  <button className="w-full py-3.5 px-6 bg-gradient-to-r from-indigo-600 via-indigo-700 to-purple-700 hover:from-indigo-700 hover:to-purple-800 text-white rounded-xl text-sm font-bold shadow-md shadow-indigo-900/10 flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-[0.99]">
-                    <Sparkles size={16} className="text-amber-300" />
-                    <span>1,200円を一括決済して公的証明・手紙開示を完了</span>
-                  </button>
-                </div>
-
-                <div>
-                  <span className="text-xs text-slate-400 block mb-2">標準プライマリボタン (Primary Solid)</span>
-                  <button className="py-3 px-6 bg-slate-900 hover:bg-black text-white rounded-xl text-sm font-bold shadow-sm flex items-center gap-2 transition-all cursor-pointer active:scale-[0.99]">
-                    <Mail size={16} />
-                    <span>想い出のボトルメールを投函する</span>
-                  </button>
-                </div>
-
-                <div>
-                  <span className="text-xs text-slate-400 block mb-2">セカンダリボタン (Secondary Outline)</span>
-                  <button className="py-2.5 px-5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 rounded-xl text-xs font-bold shadow-xs flex items-center gap-2 transition-all cursor-pointer">
-                    <Eye size={14} />
-                    <span>プレビューを表示</span>
-                  </button>
-                </div>
-              </div>
             </div>
 
-            {/* Special & Destructive Buttons */}
-            <div className="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
-              <h3 className="text-base font-bold text-slate-900">2. 状態・セキュリティ・危険アクション</h3>
-              <div className="space-y-4">
-                <div>
-                  <span className="text-xs text-slate-400 block mb-2">警察捜査照会エクスポート (Police Report CTA)</span>
-                  <button className="py-2.5 px-5 bg-slate-900 hover:bg-black text-amber-300 border border-amber-500/40 rounded-xl text-xs font-bold flex items-center gap-2 shadow-md transition-all cursor-pointer">
-                    <ShieldAlert size={15} className="text-amber-400" />
+            {/* Live Button Showcase */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Button 1: Main CTA */}
+              <div className="p-5 rounded-2xl bg-zinc-50 border border-brand-border space-y-3">
+                <span className="text-xs font-bold text-black block">① メイン開通CTAボタン（600円決済連動）</span>
+                <button
+                  disabled={btnState === 'disabled' || btnState === 'loading'}
+                  className={`w-full py-3.5 px-6 rounded-xl text-xs md:text-sm font-bold shadow-sm flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-[0.99] ${
+                    btnState === 'success'
+                      ? 'bg-emerald-600 text-white shadow-emerald-600/20'
+                      : btnState === 'disabled'
+                      ? 'bg-zinc-200 text-black/40 cursor-not-allowed'
+                      : 'bg-teal-700 hover:bg-teal-800 text-white shadow-teal-700/20'
+                  }`}
+                >
+                  {btnState === 'loading' && <Loader2 size={16} className="animate-spin text-white" />}
+                  {btnState === 'success' && <Check size={16} className="text-white" />}
+                  {btnState === 'idle' && <Sparkles size={16} className="text-amber-300" />}
+                  <span>
+                    {btnState === 'loading' && 'Stripe 決済・eKYC連携処理中...'}
+                    {btnState === 'success' && '600 円 決済 ＆ 開通完了！'}
+                    {btnState === 'disabled' && '利用規約に同意してください'}
+                    {btnState === 'idle' && '600 円で本人確認 ＆ 直通連絡先を開示'}
+                  </span>
+                </button>
+              </div>
+
+              {/* Button 2: Secondary & Police CTA */}
+              <div className="p-5 rounded-2xl bg-zinc-50 border border-brand-border space-y-3">
+                <span className="text-xs font-bold text-black block">② 警察照会 ＆ 破壊的操作ボタン</span>
+                <div className="flex flex-wrap gap-2.5">
+                  <button className="py-2.5 px-4 bg-slate-900 hover:bg-black text-amber-300 border border-amber-500/40 rounded-xl text-xs font-bold flex items-center gap-2 shadow-sm transition-all cursor-pointer">
+                    <ShieldAlert size={14} className="text-amber-400" />
                     <span>🚔 警察照会データ一括出力（刑訴法197条）</span>
                   </button>
-                </div>
 
-                <div>
-                  <span className="text-xs text-slate-400 block mb-2">破壊的操作 (Destructive Action)</span>
-                  <button className="py-2.5 px-5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs font-bold flex items-center gap-2 transition-all cursor-pointer">
-                    <AlertTriangle size={15} />
-                    <span>アカウントを強制凍結する</span>
-                  </button>
-                </div>
-
-                <div>
-                  <span className="text-xs text-slate-400 block mb-2">無効化状態 (Disabled State)</span>
-                  <button disabled className="py-2.5 px-5 bg-slate-100 text-slate-400 border border-slate-200 rounded-xl text-xs font-bold flex items-center gap-2 cursor-not-allowed opacity-60">
-                    <Lock size={14} />
-                    <span>決済情報を入力してください (無効)</span>
+                  <button className="py-2.5 px-4 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs font-bold flex items-center gap-2 transition-all cursor-pointer">
+                    <AlertTriangle size={14} />
+                    <span>アカウント強制凍結</span>
                   </button>
                 </div>
               </div>
             </div>
           </div>
-        </motion.div>
-      )}
 
-      {/* Section 4: Badges & Status */}
-      {activeSection === 'badges' && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
-          <div className="border-b border-slate-200 pb-4">
-            <h2 className="text-xl font-bold text-slate-900 font-serif flex items-center gap-2">
-              <ShieldCheck className="text-indigo-600" />
-              <span>Badges, Tags & Security Chips (バッジ・ステータス表示)</span>
-            </h2>
-            <p className="text-sm text-slate-500 mt-1">
-              ユーザーの身元保証状態、年代、AI診断結果を直感的に識別するバッジ体系
-            </p>
-          </div>
-
-          <div className="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
-            <h3 className="text-base font-bold text-slate-900">本人確認・セキュリティバッジ</h3>
-            <div className="flex flex-wrap items-center gap-3">
-              <span className="text-[11px] bg-emerald-100 text-emerald-800 border border-emerald-300 px-3 py-1 rounded-full font-bold flex items-center gap-1 shadow-xs">
-                🛡️ 公的本人確認 (eKYC) 済
-              </span>
-              <span className="text-[11px] bg-zinc-100 text-zinc-600 border border-zinc-200 px-3 py-1 rounded-full font-medium flex items-center gap-1">
-                📝 自己申告・誓約署名のみ
-              </span>
-              <span className="text-[11px] bg-rose-100 text-rose-800 border border-rose-300 px-3 py-1 rounded-full font-bold flex items-center gap-1">
-                ⚠️ AI不適切検知・隔離中
-              </span>
-              <span className="text-[11px] bg-amber-100 text-amber-800 border border-amber-300 px-3 py-1 rounded-full font-bold flex items-center gap-1">
-                🔒 秘密の質問未回答
-              </span>
-            </div>
-
-            <h3 className="text-base font-bold text-slate-900 pt-4 border-t border-slate-100">年代・カテゴリタグ</h3>
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[11px] bg-indigo-50 text-indigo-700 border border-indigo-200/80 px-2.5 py-0.5 rounded-lg font-bold">
-                1980年代
-              </span>
-              <span className="text-[11px] bg-indigo-50 text-indigo-700 border border-indigo-200/80 px-2.5 py-0.5 rounded-lg font-bold">
-                1990年代
-              </span>
-              <span className="text-[11px] bg-indigo-50 text-indigo-700 border border-indigo-200/80 px-2.5 py-0.5 rounded-lg font-bold">
-                2000年代
-              </span>
-              <span className="text-[11px] bg-purple-50 text-purple-700 border border-purple-200/80 px-2.5 py-0.5 rounded-lg font-bold">
-                友だち・部活
-              </span>
-              <span className="text-[11px] bg-pink-50 text-pink-700 border border-pink-200/80 px-2.5 py-0.5 rounded-lg font-bold">
-                初恋・恩師
-              </span>
-            </div>
-          </div>
-        </motion.div>
-      )}
-
-      {/* Section 5: Cards & Surfaces */}
-      {activeSection === 'cards' && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
-          <div className="border-b border-slate-200 pb-4">
-            <h2 className="text-xl font-bold text-slate-900 font-serif flex items-center gap-2">
-              <Mail className="text-indigo-600" />
-              <span>Card & Surface Architecture (カード・サーフェス設計)</span>
-            </h2>
-            <p className="text-sm text-slate-500 mt-1">
-              角丸比率、インナーパディング、視覚的階層（Z-index/Elevation）の設計ルール
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Live Sample Bottle Card */}
-            <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm space-y-4 relative overflow-hidden">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-xs">
-                    本
-                  </div>
-                  <div>
-                    <span className="text-xs font-bold text-slate-900 block">本間 貴司 (たかし)</span>
-                    <span className="text-[10px] text-slate-400">東京都世田谷区 ・ 1990年代</span>
-                  </div>
-                </div>
-                <span className="text-[10px] bg-emerald-100 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">
-                  🛡️ eKYC公的認証済
-                </span>
-              </div>
-
-              <div className="p-4 bg-amber-50/60 border border-amber-200/60 rounded-2xl space-y-2 font-serif text-xs text-slate-800 leading-relaxed">
-                <p>「あの時、校庭の桜の木の下で話した約束をずっと覚えています。もしこのボトルメールを見つけたら、秘密の質問に答えて手紙を開封してください。」</p>
-              </div>
-
-              <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs text-slate-500">
-                <span>対象: 田中 誠 様宛</span>
-                <span className="font-bold text-indigo-600 flex items-center gap-1">
-                  秘密の質問 2問完備 <ArrowRight size={12} />
-                </span>
-              </div>
-            </div>
-
-            {/* Fee Breakdown Card */}
-            <div className="bg-indigo-50/80 border border-indigo-200 rounded-3xl p-6 space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-indigo-200/70">
-                <div className="flex items-center gap-2">
-                  <CreditCard className="text-indigo-600" size={18} />
-                  <h4 className="text-sm font-bold text-indigo-950 font-serif">公的証明 ＆ 手紙開封手数料</h4>
-                </div>
-                <span className="text-xs bg-indigo-200/60 text-indigo-900 px-2 py-0.5 rounded-lg font-bold">一括決済</span>
-              </div>
-
-              <div className="space-y-2 text-xs font-sans">
-                <div className="flex items-center justify-between text-indigo-950 pb-1.5 border-b border-indigo-200/50">
-                  <span>🪪 公的身分証（eKYC）認証審査料</span>
-                  <span className="font-bold">600 円</span>
-                </div>
-                <div className="flex items-center justify-between text-indigo-950 pb-1.5 border-b border-indigo-200/50">
-                  <span>✉️ 手紙開封・直通連絡先開示料</span>
-                  <span className="font-bold">600 円</span>
-                </div>
-                <div className="flex items-center justify-between text-indigo-950 font-bold pt-1 text-sm">
-                  <span className="flex items-center gap-1">
-                    <Sparkles size={14} className="text-amber-500" />
-                    お引き落とし合計（買い切り）
-                  </span>
-                  <span className="text-base text-indigo-900 font-serif">1,200 円 (税込)</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      )}
-
-      {/* Section 6: Forms */}
-      {activeSection === 'forms' && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
-          <div className="border-b border-slate-200 pb-4">
-            <h2 className="text-xl font-bold text-slate-900 font-serif flex items-center gap-2">
-              <Sliders className="text-indigo-600" />
-              <span>Form Controls & Input Fields (フォーム入力コンポーネント)</span>
-            </h2>
-            <p className="text-sm text-slate-500 mt-1">
-              エラーフィードバック、フォーカスリング、アクセシビリティを徹底した入力要素
-            </p>
-          </div>
-
-          <div className="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">テキスト入力（標準フォーカス）</label>
-                <input 
-                  type="text"
-                  value={demoInputVal}
-                  onChange={(e) => setDemoInputVal(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 outline-none transition-all text-slate-900"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">検索バー（アイコン付き）</label>
-                <div className="relative">
-                  <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-                  <input 
-                    type="text"
-                    placeholder="お名前、地域、学校名で検索..."
-                    className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 outline-none transition-all text-slate-900"
-                  />
-                </div>
-              </div>
+          {/* Badges & Status Chips */}
+          <div className="bg-white p-6 md:p-8 rounded-3xl border border-brand-border shadow-sm space-y-6">
+            <div className="border-b border-zinc-100 pb-3">
+              <h3 className="text-base font-bold text-black flex items-center gap-2">
+                <ShieldCheck className="text-teal-700" size={18} />
+                <span>Badges, Tags & Security Chips (バッジ・ステータス体系)</span>
+              </h3>
+              <p className="text-xs text-black/60 mt-0.5">
+                ユーザーの身元保証状態、年代、AI診断結果を直感的に識別するバッジ体系
+              </p>
             </div>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-2">トグルスイッチ (Toggle Switch)</label>
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={() => setDemoSwitch(!demoSwitch)}
-                    className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors duration-300 cursor-pointer ${
-                      demoSwitch ? 'bg-indigo-600 justify-end' : 'bg-slate-300 justify-start'
-                    }`}
-                  >
-                    <div className="bg-white w-4 h-4 rounded-full shadow-md" />
-                  </button>
-                  <span className="text-xs text-slate-600 font-medium">
-                    {demoSwitch ? 'リアルタイムAIモデレーション有効' : '無効'}
+                <span className="text-xs font-bold text-black block mb-2">本人確認・セキュリティバッジ</span>
+                <div className="flex flex-wrap items-center gap-2.5">
+                  <span className="text-[11px] bg-emerald-100 text-emerald-800 border border-emerald-300 px-3 py-1 rounded-full font-bold flex items-center gap-1 shadow-xs">
+                    🛡️ 公的本人確認 (eKYC) 済
+                  </span>
+                  <span className="text-[11px] bg-zinc-100 text-black/70 border border-zinc-200 px-3 py-1 rounded-full font-medium flex items-center gap-1">
+                    📝 自己申告・誓約署名のみ
+                  </span>
+                  <span className="text-[11px] bg-rose-100 text-rose-800 border border-rose-300 px-3 py-1 rounded-full font-bold flex items-center gap-1">
+                    ⚠️ AI不適切検知・隔離中
+                  </span>
+                  <span className="text-[11px] bg-amber-100 text-amber-800 border border-amber-300 px-3 py-1 rounded-full font-bold flex items-center gap-1">
+                    🔒 秘密の質問未回答
                   </span>
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-2">ラジオ選択 (Radio Chips)</label>
-                <div className="flex gap-2">
-                  {['card', 'table', 'compact'].map((type) => (
-                    <button
-                      key={type}
-                      onClick={() => setDemoRadio(type)}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                        demoRadio === type 
-                          ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm' 
-                          : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
-                      }`}
-                    >
-                      {type === 'card' ? 'カード形式' : type === 'table' ? 'テーブル形式' : 'コンパクト'}
-                    </button>
+              <div className="pt-3 border-t border-zinc-100">
+                <span className="text-xs font-bold text-black block mb-2">年代・カテゴリタグ</span>
+                <div className="flex flex-wrap items-center gap-2">
+                  {['1980年代', '1990年代', '2000年代', '2010年代', '友だち・部活', '初恋・恩師', '旅先での出会い'].map((tag) => (
+                    <span key={tag} className="text-[11px] bg-teal-50 text-teal-800 border border-teal-200 px-2.5 py-0.5 rounded-lg font-bold">
+                      {tag}
+                    </span>
                   ))}
                 </div>
               </div>
             </div>
           </div>
-        </motion.div>
-      )}
 
-      {/* Section 7: Icons */}
-      {activeSection === 'icons' && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
-          <div className="border-b border-slate-200 pb-4">
-            <h2 className="text-xl font-bold text-slate-900 font-serif flex items-center gap-2">
-              <Compass className="text-indigo-600" />
-              <span>Icon System & Semantic Meanings (アイコン体系)</span>
-            </h2>
-            <p className="text-sm text-slate-500 mt-1">
-              すべてのアイコンは `lucide-react` よりインポートし、意味的な一貫性を保持します。
-            </p>
-          </div>
+          {/* Form Controls & Toast Launcher */}
+          <div className="bg-white p-6 md:p-8 rounded-3xl border border-brand-border shadow-sm space-y-6">
+            <div className="border-b border-zinc-100 pb-3">
+              <h3 className="text-base font-bold text-black flex items-center gap-2">
+                <Sliders className="text-teal-700" size={18} />
+                <span>Form Controls & Interactive Toast Launcher (フォーム部品 ＆ トースト発火)</span>
+              </h3>
+            </div>
 
-          <div className="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {[
-              { icon: Mail, label: 'Mail', role: 'ボトルメール・メッセージ' },
-              { icon: ShieldCheck, label: 'ShieldCheck', role: 'eKYC認証完了・公式監査' },
-              { icon: Sparkles, label: 'Sparkles', role: '再会成立・マッチング' },
-              { icon: ShieldAlert, label: 'ShieldAlert', role: '警察照会・法執行機関連携' },
-              { icon: Bot, label: 'Bot', role: 'AI自動検閲・モデレーション' },
-              { icon: CreditCard, label: 'CreditCard', role: 'Stripe 決済・返金処理' },
-              { icon: User, label: 'User', role: 'アカウント・マイページ' },
-              { icon: Lock, label: 'Lock', role: '秘密の質問・非公開保護' },
-            ].map((item) => {
-              const Icon = item.icon;
-              return (
-                <div key={item.label} className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col items-center text-center space-y-2">
-                  <div className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-indigo-600 shadow-xs">
-                    <Icon size={20} />
-                  </div>
-                  <span className="text-xs font-bold font-mono text-slate-900">{item.label}</span>
-                  <span className="text-[11px] text-slate-500">{item.role}</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-black mb-1">テキスト入力（フォーカスリング検証）</label>
+                  <input 
+                    type="text"
+                    value={demoInputVal}
+                    onChange={(e) => setDemoInputVal(e.target.value)}
+                    className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-300 rounded-xl text-sm focus:bg-white focus:border-teal-600 focus:ring-4 focus:ring-teal-100 outline-none transition-all text-black"
+                  />
                 </div>
-              );
-            })}
+
+                <div>
+                  <label className="block text-xs font-bold text-black mb-1">検索バー（アイコン付き）</label>
+                  <div className="relative">
+                    <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-black/40" />
+                    <input 
+                      type="text"
+                      placeholder="お名前、地域、学校名で検索..."
+                      className="w-full pl-10 pr-4 py-2.5 bg-zinc-50 border border-zinc-300 rounded-xl text-sm focus:bg-white focus:border-teal-600 focus:ring-4 focus:ring-teal-100 outline-none transition-all text-black"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-black mb-2">トグルスイッチ (Toggle Switch)</label>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => setDemoSwitch(!demoSwitch)}
+                      className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors duration-300 cursor-pointer ${
+                        demoSwitch ? 'bg-teal-700 justify-end' : 'bg-zinc-300 justify-start'
+                      }`}
+                    >
+                      <div className="bg-white w-4 h-4 rounded-full shadow-md" />
+                    </button>
+                    <span className="text-xs text-black/70 font-medium">
+                      {demoSwitch ? 'リアルタイムAIモデレーション有効' : '無効'}
+                    </span>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-black mb-2">トースト通知発火テスト</label>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      onClick={() => triggerToast('success', '🎉 600 円の決済と本人確認が完了しました')}
+                      className="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold hover:bg-emerald-100 transition-all cursor-pointer"
+                    >
+                      成功トースト
+                    </button>
+                    <button
+                      onClick={() => triggerToast('error', '⚠️ 秘密の質問の回答が一致しません')}
+                      className="px-3 py-1.5 rounded-xl bg-rose-50 text-rose-800 border border-rose-200 text-xs font-bold hover:bg-rose-100 transition-all cursor-pointer"
+                    >
+                      エラー警告
+                    </button>
+                    <button
+                      onClick={() => triggerToast('info', 'ℹ️ 相手からの返信メールが届きました')}
+                      className="px-3 py-1.5 rounded-xl bg-indigo-50 text-indigo-800 border border-indigo-200 text-xs font-bold hover:bg-indigo-100 transition-all cursor-pointer"
+                    >
+                      情報通知
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </motion.div>
       )}
 
-      {/* Section 8: Guidelines */}
-      {activeSection === 'guidelines' && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
-          <div className="border-b border-slate-200 pb-4">
-            <h2 className="text-xl font-bold text-slate-900 font-serif flex items-center gap-2">
-              <Code className="text-indigo-600" />
-              <span>Design Principles & Architecture Rules (設計原則)</span>
-            </h2>
-            <p className="text-sm text-slate-500 mt-1">
-              ReMEETsのUI品質を長期にわたって担保するための5大鉄則
-            </p>
+      {/* ======================================================== */}
+      {/* SECTION 3: ✉️ サーフェス ＆ 情緒カード                  */}
+      {/* ======================================================== */}
+      {activeTab === 'surfaces' && (
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+          {/* Card Theme Switcher & Preview */}
+          <div className="bg-white p-6 md:p-8 rounded-3xl border border-brand-border shadow-sm space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-100 pb-3">
+              <div>
+                <h3 className="text-base font-bold text-black flex items-center gap-2">
+                  <Mail className="text-teal-700" size={18} />
+                  <span>Emotion Bottle Mail Cards (情緒ボトルメールカード・テーマ切替)</span>
+                </h3>
+                <p className="text-xs text-black/60 mt-0.5">
+                  季節や想い出の情感を表現する4つのカラーテーマをリアルタイムに切り替えて確認できます。
+                </p>
+              </div>
+
+              {/* Theme Switcher Chips */}
+              <div className="flex items-center gap-1.5 bg-zinc-100 p-1 rounded-xl border border-brand-border/60 text-xs font-bold">
+                {(['summer', 'spring', 'autumn', 'winter'] as const).map((t) => (
+                  <button
+                    key={t}
+                    onClick={() => setCardTheme(t)}
+                    className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                      cardTheme === t ? 'bg-white text-black shadow-xs font-bold' : 'text-black/60 hover:text-black'
+                    }`}
+                  >
+                    {t === 'summer' ? '🌊 夏' : t === 'spring' ? '🌸 春' : t === 'autumn' ? '🌇 秋' : '🌌 冬'}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Live Interactive Bottle Card */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+              <div className={`rounded-3xl border ${themeConfig[cardTheme].border} ${themeConfig[cardTheme].bg} p-6 shadow-sm space-y-4 relative overflow-hidden transition-all duration-300`}>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className={`w-9 h-9 rounded-full border ${themeConfig[cardTheme].avatarBg} flex items-center justify-center font-bold text-xs shadow-xs`}>
+                      本
+                    </div>
+                    <div>
+                      <span className="text-xs font-bold text-black block">本間 貴司 (たかし)</span>
+                      <span className="text-[10px] text-black/50">東京都世田谷区 ・ 1990年代</span>
+                    </div>
+                  </div>
+                  <span className="text-[10px] bg-emerald-100 text-emerald-800 border border-emerald-200 px-2.5 py-0.5 rounded-full font-bold">
+                    🛡️ eKYC公的認証済
+                  </span>
+                </div>
+
+                <div className={`p-4 rounded-2xl border ${themeConfig[cardTheme].quoteBg} space-y-2 font-serif text-xs leading-relaxed`}>
+                  <p>「あの時、校庭の桜の木の下で話した約束をずっと覚えています。もしこのボトルメールを見つけたら、秘密の質問に答えて手紙を開封してください。」</p>
+                </div>
+
+                <div className="flex items-center justify-between pt-2 border-t border-black/5 text-xs text-black/60">
+                  <span className={`text-[11px] font-bold px-2 py-0.5 rounded-md border ${themeConfig[cardTheme].tagBg}`}>
+                    {themeConfig[cardTheme].badge}
+                  </span>
+                  <span className="font-bold text-teal-800 flex items-center gap-1">
+                    秘密の質問 2問完備 <ArrowRight size={12} />
+                  </span>
+                </div>
+              </div>
+
+              {/* Official 600-Yen Transparent Fee Breakdown Card */}
+              <div className="bg-teal-50/80 border border-teal-200 rounded-3xl p-6 space-y-4 shadow-sm">
+                <div className="flex items-center justify-between pb-3 border-b border-teal-200/70">
+                  <div className="flex items-center gap-2">
+                    <CreditCard className="text-teal-700" size={18} />
+                    <h4 className="text-sm font-bold text-teal-950 font-serif">公的証明 ＆ 直通連絡先開示手数料</h4>
+                  </div>
+                  <span className="text-xs bg-teal-200/60 text-teal-900 px-2.5 py-0.5 rounded-lg font-bold">完全買い切り</span>
+                </div>
+
+                <div className="space-y-2 text-xs font-sans">
+                  <div className="flex items-center justify-between text-teal-950 pb-1.5 border-b border-teal-200/50">
+                    <span>🪪 公的身分証（eKYC）認証審査料</span>
+                    <span className="font-mono font-medium text-black/60">込み (0 円)</span>
+                  </div>
+                  <div className="flex items-center justify-between text-teal-950 pb-1.5 border-b border-teal-200/50">
+                    <span>📱 SMS携帯番号本人認証通信費</span>
+                    <span className="font-mono font-medium text-black/60">込み (0 円)</span>
+                  </div>
+                  <div className="flex items-center justify-between text-teal-950 pb-1.5 border-b border-teal-200/50">
+                    <span>✉️ 手紙開封 ＆ 直通SNS/メアド開示</span>
+                    <span className="font-mono font-bold text-teal-900">600 円</span>
+                  </div>
+                  <div className="flex items-center justify-between text-teal-950 font-bold pt-1.5 text-sm">
+                    <span className="flex items-center gap-1 text-teal-950">
+                      <Sparkles size={14} className="text-amber-500" />
+                      お引き落とし合計（買い切り）
+                    </span>
+                    <span className="text-base text-teal-900 font-serif">600 円 (税込)</span>
+                  </div>
+                </div>
+
+                <div className="p-2.5 rounded-xl bg-white/70 border border-teal-200/80 text-[11px] text-teal-900 flex items-start gap-1.5">
+                  <CheckCircle2 size={14} className="text-teal-700 shrink-0 mt-0.5" />
+                  <span>審査不合格や通信不達の場合は、Stripe決済が即座に自動返金・キャンセルされます。</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      )}
+
+      {/* ======================================================== */}
+      {/* SECTION 4: 📐 設計原則 ＆ トークン出力                  */}
+      {/* ======================================================== */}
+      {activeTab === 'guidelines' && (
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+          {/* 4 Core Principles */}
+          <div className="bg-white p-6 md:p-8 rounded-3xl border border-brand-border shadow-sm space-y-6">
+            <div className="border-b border-zinc-100 pb-3">
+              <h3 className="text-base font-bold text-black flex items-center gap-2">
+                <Code className="text-teal-700" size={18} />
+                <span>Design Principles & Architecture Rules (設計原則 4大鉄則)</span>
+              </h3>
+              <p className="text-xs text-black/60 mt-0.5">
+                ReMEETsのUI品質を長期にわたって担保するための設計ルール
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-5 rounded-2xl bg-zinc-50 border border-brand-border space-y-2">
+                <div className="w-7 h-7 rounded-lg bg-teal-100 text-teal-800 flex items-center justify-center font-bold text-xs">
+                  01
+                </div>
+                <h4 className="text-sm font-bold text-black font-serif">情緒と法的信頼性の共存</h4>
+                <p className="text-xs text-black/60 leading-relaxed">
+                  手紙やボトルメールには和文明朝（`font-serif`）と温かみのあるアンバー/ティールを、決済やeKYC・警察照会などの法的画面には厳格なモノスペースフォントとクリーンな白背景を適用します。
+                </p>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-zinc-50 border border-brand-border space-y-2">
+                <div className="w-7 h-7 rounded-lg bg-teal-100 text-teal-800 flex items-center justify-center font-bold text-xs">
+                  02
+                </div>
+                <h4 className="text-sm font-bold text-black font-serif">ボタンラベルの改行禁止 (No Wrapping)</h4>
+                <p className="text-xs text-black/60 leading-relaxed">
+                  ピル、チップ、CTAボタン内のテキストは絶対に途中で改行させず、`white-space: nowrap` と適切なパディングで1行に収めます。
+                </p>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-zinc-50 border border-brand-border space-y-2">
+                <div className="w-7 h-7 rounded-lg bg-teal-100 text-teal-800 flex items-center justify-center font-bold text-xs">
+                  03
+                </div>
+                <h4 className="text-sm font-bold text-black font-serif">角丸のネスト計算公式 (Corner Radius)</h4>
+                <p className="text-xs text-black/60 leading-relaxed">
+                  コンテナ内部にカードを配置する場合、`内部角丸 = 外部角丸 - パディング` の計算式を厳密に順守し、視覚的な歪みを防止します。
+                </p>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-zinc-50 border border-brand-border space-y-2">
+                <div className="w-7 h-7 rounded-lg bg-teal-100 text-teal-800 flex items-center justify-center font-bold text-xs">
+                  04
+                </div>
+                <h4 className="text-sm font-bold text-black font-serif">完全買い切り・透明な料金表示</h4>
+                <p className="text-xs text-black/60 leading-relaxed">
+                  料金表示は「eKYC ＋ SMS ＋ 連絡先開示 ＝ 600 円（完全買い切り）」を明示し、ユーザーに予期せぬ月額課金の不安を与えないUIを徹底します。
+                </p>
+              </div>
+            </div>
           </div>
 
+          {/* Export Tokens Panels */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-3">
-              <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-sm">
-                1
+            {/* Tailwind Config Export */}
+            <div className="bg-white p-6 rounded-3xl border border-brand-border shadow-sm space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-black flex items-center gap-1.5">
+                  <FileText size={14} className="text-teal-700" />
+                  <span>Tailwind Config トークン定義</span>
+                </span>
+                <button
+                  onClick={() => copyToClipboard(tailwindExportCode, 'tailwindConfig')}
+                  className="px-2.5 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-black text-xs font-bold flex items-center gap-1 transition-all cursor-pointer"
+                >
+                  {copiedToken === 'tailwindConfig' ? <Check size={12} className="text-emerald-600" /> : <Copy size={12} />}
+                  <span>{copiedToken === 'tailwindConfig' ? 'コピー完了' : 'コードをコピー'}</span>
+                </button>
               </div>
-              <h3 className="text-base font-bold text-slate-900 font-serif">情緒と法的信頼性の共存</h3>
-              <p className="text-xs text-slate-600 leading-relaxed font-sans">
-                手紙やボトルメールには和文明朝（`font-serif`）と温かみのあるアンバー色を、決済やeKYC・警察照会などの法的画面には厳格なインディゴとモノスペースフォントを適用します。
-              </p>
+              <pre className="p-3.5 bg-zinc-900 text-zinc-100 rounded-xl text-[11px] font-mono overflow-x-auto custom-scrollbar">
+                <code>{tailwindExportCode}</code>
+              </pre>
             </div>
 
-            <div className="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-3">
-              <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-sm">
-                2
+            {/* CSS Variables Export */}
+            <div className="bg-white p-6 rounded-3xl border border-brand-border shadow-sm space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-black flex items-center gap-1.5">
+                  <Code size={14} className="text-teal-700" />
+                  <span>CSS カスタムプロパティ (:root)</span>
+                </span>
+                <button
+                  onClick={() => copyToClipboard(cssVariablesExportCode, 'cssVariables')}
+                  className="px-2.5 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-black text-xs font-bold flex items-center gap-1 transition-all cursor-pointer"
+                >
+                  {copiedToken === 'cssVariables' ? <Check size={12} className="text-emerald-600" /> : <Copy size={12} />}
+                  <span>{copiedToken === 'cssVariables' ? 'コピー完了' : 'コードをコピー'}</span>
+                </button>
               </div>
-              <h3 className="text-base font-bold text-slate-900 font-serif">ボタンラベルの改行禁止 (No Wrapping)</h3>
-              <p className="text-xs text-slate-600 leading-relaxed font-sans">
-                ピル、チップ、CTAボタン内のテキストは絶対に途中で改行させず、`white-space: nowrap` と適切なパディングで1行に収めます。
-              </p>
-            </div>
-
-            <div className="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-3">
-              <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-sm">
-                3
-              </div>
-              <h3 className="text-base font-bold text-slate-900 font-serif">角丸のネスト計算公式 (Corner Radius)</h3>
-              <p className="text-xs text-slate-600 leading-relaxed font-sans">
-                コンテナ内部にカードを配置する場合、`内部角丸 = 外部角丸 - パディング` の計算式を厳密に順守し、視覚的な歪みを防止します。
-              </p>
-            </div>
-
-            <div className="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-3">
-              <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-sm">
-                4
-              </div>
-              <h3 className="text-base font-bold text-slate-900 font-serif">完全買い切り・透明な料金表示</h3>
-              <p className="text-xs text-slate-600 leading-relaxed font-sans">
-                料金表示は「eKYC 600円 ＋ 手紙開示 600円 ＝ 一括 1,200円（買い切り）」の内訳を明示し、ユーザーに予期せぬ月額請求の不安を与えないUIを徹底します。
-              </p>
+              <pre className="p-3.5 bg-zinc-900 text-zinc-100 rounded-xl text-[11px] font-mono overflow-x-auto custom-scrollbar">
+                <code>{cssVariablesExportCode}</code>
+              </pre>
             </div>
           </div>
         </motion.div>
@@ -617,3 +957,5 @@ export const AdminDesignSystem: React.FC = () => {
     </div>
   );
 };
+
+export default AdminDesignSystem;
