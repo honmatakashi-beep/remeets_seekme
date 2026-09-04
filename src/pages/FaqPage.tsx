@@ -618,17 +618,17 @@ export const FaqPage: React.FC = () => {
           )}
         </div>
 
-        {/* 💬 Support / Contact Callout Banner */}
-        <div className="p-6 bg-gradient-to-br from-slate-900 to-teal-950 text-white rounded-2xl shadow-sm flex flex-col md:flex-row items-center justify-between gap-5">
+        {/* 💬 Support / Contact Callout Banner (案C: 落ち着いたスレート・ライトグレー) */}
+        <div className="p-6 bg-zinc-50 rounded-2xl border border-brand-border shadow-2xs flex flex-col md:flex-row items-center justify-between gap-5">
           <div className="space-y-1.5 text-center md:text-left">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-teal-500/20 text-teal-300 rounded-full text-[10px] font-bold border border-teal-500/30 font-sans">
-              <MessageSquare size={12} />
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-teal-50 text-teal-800 rounded-full text-[10px] font-bold border border-teal-200/80 font-sans">
+              <MessageSquare size={12} className="text-teal-700" />
               <span>お困りの際はお気軽にお問い合わせください</span>
             </div>
-            <h3 className="text-base font-serif font-bold text-white">
+            <h3 className="text-base font-serif font-bold text-slate-900">
               解決しない疑問やご不安はございますか？
             </h3>
-            <p className="text-[11px] text-white/70 leading-relaxed max-w-lg font-sans">
+            <p className="text-xs text-slate-600 leading-relaxed max-w-lg font-sans">
               ReMEETs カスタマーサポート事務局が、手紙の流し方や決済、操作方法について丁寧にご案内いたします。
             </p>
           </div>
@@ -636,14 +636,14 @@ export const FaqPage: React.FC = () => {
           <div className="flex flex-col sm:flex-row items-center gap-2.5 shrink-0">
             <Link
               to="/contact"
-              className="px-4 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs shadow-xs transition-all flex items-center gap-1.5 cursor-pointer font-sans"
+              className="px-4 py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs shadow-xs transition-all flex items-center gap-1.5 cursor-pointer font-sans"
             >
               <Mail size={14} />
               <span>お問い合わせ窓口へ</span>
             </Link>
             <Link
               to="/pricing"
-              className="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition-all border border-white/20 font-sans"
+              className="px-3.5 py-2.5 rounded-xl bg-white hover:bg-zinc-100 text-slate-800 font-bold text-xs transition-all border border-slate-300 shadow-2xs font-sans"
             >
               料金の詳細を見る
             </Link>
