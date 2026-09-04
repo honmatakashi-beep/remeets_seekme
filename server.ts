@@ -3892,9 +3892,55 @@ async function startServer() {
     try {
       db.prepare("UPDATE reports SET status = 'resolved' WHERE id = ?").run(req.params.id);
       logAction((req as any).user.id, "REPORT_RESOLVE", `Resolved report #${req.params.id}`, req.ip);
-      res.json({ success: true });
+      res.json({ success: true, message: `通報 #${req.params.id} を解決済みにしました` });
     } catch (err) {
       res.status(500).json({ error: "Failed to resolve report" });
+    }
+  });
+
+  app.post("/api/admin/reports/:id/dismiss", authenticateToken, isAdmin, (req, res) => {
+    try {
+      db.prepare("UPDATE reports SET status = 'dismissed' WHERE id = ?").run(req.params.id);
+      logAction((req as any).user.id, "REPORT_DISMISS", `Dismissed report #${req.params.id}`, req.ip);
+      res.json({ success: true, message: `通報 #${req.params.id} を却下しました` });
+    } catch (err) {
+      res.status(500).json({ error: "Failed to dismiss report" });
+    }
+  });
+
+  app.post("/api/admin/reports/batch-resolve", authenticateToken, isAdmin, (req, res) => {
+    try {
+      const { reportIds } = req.body;
+      if (!Array.isArray(reportIds) || reportIds.length === 0) {
+        return res.status(400).json({ error: "Report IDs required" });
+      }
+      const stmt = db.prepare("UPDATE reports SET status = 'resolved' WHERE id = ?");
+      const transaction = db.transaction((ids: number[]) => {
+        for (const id of ids) stmt.run(id);
+      });
+      transaction(reportIds);
+      logAction((req as any).user.id, "REPORT_BATCH_RESOLVE", `Batch resolved ${reportIds.length} reports`, req.ip);
+      res.json({ success: true, count: reportIds.length });
+    } catch (err) {
+      res.status(500).json({ error: "Failed to batch resolve reports" });
+    }
+  });
+
+  app.post("/api/admin/reports/batch-dismiss", authenticateToken, isAdmin, (req, res) => {
+    try {
+      const { reportIds } = req.body;
+      if (!Array.isArray(reportIds) || reportIds.length === 0) {
+        return res.status(400).json({ error: "Report IDs required" });
+      }
+      const stmt = db.prepare("UPDATE reports SET status = 'dismissed' WHERE id = ?");
+      const transaction = db.transaction((ids: number[]) => {
+        for (const id of ids) stmt.run(id);
+      });
+      transaction(reportIds);
+      logAction((req as any).user.id, "REPORT_BATCH_DISMISS", `Batch dismissed ${reportIds.length} reports`, req.ip);
+      res.json({ success: true, count: reportIds.length });
+    } catch (err) {
+      res.status(500).json({ error: "Failed to batch dismiss reports" });
     }
   });
 
@@ -3940,15 +3986,6 @@ async function startServer() {
       res.json(requests);
     } catch (err) {
       res.status(500).json({ error: "Failed to fetch deletion requests" });
-    }
-  });
-
-  app.post("/api/admin/reports/:id/resolve", authenticateToken, isAdmin, (req, res) => {
-    try {
-      db.prepare("UPDATE reports SET status = 'resolved' WHERE id = ?").run(req.params.id);
-      res.json({ success: true });
-    } catch (err) {
-      res.status(500).json({ error: "Failed to resolve report" });
     }
   });
 
