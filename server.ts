@@ -1665,6 +1665,14 @@ async function startServer() {
         git_branch TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       );
+
+      CREATE TABLE IF NOT EXISTS system_email_templates (
+        id TEXT PRIMARY KEY,
+        subject TEXT NOT NULL,
+        body_template TEXT NOT NULL,
+        from_name TEXT,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      );
     `);
     try { db.exec("ALTER TABLE system_versions ADD COLUMN git_commit TEXT"); } catch (e) {}
     try { db.exec("ALTER TABLE system_versions ADD COLUMN git_branch TEXT"); } catch (e) {}
@@ -7718,6 +7726,60 @@ ReMEETs カスタマーサポート運営事務局
     } catch (err) {
       console.error("Batch delete error:", err);
       res.status(500).json({ error: "Failed to batch delete contacts" });
+    }
+  });
+
+  // Admin Email Templates Management Endpoints
+  app.get("/api/admin/email-templates", authenticateToken, isAdmin, (req, res) => {
+    try {
+      const customTemplates = db.prepare("SELECT * FROM system_email_templates").all();
+      res.json(customTemplates);
+    } catch (err) {
+      console.error("Failed to fetch email templates:", err);
+      res.status(500).json({ error: "Failed to fetch email templates" });
+    }
+  });
+
+  app.post("/api/admin/email-templates", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      const { id, subject, bodyTemplate, fromName } = req.body;
+      if (!id || !subject || !bodyTemplate) {
+        return res.status(400).json({ error: "id, subject, and bodyTemplate are required" });
+      }
+
+      db.prepare(`
+        INSERT INTO system_email_templates (id, subject, body_template, from_name, updated_at)
+        VALUES (?, ?, ?, ?, datetime('now', 'localtime'))
+        ON CONFLICT(id) DO UPDATE SET
+          subject = excluded.subject,
+          body_template = excluded.body_template,
+          from_name = excluded.from_name,
+          updated_at = datetime('now', 'localtime')
+      `).run(id, subject, bodyTemplate, fromName || null);
+
+      logAction(req.user?.id || 1, "EMAIL_TEMPLATE_UPDATED", `メールテンプレート更新: ${id} (${subject})`, req.ip);
+
+      res.json({ success: true, message: `Template ${id} saved successfully` });
+    } catch (err) {
+      console.error("Failed to save email template:", err);
+      res.status(500).json({ error: "Failed to save email template" });
+    }
+  });
+
+  app.post("/api/admin/email-templates/reset", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      const { id } = req.body;
+      if (id) {
+        db.prepare("DELETE FROM system_email_templates WHERE id = ?").run(id);
+        logAction(req.user?.id || 1, "EMAIL_TEMPLATE_RESET", `メールテンプレート初期化: ${id}`, req.ip);
+      } else {
+        db.prepare("DELETE FROM system_email_templates").run();
+        logAction(req.user?.id || 1, "EMAIL_TEMPLATE_RESET_ALL", `全メールテンプレート初期化`, req.ip);
+      }
+      res.json({ success: true, message: "Template reset successfully" });
+    } catch (err) {
+      console.error("Failed to reset email template:", err);
+      res.status(500).json({ error: "Failed to reset email template" });
     }
   });
 

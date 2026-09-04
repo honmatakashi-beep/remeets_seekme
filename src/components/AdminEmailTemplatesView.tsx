@@ -23,7 +23,13 @@ import {
   Receipt,
   Trash2,
   ShieldAlert,
-  UserX
+  UserX,
+  Download,
+  Printer,
+  Edit3,
+  Save,
+  RotateCcw,
+  FileSpreadsheet
 } from 'lucide-react';
 
 interface EmailTemplate {
@@ -630,6 +636,7 @@ ReMEETs〜再会のボトルメール〜 運営事務局
 
 export const AdminEmailTemplatesView: React.FC = () => {
   const [templates] = useState<EmailTemplate[]>(DEFAULT_TEMPLATES);
+  const [customOverrides, setCustomOverrides] = useState<Record<string, { subject?: string; bodyTemplate?: string; fromName?: string }>>({});
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>('verification');
   const [selectedFilterCategory, setSelectedFilterCategory] = useState<string>('all');
   const [testEmailAddress, setTestEmailAddress] = useState<string>(() => {
@@ -643,6 +650,14 @@ export const AdminEmailTemplatesView: React.FC = () => {
   const [isSendingTest, setIsSendingTest] = useState(false);
   const [sendResult, setSendResult] = useState<{ success: boolean; message: string } | null>(null);
   const [copied, setCopied] = useState(false);
+
+  // Edit Mode States
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [editSubject, setEditSubject] = useState<string>('');
+  const [editBodyTemplate, setEditBodyTemplate] = useState<string>('');
+  const [editFromName, setEditFromName] = useState<string>('');
+  const [isSavingTemplate, setIsSavingTemplate] = useState<boolean>(false);
+  const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   const categories = [
     'all', 
@@ -658,24 +673,72 @@ export const AdminEmailTemplatesView: React.FC = () => {
     'アカウント・退会'
   ];
 
+  // Load custom templates from backend on mount
+  const fetchCustomTemplates = async () => {
+    try {
+      const res = await fetch('/api/admin/email-templates', {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token') || ''}` }
+      });
+      if (res.ok) {
+        const rows = await res.json();
+        const overrides: Record<string, any> = {};
+        rows.forEach((r: any) => {
+          overrides[r.id] = {
+            subject: r.subject,
+            bodyTemplate: r.body_template,
+            fromName: r.from_name
+          };
+        });
+        setCustomOverrides(overrides);
+      }
+    } catch (e) {
+      console.warn("Failed to load custom email templates:", e);
+    }
+  };
+
+  useEffect(() => {
+    fetchCustomTemplates();
+  }, []);
+
+  const getEffectiveTemplate = (tmpl: EmailTemplate): EmailTemplate & { isCustomized?: boolean } => {
+    const override = customOverrides[tmpl.id];
+    if (!override) return tmpl;
+    return {
+      ...tmpl,
+      subject: override.subject || tmpl.subject,
+      bodyTemplate: override.bodyTemplate || tmpl.bodyTemplate,
+      fromName: override.fromName || tmpl.fromName,
+      isCustomized: true
+    };
+  };
+
   const filteredTemplates = templates.filter(t => {
     if (selectedFilterCategory === 'all') return true;
     return t.category === selectedFilterCategory;
   });
 
-  const currentTemplate = templates.find(t => t.id === selectedTemplateId) || templates[0];
+  const rawTemplate = templates.find(t => t.id === selectedTemplateId) || templates[0];
+  const currentTemplate = getEffectiveTemplate(rawTemplate);
+
+  // Sync edit state when selecting a different template or entering edit mode
+  useEffect(() => {
+    setEditSubject(currentTemplate.subject);
+    setEditBodyTemplate(currentTemplate.bodyTemplate);
+    setEditFromName(currentTemplate.fromName);
+    setIsEditing(false);
+  }, [selectedTemplateId, customOverrides]);
 
   // プレビュー用に変数を展開
-  const renderPreviewBody = (template: EmailTemplate) => {
-    let text = template.bodyTemplate;
+  const renderPreviewBody = (template: EmailTemplate, customBody?: string) => {
+    let text = customBody !== undefined ? customBody : template.bodyTemplate;
     Object.entries(template.sampleData).forEach(([key, val]) => {
       text = text.replace(new RegExp(`{{${key}}}`, 'g'), val);
     });
     return text;
   };
 
-  const renderPreviewSubject = (template: EmailTemplate) => {
-    let sub = template.subject;
+  const renderPreviewSubject = (template: EmailTemplate, customSub?: string) => {
+    let sub = customSub !== undefined ? customSub : template.subject;
     Object.entries(template.sampleData).forEach(([key, val]) => {
       sub = sub.replace(new RegExp(`{{${key}}}`, 'g'), val);
     });
@@ -692,6 +755,239 @@ export const AdminEmailTemplatesView: React.FC = () => {
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
     }, 400);
+  };
+
+  // Save template edit
+  const handleSaveTemplate = async () => {
+    if (!editSubject.trim() || !editBodyTemplate.trim()) {
+      alert('件名および本文テンプレートを入力してください。');
+      return;
+    }
+
+    setIsSavingTemplate(true);
+    try {
+      const res = await fetch('/api/admin/email-templates', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+        },
+        body: JSON.stringify({
+          id: currentTemplate.id,
+          subject: editSubject.trim(),
+          bodyTemplate: editBodyTemplate.trim(),
+          fromName: editFromName.trim() || currentTemplate.fromName
+        })
+      });
+
+      if (res.ok) {
+        setCustomOverrides(prev => ({
+          ...prev,
+          [currentTemplate.id]: {
+            subject: editSubject.trim(),
+            bodyTemplate: editBodyTemplate.trim(),
+            fromName: editFromName.trim() || currentTemplate.fromName
+          }
+        }));
+        setIsEditing(false);
+        setStatusMessage({ type: 'success', text: `「${currentTemplate.title}」の文面変更を保存しました！` });
+        setTimeout(() => setStatusMessage(null), 4000);
+      } else {
+        const data = await res.json();
+        alert(data.error || '保存に失敗しました。');
+      }
+    } catch (e) {
+      console.error(e);
+      alert('通信エラーが発生しました。');
+    } finally {
+      setIsSavingTemplate(false);
+    }
+  };
+
+  // Reset single template to default
+  const handleResetTemplate = async () => {
+    if (!confirm(`「${currentTemplate.title}」の文面を初期デフォルトに戻しますか？`)) {
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/admin/email-templates/reset', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+        },
+        body: JSON.stringify({ id: currentTemplate.id })
+      });
+
+      if (res.ok) {
+        setCustomOverrides(prev => {
+          const next = { ...prev };
+          delete next[currentTemplate.id];
+          return next;
+        });
+        setIsEditing(false);
+        setStatusMessage({ type: 'success', text: `「${currentTemplate.title}」を初期デフォルトに戻しました。` });
+        setTimeout(() => setStatusMessage(null), 4000);
+      }
+    } catch (e) {
+      console.error(e);
+      alert('初期化に失敗しました。');
+    }
+  };
+
+  // Reset all templates to default
+  const handleResetAllTemplates = async () => {
+    if (!confirm(`【警告】全14種類の送信メール文面をすべて初期デフォルト状態に戻しますか？この操作は取り消せません。`)) {
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/admin/email-templates/reset', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+        },
+        body: JSON.stringify({})
+      });
+
+      if (res.ok) {
+        setCustomOverrides({});
+        setIsEditing(false);
+        setStatusMessage({ type: 'success', text: `全14種類のメールテンプレートを初期デフォルトにリセットしました。` });
+        setTimeout(() => setStatusMessage(null), 4000);
+      }
+    } catch (e) {
+      console.error(e);
+      alert('一括初期化に失敗しました。');
+    }
+  };
+
+  // 一括テキストファイル（.txt）ダウンロード
+  const handleDownloadAllTxt = () => {
+    const effectiveList = templates.map(getEffectiveTemplate);
+    let text = `================================================================================\n`;
+    text += `【ReMEETs〜再会のボトルメール〜 送信メール・SMS 全文面一覧台帳】\n`;
+    text += `出力日時: ${new Date().toLocaleString('ja-JP')}\n`;
+    text += `総テンプレート数: 全${effectiveList.length}種類（メール13種 ＋ SMS1種）\n`;
+    text += `================================================================================\n\n`;
+
+    effectiveList.forEach((tmpl, idx) => {
+      const isSms = tmpl.type === 'sms';
+      text += `--------------------------------------------------------------------------------\n`;
+      text += `【#${idx + 1}】${tmpl.title} (${isSms ? 'SMS短文通知' : '電子メール'}) ${tmpl.isCustomized ? '[カスタム編集適用中]' : '[デフォルト]'}\n`;
+      text += `--------------------------------------------------------------------------------\n`;
+      text += `・テンプレートID   : ${tmpl.id}\n`;
+      text += `・カテゴリ         : ${tmpl.category}\n`;
+      text += `・送信契機         : ${tmpl.triggerEvent}\n`;
+      text += `・送信元名         : ${tmpl.fromName}\n`;
+      text += `・送信元メール     : ${tmpl.fromEmail}\n`;
+      if (!isSms) {
+        text += `・件名             : ${tmpl.subject}\n`;
+      }
+      text += `・使用可能動的変数 : ${Object.keys(tmpl.sampleData).map(k => `{{${k}}}`).join(', ')}\n`;
+      text += `\n▼ 本文テンプレート (Raw Template):\n`;
+      text += `${tmpl.bodyTemplate}\n\n`;
+      text += `▼ 実機プレビュー (Sample Preview):\n`;
+      text += `${renderPreviewBody(tmpl)}\n\n\n`;
+    });
+
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `remeets_all_email_templates_${new Date().toISOString().slice(0, 10)}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    setStatusMessage({ type: 'success', text: '全14種類のメール文面テキストファイル（.txt）をダウンロードしました！' });
+    setTimeout(() => setStatusMessage(null), 4000);
+  };
+
+  // 一括PDF帳票出力 / 印刷プレビュー
+  const handlePrintAllPdf = () => {
+    const effectiveList = templates.map(getEffectiveTemplate);
+    const printWindow = window.open('', '_blank', 'width=900,height=900');
+    if (!printWindow) {
+      alert('ポップアップがブロックされました。ブラウザの設定でポップアップを許可してください。');
+      return;
+    }
+
+    let html = `<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ReMEETs 送信メール・SMS仕様書 (全14種)</title>
+  <style>
+    body { font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'BIZ UDPGothic', sans-serif; color: #1e293b; padding: 24px; line-height: 1.6; font-size: 10.5pt; }
+    h1 { font-size: 16pt; border-bottom: 2px solid #0f766e; padding-bottom: 6px; margin-bottom: 4px; color: #0f766e; }
+    .subtitle { font-size: 8.5pt; color: #64748b; margin-bottom: 20px; }
+    .toc { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px 18px; margin-bottom: 24px; }
+    .toc ol { margin: 0; padding-left: 20px; font-size: 9pt; column-count: 2; column-gap: 20px; }
+    .card { border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 20px; page-break-inside: avoid; background: #ffffff; }
+    .card-header { background: #f1f5f9; padding: 10px 14px; border-bottom: 1px solid #cbd5e1; display: flex; justify-content: space-between; align-items: center; }
+    .card-title { font-weight: bold; font-size: 11pt; color: #0f172a; margin: 0; }
+    .badge { font-size: 7.5pt; font-weight: bold; padding: 2px 8px; border-radius: 4px; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+    .badge-sms { background: #fef3c7; color: #92400e; border-color: #fde68a; }
+    .badge-custom { background: #ecfdf5; color: #047857; border-color: #a7f3d0; margin-left: 6px; }
+    .card-meta { padding: 8px 14px; font-size: 8.5pt; color: #475569; background: #f8fafc; border-bottom: 1px solid #e2e8f0; }
+    .card-body { padding: 12px 14px; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; font-size: 8.5pt; white-space: pre-wrap; background: #fafafa; line-height: 1.5; color: #1e293b; }
+    @media print {
+      body { padding: 0; }
+      .no-print { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="no-print" style="margin-bottom: 20px; padding: 12px; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 8px; text-align: center;">
+    <b>🖨️ 印刷 / PDF保存プレビュー</b>: ブラウザの印刷画面で「送信先: PDFに保存」を選択すると、PDFファイルとしてダウンロードできます。
+    <button onclick="window.print()" style="margin-left: 12px; padding: 6px 16px; background: #0f766e; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">PDF保存 / 印刷する</button>
+  </div>
+  <h1>ReMEETs〜再会のボトルメール〜 送信メール・SMS仕様書</h1>
+  <div class="subtitle">出力日時: ${new Date().toLocaleString('ja-JP')} ｜ 発行元: ReMEETs 運営事務局 ｜ 全14種完全網羅</div>
+
+  <div class="toc">
+    <b>【目次】全14種類の送信テンプレート一覧</b>
+    <ol>
+      ${effectiveList.map((t, idx) => `<li><b>#${idx + 1}</b> ${t.title} <span style="color:#64748b; font-size:8pt;">(${t.type === 'sms' ? 'SMS' : 'Mail'})</span></li>`).join('')}
+    </ol>
+  </div>
+
+  ${effectiveList.map((tmpl, idx) => {
+    const isSms = tmpl.type === 'sms';
+    return `
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">#${idx + 1} ${tmpl.title}</h3>
+        <div>
+          <span class="badge ${isSms ? 'badge-sms' : ''}">${isSms ? '📱 SMS通知' : '✉️ ' + tmpl.category}</span>
+          ${tmpl.isCustomized ? '<span class="badge badge-custom">編集保存済み</span>' : ''}
+        </div>
+      </div>
+      <div class="card-meta">
+        <div><b>送信契機:</b> ${tmpl.triggerEvent}</div>
+        <div><b>送信元:</b> ${tmpl.fromName} &lt;${tmpl.fromEmail}&gt;</div>
+        ${!isSms ? `<div><b>件名:</b> ${renderPreviewSubject(tmpl)}</div>` : ''}
+        <div><b>動的変数:</b> ${Object.keys(tmpl.sampleData).map(k => `<code>{{${k}}}</code>`).join(', ')}</div>
+      </div>
+      <div class="card-body">${renderPreviewBody(tmpl)}</div>
+    </div>
+    `;
+  }).join('')}
+
+  <script>
+    window.onload = function() {
+      setTimeout(function() { window.print(); }, 500);
+    };
+  </script>
+</body>
+</html>`;
+
+    printWindow.document.write(html);
+    printWindow.document.close();
   };
 
   const handleSendTestDispatch = async () => {
@@ -753,6 +1049,33 @@ export const AdminEmailTemplatesView: React.FC = () => {
 
   return (
     <div className="space-y-6 text-black font-sans animate-in fade-in duration-300">
+      {/* Toast Alert Message */}
+      <AnimatePresence>
+        {statusMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className={`p-4 rounded-2xl border text-xs font-bold flex items-center justify-between shadow-lg ${
+              statusMessage.type === 'success'
+                ? 'bg-emerald-600 text-white border-emerald-500'
+                : 'bg-rose-600 text-white border-rose-500'
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <CheckCircle2 size={16} />
+              <span>{statusMessage.text}</span>
+            </div>
+            <button
+              onClick={() => setStatusMessage(null)}
+              className="text-white/80 hover:text-white text-xs cursor-pointer ml-4"
+            >
+              ×
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Header Section */}
       <div className="glass-card p-6 md:p-8 bg-white rounded-3xl border border-brand-border shadow-sm">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-brand-border/70 pb-5">
@@ -761,19 +1084,55 @@ export const AdminEmailTemplatesView: React.FC = () => {
               <Mail size={24} />
             </div>
             <div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-[10px] font-bold text-teal-800 uppercase tracking-widest bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-200">
                   Dispatch & Notification Hub
                 </span>
                 <span className="text-[10px] text-zinc-500 font-mono">全14種（メール13種 ＋ SMS1種）完全網羅</span>
+                {Object.keys(customOverrides).length > 0 && (
+                  <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md border border-emerald-300">
+                    {Object.keys(customOverrides).length}件カスタム編集適用中
+                  </span>
+                )}
               </div>
               <h2 className="text-xl md:text-2xl font-serif font-bold text-slate-900 mt-1">
-                送信メール・SMS一覧 ＆ テスト配信センター
+                送信メール・SMS一覧 ＆ 文面編集センター
               </h2>
-              <p className="text-xs text-slate-600 font-sans mt-0.5">
-                認証・投函・新着・開通・領収・審査・削除・警告・退会まで、システムから送信される全14種類の通知を完全プレビュー＆実機テスト配信できます。
+              <p className="text-xs text-slate-600 font-sans mt-0.5 max-w-3xl">
+                認証・投函・新着・開通・領収・審査・退会まで、システムから送信される全14種類の通知をその場で直接編集・保存・一括テキストDL・PDF印刷出力できます。
               </p>
             </div>
+          </div>
+
+          {/* Download & Export Action Toolbar */}
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
+            <button
+              onClick={handleDownloadAllTxt}
+              className="px-3.5 py-2 rounded-xl bg-white border border-brand-border hover:bg-slate-50 text-slate-800 text-xs font-bold transition-all shadow-2xs flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
+              title="全14通のメール文面・変数を1つのテキストファイル(.txt)で一括ダウンロード"
+            >
+              <Download size={14} className="text-teal-700 shrink-0" />
+              <span>全文面テキストDL</span>
+            </button>
+
+            <button
+              onClick={handlePrintAllPdf}
+              className="px-3.5 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold transition-all shadow-2xs hover:shadow-xs flex items-center gap-1.5 cursor-pointer whitespace-nowrap active:scale-95"
+              title="全14通のメール仕様書を印刷プレビュー（PDF保存）"
+            >
+              <Printer size={14} className="shrink-0" />
+              <span>全文面PDF出力</span>
+            </button>
+
+            {Object.keys(customOverrides).length > 0 && (
+              <button
+                onClick={handleResetAllTemplates}
+                className="p-2 rounded-xl bg-white border border-rose-200 text-rose-600 hover:bg-rose-50 text-xs font-bold transition-all shadow-2xs cursor-pointer"
+                title="全テンプレートの編集内容を破棄し初期デフォルトに戻す"
+              >
+                <RotateCcw size={14} />
+              </button>
+            )}
           </div>
         </div>
 
@@ -849,16 +1208,17 @@ export const AdminEmailTemplatesView: React.FC = () => {
                 : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
             }`}
           >
-            {cat === 'all' ? 'すべて表示 (14)' : cat}
+            {cat === 'all' ? `すべて表示 (${templates.length})` : cat}
           </button>
         ))}
       </div>
 
-      {/* Main Content: Two Columns (Left: Template Switcher, Right: Live Preview) */}
+      {/* Main Content: Two Columns (Left: Template Switcher, Right: Live Preview & Editor) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: Template List (4 Cols) */}
-        <div className="lg:col-span-4 space-y-2.5 max-h-[750px] overflow-y-auto custom-scrollbar pr-1">
+        <div className="lg:col-span-4 space-y-2.5 max-h-[850px] overflow-y-auto custom-scrollbar pr-1">
           {filteredTemplates.map((tmpl) => {
+            const effective = getEffectiveTemplate(tmpl);
             const isSelected = tmpl.id === selectedTemplateId;
             const isSms = tmpl.type === 'sms';
             return (
@@ -883,9 +1243,16 @@ export const AdminEmailTemplatesView: React.FC = () => {
                     }`}>
                       {isSms ? '📱 SMS通知' : '✉️ ' + tmpl.category}
                     </span>
-                    {isSelected && (
-                      <span className={`w-2 h-2 rounded-full animate-pulse shrink-0 ${isSms ? 'bg-amber-500' : 'bg-teal-500'}`} />
-                    )}
+                    <div className="flex items-center gap-1">
+                      {effective.isCustomized && (
+                        <span className="text-[9px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 px-1.5 py-0.2 rounded">
+                          編集済
+                        </span>
+                      )}
+                      {isSelected && (
+                        <span className={`w-2 h-2 rounded-full animate-pulse shrink-0 ${isSms ? 'bg-amber-500' : 'bg-teal-500'}`} />
+                      )}
+                    </div>
                   </div>
                   <h3 className={`text-xs sm:text-sm font-serif font-bold transition-colors ${
                     isSelected ? (isSms ? 'text-amber-950' : 'text-teal-950') : 'text-slate-800'
@@ -910,106 +1277,86 @@ export const AdminEmailTemplatesView: React.FC = () => {
           })}
         </div>
 
-        {/* Right Column: Live Mailer / SMS Preview & Test Action (8 Cols) */}
+        {/* Right Column: Live Mailer / Editor / Test Action (8 Cols) */}
         <div className="lg:col-span-8 space-y-4">
-          {currentTemplate.type === 'sms' ? (
-            /* ============================================================
-               📱 SMS PHONE MOCKUP PREVIEW
-            ============================================================ */
-            <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm overflow-hidden flex flex-col p-6 sm:p-8 space-y-5">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
-                <div className="flex items-center gap-2">
-                  <span className="p-2 bg-amber-50 text-amber-700 rounded-xl border border-amber-200">
-                    <Smartphone size={20} />
-                  </span>
-                  <div>
+          {/* Main Display / Editor Container */}
+          <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm overflow-hidden flex flex-col">
+            {/* Top Toolbar */}
+            <div className="p-4 sm:p-5 bg-slate-50/90 border-b border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-white border border-slate-200 text-teal-700 shadow-2xs">
+                  {currentTemplate.type === 'sms' ? <Smartphone size={18} /> : <Mail size={18} />}
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
                     <h3 className="text-base font-serif font-bold text-slate-900">
                       {currentTemplate.title}
                     </h3>
-                    <span className="text-xs text-slate-500 font-mono">SMS / 短文テキストメッセージ</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={handleCopyBody}
-                    className="px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-xs font-bold transition-all shadow-2xs flex items-center gap-1.5 cursor-pointer"
-                  >
-                    {copied ? <Check size={13} className="text-emerald-600" /> : <Copy size={13} />}
-                    <span>{copied ? 'コピー完了' : '本文コピー'}</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={handleSendTestDispatch}
-                    disabled={isSendingTest}
-                    className="px-4 py-1.5 bg-gradient-to-r from-amber-600 to-orange-700 hover:from-amber-700 hover:to-orange-800 text-white rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer active:scale-95 disabled:opacity-50"
-                  >
-                    {isSendingTest ? (
-                      <>
-                        <RefreshCw size={13} className="animate-spin" />
-                        <span>送信中...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Send size={13} />
-                        <span>SMSテスト送信</span>
-                      </>
+                    {currentTemplate.isCustomized && (
+                      <span className="text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded-full">
+                        カスタム文面適用中
+                      </span>
                     )}
-                  </button>
+                  </div>
+                  <span className="text-[11px] text-slate-500 font-sans">
+                    契機: {currentTemplate.triggerEvent}
+                  </span>
                 </div>
               </div>
 
-              {/* Smartphone Bubble Display */}
-              <div className="max-w-sm mx-auto w-full bg-slate-900 p-4 rounded-[36px] shadow-xl border-4 border-slate-800 space-y-3">
-                {/* Speaker & Sensor */}
-                <div className="flex justify-center items-center gap-1 pt-1 pb-2">
-                  <span className="w-12 h-1 bg-slate-700 rounded-full inline-block" />
-                  <span className="w-2 h-2 bg-slate-700 rounded-full inline-block" />
-                </div>
+              {/* Action Buttons: Edit / Copy / Test Send */}
+              <div className="flex items-center gap-2 flex-wrap">
+                {isEditing ? (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => setIsEditing(false)}
+                      className="px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded-xl text-xs font-bold transition-all shadow-2xs cursor-pointer"
+                    >
+                      キャンセル
+                    </button>
+                    {currentTemplate.isCustomized && (
+                      <button
+                        type="button"
+                        onClick={handleResetTemplate}
+                        className="px-3 py-1.5 bg-white hover:bg-rose-50 text-rose-700 border border-rose-300 rounded-xl text-xs font-bold transition-all shadow-2xs flex items-gap-1 cursor-pointer"
+                        title="初期デフォルト文面に戻す"
+                      >
+                        <RotateCcw size={13} />
+                        <span>初期値に戻す</span>
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={handleSaveTemplate}
+                      disabled={isSavingTemplate}
+                      className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-2xs flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                    >
+                      {isSavingTemplate ? (
+                        <>
+                          <RefreshCw size={13} className="animate-spin" />
+                          <span>保存中...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Save size={13} />
+                          <span>変更を保存</span>
+                        </>
+                      )}
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => setIsEditing(true)}
+                      className="px-3.5 py-1.5 bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 rounded-xl text-xs font-bold transition-all shadow-2xs flex items-center gap-1.5 cursor-pointer"
+                      title="このメールの件名や本文を直接編集"
+                    >
+                      <Edit3 size={13} className="text-teal-700" />
+                      <span>文面を直接編集</span>
+                    </button>
 
-                <div className="bg-slate-100 rounded-[24px] p-4 min-h-[220px] flex flex-col justify-between space-y-4">
-                  <div className="text-center space-y-0.5 border-b border-slate-200/80 pb-2">
-                    <span className="text-[10px] font-bold text-slate-500 font-mono">ReMEETs 認証局</span>
-                    <p className="text-[9px] text-slate-400 font-mono">宛先: {testPhoneNumber}</p>
-                  </div>
-
-                  {/* SMS Bubble */}
-                  <div className="bg-[#E9E9EB] text-slate-900 p-3.5 rounded-2xl rounded-tl-xs shadow-xs text-xs font-sans leading-relaxed whitespace-pre-wrap select-text border border-slate-300/60">
-                    {renderPreviewBody(currentTemplate)}
-                    <div className="text-right pt-1.5">
-                      <span className="text-[9px] text-slate-400 font-mono">たった今</span>
-                    </div>
-                  </div>
-
-                  <div className="text-center pt-2">
-                    <span className="text-[9px] text-slate-400 font-mono">SMS / MMS 受信画面シミュレーター</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ) : (
-            /* ============================================================
-               ✉️ EMAIL MAILER WINDOW PREVIEW
-            ============================================================ */
-            <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm overflow-hidden flex flex-col">
-              {/* Mailer Window Header Bar */}
-              <div className="p-4 sm:p-5 bg-slate-50/90 border-b border-slate-200/80 space-y-3">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <div className="flex items-center gap-2">
-                    <div className="flex gap-1.5">
-                      <span className="w-3 h-3 rounded-full bg-rose-400 inline-block" />
-                      <span className="w-3 h-3 rounded-full bg-amber-400 inline-block" />
-                      <span className="w-3 h-3 rounded-full bg-emerald-400 inline-block" />
-                    </div>
-                    <span className="text-xs font-bold text-slate-700 ml-2 font-mono">
-                      ReMEETs Mail Preview Engine
-                    </span>
-                  </div>
-
-                  {/* Test Send Button */}
-                  <div className="flex items-center gap-2">
                     <button
                       type="button"
                       onClick={handleCopyBody}
@@ -1023,7 +1370,11 @@ export const AdminEmailTemplatesView: React.FC = () => {
                       type="button"
                       onClick={handleSendTestDispatch}
                       disabled={isSendingTest}
-                      className="px-4 py-1.5 bg-gradient-to-r from-teal-700 to-indigo-800 hover:from-teal-800 hover:to-indigo-900 text-white rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer active:scale-95 disabled:opacity-50"
+                      className={`px-4 py-1.5 text-white rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer active:scale-95 disabled:opacity-50 ${
+                        currentTemplate.type === 'sms'
+                          ? 'bg-gradient-to-r from-amber-600 to-orange-700 hover:from-amber-700 hover:to-orange-800'
+                          : 'bg-gradient-to-r from-teal-700 to-indigo-800 hover:from-teal-800 hover:to-indigo-900'
+                      }`}
                     >
                       {isSendingTest ? (
                         <>
@@ -1033,15 +1384,134 @@ export const AdminEmailTemplatesView: React.FC = () => {
                       ) : (
                         <>
                           <Send size={13} />
-                          <span>このメールをテスト送信</span>
+                          <span>テスト送信</span>
                         </>
                       )}
                     </button>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* ✏️ Direct Edit Mode Panel */}
+            {isEditing ? (
+              <div className="p-5 sm:p-6 bg-slate-50 space-y-4">
+                <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900 flex items-start gap-2">
+                  <Sparkles size={16} className="text-amber-600 shrink-0 mt-0.5" />
+                  <div className="space-y-0.5">
+                    <span className="font-bold">文面の直接編集モード</span>
+                    <p className="text-[11px] text-amber-800/90 leading-relaxed">
+                      編集した内容は「変更を保存」を押すと即座にシステム全体に反映されます。<code>{"{{変数名}}"}</code> の部分は送信時に実際のユーザー名やURLに自動置換されます。
+                    </p>
                   </div>
                 </div>
 
-                {/* Mail Headers (From, To, Subject) - Compact Pro Mailer Style */}
-                <div className="p-3 bg-white rounded-xl border border-slate-200/80 space-y-1.5 text-[11px] font-sans">
+                <div className="space-y-3">
+                  {/* Sender Name */}
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">送信元表示名 (From Name):</label>
+                    <input
+                      type="text"
+                      value={editFromName}
+                      onChange={(e) => setEditFromName(e.target.value)}
+                      className="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-900 outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-100 transition-all"
+                      placeholder="例: ReMEETs 運営事務局"
+                    />
+                  </div>
+
+                  {/* Subject (for email only) */}
+                  {currentTemplate.type !== 'sms' && (
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">メール件名 (Subject):</label>
+                      <input
+                        type="text"
+                        value={editSubject}
+                        onChange={(e) => setEditSubject(e.target.value)}
+                        className="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-900 outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-100 transition-all"
+                        placeholder="例: 【ReMEETs】メールアドレスのご確認"
+                      />
+                    </div>
+                  )}
+
+                  {/* Body Template Editor */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block text-xs font-bold text-slate-700">
+                        本文テンプレート (Body Template):
+                      </label>
+                      <span className="text-[10px] text-slate-400 font-mono">
+                        文字数: {editBodyTemplate.length} 文字
+                      </span>
+                    </div>
+
+                    <textarea
+                      rows={14}
+                      value={editBodyTemplate}
+                      onChange={(e) => setEditBodyTemplate(e.target.value)}
+                      className="w-full p-4 bg-white border border-slate-300 rounded-xl text-xs font-mono text-slate-900 outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-100 transition-all leading-relaxed whitespace-pre-wrap selection:bg-teal-100"
+                    />
+                  </div>
+
+                  {/* Dynamic Variables Chips */}
+                  <div className="p-3 bg-white rounded-xl border border-slate-200/80 space-y-1.5">
+                    <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
+                      利用可能な動的変数（クリックでカーソル位置または末尾に挿入）:
+                    </span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {Object.keys(currentTemplate.sampleData).map((varKey) => (
+                        <button
+                          key={varKey}
+                          type="button"
+                          onClick={() => {
+                            setEditBodyTemplate(prev => prev + `{{${varKey}}}`);
+                          }}
+                          className="px-2.5 py-1 rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 text-xs font-mono font-bold transition-colors cursor-pointer"
+                          title={`サンプル値: ${currentTemplate.sampleData[varKey]}`}
+                        >
+                          + {`{{${varKey}}}`}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : currentTemplate.type === 'sms' ? (
+              /* ============================================================
+                 📱 SMS PHONE MOCKUP PREVIEW
+              ============================================================ */
+              <div className="p-6 sm:p-8 space-y-5">
+                <div className="max-w-sm mx-auto w-full bg-slate-900 p-4 rounded-[36px] shadow-xl border-4 border-slate-800 space-y-3">
+                  <div className="flex justify-center items-center gap-1 pt-1 pb-2">
+                    <span className="w-12 h-1 bg-slate-700 rounded-full inline-block" />
+                    <span className="w-2 h-2 bg-slate-700 rounded-full inline-block" />
+                  </div>
+
+                  <div className="bg-slate-100 rounded-[24px] p-4 min-h-[220px] flex flex-col justify-between space-y-4">
+                    <div className="text-center space-y-0.5 border-b border-slate-200/80 pb-2">
+                      <span className="text-[10px] font-bold text-slate-500 font-mono">ReMEETs 認証局</span>
+                      <p className="text-[9px] text-slate-400 font-mono">宛先: {testPhoneNumber}</p>
+                    </div>
+
+                    <div className="bg-[#E9E9EB] text-slate-900 p-3.5 rounded-2xl rounded-tl-xs shadow-xs text-xs font-sans leading-relaxed whitespace-pre-wrap select-text border border-slate-300/60">
+                      {renderPreviewBody(currentTemplate)}
+                      <div className="text-right pt-1.5">
+                        <span className="text-[9px] text-slate-400 font-mono">たった今</span>
+                      </div>
+                    </div>
+
+                    <div className="text-center pt-2">
+                      <span className="text-[9px] text-slate-400 font-mono">SMS / MMS 受信画面シミュレーター</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              /* ============================================================
+                 ✉️ EMAIL MAILER WINDOW PREVIEW
+              ============================================================ */
+              <div className="flex flex-col flex-1">
+                {/* Mail Headers */}
+                <div className="p-4 bg-slate-50 border-b border-slate-200/80 space-y-1.5 text-[11px] font-sans">
                   <div className="grid grid-cols-1 sm:grid-cols-12 gap-1 items-center">
                     <span className="sm:col-span-2 text-slate-400 font-bold text-[10.5px]">From:</span>
                     <span className="sm:col-span-10 text-slate-700 font-medium truncate">
@@ -1054,30 +1524,30 @@ export const AdminEmailTemplatesView: React.FC = () => {
                       {testEmailAddress}
                     </span>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-12 gap-1 items-center border-t border-slate-100 pt-1.5">
+                  <div className="grid grid-cols-1 sm:grid-cols-12 gap-1 items-center border-t border-slate-200/60 pt-1.5">
                     <span className="sm:col-span-2 text-slate-400 font-bold text-[10.5px]">Subject:</span>
                     <span className="sm:col-span-10 text-slate-900 font-bold text-[12px] truncate">
                       {renderPreviewSubject(currentTemplate)}
                     </span>
                   </div>
                 </div>
-              </div>
 
-              {/* Mail Body Area (Plain Text Mode) */}
-              <div className="p-4 sm:p-6 bg-[#F8F9FA] flex-1 overflow-x-auto">
-                <div className="bg-white p-5 sm:p-7 rounded-xl border border-slate-200/80 shadow-2xs">
-                  <div className="flex items-center justify-between pb-3 border-b border-slate-100 text-[10px] text-slate-400 font-mono">
-                    <span>MIME-Version: 1.0 (Content-Type: text/plain; charset=UTF-8)</span>
-                    <span>Format: Plain Text</span>
-                  </div>
+                {/* Mail Body Area */}
+                <div className="p-4 sm:p-6 bg-[#F8F9FA] flex-1 overflow-x-auto">
+                  <div className="bg-white p-5 sm:p-7 rounded-xl border border-slate-200/80 shadow-2xs">
+                    <div className="flex items-center justify-between pb-3 border-b border-slate-100 text-[10px] text-slate-400 font-mono">
+                      <span>MIME-Version: 1.0 (Content-Type: text/plain; charset=UTF-8)</span>
+                      <span>Format: Plain Text</span>
+                    </div>
 
-                  <div className="pt-4 text-[12px] text-slate-800 font-mono leading-relaxed whitespace-pre-wrap select-text selection:bg-teal-100">
-                    {renderPreviewBody(currentTemplate)}
+                    <div className="pt-4 text-[12px] text-slate-800 font-mono leading-relaxed whitespace-pre-wrap select-text selection:bg-teal-100">
+                      {renderPreviewBody(currentTemplate)}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
           {/* Test Send Status Alert */}
           <AnimatePresence>
