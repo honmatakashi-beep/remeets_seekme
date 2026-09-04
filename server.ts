@@ -1673,6 +1673,20 @@ async function startServer() {
         from_name TEXT,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       );
+
+      CREATE TABLE IF NOT EXISTS admin_broadcast_history (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        admin_id INTEGER,
+        title TEXT,
+        category TEXT DEFAULT 'general',
+        priority TEXT DEFAULT 'normal',
+        channels TEXT,
+        target_segment TEXT DEFAULT 'all',
+        content TEXT NOT NULL,
+        link TEXT,
+        user_count INTEGER DEFAULT 0,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      );
     `);
     try { db.exec("ALTER TABLE system_versions ADD COLUMN git_commit TEXT"); } catch (e) {}
     try { db.exec("ALTER TABLE system_versions ADD COLUMN git_branch TEXT"); } catch (e) {}
@@ -5076,34 +5090,96 @@ async function startServer() {
     }
   });
 
+  app.get("/api/admin/broadcasts/segment-preview", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      const segment = (req.query.segment as string) || 'all';
+      let count = 0;
+      if (segment === 'verified') {
+        const row = db.prepare("SELECT COUNT(*) as count FROM users WHERE (age_verified = 1 OR is_ekyc_verified = 1 OR kyc_status = 'verified') AND (status != 'banned' OR status IS NULL)").get() as any;
+        count = row?.count || 0;
+      } else if (segment === 'unverified') {
+        const row = db.prepare("SELECT COUNT(*) as count FROM users WHERE (age_verified = 0 OR age_verified IS NULL) AND (is_ekyc_verified = 0 OR is_ekyc_verified IS NULL) AND (status != 'banned' OR status IS NULL)").get() as any;
+        count = row?.count || 0;
+      } else if (segment === 'active_posts') {
+        const row = db.prepare("SELECT COUNT(DISTINCT u.id) as count FROM users u JOIN posts p ON u.id = p.user_id WHERE p.status != 'deleted' AND (u.status != 'banned' OR u.status IS NULL)").get() as any;
+        count = row?.count || 0;
+      } else if (segment === 'active_chat') {
+        const row = db.prepare("SELECT COUNT(DISTINCT u.id) as count FROM users u JOIN matches m ON (u.id = m.user_id OR u.id = m.finder_id) WHERE (u.status != 'banned' OR u.status IS NULL)").get() as any;
+        count = row?.count || 0;
+      } else {
+        const row = db.prepare("SELECT COUNT(*) as count FROM users WHERE (status != 'banned' OR status IS NULL)").get() as any;
+        count = row?.count || 0;
+      }
+      res.json({ segment, count });
+    } catch (err) {
+      console.error("Failed to get segment preview:", err);
+      res.status(500).json({ error: "Failed to get segment count" });
+    }
+  });
+
   app.post("/api/admin/bulk-notification", authenticateToken, isAdmin, (req: any, res) => {
-    const { content, link } = req.body;
+    const { title, content, link, category = 'general', priority = 'normal', channels = { inApp: true, email: false }, targetSegment = 'all' } = req.body;
     if (!content) return res.status(400).json({ error: "Content is required" });
 
     try {
-      const users = db.prepare("SELECT id, email FROM users").all() as any[];
-      const stmt = db.prepare("INSERT INTO notifications (user_id, type, content, link) VALUES (?, ?, ?, ?)");
+      let query = "SELECT id, email, username FROM users WHERE (status != 'banned' OR status IS NULL)";
+      if (targetSegment === 'verified') {
+        query = "SELECT id, email, username FROM users WHERE (age_verified = 1 OR is_ekyc_verified = 1 OR kyc_status = 'verified') AND (status != 'banned' OR status IS NULL)";
+      } else if (targetSegment === 'unverified') {
+        query = "SELECT id, email, username FROM users WHERE (age_verified = 0 OR age_verified IS NULL) AND (is_ekyc_verified = 0 OR is_ekyc_verified IS NULL) AND (status != 'banned' OR status IS NULL)";
+      } else if (targetSegment === 'active_posts') {
+        query = "SELECT DISTINCT u.id, u.email, u.username FROM users u JOIN posts p ON u.id = p.user_id WHERE p.status != 'deleted' AND (u.status != 'banned' OR u.status IS NULL)";
+      } else if (targetSegment === 'active_chat') {
+        query = "SELECT DISTINCT u.id, u.email, u.username FROM users u JOIN matches m ON (u.id = m.user_id OR u.id = m.finder_id) WHERE (u.status != 'banned' OR u.status IS NULL)";
+      }
+
+      const users = db.prepare(query).all() as any[];
+      const fullMessage = title ? `【${title}】\n${content}` : content;
+      
+      const insertNotificationStmt = db.prepare("INSERT INTO notifications (user_id, type, content, link, is_read, created_at) VALUES (?, ?, ?, ?, 0, CURRENT_TIMESTAMP)");
       
       users.forEach(user => {
-        stmt.run(user.id, 'admin_broadcast', content, link || null);
-        
-        // Broadcast via WebSocket
-        broadcastToUser(user.id, {
-          type: "notification",
-          notification: {
-            type: 'admin_broadcast',
-            content,
-            link: link || null,
-            is_read: 0,
-            created_at: new Date().toISOString()
-          }
-        });
+        if (channels.inApp !== false) {
+          insertNotificationStmt.run(user.id, 'admin_broadcast', fullMessage, link || null);
+          
+          // Broadcast via WebSocket
+          broadcastToUser(user.id, {
+            type: "notification",
+            notification: {
+              type: 'admin_broadcast',
+              content: fullMessage,
+              link: link || null,
+              is_read: 0,
+              created_at: new Date().toISOString()
+            }
+          });
+        }
 
-        // Send email notification
-        sendNotificationEmail(user.id, 'admin_broadcast', content, link || "");
+        // Send email notification if enabled
+        if (channels.email === true && user.email) {
+          sendNotificationEmail(user.id, 'admin_broadcast', fullMessage, link || "");
+        }
       });
 
-      logAction(req.user.id, "bulk_notification_sent", `Content: ${content.substring(0, 50)}...`, req.ip);
+      // Insert into admin_broadcast_history
+      const historyStmt = db.prepare(`
+        INSERT INTO admin_broadcast_history (
+          admin_id, title, category, priority, channels, target_segment, content, link, user_count, created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+      `);
+      historyStmt.run(
+        req.user.id,
+        title || null,
+        category,
+        priority,
+        JSON.stringify(channels),
+        targetSegment,
+        content,
+        link || null,
+        users.length
+      );
+
+      logAction(req.user.id, "bulk_notification_sent", `Title: ${title || 'なし'}, Users: ${users.length}, Segment: ${targetSegment}`, req.ip);
       res.json({ success: true, count: users.length });
     } catch (err) {
       console.error("Bulk notification error:", err);
@@ -5113,26 +5189,101 @@ async function startServer() {
 
   app.get("/api/admin/broadcasts", authenticateToken, isAdmin, (req, res) => {
     try {
-      const broadcasts = db.prepare(`
-        SELECT content, link, created_at, COUNT(*) as user_count 
+      // 1. Get from admin_broadcast_history
+      const historyRows = db.prepare(`
+        SELECT * FROM admin_broadcast_history ORDER BY created_at DESC
+      `).all() as any[];
+
+      // For each history item, compute read_count from notifications table
+      const broadcastsWithStats = historyRows.map(row => {
+        let channelsObj = { inApp: true, email: false };
+        try {
+          if (row.channels) channelsObj = JSON.parse(row.channels);
+        } catch (e) {}
+
+        const fullMessage = row.title ? `【${row.title}】\n${row.content}` : row.content;
+        const readStats = db.prepare(`
+          SELECT 
+            COUNT(*) as total_deliveries,
+            SUM(CASE WHEN is_read = 1 THEN 1 ELSE 0 END) as read_count
+          FROM notifications 
+          WHERE type = 'admin_broadcast' AND (content = ? OR content = ?)
+        `).get(fullMessage, row.content) as any;
+
+        return {
+          id: row.id,
+          title: row.title,
+          category: row.category || 'general',
+          priority: row.priority || 'normal',
+          channels: channelsObj,
+          target_segment: row.target_segment || 'all',
+          content: row.content,
+          full_message: fullMessage,
+          link: row.link,
+          user_count: row.user_count || readStats?.total_deliveries || 0,
+          read_count: readStats?.read_count || 0,
+          created_at: row.created_at
+        };
+      });
+
+      // 2. Also check if there are legacy notifications that were not recorded in history
+      const legacyBroadcasts = db.prepare(`
+        SELECT content, link, created_at, COUNT(*) as user_count,
+               SUM(CASE WHEN is_read = 1 THEN 1 ELSE 0 END) as read_count
         FROM notifications 
         WHERE type = 'admin_broadcast' 
         GROUP BY content, created_at 
         ORDER BY created_at DESC
-      `).all();
-      res.json(broadcasts);
+      `).all() as any[];
+
+      // Merge legacy if not already in broadcastsWithStats
+      const existingContents = new Set(broadcastsWithStats.map(b => b.content));
+      const existingFull = new Set(broadcastsWithStats.map(b => b.full_message));
+
+      legacyBroadcasts.forEach((lb, idx) => {
+        if (!existingContents.has(lb.content) && !existingFull.has(lb.content)) {
+          broadcastsWithStats.push({
+            id: `legacy-${idx}`,
+            title: null,
+            category: 'general',
+            priority: 'normal',
+            channels: { inApp: true, email: true },
+            target_segment: 'all',
+            content: lb.content,
+            full_message: lb.content,
+            link: lb.link,
+            user_count: lb.user_count,
+            read_count: lb.read_count || 0,
+            created_at: lb.created_at
+          });
+        }
+      });
+
+      // Sort by created_at DESC
+      broadcastsWithStats.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+      res.json(broadcastsWithStats);
     } catch (err) {
+      console.error("Failed to fetch broadcasts:", err);
       res.status(500).json({ error: "Failed to fetch broadcasts" });
     }
   });
 
   app.delete("/api/admin/broadcasts", authenticateToken, isAdmin, (req: any, res) => {
-    const { content, created_at } = req.body;
+    const { id, content, created_at } = req.body;
     try {
-      db.prepare("DELETE FROM notifications WHERE type = 'admin_broadcast' AND content = ? AND created_at = ?").run(content, created_at);
-      logAction(req.user.id, "bulk_notification_deleted", `Content: ${content.substring(0, 50)}...`, req.ip);
+      if (id && typeof id === 'number') {
+        db.prepare("DELETE FROM admin_broadcast_history WHERE id = ?").run(id);
+      }
+      if (content) {
+        db.prepare("DELETE FROM notifications WHERE type = 'admin_broadcast' AND (content = ? OR content LIKE '%' || ? || '%')").run(content, content);
+      } else if (created_at) {
+        db.prepare("DELETE FROM notifications WHERE type = 'admin_broadcast' AND created_at = ?").run(created_at);
+      }
+      logAction(req.user.id, "bulk_notification_deleted", `Broadcast ID: ${id || 'N/A'}, Content: ${(content || '').substring(0, 50)}`, req.ip);
       res.json({ success: true });
     } catch (err) {
+      console.error("Failed to delete broadcast:", err);
       res.status(500).json({ error: "Failed to delete broadcast" });
     }
   });
