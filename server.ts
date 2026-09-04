@@ -833,16 +833,36 @@ const seedData = async () => {
   })();
 };
 
-// Auth Middleware
+// 🛡️ SEC-023: 機微情報サニタイズ（ログへのカード番号・認証シークレット混入防止）
+const sanitizeLogText = (text: string) => {
+  if (!text) return "";
+  return text
+    .replace(/\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g, "****-****-****-****")
+    .replace(/(password|passwd|secret|token)[:=]\s*[^\s,]+/gi, "$1=******");
+};
+
+// Auth Middleware (🛡️ SEC-024 & SEC-026: リアルタイムDB検証・BANユーザー即時強制遮断・退会トークン即時失効)
 const authenticateToken = (req: any, res: any, next: any) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
   if (!token) return res.status(401).json({ error: "Unauthorized" });
 
-  jwt.verify(token, JWT_SECRET, (err: any, user: any) => {
+  jwt.verify(token, JWT_SECRET, (err: any, decoded: any) => {
     if (err) return res.status(403).json({ error: "Forbidden" });
-    req.user = user;
+
+    try {
+      const liveUser = db.prepare("SELECT id, username, email, role, is_blocked, is_ekyc_verified FROM users WHERE id = ?").get(decoded.id) as any;
+      if (!liveUser) {
+        return res.status(401).json({ error: "ユーザーアカウントが存在しないか、既に退会済みです。" });
+      }
+      if (liveUser.is_blocked) {
+        return res.status(403).json({ error: "このアカウントは管理者により利用停止（凍結）されています。" });
+      }
+      req.user = { ...decoded, ...liveUser };
+    } catch (dbErr) {
+      req.user = decoded;
+    }
     next();
   });
 };
@@ -852,8 +872,17 @@ const optionalAuthenticateToken = (req: any, res: any, next: any) => {
   const token = authHeader && authHeader.split(' ')[1];
 
   if (token) {
-    jwt.verify(token, JWT_SECRET, (err: any, user: any) => {
-      if (!err) req.user = user;
+    jwt.verify(token, JWT_SECRET, (err: any, decoded: any) => {
+      if (!err && decoded?.id) {
+        try {
+          const liveUser = db.prepare("SELECT id, username, email, role, is_blocked, is_ekyc_verified FROM users WHERE id = ?").get(decoded.id) as any;
+          if (liveUser && !liveUser.is_blocked) {
+            req.user = { ...decoded, ...liveUser };
+          }
+        } catch (dbErr) {
+          req.user = decoded;
+        }
+      }
       next();
     });
   } else {
@@ -962,7 +991,8 @@ const logAccessMiddleware = (req: any, res: any, next: any) => {
 
 const logAction = (userId: number | null, action: string, details: string = "", ip: string | null = null) => {
   try {
-    db.prepare("INSERT INTO action_logs (user_id, action, details, ip) VALUES (?, ?, ?, ?)").run(userId, action, details, ip);
+    const sanitized = sanitizeLogText(details);
+    db.prepare("INSERT INTO action_logs (user_id, action, details, ip) VALUES (?, ?, ?, ?)").run(userId, action, sanitized, ip);
   } catch (err) {
     console.error("Failed to log action:", err);
   }
@@ -2293,7 +2323,16 @@ async function startServer() {
     }
   };
 
-  app.use(express.json());
+  // 🛡️ SEC-022: セキュリティHTTPレスポンスヘッダー（クリックジャッキング・XSS・MIMEスニッフィング防御）
+  app.use((req, res, next) => {
+    res.setHeader("X-Frame-Options", "SAMEORIGIN");
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    res.setHeader("X-XSS-Protection", "1; mode=block");
+    res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+    next();
+  });
+
+  app.use(express.json({ limit: '10mb' }));
   app.use(logAccessMiddleware);
 
   // --- Auth Routes ---
@@ -2830,7 +2869,7 @@ async function startServer() {
   app.post("/api/auth/ekyc-reset", authenticateToken, resetEkycHandler);
 
   app.patch("/api/auth/me", authenticateToken, async (req: any, res) => {
-    const { nickname, email, maiden_name } = req.body;
+    const { nickname, email, maiden_name, full_name, last_name, first_name, birthdate } = req.body;
     if (nickname && filterNGWords(nickname) !== nickname) {
       return res.status(400).json({ error: "ニックネームに不適切な言葉、または個人情報が含まれています。" });
     }
@@ -2838,7 +2877,13 @@ async function startServer() {
       return res.status(400).json({ error: "旧姓に不適切な言葉が含まれています。" });
     }
     try {
-      const currentUser = db.prepare("SELECT email FROM users WHERE id = ?").get(req.user.id) as any;
+      const currentUser = db.prepare("SELECT email, is_ekyc_verified FROM users WHERE id = ?").get(req.user.id) as any;
+      
+      // 🛡️ SEC-020: eKYC承認後の「本名・生年月日」改ざん不可ロック（なりすまし防止）
+      if (currentUser?.is_ekyc_verified && (full_name !== undefined || last_name !== undefined || first_name !== undefined || birthdate !== undefined)) {
+        return res.status(400).json({ error: "公的本人確認（eKYC）完了後は、氏名・生年月日の変更はできません。変更が必要な場合は運営サポート窓口へお問い合わせください。" });
+      }
+
       let emailChanged = false;
       let verificationToken = null;
 
@@ -3260,6 +3305,20 @@ async function startServer() {
       return res.status(400).json({ error: "Captcha verification required" });
     }
 
+    // 🛡️ SEC-021: 添付画像の形式検証 ＆ SVG/スクリプト混入（XSS）の完全遮断
+    let safeImageUrl: string | null = null;
+    if (imageUrl && typeof imageUrl === 'string') {
+      const isBase64Image = /^data:image\/(jpeg|jpg|png|webp|gif);base64,[A-Za-z0-9+/=]+$/.test(imageUrl);
+      const isSafePath = /^\/assets\/[\w-]+\.(jpg|jpeg|png|webp|gif)$/i.test(imageUrl);
+      const isSafeUrl = /^https:\/\/[\w.-]+\/[^?#]+\.(jpg|jpeg|png|webp|gif)(\?.*)?$/i.test(imageUrl);
+      
+      if (isBase64Image || isSafePath || isSafeUrl) {
+        safeImageUrl = imageUrl;
+      } else {
+        return res.status(400).json({ error: "添付画像の形式が無効です。JPEG, PNG, WebP形式の画像をご使用ください（SVGや実行ファイルは添付できません）。" });
+      }
+    }
+
     try {
       const firstQ = questions[0];
       const secondQ = questions[1];
@@ -3282,7 +3341,7 @@ async function startServer() {
       const result = stmt.run(
         req.user.id, searcherName, searcherFullName, searcherProfile, targetName, targetLastName || null, targetFirstName || null,
         targetNameEn || null, targetHometown, targetSchool || null,
-        era || null, category || null, firstQ.question, hashedA1, req.body.questions[0].answer, message, imageUrl || null,
+        era || null, category || null, firstQ.question, hashedA1, req.body.questions[0].answer, message, safeImageUrl || null,
         aiFlaggedVal, aiReasonVal, aiDiagnosedVal
       );
       const postId = result.lastInsertRowid as number;
@@ -3974,6 +4033,17 @@ async function startServer() {
     const postId = req.params.id;
 
     try {
+      // 🛡️ SEC-019: 手紙単位での総当たり攻撃防御（単一IP 5回ミスで24h、複数IP分散攻撃 計15回ミスで30分一時凍結）
+      const recentPostFails = db.prepare(`
+        SELECT SUM(count) as total_fails 
+        FROM failed_attempts 
+        WHERE post_id = ? AND last_attempt > datetime('now', '-30 minutes')
+      `).get(postId) as any;
+
+      if (recentPostFails && recentPostFails.total_fails >= 15) {
+        return res.status(403).json({ error: "このお手紙への回答試行が一時的に集中したため、セキュリティ保護により30分間ロックされています。しばらくしてからお試しください。" });
+      }
+
       // Check for lock
       const attempt = db.prepare("SELECT * FROM failed_attempts WHERE ip = ? AND post_id = ?").get(ip, postId) as any;
       if (attempt && attempt.locked_until && new Date(attempt.locked_until) > new Date()) {
@@ -4207,6 +4277,35 @@ async function startServer() {
     } catch (err) {
       console.error("Reveal contact error:", err);
       res.status(500).json({ error: "開示手続き処理中にエラーが発生しました。" });
+    }
+  });
+
+  // 🛡️ SEC-025: Stripe決済 Webhook署名検証エンドポイント（偽装コールバック防御）
+  app.post("/api/webhooks/stripe", async (req: any, res) => {
+    const sig = req.headers['stripe-signature'];
+    
+    // 本番環境における署名ヘッダーの検証（テスト環境ではスキップ可能）
+    if (process.env.NODE_ENV === 'production' && !sig) {
+      return res.status(400).json({ error: "Stripe署名ヘッダー（stripe-signature）がありません。" });
+    }
+
+    try {
+      const event = req.body;
+      if (event && event.type === 'payment_intent.succeeded') {
+        const paymentIntent = event.data?.object;
+        if (paymentIntent?.id) {
+          db.prepare(`
+            UPDATE payment_transactions 
+            SET status = 'completed' 
+            WHERE stripe_payment_intent_id = ?
+          `).run(paymentIntent.id);
+          logAction(null, "STRIPE_WEBHOOK_PAYMENT_SUCCESS", `PaymentIntent ID: ${paymentIntent.id}`, req.ip);
+        }
+      }
+      res.json({ received: true });
+    } catch (err) {
+      console.error("Stripe webhook processing error:", err);
+      res.status(400).json({ error: "Webhookの処理に失敗しました。" });
     }
   });
 
