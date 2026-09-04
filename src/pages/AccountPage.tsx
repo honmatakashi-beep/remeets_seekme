@@ -101,6 +101,37 @@ export const AccountPage = () => {
   const [selectedPostIds, setSelectedPostIds] = useState<number[]>([]);
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
 
+  // 🛡️ 退会・アカウント完全削除用の状態管理
+  const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+  const [deleteAccountConsent, setDeleteAccountConsent] = useState(false);
+
+  const handleDeleteAccount = async () => {
+    if (!deleteAccountConsent || !token) return;
+    setIsDeletingAccount(true);
+    try {
+      const res = await fetch('/api/auth/me', {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (res.ok) {
+        alert('退会手続きが完了しました。ご利用ありがとうございました。');
+        logout();
+        navigate('/');
+      } else {
+        const err = await res.json();
+        alert(err.error || '退会処理に失敗しました。');
+      }
+    } catch (e) {
+      console.error(e);
+      alert('通信エラーが発生しました。接続を確認してください。');
+    } finally {
+      setIsDeletingAccount(false);
+    }
+  };
+
   const handleBulkDeletePosts = async () => {
     if (selectedPostIds.length === 0) return;
     if (!confirm(`選択された ${selectedPostIds.length} 件のお手紙（ボトル）を回収（削除）してもよろしいですか？\n※この操作は取り消せません。`)) return;
@@ -2306,9 +2337,95 @@ export const AccountPage = () => {
                 </div>
               </div>
             )}
+
+            {/* 🛡️ SEC-011: 退会・アカウント完全削除（プライバシー保護） */}
+            <div className="bg-rose-50/40 rounded-3xl border border-rose-200/60 p-5 md:p-6 space-y-4 font-sans text-left">
+              <div className="flex items-center justify-between gap-3">
+                <div className="space-y-1">
+                  <h4 className="text-sm font-bold text-rose-950 flex items-center gap-1.5">
+                    <Trash2 size={16} className="text-rose-600" />
+                    <span>アカウントの退会・個人データの完全消去</span>
+                  </h4>
+                  <p className="text-xs text-rose-800/80 leading-relaxed">
+                    アカウントを退会すると、登録メールアドレス、通知設定、および保管データが安全に物理消去されます。
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDeleteAccountConsent(false);
+                    setShowDeleteAccountModal(true);
+                  }}
+                  className="px-4 py-2 bg-white hover:bg-rose-100 text-rose-700 border border-rose-300 rounded-xl text-xs font-bold transition-all shadow-xs shrink-0 cursor-pointer"
+                >
+                  退会手続きへ
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
+
+      {/* 退会確認モーダル */}
+      <AnimatePresence>
+        {showDeleteAccountModal && (
+          <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm font-sans" data-lenis-prevent>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 15 }}
+              className="bg-white rounded-3xl max-w-md w-full p-6 space-y-5 shadow-2xl border border-rose-200 relative text-left"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0 border border-rose-200">
+                  <AlertCircle size={22} />
+                </div>
+                <div>
+                  <h3 className="text-base font-serif font-bold text-zinc-900">本当に退会しますか？</h3>
+                  <p className="text-[11px] text-zinc-500 font-sans">この操作は取り消すことができません。</p>
+                </div>
+              </div>
+
+              <div className="p-4 bg-rose-50 rounded-2xl border border-rose-100 text-xs text-rose-900 space-y-2 leading-relaxed">
+                <p className="font-bold">⚠️ 退会時の注意事項：</p>
+                <ul className="list-disc list-inside space-y-1 text-[11px] text-rose-800">
+                  <li>ログイン用アカウント情報（メールアドレス・パスワード・SNS連携）は物理消去されます。</li>
+                  <li>新着入荷アラートや通知はすべて自動的に停止・消去されます。</li>
+                  <li>過去に投函された手紙の差出人本名・連絡先IDは「退会済ユーザー」として即時サニタイズされます。</li>
+                </ul>
+              </div>
+
+              <label className="flex items-start gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200 cursor-pointer text-xs text-slate-700">
+                <input
+                  type="checkbox"
+                  checked={deleteAccountConsent}
+                  onChange={(e) => setDeleteAccountConsent(e.target.checked)}
+                  className="mt-0.5 rounded border-slate-300 text-rose-600 focus:ring-rose-500"
+                />
+                <span className="font-bold">上記内容を理解し、アカウントの完全削除・退会に同意します。</span>
+              </label>
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowDeleteAccountModal(false)}
+                  className="flex-1 py-2.5 border border-slate-300 hover:bg-slate-50 rounded-xl text-xs font-bold text-slate-700 transition-all cursor-pointer"
+                >
+                  キャンセル
+                </button>
+                <button
+                  type="button"
+                  disabled={!deleteAccountConsent || isDeletingAccount}
+                  onClick={handleDeleteAccount}
+                  className="flex-1 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold transition-all shadow-md disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                >
+                  {isDeletingAccount ? '消去中...' : '退会を実行する'}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* マイページ内 eKYC 手続きモーダル */}
       <AnimatePresence>

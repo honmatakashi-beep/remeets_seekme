@@ -1235,7 +1235,6 @@ const detectInappropriateWords = (text: string, isChat = false): string[] => {
   ];
 
   if (isChat) {
-    // チャットではよりスムーズに連絡先交換（LINE ID、SNS IDなど）ができるよう、制限対象を重大犯罪・攻撃ワードのみに限定する
     defaultForbiddenWords = [
       "殺す", "死ね", "消えろ", "殺人", "脅迫", "爆破", "自殺", "レイプ", "殺", "コロス", "シネ"
     ];
@@ -1249,6 +1248,26 @@ const detectInappropriateWords = (text: string, isChat = false): string[] => {
       if (!detected.includes(word)) {
         detected.push(word);
       }
+    }
+  }
+
+  // 🛡️ 個人情報（電話番号・メアド・LINE/SNS・URL）の直接記載検知（正規化後の文字列で判定）
+  if (!isChat) {
+    // 携帯・固定電話番号（全角・スペース・ハイフン混在を正規化後に検知）
+    if (/0[5789]0\d{8}|0\d{9,10}|\d{2,4}-\d{2,4}-\d{4}/.test(textNormalized)) {
+      detected.push("電話番号の記載");
+    }
+    // メールアドレス
+    if (/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/i.test(textNormalized) || /@.*?\.(com|jp|net|ne|org)/i.test(textNormalized)) {
+      detected.push("メールアドレスの記載");
+    }
+    // LINE ID, SNSハンドル
+    if (/lineid|ラインid|line:|ライン:|id:|id：|@[\w_]{4,}/i.test(textNormalized)) {
+      detected.push("LINE/SNS_IDの記載");
+    }
+    // URLリンク
+    if (/https?:|www\./i.test(textNormalized)) {
+      detected.push("外部リンクURLの記載");
     }
   }
 
@@ -1277,23 +1296,22 @@ const filterNGWords = (text: string, isChat = false): string => {
   if (!text) return "";
   let filteredText = text;
 
-  // Default patterns for personal info. Skip if isChat is true (allowing friendly chat/contact exchange)
+  // Default patterns for personal info. Skip if isChat is true
   let patterns: RegExp[] = [];
   if (!isChat) {
     patterns = [
-      /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, // Email
-      /\d{2,4}-\d{2,4}-\d{4}/g, // Phone number
-      /0[789]0-?\d{4}-?\d{4}/g, // Mobile phone
-      /\d{10,11}/g, // Phone number (no hyphens)
-      /LINE\s*ID|ライン\s*ID|ID\s*：|ID\s*:/gi, // LINE ID keyword
-      /[都道府県市区町村].*[0-9０-９]/g, // Simple address pattern (Prefecture/City + Number)
-      /https?:\/\/[\w/:%#\$&\?\(\)~\.=\+\-]+/g, // URLs
+      /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/gi, // Email
+      /\d{2,4}[-ー―]\d{2,4}[-ー―]\d{4}/g, // Phone with hyphens
+      /0[5789]0[-ー―\s]?\d{4}[-ー―\s]?\d{4}/g, // Mobile phone (half/full)
+      /[０-９]{2,4}[-ー―\s]?[０-９]{2,4}[-ー―\s]?[０-９]{4}/g, // Full-width phone
+      /\b\d{10,11}\b/g, // Phone number no hyphens
+      /LINE\s*ID|ライン\s*ID|ID\s*：|ID\s*:/gi, // LINE ID
+      /[都道府県市区町村].*[0-9０-９]{1,4}[-ー―丁目番地号]/g, // Detailed Address
+      /https?:\/\/[\w/:%#\$&\?\(\)~\.=\+\-]+/gi, // URLs
       /インスタ|instagram|ツイッター|twitter|x\.com|facebook|フェイスブック/gi, // SNS keywords
     ];
   }
 
-  // 凶悪・嫌がらせワードはチャットでも念のため伏せ字にすることもありますが、今回は「通常どおり安全に相手と会話できる」ので
-  // 連絡先以外の凶悪暴言だけ伏せ字処理を施します
   const dangerPatterns = [
     /死ね|殺す|消えろ/g,
   ];
@@ -1316,7 +1334,6 @@ const filterNGWords = (text: string, isChat = false): string => {
     
     cachedNgWords.forEach(word => {
       if (!word) return;
-      // Check if it's a regex pattern (contains special chars or looks like one)
       if (word.includes('[') || word.includes('\\') || word.includes('|')) {
         try {
           const regex = new RegExp(word, 'gi');
@@ -2414,17 +2431,21 @@ async function startServer() {
     }
   });
 
-  app.post("/api/auth/reset-password", async (req, res) => {
+  app.post("/api/auth/reset-password", authLimiter, async (req, res) => {
     const { token, newPassword } = req.body;
+    if (!token || typeof token !== 'string' || !newPassword || typeof newPassword !== 'string' || newPassword.length < 6) {
+      return res.status(400).json({ error: "パスワードは6文字以上で指定してください。" });
+    }
     try {
       const user = db.prepare("SELECT * FROM users WHERE reset_token = ? AND reset_token_expires > ?").get(token, new Date().toISOString()) as any;
       if (!user) return res.status(400).json({ error: "無効または期限切れのトークンです。" });
 
       const hashedPassword = await bcrypt.hash(newPassword, 10);
       db.prepare("UPDATE users SET password = ?, reset_token = NULL, reset_token_expires = NULL WHERE id = ?").run(hashedPassword, user.id);
-      res.json({ success: true, message: "パスワードを更新しました。" });
+      logAction(user.id, "PASSWORD_RESET_SUCCESS", `Password reset successful for user #${user.id} (${user.username})`, req.ip);
+      res.json({ success: true, message: "パスワードを更新しました。新しいパスワードでログインしてください。" });
     } catch (err) {
-      res.status(500).json({ error: "リセットに失敗しました。" });
+      res.status(500).json({ error: "パスワードリセットに失敗しました。" });
     }
   });
 
@@ -2844,6 +2865,47 @@ async function startServer() {
       res.json({ success: true, emailChanged });
     } catch (err) {
       res.status(500).json({ error: "プロフィールの更新に失敗しました。" });
+    }
+  });
+
+  // 🛡️ SEC-011: ユーザー退会・個人データ完全物理消去API
+  app.delete("/api/auth/me", authenticateToken, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const user = db.prepare("SELECT * FROM users WHERE id = ?").get(userId) as any;
+      if (!user) {
+        return res.status(404).json({ error: "ユーザーが見つかりません。" });
+      }
+      if (user.role === 'admin') {
+        return res.status(403).json({ error: "管理者アカウントはマイページから直接退会できません。" });
+      }
+
+      // トランザクションによる個人データ物理消去・サニタイズ
+      db.transaction(() => {
+        // 1. ユーザーの通知・アラート消去
+        db.prepare("DELETE FROM notifications WHERE user_id = ?").run(userId);
+        db.prepare("DELETE FROM search_alerts WHERE email = ?").run(user.email);
+        
+        // 2. 退会ユーザーの手紙の個人情報物理消去（差出人本名・連絡先IDの消去）
+        db.prepare(`
+          UPDATE posts 
+          SET searcher_full_name = '退会済ユーザー', 
+              contact_id = NULL, 
+              contact_note = NULL,
+              user_id = NULL 
+          WHERE user_id = ?
+        `).run(userId);
+
+        // 3. ユーザーレコードの物理消去
+        db.prepare("DELETE FROM users WHERE id = ?").run(userId);
+      })();
+
+      logAction(null, "USER_ACCOUNT_DELETED", `User ID: ${userId} (${user.username}) self-deleted account and purged personal data.`, req.ip);
+
+      res.json({ success: true, message: "退会手続きが完了し、アカウントと個人情報が完全に消去されました。" });
+    } catch (err) {
+      console.error("Account deletion error:", err);
+      res.status(500).json({ error: "退会処理中にエラーが発生しました。" });
     }
   });
 
@@ -4045,6 +4107,7 @@ async function startServer() {
   });
 
   // Reveal contact and letter endpoint (supports 600 JPY letter only or 1,200 JPY eKYC + letter opening lump sum)
+  // Reveal contact and letter endpoint (supports 600 JPY letter only or 1,200 JPY eKYC + letter opening lump sum)
   app.post("/api/posts/:id/reveal-contact", optionalAuthenticateToken, async (req: any, res: any) => {
     const postId = req.params.id;
     const { unlockMessage, unlockContactInfo, amount = 600, isEkyc = false } = req.body || {};
@@ -4055,37 +4118,72 @@ async function startServer() {
         return res.status(404).json({ error: "手紙が見つかりませんでした。" });
       }
 
-      // Mark post as resolved and record verifier
       const userId = req.user ? req.user.id : null;
-      db.prepare("UPDATE posts SET status = 'resolved', verified_by = COALESCE(verified_by, ?) WHERE id = ?")
-        .run(userId, postId);
+      const isOwner = userId && Number(post.user_id) === Number(userId);
+      const isVerifiedFinder = userId && post.verified_by && Number(post.verified_by) === Number(userId);
 
-      // Record payment transaction
+      // Fetch author info helper
+      let author = null;
+      if (post.user_id) {
+        author = db.prepare("SELECT id, username, full_name, email FROM users WHERE id = ?").get(post.user_id) as any;
+      }
+      const contactType = post.contact_type || 'LINE';
+      const contactId = post.contact_id || `@${author?.username || post.searcher_name || 'remeets_contact'}`;
+      const contactNote = post.contact_note || 'お手紙を見つけていただきありがとうございます！LINEまたはメールにてご連絡をお待ちしております。';
+
+      // 🛡️ SEC-006: 既存決済の確認（二重課金・連続決済の多重防止制御）
+      const existingTx = userId 
+        ? db.prepare("SELECT * FROM payment_transactions WHERE post_id = ? AND user_id = ? AND status = 'completed'").get(postId, userId) as any
+        : null;
+
+      // 既に解決済みの手紙である場合
+      if (post.status === 'resolved') {
+        if (isOwner || isVerifiedFinder || existingTx) {
+          // すでに正当に開示済みの本人または回答者：課金なしで安全に再取得
+          return res.json({
+            success: true,
+            alreadyUnlocked: true,
+            amount: existingTx ? existingTx.amount : finalAmount,
+            contactType,
+            contactId,
+            contactNote,
+            searcherName: post.searcher_name,
+            searcherFullName: post.searcher_full_name,
+            message: post.message,
+            status: 'resolved'
+          });
+        } else {
+          // 第三者による不正な後追い決済・閲覧要求を遮断
+          return res.status(400).json({ error: "この手紙は既に他のお受取人様によって解決・開示済みです。" });
+        }
+      }
+
+      // 未解決手紙の初回決済トランザクション
       const txId = `tx_reveal_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
       const desc = finalAmount === 1200 
         ? `公的eKYC認証＋手紙開示手数料（${post.searcher_name}様宛 一括決済）`
         : `手紙開示・接続手数料（${post.searcher_name}様宛）`;
       const netProfit = finalAmount === 1200 ? 957 : 578;
 
-      try {
-        db.prepare(`
-          INSERT INTO payment_transactions (
-            transaction_id, user_id, post_id, type, status, ekyc_status, amount, 
-            payment_method, description, net_profit, created_at
-          ) VALUES (?, ?, ?, 'chat_unlock', 'completed', 'passed', ?, 'stripe_card', ?, ?, CURRENT_TIMESTAMP)
-        `).run(txId, userId, postId, finalAmount, desc, netProfit);
-      } catch (payErr) {
-        console.error("Failed to log payment transaction:", payErr);
-      }
+      // DB更新のアトミックトランザクション実行
+      db.transaction(() => {
+        db.prepare("UPDATE posts SET status = 'resolved', verified_by = COALESCE(verified_by, ?) WHERE id = ?")
+          .run(userId, postId);
+
+        if (!existingTx) {
+          db.prepare(`
+            INSERT INTO payment_transactions (
+              transaction_id, user_id, post_id, type, status, ekyc_status, amount, 
+              payment_method, description, net_profit, created_at
+            ) VALUES (?, ?, ?, 'chat_unlock', 'completed', 'passed', ?, 'stripe_card', ?, ?, CURRENT_TIMESTAMP)
+          `).run(txId, userId, postId, finalAmount, desc, netProfit);
+        }
+      })();
 
       // Log action
       logAction(userId, "REVEAL_CONTACT", `Post ID: ${postId}, ${finalAmount} JPY paid (${finalAmount === 1200 ? 'eKYC + Reveal' : 'Reveal Only'})`, req.ip);
 
-      // Fetch author info
-      let author = null;
       if (post.user_id) {
-        author = db.prepare("SELECT id, username, full_name, email FROM users WHERE id = ?").get(post.user_id) as any;
-        
         // Notify post author that letter & contact were opened
         createNotification(
           post.user_id,
@@ -4094,10 +4192,6 @@ async function startServer() {
           `/account`
         );
       }
-
-      const contactType = post.contact_type || 'LINE';
-      const contactId = post.contact_id || `@${author?.username || post.searcher_name || 'remeets_contact'}`;
-      const contactNote = post.contact_note || 'お手紙を見つけていただきありがとうございます！LINEまたはメールにてご連絡をお待ちしております。';
 
       res.json({
         success: true,
@@ -4421,11 +4515,24 @@ async function startServer() {
     const { postId, receiverId, content } = req.body;
     if (!postId || !receiverId || !content) return res.status(400).json({ error: "Missing fields" });
 
-    // Check for inappropriate buy bypass personal info blockers since we are in a close 1-1 chat
-    const detectedForbidden = detectInappropriateWords(content, true);
-    const hasForbidden = detectedForbidden.length > 0;
-
     try {
+      const post = db.prepare("SELECT * FROM posts WHERE id = ?").get(postId) as any;
+      if (!post) {
+        return res.status(404).json({ error: "該当のお手紙が見つかりません。" });
+      }
+
+      // 🛡️ SEC-017: 送受信者の権限検証（IDOR防御：差出人または回答受取人のみ送受信可能）
+      const isSenderAuthorized = (post.user_id === req.user.id) || (post.verified_by === req.user.id);
+      const isReceiverAuthorized = (post.user_id === Number(receiverId)) || (post.verified_by === Number(receiverId));
+
+      if (!isSenderAuthorized || !isReceiverAuthorized) {
+        return res.status(403).json({ error: "このお手紙に関するメッセージを送受信する権限がありません。" });
+      }
+
+      // Check for inappropriate buy bypass personal info blockers since we are in a close 1-1 chat
+      const detectedForbidden = detectInappropriateWords(content, true);
+      const hasForbidden = detectedForbidden.length > 0;
+
       const filteredContent = filterNGWords(content, true);
 
       const stmt = db.prepare("INSERT INTO messages (post_id, sender_id, receiver_id, content) VALUES (?, ?, ?, ?)");
