@@ -146,12 +146,12 @@ export const SuccessStoriesPage = () => {
   ];
 
   const dbStoriesMapped = dbStories.map((story) => {
-    const category = story.era ? (story.era.includes('80') ? 'classmate' : story.era.includes('90') ? 'mentor' : 'colleague') : 'classmate';
+    const category = story.category || (story.era ? (story.era.includes('80') ? 'classmate' : story.era.includes('90') ? 'mentor' : 'colleague') : 'classmate');
     return {
       id: `db-${story.id}`,
       category,
-      tag: story.era ? `${story.era}年代の再会` : "再会の物語",
-      era: story.era ? `${story.era}年代` : "想い出の年代",
+      tag: story.category ? getCategoryBadge(story.category).label : (story.era ? `${story.era}年代の再会` : "再会の物語"),
+      era: story.era ? story.era : "想い出の年代",
       relationship: story.gender ? `再会のご報告（${story.gender === 'male' || story.gender === '男性' ? '男性' : story.gender === 'female' || story.gender === '女性' ? '女性' : 'その他'}）` : "再会のご報告",
       title: story.title || "奇跡が結びつけた、温かい再会の物語",
       participants: `${story.username || "匿名のユーザー"} 様`,

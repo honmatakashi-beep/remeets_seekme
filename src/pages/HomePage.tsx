@@ -650,30 +650,52 @@ export const HomePage = ({ onOpenOnboarding, heroCopyStyle }: { onOpenOnboarding
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {(() => {
+            const getCategoryBadge = (category: string, defaultTag?: string) => {
+              switch (category) {
+                case 'classmate':
+                  return { label: '🏫 同級生', style: 'bg-amber-50 text-amber-900 border-amber-200' };
+                case 'mentor':
+                  return { label: '🌸 恩師・部活', style: 'bg-indigo-50 text-indigo-900 border-indigo-200' };
+                case 'journey':
+                  return { label: '🧭 旅・一期一会', style: 'bg-teal-50 text-teal-900 border-teal-200' };
+                case 'neighbor':
+                  return { label: '🏡 幼馴染・ご近所', style: 'bg-rose-50 text-rose-900 border-rose-200' };
+                case 'colleague':
+                  return { label: '💼 元同僚・仲間', style: 'bg-emerald-50 text-emerald-900 border-emerald-200' };
+                case 'rival':
+                  return { label: '⚽ 青春・ライバル', style: 'bg-sky-50 text-sky-900 border-sky-200' };
+                default:
+                  return { label: defaultTag || '✨ 再会の物語', style: 'bg-slate-100 text-slate-700 border-slate-200' };
+              }
+            };
+
             const defaultStories = [
               {
                 id: 'def-1',
-                era: "1990",
-                gender: "女性",
-                tag: "友人関係",
-                title: "30年ぶりに繋がった、幼馴染 of 友情",
-                message: "小学校卒業以来、引越しで連絡が途絶えていた親友。「本人のみわかる質問」に、彼が“放課後に毎日通った駄菓子屋の名前”を入力し正解。当時の思い出バナシから、来月ついに再会します。（40代・女性）"
+                category: "classmate",
+                era: "1980年代後半",
+                gender: "男性",
+                tag: "🏫 同級生",
+                title: "卒業から35年。懐かしいあだ名とお互いの記憶が繋いでくれた奇跡",
+                message: "中学の卒業以来、お互いに転居が重なり連絡先が分からなくなっていました。ふとReMEETsで当時の陸上部の手紙を見つけ、懐かしい想い出のキーワードをきっかけに35年ぶりにメッセージが開通。当時のあだ名で呼び合い、まるで当時にタイムスリップしたような感動でした。今では年に一度集まる仲に戻り、一生の友人を再び取り戻せました。"
               },
               {
                 id: 'def-2',
-                era: "2000",
-                gender: "男性",
-                tag: "部活・恩師",
-                title: "定年退職された、陸上部顧問への感謝",
-                message: "連絡先もわからないお世話になった先生へ、ボトルメールを起稿。先生の息子さんがお名前の検索から見つけてくださり、先生ご本人に伝えてくれました。もう一度「ありがとう」が届く奇跡に感謝です。（30代・男性）"
+                category: "mentor",
+                era: "1990年代半ば",
+                gender: "女性",
+                tag: "🌸 恩師・部活",
+                title: "定年退職された吹奏楽部の恩師へ。30年越しの『ありがとう』が届いた日",
+                message: "山本先生が定年退職されたと風の噂で聞き、当時の部活仲間で『どうしても感謝を伝えたい』と手紙を流しました。先生のご家族がこの手紙を見つけて先生に伝えてくださり、30年ぶりに温かいお返事をいただくことができました。先日、当時の部員一同で先生を囲んで同窓会を開き、最高の恩返しができました。"
               },
               {
                 id: 'def-3',
-                era: "2010",
+                category: "journey",
+                era: "1990年代初頭",
                 gender: "男性",
-                tag: "旅先の一期一会",
-                title: "10年前の旅の相棒、カレー屋での記憶",
-                message: "バックパッカー時代に旅先で出会った親友。SNS等も相互でなく音信不通でしたが、彼が『インドでの駅前のカレー屋の名前』という質問で見事に正解して部屋が開設。10年の空白が埋まり、友情が再開しました。（30代・男性）"
+                tag: "🧭 旅・一期一会",
+                title: "あの夏の北海道。夜通し夢を語り合った旅の友から、3年越しの返信",
+                message: "学生時代、バイクで北海道を巡っていた時に富良野の宿で偶然知り合い、朝まで将来の夢について熱く語り合いました。連絡先を書いた紙を紛失してしまいずっと悔やんでいましたが、ダメ元でReMEETsの海に想いを流していました。3年後、彼から『見つけたよ！』と連絡が入った時は手の震えが止まりませんでした。お互いに白髪交じりの大人になりましたが、心の距離は当時のままでした。"
               }
             ];
 
@@ -684,28 +706,41 @@ export const HomePage = ({ onOpenOnboarding, heroCopyStyle }: { onOpenOnboarding
 
             return [leftStory, centerStory, rightStory].map((story, idx) => {
               if (!story) return null;
-              const displayTag = story.tag || `${story.era ? story.era + '年代の' : ''}${story.gender ? '再会者（' + (story.gender === 'male' || story.gender === '男性' ? '男性' : story.gender === 'female' || story.gender === '女性' ? '女性' : 'その他') + '）' : '再会のご報告'}`;
+              const category = story.category || (idx === 0 ? 'classmate' : idx === 1 ? 'mentor' : 'journey');
+              const badge = getCategoryBadge(category, story.tag);
               const storyId = story.id ? (String(story.id).startsWith('db-') || String(story.id).startsWith('def-') ? story.id : `db-${story.id}`) : `def-${idx + 1}`;
+              const posLabel = idx === 0 ? 'LEFT' : idx === 1 ? 'CENTER' : 'RIGHT';
+
               return (
                 <Link
                   key={story.id || idx}
                   to={`/success-stories?id=${storyId}`}
-                  className="bg-white border border-brand-border/60 p-6 rounded-[28px] space-y-4 hover:shadow-lg hover:border-brand-primary/30 transition-all hover:-translate-y-0.5 flex flex-col justify-between cursor-pointer text-left block group"
+                  className="bg-white border border-slate-200/90 p-6 rounded-3xl space-y-4 hover:shadow-lg hover:border-teal-400/80 transition-all hover:-translate-y-0.5 flex flex-col justify-between cursor-pointer text-left block group shadow-xs"
                 >
                   <div className="space-y-4">
-                    <span className="text-[10px] font-bold text-zinc-400 font-mono tracking-widest uppercase block border-b border-brand-border pb-2 group-hover:text-brand-primary/80 transition-colors">
-                      STORY #{String(idx + 1).padStart(2, '0')} / {displayTag}
-                    </span>
+                    <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                      <span className={`text-[10.5px] font-bold px-2.5 py-0.5 rounded-full border ${badge.style}`}>
+                        {badge.label}
+                      </span>
+                      <span className="text-[10px] font-mono font-bold text-slate-400 tracking-wider">
+                        {story.era ? story.era : '想い出の再会'}
+                      </span>
+                    </div>
                     <div className="space-y-2">
-                      <h4 className="text-base font-serif font-bold text-brand-dark group-hover:text-brand-primary transition-colors">「{story.title || '思い出クイズがつないだ奇跡の再会'}」</h4>
-                      <p className="text-xs text-zinc-600 leading-relaxed font-sans line-clamp-6">
+                      <h4 className="text-sm sm:text-base font-serif font-bold text-slate-900 group-hover:text-teal-700 transition-colors line-clamp-2">
+                        {story.title || '奇跡が結びつけた、温かい再会の物語'}
+                      </h4>
+                      <p className="text-xs text-slate-600 leading-relaxed font-sans line-clamp-5">
                         {story.message}
                       </p>
                     </div>
                   </div>
-                  <div className="flex justify-end pt-2">
-                    <span className="text-[10px] font-sans font-bold text-brand-primary flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      エピソードを読む <ArrowRight size={10} />
+                  <div className="flex items-center justify-between pt-3 border-t border-slate-100 text-[11px] text-slate-500 font-sans">
+                    <span className="text-[10px] font-mono text-slate-400 uppercase">
+                      FEATURED #{idx + 1}
+                    </span>
+                    <span className="text-teal-700 font-bold flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+                      体験談を読む <ArrowRight size={12} />
                     </span>
                   </div>
                 </Link>

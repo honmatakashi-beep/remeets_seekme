@@ -1761,6 +1761,9 @@ async function startServer() {
     if (!ssCols.some((c: any) => c.name === 'target_name')) {
       db.prepare("ALTER TABLE success_stories ADD COLUMN target_name TEXT").run();
     }
+    if (!ssCols.some((c: any) => c.name === 'category')) {
+      db.prepare("ALTER TABLE success_stories ADD COLUMN category TEXT").run();
+    }
 
     const contactCols = db.prepare("PRAGMA table_info(contacts)").all();
     if (!contactCols.some((c: any) => c.name === 'reply_message')) {
@@ -2220,23 +2223,79 @@ async function startServer() {
     }
   });
 
-  app.patch("/api/admin/success-stories/:id", authenticateToken, isAdmin, (req: any, res) => {
-    const { is_public, is_featured, is_all_page, display_position } = req.body;
+  app.post("/api/admin/success-stories", authenticateToken, isAdmin, (req: any, res) => {
+    const { title, message, era, gender, category, consent, is_public, is_featured, is_all_page, display_position } = req.body;
+    if (!message) return res.status(400).json({ error: "Message required" });
     try {
+      if (is_featured && display_position) {
+        // Clear conflicting slot
+        db.prepare("UPDATE success_stories SET display_position = NULL WHERE display_position = ?").run(display_position);
+      }
+      const result = db.prepare(`
+        INSERT INTO success_stories (user_id, title, message, era, gender, category, consent, is_public, is_featured, is_all_page, display_position)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `).run(
+        req.user.id,
+        title || null,
+        message,
+        era || null,
+        gender || null,
+        category || 'classmate',
+        consent ? 1 : 0,
+        is_public !== undefined ? (is_public ? 1 : 0) : 1,
+        is_featured !== undefined ? (is_featured ? 1 : 0) : 0,
+        is_all_page !== undefined ? (is_all_page ? 1 : 0) : 1,
+        display_position || null
+      );
+      res.json({ id: result.lastInsertRowid, success: true });
+    } catch (err) {
+      console.error("Admin create success story error:", err);
+      res.status(500).json({ error: "Failed to create success story" });
+    }
+  });
+
+  app.patch("/api/admin/success-stories/:id", authenticateToken, isAdmin, (req: any, res) => {
+    const { is_public, is_featured, is_all_page, display_position, title, message, era, gender, category } = req.body;
+    try {
+      if (is_featured && display_position) {
+        // Clear conflicting slot on other stories
+        db.prepare("UPDATE success_stories SET display_position = NULL WHERE display_position = ? AND id != ?").run(display_position, req.params.id);
+      }
+      
+      const current = db.prepare("SELECT * FROM success_stories WHERE id = ?").get(req.params.id) as any;
+      if (!current) return res.status(404).json({ error: "Story not found" });
+
       db.prepare(`
         UPDATE success_stories 
-        SET is_public = ?, is_featured = ?, is_all_page = ?, display_position = ? 
+        SET is_public = ?, is_featured = ?, is_all_page = ?, display_position = ?,
+            title = ?, message = ?, era = ?, gender = ?, category = ?
         WHERE id = ?
       `).run(
-        is_public ? 1 : 0, 
-        is_featured ? 1 : 0, 
-        is_all_page ? 1 : 0, 
-        display_position || null, 
+        is_public !== undefined ? (is_public ? 1 : 0) : current.is_public, 
+        is_featured !== undefined ? (is_featured ? 1 : 0) : current.is_featured, 
+        is_all_page !== undefined ? (is_all_page ? 1 : 0) : current.is_all_page, 
+        display_position !== undefined ? (display_position || null) : current.display_position,
+        title !== undefined ? (title || null) : current.title,
+        message !== undefined ? message : current.message,
+        era !== undefined ? (era || null) : current.era,
+        gender !== undefined ? (gender || null) : current.gender,
+        category !== undefined ? (category || null) : current.category,
         req.params.id
       );
       res.json({ success: true });
     } catch (err) {
+      console.error("Admin update success story error:", err);
       res.status(500).json({ error: "Failed to update success story" });
+    }
+  });
+
+  app.delete("/api/admin/success-stories/:id", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      db.prepare("DELETE FROM success_stories WHERE id = ?").run(req.params.id);
+      res.json({ success: true });
+    } catch (err) {
+      console.error("Admin delete success story error:", err);
+      res.status(500).json({ error: "Failed to delete success story" });
     }
   });
 
@@ -2248,8 +2307,10 @@ async function startServer() {
       const samples = [
         {
           user_id: req.user.id,
-          message: "30年ぶりに中学時代の親友と再会できました！ボトルメールを流して本当に良かったです。最初は半信半疑でしたが、本人確認の質問に答えてくれた時は鳥肌が立ちました。今は週末に一緒にゴルフに行く仲に戻りました。",
-          era: "1980",
+          category: "classmate",
+          title: "卒業から35年。懐かしいあだ名とお互いの記憶が繋いでくれた奇跡",
+          message: "中学の卒業以来、お互いに転居が重なり連絡先が分からなくなっていました。ふとReMEETsで当時の陸上部の手紙を見つけ、懐かしい想い出のキーワードをきっかけに35年ぶりにメッセージが開通。当時のあだ名で呼び合い、まるで当時にタイムスリップしたような感動でした。今では年に一度集まる仲に戻り、一生の友人を再び取り戻せました。",
+          era: "1980年代後半",
           gender: "男性",
           consent: 1,
           is_public: 1,
@@ -2259,30 +2320,23 @@ async function startServer() {
         },
         {
           user_id: req.user.id,
-          message: "初恋の人を探してボトルを流しました。まさか見つかるとは思っていませんでしたが、共通の知人を通じて連絡が来ました。お互い家庭を持っていますが、当時の思い出を懐かしく語り合える友人が増えて、人生が少し豊かになった気がします。",
-          era: "1990",
+          category: "mentor",
+          title: "定年退職された吹奏楽部の恩師へ。30年越しの『ありがとう』が届いた日",
+          message: "山本先生が定年退職されたと風の噂で聞き、当時の部活仲間で『どうしても感謝を伝えたい』と手紙を流しました。先生のご家族がこの手紙を見つけて先生に伝えてくださり、30年ぶりに温かいお返事をいただくことができました。先日、当時の部員一同で先生を囲んで同窓会を開き、最高の恩返しができました。",
+          era: "1990年代半ば",
           gender: "女性",
           consent: 1,
           is_public: 1,
           is_featured: 1,
           is_all_page: 1,
-          display_position: "right"
+          display_position: "center"
         },
         {
           user_id: req.user.id,
-          message: "恩師に感謝を伝えたくて利用しました。先生はもうご高齢でしたが、私のことを覚えていてくださり、涙ながらに電話で話しました。あの時、先生がかけてくれた言葉が今の私の支えになっています。本当にありがとうございました。",
-          era: "1970",
-          gender: "男性",
-          consent: 1,
-          is_public: 1,
-          is_featured: 1,
-          is_all_page: 1,
-          display_position: "left"
-        },
-        {
-          user_id: req.user.id,
-          message: "昔の仕事仲間と再会。みんなで集まって当時の苦労話を肴に飲むお酒は最高でした。このサイトがなければ、一生会うことはなかったかもしれません。素晴らしいサービスをありがとうございます。",
-          era: "2000",
+          category: "journey",
+          title: "あの夏の北海道。夜通し夢を語り合った旅の友から、3年越しの返信",
+          message: "学生時代、バイクで北海道を巡っていた時に富良野の宿で偶然知り合い、朝まで将来の夢について熱く語り合いました。連絡先を書いた紙を紛失してしまいずっと悔やんでいましたが、ダメ元でReMEETsの海に想いを流していました。3年後、彼から『見つけたよ！』と連絡が入った時は手の震えが止まりませんでした。お互いに白髪交じりの大人になりましたが、心の距離は当時のままでした。",
+          era: "1990年代初頭",
           gender: "男性",
           consent: 1,
           is_public: 1,
@@ -2292,36 +2346,53 @@ async function startServer() {
         },
         {
           user_id: req.user.id,
-          message: "幼馴染と再会できました。お互い近所に住んでいることが分かり、今では家族ぐるみで付き合っています。子供たちも仲良くなり、不思議な縁を感じています。",
-          era: "2010",
+          category: "neighbor",
+          title: "さよならを言えないまま離れ離れになった幼馴染。40年ぶりの笑顔",
+          message: "小学校の時、親の急な転勤で手紙も渡せないまま引っ越してしまい、40年間ずっと心に引っかかっていました。ReMEETsに当時の公園の思い出を流したところ、彼女が検索して見つけてくれました。『ずっと探してたよ』と言われた瞬間、涙があふれました。今はお互いの子供のことや近況を楽しく語り合っています。",
+          era: "1980年代初頭",
           gender: "女性",
           consent: 1,
           is_public: 1,
           is_featured: 0,
           is_all_page: 1,
-          display_position: "left"
+          display_position: null
         },
         {
           user_id: req.user.id,
-          message: "趣味のサークルで一緒だった仲間と15年ぶりに連絡が取れました。今は住んでいる場所は離れていますが、オンラインで近況を報告し合っています。またいつか集まれる日を楽しみにしています。",
-          era: "2000",
-          gender: "その他",
+          category: "colleague",
+          title: "20年前、共に徹夜を乗り越えた仲間と再会。お互いの成長を喜び合う",
+          message: "20代の頃、小さな雑居ビルで寝る間も惜しんでサービス開発に明け暮れた創業メンバー。会社が大きくなり別々の道を歩んでから疎遠になっていましたが、ReMEETsを通じて再び繋がることができました。20年ぶりにグラスを交わし、当時の熱い情熱とお互いのこれまでの歩みを称え合いました。",
+          era: "2000年代初頭",
+          gender: "男性",
           consent: 1,
           is_public: 1,
           is_featured: 0,
           is_all_page: 1,
-          display_position: "right"
+          display_position: null
+        },
+        {
+          user_id: req.user.id,
+          category: "rival",
+          title: "高校最後の決勝で競い合った他校のエース。『あの時の握手』をもう一度",
+          message: "高校サッカー選手権の決勝戦で激闘を繰り広げ、試合後に抱き合って健闘を称え合った他校のキャプテン。大人になってからもずっと心に残っていたあの時の感謝をボトルに託しました。メッセージが届き、今では社会人フットサルで時々一緒に汗を流す大切な友人になりました。",
+          era: "2000年代半ば",
+          gender: "男性",
+          consent: 1,
+          is_public: 1,
+          is_featured: 0,
+          is_all_page: 1,
+          display_position: null
         }
       ];
 
-      const insert = db.prepare("INSERT INTO success_stories (user_id, message, era, gender, consent, is_public, is_featured, is_all_page, display_position) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+      const insert = db.prepare("INSERT INTO success_stories (user_id, category, title, message, era, gender, consent, is_public, is_featured, is_all_page, display_position) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
       const transaction = db.transaction((data) => {
         for (const s of data) {
-          insert.run(s.user_id, s.message, s.era, s.gender, s.consent, s.is_public, s.is_featured || 0, s.is_all_page || 0, s.display_position);
+          insert.run(s.user_id, s.category, s.title, s.message, s.era, s.gender, s.consent, s.is_public, s.is_featured || 0, s.is_all_page || 0, s.display_position);
         }
       });
       transaction(samples);
-      res.json({ success: true });
+      res.json({ success: true, count: samples.length });
     } catch (err) {
       console.error("Seed success stories error:", err);
       res.status(500).json({ error: "Failed to seed success stories" });
