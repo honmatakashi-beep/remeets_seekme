@@ -2160,6 +2160,12 @@ export const AdminDashboard = () => {
   const [dbVersions, setDbVersions] = useState<any[]>([]);
   const [isCreatingVersion, setIsCreatingVersion] = useState(false);
   const [newVersionComment, setNewVersionComment] = useState('');
+  const [selectedVersionIds, setSelectedVersionIds] = useState<number[]>([]);
+  const [versionSearchQuery, setVersionSearchQuery] = useState<string>('');
+  const [versionTypeFilter, setVersionTypeFilter] = useState<'all' | 'manual' | 'pre_restore'>('all');
+  const [versionCurrentPage, setVersionCurrentPage] = useState<number>(1);
+  const [versionItemsPerPage, setVersionItemsPerPage] = useState<number>(25);
+  const [isBatchDeletingVersions, setIsBatchDeletingVersions] = useState<boolean>(false);
 
   // 検閲テストシミュレータ用ステート
   const [censorshipTestText, setCensorshipTestText] = useState<string>('');
@@ -2475,6 +2481,7 @@ export const AdminDashboard = () => {
           });
           if (res.ok) {
             setDbVersions(prev => prev.filter(v => v.id !== version.id));
+            setSelectedVersionIds(prev => prev.filter(id => id !== version.id));
             setStatusMsg({ type: 'success', text: 'バージョン履歴を削除しました。' });
             setTimeout(() => setStatusMsg(null), 4000);
           } else {
@@ -2488,6 +2495,117 @@ export const AdminDashboard = () => {
         }
       }
     );
+  };
+
+  const handleDownloadVersion = async (version: any) => {
+    if (!token) return;
+    try {
+      const res = await fetch(`/api/admin/versions/${version.id}/download`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (res.ok) {
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        const safeComment = (version.comment || 'snapshot').replace(/[^a-zA-Z0-9_\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff-]/g, '_');
+        link.download = `remeets_backup_v${version.id}_${safeComment}.db`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        setStatusMsg({ type: 'success', text: `📦 バックアップファイル「${version.comment}」をダウンロードしました。` });
+        setTimeout(() => setStatusMsg(null), 3000);
+      } else {
+        setStatusMsg({ type: 'error', text: 'ダウンロードに失敗しました。' });
+      }
+    } catch (err) {
+      console.error("Download version error:", err);
+      setStatusMsg({ type: 'error', text: '通信エラーが発生しました。' });
+    }
+  };
+
+  const handleToggleSelectAllVersions = (currentIds: number[]) => {
+    if (selectedVersionIds.length === currentIds.length && currentIds.length > 0) {
+      setSelectedVersionIds([]);
+    } else {
+      setSelectedVersionIds(currentIds);
+    }
+  };
+
+  const handleToggleSelectVersion = (id: number) => {
+    setSelectedVersionIds(prev => 
+      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+    );
+  };
+
+  const handleBatchDeleteVersions = async () => {
+    if (!token || selectedVersionIds.length === 0) return;
+    if (!confirm(`⚠️ 警告: 選択した ${selectedVersionIds.length} 件のスナップショットを完全に削除しますか？バックアップファイルも削除され、元に戻せません。`)) return;
+
+    setIsBatchDeletingVersions(true);
+    try {
+      const res = await fetch('/api/admin/versions/batch-delete', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ ids: selectedVersionIds })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setStatusMsg({ type: 'success', text: `🗑️ ${data.message || '一括削除が完了しました。'}` });
+        setDbVersions(prev => prev.filter(v => !selectedVersionIds.includes(v.id)));
+        setSelectedVersionIds([]);
+        setTimeout(() => setStatusMsg(null), 3000);
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        setStatusMsg({ type: 'error', text: errData.error || '一括削除に失敗しました。' });
+      }
+    } catch (err) {
+      console.error("Batch delete versions error:", err);
+      setStatusMsg({ type: 'error', text: '通信エラーが発生しました。' });
+    } finally {
+      setIsBatchDeletingVersions(false);
+    }
+  };
+
+  const handleExportVersionsCsv = () => {
+    if (!dbVersions || dbVersions.length === 0) {
+      alert('エクスポートするバージョン履歴データがありません。');
+      return;
+    }
+
+    const headers = ['ID', 'バージョン番号', 'コメント', '種別', 'ファイルサイズ(Byte)', 'ファイルサイズ(MB)', '作成日時', 'ファイル名'];
+    const rows = dbVersions.map((v, index) => {
+      const isPreRestore = (v.comment || '').includes('復元前自動バックアップ');
+      const mbSize = v.size ? (v.size / (1024 * 1024)).toFixed(3) : '0';
+      return [
+        v.id,
+        `"#${dbVersions.length - index}"`,
+        `"${(v.comment || '').replace(/"/g, '""')}"`,
+        isPreRestore ? '復元前自動退避' : '手動スナップショット',
+        v.size || 0,
+        mbSize,
+        `"${new Date(v.timestamp).toLocaleString('ja-JP').replace(/"/g, '""')}"`,
+        `"${(v.filename || '').replace(/"/g, '""')}"`
+      ];
+    });
+
+    const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `remeets_versions_history_${new Date().toISOString().slice(0,10)}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   const [activeTab, setActiveTab] = useState<'stats' | 'valuation' | 'quizAnalytics' | 'liveAlerts' | 'users' | 'posts' | 'logs' | 'reports' | 'deletion' | 'ngWords' | 'contacts' | 'emailTemplates' | 'successStories' | 'security' | 'system' | 'versions' | 'notifications' | 'moderation' | 'manual' | 'designSystem' | 'ageVerification' | 'settings' | 'deployment' | 'monetization' | 'payments' | 'rbac'>('stats');
@@ -13674,150 +13792,464 @@ export const AdminDashboard = () => {
               </div>
             </div>
           ) : activeTab === 'versions' ? (
-            <div className="space-y-8">
-              {/* Header section with description */}
-              <div className="glass-card p-8 space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-brand-dark rounded-xl flex items-center justify-center text-white">
-                    <History size={20} className="text-brand-accent" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-serif text-black font-[400] tracking-wider">バージョン履歴・システム復元 (Versions)</h3>
-                    <p className="text-xs text-black/40 uppercase tracking-widest mt-0.5">Database Snapshot Backups & Restore Control</p>
-                  </div>
-                </div>
-                <p className="text-sm font-serif text-black/60 leading-relaxed max-w-4xl">
-                  現在のデータベース状態（ユーザー情報、投函ボトル、お問い合わせ、各種検閲ログ、アクセス履歴等を含むすべてのデータ）を「Versions」として保存し、自由に戻せるスナップショットログ機能です。
-                  実験的なデータ追加を行う前や、理想的な現在の動作仕様をログとして残しておき、もしもの際（データ消失時など）にその時点へ1クリックでロールバック（復旧）することができます。
-                </p>
-              </div>
+            (() => {
+              const enrichedVersions = dbVersions.map((v, index) => {
+                const isPreRestore = (v.comment || '').includes('復元前自動バックアップ');
+                return {
+                  ...v,
+                  versionNumber: dbVersions.length - index,
+                  isPreRestore,
+                  sizeMb: v.size ? (v.size / (1024 * 1024)).toFixed(3) : '0'
+                };
+              });
 
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Create aspect (1 col) */}
-                <div className="lg:col-span-1 space-y-6">
-                  <div className="glass-card p-6 space-y-6">
-                    <h4 className="text-base font-serif text-black flex items-center gap-2 border-b border-brand-border pb-3">
-                      <PlusCircle size={16} className="text-brand-primary" />
-                      スナップショット「現在の状態で保存」
-                    </h4>
-                    
-                    <div className="space-y-4">
-                      <div>
-                        <label className="block text-xs font-bold text-black/50 uppercase tracking-widest mb-2">スナップショットの解説・記憶メッセージ</label>
-                        <input 
-                          type="text"
-                          placeholder="例: データ復旧完了時, ある程度戻したタイミング"
-                          value={newVersionComment}
-                          onChange={(e) => setNewVersionComment(e.target.value)}
-                          className="w-full px-4 py-3 bg-white border border-brand-border rounded-xl text-sm outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/5 transition-all text-black placeholder:text-black/30"
-                        />
+              const totalCount = enrichedVersions.length;
+              const preRestoreCount = enrichedVersions.filter(v => v.isPreRestore).length;
+              const manualCount = totalCount - preRestoreCount;
+              const totalSizeBytes = enrichedVersions.reduce((acc, v) => acc + (v.size || 0), 0);
+              const totalSizeMb = (totalSizeBytes / (1024 * 1024)).toFixed(2);
+              const latestTimestamp = enrichedVersions.length > 0 ? enrichedVersions[0].timestamp : null;
+
+              const filteredVersions = enrichedVersions.filter(v => {
+                if (versionTypeFilter === 'manual' && v.isPreRestore) return false;
+                if (versionTypeFilter === 'pre_restore' && !v.isPreRestore) return false;
+                if (versionSearchQuery.trim()) {
+                  const q = versionSearchQuery.toLowerCase();
+                  const matchText = `${v.comment || ''} ${v.filename || ''} ${v.id || ''}`.toLowerCase();
+                  if (!matchText.includes(q)) return false;
+                }
+                return true;
+              });
+
+              // Pagination
+              const totalPages = Math.max(1, Math.ceil(filteredVersions.length / versionItemsPerPage));
+              const safeCurrentPage = Math.min(versionCurrentPage, totalPages);
+              const startIndex = (safeCurrentPage - 1) * versionItemsPerPage;
+              const paginatedVersions = filteredVersions.slice(startIndex, startIndex + versionItemsPerPage);
+              const currentPageIds = paginatedVersions.map(v => v.id);
+              const isAllPageSelected = currentPageIds.length > 0 && currentPageIds.every(id => selectedVersionIds.includes(id));
+
+              return (
+                <div className="space-y-6">
+                  {/* Header */}
+                  <div className="glass-card p-6 rounded-3xl border border-brand-border/60 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-brand-primary/10 text-brand-primary uppercase tracking-widest border border-brand-primary/20">
+                          Database Snapshot Backups & Restore Control
+                        </span>
                       </div>
+                      <h2 className="text-xl md:text-2xl font-serif font-bold text-brand-dark">
+                        バージョン履歴・システム復元 (Versions)
+                      </h2>
+                      <p className="text-xs md:text-sm text-brand-dark/70 font-sans max-w-3xl">
+                        データベース全体の完全スナップショット（ユーザー・ボトル・お問い合わせ・各種検閲ログ・アクセス履歴等）を保存し、万が一のデータ消失やメンテナンス時に1クリックで安全にロールバック（復旧）できます。
+                      </p>
+                    </div>
 
+                    <div className="flex flex-wrap items-center gap-2 shrink-0">
+                      <button
+                        onClick={handleExportVersionsCsv}
+                        className="px-3.5 py-2.5 rounded-xl bg-white border border-brand-border text-brand-dark text-xs font-bold hover:bg-brand-light/50 transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0"
+                        title="バックアップ台帳をCSVファイルでダウンロードします"
+                      >
+                        <FileSpreadsheet size={14} className="text-emerald-600 shrink-0" />
+                        <span className="whitespace-nowrap">CSV出力</span>
+                      </button>
+                      <button
+                        onClick={() => fetchDbVersions()}
+                        className="p-2.5 rounded-xl bg-white border border-brand-border text-brand-dark hover:bg-brand-light/50 transition-colors shadow-xs cursor-pointer shrink-0"
+                        title="最新のバージョン履歴を取得"
+                      >
+                        <RefreshCw size={14} />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* 4-Card KPI Overview */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">
+                    {/* Total Versions */}
+                    <div className="p-4 rounded-2xl border bg-white border-brand-border/80 text-brand-dark shadow-xs">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[11px] font-bold uppercase tracking-wider opacity-70 whitespace-nowrap">総スナップショット数</span>
+                        <History size={16} className="text-brand-primary" />
+                      </div>
+                      <div className="text-2xl md:text-3xl font-mono font-bold">{totalCount}</div>
+                      <div className="text-[10px] mt-1 opacity-70 whitespace-nowrap">保存済み世代数</div>
+                    </div>
+
+                    {/* Latest Snapshot Time */}
+                    <div className="p-4 rounded-2xl border bg-white border-brand-border/80 text-brand-dark shadow-xs">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[11px] font-bold uppercase tracking-wider opacity-70 whitespace-nowrap">最新バックアップ</span>
+                        <Clock size={16} className="text-emerald-600" />
+                      </div>
+                      <div className="text-sm md:text-base font-mono font-bold truncate">
+                        {latestTimestamp ? new Date(latestTimestamp).toLocaleString('ja-JP', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '未保存'}
+                      </div>
+                      <div className="text-[10px] mt-1 opacity-70 whitespace-nowrap">最終更新日時</div>
+                    </div>
+
+                    {/* Total Disk Size */}
+                    <div className="p-4 rounded-2xl border bg-white border-brand-border/80 text-brand-dark shadow-xs">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[11px] font-bold uppercase tracking-wider opacity-70 whitespace-nowrap">バックアップ総容量</span>
+                        <HardDrive size={16} className="text-sky-600" />
+                      </div>
+                      <div className="text-2xl md:text-3xl font-mono font-bold text-sky-950">{totalSizeMb} <span className="text-sm font-normal">MB</span></div>
+                      <div className="text-[10px] mt-1 opacity-70 whitespace-nowrap">ディスク使用量</div>
+                    </div>
+
+                    {/* Pre-restore Auto Backups */}
+                    <div className="p-4 rounded-2xl border bg-white border-brand-border/80 text-brand-dark shadow-xs">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[11px] font-bold uppercase tracking-wider opacity-70 whitespace-nowrap">復元前自動セーフティ</span>
+                        <ShieldCheck size={16} className="text-purple-600" />
+                      </div>
+                      <div className="text-2xl md:text-3xl font-mono font-bold text-purple-950">{preRestoreCount}</div>
+                      <div className="text-[10px] mt-1 opacity-70 whitespace-nowrap">ロールバック直前退避</div>
+                    </div>
+                  </div>
+
+                  {/* Create Snapshot Panel */}
+                  <div className="glass-card p-5 rounded-2xl border border-brand-border shadow-xs bg-gradient-to-r from-brand-light/40 to-white">
+                    <h3 className="text-xs font-bold text-brand-dark uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                      <PlusCircle size={14} className="text-brand-primary" />
+                      <span>現在の状態でスナップショットを即時作成</span>
+                    </h3>
+                    <div className="flex flex-col sm:flex-row items-center gap-2.5">
+                      <input 
+                        type="text"
+                        placeholder="スナップショットの解説・記憶メモ（例: データ復旧完了時、本番公開前など）..."
+                        value={newVersionComment}
+                        onChange={(e) => setNewVersionComment(e.target.value)}
+                        className="w-full flex-1 px-4 py-2.5 bg-white border border-brand-border rounded-xl text-xs outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/10 transition-all text-brand-dark placeholder:text-brand-dark/40"
+                      />
                       <button
                         type="button"
                         onClick={handleCreateVersion}
                         disabled={isCreatingVersion}
-                        className="w-full py-4 bg-brand-dark text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-brand-dark/90 hover:shadow-lg hover:shadow-brand-dark/10 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50"
+                        className="w-full sm:w-auto px-5 py-2.5 bg-brand-dark text-white rounded-xl text-xs font-bold hover:bg-brand-dark/90 active:scale-95 transition-all shadow-sm flex items-center justify-center gap-1.5 disabled:opacity-50 cursor-pointer whitespace-nowrap shrink-0"
                       >
                         {isCreatingVersion ? (
                           <>
-                            <RefreshCw size={14} className="animate-spin" />
+                            <RefreshCw size={13} className="animate-spin shrink-0" />
                             <span>スナップショット作成中...</span>
                           </>
                         ) : (
                           <>
-                            <History size={14} />
-                            <span>ログを保存</span>
+                            <Camera size={13} className="shrink-0" />
+                            <span>スナップショット保存</span>
                           </>
                         )}
                       </button>
                     </div>
                   </div>
-                </div>
 
-                {/* List aspect (2 cols) */}
-                <div className="lg:col-span-2 space-y-6">
-                  <div className="glass-card p-6 space-y-4">
-                    <div className="flex items-center justify-between border-b border-brand-border pb-3">
-                      <h4 className="text-base font-serif text-black flex items-center gap-2">
-                        <History size={16} className="text-brand-primary" />
-                        保存済みバージョン一覧
-                      </h4>
-                      <span className="text-[10px] font-bold uppercase tracking-widest bg-brand-dark/5 text-black/60 px-2.5 py-1 rounded-full">
-                        バージョン総数: {dbVersions.length}
-                      </span>
+                  {/* Filter Toolbar & Search Bar */}
+                  <div className="glass-card p-4 rounded-2xl border border-brand-border space-y-3">
+                    <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+                      {/* Type Filter Pills */}
+                      <div className="flex items-center gap-1.5 flex-wrap w-full sm:w-auto">
+                        <span className="text-[11px] font-bold text-brand-dark/50 uppercase tracking-wider mr-1 whitespace-nowrap shrink-0">種別:</span>
+                        <button
+                          onClick={() => { setVersionTypeFilter('all'); setVersionCurrentPage(1); }}
+                          className={cn(
+                            "px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap shrink-0",
+                            versionTypeFilter === 'all'
+                              ? "bg-brand-dark text-white shadow-xs"
+                              : "bg-brand-light/60 text-brand-dark/70 hover:bg-brand-light"
+                          )}
+                        >
+                          <span className="whitespace-nowrap">すべて</span>
+                          <span className="px-1.5 py-0.2 rounded-full bg-black/10 text-[10px] font-mono">{totalCount}</span>
+                        </button>
+                        <button
+                          onClick={() => { setVersionTypeFilter('manual'); setVersionCurrentPage(1); }}
+                          className={cn(
+                            "px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap shrink-0",
+                            versionTypeFilter === 'manual'
+                              ? "bg-brand-primary text-white shadow-xs"
+                              : "bg-brand-light/60 text-brand-dark/70 hover:bg-brand-light"
+                          )}
+                        >
+                          <span className="whitespace-nowrap">📸 手動スナップショット</span>
+                          <span className="px-1.5 py-0.2 rounded-full bg-black/10 text-[10px] font-mono">{manualCount}</span>
+                        </button>
+                        <button
+                          onClick={() => { setVersionTypeFilter('pre_restore'); setVersionCurrentPage(1); }}
+                          className={cn(
+                            "px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap shrink-0",
+                            versionTypeFilter === 'pre_restore'
+                              ? "bg-purple-600 text-white shadow-xs"
+                              : "bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200"
+                          )}
+                        >
+                          <ShieldCheck size={12} className="shrink-0" />
+                          <span className="whitespace-nowrap">復元前自動退避</span>
+                          <span className="px-1.5 py-0.2 rounded-full bg-purple-200 text-purple-800 text-[10px] font-mono font-bold">{preRestoreCount}</span>
+                        </button>
+                      </div>
+
+                      {/* Items per page Selector */}
+                      <div className="flex items-center gap-1.5 whitespace-nowrap shrink-0 self-end sm:self-center">
+                        <span className="text-[11px] text-brand-dark/50 font-bold whitespace-nowrap">表示件数:</span>
+                        <select
+                          value={versionItemsPerPage}
+                          onChange={(e) => { setVersionItemsPerPage(Number(e.target.value)); setVersionCurrentPage(1); }}
+                          className="px-2 py-1.5 bg-white border border-brand-border rounded-xl text-xs font-bold text-brand-dark outline-none focus:border-brand-primary cursor-pointer whitespace-nowrap"
+                        >
+                          <option value={10}>10件</option>
+                          <option value={25}>25件</option>
+                          <option value={50}>50件</option>
+                          <option value={100}>100件</option>
+                        </select>
+                      </div>
                     </div>
 
-                    {dbVersions.length === 0 ? (
-                      <div className="py-20 text-center space-y-4">
-                        <div className="w-16 h-16 bg-brand-primary/5 rounded-full flex items-center justify-center mx-auto text-brand-primary/40">
-                          <History size={32} />
-                        </div>
-                        <div className="space-y-1">
-                          <h5 className="text-sm font-bold text-black/70">保存されたバージョン履歴はありません</h5>
-                          <p className="text-xs text-black/40 font-serif">
-                            現在の理想的な動作・戻った状態を保持するには、左の「1クリックでログを保存」してください。
-                          </p>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="divide-y divide-brand-border overflow-hidden rounded-xl border border-brand-border bg-white shadow-sm">
-                        {dbVersions.map((version, index) => (
-                          <div 
-                            key={version.id} 
-                            className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-brand-primary/5 transition-all duration-300"
+                    {/* Search Bar */}
+                    <div className="pt-2 border-t border-brand-border/50">
+                      <div className="relative w-full">
+                        <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-brand-dark/40" />
+                        <input
+                          type="text"
+                          value={versionSearchQuery}
+                          onChange={(e) => { setVersionSearchQuery(e.target.value); setVersionCurrentPage(1); }}
+                          placeholder="コメント・ファイル名・バージョンIDで検索..."
+                          className="w-full pl-9 pr-8 py-2 bg-white border border-brand-border rounded-xl text-xs outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/10 transition-all text-brand-dark placeholder:text-brand-dark/40"
+                        />
+                        {versionSearchQuery && (
+                          <button
+                            onClick={() => { setVersionSearchQuery(''); setVersionCurrentPage(1); }}
+                            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-brand-dark/40 hover:text-brand-dark text-xs cursor-pointer"
                           >
-                            <div className="space-y-2 min-w-0 flex-1">
-                              <div className="flex items-center gap-3">
-                                <span className="text-xs font-bold font-mono text-brand-primary bg-brand-primary/10 px-2.5 py-0.5 rounded-full">
-                                  #{dbVersions.length - index}
-                                </span>
-                                <h5 className="text-sm font-bold text-black truncate pr-4" title={version.comment}>
-                                  {version.comment}
-                                </h5>
-                              </div>
-                              
-                              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-black/40 font-serif">
-                                <span className="flex items-center gap-1">
-                                  <Calendar size={12} />
-                                  {new Date(version.timestamp).toLocaleString()}
-                                </span>
-                                <span className="flex items-center gap-1 font-mono">
-                                  📂 {version.size ? `${(version.size / 1024 / 1024).toFixed(3)} MB` : '不明'}
-                                </span>
-                                <span className="flex items-center gap-1 text-[10px] font-mono select-all bg-black/5 px-1 py-0.5 rounded text-black/60">
-                                  ID: {version.id}
-                                </span>
-                              </div>
-                            </div>
+                            ×
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
 
-                            <div className="flex items-center gap-2.5 shrink-0 self-end sm:self-center">
-                              <button
-                                type="button"
-                                onClick={() => handleRestoreVersion(version)}
-                                className="px-4 py-2.5 bg-brand-dark hover:bg-brand-dark/95 text-white text-xs font-bold rounded-xl transition-all duration-300 flex items-center justify-center gap-1.5 hover:shadow-lg shadow-sm"
+                  {/* Floating Batch Actions Bar */}
+                  {selectedVersionIds.length > 0 && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="p-3 bg-brand-dark text-white rounded-2xl shadow-lg flex flex-wrap items-center justify-between gap-3 border border-brand-border/20"
+                    >
+                      <div className="flex items-center gap-2 whitespace-nowrap shrink-0">
+                        <span className="px-2.5 py-1 rounded-lg bg-white/20 text-xs font-mono font-bold whitespace-nowrap">
+                          {selectedVersionIds.length} 件選択中
+                        </span>
+                        <span className="text-xs text-white/70 hidden sm:inline whitespace-nowrap">
+                          選択したスナップショットの一括操作:
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <button
+                          onClick={handleBatchDeleteVersions}
+                          disabled={isBatchDeletingVersions}
+                          className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-xs cursor-pointer disabled:opacity-50 whitespace-nowrap shrink-0"
+                        >
+                          <Trash2 size={13} className="shrink-0" />
+                          <span className="whitespace-nowrap">選択した履歴を一括削除</span>
+                        </button>
+                        <button
+                          onClick={() => setSelectedVersionIds([])}
+                          className="px-2.5 py-1.5 bg-white/10 hover:bg-white/20 text-white/80 rounded-xl text-xs font-medium transition-all cursor-pointer whitespace-nowrap shrink-0"
+                        >
+                          選択解除
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {/* Modern h-12 Table */}
+                  <div className="glass-card overflow-hidden rounded-3xl border border-brand-border shadow-sm">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr className="border-b border-brand-border bg-brand-light/70 h-10">
+                            <th className="w-10 px-3 text-center align-middle">
+                              <input
+                                type="checkbox"
+                                checked={isAllPageSelected}
+                                onChange={() => handleToggleSelectAllVersions(currentPageIds)}
+                                className="rounded border-brand-border text-brand-primary focus:ring-brand-primary/20 cursor-pointer"
+                                title="このページの全件を選択/解除"
+                              />
+                            </th>
+                            <th className="px-3 text-[11px] font-bold uppercase tracking-widest text-brand-dark/75 whitespace-nowrap align-middle">世代 #</th>
+                            <th className="px-3 text-[11px] font-bold uppercase tracking-widest text-brand-dark/75 whitespace-nowrap align-middle">種別</th>
+                            <th className="px-3 text-[11px] font-bold uppercase tracking-widest text-brand-dark/75 whitespace-nowrap align-middle min-w-[240px]">コメント・記憶メモ</th>
+                            <th className="px-3 text-[11px] font-bold uppercase tracking-widest text-brand-dark/75 whitespace-nowrap align-middle">作成日時</th>
+                            <th className="px-3 text-[11px] font-bold uppercase tracking-widest text-brand-dark/75 whitespace-nowrap align-middle">容量</th>
+                            <th className="px-3 text-[11px] font-bold uppercase tracking-widest text-brand-dark/75 text-right whitespace-nowrap align-middle pr-4">操作</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-brand-border/60 font-sans">
+                          {paginatedVersions.map(v => {
+                            const isSelected = selectedVersionIds.includes(v.id);
+
+                            return (
+                              <tr 
+                                key={v.id} 
+                                className={cn(
+                                  "h-12 transition-colors",
+                                  isSelected
+                                    ? "bg-brand-primary/10"
+                                    : "hover:bg-brand-light/30"
+                                )}
                               >
-                                <RefreshCw size={12} />
-                                この状態に復旧・戻る
-                              </button>
-                              
-                              <button
-                                type="button"
-                                onClick={() => handleDeleteVersion(version)}
-                                className="p-2.5 bg-red-50 hover:bg-red-600 border border-red-100 hover:border-red-600 text-red-600 hover:text-white rounded-xl transition-all duration-300"
-                                title="このバージョン履歴を削除"
-                              >
-                                <Trash2 size={14} />
-                              </button>
+                                {/* Checkbox */}
+                                <td className="px-3 text-center align-middle">
+                                  <input
+                                    type="checkbox"
+                                    checked={isSelected}
+                                    onChange={() => handleToggleSelectVersion(v.id)}
+                                    className="rounded border-brand-border text-brand-primary focus:ring-brand-primary/20 cursor-pointer"
+                                  />
+                                </td>
+
+                                {/* Version Number */}
+                                <td className="px-3 align-middle whitespace-nowrap">
+                                  <span className="text-xs font-bold font-mono text-brand-primary bg-brand-primary/10 px-2 py-0.5 rounded-full">
+                                    #{v.versionNumber}
+                                  </span>
+                                </td>
+
+                                {/* Type Badge */}
+                                <td className="px-3 align-middle whitespace-nowrap">
+                                  {v.isPreRestore ? (
+                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-purple-100 text-purple-800 border border-purple-200 rounded-md text-[10px] font-bold whitespace-nowrap">
+                                      <ShieldCheck size={11} className="shrink-0" />
+                                      <span>自動退避</span>
+                                    </span>
+                                  ) : (
+                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-md text-[10px] font-bold whitespace-nowrap">
+                                      <Camera size={11} className="shrink-0" />
+                                      <span>手動保存</span>
+                                    </span>
+                                  )}
+                                </td>
+
+                                {/* Comment & Details */}
+                                <td className="px-3 align-middle max-w-[340px]">
+                                  <div className="flex items-center gap-1.5 truncate">
+                                    <span className="font-bold text-xs text-brand-dark truncate" title={v.comment}>
+                                      {v.comment}
+                                    </span>
+                                    <span className="text-[10px] text-brand-dark/40 font-mono hidden md:inline truncate">
+                                      ({v.filename})
+                                    </span>
+                                  </div>
+                                </td>
+
+                                {/* Timestamp */}
+                                <td className="px-3 align-middle text-[11px] text-brand-dark/75 font-mono whitespace-nowrap">
+                                  {new Date(v.timestamp).toLocaleString('ja-JP', { 
+                                    year: 'numeric',
+                                    month: 'numeric', 
+                                    day: 'numeric', 
+                                    hour: '2-digit', 
+                                    minute: '2-digit' 
+                                  })}
+                                </td>
+
+                                {/* Size */}
+                                <td className="px-3 align-middle text-[11px] text-brand-dark/80 font-mono whitespace-nowrap">
+                                  {v.sizeMb} MB
+                                </td>
+
+                                {/* Actions */}
+                                <td className="px-3 align-middle text-right whitespace-nowrap pr-4">
+                                  <div className="flex items-center justify-end gap-1.5 whitespace-nowrap shrink-0">
+                                    <button
+                                      type="button"
+                                      onClick={() => handleRestoreVersion(v)}
+                                      className="py-1 px-2.5 bg-brand-dark hover:bg-brand-primary text-white text-xs font-bold rounded-lg transition-all duration-200 flex items-center gap-1 shadow-2xs cursor-pointer whitespace-nowrap shrink-0"
+                                      title="このスナップショット時点へデータベースを復元（ロールバック）します"
+                                    >
+                                      <RefreshCw size={11} className="shrink-0" />
+                                      <span className="whitespace-nowrap">この状態へ復元</span>
+                                    </button>
+
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDownloadVersion(v)}
+                                      className="p-1 rounded-lg text-brand-dark/60 hover:text-emerald-700 hover:bg-emerald-50 transition-colors cursor-pointer shrink-0"
+                                      title="このDBバックアップファイル(.db)をPCへダウンロード"
+                                    >
+                                      <Download size={13} className="shrink-0" />
+                                    </button>
+
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDeleteVersion(v)}
+                                      className="p-1 rounded-lg text-brand-dark/40 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer shrink-0"
+                                      title="このバージョン履歴を削除"
+                                    >
+                                      <Trash2 size={13} className="shrink-0" />
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            );
+                          })}
+
+                          {paginatedVersions.length === 0 && (
+                            <tr>
+                              <td colSpan={7} className="py-16 text-center text-brand-dark/50 font-serif">
+                                <div className="max-w-xs mx-auto space-y-2">
+                                  <History size={32} className="mx-auto text-brand-dark/30" />
+                                  <p className="text-sm font-bold text-brand-dark/80">該当するバージョン履歴はありません</p>
+                                  <p className="text-xs text-brand-dark/50">上部のスナップショット保存ボタンから、現在の状態をバックアップしてください。</p>
+                                </div>
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Pagination Bar */}
+                    {filteredVersions.length > 0 && (
+                      <div className="p-3 bg-brand-light/40 border-t border-brand-border flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-brand-dark/70">
+                        <div className="font-mono text-[11px]">
+                          全 <strong className="text-brand-dark font-bold">{filteredVersions.length}</strong> 件中 {startIndex + 1} - {Math.min(startIndex + versionItemsPerPage, filteredVersions.length)} 件を表示
+                        </div>
+
+                        {totalPages > 1 && (
+                          <div className="flex items-center gap-1">
+                            <button
+                              onClick={() => setVersionCurrentPage(prev => Math.max(1, prev - 1))}
+                              disabled={safeCurrentPage === 1}
+                              className="px-2.5 py-1 rounded-lg bg-white border border-brand-border font-bold text-xs hover:bg-brand-light transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                            >
+                              前へ
+                            </button>
+                            <div className="flex items-center gap-1 font-mono font-bold text-[11px] px-2">
+                              <span>{safeCurrentPage}</span>
+                              <span className="opacity-40">/</span>
+                              <span>{totalPages}</span>
                             </div>
+                            <button
+                              onClick={() => setVersionCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                              disabled={safeCurrentPage === totalPages}
+                              className="px-2.5 py-1 rounded-lg bg-white border border-brand-border font-bold text-xs hover:bg-brand-light transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                            >
+                              次へ
+                            </button>
                           </div>
-                        ))}
+                        )}
                       </div>
                     )}
                   </div>
                 </div>
-              </div>
-            </div>
+              );
+            })()
           ) : activeTab === 'manual' ? (
             <AdminManualContent />
           ) : activeTab === 'designSystem' ? (

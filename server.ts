@@ -6097,6 +6097,63 @@ async function startServer() {
     }
   });
 
+  // Download Database Snapshot File (.db)
+  app.get("/api/admin/versions/:id/download", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      const versionId = req.params.id;
+      const targetVersion = db.prepare("SELECT * FROM system_versions WHERE id = ?").get(versionId) as any;
+      if (!targetVersion) {
+        return res.status(404).json({ error: "指定されたバージョンが見つかりません" });
+      }
+
+      const backupsDir = path.join(process.cwd(), "backups");
+      const backupPath = path.join(backupsDir, targetVersion.filename);
+      if (!fs.existsSync(backupPath)) {
+        return res.status(404).json({ error: "バックアップファイルが存在しません" });
+      }
+
+      const safeComment = (targetVersion.comment || 'snapshot').replace(/[^a-zA-Z0-9_\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff-]/g, '_');
+      const downloadFilename = `remeets_backup_v${targetVersion.id}_${safeComment}.db`;
+
+      res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(downloadFilename)}"`);
+      res.setHeader('Content-Type', 'application/x-sqlite3');
+      const fileStream = fs.createReadStream(backupPath);
+      fileStream.pipe(res);
+      logAction(req.user?.id || 1, "VERSION_DOWNLOADED", `DBバックアップダウンロード: ${targetVersion.comment}`, req.ip);
+    } catch (err) {
+      console.error("Failed to download version snapshot:", err);
+      res.status(500).json({ error: "ファイルのダウンロードに失敗しました" });
+    }
+  });
+
+  // Batch Delete Version Snapshots
+  app.post("/api/admin/versions/batch-delete", authenticateToken, isAdmin, (req: any, res) => {
+    const { ids } = req.body;
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({ error: "Invalid request (ids array required)" });
+    }
+    try {
+      const backupsDir = path.join(process.cwd(), "backups");
+      let deletedCount = 0;
+      for (const id of ids) {
+        const targetVersion = db.prepare("SELECT * FROM system_versions WHERE id = ?").get(id) as any;
+        if (targetVersion) {
+          const backupPath = path.join(backupsDir, targetVersion.filename);
+          if (fs.existsSync(backupPath)) {
+            try { fs.unlinkSync(backupPath); } catch (e) {}
+          }
+          db.prepare("DELETE FROM system_versions WHERE id = ?").run(id);
+          deletedCount++;
+        }
+      }
+      logAction(req.user?.id || 1, "VERSION_BATCH_DELETED", `${deletedCount}件のバージョン履歴を一括削除`, req.ip);
+      res.json({ success: true, count: deletedCount, message: `${deletedCount}件のスナップショットを一括削除しました` });
+    } catch (err) {
+      console.error("Batch delete versions error:", err);
+      res.status(500).json({ error: "一括削除に失敗しました" });
+    }
+  });
+
   app.get("/api/admin/retention-stats", authenticateToken, isAdmin, (req, res) => {
     try {
       // New users vs Returning users (last 30 days)
