@@ -16,6 +16,7 @@ import { SuccessStoryModal } from './SearchPage';
 import { DocumentCameraOverlay, stopAllGlobalCameraStreams } from '../components/DocumentCameraOverlay';
 import { EkycProgressTelemetryPanel } from '../components/EkycProgressTelemetryPanel';
 import { SupportModal } from '../components/SupportModal';
+import { CreditCardPaymentForm } from '../components/CreditCardPaymentForm';
 import postSuccessSoft from '../assets/images/post_success_soft_1785869214309.jpg';
 import quizMatchHearts from '../assets/images/quiz_match_hearts_pastel_1785940521320.jpg';
 
@@ -2480,88 +2481,24 @@ export const AccountPage = () => {
             {/* Step 3: 決済 */}
             {mypageEkycStep === 3 && (
               <div className="space-y-6 font-sans">
-                <div className="flex items-center justify-between border-b border-zinc-150 pb-3 gap-2">
-                  <div>
-                    <span className="text-[10px] font-bold text-teal-700 uppercase tracking-widest block font-sans">Step 3 / 4</span>
-                    <h3 className="text-lg font-serif font-bold text-brand-dark">クレジットカードお支払い（600円）</h3>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setMypagePayCardNumber('4242 4242 4242 4242');
-                      setMypagePayCardExpiry('12/28');
-                      setMypagePayCardCvc('123');
-                    }}
-                    className="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 rounded-lg text-[11px] font-bold transition-all shadow-2xs shrink-0 flex items-center gap-1 cursor-pointer"
-                    title="検証用のStripeテストカード情報を自動入力"
-                  >
-                    <Sparkles size={12} className="text-amber-600" />
-                    <span>⚡ テストカード自動入力</span>
-                  </button>
-                </div>
-
-                {mypageEkycCapturedImages.front && (
-                  <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2 text-emerald-800 font-bold">
-                      <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
-                      <span>身分証撮影完了 (反射なし・角の欠けなし OK)</span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setMypageEkycStep(2)}
-                      className="text-[11px] text-teal-700 hover:underline font-bold shrink-0 cursor-pointer"
-                    >
-                      再撮影
-                    </button>
-                  </div>
-                )}
-
-                <div className="p-4 bg-slate-50 border border-zinc-200 rounded-2xl space-y-3 text-xs">
-                  <div className="flex justify-between items-center font-bold text-brand-dark border-b border-zinc-200 pb-2">
-                    <span>eKYC本人確認手続き費用（税込）</span>
-                    <span className="text-base text-teal-800 font-serif">600円</span>
-                  </div>
-                  
-                  <div className="space-y-2 pt-1">
-                    <div>
-                      <label className="font-bold text-zinc-700 block text-[11px]">カード番号</label>
-                      <input
-                        type="text"
-                        placeholder="4242 •••• •••• 4242"
-                        value={mypagePayCardNumber}
-                        onChange={(e) => setMypagePayCardNumber(e.target.value)}
-                        className="w-full px-3 py-2 bg-white border border-zinc-300 rounded-lg text-xs focus:outline-none focus:border-teal-500 font-mono"
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <div>
-                        <label className="font-bold text-zinc-700 block text-[11px]">有効期限 (MM/YY)</label>
-                        <input
-                          type="text"
-                          placeholder="12/28"
-                          value={mypagePayCardExpiry}
-                          onChange={(e) => setMypagePayCardExpiry(e.target.value)}
-                          className="w-full px-3 py-2 bg-white border border-zinc-300 rounded-lg text-xs focus:outline-none focus:border-teal-500 font-mono"
-                        />
-                      </div>
-                      <div>
-                        <label className="font-bold text-zinc-700 block text-[11px]">CVC (3桁)</label>
-                        <input
-                          type="text"
-                          placeholder="123"
-                          value={mypagePayCardCvc}
-                          onChange={(e) => setMypagePayCardCvc(e.target.value)}
-                          className="w-full px-3 py-2 bg-white border border-zinc-300 rounded-lg text-xs focus:outline-none focus:border-teal-500 font-mono"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <p className="text-[10px] text-zinc-500 flex items-center gap-1 pt-1">
-                    <ShieldCheck size={12} className="text-emerald-600" />
-                    <span>256-bit SSL 暗号化通信によりStripe安全決済処理されます</span>
-                  </p>
-                </div>
+                <CreditCardPaymentForm
+                  cardNumber={mypagePayCardNumber}
+                  cardExpiry={mypagePayCardExpiry}
+                  cardCvc={mypagePayCardCvc}
+                  cardName={mypagePayCardName}
+                  onCardNumberChange={setMypagePayCardNumber}
+                  onCardExpiryChange={setMypagePayCardExpiry}
+                  onCardCvcChange={setMypagePayCardCvc}
+                  onCardNameChange={setMypagePayCardName}
+                  showDemoButton={true}
+                  onDemoFill={() => {
+                    setMypagePayCardNumber('4242 4242 4242 4242');
+                    setMypagePayCardExpiry('12/28');
+                    setMypagePayCardCvc('123');
+                    setMypagePayCardName('TAKASHI HONMA');
+                  }}
+                  refundGuaranteeText="本人確認（eKYC）審査が不承認となった場合は、Stripe仮売上により全額即時自動返金されます。"
+                />
 
                 <div className="flex gap-3 pt-2">
                   <button

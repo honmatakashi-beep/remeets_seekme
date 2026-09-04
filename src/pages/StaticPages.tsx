@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { SupportModal } from '../components/SupportModal';
+import { CreditCardPaymentForm } from '../components/CreditCardPaymentForm';
 import { motion } from 'framer-motion';
 import safetyGuardianCool from '../assets/images/safety_guardian_cool_1785864341331.jpg';
 import { PageHeader } from '../lib/utils';
@@ -491,46 +492,26 @@ export const SupporterDonationModal = ({
               />
             </div>
 
-            <div className="space-y-3 pt-2">
-              <label className="text-xs font-bold text-slate-800 block">
-                クレジットカード情報 (Stripeセキュア決済)
-              </label>
-              <div className="space-y-2">
-                <input
-                  type="text"
-                  required
-                  placeholder="カード番号 (4242 4242 4242 4242)"
-                  value={cardNumber}
-                  onChange={(e) => setCardNumber(e.target.value)}
-                  className="w-full text-xs p-2.5 bg-white rounded-lg border border-slate-200 focus:outline-none focus:border-pink-500 font-sans"
-                />
-                <div className="grid grid-cols-2 gap-2">
-                  <input
-                    type="text"
-                    required
-                    placeholder="MM/YY"
-                    value={cardExpiry}
-                    onChange={(e) => setCardExpiry(e.target.value)}
-                    className="text-xs p-2.5 bg-white rounded-lg border border-slate-200 focus:outline-none focus:border-pink-500 font-sans"
-                  />
-                  <input
-                    type="text"
-                    required
-                    placeholder="CVC"
-                    value={cardCvc}
-                    onChange={(e) => setCardCvc(e.target.value)}
-                    className="text-xs p-2.5 bg-white rounded-lg border border-slate-200 focus:outline-none focus:border-pink-500 font-sans"
-                  />
-                </div>
-                <input
-                  type="text"
-                  required
-                  placeholder="カード名義人 (例: TARO YAMADA)"
-                  value={cardName}
-                  onChange={(e) => setCardName(e.target.value)}
-                  className="w-full text-xs p-2.5 bg-white rounded-lg border border-slate-200 focus:outline-none focus:border-pink-500 font-sans"
-                />
-              </div>
+            <div className="pt-2">
+              <CreditCardPaymentForm
+                cardNumber={cardNumber}
+                cardExpiry={cardExpiry}
+                cardCvc={cardCvc}
+                cardName={cardName}
+                onCardNumberChange={setCardNumber}
+                onCardExpiryChange={setCardExpiry}
+                onCardCvcChange={setCardCvc}
+                onCardNameChange={setCardName}
+                amountText={`ご支援・寄付額: ¥${totalAmount.toLocaleString()}（税込）`}
+                showDemoButton={true}
+                onDemoFill={() => {
+                  setCardNumber('4242 4242 4242 4242');
+                  setCardExpiry('12/28');
+                  setCardCvc('123');
+                  setCardName('TAKASHI HONMA');
+                }}
+                refundGuaranteeText="寄付決済はStripeの国際最高セキュリティ規格 (PCI-DSS Level 1) で安全に処理されます。"
+              />
             </div>
 
             <button

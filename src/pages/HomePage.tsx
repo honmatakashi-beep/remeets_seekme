@@ -15,6 +15,7 @@ import stepWriteImg from '../assets/images/step_01_photo_write_1785857630366.jpg
 import stepDriftImg from '../assets/images/step_02_photo_drift_1785857647101.jpg';
 import stepReconnectImg from '../assets/images/step_03_photo_read_v2_1785857978640.jpg';
 import heroBottleMail from '../assets/images/hero_small_bottle_mail_1785944479619.jpg';
+import { CreditCardPaymentForm } from '../components/CreditCardPaymentForm';
 
 export const HomePage = ({ onOpenOnboarding, heroCopyStyle }: { onOpenOnboarding?: () => void, heroCopyStyle: 'proposal1' | 'proposal2' | 'proposal3' }) => {
   const [posts, setPosts] = useState<any[]>([]);
@@ -1302,84 +1303,24 @@ export const HomePage = ({ onOpenOnboarding, heroCopyStyle }: { onOpenOnboarding
                     </div>
                   </div>
 
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-zinc-800">クレジットカード情報</span>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setPayCardNumber('4111 1111 1111 1111');
-                          setPayCardExpiry('12/29');
-                          setPayCardCvc('123');
-                          setPayCardName('TAKASHI HONMA');
-                        }}
-                        className="text-[9px] bg-zinc-100 hover:bg-zinc-200 border border-zinc-200 text-zinc-700 px-2 py-0.5 rounded font-bold transition-all cursor-pointer"
-                      >
-                        デモ用カード情報を自動入力する
-                      </button>
-                    </div>
-
-                    <div className="space-y-2">
-                      <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-zinc-500">カード番号</label>
-                        <input
-                          type="text"
-                          maxLength={19}
-                          value={payCardNumber}
-                          onChange={(e) => setPayCardNumber(e.target.value.replace(/[^\d]/g, '').replace(/(.{4})/g, '$1 ').trim())}
-                          placeholder="4111 1111 1111 1111"
-                          className="w-full px-3 py-2 border border-zinc-300 rounded-xl bg-slate-50 focus:border-rose-500 outline-none text-xs text-black tracking-widest font-mono"
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-2">
-                        <div className="space-y-1">
-                          <label className="text-[10px] font-bold text-zinc-500">有効期限 (MM/YY)</label>
-                          <input
-                            type="text"
-                            maxLength={5}
-                            value={payCardExpiry}
-                            onChange={(e) => {
-                              let val = e.target.value.replace(/[^\d]/g, '');
-                              if (val.length > 2) val = val.substring(0, 2) + '/' + val.substring(2);
-                              setPayCardExpiry(val);
-                            }}
-                            placeholder="12/29"
-                            className="w-full px-3 py-2 border border-zinc-300 rounded-xl bg-slate-50 focus:border-rose-500 outline-none text-xs text-black font-mono text-center"
-                          />
-                        </div>
-                        <div className="space-y-1">
-                          <label className="text-[10px] font-bold text-zinc-500">セキュリティコード (CVC)</label>
-                          <input
-                            type="password"
-                            maxLength={4}
-                            value={payCardCvc}
-                            onChange={(e) => setPayCardCvc(e.target.value.replace(/[^\d]/g, ''))}
-                            placeholder="123"
-                            className="w-full px-3 py-2 border border-zinc-300 rounded-xl bg-slate-50 focus:border-rose-500 outline-none text-xs text-black font-mono text-center"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-zinc-500">カード名義人 (半角大文字ローマ字)</label>
-                        <input
-                          type="text"
-                          value={payCardName}
-                          onChange={(e) => setPayCardName(e.target.value.toUpperCase())}
-                          placeholder="TAROU SATO"
-                          className="w-full px-3 py-2 border border-zinc-300 rounded-xl bg-slate-50 focus:border-rose-500 outline-none text-xs text-black uppercase font-mono"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="p-2.5 bg-zinc-50 border border-zinc-100 rounded-xl flex items-start gap-2 text-xs text-zinc-500 leading-relaxed font-sans text-left">
-                      <ShieldAlert size={14} className="text-zinc-400 shrink-0 mt-0.5" />
-                      <p>
-                        <strong>🔒 SSL高セキュリティ保護</strong>: クレジットカード情報は高度に暗号化されて通信され、サーバー側には一切保管されません。安心して決済をお進めください。
-                      </p>
-                    </div>
-                  </div>
+                  <CreditCardPaymentForm
+                    cardNumber={payCardNumber}
+                    cardExpiry={payCardExpiry}
+                    cardCvc={payCardCvc}
+                    cardName={payCardName}
+                    onCardNumberChange={setPayCardNumber}
+                    onCardExpiryChange={setPayCardExpiry}
+                    onCardCvcChange={setPayCardCvc}
+                    onCardNameChange={setPayCardName}
+                    showDemoButton={true}
+                    onDemoFill={() => {
+                      setPayCardNumber('4111 1111 1111 1111');
+                      setPayCardExpiry('12/29');
+                      setPayCardCvc('123');
+                      setPayCardName('TAKASHI HONMA');
+                    }}
+                    refundGuaranteeText="手紙開封または本人確認（eKYC）手続きが不承認となった場合は、Stripe仮売上システムにより全額即時自動返金されます。"
+                  />
 
                   <div className="flex gap-2 pt-2">
                     <button

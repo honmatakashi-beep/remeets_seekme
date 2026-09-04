@@ -22,6 +22,7 @@ import { BottleLoader, WarningMessage, ProtectedRoute, GoogleSearchResultPreview
 import { DocumentCameraOverlay, stopAllGlobalCameraStreams } from '../components/DocumentCameraOverlay';
 import { QuizMatchingAnalyticsView } from '../components/QuizMatchingAnalyticsView';
 import { SupportModal } from '../components/SupportModal';
+import { CreditCardPaymentForm } from '../components/CreditCardPaymentForm';
 import { QuestionSampleModal } from './AuthPages';
 import { SuccessStoryModal } from './SearchPage';
 import quizMatchHearts from '../assets/images/quiz_match_hearts_pastel_1785940521320.jpg';
@@ -2293,84 +2294,24 @@ export const CreatePostPage = () => {
                     </div>
                   </div>
 
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-zinc-800">クレジットカード情報</span>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setPayCardNumber('4111 1111 1111 1111');
-                          setPayCardExpiry('12/29');
-                          setPayCardCvc('123');
-                          setPayCardName('TAKASHI HONMA');
-                        }}
-                        className="text-[9px] bg-zinc-100 hover:bg-zinc-200 border border-zinc-200 text-zinc-700 px-2 py-0.5 rounded font-bold transition-all cursor-pointer"
-                      >
-                        デモ用カード情報を自動入力する
-                      </button>
-                    </div>
-
-                    <div className="space-y-2">
-                      <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-zinc-500">カード番号</label>
-                        <input
-                          type="text"
-                          maxLength={19}
-                          value={payCardNumber}
-                          onChange={(e) => setPayCardNumber(e.target.value.replace(/[^\d]/g, '').replace(/(.{4})/g, '$1 ').trim())}
-                          placeholder="4111 1111 1111 1111"
-                          className="w-full px-3 py-1.5 border border-zinc-300 rounded-xl bg-slate-50 focus:border-rose-500 outline-none text-xs text-black tracking-widest font-mono"
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-2">
-                        <div className="space-y-1">
-                          <label className="text-[10px] font-bold text-zinc-500">有効期限 (MM/YY)</label>
-                          <input
-                            type="text"
-                            maxLength={5}
-                            value={payCardExpiry}
-                            onChange={(e) => {
-                              let val = e.target.value.replace(/[^\d]/g, '');
-                              if (val.length > 2) val = val.substring(0, 2) + '/' + val.substring(2);
-                              setPayCardExpiry(val);
-                            }}
-                            placeholder="12/29"
-                            className="w-full px-3 py-1.5 border border-zinc-300 rounded-xl bg-slate-50 focus:border-rose-500 outline-none text-xs text-black font-mono text-center"
-                          />
-                        </div>
-                        <div className="space-y-1">
-                          <label className="text-[10px] font-bold text-zinc-500">セキュリティコード (CVC)</label>
-                          <input
-                            type="password"
-                            maxLength={4}
-                            value={payCardCvc}
-                            onChange={(e) => setPayCardCvc(e.target.value.replace(/[^\d]/g, ''))}
-                            placeholder="123"
-                            className="w-full px-3 py-1.5 border border-zinc-300 rounded-xl bg-slate-50 focus:border-rose-500 outline-none text-xs text-black font-mono text-center"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-zinc-500">カード名義人 (半角大文字ローマ字)</label>
-                        <input
-                          type="text"
-                          value={payCardName}
-                          onChange={(e) => setPayCardName(e.target.value.toUpperCase())}
-                          placeholder="TAROU SATO"
-                          className="w-full px-3 py-1.5 border border-zinc-300 rounded-xl bg-slate-50 focus:border-rose-500 outline-none text-xs text-black uppercase font-mono"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="p-2.5 bg-zinc-50 border border-zinc-100 rounded-xl flex items-start gap-2 text-xs text-zinc-500 leading-relaxed font-sans text-left">
-                      <ShieldAlert size={14} className="text-zinc-400 shrink-0 mt-0.5" />
-                      <p>
-                        <strong>🔒 SSL高セキュリティ保護</strong>: クレジットカード情報は高度に暗号化されて通信され、サーバー側には一切保管されません。安心して決済をお進めください。
-                      </p>
-                    </div>
-                  </div>
+                  <CreditCardPaymentForm
+                    cardNumber={payCardNumber}
+                    cardExpiry={payCardExpiry}
+                    cardCvc={payCardCvc}
+                    cardName={payCardName}
+                    onCardNumberChange={setPayCardNumber}
+                    onCardExpiryChange={setPayCardExpiry}
+                    onCardCvcChange={setPayCardCvc}
+                    onCardNameChange={setPayCardName}
+                    showDemoButton={true}
+                    onDemoFill={() => {
+                      setPayCardNumber('4111 1111 1111 1111');
+                      setPayCardExpiry('12/29');
+                      setPayCardCvc('123');
+                      setPayCardName('TAKASHI HONMA');
+                    }}
+                    refundGuaranteeText="手紙開封または本人確認（eKYC）手続きが不承認となった場合は、Stripe仮売上システムにより全額即時自動返金されます。"
+                  />
 
                   <div className="flex gap-2 pt-2">
                     <button
@@ -3780,75 +3721,18 @@ export const RevealContactModal = ({
 
               <form onSubmit={handleRevealSubmit} className="space-y-5">
                 {/* 開封手数料 Stripeカード入力 */}
-                <div className="p-4 bg-emerald-50/80 border border-emerald-200 rounded-2xl space-y-3 shadow-2xs">
-                  <div className="flex items-center justify-between border-b border-emerald-200/80 pb-2">
-                    <span className="text-xs font-bold text-emerald-900 flex items-center gap-1.5">
-                      <Coins size={16} className="text-emerald-600" />
-                      手紙開示・接続手数料（買い切り）
-                    </span>
-                    <span className="text-base font-bold text-emerald-900 font-serif">600 円 <span className="text-[10px] font-normal text-emerald-700">(税込)</span></span>
-                  </div>
-
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="text-[11px] text-emerald-800 leading-relaxed font-sans">
-                      ※お相手との安全な連絡先交換およびシステムの維持に当てられます（月額なし）。
-                    </p>
-                    {/* テスト用自動入力ボタン */}
-                    <button
-                      type="button"
-                      onClick={fillTestCard}
-                      className="shrink-0 px-2.5 py-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-900 font-bold text-[11px] rounded-lg border border-emerald-300 transition-colors flex items-center gap-1 cursor-pointer shadow-2xs active:scale-95"
-                    >
-                      <span>🧪 テストカード入力</span>
-                    </button>
-                  </div>
-
-                  <div className="space-y-2 pt-1">
-                    <div>
-                      <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                        クレジットカード番号（Stripeテスト決済）
-                      </label>
-                      <input 
-                        type="text"
-                        required
-                        placeholder="4242 4242 4242 4242"
-                        className="w-full px-3 py-2.5 border border-emerald-300 rounded-xl text-xs md:text-sm bg-white font-mono outline-none focus:ring-2 focus:ring-emerald-500"
-                        value={payCardNumber}
-                        onChange={e => handleCardNumberChange(e.target.value)}
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <div>
-                        <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                          有効期限 (MM/YY)
-                        </label>
-                        <input 
-                          type="text"
-                          required
-                          placeholder="12/28"
-                          maxLength={5}
-                          className="w-full px-3 py-2 border border-emerald-300 rounded-xl text-xs bg-white font-mono outline-none focus:ring-2 focus:ring-emerald-500"
-                          value={payCardExpiry}
-                          onChange={e => handleExpiryChange(e.target.value)}
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                          CVC / セキュリティコード
-                        </label>
-                        <input 
-                          type="text"
-                          required
-                          placeholder="123"
-                          maxLength={4}
-                          className="w-full px-3 py-2 border border-emerald-300 rounded-xl text-xs bg-white font-mono outline-none focus:ring-2 focus:ring-emerald-500"
-                          value={payCardCvc}
-                          onChange={e => setPayCardCvc(e.target.value.replace(/\D/g, '').slice(0, 4))}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <CreditCardPaymentForm
+                  cardNumber={payCardNumber}
+                  cardExpiry={payCardExpiry}
+                  cardCvc={payCardCvc}
+                  onCardNumberChange={handleCardNumberChange}
+                  onCardExpiryChange={setPayCardExpiry}
+                  onCardCvcChange={setPayCardCvc}
+                  amountText="手紙開示・接続手数料: 600 円（税込・買い切り）"
+                  showDemoButton={true}
+                  onDemoFill={fillTestCard}
+                  refundGuaranteeText="お相手との連絡先開示手続きは、Stripe暗号化通信により安全に保護されます。"
+                />
 
                 <button 
                   type="submit"
@@ -7194,50 +7078,24 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                     </div>
                   )}
 
-                  <div className="space-y-3">
-                    <div>
-                      <label className="text-[10px] font-bold text-zinc-500 block mb-1 uppercase tracking-wider font-sans">カード番号</label>
-                      <input
-                        type="text"
-                        value={finderPayCardNumber}
-                        onChange={(e) => setFinderPayCardNumber(e.target.value)}
-                        placeholder="4111 1111 1111 1111"
-                        className="w-full px-4 py-2.5 border border-zinc-200 rounded-xl text-sm focus:outline-none focus:border-indigo-600 font-mono"
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="text-[10px] font-bold text-zinc-500 block mb-1 uppercase tracking-wider font-sans">有効期限 (MM/YY)</label>
-                        <input
-                          type="text"
-                          value={finderPayCardExpiry}
-                          onChange={(e) => setFinderPayCardExpiry(e.target.value)}
-                          placeholder="12/29"
-                          className="w-full px-4 py-2.5 border border-zinc-200 rounded-xl text-sm focus:outline-none focus:border-indigo-600 font-mono"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-[10px] font-bold text-zinc-500 block mb-1 uppercase tracking-wider font-sans">CVC</label>
-                        <input
-                          type="text"
-                          value={finderPayCardCvc}
-                          onChange={(e) => setFinderPayCardCvc(e.target.value)}
-                          placeholder="123"
-                          className="w-full px-4 py-2.5 border border-zinc-200 rounded-xl text-sm focus:outline-none focus:border-indigo-600 font-mono"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="text-[10px] font-bold text-zinc-500 block mb-1 uppercase tracking-wider font-sans">カード名義</label>
-                      <input
-                        type="text"
-                        value={finderPayCardName}
-                        onChange={(e) => setFinderPayCardName(e.target.value)}
-                        placeholder="TARO YAMADA"
-                        className="w-full px-4 py-2.5 border border-zinc-200 rounded-xl text-sm focus:outline-none focus:border-indigo-600 text-uppercase font-sans"
-                      />
-                    </div>
-                  </div>
+                  <CreditCardPaymentForm
+                    cardNumber={finderPayCardNumber}
+                    cardExpiry={finderPayCardExpiry}
+                    cardCvc={finderPayCardCvc}
+                    cardName={finderPayCardName}
+                    onCardNumberChange={setFinderPayCardNumber}
+                    onCardExpiryChange={setFinderPayCardExpiry}
+                    onCardCvcChange={setFinderPayCardCvc}
+                    onCardNameChange={setFinderPayCardName}
+                    showDemoButton={true}
+                    onDemoFill={() => {
+                      setFinderPayCardNumber("4242 4242 4242 4242");
+                      setFinderPayCardExpiry("12/28");
+                      setFinderPayCardCvc("123");
+                      setFinderPayCardName("TAKASHI HONMA");
+                    }}
+                    refundGuaranteeText="本人確認（eKYC）審査が不承認となった場合は、Stripe仮売上システムにより全額即時自動返金されます。"
+                  />
 
                   <div className="flex items-center gap-2 pt-1">
                     <button

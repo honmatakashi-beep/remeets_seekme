@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, Coffee, ShieldCheck, CheckCircle2, Sparkles, CreditCard, Lock, X, BookOpen } from 'lucide-react';
+import { CreditCardPaymentForm } from './CreditCardPaymentForm';
 
 interface SupportModalProps {
   isOpen: boolean;
@@ -141,45 +142,23 @@ export const SupportModal: React.FC<SupportModalProps> = ({ isOpen, onClose, onS
               </div>
 
               {/* Payment Card Form Simulation */}
-              <div className="space-y-3 pt-2 border-t border-slate-100">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                    <CreditCard size={15} className="text-indigo-600" />
-                    お支払い方法（クレジットカード）
-                  </span>
-                  <span className="text-[10px] text-slate-400 flex items-center gap-1 font-sans">
-                    <Lock size={12} className="text-emerald-600" /> Stripe暗号化通信
-                  </span>
-                </div>
-
-                <div className="space-y-2 text-xs">
-                  <input
-                    type="text"
-                    required
-                    placeholder="カード番号 (例: 4242 4242 4242 4242)"
-                    value={cardNumber}
-                    onChange={(e) => setCardNumber(e.target.value)}
-                    className="w-full h-10 px-3 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:border-indigo-500 focus:bg-white outline-none font-mono text-xs"
-                  />
-                  <div className="grid grid-cols-2 gap-2">
-                    <input
-                      type="text"
-                      required
-                      placeholder="有効期限 (MM/YY)"
-                      value={cardExpiry}
-                      onChange={(e) => setCardExpiry(e.target.value)}
-                      className="h-10 px-3 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:border-indigo-500 focus:bg-white outline-none font-mono text-xs"
-                    />
-                    <input
-                      type="text"
-                      required
-                      placeholder="CVC (セキュリティコード)"
-                      value={cardCvc}
-                      onChange={(e) => setCardCvc(e.target.value)}
-                      className="h-10 px-3 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:border-indigo-500 focus:bg-white outline-none font-mono text-xs"
-                    />
-                  </div>
-                </div>
+              <div className="pt-2 border-t border-slate-100">
+                <CreditCardPaymentForm
+                  cardNumber={cardNumber}
+                  cardExpiry={cardExpiry}
+                  cardCvc={cardCvc}
+                  onCardNumberChange={setCardNumber}
+                  onCardExpiryChange={setCardExpiry}
+                  onCardCvcChange={setCardCvc}
+                  amountText={`ご支援額: ¥${(quantity * 500).toLocaleString()}（税込）`}
+                  showDemoButton={true}
+                  onDemoFill={() => {
+                    setCardNumber('4242 4242 4242 4242');
+                    setCardExpiry('12/28');
+                    setCardCvc('123');
+                  }}
+                  refundGuaranteeText="決済はStripeの国際最高セキュリティ規格 (PCI-DSS Level 1) で安全に処理されます。"
+                />
               </div>
 
               {/* Submit Button */}
