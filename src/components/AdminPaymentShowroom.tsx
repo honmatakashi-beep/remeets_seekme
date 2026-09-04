@@ -16,9 +16,20 @@ import {
   RotateCcw,
   Zap,
   Info,
-  ShieldAlert
+  ShieldAlert,
+  ArrowRight
 } from 'lucide-react';
-import { CreditCardPaymentForm, CardBrand, detectCardBrand } from './CreditCardPaymentForm';
+import {
+  CreditCardPaymentForm,
+  CardBrand,
+  detectCardBrand,
+  VisaLogo,
+  MastercardLogo,
+  JcbLogo,
+  AmexLogo,
+  DinersLogo,
+  DiscoverLogo
+} from './CreditCardPaymentForm';
 
 export type PaymentScenario = 
   | 'letter_reveal'        // 手紙開示・連絡先開示 (600円)
@@ -34,16 +45,16 @@ interface TestCardPreset {
   expiry: string;
   cvc: string;
   name: string;
-  color: string;
+  badgeBg: string;
 }
 
 const TEST_CARDS: TestCardPreset[] = [
-  { brandName: 'VISA', brand: 'visa', number: '4111 1111 1111 1111', expiry: '12/29', cvc: '123', name: 'TAKASHI HONMA', color: 'bg-blue-600 text-white' },
-  { brandName: 'Mastercard', brand: 'mastercard', number: '5555 5555 5555 4444', expiry: '10/28', cvc: '888', name: 'KENJI SATO', color: 'bg-amber-600 text-white' },
-  { brandName: 'JCB', brand: 'jcb', number: '3528 1234 5678 9012', expiry: '06/27', cvc: '567', name: 'YUKI TANAKA', color: 'bg-emerald-600 text-white' },
-  { brandName: 'AMEX', brand: 'amex', number: '3782 8224 6310 005', expiry: '04/29', cvc: '1234', name: 'TAKASHI HONMA', color: 'bg-cyan-700 text-white' },
-  { brandName: 'Diners', brand: 'diners', number: '3600 0000 0000 00', expiry: '11/28', cvc: '999', name: 'HANAKO YAMADA', color: 'bg-indigo-700 text-white' },
-  { brandName: 'Discover', brand: 'discover', number: '6011 0000 0000 0000', expiry: '08/30', cvc: '321', name: 'JOHN DOE', color: 'bg-orange-600 text-white' },
+  { brandName: 'VISA', brand: 'visa', number: '4111 1111 1111 1111', expiry: '12/29', cvc: '123', name: 'TAKASHI HONMA', badgeBg: 'border-blue-300 hover:border-blue-500 bg-blue-50/50' },
+  { brandName: 'Mastercard', brand: 'mastercard', number: '5555 5555 5555 4444', expiry: '10/28', cvc: '888', name: 'KENJI SATO', badgeBg: 'border-red-300 hover:border-red-500 bg-red-50/50' },
+  { brandName: 'JCB', brand: 'jcb', number: '3528 1234 5678 9012', expiry: '06/27', cvc: '567', name: 'YUKI TANAKA', badgeBg: 'border-emerald-300 hover:border-emerald-500 bg-emerald-50/50' },
+  { brandName: 'AMEX', brand: 'amex', number: '3782 8224 6310 005', expiry: '04/29', cvc: '1234', name: 'TAKASHI HONMA', badgeBg: 'border-cyan-300 hover:border-cyan-500 bg-cyan-50/50' },
+  { brandName: 'Diners', brand: 'diners', number: '3600 0000 0000 00', expiry: '11/28', cvc: '999', name: 'HANAKO YAMADA', badgeBg: 'border-indigo-300 hover:border-indigo-500 bg-indigo-50/50' },
+  { brandName: 'Discover', brand: 'discover', number: '6011 0000 0000 0000', expiry: '08/30', cvc: '321', name: 'JOHN DOE', badgeBg: 'border-orange-300 hover:border-orange-500 bg-orange-50/50' },
 ];
 
 export const AdminPaymentShowroom: React.FC = () => {
@@ -65,13 +76,15 @@ export const AdminPaymentShowroom: React.FC = () => {
 
   const detectedBrand = detectCardBrand(cardNumber);
 
-  // プリセット注入
-  const applyPreset = (preset: TestCardPreset) => {
+  // プリセット注入（クリックと同時に実機モーダルを自動ポップアップ！）
+  const applyPresetAndOpenModal = (preset: TestCardPreset) => {
     setCardNumber(preset.number);
     setCardExpiry(preset.expiry);
     setCardCvc(preset.cvc);
     setCardName(preset.name);
     setIsSuccess(false);
+    // 自動で実機モーダルを起動
+    setModalOpen(true);
   };
 
   const clearForm = () => {
@@ -108,58 +121,66 @@ export const AdminPaymentShowroom: React.FC = () => {
 
   return (
     <div className="space-y-6 font-sans">
-      {/* ヘッダー */}
-      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-6 rounded-2xl shadow-lg border border-indigo-900/50">
+      {/* 🚀 ヘッダー＆ワンクリック即時モーダル起動カードバー */}
+      <div className="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white p-6 rounded-3xl shadow-xl border border-indigo-900/50">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-1.5">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-xs font-bold">
               <Sparkles size={13} className="text-emerald-400 animate-pulse" />
-              <span>管理者専用 / 全決済画面ライブショールーム</span>
+              <span>公式カードブランドSVG搭載 / 決済ショールーム</span>
             </div>
-            <h2 className="text-xl md:text-2xl font-bold font-serif tracking-wide text-white">
-              💳 クレジットカード決済UI・シミュレーター
+            <h2 className="text-xl md:text-2xl font-bold font-serif tracking-wide text-white flex items-center gap-2">
+              <span>💳 本物の決済画面プレビュー・シミュレーター</span>
             </h2>
             <p className="text-xs text-slate-300 leading-relaxed font-sans max-w-3xl">
-              クイズ回答や身分証撮影のステップをスキップし、アプリ内の全5つの決済パターン、カードブランド自動判定、Stripe公式暗号化保証バナー、決済完了画面をワンクリックで即座にプレビュー・テストできます。
+              <strong>下のカードブランド（VISA / Master / JCB等）をクリックすると、その場で実際の決済ポップアップが自動で開きます。</strong>
+              各国際ブランドの本物公式ロゴ、自動ハイライト判定、Stripe暗号化バナー、返金保証の動作を体験できます。
             </p>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setModalOpen(true)}
-              className="px-4 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-xs font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
+              className="px-5 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-2xl text-xs font-bold shadow-lg hover:shadow-xl transition-all flex items-center gap-2 cursor-pointer active:scale-95"
             >
-              <Eye size={15} />
-              <span>モーダル形式で開く</span>
+              <Eye size={16} />
+              <span>モーダルを開いて確認</span>
             </button>
           </div>
         </div>
 
-        {/* テストカード ワンクリック注入バー */}
-        <div className="mt-5 pt-4 border-t border-slate-700/60">
-          <div className="text-[11px] font-bold text-slate-300 mb-2 flex items-center gap-1.5">
-            <Zap size={13} className="text-amber-400" />
-            <span>カードブランド自動認識テスト（クリックすると即座に各ブランドのロゴが点灯します）:</span>
+        {/* 🌟 本物カードブランド即時起動バー（クリックで即モーダル展開） */}
+        <div className="mt-6 pt-5 border-t border-slate-700/60">
+          <div className="text-xs font-bold text-emerald-300 mb-3 flex items-center justify-between">
+            <span className="flex items-center gap-1.5">
+              <Zap size={15} className="text-amber-400 animate-bounce" />
+              <span>カードを押すと、即座に実機モーダルが自動で開きます（1クリック起動）:</span>
+            </span>
+            <span className="text-[10px] text-slate-400 font-normal">全6大ブランド対応</span>
           </div>
-          <div className="flex flex-wrap items-center gap-2">
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
             {TEST_CARDS.map((card) => (
               <button
                 key={card.brand}
                 type="button"
-                onClick={() => applyPreset(card)}
-                className={'px-3 py-1.5 rounded-lg text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95 hover:brightness-110 ' + card.color}
+                onClick={() => applyPresetAndOpenModal(card)}
+                className="bg-white hover:bg-slate-50 text-slate-900 p-2.5 rounded-2xl border border-slate-300 shadow-md hover:shadow-lg transition-all flex flex-col items-center justify-center gap-1.5 cursor-pointer active:scale-95 group"
+                title={card.brandName + 'のテスト情報を注入して決済モーダルを即座に開く'}
               >
-                <span>{card.brandName}</span>
-                <span className="text-[10px] opacity-80 font-mono">({card.number.slice(0, 4)}...)</span>
+                <div className="h-6 flex items-center justify-center">
+                  {card.brand === 'visa' && <VisaLogo className="h-5 w-auto" />}
+                  {card.brand === 'mastercard' && <MastercardLogo className="h-5 w-auto" />}
+                  {card.brand === 'jcb' && <JcbLogo className="h-5 w-auto" />}
+                  {card.brand === 'amex' && <AmexLogo className="h-5 w-auto" />}
+                  {card.brand === 'diners' && <DinersLogo className="h-5 w-auto" />}
+                  {card.brand === 'discover' && <DiscoverLogo className="h-5 w-auto" />}
+                </div>
+                <div className="text-[10px] font-bold text-indigo-700 flex items-center gap-1 group-hover:underline">
+                  <span>{card.brandName}で開く</span>
+                  <ArrowRight size={10} className="group-hover:translate-x-0.5 transition-transform" />
+                </div>
               </button>
             ))}
-            <button
-              type="button"
-              onClick={clearForm}
-              className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-600 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1"
-            >
-              <RotateCcw size={12} />
-              <span>クリア</span>
-            </button>
           </div>
         </div>
       </div>
@@ -279,7 +300,7 @@ export const AdminPaymentShowroom: React.FC = () => {
                 {currentScenario === 'system_donation' && '⑤ ReMEETs運営応援・寄付モーダル'}
               </h3>
             </div>
-            <span className="text-xs px-2.5 py-1 bg-slate-100 text-slate-700 rounded-full font-bold">
+            <span className="text-xs px-3 py-1 bg-slate-100 text-slate-700 rounded-full font-bold">
               現在認識: <strong className="text-indigo-600 uppercase font-mono">{detectedBrand}</strong>
             </span>
           </div>
@@ -463,10 +484,10 @@ export const AdminPaymentShowroom: React.FC = () => {
 
               <div className="p-3 bg-slate-50 rounded-xl border border-slate-150 space-y-1">
                 <span className="font-bold text-slate-800 flex items-center gap-1">
-                  4. 🎯 6大カードブランド即時認識UX
+                  4. 🎯 6大カードブランド公式SVG＆即時認識
                 </span>
                 <p className="text-[11px] leading-relaxed text-slate-500">
-                  VISA、Mastercard、JCB、AMEX、Diners、Discoverの各国際ブランドを先頭桁からリアルタイム自動判定し、ハイライト点灯します。
+                  VISA、Mastercard、JCB、AMEX、Diners、Discoverの各公式ベクターロゴマークを搭載し、入力番号からリアルタイム判定します。
                 </p>
               </div>
             </div>
@@ -500,7 +521,7 @@ export const AdminPaymentShowroom: React.FC = () => {
         </div>
       </div>
 
-      {/* モーダル形式でのポップアッププレビュー */}
+      {/* 📱 実機ポップアップモーダル（カードクリックで即座にここが開く） */}
       <AnimatePresence>
         {modalOpen && (
           <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 overflow-y-auto bg-slate-950/80 backdrop-blur-sm">
@@ -508,17 +529,17 @@ export const AdminPaymentShowroom: React.FC = () => {
               initial={{ opacity: 0, scale: 0.95, y: 15 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 15 }}
-              className="relative w-full max-w-lg bg-white rounded-3xl p-6 shadow-2xl border border-slate-200 space-y-5 my-auto max-h-[90vh] overflow-y-auto"
+              className="relative w-full max-w-lg bg-white rounded-3xl p-6 shadow-2xl border border-slate-200 space-y-5 my-auto max-h-[90vh] overflow-y-auto text-left"
             >
               <div className="flex items-center justify-between border-b border-slate-150 pb-3">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-xl bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-700">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-2xl bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-700 shadow-xs">
                     <CreditCard size={18} />
                   </div>
                   <div>
                     <span className="text-[10px] font-bold text-indigo-700 uppercase tracking-widest block font-sans">Modal Viewport Simulator</span>
                     <h3 className="text-base font-bold text-slate-900 font-serif">
-                      実機モーダル表示テスト
+                      実機決済モーダル（本番同様UI）
                     </h3>
                   </div>
                 </div>
@@ -553,6 +574,11 @@ export const AdminPaymentShowroom: React.FC = () => {
                   setCardCvc('123');
                   setCardName('TAKASHI HONMA');
                 }}
+                refundGuaranteeText={
+                  currentScenario === 'supporter_donation' || currentScenario === 'system_donation'
+                    ? '決済はStripeの国際最高セキュリティ規格 (PCI-DSS Level 1) で安全に処理されます。'
+                    : '手紙開封または本人確認（eKYC）審査が不承認となった場合は、Stripe仮売上システムにより全額即時自動返金されます。'
+                }
               />
 
               <div className="flex gap-2 pt-2">
@@ -569,9 +595,10 @@ export const AdminPaymentShowroom: React.FC = () => {
                     handleSimulatePayment();
                     setTimeout(() => setModalOpen(false), 1300);
                   }}
-                  className="flex-1 py-3 bg-gradient-to-r from-emerald-600 to-teal-700 text-white rounded-xl text-xs font-bold shadow-md transition-all cursor-pointer"
+                  className="flex-1 py-3 bg-gradient-to-r from-emerald-600 to-teal-700 text-white rounded-xl text-xs font-bold shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
                 >
-                  テスト決済を実行
+                  <Lock size={14} />
+                  <span>テスト決済を実行</span>
                 </button>
               </div>
             </motion.div>
