@@ -21,10 +21,12 @@ let db: any;
 
 const JWT_SECRET = process.env.JWT_SECRET || "kizuna-secret-key-2026";
 
-// Rate Limiters
+const isProd = process.env.NODE_ENV === 'production';
+
+// Rate Limiters (🛡️ SEC-012: 環境連動型レート制限)
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
+  max: isProd ? 100 : 5000, // Limit each IP to 100 requests in prod
   message: { error: "リクエストが多すぎます。しばらくしてからもう一度お試しください。" },
   standardHeaders: true,
   legacyHeaders: false,
@@ -33,7 +35,7 @@ const authLimiter = rateLimit({
 
 const registrationLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: 5, // Limit each IP to 5 registrations per hour
+  max: isProd ? 10 : 5000, // Limit each IP to 10 registrations per hour in prod
   message: { error: "登録リクエストが多すぎます。しばらくしてからもう一度お試しください。" },
   standardHeaders: true,
   legacyHeaders: false,
@@ -42,7 +44,7 @@ const registrationLimiter = rateLimit({
 
 const searchLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 30, // Limit each IP to 30 searches per 15 mins
+  max: isProd ? 30 : 5000, // Limit each IP to 30 searches per 15 mins in prod
   message: { error: "検索リクエストが多すぎます。しばらくしてからもう一度お試しください。" },
   standardHeaders: true,
   legacyHeaders: false,
@@ -51,7 +53,7 @@ const searchLimiter = rateLimit({
 
 const postLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: 3, // Limit each IP to 3 posts per hour
+  max: isProd ? 10 : 5000, // Limit each IP to 10 posts per hour in prod
   message: { error: "投稿リクエストが多すぎます。しばらくしてからもう一度お試しください。" },
   standardHeaders: true,
   legacyHeaders: false,
@@ -60,7 +62,7 @@ const postLimiter = rateLimit({
 
 const messageLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 50, // Limit each IP to 50 messages per 15 mins
+  max: isProd ? 50 : 5000, // Limit each IP to 50 messages per 15 mins in prod
   message: { error: "メッセージ送信リクエストが多すぎます。しばらくしてからもう一度お試しください。" },
   standardHeaders: true,
   legacyHeaders: false,
@@ -69,7 +71,7 @@ const messageLimiter = rateLimit({
 
 const verifyLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10, // Limit each IP to 10 verification attempts per 15 mins
+  max: isProd ? 15 : 5000, // Limit each IP to 15 verification attempts per 15 mins in prod
   message: { error: "回答試行回数が多すぎます。しばらくしてからもう一度お試しください。" },
   standardHeaders: true,
   legacyHeaders: false,
@@ -2931,7 +2933,20 @@ async function startServer() {
         db.prepare("DELETE FROM notifications WHERE user_id = ?").run(userId);
         db.prepare("DELETE FROM search_alerts WHERE email = ?").run(user.email);
         
-        // 2. 退会ユーザーの手紙の個人情報物理消去（差出人本名・連絡先IDの消去）
+        // 2. 外部キー制約テーブルの安全解除・匿名化
+        db.prepare("UPDATE posts SET verified_by = NULL WHERE verified_by = ?").run(userId);
+        db.prepare("UPDATE payment_transactions SET user_id = NULL WHERE user_id = ?").run(userId);
+        db.prepare("UPDATE action_logs SET user_id = NULL WHERE user_id = ?").run(userId);
+        db.prepare("UPDATE access_logs SET user_id = NULL WHERE user_id = ?").run(userId);
+        try { db.prepare("UPDATE age_verification_logs SET user_id = NULL WHERE user_id = ?").run(userId); } catch (e) {}
+        try { db.prepare("UPDATE age_verification_documents SET user_id = NULL WHERE user_id = ?").run(userId); } catch (e) {}
+        try { db.prepare("UPDATE success_stories SET user_id = NULL WHERE user_id = ?").run(userId); } catch (e) {}
+        try { db.prepare("UPDATE contacts SET user_id = NULL WHERE user_id = ?").run(userId); } catch (e) {}
+        try { db.prepare("UPDATE messages SET sender_id = NULL WHERE sender_id = ?").run(userId); } catch (e) {}
+        try { db.prepare("UPDATE messages SET receiver_id = NULL WHERE receiver_id = ?").run(userId); } catch (e) {}
+        try { db.prepare("UPDATE reports SET reporter_id = NULL WHERE reporter_id = ?").run(userId); } catch (e) {}
+
+        // 3. 退会ユーザーの手紙の個人情報物理消去（差出人本名・連絡先IDの消去）
         db.prepare(`
           UPDATE posts 
           SET searcher_full_name = '退会済ユーザー', 
@@ -2941,7 +2956,7 @@ async function startServer() {
           WHERE user_id = ?
         `).run(userId);
 
-        // 3. ユーザーレコードの物理消去
+        // 4. ユーザーレコードの物理消去
         db.prepare("DELETE FROM users WHERE id = ?").run(userId);
       })();
 
