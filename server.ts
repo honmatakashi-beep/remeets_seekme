@@ -3355,7 +3355,7 @@ async function startServer() {
     }
   });
 
-  app.get("/api/debug/post_questions", (req, res) => {
+  app.get("/api/debug/post_questions", authenticateToken, isAdmin, (req, res) => {
     try {
       const count = db.prepare("SELECT COUNT(*) as count FROM post_questions").get();
       const sample = db.prepare("SELECT * FROM post_questions LIMIT 5").all();
@@ -3837,23 +3837,28 @@ async function startServer() {
         ...questions
       ];
       
-      const { secret_answer, ...postData } = post;
+      const { secret_answer, secret_answer_plain, ...postData } = post;
       
       const author = post.user_id ? (db.prepare("SELECT id, username, full_name, nickname, email, contact_type, contact_id, is_ekyc_verified FROM users WHERE id = ?").get(post.user_id) as any) : null;
       const verifier = post.verified_by ? (db.prepare("SELECT id, username, full_name, nickname, email, contact_type, contact_id, is_ekyc_verified FROM users WHERE id = ?").get(post.verified_by) as any) : null;
 
       const isOwner = !!(req.user && req.user.id === post.user_id);
       const isVerifiedFinder = !!(req.user && post.verified_by === req.user.id);
-      const isResolved = post.status === 'resolved' || !!post.verified_by;
+      const canViewDetails = isOwner || isVerifiedFinder;
       
       postData.is_owner = isOwner;
       postData.is_verified_finder = isVerifiedFinder;
+
+      // Always remove sensitive internal / security fields
+      delete postData.secret_answer;
+      delete postData.secret_answer_plain;
+      delete postData.ai_reason;
 
       if (author) {
         postData.author_info = {
           id: author.id,
           username: author.username,
-          full_name: author.full_name,
+          full_name: canViewDetails ? author.full_name : undefined,
           nickname: author.nickname,
           is_ekyc_verified: author.is_ekyc_verified
         };
@@ -3862,8 +3867,8 @@ async function startServer() {
         postData.verified_by_user = verifier;
       }
 
-      if (isOwner || isVerifiedFinder || isResolved) {
-        // Resolve full name and contact information
+      if (canViewDetails) {
+        // Resolve full name and contact information only for author or verified finder
         const resolvedFullName = post.searcher_full_name || author?.full_name || post.searcher_name || author?.username;
         const resolvedContactType = post.contact_type || author?.contact_type || 'LINE';
         const resolvedContactId = post.contact_id || author?.contact_id || (author?.username ? `@${author.username}` : (post.searcher_name ? `@${post.searcher_name}` : ''));
@@ -3879,12 +3884,13 @@ async function startServer() {
         postData.contact_note = resolvedContactNote;
         postData.unlock_message = resolvedContactNote;
       } else {
-        // Hide message, full name, school, and detailed hometown if not owner or solved
+        // Strictly hide message, full name, contact ID, note, school, and detailed hometown from strangers / third parties
         delete postData.message;
         delete postData.searcher_full_name;
         delete postData.contact_id;
         delete postData.contact_note;
         delete postData.unlock_contact_info;
+        delete postData.unlock_message;
         if (postData.target_school) {
           postData.target_school = post.category === 'work' ? '関連職場（正解後に開示）' : '関連学校（正解後に開示）';
         }
