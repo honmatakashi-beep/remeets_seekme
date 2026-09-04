@@ -8,11 +8,11 @@ import {
 } from 'recharts';
 import {
   Activity, AlertCircle, AlertTriangle, ArrowDown, ArrowLeft, ArrowRight,
-  ArrowUp, Award, BarChart2, Bell, BookOpen, Bot, Brain, Calendar, Check,
+  ArrowUp, Award, BarChart2, Bell, BookOpen, Bot, Brain, Calendar, Camera, Check,
   CheckCircle, CheckCircle2, CheckSquare, ChevronDown, ChevronLeft,
   ChevronRight, ChevronUp, Clock, Coins, Copy, CreditCard, Database,
   DollarSign, Download, Edit, Edit2, Edit3, ExternalLink, Eye, EyeOff,
-  FileSpreadsheet, FileText, FileWarning, Filter, Flag, Globe, Heart,
+  FileSpreadsheet, FileText, FileWarning, Filter, Flag, Globe, HardDrive, Heart,
   HelpCircle, Home, Image as ImageIcon, Inbox, Info, Key, Lock, LogIn,
   LogOut, Mail, MapPin, Menu, MessageCircle, MessageSquare, MoreVertical,
   Palette, PlusCircle, Presentation, Printer, Radio, RefreshCw, RotateCcw,
