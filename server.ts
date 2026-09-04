@@ -6082,8 +6082,9 @@ async function startServer() {
     const { word } = req.body;
     if (!word) return res.status(400).json({ error: "Word required" });
     try {
-      db.prepare("INSERT INTO ng_words (word) VALUES (?)").run(word);
+      db.prepare("INSERT INTO ng_words (word) VALUES (?)").run(word.trim());
       lastNgWordsFetch = 0; // Clear cache immediately
+      logAction((req as any).user.id, "NG_WORD_ADD", `Added NG word: ${word.trim()}`, req.ip);
       res.json({ success: true });
     } catch (err: any) {
       if (err.message.includes("UNIQUE constraint failed")) {
@@ -6093,10 +6094,58 @@ async function startServer() {
     }
   });
 
+  app.post("/api/admin/ng-words/batch-add", authenticateToken, isAdmin, (req, res) => {
+    const { words } = req.body;
+    if (!Array.isArray(words) || words.length === 0) {
+      return res.status(400).json({ error: "Words array required" });
+    }
+    try {
+      let inserted = 0;
+      let skipped = 0;
+      const stmt = db.prepare("INSERT OR IGNORE INTO ng_words (word) VALUES (?)");
+      const transaction = db.transaction((list: string[]) => {
+        for (const w of list) {
+          const trimmed = (w || '').trim();
+          if (trimmed) {
+            const result = stmt.run(trimmed);
+            if (result.changes > 0) inserted++;
+            else skipped++;
+          }
+        }
+      });
+      transaction(words);
+      lastNgWordsFetch = 0;
+      logAction((req as any).user.id, "NG_WORDS_BATCH_ADD", `Batch added ${inserted} NG words (${skipped} skipped)`, req.ip);
+      res.json({ success: true, inserted, skipped });
+    } catch (err) {
+      res.status(500).json({ error: "Failed to batch add NG words" });
+    }
+  });
+
+  app.post("/api/admin/ng-words/batch-delete", authenticateToken, isAdmin, (req, res) => {
+    const { ids } = req.body;
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({ error: "IDs array required" });
+    }
+    try {
+      const stmt = db.prepare("DELETE FROM ng_words WHERE id = ?");
+      const transaction = db.transaction((idList: number[]) => {
+        for (const id of idList) stmt.run(id);
+      });
+      transaction(ids);
+      lastNgWordsFetch = 0;
+      logAction((req as any).user.id, "NG_WORDS_BATCH_DELETE", `Batch deleted ${ids.length} NG words`, req.ip);
+      res.json({ success: true, count: ids.length });
+    } catch (err) {
+      res.status(500).json({ error: "Failed to batch delete NG words" });
+    }
+  });
+
   app.delete("/api/admin/ng-words/:id", authenticateToken, isAdmin, (req, res) => {
     try {
       db.prepare("DELETE FROM ng_words WHERE id = ?").run(req.params.id);
       lastNgWordsFetch = 0; // Clear cache immediately
+      logAction((req as any).user.id, "NG_WORD_DELETE", `Deleted NG word #${req.params.id}`, req.ip);
       res.json({ success: true });
     } catch (err) {
       res.status(500).json({ error: "Failed to delete NG word" });
