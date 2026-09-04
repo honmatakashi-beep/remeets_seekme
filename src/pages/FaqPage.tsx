@@ -28,28 +28,67 @@ interface FaqItem {
   tags?: string[];
 }
 
+interface CategoryDef {
+  id: string;
+  label: string;
+  icon: React.ComponentType<{ size?: number; className?: string }>;
+  description: string;
+}
+
 export const FaqPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [activeCategory, setActiveCategory] = useState<string>('pricing');
   const [openItems, setOpenItems] = useState<Record<string, boolean>>({});
 
-  // 未設定時はデフォルト true（最初から全開）
   const isItemOpen = (id: string) => {
-    return openItems[id] !== false;
+    // 検索語句が入力されている場合は一致した項目を自動展開
+    if (searchQuery.trim().length > 0) {
+      return openItems[id] !== false;
+    }
+    return !!openItems[id];
   };
 
   const toggleItem = (id: string) => {
     setOpenItems(prev => ({ ...prev, [id]: !isItemOpen(id) }));
   };
 
-  const categories = [
-    { id: 'all', label: 'すべて', icon: HelpCircle },
-    { id: 'pricing', label: '料金・お支払い', icon: CreditCard },
-    { id: 'quiz', label: '想い出クイズ・再会', icon: HeartHandshake },
-    { id: 'safety', label: '安全性・プライバシー', icon: ShieldCheck },
-    { id: 'ekyc', label: '本人確認・返金保証', icon: UserCheck },
-    { id: 'account', label: '登録・ログイン・通知', icon: Smartphone },
-    { id: 'edit', label: '手紙の編集・削除・退会', icon: Trash2 },
+  const categories: CategoryDef[] = [
+    {
+      id: 'pricing',
+      label: '料金・お支払い',
+      icon: CreditCard,
+      description: '利用料金、買い切りシステム、決済方法、領収書について'
+    },
+    {
+      id: 'quiz',
+      label: '想い出クイズ・再会',
+      icon: HeartHandshake,
+      description: '秘密の合言葉照合、回答制限、連絡先の安全な引き渡しについて'
+    },
+    {
+      id: 'safety',
+      label: '安全性・プライバシー',
+      icon: ShieldCheck,
+      description: '個人情報の非公開保護、Google Gemini AI自動診断・検閲'
+    },
+    {
+      id: 'ekyc',
+      label: '本人確認・返金保証',
+      icon: UserCheck,
+      description: '公的本人確認（eKYC）、Stripe仮売上による即時自動返金保証'
+    },
+    {
+      id: 'account',
+      label: '登録・ログイン・通知',
+      icon: Smartphone,
+      description: 'LINE / Google認証、パスワード不要ログイン、メール・SMS通知'
+    },
+    {
+      id: 'edit',
+      label: '手紙の編集・削除・退会',
+      icon: Trash2,
+      description: '手紙の修正・完全削除、退会時のデータ抹消、海外利用について'
+    },
   ];
 
   const faqList: FaqItem[] = [
@@ -428,29 +467,35 @@ export const FaqPage: React.FC = () => {
     }
   ];
 
-  // フィルタリング
+  // 検索フィルタリング
   const filteredFaqs = useMemo(() => {
+    if (!searchQuery.trim()) return faqList;
+    const q = searchQuery.toLowerCase();
     return faqList.filter(item => {
-      const matchCategory = selectedCategory === 'all' || item.category === selectedCategory;
-      if (!searchQuery.trim()) return matchCategory;
-      
-      const q = searchQuery.toLowerCase();
-      const matchQuery = 
+      return (
         item.question.toLowerCase().includes(q) ||
         item.categoryName.toLowerCase().includes(q) ||
-        (item.tags && item.tags.some(t => t.toLowerCase().includes(q)));
-      
-      return matchCategory && matchQuery;
+        (item.tags && item.tags.some(t => t.toLowerCase().includes(q)))
+      );
     });
-  }, [selectedCategory, searchQuery, faqList]);
+  }, [searchQuery, faqList]);
 
-  // すべて開いているかの判定
+  // カテゴリごとにグループ化
+  const groupedFaqs = useMemo(() => {
+    const map: Record<string, FaqItem[]> = {};
+    categories.forEach(cat => {
+      map[cat.id] = filteredFaqs.filter(item => item.category === cat.id);
+    });
+    return map;
+  }, [categories, filteredFaqs]);
+
+  // 全開閉判定
   const isAllOpen = useMemo(() => {
     if (filteredFaqs.length === 0) return false;
     return filteredFaqs.every(f => isItemOpen(f.id));
-  }, [filteredFaqs, openItems]);
+  }, [filteredFaqs, openItems, searchQuery]);
 
-  // すべて開く / すべて閉じる の一括トグル
+  // すべて開く / すべて閉じる
   const toggleAll = () => {
     if (isAllOpen) {
       setOpenItems(prev => {
@@ -468,6 +513,17 @@ export const FaqPage: React.FC = () => {
         });
         return next;
       });
+    }
+  };
+
+  // スムーズスクロールで該当見出しへジャンプ
+  const scrollToCategory = (categoryId: string) => {
+    setActiveCategory(categoryId);
+    const element = document.getElementById(`faq-section-${categoryId}`);
+    if (element) {
+      const yOffset = -80; // ヘッダーオフセット
+      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
     }
   };
 
@@ -500,7 +556,7 @@ export const FaqPage: React.FC = () => {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="キーワードで検索... (例: 料金, クイズ, 返金, 免許証, 退会)"
+            placeholder="キーワードで全項目から検索... (例: 料金, クイズ, 返金, 免許証, 退会)"
             className="w-full pl-11 pr-10 py-3 bg-zinc-50 border border-brand-border rounded-2xl text-sm text-black focus:bg-white focus:border-teal-600 focus:outline-none transition-all placeholder:text-black/40 shadow-inner font-sans"
           />
           {searchQuery && (
@@ -514,115 +570,155 @@ export const FaqPage: React.FC = () => {
           )}
         </div>
 
-        {/* 🗂️ Category Pills Navigation (全表示・折り返しレイアウト) */}
-        <div className="flex flex-wrap items-center gap-2 pt-1">
-          {categories.map((cat) => {
-            const Icon = cat.icon;
-            const isSelected = selectedCategory === cat.id;
-            return (
+        {/* 🗂️ In-Page Category Anchor Navigation (クリックで見出しへスムーズ移動) */}
+        <div className="space-y-2">
+          <div className="text-xs font-bold text-slate-500 flex items-center justify-between px-1">
+            <span>カテゴリ見出しへジャンプ：</span>
+            {filteredFaqs.length > 0 && (
               <button
-                key={cat.id}
                 type="button"
-                onClick={() => setSelectedCategory(cat.id)}
-                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
-                  isSelected
-                    ? 'bg-teal-700 text-white border-teal-700 shadow-sm'
-                    : 'bg-zinc-50 text-black/70 hover:bg-zinc-100 hover:text-black border-brand-border'
-                }`}
+                onClick={toggleAll}
+                className="inline-flex items-center gap-1 text-xs font-bold text-teal-800 hover:text-teal-950 transition-colors cursor-pointer"
               >
-                <Icon size={14} className={isSelected ? 'text-white' : 'text-teal-700'} />
-                <span>{cat.label}</span>
+                {isAllOpen ? (
+                  <>
+                    <ChevronUp size={13} />
+                    <span>すべて閉じる</span>
+                  </>
+                ) : (
+                  <>
+                    <ChevronDown size={13} />
+                    <span>すべて開く</span>
+                  </>
+                )}
               </button>
-            );
-          })}
-        </div>
-
-        {/* 🎛️ Quick Control & Count Bar (全開閉トグル＋件数) */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-2 pb-2 border-b border-teal-100">
-          <div className="flex items-center gap-2 text-xs text-slate-700 font-sans">
-            <span>該当 <b className="text-teal-900 text-sm">{filteredFaqs.length}</b> 件</span>
-            <span className="text-[11px] text-teal-800 bg-teal-50 border border-teal-200/80 px-2.5 py-0.5 rounded-md font-bold">
-              ⚡ クリック不要・全回答を表示中
-            </span>
-          </div>
-          <button
-            type="button"
-            onClick={toggleAll}
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-teal-900 hover:text-teal-950 bg-teal-50 hover:bg-teal-100/90 border border-teal-300/80 px-3.5 py-1.5 rounded-xl transition-all cursor-pointer shadow-2xs font-sans"
-          >
-            {isAllOpen ? (
-              <>
-                <ChevronUp size={14} className="text-teal-700" />
-                <span>すべて閉じる（質問一覧にする）</span>
-              </>
-            ) : (
-              <>
-                <ChevronDown size={14} className="text-teal-700" />
-                <span>すべて開く（全回答を表示）</span>
-              </>
             )}
-          </button>
+          </div>
+          <div className="flex flex-wrap items-center gap-2 pt-0.5">
+            {categories.map((cat) => {
+              const Icon = cat.icon;
+              const count = groupedFaqs[cat.id]?.length || 0;
+              const isCurrent = activeCategory === cat.id;
+
+              return (
+                <button
+                  key={cat.id}
+                  type="button"
+                  onClick={() => scrollToCategory(cat.id)}
+                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
+                    isCurrent
+                      ? 'bg-teal-700 text-white border-teal-700 shadow-sm'
+                      : 'bg-zinc-50 text-slate-700 hover:bg-zinc-100 hover:text-slate-900 border-brand-border'
+                  }`}
+                >
+                  <Icon size={14} className={isCurrent ? 'text-white' : 'text-teal-700'} />
+                  <span>{cat.label}</span>
+                  {count > 0 && (
+                    <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
+                      isCurrent ? 'bg-white/20 text-white' : 'bg-zinc-200/80 text-slate-600'
+                    }`}>
+                      {count}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        {/* 📑 FAQ Card List with Distinct Question Tinting */}
-        <div className="space-y-4">
+        {/* 📑 FAQ Sections List (見出しごとにグループ化された1ページ構成) */}
+        <div className="space-y-10 pt-2">
           {filteredFaqs.length > 0 ? (
-            filteredFaqs.map((faq) => {
-              const isOpen = isItemOpen(faq.id);
+            categories.map((cat) => {
+              const items = groupedFaqs[cat.id] || [];
+              if (items.length === 0) return null;
+              const Icon = cat.icon;
+
               return (
-                <div
-                  key={faq.id}
-                  className="rounded-2xl border-2 border-teal-100/90 hover:border-teal-200 shadow-2xs overflow-hidden bg-white transition-all"
+                <section
+                  key={cat.id}
+                  id={`faq-section-${cat.id}`}
+                  className="space-y-4 scroll-mt-24 pt-2"
                 >
-                  {/* 🟢 質問エリア（爽やかなカラー背景をつけて質問を一目で識別可能に） */}
-                  <button
-                    type="button"
-                    onClick={() => toggleItem(faq.id)}
-                    className="w-full p-4 text-left flex items-start justify-between gap-3.5 bg-gradient-to-r from-teal-50/90 via-teal-50/60 to-sky-50/40 hover:from-teal-100/80 hover:to-teal-50 transition-colors cursor-pointer border-b border-teal-100/80"
-                  >
-                    <div className="flex items-start gap-3 flex-1 min-w-0">
-                      <span className="w-6 h-6 rounded-lg bg-teal-800 text-white flex items-center justify-center text-xs font-bold shrink-0 font-sans shadow-2xs mt-0.5">
-                        Q
-                      </span>
-                      <div className="space-y-1.5 flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-white text-teal-900 border border-teal-200 shadow-2xs font-sans">
-                            {faq.categoryName}
-                          </span>
-                        </div>
-                        <h3 className="font-bold text-sm md:text-base text-teal-950 font-sans leading-snug">
-                          {faq.question}
-                        </h3>
+                  {/* 🏷️ Section Header (カテゴリ見出し) */}
+                  <div className="flex items-center justify-between border-b-2 border-teal-600/30 pb-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-xl bg-teal-50 border border-teal-200 text-teal-800 flex items-center justify-center shrink-0 shadow-2xs">
+                        <Icon size={18} />
+                      </div>
+                      <div>
+                        <h2 className="text-base sm:text-lg font-bold text-slate-900 font-sans tracking-tight">
+                          {cat.label}
+                        </h2>
+                        <p className="text-xs text-slate-500 font-sans">
+                          {cat.description}
+                        </p>
                       </div>
                     </div>
-                    <div className={`p-1.5 rounded-lg bg-white border border-teal-200/80 text-teal-800 transition-transform duration-200 mt-0.5 shrink-0 ${isOpen ? 'rotate-180 bg-teal-800 text-white' : ''}`}>
-                      <ChevronDown size={16} />
-                    </div>
-                  </button>
+                    <span className="text-xs font-bold text-teal-800 bg-teal-50 border border-teal-200 px-2.5 py-1 rounded-full font-sans shadow-2xs">
+                      {items.length}問
+                    </span>
+                  </div>
 
-                  {/* ⚪ 回答エリア（清潔な白背景＋統一された標準フォントサイズ） */}
-                  <AnimatePresence initial={false}>
-                    {isOpen && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        <div className="p-5 md:p-6 bg-white">
-                          <div className="flex items-start gap-3.5">
-                            <span className="w-6 h-6 rounded-lg bg-emerald-700 text-white flex items-center justify-center text-xs font-bold shrink-0 font-sans shadow-2xs mt-0.5">
-                              A
-                            </span>
-                            <div className="flex-1 text-sm text-slate-800 font-sans leading-relaxed space-y-2">
-                              {faq.answer}
+                  {/* ❓ Questions Accordion under Section Heading */}
+                  <div className="space-y-3">
+                    {items.map((faq) => {
+                      const isOpen = isItemOpen(faq.id);
+                      return (
+                        <div
+                          key={faq.id}
+                          className="rounded-2xl border border-teal-100/90 hover:border-teal-200 shadow-2xs overflow-hidden bg-white transition-all"
+                        >
+                          {/* 🟢 質問ボタン（色づけされ一目で質問とわかるデザイン・クリックで展開） */}
+                          <button
+                            type="button"
+                            onClick={() => toggleItem(faq.id)}
+                            className={`w-full p-4 text-left flex items-start justify-between gap-3.5 transition-colors cursor-pointer ${
+                              isOpen
+                                ? 'bg-teal-50/80 border-b border-teal-100'
+                                : 'bg-teal-50/40 hover:bg-teal-50/80'
+                            }`}
+                          >
+                            <div className="flex items-start gap-3 flex-1 min-w-0">
+                              <span className="w-6 h-6 rounded-lg bg-teal-800 text-white flex items-center justify-center text-xs font-bold shrink-0 font-sans shadow-2xs mt-0.5">
+                                Q
+                              </span>
+                              <h3 className="font-bold text-sm text-teal-950 font-sans leading-snug flex-1">
+                                {faq.question}
+                              </h3>
                             </div>
-                          </div>
+                            <div className={`p-1.5 rounded-lg bg-white border border-teal-200/80 text-teal-800 transition-transform duration-200 mt-0.5 shrink-0 ${isOpen ? 'rotate-180 bg-teal-800 text-white' : ''}`}>
+                              <ChevronDown size={15} />
+                            </div>
+                          </button>
+
+                          {/* ⚪ 回答エリア（クリック時に展開される白背景＋統一フォントサイズ） */}
+                          <AnimatePresence initial={false}>
+                            {isOpen && (
+                              <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: 'auto', opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                transition={{ duration: 0.2 }}
+                              >
+                                <div className="p-5 md:p-6 bg-white">
+                                  <div className="flex items-start gap-3.5">
+                                    <span className="w-6 h-6 rounded-lg bg-emerald-700 text-white flex items-center justify-center text-xs font-bold shrink-0 font-sans shadow-2xs mt-0.5">
+                                      A
+                                    </span>
+                                    <div className="flex-1 text-sm text-slate-800 font-sans leading-relaxed space-y-2">
+                                      {faq.answer}
+                                    </div>
+                                  </div>
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
                         </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
+                      );
+                    })}
+                  </div>
+                </section>
               );
             })
           ) : (
