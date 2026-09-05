@@ -14459,7 +14459,6 @@ export const SitemapPage = () => {
         { label: "ログイン", path: "/login" },
         { label: "新規登録", path: "/register" },
         { label: "マイページ", path: "/account" },
-        { label: "メッセージ一覧", path: "/messages" },
       ]
     },
     {
@@ -14750,82 +14749,6 @@ export const AuroraAmbientGlow = () => {
       <div className="absolute top-[25%] right-[-15%] w-[90vw] h-[90vw] md:w-[70vw] md:h-[70vw] rounded-full bg-gradient-to-tr from-pink-200/35 via-violet-100/35 to-sky-200/40 blur-[150px] aurora-animate-2 pointer-events-none" />
       <div className="absolute bottom-[20%] left-[-10%] w-[80vw] h-[80vw] md:w-[60vw] md:h-[60vw] rounded-full bg-gradient-to-br from-indigo-100/35 via-cyan-100/40 to-teal-100/30 blur-[140px] aurora-animate-3 pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[10%] w-[80vw] h-[80vw] md:w-[50vw] md:h-[50vw] rounded-full bg-gradient-to-tr from-rose-200/40 via-orange-100/30 to-amber-200/35 blur-[120px] aurora-animate-1 pointer-events-none" style={{ animationDelay: '-12s' }} />
-    </div>
-  );
-};
-
-export const MessagesPage = () => {
-  const { user, token } = useAuth();
-  const [conversations, setConversations] = useState<any[]>([]);
-  const [selectedConv, setSelectedConv] = useState<any>(null);
-
-  useEffect(() => {
-    if (token) {
-      fetch('/api/conversations', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
-        .then(res => res.json())
-        .then(data => setConversations(Array.isArray(data) ? data : []));
-    }
-  }, [token]);
-
-  if (!user) return <div className="p-24 text-center">ログインが必要です</div>;
-
-  return (
-    <div className="max-w-6xl mx-auto px-6 py-8 md:py-16">
-      <div className="flex flex-col md:flex-row gap-8 h-[700px]">
-        <div className="w-full md:w-80 flex flex-col gap-4">
-          <h1 className="text-2xl font-serif font-[400] text-black mb-4 tracking-widest">メッセージ</h1>
-          <div className="flex-grow overflow-y-auto space-y-3 pr-2 custom-scrollbar">
-            {conversations.length === 0 ? (
-              <div className="p-8 text-center glass-card opacity-70 text-sm text-black/70">
-                メッセージはまだありません
-              </div>
-            ) : (
-              conversations.map(conv => (
-                <button
-                  key={conv.id}
-                  onClick={() => setSelectedConv(conv)}
-                  className={`w-full text-left p-5 rounded-2xl transition-all border ${
-                    selectedConv?.id === conv.id 
-                      ? 'bg-brand-primary text-white border-brand-primary shadow-lg shadow-brand-primary/20' 
-                      : 'glass-card hover:border-brand-primary/30'
-                  }`}
-                >
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className={`w-2 h-2 rounded-full ${conv.unread_count > 0 ? 'bg-brand-accent' : 'bg-transparent'}`} />
-                    <span className="font-bold text-sm truncate text-black">
-                      {conv.other_user_full_name ? conv.other_user_full_name : conv.other_user_name}
-                    </span>
-                  </div>
-                  <p className={`text-xs truncate ${selectedConv?.id === conv.id ? 'text-white/70' : 'text-black/70'}`}>
-                    {conv.last_message}
-                  </p>
-                </button>
-              ))
-            )}
-          </div>
-        </div>
-
-        <div className="flex-grow glass-card overflow-hidden flex flex-col">
-          {selectedConv ? (
-            <ChatComponent 
-              postId={selectedConv.post_id} 
-              otherUserId={selectedConv.other_user_id} 
-              otherUserName={selectedConv.other_user_name} 
-              otherUserFullName={selectedConv.other_user_full_name}
-            />
-          ) : (
-            <div className="flex-grow flex flex-col items-center justify-center text-center p-12">
-              <div className="w-20 h-20 bg-brand-primary/5 rounded-full flex items-center justify-center text-brand-primary mb-6">
-                <Mail size={40} className="opacity-50" />
-              </div>
-              <h2 className="text-xl font-serif font-normal text-black/80">会話を選択してください</h2>
-              <p className="text-sm text-black/70 mt-2">左のリストからメッセージのやり取りを選んでください</p>
-            </div>
-          )}
-        </div>
-      </div>
     </div>
   );
 };

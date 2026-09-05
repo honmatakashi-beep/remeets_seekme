@@ -7,7 +7,7 @@ import { SearchPage, SuccessStoryModal, ThankAdminModal } from './pages/SearchPa
 import { AccountPage } from './pages/AccountPage';
 import { EditPostPage, CreatePostPage, ChatComponent, ScrollToTop, ScrollToTopButton, SeoPreviewModal, FlowExplanation, RevealContactModal, SuccessModal, AgeVerificationGate, ComplianceBanner, PostDetailPage, ReportModal } from './pages/PostPages';
 import { SuccessStoriesPage, AdminDeploymentGuideBlock, AdminDeploymentGuidePage, ManualContent, LocalInlineGuidePage, ManualPage } from './pages/MiscPages';
-import { AdminManualContent, OldAdminManualContent, RegionalMatrix, FunnelChart, HeatmapChart, AdminLiveSystemMonitor, AdminDashboard, AdminInfoPage, SitemapPage, ContactPage, ConfirmModal, AuroraAmbientGlow, MessagesPage, PageViewTracker, PageViewChart } from './pages/AdminDashboard';
+import { AdminManualContent, OldAdminManualContent, RegionalMatrix, FunnelChart, HeatmapChart, AdminLiveSystemMonitor, AdminDashboard, AdminInfoPage, SitemapPage, ContactPage, ConfirmModal, AuroraAmbientGlow, PageViewTracker, PageViewChart } from './pages/AdminDashboard';
 import { WarningMessage, BottleLoader, Navbar, Footer, ProtectedRoute, GoogleSearchResultPreview } from './components/SharedComponents';
 import { PaymentPreviewPage } from './pages/PaymentPreviewPage';
 import { PaymentPreviewFloatingButton } from './components/PaymentPreviewFloatingButton';
@@ -145,7 +145,6 @@ export default function App() {
                 <Route path="/account" element={<ProtectedRoute><AccountPage /></ProtectedRoute>} />
                 <Route path="/post/:id" element={<PostDetailPage onOpenOnboarding={() => {}} />} />
                 <Route path="/name/:name/:location/:year/:relationship" element={<PostDetailPage onOpenOnboarding={() => {}} />} />
-                <Route path="/messages" element={<ProtectedRoute><MessagesPage /></ProtectedRoute>} />
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/admin/deployment-guide" element={<AdminDeploymentGuidePage />} />
                 <Route path="/admin-info" element={<AdminInfoPage />} />
