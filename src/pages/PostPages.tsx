@@ -6274,68 +6274,76 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                   setHasClickedStartContact(false);
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                className="inline-flex items-center gap-1.5 text-xs text-black/50 hover:text-brand-primary transition-colors font-sans font-bold group pb-2 cursor-pointer"
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-bold transition-all group cursor-pointer shadow-2xs"
               >
-                <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
-                <span>戻る：手がかり（Step 1）を再確認する</span>
+                <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform text-slate-500" />
+                <span>← 手がかり（Step 1）を再確認する</span>
               </button>
             </div>
 
-            <div className="glass-card p-6 md:p-10 space-y-6 bg-white border border-brand-border/60 rounded-[32px] shadow-lg font-sans">
+            {/* Step 2 メインカード */}
+            <div className="p-6 md:p-8 bg-white border-2 border-teal-200/90 rounded-[32px] shadow-md relative overflow-hidden font-sans space-y-6">
+              
               {/* ヘッダータイトル */}
-              <div className="flex items-center gap-3.5 border-b border-slate-100 pb-5">
-                <div className="w-12 h-12 bg-brand-primary/10 rounded-2xl flex items-center justify-center text-brand-primary shrink-0 shadow-inner">
-                  <Lock size={24} />
-                </div>
-                <div>
-                  <h2 className="text-xl md:text-2xl font-extrabold text-slate-900 tracking-tight font-sans">
-                    お互いの記憶を確かめる思い出クイズ
-                  </h2>
-                  <p className="text-[11px] text-slate-500 font-sans tracking-wider block uppercase font-semibold mt-0.5">
-                    STEP 2 / 記憶の照合
-                  </p>
-                </div>
-              </div>
+              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-3 text-left">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3">
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-9 h-9 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-2xs">
+                      <Lock size={18} />
+                    </span>
+                    <div>
+                      <span className="text-[10px] text-teal-800 font-bold uppercase tracking-wider block">STEP 2 / 記憶の照合</span>
+                      <h2 className="text-lg sm:text-xl font-bold text-teal-950 font-serif">
+                        お互いの記憶を確かめる思い出クイズ
+                      </h2>
+                    </div>
+                  </div>
 
-              {/* クイズの概要と開示条件説明（大きすぎず適切なサイズ感でスッキリ表示） */}
-              <div className="space-y-3 font-sans">
-                <p className="text-xs md:text-sm text-slate-700 leading-relaxed">
+                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-teal-100 text-teal-900 border border-teal-300/80 rounded-full text-xs font-bold shadow-2xs">
+                    <ShieldCheck size={14} className="text-teal-700 shrink-0" />
+                    暗号化保護
+                  </span>
+                </div>
+
+                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-sans">
                   差出人が設定した「二人だけの思い出にまつわるクイズ」です。正しい回答を入力してお互いの記憶を一致させましょう。
                 </p>
-                <div className="p-3.5 bg-emerald-50/70 border border-emerald-200/70 rounded-2xl text-xs md:text-sm text-emerald-950 leading-relaxed font-sans space-y-1">
-                  <div className="flex items-center gap-1.5 font-bold text-emerald-900">
-                    <CheckCircle2 size={15} className="text-emerald-600 shrink-0" />
-                    <span>正解時に安全に開示される情報</span>
-                  </div>
-                  <p className="text-slate-700 text-xs md:text-sm leading-relaxed pl-5">
-                    思い出クイズに正解することでお互いの記憶が一致していることが確認され、<strong>差出人のフルネーム（実名）</strong>および手紙の本文（詳細メッセージ）が安全に開示されます。これにより、間違いのない確実な再会へ繋がります。
-                  </p>
-                </div>
               </div>
 
-              <form onSubmit={handleVerify} className="space-y-7 pt-2">
+              {/* クイズの概要と開示条件説明 */}
+              <div className="p-4 sm:p-5 bg-gradient-to-br from-teal-50/90 via-emerald-50/70 to-slate-50 rounded-2xl border border-teal-200/90 space-y-2.5 font-sans">
+                <div className="flex items-center gap-2 text-teal-950 font-bold text-xs sm:text-sm border-b border-teal-200/60 pb-2">
+                  <Sparkles size={16} className="text-teal-600 shrink-0" />
+                  <span>正解時に安全に開示される情報</span>
+                </div>
+                <p className="text-slate-700 text-xs sm:text-sm leading-relaxed">
+                  思い出クイズに正解することでお互いの記憶が一致していることが確認され、<strong>差出人のフルネーム（実名）</strong>および手紙の本文（詳細メッセージ）、<strong>直接つながる連絡先</strong>が安全に開示されます。これにより、間違いのない確実な再会へ繋がります。
+                </p>
+              </div>
+
+              <form onSubmit={handleVerify} className="space-y-6 pt-1">
                 {remainingAttempts !== null && remainingAttempts < 5 && !isAttemptsLocked && (
-                  <div className="flex items-center gap-2 px-4 py-3 bg-amber-50 rounded-2xl border border-amber-200/50 text-amber-800 text-xs font-semibold font-sans animate-pulse">
-                    <AlertCircle size={14} className="text-amber-500 shrink-0" />
+                  <div className="flex items-center gap-2 px-4 py-3 bg-amber-50 rounded-2xl border border-amber-200/70 text-amber-800 text-xs font-semibold font-sans animate-pulse">
+                    <AlertCircle size={15} className="text-amber-600 shrink-0" />
                     <span>
-                      あと <strong className="text-sm font-bold text-amber-600">{remainingAttempts}回</strong> 間違えると、安全保護のため24時間このボトルの回答がロックされます。
+                      あと <strong className="text-sm font-bold text-amber-700">{remainingAttempts}回</strong> 間違えると、安全保護のため24時間このボトルの回答がロックされます。
                     </span>
                   </div>
                 )}
 
                 {isAttemptsLocked && (
-                  <div className="p-6 bg-red-50/60 border border-red-200/30 rounded-3xl text-center space-y-4 font-sans">
-                    <div className="w-14 h-14 bg-red-500/10 rounded-full flex items-center justify-center text-red-500 mx-auto">
-                      <Lock size={24} className="animate-pulse" />
+                  <div className="p-6 bg-red-50/70 border-2 border-red-200 rounded-3xl text-center space-y-3 font-sans">
+                    <div className="w-12 h-12 bg-red-500/10 rounded-full flex items-center justify-center text-red-600 mx-auto">
+                      <Lock size={22} className="animate-pulse" />
                     </div>
                     <div className="space-y-1">
-                      <h4 className="text-sm font-bold text-red-800">セキュリティロック中</h4>
-                      <p className="text-xs text-red-700 leading-relaxed animate-pulse">
-                        何度も間違えられたため、一時的に24時間の保護ロックがかかっています。安全のため、しばらく時間をおいてから再度お試しください。
+                      <h4 className="text-sm font-bold text-red-900">セキュリティロック中</h4>
+                      <p className="text-xs text-red-700 leading-relaxed">
+                        連続して回答が一致しなかったため、安全保護のため24時間ロックされています。時間をおいてから再度お試しください。
                       </p>
                     </div>
                     {lockedUntil && (
-                      <p className="text-[10px] font-mono text-zinc-600 bg-white/50 px-3 py-1.5 rounded-full inline-block border border-red-200 font-sans">
+                      <p className="text-[11px] font-mono text-slate-700 bg-white px-3 py-1.5 rounded-full inline-block border border-red-200 font-sans shadow-2xs">
                         ロック解除予定時刻: {new Date(lockedUntil).toLocaleString('ja-JP')}
                       </p>
                     )}
@@ -6351,28 +6359,26 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                         { id: 'sub_default', question: 'お相手との思い出の場所または共通のエピソードは？' }
                       ]
                 ).map((q: any, idx: number) => (
-                  <div key={idx} className="space-y-3.5 text-left font-sans bg-slate-50/80 p-5 rounded-2xl border border-slate-200/80 shadow-2xs">
+                  <div key={idx} className="bg-gradient-to-br from-teal-50/40 via-emerald-50/30 to-slate-50 p-5 sm:p-6 rounded-2xl border border-teal-200/80 space-y-3.5 text-left shadow-2xs font-sans">
                     {/* 大きくて見やすい質問バッジラベル */}
                     <div className="flex items-center justify-between gap-2 flex-wrap">
                       <div className="flex items-center gap-2">
-                        <span className="px-3 py-1 bg-[#3B627F] text-white font-extrabold text-xs md:text-sm rounded-lg tracking-wider font-sans shadow-2xs">
+                        <span className="px-3 py-1 bg-teal-700 text-white font-bold text-xs md:text-sm rounded-lg tracking-wider font-sans shadow-2xs">
                           思い出質問 {idx + 1}
                         </span>
                         <span className="text-xs text-slate-500 font-bold font-sans">（お答えください）</span>
                       </div>
                       {verificationResults[idx]?.correct && (
-                        <span className="text-xs font-bold text-emerald-700 bg-emerald-100/90 px-2.5 py-0.5 rounded-md flex items-center gap-1">
-                          <CheckCircle2 size={13} /> 正解済み
+                        <span className="text-xs font-bold text-emerald-800 bg-emerald-100 px-3 py-1 rounded-lg border border-emerald-300 flex items-center gap-1 shadow-2xs">
+                          <CheckCircle2 size={13} className="text-emerald-700" /> 正解済み
                         </span>
                       )}
                     </div>
 
                     {/* 質問文本文 */}
-                    <div className="font-serif text-base md:text-lg text-slate-900 leading-relaxed p-4 bg-white rounded-xl border border-slate-200/90 shadow-2xs font-semibold">
+                    <div className="font-serif text-base md:text-lg text-slate-900 leading-relaxed p-4 bg-white rounded-xl border border-teal-100/90 shadow-2xs font-semibold">
                       {q.question}
                     </div>
-
-
 
                     {/* 入力フィールド */}
                     <div className="pt-1">
@@ -6392,7 +6398,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                             ? 'border-red-200 text-zinc-400 bg-red-50/5 cursor-not-allowed'
                             : verificationResults[idx]?.correct 
                               ? 'border-emerald-500 text-emerald-800 bg-emerald-50/40 cursor-not-allowed font-bold' 
-                              : 'border-slate-300 focus:border-[#3B627F] focus:ring-2 focus:ring-[#3B627F]/20 shadow-2xs'
+                              : 'border-slate-300 focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 shadow-2xs'
                         }`}
                         value={answers[idx] || ''}
                         onChange={e => {
@@ -6419,13 +6425,13 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                         className="pt-1 font-sans text-xs"
                       >
                         {verificationResults[idx].correct ? (
-                          <p className="text-xs text-emerald-700 font-bold flex items-center gap-1.5">
-                            <CheckCircle2 size={14} className="text-emerald-600" />
+                          <p className="text-xs text-emerald-700 font-bold flex items-center gap-1.5 bg-emerald-50 p-2.5 rounded-xl border border-emerald-200">
+                            <CheckCircle2 size={15} className="text-emerald-600 shrink-0" />
                             このクイズは正解です！
                           </p>
                         ) : (
-                          <p className={`text-xs font-bold flex items-center gap-1.5 ${verificationResults[idx].close ? 'text-amber-700' : 'text-red-600'}`}>
-                            <AlertCircle size={14} />
+                          <p className={`text-xs font-bold flex items-center gap-1.5 p-2.5 rounded-xl border ${verificationResults[idx].close ? 'bg-amber-50 text-amber-800 border-amber-200' : 'bg-red-50 text-red-700 border-red-200'}`}>
+                            <AlertCircle size={15} className="shrink-0" />
                             {verificationResults[idx].close ? '惜しいです！ローマ字、カタカナ、漢字などの表記ゆれをご確認ください。' : '回答が一致しません。もう一度お確かめください。'}
                           </p>
                         )}
@@ -6435,34 +6441,34 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                 ))}
                 
                 {error && (
-                  <div className="p-4 bg-red-50 text-red-500 text-[10px] font-bold uppercase tracking-widest rounded-xl flex items-center gap-2 font-sans">
-                    <AlertCircle size={14} />
-                    {error}
+                  <div className="p-4 bg-red-50 text-red-700 text-xs font-bold rounded-xl flex items-center gap-2 font-sans border border-red-200">
+                    <AlertCircle size={16} className="text-red-600 shrink-0" />
+                    <span>{error}</span>
                   </div>
                 )}
 
                 <button 
                   type="submit" 
                   disabled={isVerifying || isAttemptsLocked}
-                  className={`w-full py-5 shadow-xl flex items-center justify-center gap-3 group font-sans rounded-3xl transition-all duration-300 cursor-pointer ${
+                  className={`w-full py-4 text-white font-bold rounded-2xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2.5 text-sm sm:text-base cursor-pointer hover:scale-[1.01] ${
                     isAttemptsLocked 
-                      ? 'bg-zinc-200 text-zinc-400 cursor-not-allowed shadow-none' 
-                      : 'btn-primary text-white hover:scale-[1.01] hover:shadow-2xl'
+                      ? 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none' 
+                      : 'bg-teal-700 hover:bg-teal-800'
                   }`}
-                  style={{ background: isAttemptsLocked ? '' : '#3B627F' }}
                 >
                   {isVerifying ? (
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   ) : (
                     <>
                       {isAttemptsLocked ? (
                         <Lock size={18} />
                       ) : (
-                        <MessageSquare size={18} className="group-hover:scale-110 transition-transform" />
+                        <CheckCircle2 size={18} />
                       )}
-                      <span className="tracking-widest font-bold text-sm">
+                      <span>
                         {isAttemptsLocked ? "制限ロック経過をお待ちください" : "回答を送信して判定する"}
                       </span>
+                      {!isAttemptsLocked && <ArrowRight size={16} />}
                     </>
                   )}
                 </button>
