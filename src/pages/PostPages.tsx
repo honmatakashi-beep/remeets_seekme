@@ -4780,7 +4780,6 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
     }
   }, [showDetails, isOwner, searcherId]);
 
-  const [scrollingMessage, setScrollingMessage] = useState<string | null>(null);
   const [hasClickedStartContact, setHasClickedStartContact] = useState(false);
 
   const activeContact = hasClickedStartContact || isQuestionVerified || showDetails;
@@ -4823,11 +4822,6 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
     if (post) {
       if (justPostedFlag && isOwner) {
         setShowPostedBanner(true);
-        if (postedWithEkycFlag) {
-          setScrollingMessage("🛡️ 本人確認済マーク付きでボトルメールを投函しました！");
-        } else {
-          setScrollingMessage("🌊 ボトルメールの投函が完了しました！");
-        }
         const timer = setTimeout(() => {
           if (welcomeBannerRef.current) {
             smoothScrollWithOffset(welcomeBannerRef.current, 120);
@@ -4836,7 +4830,6 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
         return () => clearTimeout(timer);
       } else if (isKeyConnectedFlag && !isOwner) {
         setShowKeyConnectedBanner(true);
-        setScrollingMessage("✨ 思い出の鍵が繋がりました！お手紙を開封します...");
         const timer = setTimeout(() => {
           if (welcomeBannerRef.current) {
             smoothScrollWithOffset(welcomeBannerRef.current, 120);
@@ -4847,7 +4840,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
     }
   }, [post, isOwner, isKeyConnectedFlag, justPostedFlag, postedWithEkycFlag]);
 
-  // 自動滑走スクロール：ステップ状況が遷移した時、自動的に次に取り組むセクションまで滑らかにオートスクロール誘導
+  // ステップ状況が遷移した時、自動的に次に取り組むセクションまで滑らかにスムーズスクロール
   const prevStepRef = useRef<number>(1);
   useEffect(() => {
     if (post) {
@@ -4855,51 +4848,38 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
       const toStep = currentStep;
       prevStepRef.current = toStep;
 
-      // 前進する場合のみ、美しい「自動滑走」のアナウンスHUDを出し、該当エリアにスクロール
+      // 前進する場合のみ、該当エリアにスムーズスクロール
       if (toStep > fromStep) {
-        let message = "";
         let targetRef: React.RefObject<HTMLDivElement> | null = null;
 
         if (toStep === 2) {
-          message = "🚀 第二段階：思い出（秘密の質問）回答エリアへ自動滑走します...";
           targetRef = quizSectionRef;
         } else if (toStep === 3 && !isOwner) {
-          message = "✨ 思い出の鍵が繋がりました！本人確認を行います...";
           targetRef = welcomeBannerRef;
         } else if (toStep === 4 && !isOwner) {
-          message = "✨ 思い出の鍵が繋がりました！お手紙を開封します...";
           targetRef = welcomeBannerRef;
         }
 
-        if (message) {
-          setScrollingMessage(message);
+        const scrollTimer = setTimeout(() => {
+          if (targetRef?.current) {
+            smoothScrollWithOffset(targetRef.current, 80);
+          } else if (toStep === 2) {
+            const el = document.getElementById('memory-quiz-section');
+            if (el) smoothScrollWithOffset(el, 80);
+          }
           
-          const scrollTimer = setTimeout(() => {
-            if (targetRef?.current) {
-              smoothScrollWithOffset(targetRef.current, 80);
-            } else if (toStep === 2) {
-              const el = document.getElementById('memory-quiz-section');
-              if (el) smoothScrollWithOffset(el, 80);
-            }
-            
-            if (toStep === 4) {
-              setIsChatHighlighted(true);
-              setTimeout(() => setIsChatHighlighted(false), 3000);
-            }
-          }, 480);
+          if (toStep === 4) {
+            setIsChatHighlighted(true);
+            setTimeout(() => setIsChatHighlighted(false), 3000);
+          }
+        }, 480);
 
-          const hudTimer = setTimeout(() => {
-            setScrollingMessage(null);
-          }, 2600);
-
-          return () => {
-            clearTimeout(scrollTimer);
-            clearTimeout(hudTimer);
-          };
-        }
+        return () => {
+          clearTimeout(scrollTimer);
+        };
       }
     }
-  }, [currentStep, post, isOwner]);
+  }, [post, currentStep, isOwner]);
 
   const handleStartContact = () => {
     setHasClickedStartContact(true);
@@ -5453,26 +5433,6 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
             >
               <X size={18} />
             </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* 自動滑走スクロールHUD */}
-      <AnimatePresence>
-        {scrollingMessage && (
-          <motion.div
-            initial={{ opacity: 0, y: -40, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -20, scale: 0.95 }}
-            className="fixed top-24 left-1/2 -translate-x-1/2 z-[9999] bg-white/45 backdrop-blur-xl border border-white/60 px-6 py-4 rounded-3xl shadow-2xl flex items-center gap-3 font-sans pointer-events-none text-neutral-800"
-            style={{
-              boxShadow: '0 20px 45px rgba(72,119,153,0.14), inset 0 2px 4px rgba(255,255,255,0.7)',
-            }}
-          >
-            <div className="w-5 h-5 rounded-full bg-[#3B627F]/20 flex items-center justify-center animate-pulse">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#3B627F] animate-ping" />
-            </div>
-            <span className="text-[11px] font-bold tracking-wider">{scrollingMessage}</span>
           </motion.div>
         )}
       </AnimatePresence>
