@@ -851,75 +851,69 @@ export const PricingPage = () => {
         </div>
 
         {/* ③ 公的本人確認 (eKYC) の詳細・安心保証解説 */}
-        <div className="p-6 md:p-8 rounded-3xl bg-gradient-to-r from-amber-50/90 via-yellow-50/40 to-white border border-amber-300 shadow-xs space-y-5 relative overflow-hidden">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-amber-200/80 pb-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 bg-amber-600 text-white rounded-2xl shadow-2xs shrink-0">
-                <ShieldCheck size={22} />
-              </div>
-              <div>
-                <span className="text-[10px] font-bold text-amber-800 uppercase tracking-widest block font-sans">
-                  Identity Verification
-                </span>
-                <h3 className="text-lg md:text-xl font-serif font-bold text-amber-950">
-                  公的本人確認 (eKYC) について
-                </h3>
-              </div>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+            <div className="flex items-center gap-2">
+              <ShieldCheck size={20} className="text-amber-600" />
+              <h2 className="text-base md:text-lg font-serif font-bold text-slate-900">
+                公的本人確認（eKYC）について
+              </h2>
             </div>
-            <div className="flex items-center gap-2.5 flex-wrap shrink-0">
-              <span className="px-2.5 py-1 bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold rounded-full whitespace-nowrap">
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 bg-amber-100 text-amber-800 text-[10px] font-bold rounded-md">
                 任意機能
               </span>
-              <div className="text-sm font-bold text-amber-950 font-serif whitespace-nowrap">
-                1回 600 円 <span className="text-xs font-normal font-sans text-slate-600">（税込 / 差出人・受取人共通）</span>
-              </div>
+              <span className="text-xs font-bold text-amber-950 font-serif">
+                1回 600 円 <span className="text-[10px] font-normal text-slate-500 font-sans">（税込 / 差出人・受取人共通）</span>
+              </span>
             </div>
           </div>
 
-          <div className="space-y-3 text-xs text-slate-700 leading-relaxed">
-            <p>
+          <div className="p-5 bg-amber-50/40 rounded-2xl border border-amber-200/80 space-y-4 text-xs font-sans text-slate-700">
+            <p className="leading-relaxed">
               公的本人確認（eKYC）は、運転免許証やマイナンバーカード等を用いた安全な身元確認手続きです。基本利用はLINE/Google認証（0円）で可能ですが、<strong>差出人・受取人どちらも任意で受検（1回600円）</strong>いただけます。
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
-              <div className="p-3 bg-white/90 rounded-xl border border-amber-200/80 space-y-1">
-                <span className="font-bold text-amber-950 block">✉️ 差出人が受ける場合</span>
-                <p className="text-slate-600 text-[11px]">
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="p-3.5 bg-white rounded-xl border border-amber-200/70 space-y-1 shadow-2xs">
+                <span className="font-bold text-slate-900 block text-xs">✉️ 差出人が受ける場合</span>
+                <p className="text-slate-600 text-[11px] leading-relaxed">
                   手紙の投函時やマイページでいつでも実施可能。プロフィールに「🛡️ 公的本人確認済」バッジが付与され、お相手が手紙を見つけた際の信頼感と返信率が大幅に向上します。
                 </p>
               </div>
-              <div className="p-3 bg-white/90 rounded-xl border border-amber-200/80 space-y-1">
-                <span className="font-bold text-amber-950 block">🔍 受取人が受ける場合</span>
-                <p className="text-slate-600 text-[11px]">
+              <div className="p-3.5 bg-white rounded-xl border border-amber-200/70 space-y-1 shadow-2xs">
+                <span className="font-bold text-slate-900 block text-xs">🔍 受取人が受ける場合</span>
+                <p className="text-slate-600 text-[11px] leading-relaxed">
                   手紙開封時（開封600円＋eKYC600円＝計1,200円）や、事前・事後にいつでも選択可能。安心・安全な身元確認を行ってお相手と連絡を取り合えます。
                 </p>
               </div>
             </div>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs text-slate-700 pt-1">
-            <div className="p-3.5 bg-white/90 rounded-2xl border border-amber-200/80 space-y-1.5 shadow-2xs">
-              <span className="font-bold text-amber-950 block flex items-center gap-1.5">
-                <span>🛡️</span> 信頼マークの付与
-              </span>
-              <p className="text-slate-600 leading-relaxed text-[11px]">
-                運転免許証・マイナンバー等による確認でプロフィールに「🛡️ 公的本人確認済」マークが点灯します。
-              </p>
-            </div>
-            <div className="p-3.5 bg-white/90 rounded-2xl border border-amber-200/80 space-y-1.5 shadow-2xs">
-              <span className="font-bold text-amber-950 block flex items-center gap-1.5">
-                <span>✨</span> 返信率の大幅向上
-              </span>
-              <p className="text-slate-600 leading-relaxed text-[11px]">
-                お相手に「サクラやなりすましではない実在の本人」という絶対の安心を届け、再会の成功率を高めます。
-              </p>
-            </div>
-            <div className="p-3.5 bg-white/90 rounded-2xl border border-amber-200/80 space-y-1.5 shadow-2xs">
-              <span className="font-bold text-amber-950 block flex items-center gap-1.5">
-                <span>🔄</span> 100%全額即時返金保証
-              </span>
-              <p className="text-slate-600 leading-relaxed text-[11px]">
-                万が一、年齢不一致や書類不備で審査不承認となった場合は、Stripe仮売上により即座に全額自動返金されます。
-              </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
+              <div className="p-3 bg-white rounded-xl border border-slate-200 space-y-1 shadow-2xs">
+                <span className="font-bold text-slate-900 block text-xs flex items-center gap-1.5">
+                  <span>🛡️</span> 信頼マークの付与
+                </span>
+                <p className="text-slate-600 leading-relaxed text-[11px]">
+                  公的身分証の確認で「🛡️ 公的本人確認済」マークが点灯します。
+                </p>
+              </div>
+              <div className="p-3 bg-white rounded-xl border border-slate-200 space-y-1 shadow-2xs">
+                <span className="font-bold text-slate-900 block text-xs flex items-center gap-1.5">
+                  <span>✨</span> 返信率の大幅向上
+                </span>
+                <p className="text-slate-600 leading-relaxed text-[11px]">
+                  実在の本人である安心を届け、再会の成功率を格段に高めます。
+                </p>
+              </div>
+              <div className="p-3 bg-white rounded-xl border border-slate-200 space-y-1 shadow-2xs">
+                <span className="font-bold text-slate-900 block text-xs flex items-center gap-1.5">
+                  <span>🔄</span> 100%全額即時返金
+                </span>
+                <p className="text-slate-600 leading-relaxed text-[11px]">
+                  審査不備や不承認時はStripe仮売上より即座に全額自動返金されます。
+                </p>
+              </div>
             </div>
           </div>
         </div>
