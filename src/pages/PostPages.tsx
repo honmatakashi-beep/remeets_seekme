@@ -6806,13 +6806,13 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                       </div>
                     </div>
 
-                    <div className="p-4 bg-emerald-50/80 rounded-2xl border border-emerald-200 space-y-2 text-xs text-slate-700 leading-relaxed">
-                      <div className="flex items-center gap-2 text-emerald-900 font-bold text-sm">
-                        <CheckCircle2 size={17} className="text-emerald-600 shrink-0" />
+                    <div className="p-3.5 bg-emerald-50/80 rounded-2xl border border-emerald-200/90 space-y-1.5 text-xs text-slate-700 leading-relaxed">
+                      <div className="flex items-center gap-1.5 text-emerald-900 font-bold text-xs md:text-sm">
+                        <CheckCircle2 size={15} className="text-emerald-600 shrink-0" />
                         <span>手紙の本文と直通連絡先が開示されました</span>
                       </div>
-                      <p className="text-slate-600 pl-6">
-                        画面左側の手紙カードにて、差出人の実名（本名）、メッセージの全貌、開示された連絡先（LINE ID等）をご確認およびワンクリックでコピーいただけます。
+                      <p className="text-[11px] text-slate-600 pl-5 leading-relaxed">
+                        手紙カードにて、差出人の実名（本名）、メッセージの全貌、開示された連絡先（LINE ID等）をご確認およびワンクリックでコピーいただけます。
                       </p>
                     </div>
 
