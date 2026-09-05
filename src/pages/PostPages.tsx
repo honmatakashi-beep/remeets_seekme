@@ -3904,43 +3904,6 @@ export const RevealContactModal = ({
                   </div>
                 </div>
 
-                {/* 決済後に開示される3大情報ハイライト（大きく認知できる独立リッチカード） */}
-                <div className="space-y-2 bg-white/95 p-3.5 sm:p-4 rounded-2xl border-2 border-teal-200/90 shadow-2xs text-xs font-sans">
-                  <span className="text-xs sm:text-sm font-extrabold text-teal-950 flex items-center gap-1.5 pb-1 border-b border-teal-100">
-                    <Sparkles size={16} className="text-amber-500 shrink-0" />
-                    <span>お手続き完了後に安全に開示される 3大情報</span>
-                  </span>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 text-xs">
-                    <div className="p-2.5 bg-teal-50/90 rounded-xl border border-teal-200/80 flex items-center gap-2.5 shadow-2xs">
-                      <div className="w-8 h-8 rounded-lg bg-teal-600 text-white flex items-center justify-center shrink-0 text-sm font-bold shadow-2xs">
-                        👤
-                      </div>
-                      <div>
-                        <div className="font-extrabold text-slate-900 text-[11px] sm:text-xs">【差出人の実名】</div>
-                        <div className="text-[10px] text-teal-800 font-medium">フルネームを開示</div>
-                      </div>
-                    </div>
-                    <div className="p-2.5 bg-emerald-50/90 rounded-xl border border-emerald-200/80 flex items-center gap-2.5 shadow-2xs">
-                      <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0 text-sm font-bold shadow-2xs">
-                        💌
-                      </div>
-                      <div>
-                        <div className="font-extrabold text-slate-900 text-[11px] sm:text-xs">【手紙の全文】</div>
-                        <div className="text-[10px] text-emerald-800 font-medium">エピソードを開封</div>
-                      </div>
-                    </div>
-                    <div className="p-2.5 bg-indigo-50/90 rounded-xl border border-indigo-200/80 flex items-center gap-2.5 shadow-2xs">
-                      <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center shrink-0 text-sm font-bold shadow-2xs">
-                        📱
-                      </div>
-                      <div>
-                        <div className="font-extrabold text-slate-900 text-[11px] sm:text-xs">【お相手の連絡先】</div>
-                        <div className="text-[10px] text-indigo-800 font-medium">LINE・メール等</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
                 {/* お支払い金額 */}
                 <div className="flex items-center justify-between gap-2 bg-white/95 p-3 sm:p-3.5 rounded-xl border border-teal-200/80 text-xs shadow-2xs flex-wrap">
                   <span className="text-slate-600 font-bold">お支払い金額:</span>
