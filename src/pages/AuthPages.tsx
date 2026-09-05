@@ -11,6 +11,7 @@ import {
 import { useAuth } from '../contexts/AuthContext';
 import { useNgFilter } from '../contexts/AuthContext';
 import { cn, PageHeader } from '../lib/utils';
+import { TermsContent, PrivacyContent } from './StaticPages';
 import { WarningMessage, BottleLoader, GoogleSearchResultPreview, BackToHomeButton } from '../components/SharedComponents';
 
 // --- LoginPage Component ---

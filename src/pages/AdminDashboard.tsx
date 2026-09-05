@@ -22,6 +22,7 @@ import {
   FileCheck, ArrowUpRight, Cpu
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { cn, PageHeader, getPostUrl, formatEraLabel, getCategoryText, PREFECTURES } from '../lib/utils';
 import { BottleLoader, WarningMessage, Navbar, BackToHomeButton } from '../components/SharedComponents';
 import { SupportModal } from '../components/SupportModal';
 import { ManualGeneralSection, ManualMainSection, ManualModerationSection, ManualSystemSection, ManualSecuritySection } from '../components/AdminManualSections';

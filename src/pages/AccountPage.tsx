@@ -10,6 +10,7 @@ import {
   MessageCircle, Key, Plus, Zap
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { cn, PageHeader, formatEraLabel, getCategoryText, getPostUrl, PREFECTURES } from '../lib/utils';
 import { BottleLoader, WarningMessage, BackToHomeButton } from '../components/SharedComponents';
 import { SuccessStoryModal } from './SearchPage';
 import { DocumentCameraOverlay, stopAllGlobalCameraStreams } from '../components/DocumentCameraOverlay';

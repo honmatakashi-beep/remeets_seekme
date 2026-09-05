@@ -158,15 +158,11 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
         `${item.rate}%`
       ]),
       [],
-      ["4. 質問難易度・設定数別 照合分析"],
-      ["質問設定数", "ボトル数", "成立組数", "成立率 (%)", "運用特徴"],
-      ...questionComplexityStats.map((item: any) => [
-        item.label,
-        `${item.total} 通`,
-        `${item.resolved} 組`,
-        `${item.rate}%`,
-        item.desc
-      ])
+      ["4. 秘密の2段階質問 照合突破分析"],
+      ["ステップ項目", "通過率 (%)", "離脱率 (%)", "防衛・照合の役割"],
+      ["第1問（主要な思い出・あだ名等）", `${twoStepQuestionStats.q1PassRate || 0}%`, `${twoStepQuestionStats.q1DropRate || 0}%`, twoStepQuestionStats.q1Summary || ""],
+      ["第2問（詳細な合言葉・出来事等）", `${twoStepQuestionStats.q2PassRate || 0}%`, `${twoStepQuestionStats.q2DropRate || 0}%`, twoStepQuestionStats.q2Summary || ""],
+      ["両問完全正解（本人確定）", `${twoStepQuestionStats.bothPassRate || 0}%`, "-", "2問すべて正解して手紙開封・連絡先開示へ到達"]
     ];
 
     const csvContent = "\uFEFF" + rows.map(r => r.join(',')).join('\n');
