@@ -1573,7 +1573,7 @@ export const AdminManualView: React.FC = () => {
                 <ul className="list-disc pl-4 space-y-1 text-[11px] text-black/70">
                   <li><b>15. DB日次自動バックアップ (PITR) の有効化:</b> 世代管理7〜14日間の設定。</li>
                   <li><b>16. スロットリング型動的APIレート制限の有効化:</b> Auth 5req/s, Post 2req/s の固定。</li>
-                  <li><b>17. eKYC ＋ 自筆電子署名 ＋ Stripe決済の最終疎通テスト:</b> 本番同様フローでの正常動作検証。</li>
+                  <li><b>17. eKYC ＋ 電子的宣誓 ＋ Stripe決済の最終疎通テスト:</b> 本番同様フローでの正常動作検証。</li>
                 </ul>
               </div>
             </div>

@@ -249,7 +249,7 @@ export const AdminMasterKnowledgeBase: React.FC<AdminMasterKnowledgeBaseProps> =
     {
       group: '【G. 最終テスト】',
       items: [
-        { id: 'step_17', icon: '✅', title: '17. 公的 eKYC・自筆署名・Stripeテスト決済の最終疎通テスト', desc: '思い出クイズの完全一致、eKYC書類の提出、手書き誓約電子署名、Stripeによる600円の仮売上（審査落ち時即時自動返金）が連動して正常動作するか最終検証。' }
+        { id: 'step_17', icon: '✅', title: '17. 公的 eKYC・電子的宣誓・Stripeテスト決済の最終疎通テスト', desc: '思い出クイズの完全一致、eKYC書類の提出、電子的利用宣誓同意、Stripeによる600円の仮売上（審査落ち時即時自動返金）が連動して正常動作するか最終検証。' }
       ]
     }
   ];

@@ -439,11 +439,11 @@ export const POLICE_PRESENTATION_SCENARIOS = [
   "記号を混ぜたフィルタ逃れ（例：ラ_イ_ン 等）や、ストーカー特有の想い出を装った精神的な嫌がらせ、脅迫的なしがみつき感情を意味解析するため、世界最高レベルの Google Gemini AIによるリアルタイム感情・文脈監査モデレーションを常時バインド。悪質な投稿は1秒で自動的に不認可とし露出を断ちます。",
   "悪質ユーザーとの泥仕合を避け、被害者の安全を守るステルス技術。危険な回答や送信に対して、送信完了を擬態表示しながら裏DBでは隔離する『シャドウフラグ技術』を活用。迷惑ユーザーには気付かせずに活動を停止させ、攻撃の連鎖や被害の拡大を防ぎます。",
   "18歳未満、及び高校生の登録は規約および生年月日入力・証明書提出ゲート連携により完全不許可としています。青少年を甘言、児童売春、ストーカーなどの犯罪被害に絶対に巻き込ませない、青少年の完全保護コンプライアンス管理を断行します。",
-  "クイズ一致を突破したお相手の部屋の扉を開ける（メッセージ開通）直前に、利用宣誓チェックに加え『指による手書き安全利用誓約自筆署名』を義務化しています。個人情報保護のため生データは非保持とし、筆跡から得られる不可逆ハッシュのみをゼロナレッジで安全保管。漏洩リスクをゼロに抑えつつ司法物証を確保し、強固な心理的抑止力を与えます。",
+  "クイズ一致を突破したお相手との連絡先開示（セキュアブリッジ）直前に、利用宣誓チェックによる『法令遵守・ストーカー禁止・虚偽申告防止の電子的宣誓』を必須化しています。宣誓完了時のタイムスタンプ、接続元IPアドレス、認証識別子を改ざん不可能な監査ログとして確実に保全。漏洩リスクをゼロに抑えつつ司法物証を確保し、強固な心理的抑止力を与えます。",
   "ユーザーからの通報・相談・問い合わせ履歴は、管理者からの公式返信、さらにその後のユーザーからの追加返信に至るまで、全送受信ログをデータベースにチケットトークン（ticket_token）でスレッドとして完全永続保全。さらにGemini AIを活用したコンプライアンス適合返信ドラフト自動生成機能により、警察ガイドラインや規約に即した迅速かつ的確な対応を実現しています。",
   "年齢・身元確認と料金体系について、完全な透明性を確保しています。【無料の年齢誓約（グリーン）】による18歳以上確認と、【600円の公的身分証eKYC認証（オレンジ）】による公的証明書確認を視覚的にも機能的にも明確に分離。利用者が誤認することのないクリーンなインターフェースを提供しています。",
   "ユーザーの身元保証と安全な取引を担保するため、本人確認機関（TRUSTDOCK等）と決済インフラ（Stripe）を完全分離して連携する2社分離設計を採用。メッセージ開通時の本人確認を義務付け、審査に【不合格】となった際は600円の仮売上（オーソリ）が即座に自動全額返金されます。承認済ユーザーにのみ認証マークが点灯し、安心・公正な身元確認を実現します。",
-  "生活安全課、サイバー犯罪対策課、裁判所等から正式に『刑事訴訟法第197条第2項に基づく捜査事項照会書』の交付を受理した際、管理者パネルから『日付期間指定フィルター』を用いてワンボタンで、対象期間中の全接続履歴（IPアドレス、自筆手書き署名ハッシュ、アクセスUA、送信ワード）をまとめたA4のフォレンジック報告用PDFおよびCSVが瞬時に自動出力されます。警察の皆様に事務負担をかけず即時提供が可能です。",
+  "生活安全課、サイバー犯罪対策課、裁判所等から正式に『刑事訴訟法第197条第2項に基づく捜査事項照会書』の交付を受理した際、管理者パネルから『日付期間指定フィルター』を用いてワンボタンで、対象期間中の全接続履歴（IPアドレス、電子的宣誓ログ、アクセスUA、送信ワード）をまとめたA4のフォレンジック報告用PDFおよびCSVが瞬時に自動出力されます。警察の皆様に事務負担をかけず即時提供が可能です。",
   "探索（探される）側から『昔の知人に自分を探してほしくない、勝手に想い出を流されて不満である』という削除要請に対して、フッターよりオプトアウト窓口を常設しています。受付から24時間以内に運営安全委員会が情報を精査し、該当ボトルデータを完全物理削除・不活性化します。",
   "ReMEETsは、孤独と社会的断絶を解消する全く新しい安心のインフラです。未知の出会いを排除し、思い出による強固なセキュリティを全編に敷き詰めて運営されます。警察・サイバー課関係機関の皆様とも密に連携して、社会のウェルビーイングに貢献いたします。以上で説明を終了します。ありがとうございました。"
 ];
@@ -454,7 +454,7 @@ export const DEFAULT_AUTH_MEMO = `【認証設計・治安/安全対策 ＆ 警�
 
 ◆ 1. 認証設計をめぐる議論の軌跡と合意事項
 分類：[実証版（体験版）でのモック化]
-・提案・決定事項：テスターや審査官（警察や行政等）が「1台の検証端末」からスムーズに複数アカウント（投函者役とお相手役）を作って、クイズ回答や手書き安全署名、捜査用ログPDF出力のコア防衛機能をスピーディに評価・実証検証できるように、現在は「パスワード不要、SMS等はボタン付きモック」の簡易疎通仕様にしておく。
+・提案・決定事項：テスターや審査官（警察や行政等）が「1台の検証端末」からスムーズに複数アカウント（投函者役とお相手役）を作って、クイズ回答や電子的利用宣誓、捜査用ログPDF出力のコア防衛機能をスピーディに評価・実証検証できるように、現在は「パスワード不要、SMS等はボタン付きモック」の簡易疎通仕様にしておく。
 ・サイト上の実装：アカウント作成画面や認証テスト時に、複数アカウントを迅速作成・ロール切り替えできる実証用ボタンとモックUIが構築されています。
 
 分類：[本番公開時の1人1番号SMS認証]
@@ -474,10 +474,10 @@ export const DEFAULT_AUTH_MEMO = `【認証設計・治安/安全対策 ＆ 警�
    ※LINE社が発行する識別子。これにより警察はLINE社に対して該当ユーザーの「登録氏名」「電話番号」「住所」の開示請求を直接行うことが可能となる。
 ② ユーザーが登録時・連携時に同意したメールアドレス（取得可能な場合）
 ③ 本サービス内での登録日時／最終ログイン日時／接続元グローバルIPアドレス
-④ クイズ作成／回答履歴、違反ペナルティ履歴、お相手への手書き署名データ
+④ クイズ作成／回答履歴、違反ペナルティ履歴、電子的利用宣誓・同意ログデータ
 
 【補足：インターネット異性紹介事業届出（警察・公安委員会）に関する法的確約】
-本システム「ReMEETs」は、不特定多数が自由に異性を検索して出会うマッチングアプリではなく、相互の「過去の共通の個人的想い出クイズ」に正解し、合意署名を経た【既知・面識のある者同士の安全な再疎通】を支援するコンプライアンス特化型ツールであるため、法律上の「インターネット異性紹介事業」には該当しません。警察・公安委員会との健全な対話・実証実験に向け、本ドキュメントポートフォリオおよびソースコードは完全にクリーンに整備されています。`;
+本システム「ReMEETs」は、不特定多数が自由に異性を検索して出会うマッチングアプリではなく、相互の「過去の共通の個人的想い出クイズ」に正解し、合意宣誓を経た【既知・面識のある者同士の安全な再疎通】を支援するコンプライアンス特化型ツールであるため、法律上の「インターネット異性紹介事業」には該当しません。警察・公安委員会との健全な対話・実証実験に向け、本ドキュメントポートフォリオおよびソースコードは完全にクリーンに整備されています。`;
 
 export const AdminDeploymentGuideBlock = ({ 
   docType, 
@@ -778,7 +778,7 @@ export const AdminDeploymentGuideBlock = ({
       { id: 14, category: "法務・規約", title: "特定商取引法に基づく表記の整備（住所・電話番号対策）", description: "バーチャルオフィス住所・050電話番号を契約し、販売価格（600円〜1,200円）や返金規定を特定商取引法ページに記載します。", completed: false, date: "", notes: "" },
       { id: 15, category: "法務・規約", title: "全法的文書（規約・PP・ガイドライン・特商法）の【制定日・施行日】確定", description: "利用規約、PP、ガイドライン、特商法表記の制定日・施行日を正式サービス提供開始日（2026年8月15日）に一括整合します。", completed: true, date: "2026-08-15", notes: "2026年8月15日に全文書の制定日・施行日を正式反映完了済" },
       { id: 16, category: "セキュリティ", title: "スロットリング型動的APIアクセスレート制限のポリシー設定", description: "DoS攻撃やクイズの総当たり自動回答スパムを防ぐため、秒間API制限しきい値を調整・固定します。", completed: false, date: "", notes: "" },
-      { id: 17, category: "最終テスト", title: "公的 eKYC・自筆署名・Stripeテスト決済の最終疎通テスト", description: "お相手との想い出照合・連絡先開示手数料決済、自筆署名、本人確認書類提出が連動して正常動作するか最終検証します。", completed: false, date: "", notes: "" },
+      { id: 17, category: "最終テスト", title: "公的 eKYC・電子的宣誓・Stripeテスト決済の最終疎通テスト", description: "お相手との想い出照合・連絡先開示手数料決済、電子的利用宣誓同意、本人確認書類提出が連動して正常動作するか最終検証します。", completed: false, date: "", notes: "" },
     ];
 
     try {
@@ -819,14 +819,14 @@ export const AdminDeploymentGuideBlock = ({
       { id: 7, category: "3. 検索・秘匿性", title: "キーワード検索・年代地域フィルター＆本文マスキング検証", description: "名前や学校名で検索し、該当手紙がヒットすること、およびクイズ未正解の段階で本文・連絡先が完全に秘匿されているか検証します。", completed: false, date: "", notes: "" },
       { id: 8, category: "4. クイズ照合・本人認証", title: "想い出クイズ完全一致判定 ＆ 表記ゆれ救済テスト", description: "質問に完全正解（または登録された表記ゆれ別解）を入力した際、即座に想い出一致（照合成功）画面へ遷移するか検証します。", completed: false, date: "", notes: "" },
       { id: 9, category: "4. クイズ照合・本人認証", title: "クイズ不正解時の安全遮断 ＆ ブルートフォース制限テスト", description: "誤答時に本文が絶対に開示されないこと、および連続誤答時に一時ロックアウト（レート制限）がかかるか検証します。", completed: false, date: "", notes: "" },
-      { id: 10, category: "5. eKYC・自筆署名", title: "公的証明書（免許証/マイナンバー）アップロード＆eKYC審査テスト", description: "身分証画像が安全にアップロードされ、審査合否ステータスおよび公的認証バッジが正しく更新されるか検証します。", completed: false, date: "", notes: "" },
-      { id: 11, category: "5. eKYC・自筆署名", title: "自筆電子署名（タッチ描画・誓約書）保存テスト", description: "連絡先開示前の誓約確認画面で、指やマウスによる手書き自筆署名が正常に描画され、署名ベクターがタイムスタンプと共に安全保存されるか検証します。", completed: false, date: "", notes: "" },
+      { id: 10, category: "5. eKYC・電子的宣誓", title: "公的証明書（免許証/マイナンバー）アップロード＆eKYC審査テスト", description: "身分証画像が安全にアップロードされ、審査合否ステータスおよび公的認証バッジが正しく更新されるか検証します。", completed: false, date: "", notes: "" },
+      { id: 11, category: "5. eKYC・電子的宣誓", title: "電子的利用宣誓（法令遵守・ストーカー禁止）合意テスト", description: "連絡先開示前の誓約確認画面で、利用宣誓チェック項目への明示的同意が必須化され、合意タイムスタンプ・IPログが安全保存されるか検証します。", completed: false, date: "", notes: "" },
       { id: 12, category: "6. 決済・連絡先開示", title: "Stripe本番決済（開通手数料600円〜1,200円）疎通テスト", description: "開通ボタン押下時にStripe決済画面が起動し、クレジットカード決済が遅延なく正常に完了するか検証します。", completed: false, date: "", notes: "" },
       { id: 13, category: "6. 決済・連絡先開示", title: "決済完了後の即時連絡先開示（引き渡し完結）検証", description: "決済完了直後にお手紙全文と相手の優先開示連絡先（LINE ID等）が表示され、アプリ内永続チャットを介さず完結するか検証します。", completed: false, date: "", notes: "" },
       { id: 14, category: "6. 決済・連絡先開示", title: "eKYC審査不合格時のStripe自動返金（仮売上取消）テスト", description: "本人確認審査で不合格となった場合、Stripeで仮決済された手数料が自動的かつ即座にオーソリ取消・返金されるか検証します。", completed: false, date: "", notes: "" },
       { id: 15, category: "7. マイページ・手紙管理", title: "優先開示連絡先の設定・投函ボトル回収（削除）テスト", description: "自身のLINE ID等の更新保存、および投函ボトルの回収（完全消去）時に検索結果から即時非表示となるか検証します。", completed: false, date: "", notes: "" },
       { id: 16, category: "8. 管理者・警察連携", title: "管理者ダッシュボードKPI・AI通報ログ＆ユーザー緊急凍結検証", description: "統計メトリクス表示、AI検閲通報ログのリアルタイム確認、問題ユーザーのワンクリックBAN機能が正常動作するか検証します。", completed: false, date: "", notes: "" },
-      { id: 17, category: "8. 管理者・警察連携", title: "警察提出用・手書き誓約署名付き監査ログCSVエクスポートテスト", description: "司法捜査機関からの開示要請を想定し、安全誓約署名ログおよび認証イベント履歴を含んだ監査CSVが出力できるか検証します。", completed: false, date: "", notes: "" },
+      { id: 17, category: "8. 管理者・警察連携", title: "警察提出用・電子的宣誓同意ログ付き監査CSVエクスポートテスト", description: "司法捜査機関からの開示要請を想定し、電子的宣誓同意ログおよび認証イベント履歴を含んだ監査CSVが出力できるか検証します。", completed: false, date: "", notes: "" },
       { id: 18, category: "9. レスポンシブ表示", title: "スマートフォン実機表示 (iOS Safari / Android Chrome) 検証", description: "iPhone/Androidの実機幅で横スクロールや文字欠けが発生せず、タップターゲット（44px以上）が押しやすいか検証します。", completed: false, date: "", notes: "" },
       { id: 19, category: "10. セキュリティ・異常系", title: "未ログイン時ガード・他者ボトル不正編集遮断テスト", description: "ログイン必須ページへの未認証アクセス制限、およびURL直打ちによる他者ボトル不正操作が確実に403拒否されるか検証します。", completed: false, date: "", notes: "" },
       { id: 20, category: "10. セキュリティ・異常系", title: "回収済みボトルアクセス遮断＆APIレート制限（DoS防御）テスト", description: "削除済みボトルの安全遮断案内表示、および短時間の大量リクエストに対する429 Too Many Requests防御を検証します。", completed: false, date: "", notes: "" }
@@ -1194,13 +1194,13 @@ export const AdminDeploymentGuideBlock = ({
     },
     {
       id: 24,
-      title: "漏洩リスクのない非保持・ゼロナレッジ型「自筆電子宣誓手書き署名」",
-      category: "安全防衛メカニズム⑦：非保持ゼロナレッジ型自筆署名",
+      title: "連絡先開示直前の厳格な「電子的利用宣誓フェーズゲート」",
+      category: "安全防衛メカニズム⑦：電子的利用宣誓ゲート",
       layout: 'content',
       points: [
-        "クイズに正答し、メッセージ開通ルームに入室する（お相手のドアを開ける）直前に、「悪意ある監視、付きまとい、いたずら登録、誹謗中傷でないこと」等の厳しい免責声明および法令遵守誓約に合意させます。",
-        "チェックボックスを埋めるだけでは誓約の心理的・法的効力が弱いため、本機能ではスマートフォン等のタッチパネルを活用した『自筆の電子的手書き署名』による署名入力を必須としています。",
-        "本システムは個人情報保護とハッキング時の漏洩抑止の観点から非保持設計を採用。生画像や生座標ベクトルはサーバーに一切保存しません。ブラウザ（フロントエンド）内での署名描画とともに、筆跡の複雑度（総ストローク数・プロット点数・描画時間）および座標から得られる不可逆ハッシュのみを「ゼロナレッジ手書き誓約エビデンス」としてIPや合意日時等とともに安全な監査ログに永続保管。万一サーバーが侵害されても第三者が筆跡を悪用することは不可能です。個人情報非保持の極めて高い安全設計と、法的事件発生時の高度なフォレンジック担保、そして『自らの手で書く』ことによる強力な不正抑止の心理効果を同時に完璧に両立しています。"
+        "クイズに正答し、連絡先開示・セキュアブリッジに進む直前に、「悪意ある監視、付きまとい、いたずら登録、誹謗中傷でないこと」等の厳しい免責声明および法令遵守誓約の電子的宣誓を義務化。",
+        "全項目への明示的同意チェックを必須化し、安易なクリックによる突破を防止。宣誓完了時のタイムスタンプ、接続元IPアドレス、ユーザー識別子を改ざん不可能な監査ログとして確実に保全。",
+        "万一の法的トラブルや捜査照会時には、この電子的宣誓ログが「利用規約および法令遵守に同意した確実な証拠」として機能し、悪意あるユーザーに対する強力な心理的・法的抑止力を発揮します。"
       ]
     },
     {
@@ -1243,7 +1243,7 @@ export const AdminDeploymentGuideBlock = ({
       layout: 'content',
       points: [
         "生活安全課、サイバー犯罪対策課、または裁判所などからの「捜査事項照会書」（刑事訴訟法第197条第2項に基づく）等の付託を受理した際、開始日〜終了日の『日付期間指定フィルター』でワンクリック抽出。",
-        "指定期間内の対象アカウントによるログインIP端末、失敗履歴、自筆手書き署名ハッシュ、決済履歴が『フォレンジック分析用』PDF or CSVとして瞬時に自動集約出力されます。",
+        "指定期間内の対象アカウントによるログインIP端末、失敗履歴、電子的宣誓同意ログ、決済履歴が『フォレンジック分析用』PDF or CSVとして瞬時に自動集約出力されます。",
         "警察等からの正式要請に対して数分以内の迅速情報開示を全うし、違法・執着行為・嫌がらせ、なりすまし等の刑事責任追及を全面的に強力バックアップします。"
       ]
     },
@@ -1446,11 +1446,11 @@ export const AdminDeploymentGuideBlock = ({
           <td class="log-col">失敗時の試行ワード履歴、元セッション・IP情報を保存。管理者によるアカウント拒否権と連動。</td>
         </tr>
         <tr>
-          <td class="phase-col">⑦ メッセージ開通・初期会話</td>
+          <td class="phase-col">⑦ 連絡先開示（セキュアブリッジ）</td>
           <td class="threat-col">なりすまし突破成功後のストーカー・嫌がらせ接触、事件化</td>
-          <td class="program-col">メッセージルームを開通する前に、<strong>18歳以上（高校生を除く）</strong>、<strong>ストーカーや無断面識を目的としない安全第一の利用宣誓</strong>および<strong>デジタル手書き署名（非保持ゼロナレッジ型）</strong>の合意を必須化。</td>
-          <td class="ai-col">開通後のファーストメッセージを含む初期コミュニケーションをAI分析。暴力的・執着的ハラスメントが認められた場合に即時ログをブロック。</td>
-          <td class="log-col">同意したゼロナレッジ手書き署名メタデータ・不可逆ハッシュ、合意タイムスタンプ、IP情報を「証拠開示用」として管理者サーバーデータベースに高セキュリティ保全（生の署名画像は保存せず、ハッキング漏えい時の筆跡なりすましリスクを完璧に封鎖）。</td>
+          <td class="program-col">連絡先開示前に、<strong>18歳以上（高校生を除く）</strong>、<strong>ストーカーや無断面識を目的としない安全第一の利用宣誓</strong>への電子的合意を必須化。</td>
+          <td class="ai-col">-</td>
+          <td class="log-col">同意した電子的宣誓ログ（合意タイムスタンプ、IPアドレス、ユーザー識別子）を「証拠開示用」として管理者サーバーデータベースに高セキュリティ保全。</td>
         </tr>
       `;
 
@@ -2183,6 +2183,7 @@ export const AdminDeploymentGuideBlock = ({
 
   const handleDownloadMarkdown = async () => {
     let fileName = 'ReMEETs_Deployment_Guide.md';
+    let titleStr = "ReMEETs 治安行政・防衛システム文書";
     if (docType === 'permit') fileName = 'ReMEETs_Permit_QA_Guide.md';
     else if (docType === 'cost_estimate') fileName = 'ReMEETs_Monetization_Guide.md';
     else if (docType === 'cost_list_detailed') fileName = 'ReMEETs_Cost_List_Guide.md';
@@ -2206,7 +2207,6 @@ export const AdminDeploymentGuideBlock = ({
     else if (docType === 'pr_plan') fileName = 'ReMEETs_PR_Plan.md';
     else if (docType === 'legal_guide') fileName = 'ReMEETs_Legal_Compliance_Guide.md';
     
-    let titleStr = "ReMEETs 治安行政・防衛システム文書";
     if (docType === 'deployment') titleStr = "① ReMEETs 本番デプロイガイド ＆ 運営コンプライアンス設計書";
     else if (docType === 'cost_estimate') titleStr = "①-B 本番運用コスト＆初期費用シミュレータ";
     else if (docType === 'cost_list_detailed') titleStr = "①-C 本番運用コスト＆初期費用 総合見積もりリスト";
@@ -2271,6 +2271,410 @@ export const AdminDeploymentGuideBlock = ({
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const addPptxCardDiagram = (pptx: any, pptxSlide: any, slide: any) => {
+    const isDarkVisual = [3, 13, 15, 20, 21, 22].includes(slide.id);
+    const bgCol = isDarkVisual ? '1A2735' : (slide.id === 30 ? 'ECFDF5' : 'FFFFFF');
+    const lineCol = isDarkVisual ? '334155' : (slide.id === 30 ? '34D399' : 'E2E8F0');
+    const textCol = isDarkVisual ? 'FAFAF8' : '1A2735';
+
+    // Main Card Container (Right Column: x: 5.95, y: 1.45, w: 3.45, h: 3.65)
+    pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', {
+      x: 5.95,
+      y: 1.45,
+      w: 3.45,
+      h: 3.65,
+      fill: { color: bgCol },
+      line: { color: lineCol, width: 1.2 }
+    });
+
+    // Tag labels per slide
+    const tagLabels: Record<number, string> = {
+      2: 'RE-MEET ARCHITECTURE',
+      3: 'DRIFT CAPSULE',
+      4: 'SOCIAL MISSION',
+      5: 'TARGET GROUPS',
+      6: 'FUNCTION: DRIFT',
+      7: 'QUIZ GATE SHIELD',
+      8: 'CONTACT BRIDGE',
+      9: 'SOC REALTIME',
+      10: 'SHADOW FILTER',
+      11: 'CRYPTOGRAPHIC ENGINE',
+      12: 'ZERO TRACE PRIVACY',
+      13: 'SYSTEM TOPOLOGY',
+      14: 'COMPARISON MATRIX',
+      15: 'LEGAL & SECURITY DEEP DIVE',
+      16: 'LEGAL OPINION',
+      17: 'AUTHENTICATION LAW',
+      18: 'IP BRUTE GUARD',
+      19: 'NAME REGEX DEFENSE',
+      20: 'STEALTH MASK',
+      21: 'SEMANTIC AI FILTER',
+      22: 'SHADOW SANDBOX',
+      23: 'YOUTH PROTECTION',
+      24: 'DIGITAL SIGNATURE',
+      25: 'TICKET & AI DRAFT',
+      26: 'PRICING & VERIFICATION',
+      27: 'EKYC & STRIPE COUPLING',
+      28: 'JUDICIAL ALIGNMENT',
+      29: 'OPT-OUT AUDIT',
+      30: 'GRAND SUMMARY'
+    };
+
+    const currentTag = tagLabels[slide.id] || `SECURITY PROTOCOL #${slide.id}`;
+
+    // Top-right Tag Badge
+    pptxSlide.addText(currentTag, {
+      x: 6.0,
+      y: 1.55,
+      w: 3.3,
+      h: 0.25,
+      fontSize: 7.5,
+      fontFace: 'Courier New',
+      color: isDarkVisual ? '34D399' : '059669',
+      bold: true,
+      align: 'right'
+    });
+
+    // Detailed visual rendering per slide
+    switch (slide.id) {
+      case 2: // 名前の由来 (A - B 連携図)
+        pptxSlide.addShape(pptx.shapes.OVAL || 'ellipse', { x: 6.2, y: 2.15, w: 0.65, h: 0.65, fill: { color: 'F1F5F9' }, line: { color: 'CBD5E1', width: 1.5 } });
+        pptxSlide.addText('A', { x: 6.2, y: 2.15, w: 0.65, h: 0.65, fontSize: 13, bold: true, align: 'center', valign: 'middle', color: '1E293B', fontFace: 'Hiragino Mincho ProN' });
+        pptxSlide.addText('あなた', { x: 6.1, y: 2.85, w: 0.85, h: 0.25, fontSize: 7.5, align: 'center', color: '64748B', fontFace: 'Hiragino Kaku Gothic ProN' });
+
+        pptxSlide.addShape(pptx.shapes.LINE || 'line', { x: 6.95, y: 2.47, w: 1.45, h: 0, line: { color: '10B981', width: 2 } });
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 7.1, y: 2.05, w: 1.15, h: 0.35, fill: { color: 'ECFDF5' }, line: { color: '10B981', width: 1 } });
+        pptxSlide.addText('相互の記憶 ✦', { x: 7.1, y: 2.05, w: 1.15, h: 0.35, fontSize: 7, bold: true, color: '065F46', align: 'center', valign: 'middle', fontFace: 'Hiragino Kaku Gothic ProN' });
+        pptxSlide.addText('Re-meet', { x: 7.1, y: 2.55, w: 1.15, h: 0.25, fontSize: 7, color: '64748B', align: 'center', fontFace: 'Courier New' });
+
+        pptxSlide.addShape(pptx.shapes.OVAL || 'ellipse', { x: 8.5, y: 2.15, w: 0.65, h: 0.65, fill: { color: 'ECFDF5' }, line: { color: '10B981', width: 1.5 } });
+        pptxSlide.addText('B', { x: 8.5, y: 2.15, w: 0.65, h: 0.65, fontSize: 13, bold: true, align: 'center', valign: 'middle', color: '047857', fontFace: 'Hiragino Mincho ProN' });
+        pptxSlide.addText('懐かしい知人', { x: 8.35, y: 2.85, w: 0.95, h: 0.25, fontSize: 7.5, align: 'center', color: '047857', bold: true, fontFace: 'Hiragino Kaku Gothic ProN' });
+
+        pptxSlide.addText('不特定の「出会い」を排除し、過去の知人との「再会（Re-meet）」に特化。', { x: 6.05, y: 3.3, w: 3.25, h: 1.4, fontSize: 8.5, align: 'center', color: '475569', fontFace: 'Hiragino Kaku Gothic ProN' });
+        break;
+
+      case 3: // コンセプト (波間に漂流するカプセル)
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 7.25, y: 2.05, w: 0.85, h: 0.85, fill: { color: '0F172A' }, line: { color: '10B981', width: 1.5 } });
+        pptxSlide.addText('✉️', { x: 7.25, y: 2.05, w: 0.85, h: 0.85, fontSize: 24, align: 'center', valign: 'middle' });
+        pptxSlide.addShape(pptx.shapes.OVAL || 'ellipse', { x: 7.9, y: 2.7, w: 0.35, h: 0.35, fill: { color: '10B981' } });
+        pptxSlide.addText('16:9', { x: 7.9, y: 2.7, w: 0.35, h: 0.35, fontSize: 6.5, color: 'FFFFFF', bold: true, align: 'center', valign: 'middle', fontFace: 'Courier New' });
+        pptxSlide.addText('~ ~ ~ 海洋漂流ボトルカプセル ~ ~ ~', { x: 6.1, y: 3.05, w: 3.15, h: 0.3, fontSize: 7.5, color: '34D399', align: 'center', fontFace: 'Courier New' });
+        pptxSlide.addText('投函から波間に漂流。記憶の暗号キーにより本人だけに届くボトルメール構造。', { x: 6.05, y: 3.45, w: 3.25, h: 1.3, fontSize: 8.5, align: 'center', color: 'CBD5E1', fontFace: 'Hiragino Kaku Gothic ProN' });
+        break;
+
+      case 4: // 構築目的 (3大ソーシャルミッション)
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.1, y: 1.95, w: 0.95, h: 1.15, fill: { color: 'FFF1F2' }, line: { color: 'FECDD3', width: 1 } });
+        pptxSlide.addText('🏠', { x: 6.1, y: 2.05, w: 0.95, h: 0.35, fontSize: 14, align: 'center' });
+        pptxSlide.addText('孤立化防止', { x: 6.1, y: 2.45, w: 0.95, h: 0.5, fontSize: 7.5, bold: true, color: '9F1239', align: 'center', fontFace: 'Hiragino Kaku Gothic ProN' });
+
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 7.2, y: 1.95, w: 0.95, h: 1.15, fill: { color: 'ECFDF5' }, line: { color: 'A7F3D0', width: 1 } });
+        pptxSlide.addText('👥', { x: 7.2, y: 2.05, w: 0.95, h: 0.35, fontSize: 14, align: 'center' });
+        pptxSlide.addText('震災断絶回復', { x: 7.2, y: 2.45, w: 0.95, h: 0.5, fontSize: 7.5, bold: true, color: '065F46', align: 'center', fontFace: 'Hiragino Kaku Gothic ProN' });
+
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 8.3, y: 1.95, w: 0.95, h: 1.15, fill: { color: 'F0F9FF' }, line: { color: 'BAE6FD', width: 1 } });
+        pptxSlide.addText('🏫', { x: 8.3, y: 2.05, w: 0.95, h: 0.35, fontSize: 14, align: 'center' });
+        pptxSlide.addText('自発的隣人網', { x: 8.3, y: 2.45, w: 0.95, h: 0.5, fontSize: 7.5, bold: true, color: '0369A1', align: 'center', fontFace: 'Hiragino Kaku Gothic ProN' });
+
+        pptxSlide.addText('家族・親族衰退期における、過去の恩師・同窓生とのセーフティネット再生。', { x: 6.05, y: 3.3, w: 3.25, h: 1.4, fontSize: 8.5, align: 'center', color: '475569', fontFace: 'Hiragino Kaku Gothic ProN' });
+        break;
+
+      case 5: // ターゲットユーザー (2x2 グリッド)
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.1, y: 1.95, w: 1.5, h: 0.65, fill: { color: 'F8FAFC' }, line: { color: 'E2E8F0', width: 1 } });
+        pptxSlide.addText('🏫 学校の同窓生\n幼馴染・クラスメイト', { x: 6.15, y: 1.98, w: 1.4, h: 0.6, fontSize: 7, bold: true, color: '1E293B', fontFace: 'Hiragino Kaku Gothic ProN' });
+
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 7.75, y: 1.95, w: 1.5, h: 0.65, fill: { color: 'F8FAFC' }, line: { color: 'E2E8F0', width: 1 } });
+        pptxSlide.addText('🏠 旧隣人・被災者\n転居・区画整理で断絶', { x: 7.8, y: 1.98, w: 1.4, h: 0.6, fontSize: 7, bold: true, color: '1E293B', fontFace: 'Hiragino Kaku Gothic ProN' });
+
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.1, y: 2.7, w: 1.5, h: 0.65, fill: { color: 'F8FAFC' }, line: { color: 'E2E8F0', width: 1 } });
+        pptxSlide.addText('👥 元同僚・仕事仲間\n退職・異動後の再会', { x: 6.15, y: 2.73, w: 1.4, h: 0.6, fontSize: 7, bold: true, color: '1E293B', fontFace: 'Hiragino Kaku Gothic ProN' });
+
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 7.75, y: 2.7, w: 1.5, h: 0.65, fill: { color: 'F8FAFC' }, line: { color: 'E2E8F0', width: 1 } });
+        pptxSlide.addText('🎖️ 恩師・指導者\n感謝を伝えたい相手', { x: 7.8, y: 2.73, w: 1.4, h: 0.6, fontSize: 7, bold: true, color: '1E293B', fontFace: 'Hiragino Kaku Gothic ProN' });
+
+        pptxSlide.addText('信頼できるお相手にだけエピソードを届けたい安心なユーザーが集う空間。', { x: 6.05, y: 3.5, w: 3.25, h: 1.2, fontSize: 8.5, align: 'center', color: '475569', fontFace: 'Hiragino Kaku Gothic ProN' });
+        break;
+
+      case 6: // 主要機能① (投函＆漂流フロー)
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.1, y: 2.1, w: 0.9, h: 0.6, fill: { color: 'F1F5F9' }, line: { color: 'CBD5E1', width: 1 } });
+        pptxSlide.addText('① 国名+名前投函', { x: 6.1, y: 2.15, w: 0.9, h: 0.5, fontSize: 7, fontFace: 'Hiragino Kaku Gothic ProN', color: '1E293B', align: 'center', bold: true });
+
+        pptxSlide.addShape(pptx.shapes.LINE || 'line', { x: 7.02, y: 2.4, w: 0.2, h: 0, line: { color: '94A3B8', width: 1.5 } });
+
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 7.24, y: 2.1, w: 0.9, h: 0.6, fill: { color: 'F1F5F9' }, line: { color: 'CBD5E1', width: 1 } });
+        pptxSlide.addText('② 漂流待機', { x: 7.24, y: 2.15, w: 0.9, h: 0.5, fontSize: 7, fontFace: 'Hiragino Kaku Gothic ProN', color: '1E293B', align: 'center', bold: true });
+
+        pptxSlide.addShape(pptx.shapes.LINE || 'line', { x: 8.16, y: 2.4, w: 0.2, h: 0, line: { color: '94A3B8', width: 1.5 } });
+
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 8.38, y: 2.1, w: 0.9, h: 0.6, fill: { color: 'ECFDF5' }, line: { color: '10B981', width: 1 } });
+        pptxSlide.addText('③ クイズ開門', { x: 8.38, y: 2.15, w: 0.9, h: 0.5, fontSize: 7, fontFace: 'Hiragino Kaku Gothic ProN', color: '065F46', align: 'center', bold: true });
+
+        pptxSlide.addText('詳細住所不要。システム波間に漂流し、第三者から完全に遮断された空間。', { x: 6.05, y: 3.1, w: 3.25, h: 1.5, fontSize: 8.5, fontFace: 'Hiragino Kaku Gothic ProN', color: textCol, align: 'center' });
+        break;
+
+      case 7: // 主要機能② (想い出クイズゲート)
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.15, y: 1.95, w: 3.05, h: 0.9, fill: { color: '0F172A' }, line: { color: '1E293B', width: 1 } });
+        pptxSlide.addText('🔒 QUIZ VERIFICATION GATE', { x: 6.25, y: 2.05, w: 2.85, h: 0.25, fontSize: 7.5, fontFace: 'Courier New', color: '34D399', bold: true });
+        pptxSlide.addText('二人だけの共有記憶に全問正答で開門', { x: 6.25, y: 2.35, w: 2.85, h: 0.4, fontSize: 9.5, fontFace: 'Hiragino Kaku Gothic ProN', color: 'FFFFFF', bold: true });
+
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.15, y: 2.95, w: 3.05, h: 0.45, fill: { color: 'ECFDF5' }, line: { color: 'A7F3D0', width: 1 } });
+        pptxSlide.addText('✦ 表記ゆれ自動救済 (Levenshtein ≤ 2)  [ACTIVE]', { x: 6.25, y: 2.95, w: 2.85, h: 0.45, fontSize: 7.5, fontFace: 'Hiragino Kaku Gothic ProN', color: '065F46', bold: true, valign: 'middle' });
+
+        pptxSlide.addText('共通の想い出が高精度認証キーとなり、第三者を遮断しつつ正当な再会を支援。', { x: 6.05, y: 3.6, w: 3.25, h: 1.2, fontSize: 8.5, fontFace: 'Hiragino Kaku Gothic ProN', color: textCol, align: 'center' });
+        break;
+
+      case 8: // 主要機能③ (連絡先安全引き渡しモデル)
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.15, y: 1.85, w: 3.05, h: 1.8, fill: { color: 'F8FAFC' }, line: { color: 'E2E8F0', width: 1 } });
+        pptxSlide.addText('🤝 連絡先安全引き渡し（セキュア・ブリッジ）', { x: 6.25, y: 1.95, w: 2.85, h: 0.25, fontSize: 8, fontFace: 'Hiragino Kaku Gothic ProN', color: '065F46', bold: true });
+
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.3, y: 2.3, w: 2.75, h: 0.45, fill: { color: 'FFFFFF' }, line: { color: 'CBD5E1', width: 1 } });
+        pptxSlide.addText('開示連絡先: LINE ID: @sample_friend', { x: 6.35, y: 2.3, w: 2.65, h: 0.45, fontSize: 7.5, fontFace: 'Courier New', color: '047857', bold: true, valign: 'middle' });
+
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.3, y: 2.85, w: 2.75, h: 0.65, fill: { color: 'ECFDF5' }, line: { color: 'A7F3D0', width: 1 } });
+        pptxSlide.addText('🔒 密室チャットを持たないクリーン設計で、\nトラブルや犯罪リスクをシステム構造上ゼロに。', { x: 6.35, y: 2.85, w: 2.65, h: 0.65, fontSize: 7, fontFace: 'Hiragino Kaku Gothic ProN', color: '065F46', valign: 'middle' });
+
+        pptxSlide.addText('🛡️ 緊急通報・ワンタップブロック機能常備', { x: 6.05, y: 3.8, w: 3.25, h: 0.4, fontSize: 8.5, fontFace: 'Hiragino Kaku Gothic ProN', color: '047857', align: 'center', bold: true });
+        break;
+
+      case 9: // 管理・運用① (セキュリティダッシュボード)
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.25, y: 2.05, w: 0.8, h: 0.8, fill: { color: 'FFF1F2' }, line: { color: 'FECDD3', width: 1 } });
+        pptxSlide.addText('🚨', { x: 6.25, y: 2.05, w: 0.8, h: 0.5, fontSize: 18, align: 'center' });
+        pptxSlide.addText('検知盾', { x: 6.25, y: 2.55, w: 0.8, h: 0.25, fontSize: 7, bold: true, color: 'E11D48', align: 'center', fontFace: 'Hiragino Kaku Gothic ProN' });
+
+        pptxSlide.addText('THREAT MONITOR', { x: 7.2, y: 2.05, w: 2.0, h: 0.25, fontSize: 7.5, fontFace: 'Courier New', color: '64748B', bold: true });
+        pptxSlide.addText('不正突破：0件', { x: 7.2, y: 2.3, w: 2.0, h: 0.35, fontSize: 11, fontFace: 'Hiragino Kaku Gothic ProN', color: 'E11D48', bold: true });
+        pptxSlide.addText('24時間総当たり・不正通信自動監視', { x: 7.2, y: 2.65, w: 2.0, h: 0.25, fontSize: 7.5, fontFace: 'Hiragino Kaku Gothic ProN', color: '64748B' });
+
+        pptxSlide.addText('オペレーション・ダッシュボードにより不正接続を瞬時に検知・排除。', { x: 6.05, y: 3.3, w: 3.25, h: 1.4, fontSize: 8.5, fontFace: 'Hiragino Kaku Gothic ProN', color: textCol, align: 'center' });
+        break;
+
+      case 10: // 管理・運用② (シャドウフラグ隔離)
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.2, y: 2.05, w: 0.95, h: 0.75, fill: { color: 'FFF1F2' }, line: { color: 'FECDD3', width: 1 } });
+        pptxSlide.addText('悪質アクセス\nshadow: 1', { x: 6.2, y: 2.05, w: 0.95, h: 0.75, fontSize: 7, fontFace: 'Hiragino Kaku Gothic ProN', color: 'BE123C', align: 'center', valign: 'middle', bold: true });
+
+        pptxSlide.addShape(pptx.shapes.LINE || 'line', { x: 7.2, y: 2.42, w: 0.95, h: 0, line: { color: '94A3B8', width: 1.5 } });
+        pptxSlide.addText('⚡ 隔離', { x: 7.2, y: 2.15, w: 0.95, h: 0.25, fontSize: 7, color: 'BE123C', align: 'center', bold: true });
+
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 8.2, y: 2.05, w: 0.95, h: 0.75, fill: { color: 'ECFDF5' }, line: { color: 'A7F3D0', width: 1 } });
+        pptxSlide.addText('一般ユーザー\n影響 0%', { x: 8.2, y: 2.05, w: 0.95, h: 0.75, fontSize: 7, fontFace: 'Hiragino Kaku Gothic ProN', color: '047857', align: 'center', valign: 'middle', bold: true });
+
+        pptxSlide.addText('つきまとい者の投稿は、本人には成功と見せかけ裏側で完全隔離。', { x: 6.05, y: 3.2, w: 3.25, h: 1.5, fontSize: 8.5, fontFace: 'Hiragino Kaku Gothic ProN', color: textCol, align: 'center' });
+        break;
+
+      case 11: // 非機能① (最高レベルの暗号化)
+        pptxSlide.addText('🔑 SHA-256 不可逆ストレッチ', { x: 6.1, y: 2.05, w: 3.15, h: 0.35, fontSize: 10, bold: true, color: '065F46', align: 'center', fontFace: 'Hiragino Mincho ProN' });
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.2, y: 2.5, w: 2.95, h: 0.45, fill: { color: 'F1F5F9' }, line: { color: 'CBD5E1', width: 1 } });
+        pptxSlide.addText('salt_key_hash_5a9b8dc91e77...', { x: 6.25, y: 2.5, w: 2.85, h: 0.45, fontSize: 7.5, fontFace: 'Courier New', color: '334155', align: 'center', valign: 'middle' });
+        pptxSlide.addText('想い出パスワードが平文で保存されることは一切ありません。不可逆変換により金融機関クラスの安全性を遵守。', { x: 6.05, y: 3.3, w: 3.25, h: 1.4, fontSize: 8.5, fontFace: 'Hiragino Kaku Gothic ProN', color: textCol, align: 'center' });
+        break;
+
+      case 12: // 非機能② (即時オプトアウト)
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.25, y: 2.05, w: 0.8, h: 0.8, fill: { color: 'FFF1F2' }, line: { color: 'FECDD3', width: 1 } });
+        pptxSlide.addText('🗑️', { x: 6.25, y: 2.05, w: 0.8, h: 0.8, fontSize: 20, align: 'center', valign: 'middle' });
+
+        pptxSlide.addText('OPT-OUT GUARANTEE', { x: 7.2, y: 2.05, w: 2.0, h: 0.25, fontSize: 7.5, fontFace: 'Courier New', color: 'E11D48', bold: true });
+        pptxSlide.addText('24時間以内物理削除の保証', { x: 7.2, y: 2.3, w: 2.0, h: 0.35, fontSize: 9.5, fontFace: 'Hiragino Kaku Gothic ProN', color: '1E293B', bold: true });
+        pptxSlide.addText('物理サーバーからもデータを完全に消去', { x: 7.2, y: 2.65, w: 2.0, h: 0.25, fontSize: 7.5, fontFace: 'Hiragino Kaku Gothic ProN', color: '64748B' });
+
+        pptxSlide.addText('「忘れられる権利」および被探索者の断る権利を完全に保障。', { x: 6.05, y: 3.3, w: 3.25, h: 1.4, fontSize: 8.5, fontFace: 'Hiragino Kaku Gothic ProN', color: textCol, align: 'center' });
+        break;
+
+      case 13: // システム構成 (3ブロック)
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.1, y: 1.95, w: 0.95, h: 0.9, fill: { color: '0F172A' }, line: { color: '334155', width: 1 } });
+        pptxSlide.addText('SPA\nReact 18', { x: 6.1, y: 1.95, w: 0.95, h: 0.9, fontSize: 7.5, fontFace: 'Hiragino Kaku Gothic ProN', color: '34D399', align: 'center', valign: 'middle', bold: true });
+
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 7.2, y: 1.95, w: 0.95, h: 0.9, fill: { color: '0F172A' }, line: { color: '334155', width: 1 } });
+        pptxSlide.addText('Server\nExpress', { x: 7.2, y: 1.95, w: 0.95, h: 0.9, fontSize: 7.5, fontFace: 'Hiragino Kaku Gothic ProN', color: '6EE7B7', align: 'center', valign: 'middle', bold: true });
+
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 8.3, y: 1.95, w: 0.95, h: 0.9, fill: { color: '0F172A' }, line: { color: '334155', width: 1 } });
+        pptxSlide.addText('Security\nGemini AI', { x: 8.3, y: 1.95, w: 0.95, h: 0.9, fontSize: 7.5, fontFace: 'Hiragino Kaku Gothic ProN', color: '7DD3FC', align: 'center', valign: 'middle', bold: true });
+
+        pptxSlide.addText('サーバーサイドAPIプロキシ。APIキーはブラウザに一切露出しません。', { x: 6.05, y: 3.3, w: 3.25, h: 1.4, fontSize: 8.5, fontFace: 'Hiragino Kaku Gothic ProN', color: '94A3B8', align: 'center' });
+        break;
+
+      case 14: // 新奇出会いとの対比分析 (比較カード)
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.15, y: 1.95, w: 3.05, h: 0.65, fill: { color: 'FFF1F2' }, line: { color: 'FECDD3', width: 1 } });
+        pptxSlide.addText('一般的なマッチング ： 無差別（危険 ❌）', { x: 6.2, y: 1.95, w: 2.95, h: 0.65, fontSize: 8, fontFace: 'Hiragino Kaku Gothic ProN', color: 'BE123C', align: 'center', valign: 'middle', bold: true });
+
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.15, y: 2.75, w: 3.05, h: 0.65, fill: { color: 'ECFDF5' }, line: { color: 'A7F3D0', width: 1 } });
+        pptxSlide.addText('ReMEETs 再会モデル ： 既知限定（安全 ⭕）', { x: 6.2, y: 2.75, w: 2.95, h: 0.65, fontSize: 8, fontFace: 'Hiragino Kaku Gothic ProN', color: '065F46', align: 'center', valign: 'middle', bold: true });
+
+        pptxSlide.addText('見知らぬ人との出会いを完全に排除し、二者間の『強固な過去の面識・共有記憶』のみを紐解く確実な治安特化モデル。', { x: 6.05, y: 3.65, w: 3.25, h: 1.1, fontSize: 8, fontFace: 'Hiragino Kaku Gothic ProN', color: textCol, align: 'center' });
+        break;
+
+      case 15: // 第2部表紙
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 7.25, y: 1.95, w: 0.85, h: 0.85, fill: { color: '064E3B' }, line: { color: '34D399', width: 1.5 } });
+        pptxSlide.addText('🎖️', { x: 7.25, y: 1.95, w: 0.85, h: 0.85, fontSize: 22, align: 'center', valign: 'middle' });
+        pptxSlide.addText('LEGAL & SECURITY DEEP DIVE', { x: 6.1, y: 2.95, w: 3.15, h: 0.25, fontSize: 8, fontFace: 'Courier New', color: '34D399', bold: true, align: 'center' });
+        pptxSlide.addText('第2部：法規適合性と\n10大防衛アーキテクチャ', { x: 6.1, y: 3.3, w: 3.15, h: 0.8, fontSize: 11, fontFace: 'Hiragino Mincho ProN', color: 'FFFFFF', bold: true, align: 'center' });
+        break;
+
+      case 16: // 異性紹介事業非該当の証明
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.15, y: 1.95, w: 3.05, h: 1.1, fill: { color: 'ECFDF5' }, line: { color: 'A7F3D0', width: 1.2 } });
+        pptxSlide.addText('✅ POLICE ADAPTATION', { x: 6.25, y: 2.05, w: 2.85, h: 0.25, fontSize: 7.5, fontFace: 'Courier New', color: '059669', bold: true });
+        pptxSlide.addText('「異性紹介事業」非該当 判定', { x: 6.25, y: 2.35, w: 2.85, h: 0.35, fontSize: 11, fontFace: 'Hiragino Kaku Gothic ProN', color: '065F46', bold: true });
+        pptxSlide.addText('警察公安・行政書面要件適合', { x: 6.25, y: 2.7, w: 2.85, h: 0.25, fontSize: 7.5, fontFace: 'Hiragino Kaku Gothic ProN', color: '047857' });
+
+        pptxSlide.addText('面識のない異性との交際仲介に該当せず、公安への届出手続きは完全不要。', { x: 6.05, y: 3.35, w: 3.25, h: 1.4, fontSize: 8.5, fontFace: 'Hiragino Kaku Gothic ProN', color: textCol, align: 'center' });
+        break;
+
+      case 17: // 共有記憶認証法理
+        pptxSlide.addText('🔓', { x: 6.1, y: 1.95, w: 3.15, h: 0.45, fontSize: 20, align: 'center' });
+        pptxSlide.addText('既知の記憶 ＝ 暗号通信路の鍵', { x: 6.1, y: 2.45, w: 3.15, h: 0.35, fontSize: 10.5, fontFace: 'Hiragino Mincho ProN', color: '065F46', bold: true, align: 'center' });
+        pptxSlide.addText('二人だけの記憶クイズが、「新規出会い」ではない事実を電子証明。無名による不当接触や変質者のアタックを起動段階で100%封殺。', { x: 6.05, y: 3.1, w: 3.25, h: 1.6, fontSize: 8.5, fontFace: 'Hiragino Kaku Gothic ProN', color: textCol, align: 'center' });
+        break;
+
+      case 18: // 時間制限ロック
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.15, y: 1.95, w: 3.05, h: 0.85, fill: { color: 'FFF1F2' }, line: { color: 'FECDD3', width: 1 } });
+        pptxSlide.addText('⏱️ LOCKOUT SYSTEM', { x: 6.25, y: 2.05, w: 2.85, h: 0.25, fontSize: 7.5, fontFace: 'Courier New', color: 'E11D48', bold: true });
+        pptxSlide.addText('5回連続誤答で24H完全ロック', { x: 6.25, y: 2.35, w: 2.85, h: 0.35, fontSize: 9.5, fontFace: 'Hiragino Kaku Gothic ProN', color: '1E293B', bold: true });
+
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.35, y: 2.95, w: 2.65, h: 0.35, fill: { color: '0F172A' }, line: { color: 'BE123C', width: 1 } });
+        pptxSlide.addText('STATUS: IP_LOCKOUT_ACTIVE', { x: 6.35, y: 2.95, w: 2.65, h: 0.35, fontSize: 7.5, fontFace: 'Courier New', color: 'FB7185', align: 'center', valign: 'middle', bold: true });
+
+        pptxSlide.addText('悪意ある回答推測（ブルートフォース）に対し、累計5回不正解答でアカウント＋IPを24時間完全ロック。', { x: 6.05, y: 3.55, w: 3.25, h: 1.2, fontSize: 8, fontFace: 'Hiragino Kaku Gothic ProN', color: textCol, align: 'center' });
+        break;
+
+      case 19: // 常用姓名照合
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.25, y: 2.05, w: 0.8, h: 0.8, fill: { color: 'FFF1F2' }, line: { color: 'FECDD3', width: 1 } });
+        pptxSlide.addText('👤', { x: 6.25, y: 2.05, w: 0.8, h: 0.8, fontSize: 18, align: 'center', valign: 'middle' });
+
+        pptxSlide.addText('フルネーム規制', { x: 7.2, y: 2.05, w: 2.0, h: 0.25, fontSize: 7.5, fontFace: 'Hiragino Kaku Gothic ProN', color: 'E11D48', bold: true });
+        pptxSlide.addText('「山田太郎」等の実名は警告', { x: 7.2, y: 2.3, w: 2.0, h: 0.35, fontSize: 9, fontFace: 'Hiragino Kaku Gothic ProN', color: '1E293B', bold: true });
+        pptxSlide.addText('本名の直截露出から保護', { x: 7.2, y: 2.65, w: 2.0, h: 0.25, fontSize: 7.5, fontFace: 'Hiragino Kaku Gothic ProN', color: '64748B' });
+
+        pptxSlide.addText('日本の常用姓名辞書に基づき、実名・フルネーム露出トラブルを自動規制。', { x: 6.05, y: 3.3, w: 3.25, h: 1.4, fontSize: 8.5, fontFace: 'Hiragino Kaku Gothic ProN', color: textCol, align: 'center' });
+        break;
+
+      case 20: // 連絡先ステルス
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.15, y: 1.95, w: 3.05, h: 1.5, fill: { color: '0F172A' }, line: { color: '1E293B', width: 1 } });
+        pptxSlide.addText('REGEX SCAN FILTER : BLOCKED', { x: 6.25, y: 2.05, w: 2.85, h: 0.25, fontSize: 7, fontFace: 'Courier New', color: 'FB7185', bold: true });
+        pptxSlide.addText('LINE ID: my_id_123  → MASK_ID\nTEL: 090-1234-5678 → MASK_TEL\n\nRESULT: LINE ID: **** / TEL: ****', { x: 6.25, y: 2.35, w: 2.85, h: 1.0, fontSize: 7.5, fontFace: 'Courier New', color: '34D399' });
+
+        pptxSlide.addText('連絡先情報の直接交換をリアルタイムに伏字(****)へ自動プログラム変換し完全無害化。', { x: 6.05, y: 3.65, w: 3.25, h: 1.1, fontSize: 8, fontFace: 'Hiragino Kaku Gothic ProN', color: '94A3B8', align: 'center' });
+        break;
+
+      case 21: // Gemini AI モデレーション
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.15, y: 1.95, w: 3.05, h: 1.5, fill: { color: '0F172A' }, line: { color: '1E293B', width: 1 } });
+        pptxSlide.addText('✨ Gemini Security Agent v2.5', { x: 6.25, y: 2.05, w: 2.85, h: 0.25, fontSize: 7.5, fontFace: 'Courier New', color: '34D399', bold: true });
+        pptxSlide.addText('INPUT: "お前どこにいる？絶対探すからな"\n危険検知: 執着・脅迫性 98% [隔離]\n自動処置: 即時隔離作動', { x: 6.25, y: 2.35, w: 2.85, h: 1.0, fontSize: 7.5, fontFace: 'Courier New', color: '7DD3FC' });
+
+        pptxSlide.addText('高度な文章理解で、心理的な付きまとい・暴力隠語をリアルタイムにセマンティック自動検知・隔離。', { x: 6.05, y: 3.65, w: 3.25, h: 1.1, fontSize: 8, fontFace: 'Hiragino Kaku Gothic ProN', color: '94A3B8', align: 'center' });
+        break;
+
+      case 22: // シャドウフィルタ
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.15, y: 1.95, w: 3.05, h: 1.3, fill: { color: '0F172A' }, line: { color: '1E293B', width: 1 } });
+        pptxSlide.addText('$ sys_shadow_scan\n$ ATTACK DETECTED !\n$ SHADOW_FLAG_ISOLATION: ON', { x: 6.25, y: 2.1, w: 2.85, h: 1.0, fontSize: 8, fontFace: 'Courier New', color: '34D399', bold: true });
+
+        pptxSlide.addText('冷やかし・荒らしユーザーは孤立した空間に送られます。送信成功に見せかけ攻撃意欲を無音で根絶。', { x: 6.05, y: 3.5, w: 3.25, h: 1.3, fontSize: 8.5, fontFace: 'Hiragino Kaku Gothic ProN', color: 'CBD5E1', align: 'center' });
+        break;
+
+      case 23: // 青少年保護 (18+)
+        pptxSlide.addShape(pptx.shapes.OVAL || 'ellipse', { x: 6.25, y: 2.1, w: 0.75, h: 0.75, fill: { color: 'FFF1F2' }, line: { color: 'F43F5E', width: 2 } });
+        pptxSlide.addText('18+', { x: 6.25, y: 2.1, w: 0.75, h: 0.75, fontSize: 13, bold: true, color: 'E11D48', align: 'center', valign: 'middle', fontFace: 'Arial' });
+
+        pptxSlide.addText('MINOR PROTECTION', { x: 7.2, y: 2.05, w: 2.0, h: 0.25, fontSize: 7.5, fontFace: 'Courier New', color: 'E11D48', bold: true });
+        pptxSlide.addText('高校生以下は完全不可', { x: 7.2, y: 2.3, w: 2.0, h: 0.35, fontSize: 10, fontFace: 'Hiragino Kaku Gothic ProN', color: '1E293B', bold: true });
+        pptxSlide.addText('非行・児童虐待被害を徹底予防', { x: 7.2, y: 2.65, w: 2.0, h: 0.25, fontSize: 7.5, fontFace: 'Hiragino Kaku Gothic ProN', color: '64748B' });
+
+        pptxSlide.addText('青少年をネット犯罪被害から完璧にプロテクトする強固なコンプライアンス管理。', { x: 6.05, y: 3.3, w: 3.25, h: 1.4, fontSize: 8.5, fontFace: 'Hiragino Kaku Gothic ProN', color: textCol, align: 'center' });
+        break;
+
+      case 24: // 電子的利用宣誓ゲート
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.15, y: 1.85, w: 3.05, h: 1.4, fill: { color: 'F8FAFC' }, line: { color: 'CBD5E1', width: 1 } });
+        pptxSlide.addText('🛡️ 電子的利用宣誓ゲート [PLEDGE_GATE]', { x: 6.25, y: 1.95, w: 2.85, h: 0.25, fontSize: 7.5, fontFace: 'Hiragino Kaku Gothic ProN', color: '065F46', bold: true });
+
+        pptxSlide.addText('☑ 18歳以上（高校生除く）の利用であること\n☑ ストーカー・嫌がらせ・監視目的でないこと\n☑ 法令・利用ガイドライン遵守への完全合意', { x: 6.25, y: 2.25, w: 2.85, h: 0.65, fontSize: 7, fontFace: 'Hiragino Kaku Gothic ProN', color: '1E293B', leading: 14 });
+
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.25, y: 2.95, w: 2.85, h: 0.25, fill: { color: 'ECFDF5' }, line: { color: '10B981', width: 1 } });
+        pptxSlide.addText('✓ AUDIT LOGGED (IP & Timestamp 永続保全)', { x: 6.25, y: 2.95, w: 2.85, h: 0.25, fontSize: 6.5, bold: true, color: '065F46', align: 'center', valign: 'middle', fontFace: 'Courier New' });
+
+        pptxSlide.addText('連絡先開示直前の厳格な電子的利用宣誓。タイムスタンプ・接続元IPを監査保全。', { x: 6.05, y: 3.35, w: 3.25, h: 1.3, fontSize: 8.5, fontFace: 'Hiragino Kaku Gothic ProN', color: '065F46', align: 'center', bold: true });
+        break;
+
+      case 25: // チケット全履歴保全
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.15, y: 1.85, w: 3.05, h: 1.8, fill: { color: 'F8FAFC' }, line: { color: 'E2E8F0', width: 1 } });
+        pptxSlide.addText('🎫 チケットスレッド永続化  [TICKET_DB]', { x: 6.25, y: 1.95, w: 2.85, h: 0.25, fontSize: 7.5, fontFace: 'Hiragino Kaku Gothic ProN', color: '0369A1', bold: true });
+
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.25, y: 2.25, w: 2.85, h: 0.45, fill: { color: 'FFFFFF' }, line: { color: 'CBD5E1', width: 1 } });
+        pptxSlide.addText('#REQ-1092: ユーザーからの通報・相談内容', { x: 6.3, y: 2.25, w: 2.75, h: 0.45, fontSize: 7, fontFace: 'Hiragino Kaku Gothic ProN', color: '334155', valign: 'middle' });
+
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.25, y: 2.8, w: 2.85, h: 0.45, fill: { color: 'FAF5FF' }, line: { color: 'E9D5FF', width: 1 } });
+        pptxSlide.addText('✨ Gemini AI コンプライアンス返信 [生成完了]', { x: 6.3, y: 2.8, w: 2.75, h: 0.45, fontSize: 7, fontFace: 'Hiragino Kaku Gothic ProN', color: '7E22CE', valign: 'middle', bold: true });
+
+        pptxSlide.addText('送受信全ログ完全永続化 ➔ 警察・司法証拠保全', { x: 6.05, y: 3.8, w: 3.25, h: 0.4, fontSize: 8, fontFace: 'Hiragino Kaku Gothic ProN', color: '047857', align: 'center', bold: true });
+        break;
+
+      case 26: // 明確な本人確認体系・料金分離 (無料グリーン & 600円オレンジ)
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.1, y: 1.95, w: 3.15, h: 0.85, fill: { color: 'ECFDF5' }, line: { color: '10B981', width: 1.5 } });
+        pptxSlide.addText('FREE TIER', { x: 6.2, y: 2.02, w: 1.8, h: 0.2, fontSize: 6.5, fontFace: 'Courier New', color: '047857', bold: true });
+        pptxSlide.addText('年齢確認（18歳以上宣誓）', { x: 6.2, y: 2.22, w: 2.0, h: 0.35, fontSize: 9, fontFace: 'Hiragino Kaku Gothic ProN', color: '065F46', bold: true });
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 8.35, y: 2.15, w: 0.8, h: 0.35, fill: { color: '059669' } });
+        pptxSlide.addText('無料', { x: 8.35, y: 2.15, w: 0.8, h: 0.35, fontSize: 8.5, fontFace: 'Hiragino Kaku Gothic ProN', color: 'FFFFFF', bold: true, align: 'center', valign: 'middle' });
+
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.1, y: 2.95, w: 3.15, h: 0.85, fill: { color: 'FFF7ED' }, line: { color: 'F97316', width: 1.5 } });
+        pptxSlide.addText('OFFICIAL eKYC', { x: 6.2, y: 3.02, w: 1.8, h: 0.2, fontSize: 6.5, fontFace: 'Courier New', color: 'C2410C', bold: true });
+        pptxSlide.addText('公的身分証(eKYC)認証', { x: 6.2, y: 3.22, w: 2.0, h: 0.35, fontSize: 9, fontFace: 'Hiragino Kaku Gothic ProN', color: '9A3412', bold: true });
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 8.35, y: 3.15, w: 0.8, h: 0.35, fill: { color: 'EA580C' } });
+        pptxSlide.addText('600円', { x: 8.35, y: 3.15, w: 0.8, h: 0.35, fontSize: 8.5, fontFace: 'Hiragino Kaku Gothic ProN', color: 'FFFFFF', bold: true, align: 'center', valign: 'middle' });
+
+        pptxSlide.addText('🛡️ 明確な料金分離により消費者の誤認を防止し、法令を遵守。', { x: 6.05, y: 3.95, w: 3.25, h: 0.4, fontSize: 8, fontFace: 'Hiragino Kaku Gothic ProN', color: '047857', align: 'center', bold: true });
+        break;
+
+      case 27: // eKYC・決済連携
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.15, y: 1.95, w: 3.05, h: 0.65, fill: { color: 'FFF7ED' }, line: { color: 'FDBA74', width: 1 } });
+        pptxSlide.addText('💳 Stripe 決済（600円仮売上）', { x: 6.25, y: 1.95, w: 2.1, h: 0.65, fontSize: 8, fontFace: 'Hiragino Kaku Gothic ProN', color: '9A3412', bold: true, valign: 'middle' });
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 8.35, y: 2.1, w: 0.75, h: 0.35, fill: { color: 'FED7AA' } });
+        pptxSlide.addText('仮売上確保', { x: 8.35, y: 2.1, w: 0.75, h: 0.35, fontSize: 6.5, fontFace: 'Hiragino Kaku Gothic ProN', color: '9A3412', bold: true, align: 'center', valign: 'middle' });
+
+        pptxSlide.addText('▼', { x: 6.15, y: 2.65, w: 3.05, h: 0.25, fontSize: 8, color: '94A3B8', align: 'center' });
+
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.15, y: 2.95, w: 3.05, h: 0.65, fill: { color: 'ECFDF5' }, line: { color: 'A7F3D0', width: 1 } });
+        pptxSlide.addText('🆔 eKYC 審査（TRUSTDOCK等）', { x: 6.25, y: 2.95, w: 2.1, h: 0.65, fontSize: 8, fontFace: 'Hiragino Kaku Gothic ProN', color: '065F46', bold: true, valign: 'middle' });
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 8.35, y: 3.1, w: 0.75, h: 0.35, fill: { color: 'A7F3D0' } });
+        pptxSlide.addText('自動分岐', { x: 8.35, y: 3.1, w: 0.75, h: 0.35, fontSize: 6.5, fontFace: 'Hiragino Kaku Gothic ProN', color: '065F46', bold: true, align: 'center', valign: 'middle' });
+
+        pptxSlide.addText('【承認】実請求＆バッジ点灯  /  【否認】即全額自動返金', { x: 6.05, y: 3.8, w: 3.25, h: 0.4, fontSize: 7.5, fontFace: 'Hiragino Kaku Gothic ProN', color: 'C2410C', align: 'center', bold: true });
+        break;
+
+      case 28: // フォレンジックログ
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.15, y: 1.85, w: 3.05, h: 1.8, fill: { color: 'F8FAFC' }, line: { color: 'CBD5E1', width: 1 } });
+        pptxSlide.addText('📄 forensic_export.pdf  [SECURE]', { x: 6.25, y: 1.95, w: 2.85, h: 0.25, fontSize: 8, fontFace: 'Hiragino Kaku Gothic ProN', color: '047857', bold: true });
+
+        pptxSlide.addText('要求番号: #REQ-2026-9912\n対象IP: 184.22.95.101\n認証合意: 一致 (VALID SIGN)', { x: 6.25, y: 2.25, w: 2.85, h: 0.7, fontSize: 7, fontFace: 'Courier New', color: '334155' });
+
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.35, y: 3.05, w: 2.65, h: 0.45, fill: { color: '1E293B' } });
+        pptxSlide.addText('📥 捜査資料1キー抽出', { x: 6.35, y: 3.05, w: 2.65, h: 0.45, fontSize: 8, fontFace: 'Hiragino Kaku Gothic ProN', color: 'FFFFFF', bold: true, align: 'center', valign: 'middle' });
+
+        pptxSlide.addText('捜査事項照会書に数分で完全対応する証拠エクスポート体制。', { x: 6.05, y: 3.8, w: 3.25, h: 0.4, fontSize: 8, fontFace: 'Hiragino Kaku Gothic ProN', color: '64748B', align: 'center' });
+        break;
+
+      case 29: // オプトアウト申請処理
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.25, y: 2.05, w: 0.8, h: 0.8, fill: { color: 'ECFDF5' }, line: { color: 'A7F3D0', width: 1 } });
+        pptxSlide.addText('🛡️', { x: 6.25, y: 2.05, w: 0.8, h: 0.8, fontSize: 20, align: 'center', valign: 'middle' });
+
+        pptxSlide.addText('AUTO OPT-OUT', { x: 7.2, y: 2.05, w: 2.0, h: 0.25, fontSize: 7.5, fontFace: 'Courier New', color: '059669', bold: true });
+        pptxSlide.addText('「二度と繋がらない」権利', { x: 7.2, y: 2.3, w: 2.0, h: 0.35, fontSize: 9.5, fontFace: 'Hiragino Kaku Gothic ProN', color: '1E293B', bold: true });
+        pptxSlide.addText('全データ即時遮断', { x: 7.2, y: 2.65, w: 2.0, h: 0.25, fontSize: 7.5, fontFace: 'Hiragino Kaku Gothic ProN', color: '64748B' });
+
+        pptxSlide.addText('お相手との想い出を開門されたくない方の「再会を行わない権利」を完全に保障。', { x: 6.05, y: 3.3, w: 3.25, h: 1.4, fontSize: 8.5, fontFace: 'Hiragino Kaku Gothic ProN', color: textCol, align: 'center' });
+        break;
+
+      case 30: // 総括
+        pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.15, y: 1.95, w: 3.05, h: 1.2, fill: { color: 'FFFFFF' }, line: { color: '34D399', width: 1.5 } });
+        pptxSlide.addText('🏆', { x: 6.25, y: 2.15, w: 0.6, h: 0.7, fontSize: 22, align: 'center', valign: 'middle' });
+
+        pptxSlide.addText('100% POLICE COMPLIANT', { x: 6.9, y: 2.1, w: 2.2, h: 0.25, fontSize: 7.5, fontFace: 'Courier New', color: '047857', bold: true });
+        pptxSlide.addText('治安・防衛コンプライアンス適合証明', { x: 6.9, y: 2.35, w: 2.2, h: 0.5, fontSize: 9.5, fontFace: 'Hiragino Kaku Gothic ProN', color: '1E293B', bold: true });
+
+        pptxSlide.addText('警察公安、サイバー対策セクション、及び法規制の求めるあらゆる安全規範を完全に充足。', { x: 6.05, y: 3.4, w: 3.25, h: 1.3, fontSize: 8.5, fontFace: 'Hiragino Kaku Gothic ProN', color: '065F46', align: 'center', bold: true });
+        break;
+
+      default:
+        break;
+    }
   };
 
   const handleDownloadPPTX = () => {
@@ -2359,210 +2763,20 @@ export const AdminDeploymentGuideBlock = ({
             });
           }
 
-          // Native custom diagrams/flows on the right column card (x: 6.0, y: 1.4, w: 3.4, h: 3.6)
-          const isDarkVisual = [3, 13, 20, 21, 22].includes(slide.id);
-          const bgCol = isDarkVisual ? "1C2B3C" : "FAFAF8";
-          const lineCol = isDarkVisual ? "4B5E70" : "E2E8F0";
-          const textCol = isDarkVisual ? "FAFAF8" : "1A2735";
-
-          pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || "roundRect", {
-            x: 5.95,
-            y: 1.4,
-            w: 3.45,
-            h: 3.6,
-            fill: { color: bgCol },
-            line: { color: lineCol, width: 1 }
-          });
-
-          let headerLabel = "ReMEETs SECURITY";
-          if (slide.id === 2) headerLabel = "ReMEETs PARADIGM";
-          else if (slide.id === 3) headerLabel = "DRIFT CONCEPT";
-          else if (slide.id === 4) headerLabel = "SOCIAL MISSION";
-          else if (slide.id === 5) headerLabel = "TARGET GROUPS";
-          else if (slide.id === 6) headerLabel = "FUNCTION: DRIFT";
-          else if (slide.id === 7) headerLabel = "QUIZ GATE SHIELD";
-          else if (slide.id === 8) headerLabel = "CONTACT BRIDGE";
-          else if (slide.id === 9) headerLabel = "ADMIN MONITORING";
-          else if (slide.id === 10) headerLabel = "SHADOW FILTER";
-          else if (slide.id === 11) headerLabel = "CRYPTOGRAPHIC ENGINE";
-          else if (slide.id === 12) headerLabel = "ZERO TRACE PRIVACY";
-          else if (slide.id === 13) headerLabel = "SYSTEM ARCHITECTURE";
-          else if (slide.id === 14) headerLabel = "COMPARISON SHIELD";
-          else if (slide.id === 16) headerLabel = "LEGAL VERIFIED";
-          else if (slide.id === 17) headerLabel = "AUTHENTICATION LAW";
-          else if (slide.id === 18) headerLabel = "IP BRUTE GUARD";
-          else if (slide.id === 19) headerLabel = "NAME REGEX DEFENSE";
-          else if (slide.id === 20) headerLabel = "STEALTH MASK";
-          else if (slide.id === 21) headerLabel = "SEMANTIC AI FILTER";
-          else if (slide.id === 22) headerLabel = "SHADOW SIMULATION";
-          else if (slide.id === 23) headerLabel = "ADOLESCENT SHIELD";
-          else if (slide.id === 24) headerLabel = "DIGITAL SIGNATURE";
-          else if (slide.id === 25) headerLabel = "TICKET & AI DRAFT";
-          else if (slide.id === 26) headerLabel = "PRICING & VERIFICATION";
-          else if (slide.id === 27) headerLabel = "EKYC & STRIPE COUPLING";
-          else if (slide.id === 28) headerLabel = "JUDICIAL ALIGNMENT";
-          else if (slide.id === 29) headerLabel = "OPT-OUT AUDIT";
-          else if (slide.id === 30) headerLabel = "SUMMARY EMBLEM";
-
-          pptxSlide.addText(headerLabel, {
-            x: 6.0,
-            y: 1.5,
-            w: 3.3,
-            h: 0.3,
-            fontSize: 7.5,
-            fontFace: "Courier New",
-            color: isDarkVisual ? "4ECDC4" : "3B627F",
-            bold: true,
-            align: "right"
-          });
-
-          // Helper for standard "Icon + Title + Description" layout to keep code concise
-          const addStandardVisual = (icon: string, titleStr: string, desc: string) => {
-            pptxSlide.addText(icon, { x: 6.0, y: 1.7, w: 3.3, h: 0.8, fontSize: 32, align: "center" });
-            pptxSlide.addText(titleStr, { x: 6.0, y: 2.6, w: 3.3, h: 0.4, fontSize: 10, bold: true, color: "3B627F", align: "center", fontFace: "Hiragino Kaku Gothic ProN" });
-            pptxSlide.addText(desc, { x: 6.05, y: 3.1, w: 3.2, h: 1.7, fontSize: 8.5, fontFace: "Hiragino Kaku Gothic ProN", color: textCol, align: "center" });
-          };
-
-          switch (slide.id) {
-            case 6:
-              pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || "roundRect", { x: 6.1, y: 2.1, w: 0.9, h: 0.6, fill: { color: "EAF2F8" }, line: { color: "B9D5EC", width: 1 } });
-              pptxSlide.addText("①投函\n(メッセージ)", { x: 6.1, y: 2.15, w: 0.9, h: 0.5, fontSize: 7, fontFace: "Hiragino Kaku Gothic ProN", color: "3B627F", align: "center", bold: true });
-              pptxSlide.addShape(pptx.shapes.LINE || "line", { x: 7.0, y: 2.4, w: 0.25, h: 0, line: { color: "94A3B8", width: 1 } });
-              pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || "roundRect", { x: 7.25, y: 2.1, w: 0.9, h: 0.6, fill: { color: "F1F5F9" }, line: { color: "CBD5E1", width: 1 } });
-              pptxSlide.addText("②漂流\n(検索等)", { x: 7.25, y: 2.15, w: 0.9, h: 0.5, fontSize: 7, fontFace: "Hiragino Kaku Gothic ProN", color: "475569", align: "center", bold: true });
-              pptxSlide.addShape(pptx.shapes.LINE || "line", { x: 8.15, y: 2.4, w: 0.25, h: 0, line: { color: "94A3B8", width: 1 } });
-              pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || "roundRect", { x: 8.4, y: 2.1, w: 0.9, h: 0.6, fill: { color: "D1FAE5" }, line: { color: "A7F3D0", width: 1 } });
-              pptxSlide.addText("③開通\n(引き渡し)", { x: 8.4, y: 2.15, w: 0.9, h: 0.5, fontSize: 7, fontFace: "Hiragino Kaku Gothic ProN", color: "065F46", align: "center", bold: true });
-              pptxSlide.addText("住所不要。お互いの「思い出キー」でシステム上の波間に漂流。第三者から完全に遮断された空間。", { x: 6.05, y: 3.0, w: 3.2, h: 1.6, fontSize: 8.5, fontFace: "Hiragino Kaku Gothic ProN", color: textCol, align: "center" });
-              break;
-            case 7:
-              addStandardVisual("🔒", "思い出クイズ＆表記ゆれ救済", "共通の思い出が最強のパス。表記ゆれ正規化＋レーベンシュタイン救済で正当な再会を支援しつつ第三者を遮断。");
-              break;
-            case 8:
-              pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || "roundRect", { x: 6.2, y: 1.8, w: 3.0, h: 2.0, fill: { color: "FFFFFF" }, line: { color: "E2E8F0", width: 1 } });
-              pptxSlide.addText("🤝 連絡先安全引き渡し（ブリッジ）", { x: 6.3, y: 1.9, w: 2.8, h: 0.3, fontSize: 8, fontFace: "Hiragino Kaku Gothic ProN", color: "3B627F", bold: true });
-              pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || "roundRect", { x: 6.4, y: 2.3, w: 2.6, h: 0.45, fill: { color: "3B627F" }, line: { color: "3B627F", width: 1 } });
-              pptxSlide.addText("LINE ID / メール安全開示完了", { x: 6.4, y: 2.3, w: 2.6, h: 0.45, fontSize: 7, fontFace: "Hiragino Kaku Gothic ProN", color: "FFFFFF", valign: "middle", align: "center" });
-              pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || "roundRect", { x: 6.4, y: 2.9, w: 2.6, h: 0.45, fill: { color: "F1F5F9" }, line: { color: "E2E8F0", width: 1 } });
-              pptxSlide.addText("永続チャット廃止 ➔ 運営リスク完全排除", { x: 6.4, y: 2.9, w: 2.6, h: 0.45, fontSize: 7, fontFace: "Hiragino Kaku Gothic ProN", color: "1A2735", valign: "middle", align: "center" });
-              pptxSlide.addText("🛡️ 緊急通報・ブロック機能常備", { x: 6.1, y: 3.9, w: 3.2, h: 0.5, fontSize: 8.5, fontFace: "Hiragino Kaku Gothic ProN", color: "065F46", align: "center", bold: true });
-              break;
-            case 9:
-              addStandardVisual("🚨", "アビューズ・総当たり監視", "24時間総当たり攻撃を完全監視。不当ユーザーによる不正連続回答試行を自動的に検出しロックアウトします。");
-              break;
-            case 10:
-              pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || "roundRect", { x: 6.2, y: 1.9, w: 0.9, h: 0.8, fill: { color: "FEE2E2" }, line: { color: "FCA5A5", width: 1 } });
-              pptxSlide.addText("不当接近\n(悪質ユーザー)", { x: 6.2, y: 1.9, w: 0.9, h: 0.8, fontSize: 7, fontFace: 'Hiragino Kaku Gothic ProN', color: 'B91C1C', align: 'center', valign: 'middle', bold: true });
-              pptxSlide.addShape(pptx.shapes.LINE || "line", { x: 7.1, y: 2.3, w: 1.1, h: 0, line: { color: '94A3B8', width: 1 } });
-              pptxSlide.addText("⚡ 隔離", { x: 7.1, y: 2.0, w: 1.1, h: 0.3, fontSize: 7.5, color: 'B91C1C', align: 'center', bold: true });
-              pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || "roundRect", { x: 8.3, y: 1.9, w: 0.9, h: 0.8, fill: { color: 'F1F5F9' }, line: { color: 'CBD5E1', width: 1 } });
-              pptxSlide.addText("一般空間\n(影響度ゼロ)", { x: 8.3, y: 1.9, w: 0.9, h: 0.8, fontSize: 7, fontFace: 'Hiragino Kaku Gothic ProN', color: '475569', align: 'center', valign: 'middle', bold: true });
-              pptxSlide.addText("つきまとい・冷やかし投稿者は、フロント上は送信成功に見せかけながら、DBの裏側で完全に擬態隔離（シャドウフィルタ）されます。", { x: 6.05, y: 2.8, w: 3.2, h: 1.8, fontSize: 8, fontFace: 'Hiragino Kaku Gothic ProN', color: textCol, align: 'center' });
-              break;
-            case 11:
-              pptxSlide.addText("🔑", { x: 6.0, y: 1.7, w: 3.3, h: 0.8, fontSize: 32, align: 'center' });
-              pptxSlide.addText("SHA-256 ハッシュストレッチ", { x: 6.0, y: 2.6, w: 3.3, h: 0.4, fontSize: 10, bold: true, color: '3B627F', align: 'center', fontFace: 'Hiragino Kaku Gothic ProN' });
-              pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || "roundRect", { x: 6.3, y: 3.0, w: 2.8, h: 0.4, fill: { color: 'E2E8F0' }, line: { color: 'CBD5E1', width: 1 } });
-              pptxSlide.addText("salt_key_hash_5a9b8dc91e...", { x: 6.3, y: 3.0, w: 2.8, h: 0.4, fontSize: 7, fontFace: 'Courier New', color: '334155', align: 'center', valign: 'middle' });
-              pptxSlide.addText("思い出パスワードが生テキストで直接DBに保存されることは一切ありません。不可逆変換により高度に保護されます。", { x: 6.05, y: 3.5, w: 3.2, h: 1.3, fontSize: 8, fontFace: 'Hiragino Kaku Gothic ProN', color: textCol, align: 'center' });
-              break;
-            case 12:
-              addStandardVisual("🗑️", "「忘れられる権利」の確実な保障", "削除要請を受けた場合、24時間以内に運営安全監査室が即時物理消去。再び繋がらない合意拒絶 of 権利も強固に保全します。");
-              break;
-            case 13:
-              pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || "roundRect", { x: 6.15, y: 2.0, w: 0.8, h: 0.6, fill: { color: '334155' } });
-              pptxSlide.addText("SPA (React 18)", { x: 6.15, y: 2.15, w: 0.8, h: 0.3, fontSize: 7, fontFace: 'Hiragino Kaku Gothic ProN', color: 'FFFFFF', align: 'center', bold: true });
-              pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || "roundRect", { x: 7.3, y: 2.0, w: 0.8, h: 0.6, fill: { color: '1A2735' }, line: { color: '4ADE80', width: 1 } });
-              pptxSlide.addText("API (Express)", { x: 7.3, y: 2.15, w: 0.8, h: 0.3, fontSize: 7, fontFace: 'Hiragino Kaku Gothic ProN', color: '4ADE80', align: 'center', bold: true });
-              pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || "roundRect", { x: 8.45, y: 2.0, w: 0.8, h: 0.6, fill: { color: '1A2735' }, line: { color: '818CF8', width: 1 } });
-              pptxSlide.addText("Core (Gemini)", { x: 8.45, y: 2.15, w: 0.8, h: 0.3, fontSize: 7, fontFace: 'Hiragino Kaku Gothic ProN', color: '818CF8', align: 'center', bold: true });
-              pptxSlide.addText("厳重なサーバーサイドAPI。APIキーなどの最高機密変数はブラウザ端末に一切露呈・露出させない安全設計です。", { x: 6.05, y: 2.8, w: 3.2, h: 1.7, fontSize: 8, fontFace: 'Hiragino Kaku Gothic ProN', color: '94A3B8', align: 'center' });
-              break;
-            case 14:
-              pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || "roundRect", { x: 6.2, y: 1.9, w: 3.0, h: 0.7, fill: { color: 'FEE2E2' }, line: { color: 'FCA5A5', width: 1 } });
-              pptxSlide.addText("一般マッチング：無差別出会い（危険 ❌）", { x: 6.2, y: 2.1, w: 3.0, h: 0.3, fontSize: 8, color: 'B91C1C', fontFace: 'Hiragino Kaku Gothic ProN', align: 'center', bold: true });
-              pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || "roundRect", { x: 6.2, y: 2.8, w: 3.0, h: 0.7, fill: { color: 'D1FAE5' }, line: { color: '34D399', width: 1 } });
-              pptxSlide.addText("ReMEETs再会：既知特定限定（安全 ⭕）", { x: 6.2, y: 3.0, w: 3.0, h: 0.3, fontSize: 8, color: '065F46', fontFace: 'Hiragino Kaku Gothic ProN', align: 'center', bold: true });
-              pptxSlide.addText("見知らぬ人との出会いを完全に排除し、二者間の「強固な過去 of 面識・共有記憶」のみを紐解く確実な治安特化モデル。", { x: 6.05, y: 3.7, w: 3.2, h: 1.2, fontSize: 8, fontFace: 'Hiragino Kaku Gothic ProN', color: textCol, align: 'center' });
-              break;
-            case 16:
-              addStandardVisual("🛡️", "「異性紹介事業」完全非該当", "警察公安等の法規基準をすべてクリア。面識のない無差別な男女のマッチング要素を物理的に含まない「再会特定システム」のため届出不要。");
-              break;
-            case 17:
-              addStandardVisual("🔑", "既知の共有記憶 ＝ 通信路の鍵", "「修学旅行の部屋番号」等、お互いの共通の記憶クイズが高精度な相互認証キーとして作動。新奇マッチングでないことを電子証明します。");
-              break;
-            case 18:
-              addStandardVisual("⚠️", "5回連続間違いアクセスを即時拒絶", "悪意ある回答推測（ブルートフォース）に対し、累計5回不正解答でアカウント＋接続元IPアドレスを24時間完全ロックアウト。いたずらを自動撃退。");
-              break;
-            case 19:
-              addStandardVisual("👤", "常用姓名辞書自動照合判定", "登録時や見出し設定時に漢字や配列表を瞬時に精査。「山田太郎」などのフルネーム構造実名露出トラブルを警告付きで徹底的に自動規制します。");
-              break;
-            case 20:
-              pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || "roundRect", { x: 6.2, y: 1.8, w: 3.0, h: 1.4, fill: { color: '111827' }, line: { color: '374151', width: 1 } });
-              pptxSlide.addText("REGEX SECURE SCAN\n\nLINE ID: my_id  --> [MASK_ID]\nTEL: 090-1234-* --> [MASK_TEL]\n\n置換結果: LINE ID: ****", { x: 6.3, y: 1.9, w: 2.8, h: 1.2, fontSize: 7, fontFace: 'Courier New', color: 'F87171' });
-              pptxSlide.addText("連絡先直接交換を強力排除", { x: 6.1, y: 3.3, w: 3.2, h: 0.3, fontSize: 9.5, bold: true, color: 'FFFFFF', align: 'center', fontFace: 'Hiragino Kaku Gothic ProN' });
-              pptxSlide.addText("LINE誘き出しや詐欺外部誘導を防ぐため、連絡先情報をリアルタイムに伏字(****)へ自動プログラム変換し、完璧に無害化します。", { x: 6.05, y: 3.6, w: 3.2, h: 1.3, fontSize: 8, fontFace: 'Hiragino Kaku Gothic ProN', color: '94A3B8', align: 'center' });
-              break;
-            case 21:
-              pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || "roundRect", { x: 6.2, y: 1.8, w: 3.0, h: 1.4, fill: { color: '111827' }, line: { color: '22D3EE', width: 1 } });
-              pptxSlide.addText("✨ Gemini Security Agent API\n\nINPUT: 「探して復讐する」\n-> [危険アラート検知: 執着値 98%]\n-> [自動処置: 一般漂流から1秒隔離]", { x: 6.3, y: 1.9, w: 2.8, h: 1.2, fontSize: 7.5, fontFace: 'Courier New', color: '22D3EE' });
-              pptxSlide.addText("Gemini AIによる意味論モデレーション", { x: 6.1, y: 3.3, w: 3.2, h: 0.3, fontSize: 9, bold: true, color: 'FFFFFF', align: 'center', fontFace: 'Hiragino Kaku Gothic ProN' });
-              pptxSlide.addText("高度な文章理解で、心理的な付きまとい、暴力隠語をリアルタイムにセマンティック検知。不正な接近を一般タイムラインから瞬時に自動隔離します。", { x: 6.05, y: 3.6, w: 3.2, h: 1.3, fontSize: 8, fontFace: 'Hiragino Kaku Gothic ProN', color: '94A3B8', align: 'center' });
-              break;
-            case 22:
-              addStandardVisual("🛡️", "嫌がらせを諦めさせる隔離技術", "高リスク検知相手には「送信完了」のダミー画面を見せかけながら、DB上は 'shadow_flag_hidden' 隔離室へ格納。攻撃方法の回答改変や再挑戦を根底防止。");
-              break;
-            case 23:
-              addStandardVisual("🔞", "高校生を除く18歳以上限定", "青少年をネット犯罪被害から完璧にプロテクトする強固なコンプライアンス管理。公的身分証認証連携の年齢ゲーティングを徹底。");
-              break;
-            case 24:
-              addStandardVisual("✍️", "非保持ゼロナレッジ自筆署名", "画面上への手書き自筆を必須化。サーバーには生画像を一切保存せず、筆跡の複雑度特徴および不可逆軌跡ハッシュ等のみを安全に記録。漏洩時なりすましリスクを根絶。");
-              break;
-            case 25:
-              pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || "roundRect", { x: 6.2, y: 1.8, w: 3.0, h: 2.0, fill: { color: "FFFFFF" }, line: { color: "E2E8F0", width: 1 } });
-              pptxSlide.addText("🎫 チケット型全履歴保全 ＆ AIドラフト", { x: 6.3, y: 1.9, w: 2.8, h: 0.3, fontSize: 8, fontFace: "Hiragino Kaku Gothic ProN", color: "3B627F", bold: true });
-              pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || "roundRect", { x: 6.4, y: 2.3, w: 2.6, h: 0.45, fill: { color: "E0F2FE" }, line: { color: "BAE6FD", width: 1 } });
-              pptxSlide.addText("全送受信スレッド完全永続化 (Ticket DB)", { x: 6.4, y: 2.3, w: 2.6, h: 0.45, fontSize: 7, fontFace: "Hiragino Kaku Gothic ProN", color: "0369A1", valign: "middle", align: "center", bold: true });
-              pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || "roundRect", { x: 6.4, y: 2.9, w: 2.6, h: 0.45, fill: { color: "F5F3FF" }, line: { color: "DDD6FE", width: 1 } });
-              pptxSlide.addText("✨ Gemini AI コンプライアンス返信生成", { x: 6.4, y: 2.9, w: 2.6, h: 0.45, fontSize: 7, fontFace: "Hiragino Kaku Gothic ProN", color: "6D28D9", valign: "middle", align: "center", bold: true });
-              pptxSlide.addText("⚖️ 警察照会・司法監査への完全証拠提出力", { x: 6.1, y: 3.9, w: 3.2, h: 0.5, fontSize: 8.5, fontFace: "Hiragino Kaku Gothic ProN", color: "065F46", align: "center", bold: true });
-              break;
-            case 26:
-              pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || "roundRect", { x: 6.2, y: 1.8, w: 3.0, h: 2.0, fill: { color: "FFFFFF" }, line: { color: "E2E8F0", width: 1 } });
-              pptxSlide.addText("🏷️ 明確な本人確認体系・料金分離", { x: 6.3, y: 1.9, w: 2.8, h: 0.3, fontSize: 8, fontFace: "Hiragino Kaku Gothic ProN", color: "3B627F", bold: true });
-              pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || "roundRect", { x: 6.4, y: 2.3, w: 2.6, h: 0.45, fill: { color: "DCFCE7" }, line: { color: "86EFAC", width: 1 } });
-              pptxSlide.addText("【無料（グリーン）】年齢誓約（18歳以上）", { x: 6.4, y: 2.3, w: 2.6, h: 0.45, fontSize: 7, fontFace: "Hiragino Kaku Gothic ProN", color: "15803D", valign: "middle", align: "center", bold: true });
-              pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || "roundRect", { x: 6.4, y: 2.9, w: 2.6, h: 0.45, fill: { color: "FFEDD5" }, line: { color: "FDBA74", width: 1 } });
-              pptxSlide.addText("【600円（オレンジ）】公的身分証(eKYC)認証", { x: 6.4, y: 2.9, w: 2.6, h: 0.45, fontSize: 7, fontFace: "Hiragino Kaku Gothic ProN", color: "C2410C", valign: "middle", align: "center", bold: true });
-              pptxSlide.addText("🛡️ 消費者誤認防止＆警察ガイドライン適合", { x: 6.1, y: 3.9, w: 3.2, h: 0.5, fontSize: 8.5, fontFace: "Hiragino Kaku Gothic ProN", color: "065F46", align: "center", bold: true });
-              break;
-            case 27:
-              addStandardVisual("💳", "2社分離型eKYC ＆ 自動返金決済", "本人認証にTRUSTDOCK等、決済にStripeを採用。失敗時は600円の仮売上が即自動返金。合格者のみ公式バッジ点灯で安心取引。");
-              break;
-            case 28:
-              addStandardVisual("🚓", "警察生活安全課等アラインツール", "正式捜査要請に基づき、同意書署名データ、IP、違反解答履歴等のデジタルフォレンジックログを1クリック抽出レポートし迅速協力。");
-              break;
-            case 29:
-              addStandardVisual("🛡️", "忘れられる権利（一括撤去申請）", "「再会を望まない」「不当に関わられたくない」お相手の意思も絶対保障。いつでも一括データ削除・アカウント拒絶窓口を利用可能。");
-              break;
-            case 30:
-              addStandardVisual("🏆", "治安防衛コンプライアンス適合総括", "警察、行政、最高安全基準が求めるセキュリティ規約を完全に満足した、100%安全な自発的隣人ネット再開社会インフラの実現。");
-              break;
-            default:
-              break;
-          }
-
-          pptxSlide.addText("ReMEETs 治安・防衛コンプライアンス管理事務局", {
-            x: 0.8,
-            y: 5.2,
-            w: 8.4,
-            h: 0.3,
-            fontSize: 8,
-            fontFace: 'Hiragino Kaku Gothic ProN',
-            color: '999999',
-            align: 'left'
-          });
+          // Right visual card diagram (fully recreated from web preview)
+          addPptxCardDiagram(pptx, pptxSlide, slide);
         }
+
+        pptxSlide.addText("ReMEETs 治安・防衛コンプライアンス管理事務局", {
+          x: 0.8,
+          y: 5.2,
+          w: 8.4,
+          h: 0.3,
+          fontSize: 8,
+          fontFace: 'Hiragino Kaku Gothic ProN',
+          color: '999999',
+          align: 'left'
+        });
       });
 
       pptx.writeFile({ fileName: '⑥ReMEETs警察・公安委員会事前相談用プレゼンテーションスライド.pptx' });
@@ -2987,35 +3201,39 @@ export const AdminDeploymentGuideBlock = ({
             </div>
           </div>
         );
-      case 24: // 安全防衛⑦（電子手書き署名）
+      case 24: // 安全防衛⑦（電子的利用宣誓ゲート）
         return (
           <div className={containerClass}>
-            <div className={headerClass}>DIGITAL SIGNATURE</div>
+            <div className={headerClass}>PLEDGE AUDIT GATE</div>
             <div className="flex flex-col items-center gap-2 w-full my-auto">
-              <div className="w-full max-w-[180px] bg-white border border-slate-200 rounded-xl p-2.5 relative shadow-sm overflow-hidden text-left">
-                <div className="absolute top-1 left-2 text-[7px] text-slate-400 font-mono scale-[0.9]">宣誓立会署名(Touch Signature)</div>
-                <div className="h-10 w-full flex items-center justify-center relative mt-1 select-none">
-                  <svg className="w-full h-full text-[#3B627F]" viewBox="0 0 100 40">
-                    <path 
-                      d="M 10 25 C 20 15, 30 10, 45 20 C 55 25, 60 5, 75 15 C 85 20, 90 28, 95 18" 
-                      fill="none" 
-                      stroke="currentColor" 
-                      strokeWidth="2" 
-                      strokeLinecap="round"
-                    />
-                    <circle cx="95" cy="18" r="2" fill="#E11D48" className="animate-ping" />
-                  </svg>
-                  <span className="absolute bottom-1 right-2 text-[6px] text-emerald-600 font-bold bg-emerald-50 px-1 rounded border border-emerald-100 flex items-center gap-0.5 scale-[0.9]">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> VERIFIED
+              <div className="w-full max-w-[200px] bg-white border border-slate-200 rounded-xl p-2.5 relative shadow-sm overflow-hidden text-left">
+                <div className="flex items-center justify-between border-b border-slate-200 pb-1 mb-1.5">
+                  <span className="text-[7.5px] font-bold text-emerald-800 flex items-center gap-1">
+                    <ShieldCheck size={11} className="text-emerald-600" /> 法令・規約遵守電子的宣誓
                   </span>
+                  <span className="text-[6.5px] font-mono text-slate-400">PLEDGE_GATE</span>
                 </div>
-                <div className="border-t border-dashed border-slate-200 mt-1 pt-1 flex justify-between items-center text-[6px] font-mono text-slate-400 scale-[0.9] origin-bottom">
-                  <span>HASH: 4F2A9...</span>
-                  <span>IP: 192.168.1.1</span>
+                <div className="space-y-1 text-[7px] text-slate-700">
+                  <div className="flex items-center gap-1">
+                    <span className="text-emerald-600 font-bold">☑</span>
+                    <span>18歳以上（高校生除く）の利用であること</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <span className="text-emerald-600 font-bold">☑</span>
+                    <span>ストーカー・嫌がらせ・監視目的でないこと</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <span className="text-emerald-600 font-bold">☑</span>
+                    <span>法令遵守・連絡先適正利用の確約</span>
+                  </div>
+                </div>
+                <div className="mt-2 pt-1 border-t border-slate-200 flex items-center justify-between text-[6px] font-mono text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">
+                  <span>LOGGED: IP & TIMESTAMP</span>
+                  <span className="font-bold">VERIFIED ✓</span>
                 </div>
               </div>
               <p className="text-[9px] text-[#3B627F] font-bold text-center leading-normal">
-                法令遵守。ストーカー行為等を行わない誓約の手書き宣誓
+                連絡先開示直前の厳格な電子的利用宣誓。タイムスタンプ・接続元IPを監査保全。
               </p>
             </div>
           </div>
@@ -3549,7 +3767,7 @@ export const AdminDeploymentGuideBlock = ({
               setShowChecklistModal(true);
             }}
             className="px-3.5 py-1.5 bg-[#0D9488] text-white hover:bg-[#0F766E] rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-[0.98]"
-            title="本番リリース前に行う各種動作確認（OAuth連携、検閲、クイズ突破、Stripe決済、自筆署名、eKYC等）をチェックリスト形式で確認・記録します。"
+            title="本番リリース前に行う各種動作確認（OAuth連携、検閲、クイズ突破、Stripe決済、電子的宣誓、eKYC等）をチェックリスト形式で確認・記録します。"
           >
             <Search size={13} />
             <span>🔍 本番前動作確認チェックリスト</span>
@@ -3708,16 +3926,16 @@ export const AdminDeploymentGuideBlock = ({
                 </tr>
 
                 <tr className="hover:bg-brand-light/10 transition-colors">
-                  <td className="p-4 font-bold text-black border-r border-[#3B627F]/20 bg-[#3B627F]/5">⑥ メッセージ開通・初期会話</td>
+                  <td className="p-4 font-bold text-black border-r border-[#3B627F]/20 bg-[#3B627F]/5">⑥ 連絡先開示（セキュアブリッジ）</td>
                   <td className="p-4 text-black/75 border-r border-[#3B627F]/20">なりすまし突破成功後のストーカー・嫌がらせ接触、事件化</td>
                   <td className="p-4 text-black/70 leading-relaxed font-sans text-xs border-r border-[#3B627F]/20">
-                    メッセージルームを開通する前に、<strong>18歳以上（高校生を除く）</strong>、<strong>ストーカーや無断面識を目的としない安全第一の利用宣誓</strong>および<strong>デジタル手書き署名（非保持ゼロナレッジ型）</strong>の合意を完全無効化不可能なフェーズゲートとして設置。
+                    連絡先開示手続きに進む前に、<strong>18歳以上（高校生を除く）</strong>、<strong>ストーカーや無断面識を目的としない安全第一の利用宣誓</strong>への電子的合意を完全無効化不可能なフェーズゲートとして設置。
                   </td>
                   <td className="p-4 text-black/70 leading-relaxed border-r border-[#3B627F]/20">
-                    開通後のファーストメッセージを含む初期コミュニケーションをAI分析。暴力的・執着的ハラスメントが認められた場合に即時ログをブロック。
+                    不適切な利用の兆候や多回数照合試行をAI分析。執着・悪意が認められた場合に即時遮断。
                   </td>
                   <td className="p-4 text-black/70 leading-relaxed font-mono text-[10px]">
-                    同意したゼロナレッジ自筆署名メタデータ・不可逆ハッシュ、合意タイムスタンプ、IP情報を「証拠開示用」として管理者サーバーデータベースに高セキュリティ保全（生の署名画像は保存せず、ハッキング漏えい時の筆跡なりすましリスクを完璧に封鎖）。
+                    同意した電子的宣誓ログ（合意タイムスタンプ、IPアドレス、ユーザー識別子）を「証拠開示用」として管理者サーバーデータベースに高セキュリティ保全。
                   </td>
                 </tr>
               </tbody>
@@ -4077,7 +4295,7 @@ export const AdminDeploymentGuideBlock = ({
                   </h3>
                   <p className="text-[10px] text-slate-300 font-sans mt-0.5">
                     {activeChecklistTab === 'operation'
-                      ? "※LINE/Google OAuth連携・クイズ突破・手書き署名・Stripe決済・eKYC運用等、各種動作確認作業の進行状況をブラウザに自動保存します。"
+                      ? "※LINE/Google OAuth連携・クイズ突破・電子的宣誓・Stripe決済・eKYC運用等、各種動作確認作業の進行状況をブラウザに自動保存します。"
                       : "※法的適合・全文書制定日確定・セキュリティ対策・SNS連携・決済疎通を含む17ステップ of 進行状況は、ブラウザ（localStorage）に自動保存されます。"}
                   </p>
                 </div>
@@ -4157,7 +4375,7 @@ export const AdminDeploymentGuideBlock = ({
                   </div>
                   <p className="text-[11px] text-teal-900/90 leading-relaxed">
                     本チェックリストは、ReMEETsの本番リリース直前に実施すべき「実稼働・動作テスト」に特化した、<strong>6大検証領域（16項目）</strong>からなる実用的な動作確認リストです。<br />
-                    LINE・GoogleなどのOAuth認証ログイン、初回規約同意フロー、不適切投稿のAI検閲、想い出クイズ突破および総当たりアビューズ制限、指による手書き自筆誓約署名の保存、Stripeモック決済と審査否認時の自動返金、eKYC公的証明書アップロード審査、および警察公安提出用の監査フォレンジックログCSVエクスポートが本番環境で正常に稼働するか、漏れなく確認・記録することができます。
+                    LINE・GoogleなどのOAuth認証ログイン、初回規約同意フロー、不適切投稿のAI検閲、想い出クイズ突破および総当たりアビューズ制限、電子的利用宣誓（法令遵守・ストーカー禁止）の合意保全、Stripeモック決済と審査否認時の自動返金、eKYC公的証明書アップロード審査、および警察公安提出用の監査フォレンジックログCSVエクスポートが本番環境で正常に稼働するか、漏れなく確認・記録することができます。
                   </p>
                 </div>
               ) : (
@@ -4203,11 +4421,11 @@ export const AdminDeploymentGuideBlock = ({
                 },
                 {
                   code: "D",
-                  title: "【D. eKYC＆自筆署名検証（2項目）】",
+                  title: "【D. eKYC＆電子的宣誓検証（2項目）】",
                   bg: "bg-gradient-to-r from-emerald-50/70 to-teal-50/30 border-emerald-100",
                   text: "text-slate-950",
                   badge: "bg-emerald-600 text-white",
-                  desc: "公的証明書アップロード審査・認証バッジ反映、および指やマウスによる手書き自筆電子署名の安全保存をテストします。",
+                  desc: "公的証明書アップロード審査・認証バッジ反映、および電子的利用宣誓（法令遵守・ストーカー禁止）の合意ログ安全保存をテストします。",
                   itemIds: [10, 11]
                 },
                 {
@@ -4225,7 +4443,7 @@ export const AdminDeploymentGuideBlock = ({
                   bg: "bg-gradient-to-r from-violet-50/70 to-fuchsia-50/30 border-violet-100",
                   text: "text-slate-950",
                   badge: "bg-violet-600 text-white",
-                  desc: "優先開示連絡先変更・ボトル回収削除、管理者KPI・AI通報ログ・ユーザー凍結、警察提出用署名付き監査CSV出力を検証します。",
+                  desc: "優先開示連絡先変更・ボトル回収削除、管理者KPI・AI通報ログ・ユーザー凍結、警察提出用監査ログCSV出力を検証します。",
                   itemIds: [15, 16, 17]
                 },
                 {
@@ -4298,7 +4516,7 @@ export const AdminDeploymentGuideBlock = ({
                   bg: "bg-gradient-to-r from-slate-100/80 to-slate-50/30 border-slate-200",
                   text: "text-slate-950",
                   badge: "bg-slate-700 text-white",
-                  desc: "eKYC本人確認、手書き自筆誓約署名、Stripeによる本番同様の仮売上（審査落ち時即自動返金含む）の疎通テストをすべて検証します。",
+                  desc: "eKYC本人確認、電子的利用宣誓同意、Stripeによる本番同様の仮売上（審査落ち時即自動返金含む）の疎通テストをすべて検証します。",
                   itemIds: [17]
                 }
               ]).map((group) => {
