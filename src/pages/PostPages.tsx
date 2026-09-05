@@ -3718,7 +3718,15 @@ export const RevealContactModal = ({
                 </button>
                 <button
                   type="button"
-                  onClick={onClose}
+                  onClick={() => {
+                    onClose();
+                    setTimeout(() => {
+                      const el = document.getElementById('reunion-success-anchor') || document.getElementById('revealed-contact-section');
+                      if (el) {
+                        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      }
+                    }, 350);
+                  }}
                   className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all cursor-pointer"
                 >
                   手紙詳細ページで確認する
@@ -5173,13 +5181,11 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
             target_hometown: data.targetHometown || prev?.target_hometown
           }));
         }
-        if (isUserAlreadyVerified || isAgeVerified) {
-          setIsAgeVerified(true);
-        }
-        // 直接「思い出の鍵が繋がりました！」のページトップへスクロール
+        setIsAgeVerified(true);
+        // クイズ正解後、スムーズにカード決済（手紙開封・連絡先開示手続き 600円）モーダルを自動起動
         setTimeout(() => {
-          welcomeBannerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 200);
+          setShowRevealModal(true);
+        }, 350);
       } else {
         if (data.results) {
           setVerificationResults(data.results);
@@ -6444,9 +6450,9 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                         <p className="text-sm md:text-base font-serif leading-relaxed text-center text-emerald-950 font-medium bg-white/90 p-3.5 rounded-2xl border border-emerald-200/60 shadow-2xs backdrop-blur-2xs">
                           秘密の質問にすべて正解しました！<br className="hidden md:inline" />
                           {(isUserAlreadyVerified || isAgeVerified) ? (
-                            <><b>「手紙の本文と連絡先を開封できます！」</b>お相手と直接連絡を取り合うために、下記よりお手続きをお進めください。</>
+                            <>手紙の本文と連絡先を開封できます。お相手と直接連絡を取り合うために、下記よりお手続きをお進めください。</>
                           ) : (
-                            <>手紙本文と連絡先を開封するために、まず<b>「年齢確認手続き」</b>をお選びください。</>
+                            <>手紙本文と連絡先を開封するために、まず年齢確認手続きをお選びください。</>
                           )}
                         </p>
 
@@ -6626,11 +6632,11 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                           本人確認・安全誓約 完了済み
                         </span>
                       </div>
-                      <div className="space-y-2 py-2 text-center bg-gradient-to-r from-emerald-500/10 via-teal-500/15 to-emerald-500/10 p-3 rounded-2xl border border-emerald-300/80 shadow-xs">
-                        <h3 className="text-xl sm:text-2xl md:text-[26px] font-black text-emerald-950 font-serif leading-snug tracking-tight">
+                      <div className="space-y-1.5 py-2 text-center bg-gradient-to-r from-emerald-500/10 via-teal-500/15 to-emerald-500/10 p-3 rounded-2xl border border-emerald-300/80 shadow-xs">
+                        <h3 className="text-base md:text-lg font-bold text-emerald-950 font-serif leading-snug tracking-tight">
                           ✨ 手紙の本文と連絡先を開封できます！
                         </h3>
-                        <p className="text-xs sm:text-sm text-slate-700 font-bold leading-relaxed">
+                        <p className="text-xs text-slate-700 font-medium leading-relaxed">
                           お相手と直接連絡を取り合うために、下記よりお手続きをお進めください。
                         </p>
                       </div>
