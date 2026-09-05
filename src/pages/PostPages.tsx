@@ -23,6 +23,7 @@ import { DocumentCameraOverlay, stopAllGlobalCameraStreams } from '../components
 import { QuizMatchingAnalyticsView } from '../components/QuizMatchingAnalyticsView';
 import { SupportModal } from '../components/SupportModal';
 import { CreditCardPaymentForm } from '../components/CreditCardPaymentForm';
+import { ReunionEffectTitle } from '../components/ReunionEffectTitle';
 import { QuestionSampleModal } from './AuthPages';
 import { SuccessStoryModal } from './SearchPage';
 import quizMatchHearts from '../assets/images/quiz_match_hearts_pastel_1785940521320.jpg';
@@ -5679,7 +5680,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
             {isOwner && post.status === 'resolved' ? (
               <span className="block whitespace-normal md:whitespace-nowrap max-w-full text-emerald-600 font-bold">再会が成功しました！✨</span>
             ) : (!isOwner && showDetails) ? (
-              <span className="block whitespace-normal md:whitespace-nowrap max-w-full text-emerald-600 font-bold">再会おめでとうございます！</span>
+              <ReunionEffectTitle effectType="shine-sweep" />
             ) : (!isOwner && (isQuestionVerified || post.status === 'resolved')) ? (
               <span className="block whitespace-normal md:whitespace-nowrap max-w-full text-emerald-600 font-bold">思い出の鍵が解かれました！✨</span>
             ) : (

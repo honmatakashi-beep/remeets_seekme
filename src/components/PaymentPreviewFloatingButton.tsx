@@ -8,20 +8,26 @@ export const PaymentPreviewFloatingButton: React.FC = () => {
 
   return (
     <>
-      {/* 右下フローティング起動ボタン */}
-      <div className="fixed bottom-6 right-6 z-[9999] flex items-center gap-2">
+      {/* 右下フローティング起動ボタン群 */}
+      <div className="fixed bottom-6 right-6 z-[9999] flex flex-col sm:flex-row items-end sm:items-center gap-2">
+        <a
+          href="/reunion-preview"
+          className="bg-gradient-to-r from-emerald-700 via-teal-700 to-emerald-800 hover:from-emerald-800 hover:to-teal-800 text-white px-4 py-2.5 rounded-full shadow-2xl border-2 border-emerald-400/60 flex items-center gap-2 text-xs font-bold font-sans cursor-pointer transition-all ring-4 ring-emerald-500/20 active:scale-95"
+          title="「再会おめでとうございます」の5つの演出エフェクトを比較・検証できます"
+        >
+          <Sparkles size={14} className="text-amber-300 animate-pulse" />
+          <span>✨ 再会エフェクト比較</span>
+        </a>
+
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsOpen(true)}
-          className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 hover:from-indigo-900 hover:to-slate-800 text-white px-4 py-3 rounded-full shadow-2xl border-2 border-indigo-400/60 flex items-center gap-2.5 text-xs font-bold font-sans cursor-pointer transition-all ring-4 ring-indigo-500/20"
+          className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 hover:from-indigo-900 hover:to-slate-800 text-white px-4 py-2.5 rounded-full shadow-2xl border-2 border-indigo-400/60 flex items-center gap-2 text-xs font-bold font-sans cursor-pointer transition-all ring-4 ring-indigo-500/20"
           title="全5パターンの決済画面とカードブランド自動検知を即座に確認できます"
         >
-          <div className="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center animate-pulse">
-            <Sparkles size={12} />
-          </div>
-          <CreditCard size={16} className="text-emerald-300" />
-          <span>💳 決済UIプレビュー</span>
+          <CreditCard size={15} className="text-emerald-300" />
+          <span>💳 決済UI確認</span>
         </motion.button>
       </div>
 

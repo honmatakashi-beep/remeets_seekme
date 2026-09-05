@@ -10,6 +10,7 @@ import { SuccessStoriesPage, AdminDeploymentGuideBlock, AdminDeploymentGuidePage
 import { AdminManualContent, OldAdminManualContent, RegionalMatrix, FunnelChart, HeatmapChart, AdminLiveSystemMonitor, AdminDashboard, AdminInfoPage, SitemapPage, ContactPage, ConfirmModal, AuroraAmbientGlow, PageViewTracker, PageViewChart } from './pages/AdminDashboard';
 import { WarningMessage, BottleLoader, Navbar, Footer, ProtectedRoute, GoogleSearchResultPreview } from './components/SharedComponents';
 import { PaymentPreviewPage } from './pages/PaymentPreviewPage';
+import { ReunionEffectsPreviewPage } from './pages/ReunionEffectsPreviewPage';
 import { HomePage } from './pages/HomePage';
 import React, { useState, useEffect, createContext, useContext, useRef, Component } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useParams, Navigate, useLocation, useSearchParams } from 'react-router-dom';
@@ -161,6 +162,8 @@ export default function App() {
                 <Route path="/sitemap" element={<SitemapPage />} />
                 <Route path="/payment-preview" element={<PaymentPreviewPage />} />
                 <Route path="/admin/payments-preview" element={<PaymentPreviewPage />} />
+                <Route path="/reunion-preview" element={<ReunionEffectsPreviewPage />} />
+                <Route path="/preview-reunion-effects" element={<ReunionEffectsPreviewPage />} />
               </Routes>
             </main>
             <Footer />
