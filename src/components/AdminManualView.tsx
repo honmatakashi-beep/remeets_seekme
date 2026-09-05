@@ -271,7 +271,7 @@ export const AdminManualView: React.FC = () => {
       sections: [
         { id: '1-1', title: '1-1. 管理者責任と個人情報保護の基本原則', description: '通信の秘密・覗き見厳禁・個人情報ゼロ保持モデル', badge: '最重要' },
         { id: '1-2', title: '1-2. 役職ロール・権限管理 (RBAC 4階層)', description: 'Owner/Admin/Auditor/Moderatorの権限分離と任命手順' },
-        { id: '1-3', title: '1-3. 連絡先開示モデルと法的建付け', description: 'クローズドチャット廃止と異性紹介事業非該当の法的理由' }
+        { id: '1-3', title: '1-3. 連絡先開示モデルと法的建付け', description: '連絡先安全引き渡し完結モデルと異性紹介事業非該当の法的理由' }
       ]
     },
     {
@@ -544,11 +544,10 @@ export const AdminManualView: React.FC = () => {
           <div className="space-y-6 text-xs text-black/80 leading-relaxed">
             <div className="p-5 rounded-2xl bg-amber-50/80 border border-amber-200 space-y-2">
               <span className="text-xs font-bold text-amber-950 uppercase tracking-wider block">
-                【重要設計】クローズドチャット廃止 ＆ 連絡先開示モデル移行の法的理由
+                【重要設計】連絡先安全引き渡し（セキュア・ブリッジ）モデル採用の法的理由
               </span>
               <p className="text-xs text-amber-900 leading-relaxed font-serif">
-                アプリ内で継続的な1対1メッセージ機能を提供し続ける場合、「インターネット異性紹介事業」への該当懸念や「24時間365日のメッセージモデレーション義務」が発生します。
-                ReMEETsでは想い出の照合後に安全に連絡先（SNS ID / メール）を引き渡してプラットフォームの役割を完結させることで、法的・運営的リスクを大幅に軽減しています。
+                アプリ内で継続的な1対1メッセージ機能を持たず、想い出の照合後に安全に連絡先（SNS ID / メール）を引き渡してプラットフォームの役割を完結させることで、「インターネット異性紹介事業」や「電気通信事業」の規制対象から根本的に完全非該当化し、法的・運営的リスクをゼロに抑えています。
               </p>
             </div>
 

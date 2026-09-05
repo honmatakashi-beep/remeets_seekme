@@ -773,7 +773,7 @@ export const AdminDeploymentGuideBlock = ({
       { id: 9, category: "データ管理", title: "情緒豊かな本番サンプルデータの一括自動生成 (Seeding)", description: "ローンチ直後の過疎感を防ぐため、実在感のある日本の想い出ボトルメールや感謝レターを一括投入します。", completed: false, date: "", notes: "" },
       { id: 10, category: "SNS連携", title: "LINE / Google Developers コンソールでの本番クライアント作成", description: "本番ドメインのログインリダイレクトURIやブランド名、プライバシーポリシーURLを各開発者ポータルに登録します。", completed: false, date: "", notes: "" },
       { id: 11, category: "SNS連携", title: "LINE_CHANNEL_SECRET / GOOGLE_CLIENT_SECRET の環境変数追記", description: "安全なSNS認証（OAuth）を行うため、各クライアントIDと秘密鍵を本番サーバー環境変数に設定します。", completed: false, date: "", notes: "" },
-      { id: 12, category: "法務・規約", title: "利用規約（TOS）のSNS連携・連絡先引き渡しモデル改訂", description: "クローズドチャット廃止＆連絡先安全引き渡しモデル、使い捨てアカウント禁止条項を明文化します。", completed: false, date: "", notes: "" },
+      { id: 12, category: "法務・規約", title: "利用規約（TOS）のSNS連携・連絡先引き渡しモデル改訂", description: "連絡先安全引き渡し（セキュア・ブリッジ）モデル、使い捨てアカウント禁止条項を明文化します。", completed: false, date: "", notes: "" },
       { id: 13, category: "法務・規約", title: "プライバシーポリシー（PP）のOAuth取得データ明記・改訂", description: "SNSログインで取得するプロファイル情報およびeKYC身分証データの安全な管理体制を開示します。", completed: false, date: "", notes: "" },
       { id: 14, category: "法務・規約", title: "特定商取引法に基づく表記の整備（住所・電話番号対策）", description: "バーチャルオフィス住所・050電話番号を契約し、販売価格（600円〜1,200円）や返金規定を特定商取引法ページに記載します。", completed: false, date: "", notes: "" },
       { id: 15, category: "法務・規約", title: "全法的文書（規約・PP・ガイドライン・特商法）の【制定日・施行日】確定", description: "利用規約、PP、ガイドライン、特商法表記の制定日・施行日を正式サービス提供開始日（2026年8月15日）に一括整合します。", completed: true, date: "2026-08-15", notes: "2026年8月15日に全文書の制定日・施行日を正式反映完了済" },
@@ -1021,13 +1021,13 @@ export const AdminDeploymentGuideBlock = ({
     },
     {
       id: 8,
-      title: "主要機能（フロント部③）- 連絡先安全引き渡し（ブリッジ）モデル ＆ クローズドチャット廃止",
+      title: "主要機能（フロント部③）- 連絡先安全引き渡し（セキュア・ブリッジ）モデル",
       category: "5. 主要機能（フロントエンド）",
       layout: 'content',
       points: [
-        "「クイズ照合」が完璧に100%成功し、本人確認（eKYC）と開通手続き（600円〜1,200円）が完了した瞬間、安全に連絡先（LINE ID, メアド等）の相互開示・引き渡し（ブリッジ）が実行されます。",
-        "アプリ内で永続的なチャット機能を提供し続けるのではなく、連絡先の引き渡しをもってプラットフォームの役割を完結させるクリーンなモデルを採用。これにより無差別なメッセージのやり取りによるトラブルを未然防止。",
-        "万が一お相手の言動にしつこさや執着・不審を感じた場合には、常設された「通報・削除申請」「緊急ブロック機能」により、1タップで即座に通信を遮断・破棄可能です。"
+        "「厳格な合意ベース開通」：投函者・受取人双方が「想い出クイズ」に100%完全合致し、公的本人確認（eKYC）と開通手続き（600円）が完了した段階でのみ、双方が希望する連絡先（LINE ID, メールアドレス等）を安全に相互開示・引き渡し（ブリッジ）します。",
+        "「密室メッセージ空間の完全排除」：サービス内に継続的なメッセージング（密室チャット）空間を持たない「ワンウェイ引き渡し完結型」のクリーン設計を採用。不特定多数との無差別なやり取りや密室でのトラブル・犯罪リスクをシステム構造上ゼロにします。",
+        "「24時間常設の緊急ブロック・通報機能」：連絡先引き渡し後も、万が一お相手の言動にしつこさや不審を感じた場合には、常設された「通報・削除申請」「緊急ブロック」により、1タップで即座に遮断・運営通報が可能です。"
       ]
     },
     {
@@ -2700,7 +2700,7 @@ export const AdminDeploymentGuideBlock = ({
             </p>
           </div>
         );
-      case 8: // 主要機能③（連絡先安全引き渡し＆クローズドチャット廃止）
+      case 8: // 主要機能③（連絡先安全引き渡しモデル）
         return (
           <div className={containerClass}>
             <div className={headerClass}>CONTACT BRIDGE</div>
@@ -2708,7 +2708,7 @@ export const AdminDeploymentGuideBlock = ({
               <div className="flex items-center justify-between border-b border-slate-100 pb-1">
                 <div className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                  <span className="text-[9px] font-bold text-slate-700">連絡先安全引き渡し（ブリッジ）</span>
+                  <span className="text-[9px] font-bold text-slate-700">連絡先安全引き渡し（セキュア・ブリッジ）</span>
                 </div>
                 <ShieldCheck className="text-emerald-600" size={12} />
               </div>
@@ -2717,8 +2717,8 @@ export const AdminDeploymentGuideBlock = ({
                   <div className="text-[7.5px] text-slate-500">お相手の開示連絡先:</div>
                   <div className="font-bold text-[#3B627F]">LINE ID: @sample_friend</div>
                 </div>
-                <div className="bg-amber-50 text-amber-900 text-[7.5px] p-1.5 rounded-lg border border-amber-200">
-                  ⚠️ 永続チャットを廃止し、連絡先の安全な引き渡しに特化して運営リスクを完全排除。
+                <div className="bg-emerald-50 text-emerald-900 text-[7.5px] p-1.5 rounded-lg border border-emerald-200">
+                  🔒 密室チャットを持たないクリーン設計で、トラブルや犯罪リスクをシステム構造上ゼロに。
                 </div>
               </div>
             </div>

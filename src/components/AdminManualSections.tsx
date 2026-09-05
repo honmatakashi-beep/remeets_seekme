@@ -55,10 +55,10 @@ export const ManualGeneralSection = () => (
         </div>
         <div>
           <h3 className="text-base font-serif font-bold text-amber-950">
-            📝 備忘録: クローズドチャット廃止 ＆ 連絡先開示（引き渡し）モデル移行検討メモ
+            📝 備忘録: 連絡先安全引き渡し（セキュア・ブリッジ）完結モデルの設計メモ
           </h3>
           <p className="text-xs text-amber-800/80 font-sans mt-0.5">
-            アプリ内1対1チャット機能の法的・運営的リスク回避策と着地アイデアの比較メモ
+            アプリ内に1対1メッセージ機能を持たず、連絡先開示のみで完結させる法的・運営的メリットの整理メモ
           </p>
         </div>
       </div>
@@ -66,11 +66,11 @@ export const ManualGeneralSection = () => (
       <div className="space-y-4 text-xs font-serif text-amber-950/90 leading-relaxed">
         <div className="bg-white/80 p-5 rounded-2xl border border-amber-200/60 space-y-2">
           <h4 className="font-bold text-amber-900 font-sans text-xs flex items-center gap-1.5">
-            <span>1. 検討の背景とメリット</span>
+            <span>1. 設計の背景とメリット</span>
           </h4>
           <p className="text-amber-900/80 text-[11px] leading-relaxed">
             アプリ内で継続的な1対1メッセージ（チャット）機能を提供する場合、インターネット異性紹介事業への該当性懸念や電気通信事業の届出、24時間体制のメッセージモデレーション（監視・検閲）義務が発生します。<br />
-            チャット機能を廃止し、「想い出の照合 ＋ 連絡先の安全な引き渡し（ブリッジ）」に特化することで、運営上の法的・監視的負担を大幅に軽減でき、DB負荷やストレージコストも極限まで抑制可能です。
+            「想い出の照合 ＋ 連絡先の安全な引き渡し（ブリッジ）」に特化することで、運営上の法的・監視的負担をゼロに抑え、DB負荷やストレージコストも極限まで抑制可能です。
           </p>
         </div>
 

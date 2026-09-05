@@ -11,3 +11,5 @@ coverage/
 *.db
 *.db.*
 pm2_logs.txt
+
+*.zip

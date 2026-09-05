@@ -610,7 +610,7 @@ export const PolicePresentationSlideViewer: React.FC<PolicePresentationSlideView
             </p>
           </div>
         );
-      case 8: // 主要機能③（連絡先安全引き渡し＆クローズドチャット廃止）
+      case 8: // 主要機能③（連絡先安全引き渡しモデル）
         return (
           <div className={cardBase}>
             <div className={tagBase}>CONTACT BRIDGE</div>
@@ -618,7 +618,7 @@ export const PolicePresentationSlideViewer: React.FC<PolicePresentationSlideView
               <div className="flex items-center justify-between border-b border-slate-200 pb-1">
                 <div className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                  <span className="text-[9px] font-bold text-slate-800">連絡先安全引き渡し</span>
+                  <span className="text-[9px] font-bold text-slate-800">連絡先安全引き渡し（セキュア・ブリッジ）</span>
                 </div>
                 <ShieldCheck className="text-emerald-600" size={13} />
               </div>
@@ -628,7 +628,7 @@ export const PolicePresentationSlideViewer: React.FC<PolicePresentationSlideView
                   <div className="font-bold text-emerald-700">LINE ID: @sample_friend</div>
                 </div>
                 <div className="bg-emerald-50 text-emerald-900 text-[7.5px] p-1.5 rounded-lg border border-emerald-200">
-                  ✓ 永続チャットを廃止し、連絡先の引き渡しに特化して運営リスクを完全排除。
+                  🔒 密室チャットを持たないクリーン設計で、トラブルや犯罪リスクをシステム構造上ゼロに。
                 </div>
               </div>
             </div>
