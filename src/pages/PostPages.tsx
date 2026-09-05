@@ -5680,7 +5680,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
             {isOwner && post.status === 'resolved' ? (
               <span className="block whitespace-normal md:whitespace-nowrap max-w-full text-emerald-600 font-bold">再会が成功しました！✨</span>
             ) : (!isOwner && showDetails) ? (
-              <ReunionEffectTitle effectType="shine-sweep" />
+              <ReunionEffectTitle effectType="pure-rainbow-flow" />
             ) : (!isOwner && (isQuestionVerified || post.status === 'resolved')) ? (
               <span className="block whitespace-normal md:whitespace-nowrap max-w-full text-emerald-600 font-bold">思い出の鍵が解かれました！✨</span>
             ) : (

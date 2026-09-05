@@ -3,9 +3,6 @@ import { Link } from 'react-router-dom';
 import { 
   ArrowLeft, 
   Sparkles, 
-  Play, 
-  RotateCcw, 
-  Check, 
   ShieldCheck, 
   User, 
   MapPin, 
@@ -13,86 +10,38 @@ import {
   Unlock, 
   MessageCircle, 
   Copy, 
-  Layers, 
-  Rainbow
+  Layers
 } from 'lucide-react';
 import { ReunionEffectTitle, ReunionEffectType } from '../components/ReunionEffectTitle';
 
 export const ReunionEffectsPreviewPage: React.FC = () => {
-  const [selectedEffect, setSelectedEffect] = useState<ReunionEffectType>('rainbow-to-emerald');
+  const [selectedEffect, setSelectedEffect] = useState<ReunionEffectType>('pure-rainbow-flow');
   const [speed, setSpeed] = useState<'slow' | 'normal' | 'fast'>('normal');
-  const [triggerKey, setTriggerKey] = useState(0);
-  const [autoReplay, setAutoReplay] = useState(false);
   const [copiedContact, setCopiedContact] = useState(false);
 
-  const handleReplay = () => {
-    setTriggerKey(prev => prev + 1);
-  };
-
-  // 自動リプレイタイマー
-  React.useEffect(() => {
-    if (!autoReplay) return;
-    const interval = setInterval(() => {
-      setTriggerKey(prev => prev + 1);
-    }, speed === 'slow' ? 4000 : speed === 'fast' ? 2200 : 3000);
-    return () => clearInterval(interval);
-  }, [autoReplay, speed, selectedEffect]);
-
-  const effectOptions: {
-    id: ReunionEffectType;
+  const speedOptions: {
+    id: 'slow' | 'normal' | 'fast';
     label: string;
-    badge: string;
+    duration: string;
     description: string;
-    icon: string;
   }[] = [
     {
-      id: 'rainbow-to-emerald',
-      label: '① 高速虹色疾走 ➔ エメラルド定着',
-      badge: '★ ご提案（TOPコピー連携・大本命）',
-      description: 'トップページの虹色が文字の中を高速で美しく駆け巡り、ふわりと落ち着いてブランドの深緑（エメラルド）に定着＋右上で星がキラリンと輝きます。',
-      icon: '🌈'
+      id: 'normal',
+      label: '標準スピード（6秒周期）',
+      duration: '6s',
+      description: 'トップページのメインコピーと同一の、最も自然で澄んだ美しい虹の循環速度です。'
     },
     {
-      id: 'rainbow-sweep-sparkle',
-      label: '② 高速虹色光線ビーム ➔ 緑定着',
-      badge: '光線・スタイリッシュ',
-      description: '左から右へ虹色の光線ビームがシャッと走り抜け、文字をエメラルドに染め上げながらキラリン星が弾けます。',
-      icon: '⚡'
+      id: 'fast',
+      label: '軽快スピード（3.5秒周期）',
+      duration: '3.5s',
+      description: 'お祝い感を少し高めた、軽やかでアクティブな虹色グラデーションです。'
     },
     {
-      id: 'shine-sweep',
-      label: '③ 純白ゴールド光線 ＆ キラリン星',
-      badge: '上品・王道シマー',
-      description: '左から右へ純白＆エメラルドゴールドの光の帯がスーッと走り抜け、最後に右上で「✨」星がキラリンと光り輝きます。',
-      icon: '✨'
-    },
-    {
-      id: 'aurora-wave',
-      label: '④ オーロラ光彩ウェーブ（常時）',
-      badge: '幻想的・継続ループ',
-      description: '文字色がエメラルド〜ティール〜オーロラゴールドに優雅に波打ち続け、文字の周囲から柔らかい光のオーラが広がり続けます。',
-      icon: '🌊'
-    },
-    {
-      id: 'sparkle-burst',
-      label: '⑤ ゴールドグリッター＆星屑',
-      badge: 'お祝い感・パーティクル',
-      description: '文字全体がゴールドに発光しながら、文字の上下から大小の星屑（スパークル）がフワフワと舞い散る祝福の演出です。',
-      icon: '🎉'
-    },
-    {
-      id: 'stagger-char',
-      label: '⑥ 順次ポップ ＋ 黄金フラッシュ',
-      badge: '躍動感・リズミカル',
-      description: '一文字ずつ軽やかにポンポンと現れ、最後に全体がパッと黄金の光で包まれて定着する演出です。',
-      icon: '💫'
-    },
-    {
-      id: 'water-flare',
-      label: '⑦ 水滴波紋 ＋ レンズフレア',
-      badge: '海・ボトルメール世界観',
-      description: '水面に水滴が落ちたような波紋が広がり、レンズフレアの光点が左から右へ滑らかにトレースします。',
-      icon: '💧'
+      id: 'slow',
+      label: 'ゆったりスピード（10秒周期）',
+      duration: '10s',
+      description: '情緒的で穏やかに、色がじわじわと移り変わる落ち着いた上品な速度です。'
     }
   ];
 
@@ -110,12 +59,12 @@ export const ReunionEffectsPreviewPage: React.FC = () => {
               className="p-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-colors flex items-center gap-1.5 text-xs font-bold"
             >
               <ArrowLeft size={16} />
-              <span>手紙詳細へ</span>
+              <span>手紙詳細へ戻る</span>
             </Link>
             <div className="h-4 w-[1px] bg-slate-200" />
             <span className="text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-1.5">
               <Sparkles size={16} className="text-amber-500" />
-              「再会おめでとうございます」演出エフェクト比較・検証デモ
+              トップページ完全同一 虹色グラデーション（WebGL無・純粋テキスト）
             </span>
           </div>
 
@@ -130,125 +79,55 @@ export const ReunionEffectsPreviewPage: React.FC = () => {
         </div>
 
         {/* ============================================================ */}
-        {/* 2. エフェクト切り替え・コントロールパネル */}
+        {/* 2. 流速コントロールパネル */}
         {/* ============================================================ */}
-        <div className="bg-white rounded-2xl border-2 border-indigo-200 p-5 shadow-sm space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+        <div className="bg-white rounded-2xl border-2 border-teal-300 p-5 shadow-sm space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-2">
             <div>
-              <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest block">Effect Selector</span>
-              <h2 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
-                <Layers size={18} className="text-indigo-600" />
-                演出エフェクトを選択してリアルタイム比較
+              <span className="text-[10px] font-bold text-teal-700 uppercase tracking-widest block">Speed Controller</span>
+              <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                <Layers size={18} className="text-teal-600" />
+                虹色グラデーションの流速（スピード）を選択
               </h2>
             </div>
-
-            {/* 再生操作ボタン群 */}
-            <div className="flex items-center gap-2">
-              <button
-                onClick={handleReplay}
-                className="px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-xs font-bold rounded-xl shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all"
-              >
-                <RotateCcw size={14} />
-                <span>もう一度再生（リプレイ）</span>
-              </button>
-
-              <button
-                onClick={() => setAutoReplay(!autoReplay)}
-                className={`px-3 py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer flex items-center gap-1 ${
-                  autoReplay 
-                    ? 'bg-amber-100 border-amber-300 text-amber-900 shadow-inner' 
-                    : 'bg-slate-100 border-slate-200 text-slate-700 hover:bg-slate-200'
-                }`}
-                title="数秒ごとに自動でエフェクトを繰り返し再生"
-              >
-                <Play size={13} className={autoReplay ? 'fill-amber-600 text-amber-600' : ''} />
-                <span>{autoReplay ? '自動ループ中' : '自動ループ'}</span>
-              </button>
-            </div>
+            <span className="text-xs text-slate-500 font-medium">
+              余計な星・パーティクル・WebGLノイズ完全排除仕様
+            </span>
           </div>
 
-          {/* 7種類のエフェクト選択カード */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
-            {effectOptions.map((opt) => {
-              const isSelected = selectedEffect === opt.id;
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+            {speedOptions.map((opt) => {
+              const isSelected = speed === opt.id;
               return (
                 <button
                   key={opt.id}
-                  onClick={() => {
-                    setSelectedEffect(opt.id);
-                    setTriggerKey(prev => prev + 1);
-                  }}
-                  className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                  onClick={() => setSpeed(opt.id)}
+                  className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
                     isSelected
-                      ? 'bg-gradient-to-br from-indigo-50/90 via-emerald-50/30 to-teal-50/50 border-indigo-500 shadow-xs ring-2 ring-indigo-500/20'
-                      : 'bg-slate-50/70 border-slate-200 hover:bg-slate-100/80 hover:border-slate-300'
+                      ? 'bg-teal-50 border-teal-500 shadow-xs ring-2 ring-teal-500/20'
+                      : 'bg-slate-50/70 border-slate-200 hover:bg-slate-100'
                   }`}
                 >
-                  <div className="space-y-1">
-                    <div className="flex items-center justify-between gap-1">
-                      <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-                        <span>{opt.icon}</span>
-                        <span>{opt.label}</span>
-                      </span>
-                      {isSelected && <Check size={15} className="text-indigo-600 shrink-0" />}
-                    </div>
-                    <span className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                      opt.id === 'rainbow-to-emerald' 
-                        ? 'bg-gradient-to-r from-sky-100 via-pink-100 to-emerald-100 text-slate-900 border border-indigo-300 font-extrabold' 
-                        : opt.id === 'shine-sweep'
-                        ? 'bg-amber-100 text-amber-900 border border-amber-200'
-                        : 'bg-slate-200/80 text-slate-700'
-                    }`}>
-                      {opt.badge}
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-900">{opt.label}</span>
+                    <span className="text-[10px] font-mono font-bold text-teal-800 bg-white px-2 py-0.5 rounded border border-teal-200">
+                      {opt.duration}
                     </span>
-                    <p className="text-[11px] text-slate-600 leading-snug pt-1 line-clamp-2">
-                      {opt.description}
-                    </p>
                   </div>
+                  <p className="text-[11px] text-slate-600 leading-snug pt-1">
+                    {opt.description}
+                  </p>
                 </button>
               );
             })}
           </div>
-
-          {/* スピード調整 */}
-          <div className="flex items-center justify-between text-xs pt-2 border-t border-slate-100 flex-wrap gap-2">
-            <div className="flex items-center gap-2 text-slate-600">
-              <span className="font-bold">再生スピード:</span>
-              {(['slow', 'normal', 'fast'] as const).map((s) => (
-                <button
-                  key={s}
-                  onClick={() => {
-                    setSpeed(s);
-                    setTriggerKey(prev => prev + 1);
-                  }}
-                  className={`px-2.5 py-1 rounded-lg font-bold text-xs transition-all cursor-pointer ${
-                    speed === s
-                      ? 'bg-indigo-600 text-white shadow-2xs'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                  }`}
-                >
-                  {s === 'slow' ? 'ゆっくり' : s === 'normal' ? '標準' : 'クイック（高速）'}
-                </button>
-              ))}
-            </div>
-
-            <span className="text-[11px] text-slate-500">
-              ※下部の実物大ページ内で実際の見え方をご確認いただけます。
-            </span>
-          </div>
         </div>
 
         {/* ============================================================ */}
-        {/* 3. 実物大 プレビューキャンバス（実際のページ構成を完全再現） */}
+        {/* 3. 実物大 プレビューキャンバス */}
         {/* ============================================================ */}
         <div className="bg-white rounded-3xl border-2 border-slate-300/80 p-6 md:p-10 shadow-lg space-y-8 relative">
           
-          {/* プレビュー中バッジ */}
-          <div className="absolute top-4 right-4 bg-indigo-100 text-indigo-900 border border-indigo-200 text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-2xs">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>プレビュー表示中: {effectOptions.find(o => o.id === selectedEffect)?.label}</span>
-          </div>
-
           {/* ヘッダー演出エリア */}
           <div className="text-center space-y-4 pt-2">
             <div className="inline-flex items-center gap-2 bg-teal-50 px-4 py-1.5 rounded-full border border-teal-200 text-teal-800 text-[10px] font-bold uppercase tracking-[0.25em]">
@@ -256,18 +135,16 @@ export const ReunionEffectsPreviewPage: React.FC = () => {
               <span>✨ 奇跡の再会が叶いました！</span>
             </div>
 
-            {/* 宛名 ＆ エフェクト付き「再会おめでとうございます！」 */}
+            {/* 宛名 ＆ トップページ完全同一の虹色「再会おめでとうございます！」 */}
             <h1 className="text-2xl sm:text-3xl md:text-5xl font-serif text-slate-900 font-bold tracking-wider leading-relaxed flex flex-col items-center gap-2 text-center px-4 w-full">
               <span className="block whitespace-normal md:whitespace-nowrap font-serif font-bold text-slate-900">
                 芥川 健 様、
               </span>
               
-              {/* ✨ ここに選択中のエフェクトがリアルタイム反映されます ✨ */}
+              {/* ✨ トップページと完全同一の虹色グラデーション文字 ✨ */}
               <div className="py-2">
                 <ReunionEffectTitle
-                  effectType={selectedEffect}
                   speed={speed}
-                  triggerKey={triggerKey}
                   className="text-2xl sm:text-3xl md:text-5xl font-serif font-bold"
                 />
               </div>
