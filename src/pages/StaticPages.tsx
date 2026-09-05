@@ -176,67 +176,71 @@ export const PrivacyPage = () => (
   </div>
 );
 
+export const GuidelinesContent = () => (
+  <div className="space-y-6 text-brand-dark/90 text-[13px] leading-relaxed text-black font-sans">
+    <section className="space-y-2">
+      <h3 className="text-lg font-bold mb-3 border-b border-brand-border pb-2 text-black font-serif">1. 健全な再会のための基本方針</h3>
+      <p className="leading-relaxed text-xs text-black font-sans">
+        ReMEETsは、大切な思い出を共有する特定の当事者同士が再びつながるための場所です。メッセージやクイズの設定は、特定のお相手が懐かしく振り返り、心温まる再会ができる内容に限定してください。
+      </p>
+    </section>
+    <section className="space-y-2">
+      <h3 className="text-lg font-bold mb-3 border-b border-brand-border pb-2 text-black font-serif">2. 検索の仕組みとキーワードの工夫</h3>
+      <p className="leading-relaxed text-xs text-black font-sans">
+        本サービスでは、お探しの当事者が自分宛ての手紙を「名前・ゆかりの地域・年代・エピソード」などで検索（エゴサーチ等）することで発見されます。<br />
+        投函する際は、お相手が検索しやすいよう共通の思い出の場所やニックネーム、年代などの「手がかりキーワード」を分かりやすく設定してください。
+      </p>
+    </section>
+    <section className="space-y-2">
+      <h3 className="text-lg font-bold mb-3 border-b border-brand-border pb-2 text-black font-serif">3. 禁止される投稿内容</h3>
+      <ul className="list-disc pl-5 space-y-1.5 text-xs text-black leading-relaxed font-sans">
+        <li><strong>過剰な個人情報の直書き制限:</strong> 電話番号や詳細な自宅住所、他人の実名や連絡先を無断で全公開で直接掲載することは禁止されています。お互いしか知り得ないエピソードや「思い出クイズ」を活用してください。</li>
+        <li><strong>他者への誹謗中傷・嫌がらせ:</strong> 特定の個人を侮辱・批判したり、プライバシーを侵害するおそれのある投稿は固く禁止します。</li>
+        <li><strong>ストーカー行為・一方的な付きまとい:</strong> 相手が恐怖や嫌悪感を抱くような執拗な表現、または一方的な恋愛感情の押し付けなどはAI判定及び目視で即座に検知され、非公開化・削除の対象となります。</li>
+        <li><strong>性的、暴力的な表現・商業スパム:</strong> 公序良俗に反するテキストやビジネス・勧誘目的の投稿。</li>
+      </ul>
+    </section>
+    <section className="space-y-2">
+      <h3 className="text-lg font-bold mb-3 border-b border-brand-border pb-2 text-black font-serif">4. リアルタイムAI自動診断と二重防御安全システム</h3>
+      <p className="leading-relaxed text-xs text-black font-sans">
+        ボトルメールが投函・更新された際、システム内部のNGワードフィルターに加え、高度なAI（Google Gemini）による文脈診断が自動実行されます。<br />
+        ストーカー行為の兆候、個人情報の過度な露出、脅迫や誹謗中傷と判定された投稿は、第三者の目に触れる前に<strong>自動的に非公開（隔離）</strong>され、管理者へ緊急通報が行われます。安心・安全な再会の場を守るため、事前のAI安全検査にご理解とご協力をお願いいたします。
+      </p>
+    </section>
+    <section className="space-y-2">
+      <h3 className="text-lg font-bold mb-3 border-b border-brand-border pb-2 text-black font-serif">5. 奇跡の再会報告（体験談）の投稿基準</h3>
+      <p className="leading-relaxed text-xs text-black font-sans">
+        再会が成立した際の体験談をご投稿いただく場合、以下の点にご配慮をお願いいたします。<br />
+        ・お相手の実名、電話番号、現在のお勤め先や詳細な居住地等の個人情報は含めず、当時の思い出や再会の喜びを中心にご記載ください。<br />
+        ・投稿いただいた内容は、管理者がプライバシー配慮および安全基準に基づき確認・匿名化を実施した上で掲載されます。
+      </p>
+    </section>
+    <section className="space-y-2">
+      <h3 className="text-lg font-bold mb-3 border-b border-brand-border pb-2 text-black font-serif">6. 手紙開通・連絡先開示における公的本人確認 (eKYC) の真正性</h3>
+      <p className="leading-relaxed text-xs text-black font-sans">
+        お相手との手紙開通・連絡先引き渡し時においては、なりすましや不正利用を防止するため、公的身分証明書（運転免許証、マイナンバーカード等）による生体顔照合およびOCR照合（eKYC）を実施しています。<br />
+        身分証画像は専門機関で瞬時に照合され、自社サーバーには保存されない「ゼロデータリテンション（非保持）」モデルを採用しており、高い安全性とプライバシー保護を両立しています。
+      </p>
+    </section>
+    <div className="pt-4 border-t border-brand-border/60 text-right text-[11px] text-neutral-500 font-mono space-y-1">
+      <div>制定日・施行日：2026年8月15日（本番サービス運用開始日）</div>
+      <div>最終改定日：2026年8月24日（公的本人確認eKYC生体照合および監査手順の明記・改訂）</div>
+    </div>
+  </div>
+);
+
 export const GuidelinesPage = () => (
   <div className="max-w-4xl mx-auto px-6 py-12 font-sans text-black">
     <BackToHomeButton />
-    <div className="glass-card p-8 md:p-16 bg-white rounded-3xl border border-brand-border shadow-sm">
+    <div className="glass-card p-8 md:p-16 text-black font-sans">
       <PageHeader
-        icon={<Sparkles size={24} className="text-amber-600" />}
-        iconBoxClassName="bg-amber-50 text-amber-600 border border-amber-100"
+        icon={<Sparkles size={24} className="text-slate-600" />}
+        iconBoxClassName="bg-slate-100 text-slate-600 border border-slate-200"
         category="Community Guidelines"
         title="投稿ガイドライン"
         description="すべての方が温かく安全に思い出と向き合えるためのルールとポリシーです。"
       />
-      <div className="space-y-6 text-brand-dark/90 leading-relaxed text-sm font-sans text-black">
-        <section className="space-y-3">
-          <h3 className="text-lg font-bold border-b border-brand-border pb-2 text-black">1. 健全な再会のための基本方針</h3>
-          <p>
-            ReMEETsは、大切な思い出を共有する特定の当事者同士が再びつながるための場所です。メッセージやクイズの設定は、特定のお相手が懐かしく振り返り、心温まる再会ができる内容に限定してください。
-          </p>
-        </section>
-        <section className="space-y-3">
-          <h3 className="text-lg font-bold border-b border-brand-border pb-2 text-black">2. 検索の仕組みとキーワードの工夫</h3>
-          <p>
-            本サービスでは、お探しの当事者が自分宛ての手紙を「名前・ゆかりの地域・年代・エピソード」などで検索（エゴサーチ等）することで発見されます。<br />
-            投函する際は、お相手が検索しやすいよう共通の思い出の場所やニックネーム、年代などの「手がかりキーワード」を分かりやすく設定してください。
-          </p>
-        </section>
-        <section className="space-y-3">
-          <h3 className="text-lg font-bold border-b border-brand-border pb-2 text-black">3. 禁止される投稿内容</h3>
-          <ul className="list-disc pl-5 space-y-1.5 text-black/80">
-            <li><strong>過剰な個人情報の直書き制限:</strong> 電話番号や詳細な自宅住所、他人の実名や連絡先を無断で全公開で直接掲載することは禁止されています。お互いしか知り得ないエピソードや「思い出クイズ」を活用してください。</li>
-            <li><strong>他者への誹謗中傷・嫌がらせ:</strong> 特定の個人を侮辱・批判したり、プライバシーを侵害するおそれのある投稿は固く禁止します。</li>
-            <li><strong>ストーカー行為・一方的な付きまとい:</strong> 相手が恐怖や嫌悪感を抱くような執拗な表現、または一方的な恋愛感情の押し付けなどはAI判定及び目視で即座に検知され、非公開化・削除の対象となります。</li>
-            <li><strong>性的、暴力的な表現・商業スパム:</strong> 公序良俗に反するテキストやビジネス・勧誘目的の投稿。</li>
-          </ul>
-        </section>
-        <section className="space-y-3">
-          <h3 className="text-lg font-bold border-b border-brand-border pb-2 text-black">4. リアルタイムAI自動診断と二重防御安全システム</h3>
-          <p>
-            ボトルメールが投函・更新された際、システム内部のNGワードフィルターに加え、高度なAI（Google Gemini）による文脈診断が自動実行されます。<br />
-            ストーカー行為の兆候、個人情報の過度な露出、脅迫や誹謗中傷と判定された投稿は、第三者の目に触れる前に<strong>自動的に非公開（隔離）</strong>され、管理者へ緊急通報が行われます。安心・安全な再会の場を守るため、事前のAI安全検査にご理解とご協力をお願いいたします。
-          </p>
-        </section>
-        <section className="space-y-3">
-          <h3 className="text-lg font-bold border-b border-brand-border pb-2 text-black">5. 奇跡の再会報告（体験談）の投稿基準</h3>
-          <p>
-            再会が成立した際の体験談をご投稿いただく場合、以下の点にご配慮をお願いいたします。<br />
-            ・お相手の実名、電話番号、現在のお勤め先や詳細な居住地等の個人情報は含めず、当時の思い出や再会の喜びを中心にご記載ください。<br />
-            ・投稿いただいた内容は、管理者がプライバシー配慮および安全基準に基づき確認・匿名化を実施した上で掲載されます。
-          </p>
-        </section>
-        <section className="space-y-3">
-          <h3 className="text-lg font-bold border-b border-brand-border pb-2 text-black">6. 手紙開通・連絡先開示における公的本人確認 (eKYC) の真正性</h3>
-          <p>
-            お相手との手紙開通・連絡先引き渡し時においては、なりすましや不正利用を防止するため、公的身分証明書（運転免許証、マイナンバーカード等）による生体顔照合およびOCR照合（eKYC）を実施しています。<br />
-            身分証画像は専門機関で瞬時に照合され、自社サーバーには保存されない「ゼロデータリテンション（非保持）」モデルを採用しており、高い安全性とプライバシー保護を両立しています。
-          </p>
-        </section>
-        <div className="pt-4 border-t border-brand-border/60 text-right text-[11px] text-neutral-500 font-mono space-y-1">
-          <div>制定日・施行日：2026年8月15日（本番サービス運用開始日）</div>
-          <div>最終改定日：2026年8月24日（公的本人確認eKYC生体照合および監査手順の明記・改訂）</div>
-        </div>
-      </div>
+      <GuidelinesContent />
     </div>
   </div>
 );
