@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  AlertTriangle, ArrowRight, BookOpen, Check, Coffee, Copy, CreditCard,
+  AlertTriangle, ArrowLeft, ArrowRight, BookOpen, Check, Coffee, Copy, CreditCard,
   HeartHandshake, LogIn, LogOut, Mail, Menu, Search, Send, Shield,
   ShieldCheck, Sparkles, User as UserIcon, X, Heart, MapPin, Plus,
   ChevronDown, ChevronUp, Bell, Settings, Shield as ShieldIcon, HelpCircle
