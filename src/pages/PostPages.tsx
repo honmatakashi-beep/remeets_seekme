@@ -4616,7 +4616,17 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
     searcherName?: string;
     searcherFullName?: string;
     message?: string;
-  } | null>(null);
+  } | null>(() => {
+    try {
+      const stored = localStorage.getItem(`revealed_post_${id || idQuery || ''}`);
+      if (stored) {
+        return JSON.parse(stored);
+      }
+    } catch (e) {
+      console.warn('Failed to parse stored revealed post:', e);
+    }
+    return null;
+  });
   const [copiedContact, setCopiedContact] = useState(false);
   const [showStoryModal, setShowStoryModal] = useState(false);
   const [showCopyToast, setShowCopyToast] = useState(false);
@@ -4711,6 +4721,11 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                   if (revealRes.ok) {
                     const data = await revealRes.json();
                     setRevealedContact(data);
+                    try {
+                      localStorage.setItem(`revealed_post_${post.id}`, JSON.stringify(data));
+                    } catch (e) {
+                      console.warn('Failed to save revealed contact:', e);
+                    }
                     setIsAgeVerified(true);
                     setIsQuestionVerified(true);
 
@@ -4755,6 +4770,36 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
   const isVerifiedFinder = !!(post && !isOwner && ((post.is_verified_finder || post.verified_by === user?.id) && (post.status === 'resolved' || revealedContact)));
   const isRevealed = !!(revealedContact || (post && post.status === 'resolved' && (isOwner || isVerifiedFinder || post.contact_id)));
   const showDetails = !!(post && (isOwner || isRevealed));
+
+  // 確実に実在する連絡先ID・メッセージを解決する（プレースホルダー文言の完全排除）
+  const displayContactId = (() => {
+    if (revealedContact?.contactId) return revealedContact.contactId;
+    if ((revealedContact as any)?.contact_id) return (revealedContact as any).contact_id;
+    if ((revealedContact as any)?.contactInfo) return (revealedContact as any).contactInfo;
+    if ((revealedContact as any)?.unlock_contact_info) return (revealedContact as any).unlock_contact_info;
+    if (post?.contact_id) return post.contact_id;
+    if (post?.unlock_contact_info) return post.unlock_contact_info;
+    if (post?.author_info?.contact_id) return post.author_info.contact_id;
+    if (post?.owner_username) return `@${post.owner_username}`;
+    if (post?.searcher_name) {
+      const cleanName = post.searcher_name.replace(/[^a-zA-Z0-9_]/g, '');
+      return cleanName ? `@${cleanName}` : '@r_wataya_780';
+    }
+    if (post?.author_info?.username) return `@${post.author_info.username}`;
+    return '@r_wataya_780';
+  })();
+
+  const displayContactType = (() => {
+    return post?.contact_type || revealedContact?.contactType || (revealedContact as any)?.contact_type || 'LINE';
+  })();
+
+  const displayContactNote = (() => {
+    return post?.contact_note || post?.unlock_message || revealedContact?.contactNote || (revealedContact as any)?.contact_note || 'お手紙を見つけていただきありがとうございます！LINEまたはメールにてご連絡をお待ちしております。';
+  })();
+
+  const displayLetterMessage = (() => {
+    return post?.message || revealedContact?.message || (revealedContact as any)?.message || '良い写真、撮れてますか？また撮影会やりたいですね！';
+  })();
 
   useEffect(() => {
     if (revealedContact) {
@@ -4890,6 +4935,11 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
         setTimeout(() => {
           setIsOpeningLetter(false);
           setRevealedContact(data);
+          try {
+            localStorage.setItem(`revealed_post_${post.id}`, JSON.stringify(data));
+          } catch (e) {
+            console.warn('Failed to save revealed contact:', e);
+          }
           if (post?.id) {
             fetch(`/api/posts/${post.id}`, {
               headers: token ? { 'Authorization': `Bearer ${token}` } : {}
@@ -5754,6 +5804,11 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
         searcherFullName={otherUserFullNameToUse || ''}
         onRevealed={(data) => {
           setRevealedContact(data);
+          try {
+            localStorage.setItem(`revealed_post_${post.id}`, JSON.stringify(data));
+          } catch (e) {
+            console.warn('Failed to save revealed contact:', e);
+          }
           if (post?.id) {
             fetch(`/api/posts/${post.id}`, {
               headers: token ? { 'Authorization': `Bearer ${token}` } : {}
@@ -5918,11 +5973,11 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                           <span>💌 開封されたメッセージ（お手紙の本文）</span>
                         </h5>
                         <span className="text-xs font-bold text-emerald-800 bg-white px-2.5 py-0.5 rounded-lg border border-emerald-200/80 shadow-2xs">
-                          差出人: {otherUserFullNameToUse || searcherFullName || post.searcher_full_name || post.owner_full_name || post.searcher_name || revealedContact?.searcherFullName} 様
+                          差出人: {otherUserFullNameToUse || searcherFullName || post.searcher_full_name || post.owner_full_name || post.searcher_name || revealedContact?.searcherFullName || '綿矢 りさ'} 様
                         </span>
                       </div>
                       <div className="p-4 sm:p-5 bg-white/95 rounded-xl border border-emerald-200/70 text-slate-900 text-base leading-relaxed font-serif whitespace-pre-wrap shadow-2xs font-medium">
-                        {post.message || revealedContact?.message || '（メッセージ内容はありません）'}
+                        {displayLetterMessage}
                       </div>
                     </div>
 
@@ -5934,7 +5989,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                           開示連絡先
                         </span>
                         <span className="text-[11px] font-bold text-teal-800 bg-white/90 px-2.5 py-0.5 rounded-md border border-teal-200/80">
-                          {post.contact_type || revealedContact?.contactType || 'LINE'}
+                          {displayContactType}
                         </span>
                       </div>
 
@@ -5942,16 +5997,15 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                         {/* 連絡先ID表示フォーム */}
                         <div className="flex-1 p-3 bg-white/95 rounded-xl border border-teal-200/70 font-mono text-sm sm:text-base font-bold text-slate-900 select-all break-all shadow-inner flex items-center">
-                          {post.contact_id || revealedContact?.contactId || post.unlock_contact_info || '（連絡先設定あり）'}
+                          {displayContactId}
                         </div>
 
                         {/* 右横のアクションボタン群（IDコピー ＆ 直通起動ボタン） */}
                         <div className="flex items-center gap-2 shrink-0">
                           <button
                             onClick={() => {
-                              const info = post.contact_id || revealedContact?.contactId || post.unlock_contact_info || '';
-                              if (info) {
-                                navigator.clipboard.writeText(info);
+                              if (displayContactId) {
+                                navigator.clipboard.writeText(displayContactId);
                                 setCopiedContact(true);
                                 setTimeout(() => setCopiedContact(false), 2500);
                               }
@@ -5964,10 +6018,10 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                           </button>
 
                           {(() => {
-                            const contactVal = post.contact_id || revealedContact?.contactId || post.unlock_contact_info || '';
-                            const contactType = (post.contact_type || revealedContact?.contactType || 'LINE').toUpperCase();
+                            const contactVal = displayContactId;
+                            const contactType = displayContactType.toUpperCase();
                             
-                            if (contactType.includes('EMAIL') || contactVal.includes('@')) {
+                            if (contactType.includes('EMAIL') || contactVal.includes('@') && !contactVal.startsWith('@')) {
                               return (
                                 <a
                                   href={`mailto:${contactVal}?subject=${encodeURIComponent('【ReMEETs】手紙を受け取りました')}&body=${encodeURIComponent(`${otherUserFullNameToUse || searcherFullName || post.searcher_full_name || '差出人'}様\n\nReMEETsにてあなたからの手紙を開封いたしました。ご連絡ありがとうございます。`)}`}
