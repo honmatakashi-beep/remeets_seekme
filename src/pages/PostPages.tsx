@@ -3882,15 +3882,34 @@ export const RevealContactModal = ({
             </div>
           ) : (
             /* 💳 決済フォーム画面 */
-            <>
-              <div className="text-center space-y-2 pt-1 pb-1">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-800 text-xs font-bold border border-teal-200/80 shadow-2xs font-sans">
-                  <ShieldCheck size={14} className="text-teal-600 shrink-0" />
-                  <span>安全なお支払い（Stripe暗号化決済）</span>
+            <div className="space-y-4">
+              {/* ① 上部: 手紙開封対象 ＆ お支払い金額サマリー枠 */}
+              <div className="p-4 sm:p-5 bg-gradient-to-br from-teal-50/80 via-emerald-50/50 to-slate-50 rounded-2xl border border-teal-200/90 text-left space-y-3 shadow-2xs font-sans">
+                <div className="flex items-center justify-between gap-2 border-b border-teal-200/70 pb-2.5 flex-wrap">
+                  <div className="flex items-center gap-2">
+                    <span className="w-8 h-8 rounded-xl bg-teal-700 text-white flex items-center justify-center font-bold text-sm shadow-2xs font-serif">
+                      ✉️
+                    </span>
+                    <div>
+                      <span className="text-[10px] text-teal-800 font-bold uppercase tracking-wider block">手紙開封手続き</span>
+                      <h3 className="text-base sm:text-lg font-bold font-serif text-slate-900">
+                        【{searcherName || '差出人'}】さんからの手紙を開封する
+                      </h3>
+                    </div>
+                  </div>
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white text-teal-800 text-[11px] font-bold border border-teal-200/80 shadow-2xs font-sans">
+                    <ShieldCheck size={13} className="text-teal-600 shrink-0" />
+                    <span>Stripe暗号化決済</span>
+                  </div>
                 </div>
-                <h3 className="text-xl sm:text-2xl font-bold font-serif text-slate-900 pt-0.5">
-                  【{searcherName || '差出人'}】さんからの手紙を開封する
-                </h3>
+
+                {/* お支払い金額 */}
+                <div className="flex items-center justify-between gap-2 bg-white/95 p-3 sm:p-3.5 rounded-xl border border-teal-100/90 text-xs shadow-2xs flex-wrap">
+                  <span className="text-slate-600 font-bold">お支払い金額:</span>
+                  <span className="text-sm sm:text-base font-bold text-slate-900 font-serif">
+                    手紙開示・接続手数料: <strong className="text-teal-800 text-base sm:text-lg font-extrabold font-mono">600</strong> 円<span className="text-xs text-slate-500 font-sans ml-1">（税込・買い切り）</span>
+                  </span>
+                </div>
               </div>
 
               {errorMessage && (
@@ -3900,20 +3919,34 @@ export const RevealContactModal = ({
                 </div>
               )}
 
-              <form onSubmit={handleRevealSubmit} className="space-y-5">
-                {/* 開封手数料 Stripeカード入力 */}
-                <CreditCardPaymentForm
-                  cardNumber={payCardNumber}
-                  cardExpiry={payCardExpiry}
-                  cardCvc={payCardCvc}
-                  onCardNumberChange={handleCardNumberChange}
-                  onCardExpiryChange={setPayCardExpiry}
-                  onCardCvcChange={setPayCardCvc}
-                  amountText="手紙開示・接続手数料: 600 円（税込・買い切り）"
-                  showDemoButton={true}
-                  onDemoFill={fillTestCard}
-                  refundGuaranteeText="お相手との連絡先開示手続きは、Stripe暗号化通信により安全に保護されます。"
-                />
+              <form onSubmit={handleRevealSubmit} className="space-y-4">
+                {/* ② 下部: クレジットカード決済入力枠 */}
+                <div className="p-4 sm:p-5 bg-white rounded-2xl border border-slate-200 shadow-2xs space-y-4 text-left font-sans">
+                  <div className="flex items-center justify-between gap-2 border-b border-slate-200/80 pb-2">
+                    <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                      <Lock size={14} className="text-teal-700" />
+                      <span>クレジットカード情報の入力</span>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={fillTestCard}
+                      className="text-[10px] bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-700 px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer font-sans shadow-2xs active:scale-95"
+                    >
+                      ⚡ テスト情報自動入力
+                    </button>
+                  </div>
+
+                  <CreditCardPaymentForm
+                    cardNumber={payCardNumber}
+                    cardExpiry={payCardExpiry}
+                    cardCvc={payCardCvc}
+                    onCardNumberChange={handleCardNumberChange}
+                    onCardExpiryChange={setPayCardExpiry}
+                    onCardCvcChange={setPayCardCvc}
+                    showDemoButton={false}
+                    refundGuaranteeText="お相手との連絡先開示手続きは、Stripe暗号化通信により安全に保護されます。"
+                  />
+                </div>
 
                 <button 
                   type="submit"
@@ -3925,7 +3958,7 @@ export const RevealContactModal = ({
                   <ArrowRight size={16} />
                 </button>
               </form>
-            </>
+            </div>
           )}
         </motion.div>
       </div>
