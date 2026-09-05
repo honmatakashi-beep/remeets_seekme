@@ -22,8 +22,7 @@ import {
   FileCheck, ArrowUpRight, Cpu
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { cn, PageHeader, getPostUrl, formatEraLabel, getCategoryText, PREFECTURES } from '../lib/utils';
-import { BottleLoader, WarningMessage, Navbar } from '../components/SharedComponents';
+import { BottleLoader, WarningMessage, Navbar, BackToHomeButton } from '../components/SharedComponents';
 import { SupportModal } from '../components/SupportModal';
 import { ManualGeneralSection, ManualMainSection, ManualModerationSection, ManualSystemSection, ManualSecuritySection } from '../components/AdminManualSections';
 import { GoogleEvaluationMemoTab } from '../components/GoogleEvaluationMemoTab';
@@ -14383,8 +14382,9 @@ export const AdminDashboard = () => {
 // --- Main App ---
 
 export const AdminInfoPage = () => (
-  <div className="min-h-screen bg-white pt-20 pb-20 transition-colors duration-300">
-    <div className="max-w-3xl mx-auto px-6">
+  <div className="min-h-screen bg-white pt-16 pb-20 transition-colors duration-300">
+    <div className="max-w-4xl mx-auto px-6">
+      <BackToHomeButton />
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -14484,8 +14484,9 @@ export const SitemapPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white pt-24 pb-20 font-serif">
-      <div className="max-w-5xl mx-auto px-6">
+    <div className="min-h-screen bg-white pt-16 pb-20 font-serif">
+      <div className="max-w-4xl mx-auto px-6">
+        <BackToHomeButton />
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -14583,10 +14584,7 @@ export const ContactPage = () => {
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-12 font-sans text-black">
-      <Link to="/" className="inline-flex items-center gap-2 text-sm opacity-60 hover:opacity-100 mb-6 font-sans text-black">
-        <ArrowLeft size={16} />
-        <span>トップへ戻る</span>
-      </Link>
+      <BackToHomeButton />
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

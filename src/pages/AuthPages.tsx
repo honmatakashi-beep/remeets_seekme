@@ -11,8 +11,7 @@ import {
 import { useAuth } from '../contexts/AuthContext';
 import { useNgFilter } from '../contexts/AuthContext';
 import { cn, PageHeader } from '../lib/utils';
-import { TermsContent, PrivacyContent } from './StaticPages';
-import { WarningMessage, BottleLoader, GoogleSearchResultPreview } from '../components/SharedComponents';
+import { WarningMessage, BottleLoader, GoogleSearchResultPreview, BackToHomeButton } from '../components/SharedComponents';
 
 // --- LoginPage Component ---
 
@@ -53,7 +52,8 @@ export const LoginPage = () => {
   };
 
   return (
-    <div className="max-w-xl mx-auto px-6 py-12 md:py-24 animate-fade-in">
+    <div className="max-w-xl mx-auto px-6 py-8 md:py-16 animate-fade-in">
+      <BackToHomeButton className="mb-4" />
       <PageHeader
         icon={<LogIn size={24} />}
         category="Sign In"
@@ -268,6 +268,7 @@ export const RegisterPage = () => {
 
   return (
     <div className="max-w-md mx-auto px-6 py-4 md:py-8">
+      <BackToHomeButton className="mb-4" />
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -672,7 +673,10 @@ export const VerifyEmailPage = () => {
   }, [token]);
 
   return (
-    <div className="max-w-md mx-auto px-6 py-20 text-center">
+    <div className="max-w-md mx-auto px-6 py-12 text-center">
+      <div className="text-left mb-4">
+        <BackToHomeButton className="mb-0" />
+      </div>
       <motion.div 
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -731,7 +735,8 @@ export const ForgotPasswordPage = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto px-6 py-20">
+    <div className="max-w-md mx-auto px-6 py-12">
+      <BackToHomeButton className="mb-4" />
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -807,7 +812,8 @@ export const ResetPasswordPage = () => {
   if (!token) return <Navigate to="/" />;
 
   return (
-    <div className="max-w-md mx-auto px-6 py-20">
+    <div className="max-w-md mx-auto px-6 py-12">
+      <BackToHomeButton className="mb-4" />
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

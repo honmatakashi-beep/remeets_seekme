@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, ShieldCheck, Sparkles, Award, Coffee, HelpCircle, ArrowRight, ArrowLeft, CheckCircle2, Lock, Anchor, MessageCircle } from 'lucide-react';
 import { SupportModal } from './SupportModal';
+import { BackToHomeButton } from './SharedComponents';
 import supporterTwilightCool from '../assets/images/supporter_twilight_cool_1785860735348.jpg';
 
 export const SupporterPage: React.FC = () => {
@@ -11,13 +12,7 @@ export const SupporterPage: React.FC = () => {
     <div className="min-h-screen bg-slate-50/50 font-sans text-slate-800 pb-20">
       {/* 上部ナビゲーション: トップへ戻る */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-6 pb-2">
-        <Link 
-          to="/" 
-          className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-900 font-sans transition-colors group cursor-pointer"
-        >
-          <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
-          <span>トップへ戻る</span>
-        </Link>
+        <BackToHomeButton className="mb-0" />
       </div>
 
       {/* ヒーローセクション（中央配置イラスト＆左右・上下ソフトグラデーション） */}

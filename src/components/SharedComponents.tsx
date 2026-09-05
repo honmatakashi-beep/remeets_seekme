@@ -641,3 +641,15 @@ export const GoogleSearchResultPreview = ({ targetName, era, location, searcherN
   );
 };
 
+export const BackToHomeButton = ({ className = "mb-6" }: { className?: string }) => {
+  return (
+    <Link 
+      to="/" 
+      className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/90 hover:bg-white border border-slate-200/90 hover:border-slate-300 text-slate-700 hover:text-brand-dark text-xs font-bold font-sans transition-all shadow-2xs group cursor-pointer w-fit ${className}`}
+    >
+      <ArrowLeft size={14} className="text-slate-500 group-hover:-translate-x-0.5 transition-transform" />
+      <span>トップへ戻る</span>
+    </Link>
+  );
+};
+

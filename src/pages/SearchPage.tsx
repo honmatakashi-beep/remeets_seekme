@@ -7,8 +7,7 @@ import {
   AlertCircle, ArrowLeft, ArrowRight, Shield
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { cn, PageHeader, getPostUrl, formatEraLabel, getCategoryText, PREFECTURES } from '../lib/utils';
-import { BottleLoader, GoogleSearchResultPreview } from '../components/SharedComponents';
+import { BottleLoader, GoogleSearchResultPreview, BackToHomeButton } from '../components/SharedComponents';
 import searchEmptySea from '../assets/images/search_empty_sea_1785869230086.jpg';
 
 export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) => {
@@ -155,6 +154,7 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 md:py-12 space-y-6 md:space-y-8 animate-fade-in font-sans text-black">
+      <BackToHomeButton className="mb-2" />
       {searchParams.get('alert_verified') === 'true' && (
         <div className="bg-green-50 border border-green-200 p-4 sm:p-6 rounded-2xl sm:rounded-3xl text-sm text-green-800 space-y-2 animate-fade-in">
           <div className="flex items-center gap-2 font-bold text-sm sm:text-base">

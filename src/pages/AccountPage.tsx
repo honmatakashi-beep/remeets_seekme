@@ -10,8 +10,7 @@ import {
   MessageCircle, Key, Plus, Zap
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { cn, PageHeader, formatEraLabel, getCategoryText, getPostUrl, PREFECTURES } from '../lib/utils';
-import { BottleLoader, WarningMessage } from '../components/SharedComponents';
+import { BottleLoader, WarningMessage, BackToHomeButton } from '../components/SharedComponents';
 import { SuccessStoryModal } from './SearchPage';
 import { DocumentCameraOverlay, stopAllGlobalCameraStreams } from '../components/DocumentCameraOverlay';
 import { EkycProgressTelemetryPanel } from '../components/EkycProgressTelemetryPanel';
@@ -871,6 +870,7 @@ export const AccountPage = () => {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 md:py-12 space-y-6 md:space-y-8 text-black font-sans">
+      <BackToHomeButton className="mb-2" />
       {/* Account Header Section */}
       <PageHeader
         icon={<UserIcon size={24} className="text-sky-600" />}

@@ -17,8 +17,7 @@ import {
 import { useAuth } from '../contexts/AuthContext';
 import { useConfirm } from '../contexts/AuthContext';
 import { useNgFilter } from '../contexts/AuthContext';
-import { cn, PageHeader, formatEraLabel, getCategoryText, getPostUrl, PREFECTURES } from '../lib/utils';
-import { BottleLoader, WarningMessage, ProtectedRoute, GoogleSearchResultPreview } from '../components/SharedComponents';
+import { BottleLoader, WarningMessage, ProtectedRoute, GoogleSearchResultPreview, BackToHomeButton } from '../components/SharedComponents';
 import { DocumentCameraOverlay, stopAllGlobalCameraStreams } from '../components/DocumentCameraOverlay';
 import { QuizMatchingAnalyticsView } from '../components/QuizMatchingAnalyticsView';
 import { SupportModal } from '../components/SupportModal';
@@ -265,24 +264,25 @@ export const EditPostPage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-brand-bg pt-24 pb-20 px-4">
-      <div className="max-w-3xl mx-auto">
+    <div className="min-h-screen bg-brand-bg pt-16 pb-20 px-4">
+      <div className="max-w-4xl mx-auto">
+        <BackToHomeButton />
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="glass-card p-8 md:p-12 border-brand-primary/10"
         >
           <div className="flex items-center justify-between mb-8">
-            <button onClick={() => navigate('/account')} className="flex items-center gap-2 text-brand-dark/60 hover:text-brand-primary transition-colors">
-              <ChevronLeft size={20} />
-              <span>マイページへ戻る</span>
+            <button onClick={() => navigate('/account')} className="flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-slate-900 transition-colors">
+              <ChevronLeft size={16} />
+              <span>マイアカウントへ戻る</span>
             </button>
             <button 
               onClick={handleDelete}
               disabled={isDeleting}
-              className="text-red-500 hover:text-red-600 transition-colors flex items-center gap-2 text-sm font-bold"
+              className="text-red-500 hover:text-red-600 transition-colors flex items-center gap-2 text-xs font-bold"
             >
-              <Trash2 size={16} />
+              <Trash2 size={15} />
               {isDeleting ? '削除中...' : 'このボトルを削除'}
             </button>
           </div>
@@ -1728,6 +1728,7 @@ export const CreatePostPage = () => {
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-12 md:py-24">
+      <BackToHomeButton className="mb-4" />
       <div className="mb-12 space-y-4">
         <PageHeader
           icon={<Send size={24} className="text-indigo-600" />}
@@ -1747,9 +1748,6 @@ export const CreatePostPage = () => {
         <div className="bg-gradient-to-r from-sky-50/90 via-teal-50/80 to-indigo-50/90 backdrop-blur-md p-5 md:p-6 rounded-3xl border border-teal-500/20 shadow-md space-y-4 mb-8">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2.5">
-              <Link to="/" className="w-9 h-9 rounded-full bg-white/90 border border-slate-200 flex items-center justify-center text-slate-600 hover:text-indigo-600 hover:bg-white hover:border-indigo-200 transition-all shadow-2xs shrink-0">
-                <ArrowLeft size={16} />
-              </Link>
               <div className="flex items-center gap-2">
                 <span className="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-black bg-indigo-600 text-white shadow-xs font-sans tracking-wide">
                   STEP {step + 1} / {steps.length}
@@ -5303,6 +5301,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 md:py-12">
+      <BackToHomeButton className="mb-2" />
       {/* 投函完了お知らせ画面・モーダル (投稿者向け: 大きく鮮明なイラストヘッダー付き特別カード) */}
       <AnimatePresence>
         {showPostedBanner && (

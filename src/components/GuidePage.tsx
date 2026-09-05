@@ -22,6 +22,7 @@ import {
   Coins
 } from 'lucide-react';
 import { GuideSampleInlineViewer, SampleSceneType } from './GuideSampleInlineViewer';
+import { BackToHomeButton } from './SharedComponents';
 import guideScene01Soft from '../assets/images/guide_scene_01_soft_1785858280085.jpg';
 import guideScene02Soft from '../assets/images/guide_scene_02_soft_1785858294880.jpg';
 import guideScene03Soft from '../assets/images/guide_scene_03_soft_1785858307849.jpg';
@@ -37,10 +38,7 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-12 text-black font-sans">
-      <Link to="/" className="inline-flex items-center gap-2 text-sm opacity-60 hover:opacity-100 mb-6 font-serif text-black">
-        <ArrowLeft size={16} />
-        <span>トップへ戻る</span>
-      </Link>
+      <BackToHomeButton />
       <div className="glass-card p-8 md:p-12 space-y-8 bg-white rounded-3xl border border-brand-border shadow-sm">
         {/* Header Section */}
         <div className="flex items-center gap-4 border-b border-brand-border pb-6">

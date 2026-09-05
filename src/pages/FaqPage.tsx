@@ -16,6 +16,7 @@ import {
   ArrowLeft
 } from 'lucide-react';
 import { PageHeader } from '../lib/utils';
+import { BackToHomeButton } from '../components/SharedComponents';
 
 interface FaqItem {
   id: string;
@@ -468,15 +469,8 @@ export const FaqPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 md:py-12">
-      {/* 🧭 Back Link */}
-      <Link
-        to="/"
-        className="inline-flex items-center gap-2 text-sm opacity-60 hover:opacity-100 mb-6 font-serif text-black transition-opacity"
-      >
-        <ArrowLeft size={16} />
-        <span>トップへ戻る</span>
-      </Link>
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 md:py-12 text-black font-sans">
+      <BackToHomeButton />
 
       {/* 🏛️ Standard Unified Glass Card */}
       <div className="glass-card p-6 sm:p-8 md:p-12 bg-white rounded-3xl border border-brand-border shadow-sm space-y-8">

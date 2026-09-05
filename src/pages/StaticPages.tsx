@@ -12,6 +12,7 @@ import { CreditCardPaymentForm } from '../components/CreditCardPaymentForm';
 import { motion } from 'framer-motion';
 import safetyGuardianCool from '../assets/images/safety_guardian_cool_1785864341331.jpg';
 import { PageHeader } from '../lib/utils';
+import { BackToHomeButton } from '../components/SharedComponents';
 
 export const TermsContent = () => (
   <div className="space-y-6 text-brand-dark/90 text-[13px] leading-relaxed text-black font-sans">
@@ -145,10 +146,7 @@ export const PrivacyContent = () => (
 
 export const TermsPage = () => (
   <div className="max-w-4xl mx-auto px-6 py-12 font-sans text-black">
-    <Link to="/" className="inline-flex items-center gap-2 text-sm opacity-60 hover:opacity-100 mb-6 font-sans text-black">
-      <ArrowLeft size={16} />
-      <span>トップへ戻る</span>
-    </Link>
+    <BackToHomeButton />
     <div className="glass-card p-8 md:p-16 text-black">
       <PageHeader
         icon={<FileText size={24} className="text-slate-600" />}
@@ -164,10 +162,7 @@ export const TermsPage = () => (
 
 export const PrivacyPage = () => (
   <div className="max-w-4xl mx-auto px-6 py-12 font-sans text-black">
-    <Link to="/" className="inline-flex items-center gap-2 text-sm opacity-60 hover:opacity-100 mb-6 font-sans text-black">
-      <ArrowLeft size={16} />
-      <span>トップへ戻る</span>
-    </Link>
+    <BackToHomeButton />
     <div className="glass-card p-8 md:p-16 text-black font-sans">
       <PageHeader
         icon={<ShieldCheck size={24} className="text-slate-600" />}
@@ -183,10 +178,7 @@ export const PrivacyPage = () => (
 
 export const GuidelinesPage = () => (
   <div className="max-w-4xl mx-auto px-6 py-12 font-sans text-black">
-    <Link to="/" className="inline-flex items-center gap-2 text-sm opacity-60 hover:opacity-100 mb-6 font-sans text-black">
-      <ArrowLeft size={16} />
-      <span>トップへ戻る</span>
-    </Link>
+    <BackToHomeButton />
     <div className="glass-card p-8 md:p-16 bg-white rounded-3xl border border-brand-border shadow-sm">
       <PageHeader
         icon={<Sparkles size={24} className="text-amber-600" />}
@@ -251,10 +243,7 @@ export const GuidelinesPage = () => (
 
 export const CompanyPage = () => (
   <div className="max-w-4xl mx-auto px-6 py-12 font-sans text-black animate-in fade-in duration-300">
-    <Link to="/" className="inline-flex items-center gap-2 text-sm opacity-60 hover:opacity-100 mb-6 font-sans text-black">
-      <ArrowLeft size={16} />
-      <span>トップへ戻る</span>
-    </Link>
+    <BackToHomeButton />
     <div className="glass-card p-8 md:p-16 bg-white rounded-3xl border border-brand-border shadow-sm space-y-8">
       <PageHeader
         icon={<Building2 size={24} className="text-slate-600" />}
@@ -555,11 +544,8 @@ export const PricingPage = () => {
   }, [location.hash, location.pathname]);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 md:px-6 py-12 md:py-20 font-sans text-slate-800 animate-in fade-in duration-300">
-      <Link to="/" className="inline-flex items-center gap-2 text-xs md:text-sm text-slate-500 hover:text-slate-800 transition-colors mb-6 font-serif">
-        <ArrowLeft size={16} />
-        <span>トップへ戻る</span>
-      </Link>
+    <div className="max-w-4xl mx-auto px-6 py-12 font-sans text-slate-800 animate-in fade-in duration-300">
+      <BackToHomeButton />
 
       <div className="glass-card p-6 md:p-12 bg-white rounded-3xl border border-slate-200/90 shadow-sm space-y-10">
         {/* 共通の PageHeader */}
@@ -954,10 +940,7 @@ export const PricingPage = () => {
 };
 export const SafetyPage = () => (
   <div className="max-w-4xl mx-auto px-6 py-12 md:py-24 text-black font-sans animate-in fade-in duration-300">
-    <Link to="/" className="inline-flex items-center gap-2 text-sm opacity-60 hover:opacity-100 mb-6 font-serif text-black">
-      <ArrowLeft size={16} />
-      <span>トップへ戻る</span>
-    </Link>
+    <BackToHomeButton />
     <div className="glass-card p-8 md:p-16 space-y-12 bg-white rounded-3xl border border-brand-border shadow-sm relative overflow-hidden">
       {/* 背景イラスト（上部に灯台を配置＆左右上下フェードグラデーション - 寒色トーン） */}
       <div className="absolute top-0 inset-x-0 flex justify-center items-start pointer-events-none overflow-hidden select-none z-0">
@@ -1173,10 +1156,7 @@ export const DeletionRequestPage = () => {
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-12 text-black font-sans">
-      <Link to="/" className="inline-flex items-center gap-2 text-sm opacity-60 hover:opacity-100 mb-6 font-sans text-black">
-        <ArrowLeft size={16} />
-        <span>トップへ戻る</span>
-      </Link>
+      <BackToHomeButton />
       <div className="glass-card p-8 md:p-16 space-y-8 bg-white rounded-3xl border border-brand-border shadow-sm">
         {/* ヘッダー */}
         <div className="flex items-start gap-4 border-b border-slate-150 pb-6">

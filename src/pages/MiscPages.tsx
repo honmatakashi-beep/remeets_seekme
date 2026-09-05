@@ -11,8 +11,7 @@ import {
   Sparkles, Trash2, Unlock, UserCheck, Users, Waves, X
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { cn, PageHeader, formatEraLabel } from '../lib/utils';
-import { BottleLoader } from '../components/SharedComponents';
+import { BottleLoader, BackToHomeButton } from '../components/SharedComponents';
 import guideScene01Soft from '../assets/images/guide_scene_01_soft_1785858280085.jpg';
 import guideScene02Soft from '../assets/images/guide_scene_02_soft_1785858294880.jpg';
 import guideScene03Soft from '../assets/images/guide_scene_03_soft_1785858307849.jpg';
@@ -179,16 +178,7 @@ export const SuccessStoriesPage = () => {
       {/* 成功ストーリー投稿モーダル */}
       <SuccessStoryModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
 
-      {/* 提案 ①: 最上部に「トップへ戻る」ナビゲーション */}
-      <div className="pt-2 pb-1">
-        <Link 
-          to="/" 
-          className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-900 font-sans transition-colors group cursor-pointer"
-        >
-          <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
-          <span>トップへ戻る</span>
-        </Link>
-      </div>
+      <BackToHomeButton className="mb-2" />
 
       {/* ページヘッダー */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -4592,10 +4582,7 @@ export const LocalInlineGuidePage = () => (
 
 export const ManualPage = () => (
   <div className="max-w-4xl mx-auto px-6 py-12 text-black font-sans">
-    <Link to="/" className="inline-flex items-center gap-2 text-sm opacity-60 hover:opacity-100 mb-6 font-serif text-black">
-      <ArrowLeft size={16} />
-      <span>トップへ戻る</span>
-    </Link>
+    <BackToHomeButton />
     <div className="glass-card p-8 md:p-12 space-y-8 bg-white rounded-3xl border border-brand-border shadow-sm">
       <div className="flex items-center gap-4 mb-8 border-b border-brand-border pb-6">
         <div className="w-12 h-12 rounded-2xl bg-brand-primary/10 flex items-center justify-center text-brand-primary shrink-0 shadow-sm">
