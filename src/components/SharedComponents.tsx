@@ -580,7 +580,7 @@ export const GoogleSearchResultPreview = ({ targetName, era, location, searcherN
   const title = `${targetName || '〇〇'} 様へ届いている思い出ボトル｜ReMEETs 再会のボトルメール`;
   const displayLocation = location ? (location.match(/.*?[都道府県]/)?.[0] || location) : 'ゆかりの地';
   const eraFormatted = formatEraLabel(era);
-  const snippet = `${eraFormatted}に${displayLocation}で出会った「${searcherName || '〇〇'}」様があなたを探しています。思い出の手がかり：${teaser || '秘密の合言葉に正解すると手紙が開封されます。'}`;
+  const snippet = `${eraFormatted}に${displayLocation}で出会った「${searcherName || '〇〇'}」様があなたを探しています。思い出の手がかり：${teaser || '思い出の質問に正解すると手紙が開封されます。'}`;
 
   return (
     <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm font-sans max-w-2xl overflow-hidden text-left my-2">

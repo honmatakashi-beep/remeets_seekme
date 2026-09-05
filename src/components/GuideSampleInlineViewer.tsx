@@ -81,7 +81,7 @@ export const GuideSampleInlineViewer: React.FC<GuideSampleInlineViewerProps> = (
         <h2 className="text-base sm:text-lg md:text-xl font-black font-serif text-white tracking-wide flex items-center justify-center gap-2">
           {activeScene === 1 && '【Scene 01 投稿サンプル】実際のボトルレター詳細画面'}
           {activeScene === 2 && '【Scene 02 検索サンプル】Google検索＆サイト内発見画面'}
-          {activeScene === 3 && '【Scene 03 照合サンプル】合言葉（秘密の質問）回答画面'}
+          {activeScene === 3 && '【Scene 03 照合サンプル】思い出の質問（秘密のクイズ）回答画面'}
           {activeScene === 4 && '【Scene 04 開封・開示サンプル】手紙開封・SNS連絡先開示画面'}
         </h2>
 
@@ -90,7 +90,7 @@ export const GuideSampleInlineViewer: React.FC<GuideSampleInlineViewerProps> = (
           {[
             { id: 1, label: '01 投稿画面' },
             { id: 2, label: '02 検索結果' },
-            { id: 3, label: '03 合言葉照合' },
+            { id: 3, label: '03 質問照合' },
             { id: 4, label: '04 連絡先開示' },
           ].map((tab) => (
             <button
@@ -168,13 +168,13 @@ export const GuideSampleInlineViewer: React.FC<GuideSampleInlineViewerProps> = (
               <div className="p-4 bg-amber-100/80 rounded-2xl border border-amber-300 space-y-2">
                 <div className="flex items-center gap-2 text-xs font-bold text-amber-950">
                   <Lock size={15} className="text-amber-700" />
-                  <span>合言葉（秘密の質問）設定済み</span>
+                  <span>思い出の質問（秘密のクイズ）設定済み</span>
                 </div>
                 <p className="text-xs md:text-sm text-amber-950 font-bold leading-snug">
                   Q: 「小学生の時に放課後一緒によく通っていた駄菓子屋の名前は？」
                 </p>
                 <p className="text-[11px] text-amber-800">
-                  ※二人だけしか知り得ない記憶の答え（合言葉）を入力して照合します。
+                  ※二人だけしか知り得ない記憶の答え（思い出の質問）を入力して照合します。
                 </p>
               </div>
 
@@ -182,7 +182,7 @@ export const GuideSampleInlineViewer: React.FC<GuideSampleInlineViewerProps> = (
                 onClick={() => onSelectScene(3)}
                 className="w-full py-3.5 bg-gradient-to-r from-teal-600 to-sky-600 hover:from-teal-700 hover:to-sky-700 text-white text-xs md:text-sm font-extrabold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.01]"
               >
-                <span>あなたが「藤井 裕太」さんですか？（合言葉に答えて照合する）</span>
+                <span>あなたが「藤井 裕太」さんですか？（思い出の質問に答えて照合する）</span>
                 <ArrowRight size={16} />
               </button>
             </div>
@@ -213,7 +213,7 @@ export const GuideSampleInlineViewer: React.FC<GuideSampleInlineViewerProps> = (
                   ReMEETs | 「藤井 裕太」様へ届いている思い出の手紙（あおいより）
                 </h4>
                 <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-sans">
-                  愛知県 1990年代 幼馴染。「小学校の時の幼馴染の裕太くんへ。放課後いつも駄菓子屋のきくや商店で...」あおいさんがあなたを探しています。合言葉に答えて手紙を開封してください。
+                  愛知県 1990年代 幼馴染。「小学校の時の幼馴染の裕太くんへ。放課後いつも駄菓子屋のきくや商店で...」あおいさんがあなたを探しています。思い出の質問に答えて手紙を開封してください。
                 </p>
               </div>
 
@@ -273,7 +273,7 @@ export const GuideSampleInlineViewer: React.FC<GuideSampleInlineViewerProps> = (
               </div>
 
               <div className="space-y-2 bg-slate-50 p-4 rounded-xl border border-slate-200">
-                <label className="text-xs font-bold text-slate-700 block">あなたの回答（合言葉）</label>
+                <label className="text-xs font-bold text-slate-700 block">あなたの回答（思い出の質問）</label>
                 <div className="flex gap-2 items-center">
                   <input
                     type="text"
@@ -290,7 +290,7 @@ export const GuideSampleInlineViewer: React.FC<GuideSampleInlineViewerProps> = (
               <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-300 text-xs text-emerald-900 space-y-1.5">
                 <div className="font-extrabold text-sm flex items-center gap-1.5 text-emerald-950">
                   <Sparkles size={18} className="text-emerald-600" />
-                  <span>合言葉が一致しました！照合成功</span>
+                  <span>思い出の質問が一致しました！照合成功</span>
                 </div>
                 <p className="text-xs text-emerald-800 leading-relaxed">
                   お互いしか知らなかった思い出の照合に成功しました。差出人のあおいさんに通知され、手紙開封・連絡先開示手続き後にSNS連絡先が開示されます。
@@ -354,7 +354,7 @@ export const GuideSampleInlineViewer: React.FC<GuideSampleInlineViewerProps> = (
                   あおいさんからのメッセージ：
                 </span>
                 <p className="font-serif italic leading-relaxed text-slate-800 text-xs md:text-sm p-3 bg-white rounded-xl border border-amber-100 shadow-2xs">
-                  「裕太くん！手紙を見つけてくれて、合言葉を答えてくれて本当にありがとう！奇跡みたいに嬉しいです。LINEかメールを追加して、またあの頃みたいにお話ししようね！」
+                  「裕太くん！手紙を見つけてくれて、思い出の質問に答えてくれて本当にありがとう！奇跡みたいに嬉しいです。LINEかメールを追加して、またあの頃みたいにお話ししようね！」
                 </p>
               </div>
 

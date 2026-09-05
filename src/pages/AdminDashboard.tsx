@@ -8101,7 +8101,7 @@ export const AdminDashboard = () => {
                                         <button
                                           onClick={() => handleViewPost(p)}
                                           className="p-1.5 text-black/60 hover:text-black hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
-                                          title="ボトルメール詳細・合言葉・メッセージ履歴を表示"
+                                          title="ボトルメール詳細・思い出の質問・メッセージ履歴を表示"
                                         >
                                           <Eye size={14} />
                                         </button>

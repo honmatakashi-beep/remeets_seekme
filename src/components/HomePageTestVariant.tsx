@@ -1094,7 +1094,7 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
 
               <div className="space-y-1.5 bg-amber-50/80 p-4 rounded-2xl border border-amber-200/80">
                 <span className="text-xs font-bold text-amber-900 font-sans flex items-center gap-1.5">
-                  <Key size={14} className="text-amber-600" /> 秘密の質問（思い出の合言葉）
+                  <Key size={14} className="text-amber-600" /> 思い出の質問（秘密のクイズ）
                 </span>
                 <p className="text-xs text-amber-950 font-sans leading-relaxed">
                   {selectedBottle.secretQuestion}

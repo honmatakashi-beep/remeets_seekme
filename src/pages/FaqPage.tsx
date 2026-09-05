@@ -50,7 +50,7 @@ export const FaqPage: React.FC = () => {
       id: 'quiz',
       label: '想い出クイズ・再会',
       icon: HeartHandshake,
-      description: '秘密の合言葉照合、回答制限、連絡先の安全な引き渡しについて'
+      description: '秘密の思い出の質問照合、回答制限、連絡先の安全な引き渡しについて'
     },
     {
       id: 'safety',
@@ -184,7 +184,7 @@ export const FaqPage: React.FC = () => {
       answer: (
         <>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            想い出クイズは、<strong className="text-slate-900 font-bold">「差出人と受け取る人の二人だけが知っている共通の記憶（合言葉）」</strong> を照合の鍵とするReMEETs独自の仕組みです。
+            想い出クイズは、<strong className="text-slate-900 font-bold">「差出人と受け取る人の二人だけが知っている共通の記憶（思い出の質問）」</strong> を照合の鍵とするReMEETs独自の仕組みです。
           </p>
           <div className="p-3.5 bg-zinc-50 rounded-xl border border-brand-border space-y-1.5 text-xs md:text-sm text-slate-600 leading-relaxed font-sans">
             <strong className="text-slate-900 block font-bold">【クイズの出題例】</strong>
@@ -196,7 +196,7 @@ export const FaqPage: React.FC = () => {
           </p>
         </>
       ),
-      tags: ['想い出クイズ', '合言葉', '仕組み', 'なりすまし防止']
+      tags: ['想い出クイズ', '思い出の質問', '仕組み', 'なりすまし防止']
     },
     {
       id: 'q-quiz-2',

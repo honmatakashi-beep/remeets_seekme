@@ -89,8 +89,8 @@ const DEFAULT_ANALYTICS_DATA = {
     bothPassRate: 74.5,
     q1DropRate: 10.8,
     q2DropRate: 14.7,
-    q1Summary: "第1問（主要な思い出・あだ名等）の正答率。無関係な第三者や誤認アクセスの約90%をここで確実に防衛。",
-    q2Summary: "第2問（詳細な合言葉・出来事等）の正答率。第1問正解者のうち約83%が突破し、本人の同一性を完全確定。"
+    q1Summary: "第1問（主要な思い出・あだ名等）の正答率。無関係な第三者や誤認アクセスの約90%を確実に防衛。",
+    q2Summary: "第2問（詳細な思い出の質問・出来事等）の正答率。第1問正解者のうち約83%が突破し、本人の同一性を完全確定。"
   },
   dailyQuizTrend: []
 };
@@ -161,7 +161,7 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
       ["4. 秘密の2段階質問 照合突破分析"],
       ["ステップ項目", "通過率 (%)", "離脱率 (%)", "防衛・照合の役割"],
       ["第1問（主要な思い出・あだ名等）", `${twoStepQuestionStats.q1PassRate || 0}%`, `${twoStepQuestionStats.q1DropRate || 0}%`, twoStepQuestionStats.q1Summary || ""],
-      ["第2問（詳細な合言葉・出来事等）", `${twoStepQuestionStats.q2PassRate || 0}%`, `${twoStepQuestionStats.q2DropRate || 0}%`, twoStepQuestionStats.q2Summary || ""],
+      ["第2問（詳細な思い出の質問・出来事等）", `${twoStepQuestionStats.q2PassRate || 0}%`, `${twoStepQuestionStats.q2DropRate || 0}%`, twoStepQuestionStats.q2Summary || ""],
       ["両問完全正解（本人確定）", `${twoStepQuestionStats.bothPassRate || 0}%`, "-", "2問すべて正解して手紙開封・連絡先開示へ到達"]
     ];
 
@@ -673,7 +673,7 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
 
                 <h4 className="text-base font-serif font-bold text-black">当事者記憶の完全確定</h4>
                 <p className="text-xs text-neutral-600 leading-relaxed">
-                  {twoStepQuestionStats.q2Summary || "第2問（詳細な合言葉・出来事等）の正答率。第1問正解者のうち約83%が突破し、本人の同一性を完全確定。"}
+                  {twoStepQuestionStats.q2Summary || "第2問（詳細な思い出の質問・出来事等）の正答率。第1問正解者のうち約83%が突破し、本人の同一性を完全確定。"}
                 </p>
               </div>
 
