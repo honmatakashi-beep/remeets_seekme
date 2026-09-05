@@ -6436,7 +6436,6 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                         <span className="px-3 py-1 bg-teal-700 text-white font-bold text-xs md:text-sm rounded-lg tracking-wider font-sans shadow-2xs">
                           思い出質問 {idx + 1}
                         </span>
-                        <span className="text-xs text-slate-500 font-bold font-sans">（お答えください）</span>
                       </div>
                       {verificationResults[idx]?.correct && (
                         <span className="text-xs font-bold text-emerald-800 bg-emerald-100 px-3 py-1 rounded-lg border border-emerald-300 flex items-center gap-1 shadow-2xs">
