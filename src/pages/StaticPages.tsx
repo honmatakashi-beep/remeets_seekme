@@ -991,7 +991,7 @@ export const PricingPage = () => {
           <div className="flex justify-end pt-1">
             <Link
               to="/faq"
-              className="text-xs font-semibold text-indigo-700 hover:text-indigo-900 hover:underline inline-flex items-center gap-1 transition-colors cursor-pointer"
+              className="text-xs font-bold text-slate-800 hover:text-black hover:underline inline-flex items-center gap-1 transition-colors cursor-pointer"
             >
               <span>よくある質問へ →</span>
             </Link>
