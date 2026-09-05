@@ -154,7 +154,7 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 md:py-16 space-y-8 md:space-y-12 animate-fade-in">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 md:py-12 space-y-6 md:space-y-8 animate-fade-in font-sans text-black">
       {searchParams.get('alert_verified') === 'true' && (
         <div className="bg-green-50 border border-green-200 p-4 sm:p-6 rounded-2xl sm:rounded-3xl text-sm text-green-800 space-y-2 animate-fade-in">
           <div className="flex items-center gap-2 font-bold text-sm sm:text-base">
@@ -174,299 +174,261 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
         description="ご自身のお名前や、ゆかりの深い地域などで検索し、あなたを探している大切な人から届いているボトルメール（手紙）と出会うことができます。"
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 sm:gap-8">
-        {/* Filter Panel */}
-        <div className="lg:col-span-1 space-y-5">
-          <div className="space-y-4 sm:space-y-6 bg-brand-light/10 p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-brand-border">
-            <h3 className="text-xs font-bold text-brand-dark/80 uppercase tracking-widest border-b border-brand-border pb-2.5 flex items-center gap-2 font-sans">
-              <Info size={14} />
-              <span>絞り込み</span>
-            </h3>
+      {/* 🔍 上部統合検索 & 絞り込み & 新着通知コントロールカード */}
+      <div className="glass-card p-5 sm:p-7 bg-white rounded-3xl border border-brand-border shadow-sm space-y-4 font-sans text-left">
+        {/* 検索入力バー */}
+        <form onSubmit={handleSearch} className="flex gap-2 sm:gap-3">
+          <div className="relative flex-grow">
+            <input 
+              type="text"
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              placeholder="あなたのお名前（苗字・旧姓・ニックネーム）、ゆかりの都道府県など..."
+              className="w-full pl-4 sm:pl-5 pr-10 sm:pr-12 py-3 text-xs sm:text-sm border border-brand-border rounded-2xl bg-slate-50/60 focus:bg-white focus:border-brand-primary outline-none focus:ring-2 focus:ring-brand-primary/20 transition-all font-sans placeholder:text-slate-400 text-black shadow-inner"
+            />
+            <Search className="absolute right-4 top-3.5 text-slate-400" size={18} />
+          </div>
+          <button type="submit" className="btn-primary px-5 sm:px-7 py-3 text-xs sm:text-sm whitespace-nowrap animate-none shrink-0 rounded-2xl font-bold cursor-pointer">
+            検索する
+          </button>
+        </form>
 
-            <div className="grid grid-cols-2 lg:grid-cols-1 gap-3 sm:space-y-4">
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-brand-dark/60 uppercase tracking-widest block font-sans">年代</label>
-                <select 
-                  value={eraFilter}
-                  onChange={e => setEraFilter(e.target.value)}
-                  className="w-full px-3 py-2 border border-brand-border rounded-xl bg-white text-xs outline-none text-black"
-                >
-                  <option value="">すべての年代</option>
-                  <option value="1950">1950年代</option>
-                  <option value="1960">1960年代</option>
-                  <option value="1970">1970年代</option>
-                  <option value="1980">1980年代</option>
-                  <option value="1990">1990年代</option>
-                  <option value="2000">2000年代</option>
-                  <option value="2010">2010年代</option>
-                  <option value="2020">2020年代</option>
-                </select>
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-brand-dark/60 uppercase tracking-widest block font-sans">カテゴリー</label>
-                <select 
-                  value={categoryFilter}
-                  onChange={e => setCategoryFilter(e.target.value)}
-                  className="w-full px-3 py-2 border border-brand-border rounded-xl bg-white text-xs outline-none text-black"
-                >
-                  <option value="">すべての関係性</option>
-                  <option value="friend">同級生・友人</option>
-                  <option value="love">初恋・元恋人</option>
-                  <option value="work">元同僚・仕事仲間</option>
-                  <option value="other">その他</option>
-                </select>
-              </div>
-            </div>
+        {/* 絞り込みセレクター & 新着通知ボタン */}
+        <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-[11px] font-bold text-slate-600 uppercase tracking-wider flex items-center gap-1">
+              <Info size={13} className="text-teal-600" />
+              <span>絞り込み:</span>
+            </span>
+            <select 
+              value={eraFilter}
+              onChange={e => setEraFilter(e.target.value)}
+              className="px-3 py-1.5 border border-slate-200 rounded-xl bg-white text-xs outline-none text-slate-800 focus:border-teal-600 font-sans cursor-pointer shadow-2xs"
+            >
+              <option value="">すべての年代</option>
+              <option value="1950">1950年代</option>
+              <option value="1960">1960年代</option>
+              <option value="1970">1970年代</option>
+              <option value="1980">1980年代</option>
+              <option value="1990">1990年代</option>
+              <option value="2000">2000年代</option>
+              <option value="2010">2010年代</option>
+              <option value="2020">2020年代</option>
+            </select>
+            <select 
+              value={categoryFilter}
+              onChange={e => setCategoryFilter(e.target.value)}
+              className="px-3 py-1.5 border border-slate-200 rounded-xl bg-white text-xs outline-none text-slate-800 focus:border-teal-600 font-sans cursor-pointer shadow-2xs"
+            >
+              <option value="">すべての関係性</option>
+              <option value="friend">同級生・友人</option>
+              <option value="love">初恋・元恋人</option>
+              <option value="work">元同僚・仕事仲間</option>
+              <option value="other">その他</option>
+            </select>
           </div>
 
-          {/* 🔔 新着通知（入荷アラート）小型カード */}
-          <div className="p-4 sm:p-5 bg-gradient-to-br from-teal-50/90 via-sky-50/50 to-white rounded-2xl sm:rounded-3xl border-2 border-teal-200/90 shadow-xs space-y-3 font-sans">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="p-1.5 bg-teal-600 text-white rounded-xl shadow-2xs">
-                  <Bell size={14} className={notifyEnabled && user ? "animate-pulse" : ""} />
-                </span>
-                <h4 className="text-xs font-bold text-teal-950 font-serif">
-                  あなた宛て新着手紙の通知
-                </h4>
-              </div>
-              {user && (
-                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                  notifyEnabled ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-500'
-                }`}>
-                  {notifyEnabled ? 'ON' : 'OFF'}
-                </span>
-              )}
-            </div>
-
+          {/* 新着通知登録ボタン */}
+          <div className="flex items-center gap-2">
             {user ? (
-              <>
-                <p className="text-[11px] text-slate-600 leading-relaxed font-sans">
-                  あなた（<span className="font-bold text-teal-900">{user.fullName || user.username}</span> 様）宛ての手紙が海に流された際、メールでお知らせします。
-                </p>
-
-                <div className="pt-1 flex items-center justify-between bg-white/90 p-2.5 rounded-2xl border border-teal-200/80">
-                  <div className="text-[11px]">
-                    <span className="text-slate-500 block text-[10px]">通知先アドレス</span>
-                    <span className="font-mono text-slate-800 font-bold truncate block max-w-[170px]">
-                      {user.email || '未設定'}
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={handleToggleNotify}
-                    disabled={isUpdatingNotify}
-                    className={`px-3 py-1.5 rounded-xl font-bold text-xs transition-all cursor-pointer shadow-xs ${
-                      notifyEnabled
-                        ? 'bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100'
-                        : 'bg-teal-600 text-white hover:bg-teal-700'
-                    }`}
-                  >
-                    {isUpdatingNotify ? '更新中...' : notifyEnabled ? '通知解除' : '通知ON'}
-                  </button>
-                </div>
-              </>
+              <button
+                type="button"
+                onClick={handleToggleNotify}
+                disabled={isUpdatingNotify}
+                className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-bold text-xs transition-all cursor-pointer shadow-xs ${
+                  notifyEnabled
+                    ? 'bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100'
+                    : 'bg-teal-600 text-white hover:bg-teal-700'
+                }`}
+              >
+                <Bell size={13} className={notifyEnabled ? "text-emerald-600" : "text-white"} />
+                <span>{isUpdatingNotify ? '更新中...' : notifyEnabled ? 'あなた宛て新着通知: ON' : 'あなた宛て新着通知をON'}</span>
+              </button>
             ) : (
-              <>
-                <p className="text-[11px] text-slate-600 leading-relaxed font-sans">
-                  無料登録すると、あなた宛ての手紙が海に流された瞬間に自動でメール通知が届きます。
-                </p>
-                <Link
-                  to="/login"
-                  className="w-full py-2.5 px-3 bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer font-sans"
-                >
-                  <Mail size={13} />
-                  <span>ログインして通知を有効化</span>
-                </Link>
-              </>
+              <button
+                type="button"
+                onClick={() => {
+                  setAlertMessage(null);
+                  setIsAlertModalOpen(true);
+                }}
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-bold text-xs bg-gradient-to-r from-teal-600 to-indigo-600 hover:from-teal-700 hover:to-indigo-700 text-white transition-all cursor-pointer shadow-xs"
+              >
+                <Bell size={13} />
+                <span>新着手紙のメール通知を受け取る</span>
+              </button>
             )}
           </div>
         </div>
+      </div>
 
-        {/* Results Area */}
-        <div className="lg:col-span-3 space-y-6">
-          <form onSubmit={handleSearch} className="flex gap-2 sm:gap-3">
-            <div className="relative flex-grow">
-              <input 
-                type="text"
-                value={query}
-                onChange={e => setQuery(e.target.value)}
-                placeholder="あなたのお名前（苗字・旧姓・ニックネーム）、ゆかりの都道府県など..."
-                className="w-full pl-4 sm:pl-5 pr-10 sm:pr-12 py-2.5 sm:py-3 text-xs sm:text-sm border border-brand-border rounded-xl bg-white focus:border-brand-primary outline-none focus:ring-1 focus:ring-brand-primary transition-all font-sans placeholder:text-brand-dark/30 text-black shadow-sm"
-              />
-              <Search className="absolute right-3.5 top-3 sm:top-3.5 text-brand-dark/30" size={16} />
-            </div>
-            <button type="submit" className="btn-primary px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm whitespace-nowrap animate-none shrink-0">検索する</button>
-          </form>
-
-          {/* NULL検索（未入力）時の案内バナー */}
-          {isNullSearch && !loading && (
-            <div className="bg-amber-50/80 border border-amber-200/90 p-3.5 rounded-2xl flex items-start gap-2.5 text-xs text-amber-900 leading-relaxed font-sans shadow-2xs">
-              <Info size={16} className="text-amber-600 shrink-0 mt-0.5" />
-              <div>
-                <p className="font-bold text-xs text-amber-950">💡 検索方法のアドバイス</p>
-                <p className="mt-0.5 text-[11px] text-amber-900/90 leading-relaxed font-sans">
-                  現在検索条件が未入力のため、<b>最新の漂うボトルメール（新着順）</b>を表示しています。<br />
-                  ご自身宛ての手紙をお探しの場合は、上の検索ボックスに<b>「あなたのお名前（苗字・旧姓・お名前・ニックネーム）」</b>や<b>「ゆかりの都道府県」「年代」</b>等を入力して検索してください。（※具体的な市区町村や学校名は安全のため非公開となっており、秘密の質問正解後に開示されます）
-                </p>
-              </div>
-            </div>
-          )}
-
-          {loading ? (
-            <BottleLoader />
-          ) : posts.length === 0 ? (
-            <div className="space-y-8">
-              <div className="text-center py-12 md:py-16 bg-white rounded-3xl border border-brand-border/80 p-6 md:p-10 space-y-4 relative overflow-hidden shadow-sm">
-                {/* 背景イラスト（凪いた朝もやの海） */}
-                <div className="absolute inset-0 flex justify-center items-center pointer-events-none overflow-hidden select-none">
-                  <div className="relative w-full h-full opacity-55">
-                    <img 
-                      src={searchEmptySea} 
-                      alt="静かな朝もやの海" 
-                      className="w-full h-full object-cover object-center"
-                    />
-                    {/* 左右グラデーション */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-white via-white/40 to-white" />
-                    {/* 上下グラデーション */}
-                    <div className="absolute inset-0 bg-gradient-to-b from-white via-transparent via-50% to-white" />
-                  </div>
-                </div>
-
-                <div className="relative z-10 space-y-4 max-w-lg mx-auto">
-                  <div className="w-14 h-14 bg-slate-100/90 rounded-2xl border border-slate-200 flex items-center justify-center mx-auto text-slate-600 shadow-2xs backdrop-blur-xs">
-                    <FileWarning size={28} />
-                  </div>
-                  <div className="space-y-1.5">
-                    <h3 className="text-base md:text-xl font-serif font-bold text-slate-800">
-                      該当するボトルメールが見つかりませんでした
-                    </h3>
-                    <p className="text-xs md:text-sm font-serif text-slate-600 leading-relaxed">
-                      まだボトルが届いていないか、異なる表現で投稿されている可能性があります。<br />
-                      ひらがな、旧姓、または都道府県のみで再検索をお試しいただくか、<b>「新着通知」</b>をご登録ください。
-                    </p>
-                  </div>
-                  <div className="pt-2 flex justify-center">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setAlertMessage(null);
-                        setIsAlertModalOpen(true);
-                      }}
-                      className="px-6 py-3 bg-gradient-to-r from-teal-700 via-teal-800 to-indigo-800 hover:from-teal-800 hover:to-indigo-900 text-white font-bold text-xs rounded-2xl shadow-md hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer font-sans active:scale-98"
-                    >
-                      <Bell size={14} />
-                      <span>あなたを探す手紙が届いたらメールで通知を受け取る ✨</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-6">
-              <div className="flex items-center justify-between border-b border-brand-border/60 pb-3">
-                <p className="text-xs text-brand-dark/70 font-serif">
-                  該当する手紙： <span className="font-bold text-brand-primary text-sm">{posts.length}</span> 通
-                  <span className="ml-2 text-brand-dark/40 font-sans">
-                    ({currentPage} / {totalPages} ページ目 - 1ページ上限20件)
-                  </span>
-                </p>
-                <div className="text-[11px] font-sans text-brand-dark/50">
-                  {(currentPage - 1) * ITEMS_PER_PAGE + 1} 〜 {Math.min(currentPage * ITEMS_PER_PAGE, posts.length)} 件目を表示中
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {paginatedPosts.map((post: any) => (
-                  <Link 
-                    key={post.id}
-                    to={getPostUrl(post)}
-                    className="p-6 block hover:-translate-y-1 hover:shadow-xl transition-all border-2 border-slate-300 hover:border-teal-600 duration-300 rounded-3xl space-y-3 bg-white group text-left shadow-md"
-                  >
-                    <div className="flex justify-between items-start">
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-1.5 flex-wrap">
-                          <span className="text-[9px] font-bold text-brand-primary uppercase tracking-widest block bg-brand-primary/5 border border-brand-primary/10 px-2 py-0.5 rounded-full w-fit font-sans">
-                            {post.era?.toString().startsWith('19') ? post.era : `19${post.era}`}年代 / {post.category === 'friend' ? '同級生・友人' : post.category === 'love' ? '初恋・他' : 'その他'}
-                          </span>
-                          {!!post.is_author_ekyc_verified && (
-                            <span className="text-[9px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full w-fit font-sans flex items-center gap-0.5">
-                              🛡️ 本人確認済
-                            </span>
-                          )}
-                        </div>
-                        <h3 className="text-base font-serif font-bold text-brand-dark group-hover:text-brand-primary transition-all">
-                          {post.target_name} 様
-                        </h3>
-                      </div>
-                      <span className="text-[10px] text-brand-dark/40 font-mono">
-                        {new Date(post.created_at).toLocaleDateString('ja-JP')}
-                      </span>
-                    </div>
-                    <p className="text-xs text-brand-dark/70 font-sans leading-relaxed line-clamp-2">
-                      ゆかりの地: {post.target_hometown ? (post.target_hometown.match(/.*?[都道府県]/)?.[0] || post.target_hometown) : '未特定'} (市区町村以下は非公開) / 所属：{post.target_school ? (post.category === 'work' ? '関連職場（正解後に開示）' : '関連学校（正解後に開示）') : '未設定'}<br/>
-                      差し出し: {post.searcher_name}<br/>
-                      「{post.searcher_profile}」
-                    </p>
-                  </Link>
-                ))}
-              </div>
-
-              {/* 50件超過時のページネーションコントロール */}
-              {totalPages > 1 && (
-                <div className="pt-6 border-t border-brand-border/60 flex flex-col sm:flex-row items-center justify-between gap-4 font-sans">
-                  <div className="text-xs text-brand-dark/60">
-                    全 {posts.length} 件中 {(currentPage - 1) * ITEMS_PER_PAGE + 1} - {Math.min(currentPage * ITEMS_PER_PAGE, posts.length)} 件を表示
-                  </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => {
-                        setCurrentPage(p => Math.max(1, p - 1));
-                        window.scrollTo({ top: 300, behavior: 'smooth' });
-                      }}
-                      disabled={currentPage === 1}
-                      className="px-3.5 py-2 border border-brand-border bg-white rounded-xl text-xs font-bold text-brand-dark hover:bg-brand-light/30 disabled:opacity-40 disabled:pointer-events-none transition-all shadow-2xs cursor-pointer"
-                    >
-                      ← 前へ
-                    </button>
-
-                    <div className="flex items-center gap-1 px-2">
-                      {Array.from({ length: totalPages }, (_, i) => i + 1).map(pNum => (
-                        <button
-                          key={pNum}
-                          onClick={() => {
-                            setCurrentPage(pNum);
-                            window.scrollTo({ top: 300, behavior: 'smooth' });
-                          }}
-                          className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${
-                            currentPage === pNum
-                              ? 'bg-[#3B627F] text-white shadow-xs'
-                              : 'bg-white border border-brand-border text-brand-dark hover:bg-brand-light/20'
-                          }`}
-                        >
-                          {pNum}
-                        </button>
-                      ))}
-                    </div>
-
-                    <button
-                      onClick={() => {
-                        setCurrentPage(p => Math.min(totalPages, p + 1));
-                        window.scrollTo({ top: 300, behavior: 'smooth' });
-                      }}
-                      disabled={currentPage === totalPages}
-                      className="px-3.5 py-2 border border-brand-border bg-white rounded-xl text-xs font-bold text-brand-dark hover:bg-brand-light/30 disabled:opacity-40 disabled:pointer-events-none transition-all shadow-2xs cursor-pointer"
-                    >
-                      次へ →
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
+      {/* NULL検索（未入力）時の案内バナー */}
+      {isNullSearch && !loading && (
+        <div className="bg-amber-50/80 border border-amber-200/90 p-4 rounded-2xl flex items-start gap-2.5 text-xs text-amber-900 leading-relaxed font-sans shadow-2xs text-left">
+          <Info size={16} className="text-amber-600 shrink-0 mt-0.5" />
+          <div>
+            <p className="font-bold text-xs text-amber-950">💡 検索方法のアドバイス</p>
+            <p className="mt-0.5 text-[11px] text-amber-900/90 leading-relaxed font-sans">
+              現在検索条件が未入力のため、<b>最新の漂うボトルメール（新着順）</b>を表示しています。<br />
+              ご自身宛ての手紙をお探しの場合は、上の検索ボックスに<b>「あなたのお名前（苗字・旧姓・お名前・ニックネーム）」</b>や<b>「ゆかりの都道府県」「年代」</b>等を入力して検索してください。（※具体的な市区町村や学校名は安全のため非公開となっており、秘密の質問正解後に開示されます）
+            </p>
+          </div>
         </div>
+      )}
+
+      {/* Results Area */}
+      <div className="space-y-6">
+        {loading ? (
+          <BottleLoader />
+        ) : posts.length === 0 ? (
+          <div className="space-y-8">
+            <div className="text-center py-12 md:py-16 bg-white rounded-3xl border border-brand-border/80 p-6 md:p-10 space-y-4 relative overflow-hidden shadow-sm">
+              {/* 背景イラスト（凪いた朝もやの海） */}
+              <div className="absolute inset-0 flex justify-center items-center pointer-events-none overflow-hidden select-none">
+                <div className="relative w-full h-full opacity-55">
+                  <img 
+                    src={searchEmptySea} 
+                    alt="静かな朝もやの海" 
+                    className="w-full h-full object-cover object-center"
+                  />
+                  {/* 左右グラデーション */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-white via-white/40 to-white" />
+                  {/* 上下グラデーション */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-white via-transparent via-50% to-white" />
+                </div>
+              </div>
+
+              <div className="relative z-10 space-y-4 max-w-lg mx-auto">
+                <div className="w-14 h-14 bg-slate-100/90 rounded-2xl border border-slate-200 flex items-center justify-center mx-auto text-slate-600 shadow-2xs backdrop-blur-xs">
+                  <FileWarning size={28} />
+                </div>
+                <div className="space-y-1.5">
+                  <h3 className="text-base md:text-xl font-serif font-bold text-slate-800">
+                    該当するボトルメールが見つかりませんでした
+                  </h3>
+                  <p className="text-xs md:text-sm font-serif text-slate-600 leading-relaxed">
+                    まだボトルが届いていないか、異なる表現で投稿されている可能性があります。<br />
+                    ひらがな、旧姓、または都道府県のみで再検索をお試しいただくか、<b>「新着通知」</b>をご登録ください。
+                  </p>
+                </div>
+                <div className="pt-2 flex justify-center">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAlertMessage(null);
+                      setIsAlertModalOpen(true);
+                    }}
+                    className="px-6 py-3 bg-gradient-to-r from-teal-700 via-teal-800 to-indigo-800 hover:from-teal-800 hover:to-indigo-900 text-white font-bold text-xs rounded-2xl shadow-md hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer font-sans active:scale-98"
+                  >
+                    <Bell size={14} />
+                    <span>あなたを探す手紙が届いたらメールで通知を受け取る ✨</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between border-b border-brand-border/60 pb-3">
+              <p className="text-xs text-brand-dark/70 font-serif">
+                該当する手紙： <span className="font-bold text-brand-primary text-sm">{posts.length}</span> 通
+                <span className="ml-2 text-brand-dark/40 font-sans">
+                  ({currentPage} / {totalPages} ページ目 - 1ページ上限20件)
+                </span>
+              </p>
+              <div className="text-[11px] font-sans text-brand-dark/50">
+                {(currentPage - 1) * ITEMS_PER_PAGE + 1} 〜 {Math.min(currentPage * ITEMS_PER_PAGE, posts.length)} 件目を表示中
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {paginatedPosts.map((post: any) => (
+                <Link 
+                  key={post.id}
+                  to={getPostUrl(post)}
+                  className="p-6 block hover:-translate-y-1 hover:shadow-xl transition-all border-2 border-slate-300 hover:border-teal-600 duration-300 rounded-3xl space-y-3 bg-white group text-left shadow-md"
+                >
+                  <div className="flex justify-between items-start">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="text-[9px] font-bold text-brand-primary uppercase tracking-widest block bg-brand-primary/5 border border-brand-primary/10 px-2 py-0.5 rounded-full w-fit font-sans">
+                          {post.era?.toString().startsWith('19') ? post.era : `19${post.era}`}年代 / {post.category === 'friend' ? '同級生・友人' : post.category === 'love' ? '初恋・他' : 'その他'}
+                        </span>
+                        {!!post.is_author_ekyc_verified && (
+                          <span className="text-[9px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full w-fit font-sans flex items-center gap-0.5">
+                            🛡️ 本人確認済
+                          </span>
+                        )}
+                      </div>
+                      <h3 className="text-base font-serif font-bold text-brand-dark group-hover:text-brand-primary transition-all">
+                        {post.target_name} 様
+                      </h3>
+                    </div>
+                    <span className="text-[10px] text-brand-dark/40 font-mono">
+                      {new Date(post.created_at).toLocaleDateString('ja-JP')}
+                    </span>
+                  </div>
+                  <p className="text-xs text-brand-dark/70 font-sans leading-relaxed line-clamp-2">
+                    ゆかりの地: {post.target_hometown ? (post.target_hometown.match(/.*?[都道府県]/)?.[0] || post.target_hometown) : '未特定'} (市区町村以下は非公開) / 所属：{post.target_school ? (post.category === 'work' ? '関連職場（正解後に開示）' : '関連学校（正解後に開示）') : '未設定'}<br/>
+                    差し出し: {post.searcher_name}<br/>
+                    「{post.searcher_profile}」
+                  </p>
+                </Link>
+              ))}
+            </div>
+
+            {/* 50件超過時のページネーションコントロール */}
+            {totalPages > 1 && (
+              <div className="pt-6 border-t border-brand-border/60 flex flex-col sm:flex-row items-center justify-between gap-4 font-sans">
+                <div className="text-xs text-brand-dark/60">
+                  全 {posts.length} 件中 {(currentPage - 1) * ITEMS_PER_PAGE + 1} - {Math.min(currentPage * ITEMS_PER_PAGE, posts.length)} 件を表示
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      setCurrentPage(p => Math.max(1, p - 1));
+                      window.scrollTo({ top: 300, behavior: 'smooth' });
+                    }}
+                    disabled={currentPage === 1}
+                    className="px-3.5 py-2 border border-brand-border bg-white rounded-xl text-xs font-bold text-brand-dark hover:bg-brand-light/30 disabled:opacity-40 disabled:pointer-events-none transition-all shadow-2xs cursor-pointer"
+                  >
+                    ← 前へ
+                  </button>
+
+                  <div className="flex items-center gap-1 px-2">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(pNum => (
+                      <button
+                        key={pNum}
+                        onClick={() => {
+                          setCurrentPage(pNum);
+                          window.scrollTo({ top: 300, behavior: 'smooth' });
+                        }}
+                        className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${
+                          currentPage === pNum
+                            ? 'bg-[#3B627F] text-white shadow-xs'
+                            : 'bg-white border border-brand-border text-brand-dark hover:bg-brand-light/20'
+                        }`}
+                      >
+                        {pNum}
+                      </button>
+                    ))}
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      setCurrentPage(p => Math.min(totalPages, p + 1));
+                      window.scrollTo({ top: 300, behavior: 'smooth' });
+                    }}
+                    disabled={currentPage === totalPages}
+                    className="px-3.5 py-2 border border-brand-border bg-white rounded-xl text-xs font-bold text-brand-dark hover:bg-brand-light/30 disabled:opacity-40 disabled:pointer-events-none transition-all shadow-2xs cursor-pointer"
+                  >
+                    次へ →
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* 🔔 新着通知（入荷アラート）登録モーダル */}
