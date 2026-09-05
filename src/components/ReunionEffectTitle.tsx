@@ -9,27 +9,26 @@ interface ReunionEffectTitleProps {
   effectType?: ReunionEffectType | string;
   className?: string;
   speed?: 'slow' | 'normal' | 'fast';
+  text?: string;
 }
 
 export const ReunionEffectTitle: React.FC<ReunionEffectTitleProps> = ({
   effectType = 'pure-rainbow-flow',
   className = '',
-  speed = 'normal'
+  speed = 'normal',
+  text = '再会おめでとうございます！'
 }) => {
-  const text = "再会おめでとうございます！";
-
-  // アニメーション速度設定（秒数）
-  let duration = '6s';
+  let duration = '4.5s';
   if (effectType === 'pure-rainbow-fast' || speed === 'fast') {
-    duration = '3.5s';
+    duration = '2.5s';
   } else if (effectType === 'pure-rainbow-gentle' || speed === 'slow') {
-    duration = '10s';
+    duration = '7.5s';
   }
 
   return (
     <>
       <style>{`
-        @keyframes topRainbowFlow {
+        @keyframes topRainbowFlowAnim {
           0% {
             background-position: 0% 50%;
           }
@@ -37,30 +36,19 @@ export const ReunionEffectTitle: React.FC<ReunionEffectTitleProps> = ({
             background-position: 200% 50%;
           }
         }
-        .reunion-rainbow-text {
-          background-image: linear-gradient(
-            90deg,
-            #38BDF8 0%,
-            #818CF8 14.28%,
-            #C084FC 28.57%,
-            #F472B6 42.85%,
-            #FB923C 57.14%,
-            #FACC15 71.42%,
-            #2DD4BF 85.71%,
-            #38BDF8 100%
-          );
-          background-size: 200% auto;
-          -webkit-background-clip: text;
-          background-clip: text;
-          color: transparent;
-          animation: topRainbowFlow var(--rainbow-duration, 6s) linear infinite;
-          display: inline-block;
-        }
       `}</style>
-
       <span
-        style={{ '--rainbow-duration': duration } as React.CSSProperties}
-        className={`reunion-rainbow-text font-serif font-bold tracking-wider select-none ${className}`}
+        style={{
+          background: 'linear-gradient(90deg, #38bdf8 0%, #818cf8 7.14%, #c084fc 14.28%, #f472b6 21.42%, #fb923c 28.57%, #facc15 35.71%, #2dd4bf 42.85%, #38bdf8 50%, #818cf8 57.14%, #c084fc 64.28%, #f472b6 71.42%, #fb923c 78.57%, #facc15 85.71%, #2dd4bf 92.85%, #38bdf8 100%)',
+          backgroundSize: '200% auto',
+          WebkitBackgroundClip: 'text',
+          backgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          color: 'transparent',
+          animation: `topRainbowFlowAnim ${duration} linear infinite`,
+          display: 'inline-block'
+        }}
+        className={`font-serif font-bold tracking-wider select-none ${className}`}
       >
         {text}
       </span>

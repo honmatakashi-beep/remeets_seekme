@@ -3644,10 +3644,10 @@ export const RevealContactModal = ({
                   <Sparkles size={32} className="animate-bounce" />
                 </div>
                 <div className="space-y-1">
-                  <span className="inline-block px-3 py-0.5 rounded-full bg-emerald-100 text-emerald-900 text-[11px] font-bold tracking-wider font-serif">
-                    🎉 おめでとうございます！手紙と連絡先が開示されました
-                  </span>
-                  <h3 className="text-xl md:text-2xl font-bold font-serif text-slate-900 pt-1">
+                  <div className="pt-1 pb-1">
+                    <ReunionEffectTitle effectType="pure-rainbow-flow" className="text-2xl sm:text-3xl md:text-4xl" />
+                  </div>
+                  <h3 className="text-base sm:text-lg font-bold font-serif text-slate-800 pt-0.5">
                     【{revealedResult.searcherFullName || searcherFullName || revealedResult.searcherName || searcherName}】さんと繋がりました
                   </h3>
                 </div>
@@ -3904,23 +3904,39 @@ export const RevealContactModal = ({
                   </div>
                 </div>
 
-                {/* 決済後に開示される3大情報ハイライト */}
-                <div className="space-y-1.5 bg-white/90 p-3 rounded-xl border border-teal-100/90 shadow-2xs text-xs">
-                  <span className="text-[10.5px] font-bold text-teal-900 block mb-1">
-                    ✨ お支払い完了後に安全に開示される内容：
+                {/* 決済後に開示される3大情報ハイライト（大きく認知できる独立リッチカード） */}
+                <div className="space-y-2 bg-white/95 p-3.5 sm:p-4 rounded-2xl border-2 border-teal-200/90 shadow-2xs text-xs font-sans">
+                  <span className="text-xs sm:text-sm font-extrabold text-teal-950 flex items-center gap-1.5 pb-1 border-b border-teal-100">
+                    <Sparkles size={16} className="text-amber-500 shrink-0" />
+                    <span>お手続き完了後に安全に開示される 3大情報</span>
                   </span>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5 text-[11.5px] font-bold text-slate-800">
-                    <div className="flex items-center gap-1.5 bg-teal-50/80 px-2.5 py-1.5 rounded-lg border border-teal-200/70">
-                      <span>👤</span>
-                      <span>差出人の実名（本名）</span>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 text-xs">
+                    <div className="p-2.5 bg-teal-50/90 rounded-xl border border-teal-200/80 flex items-center gap-2.5 shadow-2xs">
+                      <div className="w-8 h-8 rounded-lg bg-teal-600 text-white flex items-center justify-center shrink-0 text-sm font-bold shadow-2xs">
+                        👤
+                      </div>
+                      <div>
+                        <div className="font-extrabold text-slate-900 text-[11px] sm:text-xs">【差出人の実名】</div>
+                        <div className="text-[10px] text-teal-800 font-medium">フルネームを開示</div>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-1.5 bg-emerald-50/80 px-2.5 py-1.5 rounded-lg border border-emerald-200/70">
-                      <span>💌</span>
-                      <span>手紙の全文メッセージ</span>
+                    <div className="p-2.5 bg-emerald-50/90 rounded-xl border border-emerald-200/80 flex items-center gap-2.5 shadow-2xs">
+                      <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0 text-sm font-bold shadow-2xs">
+                        💌
+                      </div>
+                      <div>
+                        <div className="font-extrabold text-slate-900 text-[11px] sm:text-xs">【手紙の全文】</div>
+                        <div className="text-[10px] text-emerald-800 font-medium">エピソードを開封</div>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-1.5 bg-indigo-50/80 px-2.5 py-1.5 rounded-lg border border-indigo-200/70">
-                      <span>📱</span>
-                      <span>直通連絡先 (LINE/メール)</span>
+                    <div className="p-2.5 bg-indigo-50/90 rounded-xl border border-indigo-200/80 flex items-center gap-2.5 shadow-2xs">
+                      <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center shrink-0 text-sm font-bold shadow-2xs">
+                        📱
+                      </div>
+                      <div>
+                        <div className="font-extrabold text-slate-900 text-[11px] sm:text-xs">【お相手の連絡先】</div>
+                        <div className="text-[10px] text-indigo-800 font-medium">LINE・メール等</div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -5733,11 +5749,9 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
           <h1 className="text-xl xs:text-2xl sm:text-3xl md:text-5xl font-serif text-black font-[500] tracking-wider leading-relaxed flex flex-col items-center gap-2 text-center px-4 w-full">
             <span className="block whitespace-normal md:whitespace-nowrap max-w-full font-serif font-bold text-slate-900">{post.target_name} 様、</span>
             {isOwner && post.status === 'resolved' ? (
-              <span className="block whitespace-normal md:whitespace-nowrap max-w-full text-emerald-600 font-bold">再会が成功しました！✨</span>
-            ) : (!isOwner && showDetails) ? (
               <ReunionEffectTitle effectType="pure-rainbow-flow" />
-            ) : (!isOwner && (isQuestionVerified || post.status === 'resolved')) ? (
-              <span className="block whitespace-normal md:whitespace-nowrap max-w-full text-emerald-600 font-bold">思い出の鍵が解かれました！✨</span>
+            ) : (!isOwner && (showDetails || post.status === 'resolved' || isQuestionVerified)) ? (
+              <ReunionEffectTitle effectType="pure-rainbow-flow" />
             ) : (
               <span className="block whitespace-normal leading-snug max-w-full text-teal-800 font-bold text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl">
                 「{post.searcher_name || '差出人'}さん」があなたを探しています。
@@ -5907,6 +5921,18 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               {/* showDetails が true の場合（開示完了・再会後画面） */}
               {showDetails ? (
                 <div id="reunion-success-anchor" className="space-y-6 scroll-mt-28">
+                  {/* 🎉 再会祝福レインボーバナー */}
+                  <div className="p-5 sm:p-6 bg-gradient-to-r from-teal-50 via-purple-50/40 to-pink-50/40 rounded-2xl border-2 border-teal-300/80 text-center space-y-2 shadow-xs">
+                    <div className="flex items-center justify-center gap-2 flex-wrap">
+                      <Sparkles size={20} className="text-amber-500 animate-bounce shrink-0" />
+                      <ReunionEffectTitle effectType="pure-rainbow-flow" className="text-xl sm:text-2xl md:text-3xl" />
+                      <Sparkles size={20} className="text-amber-500 animate-bounce shrink-0" />
+                    </div>
+                    <p className="text-xs sm:text-sm text-slate-700 font-serif font-medium">
+                      あなた宛ての手紙全文と直通連絡先が開示されました。止まっていた大切な思い出が、ここから再び動き出します。
+                    </p>
+                  </div>
+
                   {/* 👤 1. 差出人（本名・呼称）＆ ゆかりの地・所属情報カード */}
                   <div className="p-5 sm:p-6 bg-slate-50/90 rounded-2xl border border-slate-200/90 space-y-4 font-sans text-left">
                     <div className="flex items-center justify-between gap-2 flex-wrap border-b border-slate-200/80 pb-3">
@@ -6247,34 +6273,48 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                   {/* カード下部: ダイレクトな手紙開封アクション CTA */}
                   {!isOwner && post.status !== 'resolved' && (
                     <div className="pt-2 space-y-4 text-left border-t border-slate-200/80">
-                      <div className="p-4 sm:p-5 bg-gradient-to-br from-teal-50/90 via-emerald-50/70 to-slate-50 rounded-2xl border border-teal-200/90 space-y-3 font-sans">
-                        <div className="flex items-center gap-2 text-teal-950 font-bold text-xs sm:text-sm">
-                          <Sparkles size={16} className="text-teal-600 shrink-0" />
-                          <span>思い出の質問に正解すると開放される内容</span>
+                      <div className="p-4 sm:p-5 bg-gradient-to-br from-teal-50/90 via-emerald-50/70 to-slate-50 rounded-2xl border-2 border-teal-300/80 space-y-3.5 font-sans shadow-xs">
+                        <div className="flex items-center justify-between gap-2 border-b border-teal-200/80 pb-2 flex-wrap">
+                          <span className="text-xs sm:text-sm font-extrabold text-teal-950 flex items-center gap-1.5">
+                            <Sparkles size={16} className="text-amber-500 shrink-0" />
+                            <span>思い出の質問に正解すると開放される 3大情報</span>
+                          </span>
+                          <span className="text-[10px] font-bold text-teal-800 bg-white/90 px-2 py-0.5 rounded-full border border-teal-200 shadow-2xs">
+                            秘密の暗号化解除
+                          </span>
                         </div>
                         
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
-                          <div className="p-2.5 bg-white rounded-xl border border-teal-200/80 flex items-center gap-2 shadow-2xs">
-                            <span className="w-7 h-7 rounded-lg bg-teal-100/80 text-teal-800 flex items-center justify-center font-bold text-xs shrink-0">👤</span>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
+                          {/* 1. 差出人の実名（フルネーム）の開示 */}
+                          <div className="p-3 bg-white rounded-xl border border-teal-200/90 shadow-2xs flex items-center gap-3">
+                            <div className="w-9 h-9 rounded-xl bg-teal-100 text-teal-800 flex items-center justify-center font-bold text-base shrink-0 shadow-2xs">
+                              👤
+                            </div>
                             <div>
-                              <span className="text-[10px] text-slate-400 font-bold block">差出人の実名</span>
-                              <span className="font-bold text-slate-800">フルネーム開示</span>
+                              <div className="text-xs font-extrabold text-slate-900 leading-tight">【差出人の実名】</div>
+                              <div className="text-[10.5px] text-teal-800 font-medium">フルネームを開示</div>
                             </div>
                           </div>
 
-                          <div className="p-2.5 bg-white rounded-xl border border-teal-200/80 flex items-center gap-2 shadow-2xs">
-                            <span className="w-7 h-7 rounded-lg bg-teal-100/80 text-teal-800 flex items-center justify-center font-bold text-xs shrink-0">✉️</span>
+                          {/* 2. 手紙の全文とエピソードを開封 */}
+                          <div className="p-3 bg-white rounded-xl border border-emerald-200/90 shadow-2xs flex items-center gap-3">
+                            <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-base shrink-0 shadow-2xs">
+                              💌
+                            </div>
                             <div>
-                              <span className="text-[10px] text-slate-400 font-bold block">あなた宛の手紙</span>
-                              <span className="font-bold text-slate-800">本文メッセージ</span>
+                              <div className="text-xs font-extrabold text-slate-900 leading-tight">【手紙の全文】</div>
+                              <div className="text-[10.5px] text-emerald-800 font-medium">エピソードを開封</div>
                             </div>
                           </div>
 
-                          <div className="p-2.5 bg-white rounded-xl border border-teal-200/80 flex items-center gap-2 shadow-2xs">
-                            <span className="w-7 h-7 rounded-lg bg-teal-100/80 text-teal-800 flex items-center justify-center font-bold text-xs shrink-0">📱</span>
+                          {/* 3. お相手の連絡先（LINE・メール等） */}
+                          <div className="p-3 bg-white rounded-xl border border-indigo-200/90 shadow-2xs flex items-center gap-3">
+                            <div className="w-9 h-9 rounded-xl bg-indigo-100 text-indigo-800 flex items-center justify-center font-bold text-base shrink-0 shadow-2xs">
+                              📱
+                            </div>
                             <div>
-                              <span className="text-[10px] text-slate-400 font-bold block">直接の繋がり</span>
-                              <span className="font-bold text-slate-800">連絡先の開示</span>
+                              <div className="text-xs font-extrabold text-slate-900 leading-tight">【お相手の連絡先】</div>
+                              <div className="text-[10.5px] text-indigo-800 font-medium">LINE・メール等</div>
                             </div>
                           </div>
                         </div>
