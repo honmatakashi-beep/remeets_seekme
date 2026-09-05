@@ -615,10 +615,10 @@ export const PricingPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
             {/* 1. 会員登録 */}
             <div className="p-4 rounded-2xl bg-slate-50/80 border border-slate-200/90 flex items-start justify-between gap-3 hover:border-emerald-300 transition-colors">
-              <div className="space-y-1 min-w-0">
-                <div className="flex items-center gap-1.5 flex-nowrap min-w-0">
+              <div className="space-y-1">
+                <div className="flex items-center gap-1.5 flex-nowrap">
                   <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-md whitespace-nowrap shrink-0">無料</span>
-                  <h3 className="text-xs sm:text-sm font-bold text-slate-900 whitespace-nowrap truncate">会員登録・アカウント維持</h3>
+                  <h3 className="text-xs sm:text-sm font-bold text-slate-900 whitespace-nowrap">会員登録・アカウント維持</h3>
                 </div>
                 <p className="text-xs text-slate-600 leading-relaxed">
                   LINE / Google 連携による安全ログイン。登録料・年会費・更新料は永久に無料です。
@@ -632,10 +632,10 @@ export const PricingPage = () => {
 
             {/* 2. ボトルメールの投函 */}
             <div className="p-4 rounded-2xl bg-slate-50/80 border border-slate-200/90 flex items-start justify-between gap-3 hover:border-emerald-300 transition-colors">
-              <div className="space-y-1 min-w-0">
-                <div className="flex items-center gap-1.5 flex-nowrap min-w-0">
+              <div className="space-y-1">
+                <div className="flex items-center gap-1.5 flex-nowrap">
                   <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-md whitespace-nowrap shrink-0">無料</span>
-                  <h3 className="text-xs sm:text-sm font-bold text-slate-900 whitespace-nowrap truncate">ボトルメールの投函</h3>
+                  <h3 className="text-xs sm:text-sm font-bold text-slate-900 whitespace-nowrap">ボトルメールの投函</h3>
                 </div>
                 <p className="text-xs text-slate-600 leading-relaxed">
                   大切な人への想い出の手紙や感謝レターを、何通でも無制限に海へ流せます。
@@ -649,10 +649,10 @@ export const PricingPage = () => {
 
             {/* 3. ボトルメールの検索 */}
             <div className="p-4 rounded-2xl bg-slate-50/80 border border-slate-200/90 flex items-start justify-between gap-3 hover:border-emerald-300 transition-colors">
-              <div className="space-y-1 min-w-0">
-                <div className="flex items-center gap-1.5 flex-nowrap min-w-0">
+              <div className="space-y-1">
+                <div className="flex items-center gap-1.5 flex-nowrap">
                   <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-md whitespace-nowrap shrink-0">無料</span>
-                  <h3 className="text-xs sm:text-sm font-bold text-slate-900 whitespace-nowrap truncate">ボトルメールの検索・閲覧</h3>
+                  <h3 className="text-xs sm:text-sm font-bold text-slate-900 whitespace-nowrap">ボトルメールの検索・閲覧</h3>
                 </div>
                 <p className="text-xs text-slate-600 leading-relaxed">
                   実名・学校名・年代・キーワードなど、自分宛ての手紙を何度でも自由に検索できます。
@@ -666,10 +666,10 @@ export const PricingPage = () => {
 
             {/* 4. 質問に答える（クイズ照合） */}
             <div className="p-4 rounded-2xl bg-slate-50/80 border border-slate-200/90 flex items-start justify-between gap-3 hover:border-emerald-300 transition-colors">
-              <div className="space-y-1 min-w-0">
-                <div className="flex items-center gap-1.5 flex-nowrap min-w-0">
+              <div className="space-y-1">
+                <div className="flex items-center gap-1.5 flex-nowrap">
                   <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-md whitespace-nowrap shrink-0">無料</span>
-                  <h3 className="text-xs sm:text-sm font-bold text-slate-900 whitespace-nowrap truncate">秘密の質問（思い出クイズ）回答</h3>
+                  <h3 className="text-xs sm:text-sm font-bold text-slate-900 whitespace-nowrap">思い出クイズ回答・照合</h3>
                 </div>
                 <p className="text-xs text-slate-600 leading-relaxed">
                   二人の想い出を照合するクイズへの回答・正誤判定は何度でも無料で挑戦可能です。
@@ -683,10 +683,10 @@ export const PricingPage = () => {
 
             {/* 5. 手紙の開封・連絡先開示 */}
             <div className="p-4 rounded-2xl bg-indigo-50/50 border border-indigo-200 flex items-start justify-between gap-3 hover:border-indigo-400 transition-colors">
-              <div className="space-y-1 min-w-0">
-                <div className="flex items-center gap-1.5 flex-nowrap min-w-0">
-                  <span className="px-2 py-0.5 bg-indigo-600 text-white text-[10px] font-bold rounded-md whitespace-nowrap shrink-0">クイズ正解時のみ</span>
-                  <h3 className="text-xs sm:text-sm font-bold text-indigo-950 whitespace-nowrap truncate">手紙の開封・連絡先開示手続き</h3>
+              <div className="space-y-1">
+                <div className="flex items-center gap-1.5 flex-nowrap">
+                  <span className="px-2 py-0.5 bg-indigo-600 text-white text-[10px] font-bold rounded-md whitespace-nowrap shrink-0">クイズ正解時</span>
+                  <h3 className="text-xs sm:text-sm font-bold text-indigo-950 whitespace-nowrap">手紙開封・連絡先開示</h3>
                 </div>
                 <p className="text-xs text-slate-600 leading-relaxed">
                   クイズ正解後、手紙全文の解凍とお相手の直通連絡先（LINE ID・メール等）を開示します。
@@ -701,10 +701,10 @@ export const PricingPage = () => {
 
             {/* 6. 安心公的本人確認 eKYC */}
             <div className="p-4 rounded-2xl bg-amber-50/50 border border-amber-200 flex items-start justify-between gap-3 hover:border-amber-400 transition-colors">
-              <div className="space-y-1 min-w-0">
-                <div className="flex items-center gap-1.5 flex-nowrap min-w-0">
-                  <span className="px-2 py-0.5 bg-amber-600 text-white text-[10px] font-bold rounded-md whitespace-nowrap shrink-0">任意支払い</span>
-                  <h3 className="text-xs sm:text-sm font-bold text-amber-950 whitespace-nowrap truncate">安心公的本人確認（eKYC）手続き</h3>
+              <div className="space-y-1">
+                <div className="flex items-center gap-1.5 flex-nowrap">
+                  <span className="px-2 py-0.5 bg-amber-600 text-white text-[10px] font-bold rounded-md whitespace-nowrap shrink-0">任意</span>
+                  <h3 className="text-xs sm:text-sm font-bold text-amber-950 whitespace-nowrap">公的本人確認（eKYC）</h3>
                 </div>
                 <p className="text-xs text-slate-600 leading-relaxed">
                   身分証照合で「🛡️ 公的本人確認済」バッジを付与。差出人・受取人ともに任意で受検可能。
