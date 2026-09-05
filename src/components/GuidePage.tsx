@@ -133,7 +133,7 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-white p-6 md:p-8 rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-md transition-all relative overflow-hidden group"
+            className="bg-white p-6 md:p-8 rounded-3xl border-2 border-teal-200/90 shadow-sm hover:shadow-md transition-all relative overflow-hidden group"
           >
             {/* 右側イラスト＆左側グラデーション */}
             <div className="absolute top-0 right-0 bottom-0 w-1/2 sm:w-5/12 md:w-1/2 pointer-events-none overflow-hidden select-none">
@@ -191,7 +191,7 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-white p-6 md:p-8 rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-md transition-all relative overflow-hidden group"
+            className="bg-white p-6 md:p-8 rounded-3xl border-2 border-blue-200/90 shadow-sm hover:shadow-md transition-all relative overflow-hidden group"
           >
             {/* 右側イラスト＆左側グラデーション */}
             <div className="absolute top-0 right-0 bottom-0 w-1/2 sm:w-5/12 md:w-1/2 pointer-events-none overflow-hidden select-none">
@@ -249,7 +249,7 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-white p-6 md:p-8 rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-md transition-all relative overflow-hidden group"
+            className="bg-white p-6 md:p-8 rounded-3xl border-2 border-amber-200/90 shadow-sm hover:shadow-md transition-all relative overflow-hidden group"
           >
             {/* 右側イラスト＆左側グラデーション */}
             <div className="absolute top-0 right-0 bottom-0 w-1/2 sm:w-5/12 md:w-1/2 pointer-events-none overflow-hidden select-none">
@@ -307,7 +307,7 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-white p-6 md:p-8 rounded-3xl border-2 border-indigo-200 shadow-sm hover:shadow-md transition-all relative overflow-hidden group"
+            className="bg-white p-6 md:p-8 rounded-3xl border-2 border-indigo-200/90 shadow-sm hover:shadow-md transition-all relative overflow-hidden group"
           >
             {/* 右側イラスト＆左側グラデーション */}
             <div className="absolute top-0 right-0 bottom-0 w-1/2 sm:w-5/12 md:w-1/2 pointer-events-none overflow-hidden select-none">
