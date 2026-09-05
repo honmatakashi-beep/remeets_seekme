@@ -5302,7 +5302,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
   const otherUserFullNameToUse = isOwner ? verifiedByUser?.full_name : searcherFullName;
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-4 md:py-8">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4 md:py-8">
       {/* 投函完了お知らせ画面・モーダル (投稿者向け: 大きく鮮明なイラストヘッダー付き特別カード) */}
       <AnimatePresence>
         {showPostedBanner && (
@@ -5483,7 +5483,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
         ref={welcomeBannerRef}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="mb-8 p-12 md:p-16 rounded-[40px] bg-white border border-brand-border relative overflow-hidden text-center shadow-md"
+        className="mb-8 p-6 sm:p-8 md:p-10 rounded-[32px] md:rounded-[36px] bg-white border border-brand-border relative overflow-hidden text-center shadow-md"
       >
         {/* Subtle Decorative Effects */}
         <div className="absolute inset-0 pointer-events-none z-0">
@@ -5505,7 +5505,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
         {/* 背景イラスト（優しく淡いグラデーションで文字を引き立てる背景） */}
         <div className="absolute inset-0 flex justify-center items-center pointer-events-none overflow-hidden select-none z-0">
           <div 
-            className="relative w-full max-w-4xl h-full transition-opacity duration-500"
+            className="relative w-full max-w-3xl h-full transition-opacity duration-500"
             style={{ opacity: (isQuestionVerified || showDetails || post.status === 'resolved') ? 0.82 : 0.85 }}
           >
             <img 
@@ -6067,7 +6067,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
             )}
 
             {isOwner && (
-              <div className="glass-card p-6 md:p-12 border border-brand-primary/20 text-center space-y-8 bg-white rounded-[32px] shadow-sm font-sans mx-auto max-w-2xl">
+              <div className="glass-card p-6 md:p-12 border border-brand-primary/20 text-center space-y-8 bg-white rounded-[32px] shadow-sm font-sans mx-auto w-full">
                 <div className="space-y-2">
                   <p className="text-black font-serif text-2.5xl font-bold">これはあなたが漂流させたボトルです</p>
                   <p className="text-sm text-brand-dark/95 leading-relaxed">
@@ -6157,7 +6157,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.99, y: -15 }}
             transition={{ duration: 0.4 }}
-            className="max-w-2xl mx-auto space-y-6 animate-fade-in text-left font-sans scroll-mt-28"
+            className="w-full mx-auto space-y-6 animate-fade-in text-left font-sans scroll-mt-28"
           >
             {/* 戻るボタン */}
             <div className="flex items-center">
