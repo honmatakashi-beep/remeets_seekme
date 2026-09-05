@@ -5886,18 +5886,6 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               {/* showDetails が true の場合（開示完了・再会後画面） */}
               {showDetails ? (
                 <div id="reunion-success-anchor" className="space-y-6 scroll-mt-28">
-                  {/* 🎉 再会祝福レインボーバナー */}
-                  <div className="p-5 sm:p-6 bg-gradient-to-r from-teal-50 via-purple-50/40 to-pink-50/40 rounded-2xl border-2 border-teal-300/80 text-center space-y-2 shadow-xs">
-                    <div className="flex items-center justify-center gap-2 flex-wrap">
-                      <Sparkles size={20} className="text-amber-500 animate-bounce shrink-0" />
-                      <ReunionEffectTitle effectType="pure-rainbow-flow" className="text-xl sm:text-2xl md:text-3xl" />
-                      <Sparkles size={20} className="text-amber-500 animate-bounce shrink-0" />
-                    </div>
-                    <p className="text-xs sm:text-sm text-slate-700 font-serif font-medium">
-                      あなた宛ての手紙全文と直通連絡先が開示されました。止まっていた大切な思い出が、ここから再び動き出します。
-                    </p>
-                  </div>
-
                   {/* 👤 1. 差出人（本名・呼称）＆ ゆかりの地・所属情報カード */}
                   <div className="p-5 sm:p-6 bg-slate-50/90 rounded-2xl border border-slate-200/90 space-y-4 font-sans text-left">
                     <div className="flex items-center justify-between gap-2 flex-wrap border-b border-slate-200/80 pb-3">
