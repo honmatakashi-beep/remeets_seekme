@@ -66,9 +66,298 @@ export const PolicePresentationSlideViewer: React.FC<PolicePresentationSlideView
   const [timerSeconds, setTimerSeconds] = React.useState<number>(0);
   const [isTimerRunning, setIsTimerRunning] = React.useState<boolean>(false);
   const [showNotesDrawer, setShowNotesDrawer] = React.useState<boolean>(false);
+  const [slideFontScale, setSlideFontScale] = React.useState<'normal' | 'large' | 'xlarge'>('large');
   const [copiedScript, setCopiedScript] = React.useState<boolean>(false);
   const [notesFontSize, setNotesFontSize] = React.useState<'sm' | 'base' | 'lg'>('sm');
   const slideContainerRef = React.useRef<HTMLDivElement>(null);
+  const channelRef = React.useRef<BroadcastChannel | null>(null);
+  const presenterWindowRef = React.useRef<Window | null>(null);
+
+  // BroadcastChannel for presenter window sync
+  React.useEffect(() => {
+    try {
+      const ch = new BroadcastChannel('remeets_presenter_sync');
+      channelRef.current = ch;
+      ch.onmessage = (event) => {
+        const { type, payload } = event.data || {};
+        if (type === 'NAVIGATE' && typeof payload?.index === 'number') {
+          setActiveSlideIdx(payload.index);
+        } else if (type === 'TIMER_TOGGLE') {
+          setIsTimerRunning((prev) => !prev);
+        } else if (type === 'TIMER_RESET') {
+          setIsTimerRunning(false);
+          setTimerSeconds(0);
+        }
+      };
+      return () => {
+        ch.close();
+      };
+    } catch (e) {
+      console.warn('BroadcastChannel not supported', e);
+    }
+  }, []);
+
+  // Broadcast state changes to presenter window
+  React.useEffect(() => {
+    if (channelRef.current) {
+      channelRef.current.postMessage({
+        type: 'SLIDE_CHANGE',
+        payload: {
+          index: activeSlideIdx,
+          total: slides.length,
+          slide: slides[activeSlideIdx],
+          scenario: scenarios[activeSlideIdx] || '',
+          nextSlide: slides[activeSlideIdx + 1] || null,
+          timerSeconds,
+          isTimerRunning
+        }
+      });
+    }
+  }, [activeSlideIdx, slides, scenarios, timerSeconds, isTimerRunning]);
+
+  // Open independent Presenter Console Window
+  const openPresenterWindow = () => {
+    const w = 780;
+    const h = 880;
+    const left = (window.screen.width - w) / 2;
+    const top = (window.screen.height - h) / 2;
+    const newWin = window.open(
+      '',
+      'ReMEETsPresenterConsole',
+      `width=${w},height=${h},top=${top},left=${left},resizable=yes,scrollbars=yes,status=no`
+    );
+    if (!newWin) {
+      alert('ポップアップがブロックされました。ブラウザのポップアップ許可を有効にしてください。');
+      return;
+    }
+    presenterWindowRef.current = newWin;
+
+    const currentSlide = slides[activeSlideIdx] || { title: '', category: '', points: [] };
+    const currentScenario = scenarios[activeSlideIdx] || 'このスライドの口頭シナリオは設定されていません。';
+    const nextSlide = slides[activeSlideIdx + 1];
+
+    const htmlContent = `<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>🎤 ReMEETs 発表者用台本コンソール (Presenter View)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif; }
+    .serif-text { font-family: "Hiragino Mincho ProN", "Yu Mincho", serif; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col p-4 select-none">
+  <header class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+    <div class="flex items-center gap-2">
+      <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
+      <h1 class="text-sm font-bold tracking-wide text-white font-mono">ReMEETs 警察説明 発表者用台本ビュー</h1>
+    </div>
+    <div class="flex items-center gap-3">
+      <div id="timer-box" class="bg-slate-900 border border-slate-700 px-3 py-1 rounded-xl text-emerald-400 font-mono text-sm font-bold flex items-center gap-2">
+        <span>⏱️</span>
+        <span id="timer-display">00:00</span>
+      </div>
+      <button id="btn-timer-toggle" class="bg-slate-800 hover:bg-slate-700 text-xs px-2.5 py-1 rounded-lg font-bold cursor-pointer">再生/停止</button>
+      <button id="btn-timer-reset" class="bg-slate-800 hover:bg-slate-700 text-xs px-2.5 py-1 rounded-lg font-bold text-rose-400 cursor-pointer">リセット</button>
+    </div>
+  </header>
+
+  <div class="bg-slate-900 border border-slate-800 p-3 rounded-2xl flex items-center justify-between gap-3 mb-4">
+    <div class="flex items-center gap-2">
+      <button id="btn-prev" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-sm font-bold cursor-pointer transition">◀ 前へ</button>
+      <button id="btn-next" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-sm font-bold cursor-pointer text-white shadow-md transition">次へ ▶</button>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="text-xs text-slate-400 font-mono">スライド選択:</span>
+      <select id="slide-select" class="bg-slate-800 border border-slate-700 text-white text-xs rounded-xl px-3 py-2 font-bold cursor-pointer max-w-[280px]">
+        ${slides.map((s, i) => `<option value="${i}" ${i === activeSlideIdx ? 'selected' : ''}>SLIDE ${i + 1}: ${s.category} - ${s.title.slice(0, 18)}...</option>`).join('')}
+      </select>
+    </div>
+    <div class="text-xs font-mono font-bold text-emerald-400">
+      <span id="slide-num">${activeSlideIdx + 1}</span> / ${slides.length} 葉
+    </div>
+  </div>
+
+  <main class="grid grid-cols-1 md:grid-cols-3 gap-4 flex-grow">
+    <div class="md:col-span-2 bg-slate-900 border border-slate-800 rounded-3xl p-5 flex flex-col justify-between shadow-xl">
+      <div>
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
+          <div>
+            <span id="slide-cat" class="text-[10px] uppercase font-bold tracking-wider text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-800/40">${currentSlide.category}</span>
+            <h2 id="slide-title" class="text-base font-bold text-white mt-1.5 leading-snug">${currentSlide.title}</h2>
+          </div>
+          <div class="flex items-center bg-slate-800 rounded-xl p-1 border border-slate-700 text-xs">
+            <button id="font-sm" class="px-2 py-1 rounded text-slate-400 hover:text-white cursor-pointer">小</button>
+            <button id="font-md" class="px-2 py-1 rounded text-slate-400 hover:text-white cursor-pointer">標準</button>
+            <button id="font-lg" class="px-2 py-1 rounded bg-slate-700 text-white font-bold cursor-pointer">大</button>
+            <button id="font-xl" class="px-2 py-1 rounded text-slate-400 hover:text-white cursor-pointer">特大</button>
+          </div>
+        </div>
+        <div class="text-xs text-slate-400 font-bold mb-2">🎤 口頭発表シナリオ（読み上げ原稿）:</div>
+        <div id="scenario-content" class="serif-text text-slate-100 text-base leading-relaxed overflow-y-auto max-h-[46vh] pr-2 whitespace-pre-wrap selection:bg-emerald-500 selection:text-white bg-slate-950/50 p-4 rounded-2xl border border-slate-800/60">
+          ${currentScenario}
+        </div>
+      </div>
+      <div class="pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+        <span>キーボード [←] [→] [Space] でスライド同期移動</span>
+        <button id="btn-copy" class="text-emerald-400 hover:underline cursor-pointer font-bold">📋 台本をコピー</button>
+      </div>
+    </div>
+
+    <div class="space-y-4 flex flex-col justify-between">
+      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-4 flex-grow shadow-lg">
+        <h3 class="text-xs font-bold text-slate-300 border-b border-slate-800 pb-2 mb-2 flex items-center gap-1.5">
+          <span>📌</span>
+          <span>現在のスライド要点</span>
+        </h3>
+        <ul id="points-list" class="space-y-2 text-xs text-slate-300 leading-relaxed overflow-y-auto max-h-[30vh]">
+          ${(currentSlide.points || []).map(p => `<li class="flex items-start gap-1.5"><span class="text-emerald-400 mt-0.5">•</span><span>${p}</span></li>`).join('')}
+        </ul>
+      </div>
+
+      <div class="bg-slate-900/80 border border-slate-800 rounded-3xl p-4 shadow-lg">
+        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">⏭️ 次のスライド予告:</div>
+        <div id="next-title" class="text-xs font-bold text-slate-200 line-clamp-2">
+          ${nextSlide ? nextSlide.title : '（最後のスライドです）'}
+        </div>
+        <div id="next-cat" class="text-[10px] text-emerald-400/80 mt-1 font-mono">
+          ${nextSlide ? nextSlide.category : ''}
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const ch = new BroadcastChannel('remeets_presenter_sync');
+    const slidesData = ${JSON.stringify(slides)};
+    const scenariosData = ${JSON.stringify(scenarios)};
+    let currentIndex = ${activeSlideIdx};
+    let timerSec = 0;
+    let isTimerRunning = false;
+    let timerInterval = null;
+
+    function updateView(data) {
+      if (!data) return;
+      currentIndex = data.index;
+      const slide = data.slide || slidesData[currentIndex] || {};
+      const scenario = data.scenario || scenariosData[currentIndex] || '';
+      const nextSlide = data.nextSlide || slidesData[currentIndex + 1];
+
+      document.getElementById('slide-num').textContent = currentIndex + 1;
+      document.getElementById('slide-select').value = currentIndex;
+      document.getElementById('slide-cat').textContent = slide.category || '';
+      document.getElementById('slide-title').textContent = slide.title || '';
+      document.getElementById('scenario-content').textContent = scenario;
+
+      const ptsUl = document.getElementById('points-list');
+      ptsUl.innerHTML = (slide.points || []).map(p => '<li class="flex items-start gap-1.5"><span class="text-emerald-400 mt-0.5">•</span><span>' + p + '</span></li>').join('');
+
+      document.getElementById('next-title').textContent = nextSlide ? nextSlide.title : '（最後のスライドです）';
+      document.getElementById('next-cat').textContent = nextSlide ? nextSlide.category : '';
+
+      document.getElementById('btn-prev').disabled = currentIndex === 0;
+      document.getElementById('btn-next').disabled = currentIndex === slidesData.length - 1;
+    }
+
+    ch.onmessage = (e) => {
+      const { type, payload } = e.data || {};
+      if (type === 'SLIDE_CHANGE') {
+        updateView(payload);
+      }
+    };
+
+    document.getElementById('btn-prev').onclick = () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+        ch.postMessage({ type: 'NAVIGATE', payload: { index: currentIndex } });
+        updateView({ index: currentIndex, slide: slidesData[currentIndex], scenario: scenariosData[currentIndex] });
+      }
+    };
+
+    document.getElementById('btn-next').onclick = () => {
+      if (currentIndex < slidesData.length - 1) {
+        currentIndex++;
+        ch.postMessage({ type: 'NAVIGATE', payload: { index: currentIndex } });
+        updateView({ index: currentIndex, slide: slidesData[currentIndex], scenario: scenariosData[currentIndex] });
+      }
+    };
+
+    document.getElementById('slide-select').onchange = (e) => {
+      currentIndex = parseInt(e.target.value, 10);
+      ch.postMessage({ type: 'NAVIGATE', payload: { index: currentIndex } });
+      updateView({ index: currentIndex, slide: slidesData[currentIndex], scenario: scenariosData[currentIndex] });
+    };
+
+    function formatTime(s) {
+      const m = Math.floor(s / 60);
+      const sec = s % 60;
+      return String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+    }
+
+    document.getElementById('btn-timer-toggle').onclick = () => {
+      isTimerRunning = !isTimerRunning;
+      if (isTimerRunning) {
+        timerInterval = setInterval(() => {
+          timerSec++;
+          document.getElementById('timer-display').textContent = formatTime(timerSec);
+        }, 1000);
+      } else {
+        clearInterval(timerInterval);
+      }
+      ch.postMessage({ type: 'TIMER_TOGGLE' });
+    };
+
+    document.getElementById('btn-timer-reset').onclick = () => {
+      isTimerRunning = false;
+      clearInterval(timerInterval);
+      timerSec = 0;
+      document.getElementById('timer-display').textContent = '00:00';
+      ch.postMessage({ type: 'TIMER_RESET' });
+    };
+
+    const contentEl = document.getElementById('scenario-content');
+    const fontBtns = ['font-sm', 'font-md', 'font-lg', 'font-xl'];
+    const fontClasses = {
+      'font-sm': 'text-xs leading-relaxed',
+      'font-md': 'text-sm leading-relaxed',
+      'font-lg': 'text-base leading-relaxed',
+      'font-xl': 'text-xl leading-loose font-medium'
+    };
+
+    fontBtns.forEach(id => {
+      document.getElementById(id).onclick = () => {
+        fontBtns.forEach(bId => {
+          document.getElementById(bId).className = 'px-2 py-1 rounded text-slate-400 hover:text-white cursor-pointer';
+        });
+        document.getElementById(id).className = 'px-2 py-1 rounded bg-slate-700 text-white font-bold cursor-pointer';
+        contentEl.className = 'serif-text text-slate-100 ' + fontClasses[id] + ' overflow-y-auto max-h-[46vh] pr-2 whitespace-pre-wrap selection:bg-emerald-500 selection:text-white bg-slate-950/50 p-4 rounded-2xl border border-slate-800/60';
+      };
+    });
+
+    document.getElementById('btn-copy').onclick = () => {
+      navigator.clipboard.writeText(scenariosData[currentIndex] || '');
+      const btn = document.getElementById('btn-copy');
+      btn.textContent = 'コピー完了 ✓';
+      setTimeout(() => btn.textContent = '📋 台本をコピー', 2000);
+    };
+
+    window.onkeydown = (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        document.getElementById('btn-next').click();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        document.getElementById('btn-prev').click();
+      }
+    };
+  </script>
+</body>
+</html>`;
+
+    newWin.document.open();
+    newWin.document.write(htmlContent);
+    newWin.document.close();
+  };
 
   // Timer interval
   React.useEffect(() => {
@@ -1277,16 +1566,32 @@ export const PolicePresentationSlideViewer: React.FC<PolicePresentationSlideView
         >
           {/* Title Slide Layout */}
           {activeSlide?.layout === 'title' ? (
-            <div className="space-y-4 text-left px-2 sm:px-8 md:px-12 my-auto z-10">
-              <div className="inline-flex items-center gap-2 bg-emerald-500/15 border border-emerald-400/40 px-3 py-1 rounded-full text-emerald-400 font-mono text-[9px] sm:text-xs font-bold">
-                <ShieldCheck size={14} />
+            <div className="space-y-4 md:space-y-6 text-left px-2 sm:px-8 md:px-12 my-auto z-10">
+              <div className={`inline-flex items-center gap-2 bg-emerald-500/15 border border-emerald-400/40 px-3 py-1 rounded-full text-emerald-400 font-mono font-bold ${
+                isFullscreen ? 'text-xs sm:text-sm' : 'text-[9px] sm:text-xs'
+              }`}>
+                <ShieldCheck size={isFullscreen ? 18 : 14} />
                 <span>POLICE & PUBLIC SAFETY COMPLIANCE REPORT</span>
               </div>
-              <h2 className="text-base sm:text-2xl md:text-3xl font-bold font-serif leading-snug whitespace-pre-wrap tracking-wide text-white">
+              <h2 className={`font-bold font-serif leading-snug whitespace-pre-wrap tracking-wide text-white ${
+                isFullscreen
+                  ? 'text-2xl sm:text-4xl md:text-5xl lg:text-6xl'
+                  : slideFontScale === 'xlarge'
+                  ? 'text-xl sm:text-2xl md:text-4xl'
+                  : slideFontScale === 'large'
+                  ? 'text-lg sm:text-2xl md:text-3xl'
+                  : 'text-base sm:text-xl md:text-2xl'
+              }`}>
                 {activeSlide?.title}
               </h2>
               {activeSlide?.subtitle && (
-                <p className="text-[9px] sm:text-xs md:text-sm text-slate-300 font-sans leading-relaxed whitespace-pre-wrap border-t border-slate-700 pt-3">
+                <p className={`text-slate-300 font-sans leading-relaxed whitespace-pre-wrap border-t border-slate-700 pt-3 md:pt-5 ${
+                  isFullscreen
+                    ? 'text-sm sm:text-lg md:text-xl'
+                    : slideFontScale === 'xlarge'
+                    ? 'text-xs sm:text-sm md:text-base'
+                    : 'text-[9px] sm:text-xs md:text-sm'
+                }`}>
                   {activeSlide?.subtitle}
                 </p>
               )}
@@ -1297,43 +1602,69 @@ export const PolicePresentationSlideViewer: React.FC<PolicePresentationSlideView
               <div className="space-y-1 sm:space-y-2 z-10">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="w-1.5 h-4 bg-emerald-600 rounded-full" />
-                    <span className="text-[9px] sm:text-[11px] font-bold text-emerald-700 tracking-wider uppercase font-sans">
+                    <div className={`bg-emerald-600 rounded-full ${isFullscreen ? 'w-2 h-5' : 'w-1.5 h-4'}`} />
+                    <span className={`font-bold text-emerald-700 tracking-wider uppercase font-sans ${
+                      isFullscreen ? 'text-xs sm:text-sm md:text-base' : 'text-[9px] sm:text-[11px]'
+                    }`}>
                       {activeSlide?.category}
                     </span>
                   </div>
-                  <span className="text-[9px] sm:text-[10px] font-mono text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200">
+                  <span className={`font-mono text-slate-400 bg-slate-100 rounded-full border border-slate-200 ${
+                    isFullscreen ? 'text-xs px-3 py-1 font-bold' : 'text-[9px] sm:text-[10px] px-2 py-0.5'
+                  }`}>
                     SLIDE {String(activeSlideIdx + 1).padStart(2, '0')} / {slides.length}
                   </span>
                 </div>
-                <h3 className="text-xs sm:text-base md:text-xl font-bold font-serif text-[#1A2735]">
+                <h3 className={`font-bold font-serif text-[#1A2735] ${
+                  isFullscreen
+                    ? 'text-xl sm:text-2xl md:text-3xl lg:text-4xl leading-snug'
+                    : slideFontScale === 'xlarge'
+                    ? 'text-sm sm:text-lg md:text-2xl'
+                    : slideFontScale === 'large'
+                    ? 'text-xs sm:text-base md:text-xl'
+                    : 'text-xs sm:text-sm md:text-base'
+                }`}>
                   {activeSlide?.title}
                 </h3>
                 <div className="w-full h-[1.5px] bg-slate-200" />
               </div>
 
               {/* Content Slide Body */}
-              <div className="flex-grow flex flex-col justify-center my-auto overflow-hidden z-10">
+              <div className="flex-grow flex flex-col justify-center my-auto overflow-hidden z-10 py-1 sm:py-2">
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
-                  <ul className="space-y-2 sm:space-y-3 px-2 text-left md:col-span-3">
+                  <ul className={`space-y-2 px-2 text-left md:col-span-3 ${
+                    isFullscreen ? 'sm:space-y-4' : 'sm:space-y-3'
+                  }`}>
                     {activeSlide?.points?.map((pt, pIdx) => (
                       <li
                         key={pIdx}
-                        className="flex items-start gap-2.5 text-[10.5px] sm:text-xs md:text-[13.5px] font-sans text-slate-800 leading-relaxed"
+                        className={`flex items-start gap-2.5 font-sans text-slate-800 ${
+                          isFullscreen
+                            ? 'text-sm sm:text-base md:text-lg lg:text-xl leading-relaxed'
+                            : slideFontScale === 'xlarge'
+                            ? 'text-xs sm:text-sm md:text-base leading-relaxed'
+                            : slideFontScale === 'large'
+                            ? 'text-[11px] sm:text-xs md:text-[14px] leading-relaxed'
+                            : 'text-[10px] sm:text-[11px] md:text-xs leading-relaxed'
+                        }`}
                       >
-                        <span className="text-emerald-600 mt-0.5 text-xs select-none">✦</span>
+                        <span className={`text-emerald-600 mt-0.5 select-none ${isFullscreen ? 'text-base' : 'text-xs'}`}>✦</span>
                         <span>{pt}</span>
                       </li>
                     ))}
                   </ul>
-                  <div className="hidden md:flex md:col-span-2 items-center justify-center">
+                  <div className={`hidden md:flex md:col-span-2 items-center justify-center ${
+                    isFullscreen ? 'scale-110 lg:scale-125 transition-transform' : ''
+                  }`}>
                     {renderSlideDiagram(activeSlide?.id)}
                   </div>
                 </div>
               </div>
 
               {/* Content Slide Footer */}
-              <div className="flex justify-between items-center text-[8px] sm:text-[9.5px] text-slate-400 border-t border-slate-200 pt-2 font-mono z-10">
+              <div className={`flex justify-between items-center text-slate-400 border-t border-slate-200 pt-2 font-mono z-10 ${
+                isFullscreen ? 'text-[10px] sm:text-xs' : 'text-[8px] sm:text-[9.5px]'
+              }`}>
                 <span>ReMEETs 治安・防衛コンプライアンス管理事務局</span>
                 <span>CONFIDENTIAL & POLICE AUDIT READY</span>
               </div>
@@ -1343,7 +1674,7 @@ export const PolicePresentationSlideViewer: React.FC<PolicePresentationSlideView
 
         {/* Fullscreen Floating Controls Dock */}
         {isFullscreen && (
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-slate-900/90 backdrop-blur border border-slate-700 px-4 py-2 rounded-2xl flex items-center gap-4 text-white z-50 shadow-2xl">
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-slate-900/90 backdrop-blur border border-slate-700 px-4 py-2 rounded-2xl flex items-center gap-3 sm:gap-4 text-white z-50 shadow-2xl">
             <button
               type="button"
               onClick={() => setActiveSlideIdx((prev) => Math.max(0, prev - 1))}
@@ -1376,12 +1707,21 @@ export const PolicePresentationSlideViewer: React.FC<PolicePresentationSlideView
             </button>
             <button
               type="button"
+              onClick={openPresenterWindow}
+              className="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-bold cursor-pointer flex items-center gap-1 shadow-sm"
+              title="発表者用台本を別ウィンドウで開く"
+            >
+              <ExternalLink size={13} />
+              <span>別窓台本</span>
+            </button>
+            <button
+              type="button"
               onClick={() => setShowNotesDrawer((prev) => !prev)}
               className={`px-2.5 py-1 rounded-lg text-xs font-bold cursor-pointer ${
                 showNotesDrawer ? 'bg-emerald-600 text-white' : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
               }`}
             >
-              台本
+              画面内台本
             </button>
             <button
               type="button"
@@ -1413,7 +1753,14 @@ export const PolicePresentationSlideViewer: React.FC<PolicePresentationSlideView
               {scenarios[activeSlideIdx] || 'このスライドの口頭シナリオは設定されていません。'}
             </div>
             <div className="pt-2 border-t border-slate-800 text-[10px] text-slate-400 font-mono flex justify-between items-center">
-              <span>[F] で全画面解除</span>
+              <button
+                type="button"
+                onClick={openPresenterWindow}
+                className="text-indigo-400 hover:underline cursor-pointer flex items-center gap-1"
+              >
+                <ExternalLink size={11} />
+                <span>別窓で開く</span>
+              </button>
               <button
                 type="button"
                 onClick={copyCurrentScenario}
@@ -1452,7 +1799,39 @@ export const PolicePresentationSlideViewer: React.FC<PolicePresentationSlideView
         </div>
 
         {/* Stopwatch Timer & Tools */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+          {/* Slide Text Size Selector */}
+          <div className="flex items-center bg-slate-800 rounded-xl p-1 border border-slate-700 text-xs">
+            <span className="text-[10px] text-slate-400 font-bold px-1.5 hidden sm:inline">文字:</span>
+            <button
+              type="button"
+              onClick={() => setSlideFontScale('normal')}
+              className={`px-2 py-0.5 rounded text-[11px] font-bold cursor-pointer transition ${
+                slideFontScale === 'normal' ? 'bg-slate-700 text-white shadow-xs' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              標準
+            </button>
+            <button
+              type="button"
+              onClick={() => setSlideFontScale('large')}
+              className={`px-2 py-0.5 rounded text-[11px] font-bold cursor-pointer transition ${
+                slideFontScale === 'large' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              大
+            </button>
+            <button
+              type="button"
+              onClick={() => setSlideFontScale('xlarge')}
+              className={`px-2 py-0.5 rounded text-[11px] font-bold cursor-pointer transition ${
+                slideFontScale === 'xlarge' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              特大
+            </button>
+          </div>
+
           {/* Stopwatch */}
           <div className="flex items-center gap-1.5 bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700">
             <Clock size={14} className="text-emerald-400" />
@@ -1477,6 +1856,17 @@ export const PolicePresentationSlideViewer: React.FC<PolicePresentationSlideView
               <RotateCcw size={13} />
             </button>
           </div>
+
+          {/* Open Presenter Window Button */}
+          <button
+            type="button"
+            onClick={openPresenterWindow}
+            className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm cursor-pointer"
+            title="口頭発表台本を別ウィンドウ（発表者ビュー）で開く"
+          >
+            <ExternalLink size={14} />
+            <span>別窓で台本を開く</span>
+          </button>
 
           {/* Laser toggle */}
           <button
