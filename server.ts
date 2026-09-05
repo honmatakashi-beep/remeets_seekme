@@ -233,8 +233,8 @@ const sendPasswordResetEmail = async (email: string, token: string) => {
   }
 };
 
-// Seed Data
-const seedData = async () => {
+// Seed Data (force=true will clear and re-seed, false will preserve existing data)
+const seedData = async (force: boolean = false) => {
   const hashedPassword = await bcrypt.hash("password123", 10);
   
   // Ensure admin exists
@@ -372,8 +372,15 @@ const seedData = async () => {
     `).run();
   }
 
-  // Clear existing data
-  console.log("Cleaning up old sample data...");
+  // Check if posts already exist in database
+  const existingPostsCount = (db.prepare("SELECT COUNT(*) as count FROM posts").get() as any)?.count || 0;
+  if (existingPostsCount > 0 && !force) {
+    console.log(`[Database] Found ${existingPostsCount} existing posts. Preserving user letters and database state (Startup seeding skipped).`);
+    return;
+  }
+
+  // Clear existing data (only if empty or force=true)
+  console.log(`[Database] ${force ? 'Force re-seeding requested.' : 'Empty database detected.'} Cleaning up and seeding sample data...`);
   try { db.pragma("foreign_keys = OFF"); } catch (e) {}
   db.prepare("DELETE FROM contact_messages").run();
   db.prepare("DELETE FROM post_questions").run();
@@ -7041,7 +7048,7 @@ async function startServer() {
 
   app.post("/api/admin/reset-data", authenticateToken, requirePermission('danger_zone'), async (req, res) => {
     try {
-      await seedData();
+      await seedData(true);
       logAction((req as any).user.id, "DATA_RESET", "Sample data reset by admin", req.ip);
       res.json({ success: true });
     } catch (err) {
