@@ -14582,29 +14582,32 @@ export const ContactPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-brand-light pt-20 pb-20">
-      <div className="max-w-3xl mx-auto px-6">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="glass-card p-8 md:p-12"
-        >
-          <div className="flex items-center gap-4 mb-8 border-b border-brand-border pb-6">
-            <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shrink-0 shadow-sm">
-              <Mail size={26} />
-            </div>
-            <div>
-              <span className="text-[10px] md:text-xs font-bold text-brand-primary uppercase tracking-[0.3em] block mb-0.5 font-sans">
-                Contact & Support
-              </span>
-              <h1 className="text-2xl md:text-3xl font-serif font-bold text-brand-dark tracking-widest leading-tight">
-                お問い合わせ
-              </h1>
-              <p className="text-xs md:text-sm text-brand-dark/60 font-sans leading-relaxed mt-1">
-                サービスに関するご質問やご要望、不具合の報告などがございましたら、以下のフォームよりお気軽にお問い合わせください。
-              </p>
-            </div>
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 md:py-12 font-sans">
+      <Link to="/" className="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-brand-primary mb-6 font-sans transition-colors">
+        <ArrowLeft size={16} />
+        <span>トップページへ戻る</span>
+      </Link>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="glass-card p-6 sm:p-8 md:p-10 bg-white rounded-3xl border border-brand-border shadow-sm space-y-6"
+      >
+        <div className="flex items-center gap-4 border-b border-brand-border pb-6">
+          <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shrink-0 shadow-sm">
+            <Mail size={26} />
           </div>
+          <div>
+            <span className="text-[10px] md:text-xs font-bold text-brand-primary uppercase tracking-[0.3em] block mb-0.5 font-sans">
+              Contact & Support
+            </span>
+            <h1 className="text-2xl md:text-3xl font-serif font-bold text-brand-dark tracking-widest leading-tight">
+              お問い合わせ
+            </h1>
+            <p className="text-xs md:text-sm text-brand-dark/60 font-sans leading-relaxed mt-1">
+              サービスに関するご質問やご要望、不具合の報告などがございましたら、以下のフォームよりお気軽にお問い合わせください。
+            </p>
+          </div>
+        </div>
 
           {status === 'success' ? (
             <motion.div 
@@ -14704,7 +14707,6 @@ export const ContactPage = () => {
           )}
         </motion.div>
       </div>
-    </div>
   );
 };
 

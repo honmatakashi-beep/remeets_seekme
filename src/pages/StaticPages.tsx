@@ -1172,12 +1172,12 @@ export const DeletionRequestPage = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-12 md:py-20 text-black font-sans">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 md:py-12 text-black font-sans">
       <Link to="/" className="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-brand-primary mb-6 font-sans transition-colors">
         <ArrowLeft size={16} />
         <span>トップページへ戻る</span>
       </Link>
-      <div className="glass-card p-6 md:p-10 space-y-8 bg-white rounded-3xl border border-slate-200/90 shadow-lg">
+      <div className="glass-card p-6 sm:p-8 md:p-10 space-y-8 bg-white rounded-3xl border border-brand-border shadow-sm">
         {/* ヘッダー */}
         <div className="flex items-start gap-4 border-b border-slate-150 pb-6">
           <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-200/80 flex items-center justify-center text-rose-600 shrink-0 shadow-xs">
