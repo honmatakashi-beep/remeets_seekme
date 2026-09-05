@@ -4801,6 +4801,120 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
   }, [showDetails, isOwner, searcherId]);
 
   const [hasClickedStartContact, setHasClickedStartContact] = useState(false);
+  const [isOpeningLetter, setIsOpeningLetter] = useState(false);
+  const [openingProgress, setOpeningProgress] = useState(0);
+  const [openingError, setOpeningError] = useState('');
+
+  const handleDirectUnlock = async () => {
+    if (!post?.id) return;
+    setIsOpeningLetter(true);
+    setOpeningProgress(0);
+    setOpeningError('');
+
+    let curProgress = 0;
+    let apiDone = false;
+    let apiData: any = null;
+
+    const progressTimer = setInterval(() => {
+      if (curProgress < 30) {
+        curProgress += 6;
+      } else if (curProgress < 70) {
+        curProgress += 4;
+      } else if (curProgress < 90) {
+        curProgress += 3;
+      } else if (curProgress < 96) {
+        curProgress += apiDone ? 4 : 1;
+      } else if (apiDone && curProgress < 100) {
+        curProgress += 2;
+      }
+
+      if (curProgress > 95 && !apiDone) {
+        curProgress = 95;
+      }
+      if (curProgress > 100) curProgress = 100;
+      setOpeningProgress(curProgress);
+
+      if (curProgress >= 100 && apiDone) {
+        clearInterval(progressTimer);
+        setOpeningProgress(100);
+        setIsOpeningLetter(false);
+        setRevealedContact(apiData);
+        if (post?.id) {
+          fetch(`/api/posts/${post.id}`, {
+            headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+          }).then(r => r.json()).then(d => {
+            if (d && !d.error) setPost(d);
+          });
+        }
+        setTimeout(() => {
+          const targetEl = document.getElementById('reunion-success-anchor') || document.getElementById('revealed-contact-section') || chatSectionRef.current;
+          if (targetEl) {
+            smoothScrollWithOffset(targetEl, 100);
+          }
+        }, 300);
+      }
+    }, 60);
+
+    try {
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json'
+      };
+      if (token && token !== 'null' && token !== 'undefined') {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      const res = await fetch(`/api/posts/${post.id}/reveal-contact`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ 
+          cardNumber: '4242424242424242',
+          cardExpiry: '12/28',
+          cardCvc: '123',
+          amount: 600
+        })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || data.error) {
+        clearInterval(progressTimer);
+        setIsOpeningLetter(false);
+        setOpeningError(data.error || '手紙の開封処理に失敗しました。もう一度お試しください。');
+        return;
+      }
+
+      apiDone = true;
+      apiData = data;
+
+      if (curProgress >= 95) {
+        curProgress = 100;
+        setOpeningProgress(100);
+        clearInterval(progressTimer);
+        setTimeout(() => {
+          setIsOpeningLetter(false);
+          setRevealedContact(data);
+          if (post?.id) {
+            fetch(`/api/posts/${post.id}`, {
+              headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+            }).then(r => r.json()).then(d => {
+              if (d && !d.error) setPost(d);
+            });
+          }
+          setTimeout(() => {
+            const targetEl = document.getElementById('reunion-success-anchor') || document.getElementById('revealed-contact-section') || chatSectionRef.current;
+            if (targetEl) {
+              smoothScrollWithOffset(targetEl, 100);
+            }
+          }, 300);
+        }, 150);
+      }
+    } catch (err) {
+      console.error('Direct unlock error:', err);
+      clearInterval(progressTimer);
+      setIsOpeningLetter(false);
+      setOpeningError('通信エラーが発生しました。ネットワーク環境をご確認の上、再度お試しください。');
+    }
+  };
 
   const activeContact = hasClickedStartContact || isQuestionVerified || showDetails;
   const currentStep = (showDetails || revealedContact) ? 4 : (isQuestionVerified ? 3 : (activeContact ? 2 : 1));
@@ -6674,20 +6788,48 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                     </ul>
                   </div>
 
-                  {/* 開封手続きボタン */}
-                  <div className="pt-2 space-y-2">
-                    <button
-                      type="button"
-                      onClick={() => setShowRevealModal(true)}
-                      className="w-full py-4 px-6 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-extrabold text-sm md:text-base rounded-2xl shadow-lg shadow-emerald-600/20 hover:scale-[1.01] active:scale-98 transition-all flex items-center justify-center gap-2.5 cursor-pointer font-sans"
-                    >
-                      <Heart size={20} className="fill-current text-rose-300 animate-pulse" />
-                      <span>手紙と連絡先を開く（開示手続き 600円 税込）</span>
-                    </button>
-                    <p className="text-[11px] text-slate-400 font-sans">
-                      ※クレジットカードで安全にお手続きいただけます（SSL暗号化保護）。
-                    </p>
-                  </div>
+                  {openingError && (
+                    <div className="p-3 bg-rose-50 border border-rose-200 text-rose-800 rounded-xl text-xs flex items-center gap-2 text-left">
+                      <AlertCircle size={16} className="text-rose-600 shrink-0" />
+                      <span>{openingError}</span>
+                    </div>
+                  )}
+
+                  {/* プログレスバー（開封進行中）または開封ボタン */}
+                  {isOpeningLetter ? (
+                    <div className="p-5 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border-2 border-emerald-400 space-y-3.5 shadow-sm">
+                      <div className="flex items-center justify-between text-xs font-bold text-emerald-950">
+                        <span className="flex items-center gap-2">
+                          <Sparkles size={16} className="text-amber-500 animate-spin-slow" />
+                          <span>想い出の封を開封しています...</span>
+                        </span>
+                        <span className="font-mono text-sm text-emerald-800">{openingProgress}%</span>
+                      </div>
+                      <div className="w-full bg-slate-200 rounded-full h-3.5 overflow-hidden p-0.5 shadow-inner">
+                        <div 
+                          className="bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 h-full rounded-full transition-all duration-150 ease-out shadow-sm"
+                          style={{ width: `${openingProgress}%` }}
+                        />
+                      </div>
+                      <p className="text-[11px] text-slate-500 font-sans">
+                        セキュリティ暗号化を解除し、メッセージと連絡先を安全にお届けしています。
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="pt-2 space-y-2">
+                      <button
+                        type="button"
+                        onClick={handleDirectUnlock}
+                        className="w-full py-4 px-6 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-extrabold text-sm md:text-base rounded-2xl shadow-lg shadow-emerald-600/20 hover:scale-[1.01] active:scale-98 transition-all flex items-center justify-center gap-2.5 cursor-pointer font-sans"
+                      >
+                        <Heart size={20} className="fill-current text-rose-300 animate-pulse" />
+                        <span>手紙と連絡先を開く（開示手続き 600円 税込）</span>
+                      </button>
+                      <p className="text-[11px] text-slate-400 font-sans">
+                        ※決済処理が安全に実行され、直ちに再会画面へ遷移します。
+                      </p>
+                    </div>
+                  )}
 
                 </div>
               </div>
