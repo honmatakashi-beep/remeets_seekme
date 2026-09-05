@@ -955,38 +955,46 @@ export const PricingPage = () => {
         </div>
 
         {/* ⑤ よくあるご質問（FAQ） */}
-        <div className="space-y-4">
+        <div className="space-y-3.5">
           <div className="flex items-center gap-2 border-b border-slate-200 pb-3">
             <HelpCircle size={20} className="text-indigo-600" />
             <h2 className="text-base md:text-lg font-serif font-bold text-slate-900">
               よくあるご質問（FAQ）
             </h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-sans text-xs">
-            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-1.5">
-              <p className="font-bold text-slate-900">Q. 月額料金や後からの追加請求はありますか？</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 font-sans">
+            <div className="p-3.5 bg-slate-50/80 rounded-2xl border border-slate-200/90 space-y-1">
+              <p className="text-xs font-bold text-slate-900">Q. 月額料金や後からの追加請求はありますか？</p>
               <p className="text-slate-600 leading-relaxed text-[11px]">
                 いいえ、一切ございません。ReMEETsはサブスクリプションではなく、手紙開封時の600円（税込）買い切りのみです。
               </p>
             </div>
-            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-1.5">
-              <p className="font-bold text-slate-900">Q. 公的本人確認（eKYC）は必須ですか？</p>
+            <div className="p-3.5 bg-slate-50/80 rounded-2xl border border-slate-200/90 space-y-1">
+              <p className="text-xs font-bold text-slate-900">Q. 公的本人確認（eKYC）は必須ですか？</p>
               <p className="text-slate-600 leading-relaxed text-[11px]">
                 いいえ、任意です。基本はLINE/Google連携による年齢確認（無料）でご利用いただけますが、公的証明バッジを取得することで相手への安心感や返信率を高めることができます。
               </p>
             </div>
-            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-1.5">
-              <p className="font-bold text-slate-900">Q. もし本人確認審査に通らなかったら返金されますか？</p>
+            <div className="p-3.5 bg-slate-50/80 rounded-2xl border border-slate-200/90 space-y-1">
+              <p className="text-xs font-bold text-slate-900">Q. もし本人確認審査に通らなかったら返金されますか？</p>
               <p className="text-slate-600 leading-relaxed text-[11px]">
                 はい。Stripe決済の仮売上（オーソリ）機能により、審査不備や不承認時はシステムが自動的に即時全額返金（決済取消）いたします。
               </p>
             </div>
-            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-1.5">
-              <p className="font-bold text-slate-900">Q. 手紙を開封した後はどのように連絡を取り合いますか？</p>
+            <div className="p-3.5 bg-slate-50/80 rounded-2xl border border-slate-200/90 space-y-1">
+              <p className="text-xs font-bold text-slate-900">Q. 手紙を開封した後はどのように連絡を取り合いますか？</p>
               <p className="text-slate-600 leading-relaxed text-[11px]">
                 開示された画面にお相手のLINE IDやメールアドレスが表示されます。「LINEを開く」や「メール作成」ボタンから直接ご連絡いただけます。
               </p>
             </div>
+          </div>
+          <div className="flex justify-end pt-1">
+            <Link
+              to="/faq"
+              className="text-xs font-semibold text-indigo-700 hover:text-indigo-900 hover:underline inline-flex items-center gap-1 transition-colors cursor-pointer"
+            >
+              <span>よくある質問へ →</span>
+            </Link>
           </div>
         </div>
 
