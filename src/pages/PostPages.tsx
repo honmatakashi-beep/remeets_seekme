@@ -3885,7 +3885,7 @@ export const RevealContactModal = ({
             /* 💳 決済フォーム画面 */
             <div className="space-y-4">
               {/* ① 上部: 手紙開封対象 ＆ お支払い金額サマリー枠 */}
-              <div className="p-4 sm:p-5 bg-gradient-to-br from-teal-50/80 via-emerald-50/50 to-slate-50 rounded-2xl border border-teal-200/90 text-left space-y-3 shadow-2xs font-sans">
+              <div className="p-4 sm:p-5 bg-gradient-to-br from-teal-50/80 via-emerald-50/50 to-slate-50 rounded-2xl border-2 border-teal-300/80 text-left space-y-3.5 shadow-2xs font-sans">
                 <div className="flex items-center justify-between gap-2 border-b border-teal-200/70 pb-2.5 flex-wrap">
                   <div className="flex items-center gap-2">
                     <span className="w-8 h-8 rounded-xl bg-teal-700 text-white flex items-center justify-center font-bold text-sm shadow-2xs font-serif">
@@ -3904,8 +3904,29 @@ export const RevealContactModal = ({
                   </div>
                 </div>
 
+                {/* 決済後に開示される3大情報ハイライト */}
+                <div className="space-y-1.5 bg-white/90 p-3 rounded-xl border border-teal-100/90 shadow-2xs text-xs">
+                  <span className="text-[10.5px] font-bold text-teal-900 block mb-1">
+                    ✨ お支払い完了後に安全に開示される内容：
+                  </span>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5 text-[11.5px] font-bold text-slate-800">
+                    <div className="flex items-center gap-1.5 bg-teal-50/80 px-2.5 py-1.5 rounded-lg border border-teal-200/70">
+                      <span>👤</span>
+                      <span>差出人の実名（本名）</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 bg-emerald-50/80 px-2.5 py-1.5 rounded-lg border border-emerald-200/70">
+                      <span>💌</span>
+                      <span>手紙の全文メッセージ</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 bg-indigo-50/80 px-2.5 py-1.5 rounded-lg border border-indigo-200/70">
+                      <span>📱</span>
+                      <span>直通連絡先 (LINE/メール)</span>
+                    </div>
+                  </div>
+                </div>
+
                 {/* お支払い金額 */}
-                <div className="flex items-center justify-between gap-2 bg-white/95 p-3 sm:p-3.5 rounded-xl border border-teal-100/90 text-xs shadow-2xs flex-wrap">
+                <div className="flex items-center justify-between gap-2 bg-white/95 p-3 sm:p-3.5 rounded-xl border border-teal-200/80 text-xs shadow-2xs flex-wrap">
                   <span className="text-slate-600 font-bold">お支払い金額:</span>
                   <span className="text-sm sm:text-base font-bold text-slate-900 font-serif">
                     手紙開示・接続手数料: <strong className="text-teal-800 text-base sm:text-lg font-extrabold font-mono">600</strong> 円<span className="text-xs text-slate-500 font-sans ml-1">（税込・買い切り）</span>
@@ -4056,52 +4077,86 @@ export const SuccessModal = ({
                 </p>
               </div>
 
-              {/* 手続き完了後に安全に開示される内容（3行整理カード） */}
-              <div className="p-4 md:p-5 bg-gradient-to-br from-emerald-50/70 via-white to-teal-50/50 rounded-2xl border border-emerald-200/90 space-y-3 shadow-sm">
-                <div className="flex items-center justify-between text-xs font-extrabold text-emerald-950 border-b border-emerald-100 pb-2">
-                  <span className="flex items-center gap-1.5">
-                    <ShieldCheck size={16} className="text-emerald-700" />
-                    <span>手続き完了後に安全に開示される内容</span>
+              {/* 手続き完了後に安全に開示される3大内容（大きく認知できる独立リッチカード） */}
+              <div className="p-4 sm:p-5 bg-gradient-to-br from-emerald-50/80 via-white to-teal-50/60 rounded-2xl border-2 border-emerald-300/80 space-y-3.5 shadow-sm text-left">
+                <div className="flex items-center justify-between gap-2 border-b border-emerald-100 pb-2.5 flex-wrap">
+                  <span className="text-xs sm:text-sm font-extrabold text-emerald-950 flex items-center gap-1.5">
+                    <ShieldCheck size={18} className="text-emerald-600 shrink-0" />
+                    <span>お手続き完了後に安全に開示される 3大情報</span>
                   </span>
                   <span className="text-[10px] bg-emerald-100 text-emerald-900 px-2.5 py-0.5 rounded-full font-bold border border-emerald-200">
                     思い出の質問 照合完了
                   </span>
                 </div>
 
-                <div className="space-y-2.5 bg-white/95 p-3.5 rounded-xl border border-emerald-100/80 text-xs text-slate-700 shadow-2xs">
-                  {/* 1行目: 差出人 */}
-                  <div className="flex items-center justify-between text-xs py-0.5 border-b border-slate-100">
-                    <span className="text-slate-600 font-medium flex items-center gap-1.5">
-                      <span>👤</span> <span>差出人の実名（本名）</span>
-                    </span>
-                    <span className="inline-flex items-center gap-1 font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded text-[11px]">
-                      手続き完了後に安全に開示
+                {/* 3つの大きな独立カード */}
+                <div className="space-y-2.5">
+                  {/* 1. 差出人の実名（フルネーム）の開示 */}
+                  <div className="p-3 sm:p-3.5 bg-white rounded-xl border border-slate-200/90 hover:border-emerald-300 transition-all flex items-center justify-between gap-3 shadow-2xs">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-teal-100 text-teal-800 flex items-center justify-center shrink-0 text-base font-bold shadow-2xs">
+                        👤
+                      </div>
+                      <div>
+                        <div className="text-xs sm:text-sm font-bold text-slate-900 flex items-center gap-1.5">
+                          <span>差出人の実名（フルネーム）の開示</span>
+                        </div>
+                        <p className="text-[11px] text-slate-500 font-medium">
+                          公的本人確認（eKYC）に基づく確実な本名を開示
+                        </p>
+                      </div>
+                    </div>
+                    <span className="shrink-0 inline-flex items-center gap-1 font-bold text-emerald-800 bg-emerald-50 border border-emerald-200/80 px-2.5 py-1 rounded-lg text-[11px] shadow-2xs">
+                      <Lock size={12} className="text-emerald-600" />
+                      <span>完了後に開示</span>
                     </span>
                   </div>
 
-                  {/* 2行目: 手紙の詳細本文 */}
-                  <div className="flex items-center justify-between text-xs py-0.5 border-b border-slate-100">
-                    <span className="text-slate-600 font-medium flex items-center gap-1.5">
-                      <span>📄</span> <span>手紙の詳細本文（メッセージ全貌）</span>
-                    </span>
-                    <span className="inline-flex items-center gap-1 font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded text-[11px]">
-                      手続き完了後に安全に開示
+                  {/* 2. 手紙の全文とエピソードを開封 */}
+                  <div className="p-3 sm:p-3.5 bg-white rounded-xl border border-slate-200/90 hover:border-emerald-300 transition-all flex items-center justify-between gap-3 shadow-2xs">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0 text-base font-bold shadow-2xs">
+                        💌
+                      </div>
+                      <div>
+                        <div className="text-xs sm:text-sm font-bold text-slate-900 flex items-center gap-1.5">
+                          <span>手紙の全文とエピソードを開封</span>
+                        </div>
+                        <p className="text-[11px] text-slate-500 font-medium">
+                          あなた宛てに届いた大切な手紙の全文・思い出メッセージ
+                        </p>
+                      </div>
+                    </div>
+                    <span className="shrink-0 inline-flex items-center gap-1 font-bold text-emerald-800 bg-emerald-50 border border-emerald-200/80 px-2.5 py-1 rounded-lg text-[11px] shadow-2xs">
+                      <Lock size={12} className="text-emerald-600" />
+                      <span>完了後に開示</span>
                     </span>
                   </div>
 
-                  {/* 3行目: 登録された連絡先 */}
-                  <div className="flex items-center justify-between text-xs py-0.5">
-                    <span className="text-slate-600 font-medium flex items-center gap-1.5">
-                      <span>📱</span> <span>差出人が登録した連絡先（LINE ID・メール等）</span>
-                    </span>
-                    <span className="inline-flex items-center gap-1 font-bold text-indigo-800 bg-indigo-50 border border-indigo-200 px-2.5 py-0.5 rounded text-[11px]">
-                      手続き完了後に安全に開示
+                  {/* 3. お相手の連絡先（LINE・メール等） */}
+                  <div className="p-3 sm:p-3.5 bg-white rounded-xl border border-slate-200/90 hover:border-emerald-300 transition-all flex items-center justify-between gap-3 shadow-2xs">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-800 flex items-center justify-center shrink-0 text-base font-bold shadow-2xs">
+                        📱
+                      </div>
+                      <div>
+                        <div className="text-xs sm:text-sm font-bold text-slate-900 flex items-center gap-1.5">
+                          <span>お相手の連絡先（LINE・メール等）</span>
+                        </div>
+                        <p className="text-[11px] text-slate-500 font-medium">
+                          ワンタップで連絡できる直通IDと専用アクションボタン
+                        </p>
+                      </div>
+                    </div>
+                    <span className="shrink-0 inline-flex items-center gap-1 font-bold text-indigo-800 bg-indigo-50 border border-indigo-200/80 px-2.5 py-1 rounded-lg text-[11px] shadow-2xs">
+                      <Lock size={12} className="text-indigo-600" />
+                      <span>完了後に開示</span>
                     </span>
                   </div>
                 </div>
 
                 <p className="text-[11.5px] text-slate-600 font-medium leading-relaxed pt-0.5">
-                  ※手紙を読み、お相手と直接連絡を取り合うために、下記よりお手続きコースをお選びください。
+                  ※ 手紙を読み、お相手と直接連絡を取り合うために、下記よりお手続きコースをお選びください。
                 </p>
               </div>
 
