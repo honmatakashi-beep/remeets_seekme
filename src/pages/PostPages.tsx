@@ -6522,14 +6522,14 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                     <div className="pt-2 space-y-2">
                       <button
                         type="button"
-                        onClick={handleDirectUnlock}
+                        onClick={() => setShowRevealModal(true)}
                         className="w-full py-4 px-6 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-extrabold text-sm md:text-base rounded-2xl shadow-lg shadow-emerald-600/20 hover:scale-[1.01] active:scale-98 transition-all flex items-center justify-center gap-2.5 cursor-pointer font-sans"
                       >
                         <Heart size={20} className="fill-current text-rose-300 animate-pulse" />
                         <span>手紙と連絡先を開く（開示手続き 600円 税込）</span>
                       </button>
                       <p className="text-[11px] text-slate-400 font-sans">
-                        ※決済処理が安全に実行され、直ちに再会画面へ遷移します。
+                        ※決済手続き画面が開き、安全にお手続きを完了いただけます。
                       </p>
                     </div>
                   )}
