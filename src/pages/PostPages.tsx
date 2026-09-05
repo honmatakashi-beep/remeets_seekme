@@ -203,11 +203,11 @@ export const EditPostPage = () => {
       return;
     }
     if (!questions[0]?.question?.trim() || !questions[0]?.answer?.trim()) {
-      alert('「秘密の質問1とその答え」を入力してください。');
+      alert('「思い出の質問1とその答え」を入力してください。');
       return;
     }
     if (!questions[1]?.question?.trim() || !questions[1]?.answer?.trim()) {
-      alert('「秘密の質問2とその答え」を入力してください。');
+      alert('「思い出の質問2とその答え」を入力してください。');
       return;
     }
     if (!formData.message?.trim()) {
@@ -341,7 +341,7 @@ export const EditPostPage = () => {
                     value={formData.searcherFullName}
                   />
                   <p className="text-xs text-brand-dark/60 font-medium leading-relaxed">
-                    ※ 登録の本名（変更不可）が自動反映されています。この名前は公開されず、秘密の質問にすべて正解したお相手のみに開示されます。
+                    ※ 登録の本名（変更不可）が自動反映されています。この名前は公開されず、思い出の質問にすべて正解したお相手のみに開示されます。
                   </p>
                 </div>
 
@@ -486,7 +486,7 @@ export const EditPostPage = () => {
                       地域・詳細な場所（市区町村以下・必須）
                     </label>
                     <p className="text-xs text-brand-dark/70 font-sans leading-relaxed">
-                      ※番地などの詳細な地域名は公開ページや検索（SEO）には載りません。一般には都道府県までが表示され、秘密の質問に回答した後に初めて完全な住所等が開示されます。
+                      ※番地などの詳細な地域名は公開ページや検索（SEO）には載りません。一般には都道府県までが表示され、思い出の質問に回答した後に初めて完全な住所等が開示されます。
                     </p>
                     <input 
                       required
@@ -506,7 +506,7 @@ export const EditPostPage = () => {
                       当時の所属（学校・職場など）
                     </label>
                     <p className="text-xs text-[#ea0736] font-bold leading-relaxed">
-                      ※具体的な学校名や会社名は一般公開されず、「関連学校（正解後に開示）」となります。お相手が秘密の質問に正解した後にだけ完全に開示されますので、安心してお相手と共有していた名前をご記入ください。
+                      ※具体的な学校名や会社名は一般公開されず、「関連学校（正解後に開示）」となります。お相手が思い出の質問に正解した後にだけ完全に開示されますので、安心してお相手と共有していた名前をご記入ください。
                     </p>
                     <input 
                       type="text" 
@@ -561,11 +561,11 @@ export const EditPostPage = () => {
               </div>
             </section>
 
-            {/* 秘密の質問 */}
+            {/* 思い出の質問 */}
             <section className="space-y-8">
               <div className="flex items-center gap-3 pb-2 border-b border-brand-primary/20">
                 <HelpCircle className="text-black" size={20} />
-                <h2 className="text-xl font-bold text-black">秘密の質問</h2>
+                <h2 className="text-xl font-bold text-black">思い出の質問</h2>
               </div>
 
               <div className="space-y-8">
@@ -574,7 +574,7 @@ export const EditPostPage = () => {
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
                         <label className="text-[16px] font-bold text-black uppercase tracking-widest flex items-center gap-2">
-                          秘密の質問 {idx + 1}（必須）
+                          思い出の質問 {idx + 1}（必須）
                         </label>
                         <button 
                           type="button"
@@ -1243,7 +1243,7 @@ export const CreatePostPage = () => {
               </div>
             </div>
             <p className="text-[11px] text-brand-dark/70 font-sans leading-relaxed">
-              ※番地や詳細な場所は一般公開ページには掲載されず、お相手が秘密の質問に正解した後に開示されます。
+              ※番地や詳細な場所は一般公開ページには掲載されず、お相手が思い出の質問に正解した後に開示されます。
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -1383,7 +1383,7 @@ export const CreatePostPage = () => {
     },
     {
       title: "二人だけの思い出の質問",
-      description: "プライバシーを守るため、本人確認用の「秘密の質問」を2問作成してください。両方の正解が必須となります。",
+      description: "プライバシーを守るため、本人確認用の「思い出の質問」を2問作成してください。両方の正解が必須となります。",
       fields: (
         <div className="space-y-8">
           <div className="space-y-6">
@@ -1396,7 +1396,7 @@ export const CreatePostPage = () => {
                       style={{ color: idx === 0 ? '#000000' : '#000000' }}
                     >
                       <HelpCircle size={18} className="text-black" />
-                      秘密の質問 {idx + 1}<span className="text-[10px] text-red-600 font-bold ml-1.5 tracking-normal">＊必須</span>
+                      思い出の質問 {idx + 1}<span className="text-[10px] text-red-600 font-bold ml-1.5 tracking-normal">＊必須</span>
                     </label>
                     <button 
                       type="button"
@@ -1847,7 +1847,7 @@ export const CreatePostPage = () => {
                       "text-[11px] font-bold mt-1.5 transition-colors font-sans max-w-[100px] text-center leading-tight hidden xs:block",
                       isCurrent ? "text-indigo-950 font-black" : isDone ? "text-emerald-800" : "text-slate-400"
                     )}>
-                      {i === 0 ? "1. 記憶と手がかり" : i === 1 ? "2. 秘密の質問" : "3. メッセージ投函"}
+                      {i === 0 ? "1. 記憶と手がかり" : i === 1 ? "2. 思い出の質問" : "3. メッセージ投函"}
                     </span>
                   </button>
                 );
@@ -1942,7 +1942,7 @@ export const CreatePostPage = () => {
       <div className="text-center">
         <p className="text-sm text-black leading-relaxed max-w-lg mx-auto">
           ※ 投函された内容は、お相手が検索で見つけられるよう公開されます。<br />
-          プライベートメッセージは、秘密の質問に正解した方のみが閲覧可能です。
+          プライベートメッセージは、思い出の質問に正解した方のみが閲覧可能です。
         </p>
       </div>
 
@@ -3094,10 +3094,10 @@ export const SeoPreviewModal = ({ isOpen, onClose, post }: { isOpen: boolean, on
                 </div>
               </div>
 
-              {/* 届出思い出クイズ（秘密の質問と答え）設定 */}
+              {/* 届出思い出クイズ（思い出の質問と答え）設定 */}
               <div className="space-y-4 relative z-10 font-sans">
                 <h2 className="text-base font-bold bg-zinc-100 text-zinc-800 py-1.5 px-4 rounded-md inline-block uppercase tracking-wider font-serif">
-                  1.5. 届出思い出クイズ（秘密の質問と答え）設定
+                  1.5. 届出思い出クイズ（思い出の質問と答え）設定
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm font-sans mt-3">
                   {(post.questions && post.questions.length >= 2
@@ -3147,7 +3147,7 @@ export const SeoPreviewModal = ({ isOpen, onClose, post }: { isOpen: boolean, on
                     </strong>
                   </div>
                   <div className="p-3 bg-white rounded-xl border border-zinc-150 flex flex-col gap-1 shadow-sm">
-                    <span className="text-[10px] text-zinc-400 font-bold block uppercase tracking-wider">🔐 秘密の質問アクセス</span>
+                    <span className="text-[10px] text-zinc-400 font-bold block uppercase tracking-wider">🔐 思い出の質問アクセス</span>
                     <strong className="text-sm text-zinc-800 block">
                       {Math.max(1, (post.id * 3) % 9)} <span className="text-[10px] font-normal text-zinc-400">回の解決試行</span>
                     </strong>
@@ -3187,7 +3187,7 @@ export const SeoPreviewModal = ({ isOpen, onClose, post }: { isOpen: boolean, on
               <div className="space-y-3 text-xs text-zinc-500 leading-relaxed font-sans p-6 bg-zinc-50 rounded-2xl border border-zinc-100">
                 <h4 className="font-bold text-zinc-700">【安全管理に関する重要事項】</h4>
                 <p>※思い出のボトルメールは、安全上、対象者の合意なしにデリケートな本文全体が公の検索エンジンに露出することはありません。</p>
-                <p>※検索された方が、まず差出人様が用意した<b>「秘密の思い出の質問」に100%正解し、さらに18歳以上の年齢誓約（または公的身分証認証）を完了した場合にのみ</b>、手紙本文の開封および差出人の連絡先が開示される仕組みです。</p>
+                <p>※検索された方が、まず差出人様が用意した<b>「思い出の質問」に100%正解し、さらに18歳以上の年齢誓約（または公的身分証認証）を完了した場合にのみ</b>、手紙本文の開封および差出人の連絡先が開示される仕組みです。</p>
               </div>
             </div>
           </div>
@@ -3203,7 +3203,7 @@ export const FlowExplanation = () => (
       { icon: <PlusCircle size={18} />, text: "想いを綴る", sub: "あの日言えなかった言葉をボトルに託す" },
       { icon: <Search size={18} />, text: "海を漂う", sub: "実名と思い出の手がかりだけが検索エンジンに届く" },
       { icon: <Globe size={18} />, text: "本人が発見", sub: "エゴサーチでお相手がこのページを見つける" },
-      { icon: <Unlock size={18} />, text: "記憶で繋がる", sub: "二人だけの秘密の質問で再会を果たす" }
+      { icon: <Unlock size={18} />, text: "記憶で繋がる", sub: "二人だけの思い出の質問で再会を果たす" }
     ].map((step, i) => (
       <div key={i} className="relative flex items-start gap-4 bg-white/50 backdrop-blur-sm p-5 rounded-[24px] border border-brand-primary/10 shadow-sm transition-all hover:bg-white/80 hover:border-brand-primary/25 group md:px-6">
         <div className="absolute -left-[35px] top-6 w-[16px] h-[16px] rounded-full bg-white border-2 border-brand-primary shadow-sm flex items-center justify-center z-10">
@@ -4051,7 +4051,7 @@ export const SuccessModal = ({
                   <span>思い出の鍵が解かれました！</span>
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-serif text-slate-900 font-extrabold tracking-tight leading-snug">
-                  {searcherFullName ? `${searcherFullName} (${searcherName})` : searcherName || 'お相手'} 様
+                  「{searcherName || '差出人'}」さんからの手紙
                 </h2>
                 <p className="text-slate-600 text-xs sm:text-sm font-medium">
                   二人の記憶が一致し、あなた宛てに大切なお手紙が届いています。
@@ -4074,11 +4074,11 @@ export const SuccessModal = ({
                   {/* 1行目: 差出人 */}
                   <div className="flex items-center justify-between text-xs py-0.5 border-b border-slate-100">
                     <span className="text-slate-600 font-medium flex items-center gap-1.5">
-                      <span>👤</span> <span>差出人</span>
+                      <span>👤</span> <span>差出人の実名（本名）</span>
                     </span>
-                    <strong className="text-slate-900 font-bold text-xs sm:text-sm">
-                      {searcherFullName ? `${searcherFullName} (${searcherName})` : searcherName} 様（思い出の質問に答えたご本人）
-                    </strong>
+                    <span className="inline-flex items-center gap-1 font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded text-[11px]">
+                      手続き完了後に安全に開示
+                    </span>
                   </div>
 
                   {/* 2行目: 手紙の詳細本文 */}
@@ -4120,7 +4120,7 @@ export const SuccessModal = ({
                     )}
                   </div>
                   <p className="text-xs text-slate-700 leading-relaxed">
-                    秘密の質問の合致、おめでとうございます！<br />
+                    思い出の質問の合致、おめでとうございます！<br />
                     ReMEETsでは、数年〜数十年ぶりの再会となるお相手に<strong>「本人の確証と安心」</strong>を届け、<strong>初回の返信率を最大化</strong>するため、<strong>公的身分証（eKYC）認証による証明バッジの取得を第一におすすめ</strong>しております。
                   </p>
                 </div>
@@ -5624,7 +5624,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
             <span>
               {isOwner 
                 ? (post.status === 'resolved' ? "再会を達成しました！" : "あなたの大切な手紙が漂流中") 
-                : (showDetails ? "✨ 奇跡の再会が叶いました！" : isQuestionVerified ? "✨ 思い出の鍵が繋がりました！" : "記憶の交差点に到着しました")}
+                : (showDetails ? "✨ 奇跡の再会が叶いました！" : isQuestionVerified ? "✨ 思い出の鍵が解かれました！" : "記憶の交差点に到着しました")}
             </span>
           </div>
           <h1 className="text-xl xs:text-2xl sm:text-3xl md:text-5xl font-serif text-black font-[500] tracking-wider leading-relaxed flex flex-col items-center gap-2 text-center px-4 w-full">
@@ -5654,8 +5654,8 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               </>
             ) : (!isOwner && (isQuestionVerified || post.status === 'resolved')) ? (
               <>
-                <span className="block whitespace-normal md:whitespace-nowrap">秘密の質問にすべて正解し、お互いの記憶が完全に合致しました。</span>
-                <span className="block whitespace-normal md:whitespace-nowrap text-brand-primary font-bold">手紙と連絡先を開封してお返事をお送りください。</span>
+                <span className="block whitespace-normal md:whitespace-nowrap">思い出の質問にすべて正解し、お互いの記憶が完全に合致しました。</span>
+                <span className="block whitespace-normal md:whitespace-nowrap text-emerald-700 font-bold">下のボタンからお手紙の本文と連絡先を開封してください。</span>
               </>
             ) : (
               <>
@@ -5683,54 +5683,6 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               <p className="text-xs text-slate-700 font-serif leading-relaxed">
                 「思い出の質問」に正解すると、あなた宛に届いた<strong className="text-teal-900 font-bold bg-teal-100/80 px-1 py-0.5 rounded">差出人のフルネーム・手紙本文・連絡先</strong>が安全に開示されます。
               </p>
-            </div>
-          )}
-
-          {/* 正解後: 手続き完了後に安全に開示される内容（3行整理カード） */}
-          {!isOwner && isQuestionVerified && !showDetails && !revealedContact && post.status !== 'resolved' && (
-            <div className="max-w-xl mx-auto mt-6 p-4 md:p-5 bg-gradient-to-br from-emerald-50/90 via-white to-teal-50/70 rounded-2xl border border-emerald-300 shadow-sm space-y-3 text-left font-sans">
-              <div className="flex items-center justify-between text-xs font-extrabold text-emerald-950 border-b border-emerald-100 pb-2">
-                <span className="flex items-center gap-1.5">
-                  <ShieldCheck size={16} className="text-emerald-700" />
-                  <span>手続き完了後に安全に開示される内容</span>
-                </span>
-                <span className="text-[10px] bg-emerald-100 text-emerald-900 px-2.5 py-0.5 rounded-full font-bold border border-emerald-200">
-                  思い出の質問 照合完了
-                </span>
-              </div>
-
-              <div className="space-y-2.5 bg-white/95 p-3.5 rounded-xl border border-emerald-100/80 text-xs text-slate-700 shadow-2xs">
-                {/* 1行目: 差出人 */}
-                <div className="flex items-center justify-between text-xs py-0.5 border-b border-slate-100">
-                  <span className="text-slate-600 font-medium flex items-center gap-1.5">
-                    <span>👤</span> <span>差出人</span>
-                  </span>
-                  <strong className="text-slate-900 font-bold text-xs sm:text-sm">
-                    {searcherFullName ? `${searcherFullName} (${searcherName || post.searcher_name})` : (otherUserFullNameToUse || post.searcher_full_name || post.owner_full_name || post.searcher_name || searcherName || 'お相手')} 様（思い出の質問に答えたご本人）
-                  </strong>
-                </div>
-
-                {/* 2行目: 手紙の詳細本文 */}
-                <div className="flex items-center justify-between text-xs py-0.5 border-b border-slate-100">
-                  <span className="text-slate-600 font-medium flex items-center gap-1.5">
-                    <span>📄</span> <span>差出人のフルネーム（実名）および手紙の詳細本文（メッセージ全貌）</span>
-                  </span>
-                  <span className="inline-flex items-center gap-1 font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded text-[11px] shrink-0">
-                    手続き完了後に安全に開示
-                  </span>
-                </div>
-
-                {/* 3行目: 登録された連絡先 */}
-                <div className="flex items-center justify-between text-xs py-0.5">
-                  <span className="text-slate-600 font-medium flex items-center gap-1.5">
-                    <span>📱</span> <span>差出人が登録した連絡先（LINE ID・メールアドレス等）</span>
-                  </span>
-                  <span className="inline-flex items-center gap-1 font-bold text-indigo-800 bg-indigo-50 border border-indigo-200 px-2.5 py-0.5 rounded text-[11px] shrink-0">
-                    手続き完了後に安全に開示
-                  </span>
-                </div>
-              </div>
-
             </div>
           )}
         </div>
@@ -5923,7 +5875,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                     <div>
                       <span className="text-[10px] text-slate-400 font-bold block">当時の所属（学校・職場など）</span>
                       <span className="font-bold text-slate-800">
-                        {showDetails ? (post.target_school || '未設定') : '秘密の質問に正解後公開'}
+                        {showDetails ? (post.target_school || '未設定') : '思い出の質問に正解後公開'}
                       </span>
                     </div>
                   </div>
@@ -6219,11 +6171,11 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                   </div>
                 )}
 
-                {/* 【プレビュー確認用】設定済みの秘密の質問と答えリスト */}
+                {/* 【プレビュー確認用】設定済みの思い出の質問と答えリスト */}
                 <div className="pt-8 border-t border-brand-border/40 text-left space-y-4">
                   <h4 className="text-sm font-bold text-zinc-900 uppercase tracking-widest flex items-center gap-2 font-sans">
                     <Lock size={16} className="text-zinc-500" />
-                    <span>【ボトル作成元】設定済みの秘密の質問と答え</span>
+                    <span>【ボトル作成元】設定済みの思い出の質問と答え</span>
                   </h4>
                   <p className="text-xs text-zinc-500 font-sans">
                     ※この項目はボトルの作成者（あなた）にのみセキュリティ上表示されています。お相手が回答する際の確認にご利用ください。
@@ -6494,12 +6446,12 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                       ✨ 時を超えて届いた想い出のメッセージ
                     </span>
                     <h3 className="text-xl md:text-2xl font-bold font-serif text-slate-900 pt-1">
-                      【{otherUserFullNameToUse || searcherFullName || post.searcher_full_name || post.owner_full_name || post.searcher_name || searcherName || 'お相手'}】さんからの手紙を開封する
+                      【{searcherName || post.searcher_name || '差出人'}】さんからの手紙を開封する
                     </h3>
                   </div>
 
                   <p className="text-xs md:text-sm text-slate-600 font-sans leading-relaxed max-w-md mx-auto">
-                    あなたを探し続けていた【{otherUserFullNameToUse || searcherFullName || post.searcher_full_name || post.owner_full_name || post.searcher_name || searcherName || 'お相手'}】さんが残した「手紙の全文」と、今すぐ直接つながる「ご連絡先（LINE・メールアドレス等）」が開示されます。止まっていた大切な時間の続きを、ここから始めましょう。
+                    あなたを探し続けていた【{searcherName || post.searcher_name || '差出人'}】さんが残した「手紙の全文」と「差出人の実名（本名）」、今すぐ直接つながる「ご連絡先（LINE・メールアドレス等）」が開示されます。止まっていた大切な時間の続きを、ここから始めましょう。
                   </p>
 
                   {/* 安全な開示情報案内 */}
@@ -6509,6 +6461,15 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                       <span>安全な照合を経て、お相手の手紙と連絡先をお届けします</span>
                     </div>
                     <ul className="space-y-2 text-slate-800 text-xs leading-relaxed font-medium">
+                      <li className="flex items-start gap-2 bg-white/80 p-2.5 rounded-xl border border-amber-100">
+                        <span className="text-base shrink-0">👤</span>
+                        <div>
+                          <strong>【差出人の実名（フルネーム）の開示】</strong>
+                          <p className="text-[11px] text-slate-600 leading-snug font-normal pt-0.5">
+                            思い出の質問を設定したご本人の本名（実名）が安全に開示されます。
+                          </p>
+                        </div>
+                      </li>
                       <li className="flex items-start gap-2 bg-white/80 p-2.5 rounded-xl border border-amber-100">
                         <span className="text-base shrink-0">✉️</span>
                         <div>
