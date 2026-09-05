@@ -6721,15 +6721,12 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               <div id="step3-unlocked-section" className="glass-card p-6 md:p-8 space-y-6 font-sans transition-all duration-500 border-2 border-emerald-400 bg-white shadow-xl rounded-[32px] scroll-mt-28">
                 <div className="space-y-6 animate-fade-in text-center">
                   
-                  {/* ヘッダー・アイコン */}
-                  <div className="w-16 h-16 bg-gradient-to-br from-emerald-100 via-teal-100 to-emerald-200 text-emerald-700 rounded-full shadow-md flex items-center justify-center mx-auto ring-4 ring-emerald-50">
-                    <CheckCircle2 size={32} className="text-emerald-600" />
+                  {/* ヘッダー・メールアイコン */}
+                  <div className="w-16 h-16 bg-gradient-to-br from-teal-100 via-emerald-100 to-teal-200 text-teal-800 rounded-full shadow-md flex items-center justify-center mx-auto ring-4 ring-teal-50">
+                    <Mail size={32} className="text-teal-700" />
                   </div>
 
-                  <div className="space-y-2">
-                    <span className="inline-block px-3.5 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold tracking-wider font-serif shadow-2xs">
-                      思い出の鍵が解かれました！
-                    </span>
+                  <div className="space-y-1">
                     <h3 className="text-xl md:text-2xl font-bold font-serif text-slate-900 pt-1">
                       【{searcherName || post.searcher_name || '差出人'}】さんからの手紙を開封する
                     </h3>
