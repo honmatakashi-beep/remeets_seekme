@@ -3877,13 +3877,16 @@ async function startServer() {
         return res.status(403).json({ error: "Unauthorized" });
       }
 
-      const questions = db.prepare("SELECT question, answer, answer_plain FROM post_questions WHERE post_id = ?").all(req.params.id);
+      const questions = db.prepare("SELECT question, answer, answer_plain FROM post_questions WHERE post_id = ?").all(post.id);
       
       // Combine main question with additional ones
-      const allQuestions = [
+      let allQuestions = [
         { question: post.secret_question, answer: post.secret_answer, answer_plain: post.secret_answer_plain },
         ...questions.map((q: any) => ({ question: q.question, answer: q.answer, answer_plain: q.answer_plain }))
       ];
+      if (allQuestions.length < 2 && post.secret_question) {
+        allQuestions.push({ question: 'お相手との思い出の場所または共通の合言葉は？', answer: '', answer_plain: '' });
+      }
       
       res.json({ ...post, questions: allQuestions });
     } catch (err) {
@@ -4075,13 +4078,17 @@ async function startServer() {
       }
       if (!post) return res.status(404).json({ error: "Post not found" });
       
-      const questions = db.prepare("SELECT id, question FROM post_questions WHERE post_id = ?").all(req.params.id);
+      const questions = db.prepare("SELECT id, question FROM post_questions WHERE post_id = ?").all(post.id);
       
       // Combine main question with additional ones
-      const allQuestions = [
+      let allQuestions = [
         { id: 'main', question: post.secret_question },
         ...questions
       ];
+      if (allQuestions.length < 2 && post.secret_question) {
+        // Safe fallback to ensure at least 2 questions are always structured
+        allQuestions.push({ id: 'sub_default', question: 'お相手との思い出の場所または共通の合言葉は？' });
+      }
       
       const { secret_answer, secret_answer_plain, ...postData } = post;
       
@@ -4185,7 +4192,7 @@ async function startServer() {
       }
 
       const post = db.prepare(`
-        SELECT p.secret_answer, p.secret_answer_plain, p.user_id, p.searcher_name, p.searcher_full_name, p.target_name, p.message, p.status
+        SELECT p.id, p.secret_answer, p.secret_answer_plain, p.user_id, p.searcher_name, p.searcher_full_name, p.target_name, p.message, p.status
         FROM posts p
         WHERE p.id = ?
       `).get(postId) as any;
@@ -4193,7 +4200,7 @@ async function startServer() {
       if (post.status === 'resolved') return res.status(400).json({ error: "このボトルメールは既に解決済みです。" });
       if (post.status === 'deleted') return res.status(404).json({ error: "Post not found" });
       
-      const additionalQuestions = db.prepare("SELECT answer, answer_plain FROM post_questions WHERE post_id = ?").all(postId) as any[];
+      const additionalQuestions = db.prepare("SELECT answer, answer_plain FROM post_questions WHERE post_id = ?").all(post.id) as any[];
       const hashedAnswers = [post.secret_answer, ...additionalQuestions.map(q => q.answer)];
       const plainAnswers = [post.secret_answer_plain, ...additionalQuestions.map(q => q.answer_plain)];
       

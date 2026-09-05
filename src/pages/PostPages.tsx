@@ -108,8 +108,21 @@ export const EditPostPage = () => {
           imageUrl: data.image_url || ''
         });
         
-        if (data.questions && data.questions.length >= 2) {
-          setQuestions(data.questions);
+        if (data.questions && data.questions.length > 0) {
+          const loadedQs = data.questions.map((q: any) => ({
+            question: q.question || '',
+            answer: q.answer_plain || q.answer || '',
+            hint: q.hint || ''
+          }));
+          while (loadedQs.length < 2) {
+            loadedQs.push({ question: '', answer: '', hint: '' });
+          }
+          setQuestions(loadedQs);
+        } else if (data.secret_question) {
+          setQuestions([
+            { question: data.secret_question, answer: data.secret_answer_plain || data.secret_answer || '', hint: '' },
+            { question: '', answer: '', hint: '' }
+          ]);
         }
       } catch (err) {
         console.error(err);
@@ -6193,7 +6206,10 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                   </div>
                 )}
 
-                {post.questions && post.questions.map((q: any, idx: number) => (
+                {(post.questions && post.questions.length > 0 
+                  ? post.questions 
+                  : [{ id: 'main', question: post.secret_question }]
+                ).map((q: any, idx: number) => (
                   <div key={idx} className="space-y-3.5 text-left font-sans bg-slate-50/80 p-5 rounded-2xl border border-slate-200/80 shadow-2xs">
                     {/* 大きくて見やすい質問バッジラベル */}
                     <div className="flex items-center justify-between gap-2 flex-wrap">
