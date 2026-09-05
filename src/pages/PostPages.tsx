@@ -5302,7 +5302,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
   const otherUserFullNameToUse = isOwner ? verifiedByUser?.full_name : searcherFullName;
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4 md:py-8">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 md:py-12">
       {/* 投函完了お知らせ画面・モーダル (投稿者向け: 大きく鮮明なイラストヘッダー付き特別カード) */}
       <AnimatePresence>
         {showPostedBanner && (
@@ -5505,7 +5505,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
         {/* 背景イラスト（優しく淡いグラデーションで文字を引き立てる背景） */}
         <div className="absolute inset-0 flex justify-center items-center pointer-events-none overflow-hidden select-none z-0">
           <div 
-            className="relative w-full max-w-3xl h-full transition-opacity duration-500"
+            className="relative w-full max-w-4xl h-full transition-opacity duration-500"
             style={{ opacity: (isQuestionVerified || showDetails || post.status === 'resolved') ? 0.82 : 0.85 }}
           >
             <img 
@@ -5730,7 +5730,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.99, y: -15 }}
             transition={{ duration: 0.4 }}
-            className="max-w-3xl mx-auto space-y-8 font-serif"
+            className="w-full mx-auto space-y-8 font-serif"
           >
             {/* 1. 【メインカード】差出人情報 & 思い出の手がかり */}
             <div className="p-6 md:p-8 bg-white border-2 border-teal-200/90 rounded-[32px] shadow-md relative overflow-hidden font-sans space-y-6">
