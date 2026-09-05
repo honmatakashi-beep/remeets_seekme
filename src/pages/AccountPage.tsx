@@ -870,7 +870,7 @@ export const AccountPage = () => {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 md:px-8 py-10 md:py-16 space-y-8 text-black">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 md:py-12 space-y-6 md:space-y-8 text-black font-sans">
       {/* Account Header Section */}
       <PageHeader
         icon={<UserIcon size={24} className="text-sky-600" />}
