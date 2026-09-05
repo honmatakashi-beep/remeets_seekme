@@ -11,7 +11,7 @@ import {
   LogOut, Mail, MapPin, MessageCircle, MessageSquare, MoreVertical,
   PlusCircle, RefreshCw, RotateCcw, School, Search, Send, Share2,
   Shield, ShieldAlert, ShieldCheck, Sparkles, Star, Tag, Trash2,
-  User as UserIcon, Users, Wind, X, Zap, Bot, Image as ImageIcon,
+  User, User as UserIcon, Users, Wind, X, Zap, Bot, Image as ImageIcon,
   Plus, Globe, Unlock, UserCheck, Gift, FileSpreadsheet, Phone
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
