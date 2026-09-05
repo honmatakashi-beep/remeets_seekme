@@ -4832,16 +4832,10 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
   })();
 
   useEffect(() => {
-    if (revealedContact) {
-      const timer = setTimeout(() => {
-        const el = document.getElementById('reunion-success-anchor') || document.getElementById('revealed-contact-section') || chatSectionRef.current;
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      }, 350);
-      return () => clearTimeout(timer);
+    if (revealedContact || showDetails) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  }, [revealedContact]);
+  }, [revealedContact, showDetails]);
 
   useEffect(() => {
     if (showDetails && !isOwner && searcherId) {
@@ -4919,11 +4913,8 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
           });
         }
         setTimeout(() => {
-          const targetEl = document.getElementById('reunion-success-anchor') || document.getElementById('revealed-contact-section') || chatSectionRef.current;
-          if (targetEl) {
-            smoothScrollWithOffset(targetEl, 100);
-          }
-        }, 300);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 150);
       }
     }, 60);
 
@@ -4978,11 +4969,8 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
             });
           }
           setTimeout(() => {
-            const targetEl = document.getElementById('reunion-success-anchor') || document.getElementById('revealed-contact-section') || chatSectionRef.current;
-            if (targetEl) {
-              smoothScrollWithOffset(targetEl, 100);
-            }
-          }, 300);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }, 150);
         }, 150);
       }
     } catch (err) {
@@ -5061,13 +5049,17 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
 
       // 前進する場合のみ、該当エリアにスムーズスクロール
       if (toStep > fromStep) {
-        let targetRef: React.RefObject<HTMLDivElement> | null = null;
+        if (toStep === 4) {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          setIsChatHighlighted(true);
+          setTimeout(() => setIsChatHighlighted(false), 3000);
+          return;
+        }
 
+        let targetRef: React.RefObject<HTMLDivElement> | null = null;
         if (toStep === 2) {
           targetRef = quizSectionRef;
         } else if (toStep === 3 && !isOwner) {
-          targetRef = welcomeBannerRef;
-        } else if (toStep === 4 && !isOwner) {
           targetRef = welcomeBannerRef;
         }
 
@@ -5077,11 +5069,6 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
           } else if (toStep === 2) {
             const el = document.getElementById('memory-quiz-section');
             if (el) smoothScrollWithOffset(el, 80);
-          }
-          
-          if (toStep === 4) {
-            setIsChatHighlighted(true);
-            setTimeout(() => setIsChatHighlighted(false), 3000);
           }
         }, 480);
 
@@ -5893,7 +5880,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               
               {/* showDetails が true の場合（開示完了・再会後画面） */}
               {showDetails ? (
-                <div id="reunion-success-anchor" className="space-y-6 scroll-mt-28">
+                <div id="reunion-success-section" className="space-y-6">
                   {/* 👤 1. 差出人（本名）＆ ゆかりの地・所属情報カード */}
                   <div className="p-5 sm:p-6 bg-slate-50/90 rounded-2xl border border-slate-200/90 space-y-4 font-sans text-left">
                     <div className="flex items-center justify-between gap-2 flex-wrap border-b border-slate-200/80 pb-3">
