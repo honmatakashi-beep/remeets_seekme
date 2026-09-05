@@ -386,35 +386,53 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
 
               {/* 🛡️ 【安心の0円保証】探す・投函は完全無料の直感的可視化バッジ */}
               <div className="w-full max-w-xl mx-auto pt-1">
-                <div className="bg-white/95 backdrop-blur-md rounded-2xl border border-emerald-200/90 p-3 sm:p-4 shadow-sm text-left font-sans">
+                <div className="bg-white/95 backdrop-blur-md rounded-2xl border border-emerald-200/90 p-3 sm:p-4 shadow-sm text-left font-sans transition-all hover:shadow-md">
                   <div className="flex items-center justify-between border-b border-emerald-100 pb-2 mb-2.5">
                     <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-emerald-900">
                       <ShieldCheck size={18} className="text-emerald-600 shrink-0" />
                       <span>ReMEETsの安心料金ポリシー</span>
                     </div>
-                    <span className="text-[10px] font-extrabold text-emerald-700 bg-emerald-100/80 border border-emerald-300/80 px-2 py-0.5 rounded-full">
-                      月額・会員費 0円
-                    </span>
+                    <Link 
+                      to="/pricing" 
+                      className="text-[10px] font-bold text-emerald-700 bg-emerald-100/80 hover:bg-emerald-200/90 border border-emerald-300/80 px-2 py-0.5 rounded-full transition-colors flex items-center gap-1 group cursor-pointer"
+                    >
+                      <span>料金表・詳細を見る</span>
+                      <ArrowRight size={10} className="group-hover:translate-x-0.5 transition-transform" />
+                    </Link>
                   </div>
                   
                   <div className="grid grid-cols-3 gap-2 text-center">
-                    <div className="bg-emerald-50/70 border border-emerald-200/60 rounded-xl p-2 flex flex-col items-center justify-center">
-                      <span className="text-[10px] text-emerald-800 font-bold">手紙を書く・投函</span>
+                    <Link 
+                      to="/pricing"
+                      className="bg-emerald-50/70 hover:bg-emerald-100/80 border border-emerald-200/60 hover:border-emerald-400/80 rounded-xl p-2 flex flex-col items-center justify-center transition-all duration-200 hover:scale-[1.02] hover:shadow-xs group cursor-pointer"
+                    >
+                      <span className="text-[10px] text-emerald-800 font-bold group-hover:text-emerald-900">手紙を書く・投函</span>
                       <span className="text-xs sm:text-sm font-black text-emerald-600 font-serif">完全0円</span>
-                    </div>
-                    <div className="bg-emerald-50/70 border border-emerald-200/60 rounded-xl p-2 flex flex-col items-center justify-center">
-                      <span className="text-[10px] text-emerald-800 font-bold">手紙を探す・閲覧</span>
+                    </Link>
+                    <Link 
+                      to="/pricing"
+                      className="bg-emerald-50/70 hover:bg-emerald-100/80 border border-emerald-200/60 hover:border-emerald-400/80 rounded-xl p-2 flex flex-col items-center justify-center transition-all duration-200 hover:scale-[1.02] hover:shadow-xs group cursor-pointer"
+                    >
+                      <span className="text-[10px] text-emerald-800 font-bold group-hover:text-emerald-900">手紙を探す・閲覧</span>
                       <span className="text-xs sm:text-sm font-black text-emerald-600 font-serif">完全0円</span>
-                    </div>
-                    <div className="bg-sky-50/70 border border-sky-200/60 rounded-xl p-2 flex flex-col items-center justify-center">
-                      <span className="text-[10px] text-sky-900 font-bold">想い出照合・再会時</span>
+                    </Link>
+                    <Link 
+                      to="/pricing"
+                      className="bg-sky-50/70 hover:bg-sky-100/80 border border-sky-200/60 hover:border-sky-400/80 rounded-xl p-2 flex flex-col items-center justify-center transition-all duration-200 hover:scale-[1.02] hover:shadow-xs group cursor-pointer"
+                    >
+                      <span className="text-[10px] text-sky-900 font-bold group-hover:text-sky-950">想い出照合・再会時</span>
                       <span className="text-xs sm:text-sm font-black text-sky-700 font-serif">開通時のみ</span>
-                    </div>
+                    </Link>
                   </div>
 
-                  <p className="text-[10px] text-slate-500 text-center pt-2 leading-tight">
-                    ※お相手とクイズで想い出が一致し、連絡先を開示する瞬間まで一切料金はかかりません。
-                  </p>
+                  <div className="pt-2 text-center">
+                    <Link 
+                      to="/pricing"
+                      className="text-[10px] text-slate-500 hover:text-emerald-700 transition-colors inline-flex items-center justify-center gap-1 leading-tight"
+                    >
+                      <span>※お相手とクイズで想い出が一致し、連絡先を開示する瞬間まで一切料金はかかりません。（詳細はこちら）</span>
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
