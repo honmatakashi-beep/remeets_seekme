@@ -5713,8 +5713,10 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
             <span className="block whitespace-normal md:whitespace-nowrap max-w-full font-serif font-bold text-slate-900">{post.target_name} 様、</span>
             {isOwner && post.status === 'resolved' ? (
               <ReunionEffectTitle effectType="pure-rainbow-flow" />
-            ) : (!isOwner && (showDetails || post.status === 'resolved' || isQuestionVerified)) ? (
+            ) : (!isOwner && showDetails) ? (
               <ReunionEffectTitle effectType="pure-rainbow-flow" />
+            ) : (!isOwner && (isQuestionVerified || post.status === 'resolved')) ? (
+              <span className="block whitespace-normal md:whitespace-nowrap max-w-full text-emerald-600 font-bold">思い出の鍵が解かれました！🔑</span>
             ) : (
               <span className="block whitespace-normal leading-snug max-w-full text-teal-800 font-bold text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl">
                 「{post.searcher_name || '差出人'}さん」があなたを探しています。
@@ -6720,22 +6722,33 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                 <div className="space-y-6 animate-fade-in text-center">
                   
                   {/* ヘッダー・アイコン */}
-                  <div className="w-16 h-16 bg-gradient-to-br from-amber-100 via-rose-100 to-amber-200 text-amber-700 rounded-full shadow-md flex items-center justify-center mx-auto ring-4 ring-amber-50">
-                    <Heart size={32} className="animate-pulse text-rose-600 fill-rose-500/20" />
+                  <div className="w-16 h-16 bg-gradient-to-br from-emerald-100 via-teal-100 to-emerald-200 text-emerald-700 rounded-full shadow-md flex items-center justify-center mx-auto ring-4 ring-emerald-50">
+                    <CheckCircle2 size={32} className="text-emerald-600" />
                   </div>
 
-                  <div className="space-y-3">
-                    <div className="pt-1">
-                      <ReunionEffectTitle effectType="pure-rainbow-flow" className="text-xl sm:text-2xl md:text-3xl" />
-                    </div>
-                    <h3 className="text-lg md:text-xl font-bold font-serif text-slate-900">
+                  <div className="space-y-2">
+                    <span className="inline-block px-3.5 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold tracking-wider font-serif shadow-2xs">
+                      🔑 思い出の鍵が解かれました！
+                    </span>
+                    <h3 className="text-xl md:text-2xl font-bold font-serif text-slate-900 pt-1">
                       【{searcherName || post.searcher_name || '差出人'}】さんからの手紙を開封する
                     </h3>
                   </div>
 
-                  <p className="text-xs md:text-sm text-slate-600 font-sans leading-relaxed max-w-md mx-auto">
-                    あなたを探し続けていた【{searcherName || post.searcher_name || '差出人'}】さんが残した「手紙の全文」と「差出人の実名（本名）」、今すぐ直接つながる「ご連絡先（LINE・メールアドレス等）」が開示されます。止まっていた大切な時間の続きを、ここから始めましょう。
-                  </p>
+                  {/* 課金サービス（手紙開封・連絡先開示）の明確なご案内 */}
+                  <div className="p-4 bg-emerald-50/90 border-2 border-emerald-200/90 rounded-2xl text-left space-y-2 font-sans shadow-2xs">
+                    <div className="font-extrabold text-emerald-950 flex items-center gap-1.5 text-xs sm:text-sm">
+                      <Sparkles size={16} className="text-emerald-700 shrink-0" />
+                      <span>手紙開封・連絡先開示手続き（課金サービス）のご案内</span>
+                    </div>
+                    <p className="text-xs text-slate-700 leading-relaxed">
+                      思い出の質問に正解された方限定で、開示手続き（<strong className="text-emerald-900 font-bold bg-emerald-100/80 px-1 py-0.5 rounded">600円 税込・買い切り</strong>）を行うことで、手紙の本文全文とお相手の直通連絡先が安全に開示されます。
+                    </p>
+                    <div className="pt-1 flex items-center justify-between text-[11.5px] text-emerald-900 font-bold border-t border-emerald-200/70">
+                      <span>✓ 1回のみの買い切り（月額課金・自動更新なし）</span>
+                      <span className="font-mono text-sm text-emerald-950">600円（税込）</span>
+                    </div>
+                  </div>
 
                   {/* 安全な開示情報案内（大きく認知できる独立リッチカード） */}
                   <div className="p-5 bg-gradient-to-br from-amber-50/90 via-orange-50/70 to-amber-50/90 border-2 border-amber-300/90 rounded-2xl text-xs space-y-3.5 font-sans shadow-md text-left">
@@ -6825,18 +6838,19 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                       </p>
                     </div>
                   ) : (
-                    <div className="pt-2 space-y-2">
+                    <div className="pt-2 space-y-2.5">
                       <button
                         type="button"
                         onClick={() => setShowRevealModal(true)}
                         className="w-full py-4 px-6 bg-teal-700 hover:bg-teal-800 text-white font-bold text-sm sm:text-base rounded-2xl shadow-md hover:shadow-lg hover:scale-[1.01] active:scale-98 transition-all flex items-center justify-center gap-2.5 cursor-pointer font-sans"
                       >
                         <Heart size={18} className="fill-current text-rose-300 animate-pulse" />
-                        <span>手紙と連絡先を開く（開示手続き 600円 税込）</span>
+                        <span>手紙と連絡先の開示手続きへ進む（600円 税込）</span>
                         <ArrowRight size={16} />
                       </button>
-                      <p className="text-[11px] text-slate-400 font-sans text-center">
-                        ※決済手続き画面が開き、安全にお手続きを完了いただけます。
+                      <p className="text-[11px] text-slate-500 font-sans text-center leading-relaxed">
+                        ※ ボタンをクリックすると安全なStripe暗号化決済画面が開きます。<br className="hidden sm:inline" />
+                        勝手に決済されることはありませんのでご安心ください。
                       </p>
                     </div>
                   )}
