@@ -5302,7 +5302,17 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 md:py-12">
-      <BackToHomeButton className="mb-2" />
+      {/* 最上部ナビゲーション: トップへ戻る ＆ ボトル検索へ戻る（文字だけリンク） */}
+      <div className="flex items-center gap-4 mb-4">
+        <BackToHomeButton className="mb-0" />
+        <button
+          onClick={() => navigate('/search')}
+          className="inline-flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-slate-900 transition-colors group cursor-pointer"
+        >
+          <ArrowLeft size={13} className="group-hover:-translate-x-0.5 transition-transform text-slate-400 group-hover:text-slate-700" />
+          <span>ボトル検索へ戻る</span>
+        </button>
+      </div>
       {/* 投函完了お知らせ画面・モーダル (投稿者向け: 大きく鮮明なイラストヘッダー付き特別カード) */}
       <AnimatePresence>
         {showPostedBanner && (
@@ -5446,17 +5456,6 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* ボトル一覧へ戻るナビゲーション */}
-      <div className="mb-6 flex items-center justify-between font-sans">
-        <button
-          onClick={() => navigate('/search')}
-          className="inline-flex items-center gap-2 text-xs font-bold text-zinc-500 hover:text-black transition-colors bg-white border border-zinc-200 px-4 py-2.5 rounded-full shadow-sm"
-        >
-          <ArrowLeft size={14} />
-          <span>ボトル検索（海原）へ戻る</span>
-        </button>
-      </div>
 
       {/* 自動滑走スクロールHUD */}
       <AnimatePresence>
