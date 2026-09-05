@@ -3955,10 +3955,11 @@ export const RevealContactModal = ({
                 <button 
                   type="submit"
                   disabled={isSubmitting}
-                  className="btn-primary w-full py-4 text-sm md:text-base shadow-xl flex items-center justify-center gap-2 font-bold cursor-pointer hover:scale-[1.01] active:scale-98 transition-all disabled:opacity-75 disabled:cursor-not-allowed"
+                  className="w-full py-4 bg-teal-700 hover:bg-teal-800 text-white font-bold text-sm sm:text-base rounded-2xl shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.01] active:scale-98 transition-all disabled:opacity-75 disabled:cursor-not-allowed font-sans"
                 >
                   <Heart size={18} className="fill-current text-rose-300" />
-                  <span>600円で【{searcherFullName || searcherName}】さんの手紙と連絡先を開く</span>
+                  <span>600円で【{searcherName || '差出人'}】さんの手紙と連絡先を開く</span>
+                  <ArrowRight size={16} />
                 </button>
               </form>
             </>
@@ -6523,12 +6524,13 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                       <button
                         type="button"
                         onClick={() => setShowRevealModal(true)}
-                        className="w-full py-4 px-6 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-extrabold text-sm md:text-base rounded-2xl shadow-lg shadow-emerald-600/20 hover:scale-[1.01] active:scale-98 transition-all flex items-center justify-center gap-2.5 cursor-pointer font-sans"
+                        className="w-full py-4 px-6 bg-teal-700 hover:bg-teal-800 text-white font-bold text-sm sm:text-base rounded-2xl shadow-md hover:shadow-lg hover:scale-[1.01] active:scale-98 transition-all flex items-center justify-center gap-2.5 cursor-pointer font-sans"
                       >
-                        <Heart size={20} className="fill-current text-rose-300 animate-pulse" />
+                        <Heart size={18} className="fill-current text-rose-300 animate-pulse" />
                         <span>手紙と連絡先を開く（開示手続き 600円 税込）</span>
+                        <ArrowRight size={16} />
                       </button>
-                      <p className="text-[11px] text-slate-400 font-sans">
+                      <p className="text-[11px] text-slate-400 font-sans text-center">
                         ※決済手続き画面が開き、安全にお手続きを完了いただけます。
                       </p>
                     </div>
