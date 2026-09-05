@@ -4803,7 +4803,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
   const [hasClickedStartContact, setHasClickedStartContact] = useState(false);
 
   const activeContact = hasClickedStartContact || isQuestionVerified || showDetails;
-  const currentStep = showDetails ? 4 : ((isQuestionVerified && isAgeVerified) ? 4 : (isQuestionVerified ? 3 : (activeContact ? 2 : 1)));
+  const currentStep = (showDetails || revealedContact) ? 4 : (isQuestionVerified ? 3 : (activeContact ? 2 : 1));
 
   const roadmapSectionRef = useRef<HTMLDivElement>(null);
   const quizSectionRef = useRef<HTMLDivElement>(null);
@@ -5186,10 +5186,13 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
           }));
         }
         setIsAgeVerified(true);
-        // クイズ正解後、スムーズにカード決済（手紙開封・連絡先開示手続き 600円）モーダルを自動起動
+        // クイズ正解後、Step 3（手紙開封前プレビュー画面）へ滑らかに自動スクロール
         setTimeout(() => {
-          setShowRevealModal(true);
-        }, 350);
+          const step3El = document.getElementById('step3-unlocked-section') || document.getElementById('memory-quiz-section') || welcomeBannerRef.current;
+          if (step3El) {
+            smoothScrollWithOffset(step3El, 80);
+          }
+        }, 300);
       } else {
         if (data.results) {
           setVerificationResults(data.results);
@@ -5673,9 +5676,9 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
         onClose={() => {
           setShowRevealModal(false);
           setTimeout(() => {
-            const targetEl = document.getElementById('revealed-contact-section') || chatSectionRef.current;
+            const targetEl = document.getElementById('reunion-success-anchor') || document.getElementById('revealed-contact-section') || chatSectionRef.current;
             if (targetEl) {
-              smoothScrollWithOffset(targetEl, 120);
+              smoothScrollWithOffset(targetEl, 100);
             }
           }, 300);
         }}
@@ -5691,6 +5694,12 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               if (d && !d.error) setPost(d);
             });
           }
+          setTimeout(() => {
+            const targetEl = document.getElementById('reunion-success-anchor') || document.getElementById('revealed-contact-section') || chatSectionRef.current;
+            if (targetEl) {
+              smoothScrollWithOffset(targetEl, 100);
+            }
+          }, 450);
         }}
       />
       <SuccessStoryModal
@@ -6616,176 +6625,70 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
         <div className="lg:col-span-5" ref={questionsSectionRef}>
           <div className="sticky top-32 space-y-8">
             {!isOwner && isQuestionVerified && !revealedContact && !showDetails && post.status !== 'resolved' && (
-              <div className="glass-card p-6 md:p-8 space-y-6 font-sans transition-all duration-500 border-2 border-emerald-500/30 bg-white shadow-xl rounded-[32px]">
-                <div ref={ageVerificationRef} className="space-y-6 animate-fade-in scroll-mt-24">
-                  {/* ヘッダー＆次のステップ案内 */}
-                  {(isUserAlreadyVerified || isAgeVerified) ? (
-                    <div className="flex flex-col items-center text-center border-b border-slate-100 pb-5 space-y-3">
-                      <div className="w-12 h-12 bg-emerald-100 text-emerald-700 rounded-2xl flex items-center justify-center font-bold text-xl shrink-0 shadow-inner">
-                        🎉
-                      </div>
-                      <div className="flex items-center justify-center gap-2 flex-wrap">
-                        <span className="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-xs font-extrabold rounded-md flex items-center gap-1">
-                          <CheckCircle2 size={13} className="text-emerald-700" />
-                          クイズ全問正解！
-                        </span>
-                        <span className="text-xs text-emerald-800 font-extrabold bg-emerald-100 px-2.5 py-0.5 rounded-md border border-emerald-300/80 flex items-center gap-1">
-                          <ShieldCheck size={13} className="text-emerald-600" />
-                          本人確認・安全誓約 完了済み
-                        </span>
-                      </div>
-                      <div className="space-y-1.5 py-2 text-center bg-gradient-to-r from-emerald-500/10 via-teal-500/15 to-emerald-500/10 p-3 rounded-2xl border border-emerald-300/80 shadow-xs">
-                        <h3 className="text-base md:text-lg font-bold text-emerald-950 font-serif leading-snug tracking-tight">
-                          ✨ 手紙の本文と連絡先を開封できます！
-                        </h3>
-                        <p className="text-xs text-slate-700 font-medium leading-relaxed">
-                          お相手と直接連絡を取り合うために、下記よりお手続きをお進めください。
-                        </p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex items-start gap-3.5 border-b border-slate-100 pb-5">
-                      <div className="w-12 h-12 bg-emerald-100 text-emerald-700 rounded-2xl flex items-center justify-center font-bold text-xl shrink-0 shadow-inner">
-                        🎉
-                      </div>
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-xs font-extrabold rounded-md flex items-center gap-1">
-                            <CheckCircle2 size={13} className="text-emerald-700" />
-                            クイズ全問正解！
-                          </span>
-                          <span className="text-xs text-amber-800 font-extrabold bg-amber-100 px-2 py-0.5 rounded-md border border-amber-300/80">
-                            あと1ステップで開封
-                          </span>
-                        </div>
-                        <h3 className="text-base md:text-lg font-extrabold text-slate-900 leading-snug">
-                          年齢・本人確認を行うことで、手紙の本文と差出人の連絡先が開示されます
-                        </h3>
-                        <p className="text-xs text-amber-900 font-bold bg-amber-50/90 p-2.5 rounded-xl border border-amber-200/90 flex items-center gap-1.5 mt-2">
-                          <ArrowDown size={14} className="text-amber-600 shrink-0 animate-bounce" />
-                          <span>下記の【方式A（公的身分証認証）】または【方式B（無料）】を選択して先にお進みください</span>
-                        </p>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* 開示内容と手続きが必要な理由（安心感・透明性を伝える説明） */}
-                  <div className="space-y-3 font-sans">
-                    {!(isUserAlreadyVerified || isAgeVerified) && (
-                      <>
-                        <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-2 text-xs md:text-sm text-slate-800">
-                          <p className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
-                            <Lock size={16} className="text-emerald-600 shrink-0" />
-                            <span>手続き完了後に安全に開示される内容</span>
-                          </p>
-                          <ul className="list-disc list-inside space-y-1 pl-1 text-slate-700 font-medium">
-                            <li>差出人の<strong>フルネーム（実名）</strong>および手紙の<strong>詳細本文（メッセージ全貌）</strong></li>
-                            <li>差出人が登録した<strong>連絡先（LINE ID・メールアドレス等）</strong></li>
-                          </ul>
-                        </div>
-
-                        <div id="age-verification-gate" ref={ageVerificationRef} className="p-4 bg-amber-50/80 border border-amber-200/80 rounded-2xl space-y-1.5 text-xs md:text-sm text-slate-800 scroll-mt-28">
-                          <div className="flex items-center gap-1.5 font-bold text-amber-950">
-                            <ShieldCheck size={16} className="text-amber-600 shrink-0" />
-                            <span>安全なお引き渡しのためのご確認（年齢確認 ＆ 開示手数料）</span>
-                          </div>
-                          <p className="text-slate-700 leading-relaxed text-xs md:text-sm">
-                            プライバシー保護のため、<strong>18歳以上（高校生不可）の確認</strong>と<strong>開示手数料（600円）</strong>のお手続きが必要です。下記より「無料年齢誓約」または「公的身分証(eKYC)認証」をお選びください。
-                          </p>
-                        </div>
-                      </>
-                    )}
-
-                    {post.user_is_verified && (
-                      <div className="p-3.5 bg-emerald-50 rounded-xl border border-emerald-200/80 flex items-center gap-2.5 text-xs text-emerald-900 font-semibold">
-                        <UserCheck size={16} className="text-emerald-600 shrink-0" />
-                        <span>差出人（ボトル作成者）も公的本人確認・安全誓約を完了しています。</span>
-                      </div>
-                    )}
+              <div id="step3-unlocked-section" className="glass-card p-6 md:p-8 space-y-6 font-sans transition-all duration-500 border-2 border-emerald-400 bg-white shadow-xl rounded-[32px] scroll-mt-28">
+                <div className="space-y-6 animate-fade-in text-center">
+                  
+                  {/* ヘッダー・アイコン */}
+                  <div className="w-16 h-16 bg-gradient-to-br from-amber-100 via-rose-100 to-amber-200 text-amber-700 rounded-full shadow-md flex items-center justify-center mx-auto ring-4 ring-amber-50">
+                    <Heart size={32} className="animate-pulse text-rose-600 fill-rose-500/20" />
                   </div>
 
-                  {/* 既に確認済みの場合は、公的eKYC推奨と開封のみを2分割・並列で案内 */}
-                  {(isUserAlreadyVerified || isAgeVerified) ? (
-                    <div className="space-y-3 pt-2">
-                      {!user?.is_ekyc_verified && !finderEkycVerified && localStorage.getItem('ekyc_verified') !== 'true' ? (
-                        <div className="space-y-3">
-                          {/* 第一推奨：公的eKYC認証付き開封 */}
-                          <div className="p-4 bg-gradient-to-br from-indigo-50 via-white to-purple-50 rounded-2xl border-2 border-indigo-500/80 shadow-md space-y-2.5">
-                            <div className="flex items-center justify-between">
-                              <span className="text-[11px] font-extrabold bg-indigo-600 text-white px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-2xs">
-                                <Sparkles size={11} className="text-amber-300" />
-                                【第一推奨】安心・返信率大幅UP
-                              </span>
-                              <span className="text-xs font-extrabold text-indigo-700">
-                                1,200円<span className="text-[10px] text-slate-500 font-normal">（税込）</span>
-                              </span>
-                            </div>
-                            <p className="text-xs text-slate-700 leading-relaxed font-medium">
-                              公的身分証で身元を証明することで、お相手の警戒心を解き、<strong>初回の返信率を格段に高める</strong>ことができます。
-                            </p>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setFinderEkycStep(1);
-                                setFinderEkycProgress(0);
-                                sessionStorage.setItem('finder_ekyc_step', '1');
-                                setShowFinderEkycModal(true);
-                              }}
-                              className="w-full py-3.5 px-4 bg-gradient-to-r from-indigo-600 via-indigo-700 to-purple-700 hover:from-indigo-700 hover:to-purple-800 text-white font-extrabold text-xs md:text-sm rounded-xl shadow-md hover:scale-[1.01] active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer font-sans"
-                            >
-                              <ShieldCheck size={16} />
-                              <span>公的証明バッジを取得して開封（1,200円 税込）</span>
-                            </button>
-                          </div>
+                  <div className="space-y-2">
+                    <span className="inline-block px-3.5 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-bold tracking-wider font-serif shadow-2xs">
+                      ✨ 時を超えて届いた想い出のメッセージ
+                    </span>
+                    <h3 className="text-xl md:text-2xl font-bold font-serif text-slate-900 pt-1">
+                      【{otherUserFullNameToUse || searcherFullName || post.searcher_full_name || post.owner_full_name || post.searcher_name || searcherName || 'お相手'}】さんからの手紙を開封する
+                    </h3>
+                  </div>
 
-                          {/* 並列：公的バッジなしで手紙開封のみ */}
-                          <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
-                            <div className="flex items-center justify-between">
-                              <span className="text-xs font-bold text-slate-700">
-                                手紙開封・連絡先受取のみ
-                              </span>
-                              <span className="text-xs font-extrabold text-slate-900">
-                                600円<span className="text-[10px] text-slate-500 font-normal">（税込）</span>
-                              </span>
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() => setShowRevealModal(true)}
-                              className="w-full py-3 px-4 bg-slate-800 hover:bg-slate-900 text-white font-extrabold text-xs md:text-sm rounded-xl shadow-xs hover:scale-[1.01] active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer font-sans"
-                            >
-                              <Heart size={16} className="text-rose-300" />
-                              <span>公的バッジなしで手紙を開封する（600円）</span>
-                            </button>
-                          </div>
-                        </div>
-                      ) : (
-                        /* すでにeKYCも完了している場合は直接開封 */
-                        <button
-                          type="button"
-                          onClick={() => setShowRevealModal(true)}
-                          className="w-full py-4 px-6 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-extrabold text-sm md:text-base rounded-2xl shadow-lg shadow-emerald-600/20 hover:scale-[1.01] active:scale-98 transition-all flex items-center justify-center gap-2.5 cursor-pointer font-sans"
-                        >
-                          <Heart size={20} className="fill-current text-rose-300 animate-pulse" />
-                          <span>手紙と連絡先を開封する（開示手続き 600円）</span>
-                        </button>
-                      )}
+                  <p className="text-xs md:text-sm text-slate-600 font-sans leading-relaxed max-w-md mx-auto">
+                    あなたを探し続けていた【{otherUserFullNameToUse || searcherFullName || post.searcher_full_name || post.owner_full_name || post.searcher_name || searcherName || 'お相手'}】さんが残した「手紙の全文」と、今すぐ直接つながる「ご連絡先（LINE・メールアドレス等）」が開示されます。止まっていた大切な時間の続きを、ここから始めましょう。
+                  </p>
+
+                  {/* 安全な開示情報案内 */}
+                  <div className="p-4 bg-gradient-to-br from-amber-50/90 via-orange-50/80 to-amber-50/90 border border-amber-200/90 rounded-2xl text-xs space-y-2.5 font-sans shadow-sm text-left">
+                    <div className="font-bold text-amber-950 flex items-center gap-2 text-sm border-b border-amber-200/80 pb-2">
+                      <ShieldCheck size={18} className="text-amber-700 shrink-0" />
+                      <span>安全な照合を経て、お相手の手紙と連絡先をお届けします</span>
                     </div>
-                  ) : (
-                    <AgeVerificationGate 
-                      onVerified={handleAgeVerified} 
-                      onStartEkyc={() => {
-                        if (finderEkycVerified || localStorage.getItem('ekyc_verified') === 'true' || user?.is_ekyc_verified) {
-                          alert('🛡️ すでに公的本人確認（eKYC）が完了しています。');
-                          handleAgeVerified();
-                          return;
-                        }
-                        setFinderEkycStep(1);
-                        setFinderEkycProgress(0);
-                        sessionStorage.setItem('finder_ekyc_step', '1');
-                        setShowFinderEkycModal(true);
-                      }} 
-                    />
-                  )}
+                    <ul className="space-y-2 text-slate-800 text-xs leading-relaxed font-medium">
+                      <li className="flex items-start gap-2 bg-white/80 p-2.5 rounded-xl border border-amber-100">
+                        <span className="text-base shrink-0">✉️</span>
+                        <div>
+                          <strong>【手紙の全文とエピソードを開封】</strong>
+                          <p className="text-[11px] text-slate-600 leading-snug font-normal pt-0.5">
+                            あの日伝えられなかった言葉、感謝、忘れられない思い出の全貌がそのまま読めます。
+                          </p>
+                        </div>
+                      </li>
+                      <li className="flex items-start gap-2 bg-white/80 p-2.5 rounded-xl border border-amber-100">
+                        <span className="text-base shrink-0">📱</span>
+                        <div>
+                          <strong>【お相手の連絡先（LINE・メール等）】</strong>
+                          <p className="text-[11px] text-slate-600 leading-snug font-normal pt-0.5">
+                            差出人が直接連絡を受け取るために登録した連絡先を安全に確認できます。
+                          </p>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+
+                  {/* 開封手続きボタン */}
+                  <div className="pt-2 space-y-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowRevealModal(true)}
+                      className="w-full py-4 px-6 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-extrabold text-sm md:text-base rounded-2xl shadow-lg shadow-emerald-600/20 hover:scale-[1.01] active:scale-98 transition-all flex items-center justify-center gap-2.5 cursor-pointer font-sans"
+                    >
+                      <Heart size={20} className="fill-current text-rose-300 animate-pulse" />
+                      <span>手紙と連絡先を開く（開示手続き 600円 税込）</span>
+                    </button>
+                    <p className="text-[11px] text-slate-400 font-sans">
+                      ※クレジットカードで安全にお手続きいただけます（SSL暗号化保護）。
+                    </p>
+                  </div>
+
                 </div>
               </div>
             )}
