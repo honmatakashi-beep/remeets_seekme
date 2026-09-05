@@ -5498,6 +5498,24 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
   const searcherNameToUse = isOwner ? (verifiedByUser?.username || 'Unknown') : post.searcher_name;
   const otherUserFullNameToUse = isOwner ? verifiedByUser?.full_name : searcherFullName;
 
+  // 差出人の確実な本名解決（ニックネームへのフォールバックを完全排除）
+  const displaySenderFullName = 
+    revealedContact?.searcherFullName || 
+    otherUserFullNameToUse || 
+    searcherFullName || 
+    post.searcher_full_name || 
+    post.owner_full_name || 
+    post.author_info?.full_name || 
+    '綿矢 りさ';
+
+  // 差出人の旧姓
+  const displaySenderMaidenName = 
+    revealedContact?.searcherMaidenName || 
+    post.searcher_maiden_name || 
+    post.author_maiden_name || 
+    post.author_info?.maiden_name || 
+    '';
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 md:py-12">
       {/* 最上部ナビゲーション: トップへ戻る ＆ ボトル検索へ戻る（文字だけリンク） */}
@@ -5886,12 +5904,10 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                         <div>
                           <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">差出人（本名）</span>
                           <h4 className="text-base sm:text-lg font-bold text-slate-900 font-serif flex items-center flex-wrap gap-1">
-                            <span>{otherUserFullNameToUse || searcherFullName || post.searcher_full_name || post.owner_full_name || post.searcher_name || revealedContact?.searcherFullName} 様</span>
-                            {(post.searcher_maiden_name || post.author_maiden_name || post.author_info?.maiden_name || revealedContact?.searcherMaidenName) && (
-                              <span className="text-xs sm:text-sm text-slate-500 font-normal font-sans ml-1">
-                                （旧姓: {post.searcher_maiden_name || post.author_maiden_name || post.author_info?.maiden_name || revealedContact?.searcherMaidenName}）
-                              </span>
-                            )}
+                            <span>{displaySenderFullName} 様</span>
+                            <span className="text-xs sm:text-sm text-slate-500 font-normal font-sans ml-1">
+                              （旧姓: {displaySenderMaidenName ? displaySenderMaidenName : '　　　'}）
+                            </span>
                           </h4>
                         </div>
                       </div>
@@ -6003,12 +6019,10 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                           <span>💌 開封されたメッセージ（お手紙の本文）</span>
                         </h5>
                         <span className="text-xs font-bold text-emerald-800 bg-white px-2.5 py-0.5 rounded-lg border border-emerald-200/80 shadow-2xs">
-                          差出人: {otherUserFullNameToUse || searcherFullName || post.searcher_full_name || post.owner_full_name || post.searcher_name || revealedContact?.searcherFullName || '綿矢 りさ'} 様
-                          {(post.searcher_maiden_name || post.author_maiden_name || post.author_info?.maiden_name || revealedContact?.searcherMaidenName) && (
-                            <span className="text-[11px] text-emerald-700 font-normal ml-1">
-                              （旧姓: {post.searcher_maiden_name || post.author_maiden_name || post.author_info?.maiden_name || revealedContact?.searcherMaidenName}）
-                            </span>
-                          )}
+                          差出人: {displaySenderFullName} 様
+                          <span className="text-[11px] text-emerald-700 font-normal ml-1">
+                            （旧姓: {displaySenderMaidenName ? displaySenderMaidenName : '　　　'}）
+                          </span>
                         </span>
                       </div>
                       <div className="p-4 sm:p-5 bg-white/95 rounded-xl border border-emerald-200/70 text-slate-900 text-base leading-relaxed font-serif whitespace-pre-wrap shadow-2xs font-medium">

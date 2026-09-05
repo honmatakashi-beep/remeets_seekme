@@ -4129,7 +4129,7 @@ async function startServer() {
 
       if (canViewDetails) {
         // Resolve full name and contact information only for author or verified finder
-        const resolvedFullName = post.searcher_full_name || author?.full_name || post.searcher_name || author?.username || '綿矢 りさ';
+        const resolvedFullName = post.searcher_full_name || author?.full_name || '綿矢 りさ';
         const resolvedMaidenName = post.searcher_maiden_name || author?.maiden_name || '';
         const resolvedContactType = post.contact_type || author?.contact_type || 'LINE';
         const resolvedContactId = post.contact_id || author?.contact_id || (author?.username ? `@${author.username}` : (post.searcher_name ? `@${post.searcher_name}` : '@r_wataya_780'));
@@ -4275,11 +4275,14 @@ async function startServer() {
           verifiedByUser = db.prepare("SELECT id, username, full_name FROM users WHERE id = ?").get(req.user.id);
         }
 
+        const author = post.user_id ? (db.prepare("SELECT id, username, full_name FROM users WHERE id = ?").get(post.user_id) as any) : null;
+        const resolvedSearcherFullName = post.searcher_full_name || author?.full_name || '綿矢 りさ';
+
         res.json({ 
           quizPassed: true,
           searcherId: post.user_id,
           searcherName: post.searcher_name,
-          searcherFullName: post.searcher_full_name,
+          searcherFullName: resolvedSearcherFullName,
           verifiedByUser: verifiedByUser,
           targetSchool: post.target_school,
           targetHometown: post.target_hometown
@@ -4319,7 +4322,6 @@ async function startServer() {
   });
 
   // Reveal contact and letter endpoint (supports 600 JPY letter only or 1,200 JPY eKYC + letter opening lump sum)
-  // Reveal contact and letter endpoint (supports 600 JPY letter only or 1,200 JPY eKYC + letter opening lump sum)
   app.post("/api/posts/:id/reveal-contact", optionalAuthenticateToken, async (req: any, res: any) => {
     const postId = req.params.id;
     const { unlockMessage, unlockContactInfo, amount = 600, isEkyc = false } = req.body || {};
@@ -4343,6 +4345,7 @@ async function startServer() {
       const contactId = post.contact_id || `@${author?.username || post.searcher_name || 'remeets_contact'}`;
       const contactNote = post.contact_note || 'お手紙を見つけていただきありがとうございます！LINEまたはメールにてご連絡をお待ちしております。';
       const searcherMaidenName = post.searcher_maiden_name || author?.maiden_name || '';
+      const resolvedSearcherFullName = post.searcher_full_name || author?.full_name || '綿矢 りさ';
 
       // 🛡️ SEC-006: 既存決済の確認（二重課金・連続決済の多重防止制御）
       const existingTx = userId 
@@ -4361,7 +4364,7 @@ async function startServer() {
             contactId,
             contactNote,
             searcherName: post.searcher_name,
-            searcherFullName: post.searcher_full_name,
+            searcherFullName: resolvedSearcherFullName,
             searcherMaidenName,
             message: post.message,
             status: 'resolved'
@@ -4414,7 +4417,7 @@ async function startServer() {
         contactId: contactId,
         contactNote: contactNote,
         searcherName: post.searcher_name,
-        searcherFullName: post.searcher_full_name,
+        searcherFullName: resolvedSearcherFullName,
         searcherMaidenName,
         message: post.message,
         status: 'resolved'
