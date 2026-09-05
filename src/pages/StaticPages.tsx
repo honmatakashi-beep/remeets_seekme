@@ -245,10 +245,73 @@ export const GuidelinesPage = () => (
   </div>
 );
 
+export const CompanyContent = () => (
+  <div className="space-y-6 text-brand-dark/90 text-[13px] leading-relaxed text-black font-sans">
+    <div className="divide-y divide-zinc-100 text-xs text-black">
+      <div className="grid grid-cols-1 md:grid-cols-3 py-4 gap-2">
+        <span className="font-bold text-neutral-700">サービス名</span>
+        <span className="md:col-span-2 text-neutral-900 font-medium">ReMEETs (リミーツ)</span>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 py-4 gap-2">
+        <span className="font-bold text-neutral-700">運営主体名</span>
+        <span className="md:col-span-2 text-neutral-900 font-medium">ReMEETs  TEAM / 代表：本間 高</span>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 py-4 gap-2">
+        <span className="font-bold text-neutral-700">郵便番号・所在地</span>
+        <span className="md:col-span-2 text-neutral-900 font-medium">〒150-0043 東京都渋谷区道玄坂1丁目10番8号 渋谷道玄坂東急ビル 2F-B (バーチャルオフィス契約)</span>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 py-4 gap-2">
+        <span className="font-bold text-neutral-700">電話番号</span>
+        <span className="md:col-span-2 text-neutral-900 font-medium">050-3183-8842 (受付時間：平日 10:00〜17:00 / 録音対応)</span>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 py-4 gap-2">
+        <span className="font-bold text-neutral-700">メールアドレス</span>
+        <span className="md:col-span-2 text-neutral-900 font-medium">support@remeets.link</span>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 py-4 gap-2">
+        <span className="font-bold text-neutral-700">役務の内容</span>
+        <span className="md:col-span-2 text-neutral-900 font-medium">
+          思い出の手紙（ボトルメール）の投函・検索プラットフォームの提供、および手紙開封・メッセージやり取り・連絡先開示（引き渡し）システムサービスの提供。
+        </span>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 py-4 gap-2">
+        <span className="font-bold text-neutral-700">役務の対価（販売価格）</span>
+        <span className="md:col-span-2 text-neutral-900 font-medium">
+          ・アカウント登録・ボトル投函・自分宛ての手紙検索・一覧閲覧：完全無料（0円）<br />
+          ・手紙開封・想い出照合および連絡先開示システム利用料：一回あたり 600円〜1,200円（税込 / eKYC本人認証実費を含む一括買い切り型）<br />
+          ※月額会費や自動更新のサブスクリプション費用は一切発生しません。
+        </span>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 py-4 gap-2">
+        <span className="font-bold text-neutral-700">お支払い方法</span>
+        <span className="md:col-span-2 text-neutral-900 font-medium">クレジットカード決済（Stripe安全決済システム）</span>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 py-4 gap-2">
+        <span className="font-bold text-neutral-700">お支払時期・役務の提供時期</span>
+        <span className="md:col-span-2 text-neutral-900 font-medium">
+          決済手続き完了時にお支払いが確定し、手続き完了後即時にシステム上で手紙の開封・想い出照合および連絡先開示が完了します。
+        </span>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 py-4 gap-2">
+        <span className="font-bold text-neutral-700">返品・キャンセル・返金について</span>
+        <span className="md:col-span-2 text-neutral-900 font-medium leading-relaxed">
+          デジタルコンテンツおよびシステム開通・照合サービスの性質上、お支払い完了後のキャンセルおよび返金・換金には原則として一切応じられません。<br />
+          ※システムの障害等により正常にサービスが提供されなかった場合は、個別確認のうえ全額返金または振替処理を行います（本人確認eKYC審査で不合格となった場合は自動キャンセル・仮売上全額取消が行われます）。<br />
+          ※運用上の都合や経営判断等により将来的に本サービスが急遽閉鎖・終了となった場合であっても、過去に支払われた各種利用手数料（手紙開封・開通手数料600円〜1,200円等）および開発応援寄付金・サポーター支援金等の返金・補償には応じられませんのであらかじめご了承ください。
+        </span>
+      </div>
+    </div>
+    <div className="pt-4 border-t border-brand-border/60 text-right text-[11px] text-neutral-500 font-mono space-y-1">
+      <div>制定日・施行日：2026年8月15日（本番サービス運用開始日）</div>
+      <div>最終改定日：2026年8月16日</div>
+    </div>
+  </div>
+);
+
 export const CompanyPage = () => (
-  <div className="max-w-4xl mx-auto px-6 py-12 font-sans text-black animate-in fade-in duration-300">
+  <div className="max-w-4xl mx-auto px-6 py-12 font-sans text-black">
     <BackToHomeButton />
-    <div className="glass-card p-8 md:p-16 bg-white rounded-3xl border border-brand-border shadow-sm space-y-8">
+    <div className="glass-card p-8 md:p-16 text-black font-sans">
       <PageHeader
         icon={<Building2 size={24} className="text-slate-600" />}
         iconBoxClassName="bg-slate-100 text-slate-600 border border-slate-200"
@@ -256,64 +319,7 @@ export const CompanyPage = () => (
         title="特定商取引法に基づく表記 ＆ 運営主体"
         description="特定商取引法に基づく販売者情報、運営組織および連絡先情報です。"
       />
-      <div className="divide-y divide-zinc-100 text-xs text-black">
-        <div className="grid grid-cols-1 md:grid-cols-3 py-4 gap-2">
-          <span className="font-bold text-neutral-700">サービス名</span>
-          <span className="md:col-span-2 text-neutral-900 font-medium">ReMEETs (リミーツ)</span>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 py-4 gap-2">
-          <span className="font-bold text-neutral-700">運営主体名</span>
-          <span className="md:col-span-2 text-neutral-900 font-medium">ReMEETs  TEAM / 代表：本間 高</span>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 py-4 gap-2">
-          <span className="font-bold text-neutral-700">郵便番号・所在地</span>
-          <span className="md:col-span-2 text-neutral-900 font-medium">〒150-0043 東京都渋谷区道玄坂1丁目10番8号 渋谷道玄坂東急ビル 2F-B (バーチャルオフィス契約)</span>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 py-4 gap-2">
-          <span className="font-bold text-neutral-700">電話番号</span>
-          <span className="md:col-span-2 text-neutral-900 font-medium">050-3183-8842 (受付時間：平日 10:00〜17:00 / 録音対応)</span>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 py-4 gap-2">
-          <span className="font-bold text-neutral-700">メールアドレス</span>
-          <span className="md:col-span-2 text-neutral-900 font-medium">support@remeets.link</span>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 py-4 gap-2">
-          <span className="font-bold text-neutral-700">役務の内容</span>
-          <span className="md:col-span-2 text-neutral-900 font-medium">
-            思い出の手紙（ボトルメール）の投函・検索プラットフォームの提供、および手紙開封・メッセージやり取り・連絡先開示（引き渡し）システムサービスの提供。
-          </span>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 py-4 gap-2">
-          <span className="font-bold text-neutral-700">役務の対価（販売価格）</span>
-          <span className="md:col-span-2 text-neutral-900 font-medium">
-            ・アカウント登録・ボトル投函・自分宛ての手紙検索・一覧閲覧：完全無料（0円）<br />
-            ・手紙開封・想い出照合および連絡先開示システム利用料：一回あたり 600円〜1,200円（税込 / eKYC本人認証実費を含む一括買い切り型）<br />
-            ※月額会費や自動更新のサブスクリプション費用は一切発生しません。
-          </span>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 py-4 gap-2">
-          <span className="font-bold text-neutral-700">お支払い方法</span>
-          <span className="md:col-span-2 text-neutral-900 font-medium">クレジットカード決済（Stripe安全決済システム）</span>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 py-4 gap-2">
-          <span className="font-bold text-neutral-700">お支払時期・役務の提供時期</span>
-          <span className="md:col-span-2 text-neutral-900 font-medium">
-            決済手続き完了時にお支払いが確定し、手続き完了後即時にシステム上で手紙の開封・想い出照合および連絡先開示が完了します。
-          </span>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 py-4 gap-2">
-          <span className="font-bold text-neutral-700">返品・キャンセル・返金について</span>
-          <span className="md:col-span-2 text-neutral-900 font-medium leading-relaxed">
-            デジタルコンテンツおよびシステム開通・照合サービスの性質上、お支払い完了後のキャンセルおよび返金・換金には原則として一切応じられません。<br />
-            ※システムの障害等により正常にサービスが提供されなかった場合は、個別確認のうえ全額返金または振替処理を行います（本人確認eKYC審査で不合格となった場合は自動キャンセル・仮売上全額取消が行われます）。<br />
-            ※運用上の都合や経営判断等により将来的に本サービスが急遽閉鎖・終了となった場合であっても、過去に支払われた各種利用手数料（手紙開封・開通手数料600円〜1,200円等）および開発応援寄付金・サポーター支援金等の返金・補償には応じられませんのであらかじめご了承ください。
-          </span>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 py-4 gap-2">
-          <span className="font-bold text-neutral-700">制定・公表日</span>
-          <span className="md:col-span-2 text-neutral-900 font-mono">2026年8月15日（本番サービス運用開始日） / 最終改定日: 2026年8月16日</span>
-        </div>
-      </div>
+      <CompanyContent />
     </div>
   </div>
 );
