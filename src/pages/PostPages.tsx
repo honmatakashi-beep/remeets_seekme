@@ -6735,18 +6735,18 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                     </h3>
                   </div>
 
-                  {/* 課金サービス（手紙開封・連絡先開示）の明確なご案内（明朝体の大型目立つ見出し） */}
+                  {/* 課金サービス（手紙開封・連絡先開示）の明確なご案内 */}
                   <div className="p-5 sm:p-6 bg-gradient-to-br from-emerald-50/95 via-teal-50/80 to-slate-50 border-2 border-emerald-400/90 rounded-2xl text-left space-y-3 font-sans shadow-md">
                     <div className="flex items-center gap-2.5 border-b border-emerald-200/90 pb-3 flex-wrap">
                       <span className="w-8 h-8 rounded-xl bg-teal-700 text-white flex items-center justify-center font-bold text-sm shadow-2xs">
                         ✉️
                       </span>
-                      <h4 className="text-base sm:text-lg md:text-xl font-bold font-serif text-slate-900 tracking-tight leading-snug">
+                      <h4 className="text-base sm:text-lg md:text-xl font-extrabold font-sans text-slate-900 tracking-tight leading-snug">
                         手紙開封・連絡先開示手続き（課金サービス）のご案内
                       </h4>
                     </div>
-                    <p className="text-xs sm:text-sm text-slate-700 font-serif leading-relaxed">
-                      思い出の質問に正解された方限定で、開示手続き（<strong className="text-teal-950 font-bold bg-teal-100/90 px-1.5 py-0.5 rounded text-xs sm:text-sm font-sans">600円 税込・買い切り</strong>）を行うことで、手紙の本文全文とお相手の直通連絡先が安全に開示されます。
+                    <p className="text-xs sm:text-sm text-slate-700 font-sans leading-relaxed">
+                      思い出の質問に正解された方限定で、開示手続き（<strong className="text-teal-950 font-bold bg-teal-100/90 px-1.5 py-0.5 rounded text-xs sm:text-sm">600円 税込・買い切り</strong>）を行うことで、手紙の本文全文とお相手の直通連絡先が安全に開示されます。
                     </p>
                     <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 text-xs text-teal-950 font-medium border-t border-emerald-200/80 bg-white/70 p-2.5 rounded-xl">
                       <span className="flex items-center gap-1.5">
