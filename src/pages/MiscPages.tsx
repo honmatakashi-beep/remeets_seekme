@@ -489,7 +489,7 @@ export const AdminDeploymentGuideBlock = ({
   const [smsCount, setSmsCount] = React.useState<number>(1000);
   const [costTab, setCostTab] = React.useState<'running' | 'initial'>('running');
   const [subTab, setSubTab] = React.useState<'memo_alert' | 'deploy_basic' | 'police_safety' | 'pr_strategy'>('memo_alert');
-  const [evaluationDateTab, setEvaluationDateTab] = React.useState<'2026-08-24' | '2026-08-15'>('2026-08-24');
+  const [evaluationDateTab, setEvaluationDateTab] = React.useState<'2026-09-05' | '2026-08-24' | '2026-08-15'>('2026-09-05');
 
   React.useEffect(() => {
     if (['deployment', 'cost_estimate', 'cost_list_detailed', 'permit', 'requirements', 'legal_guide'].includes(docType)) {
@@ -1285,7 +1285,9 @@ export const AdminDeploymentGuideBlock = ({
         else if (docType === 'scenario') fileName = 'ReMEETs_Police_Presentation_Scenario.md';
         else if (docType === 'requirements') fileName = 'ReMEETs_Requirements_Definition.md';
         else if (docType === 'evaluation') {
-          fileName = evaluationDateTab === '2026-08-24' ? 'ReMEETs_Overall_Evaluation_20260824.md' : 'ReMEETs_Overall_Evaluation.md';
+          if (evaluationDateTab === '2026-08-24') fileName = 'ReMEETs_Overall_Evaluation_20260824.md';
+          else if (evaluationDateTab === '2026-08-15') fileName = 'ReMEETs_Overall_Evaluation_20260815.md';
+          else fileName = 'ReMEETs_Overall_Evaluation.md';
         }
         else if (docType === 'pr_plan') fileName = 'ReMEETs_PR_Plan.md';
         else if (docType === 'legal_guide') fileName = 'ReMEETs_Legal_Compliance_Guide.md';
@@ -2190,7 +2192,16 @@ export const AdminDeploymentGuideBlock = ({
     else if (docType === 'scenario') fileName = 'ReMEETs_Police_Presentation_Scenario.md';
     else if (docType === 'requirements') fileName = 'ReMEETs_Requirements_Definition.md';
     else if (docType === 'evaluation') {
-      fileName = evaluationDateTab === '2026-08-24' ? 'ReMEETs_Overall_Evaluation_20260824.md' : 'ReMEETs_Overall_Evaluation.md';
+      if (evaluationDateTab === '2026-08-24') {
+        fileName = 'ReMEETs_Overall_Evaluation_20260824.md';
+        titleStr = "⑨ ReMEETs サイト全体評価 ＆ 専門家技術レビュー (2026年8月24日 改定版)";
+      } else if (evaluationDateTab === '2026-08-15') {
+        fileName = 'ReMEETs_Overall_Evaluation_20260815.md';
+        titleStr = "⑨ ReMEETs サイト全体評価 ＆ 専門家技術レビュー (2026年8月15日 初版)";
+      } else {
+        fileName = 'ReMEETs_Overall_Evaluation.md';
+        titleStr = "⑨ ReMEETs サイト全体評価 ＆ 専門家技術レビュー (2026年9月5日 最新改定版)";
+      }
     }
     else if (docType === 'pr_plan') fileName = 'ReMEETs_PR_Plan.md';
     else if (docType === 'legal_guide') fileName = 'ReMEETs_Legal_Compliance_Guide.md';
@@ -2205,7 +2216,15 @@ export const AdminDeploymentGuideBlock = ({
     else if (docType === 'matrix') titleStr = "⑤ セキュリティ適合性監査マトリクス";
     else if (docType === 'scenario') titleStr = "⑦ 警察向けプレゼンテーション公式口頭発表シナリオ";
     else if (docType === 'requirements') titleStr = "⑧ ReMEETs システム基本要件定義書 (System Requirements Definition Document)";
-    else if (docType === 'evaluation') titleStr = "⑨ ReMEETs サイト全体評価 ＆ 専門家技術レビュー";
+    else if (docType === 'evaluation') {
+      if (evaluationDateTab === '2026-08-24') {
+        titleStr = "⑨ ReMEETs サイト全体評価 ＆ 専門家技術レビュー (2026年8月24日 改定版)";
+      } else if (evaluationDateTab === '2026-08-15') {
+        titleStr = "⑨ ReMEETs サイト全体評価 ＆ 専門家技術レビュー (2026年8月15日 初版)";
+      } else {
+        titleStr = "⑨ ReMEETs サイト全体評価 ＆ 専門家技術レビュー (2026年9月5日 最新改定版)";
+      }
+    }
     else if (docType === 'pr_plan') titleStr = "⑩ ReMEETs 広報・マーケティング・PR立ち上げ戦略プラン";
     else if (docType === 'legal_guide') titleStr = "⑪ 主要関係法令適合性＆警察署相談ガイダンス";
 
@@ -3900,6 +3919,16 @@ export const AdminDeploymentGuideBlock = ({
                         </div>
                         <div className="inline-flex rounded-xl bg-slate-950 p-1 border border-slate-800">
                           <button
+                            onClick={() => setEvaluationDateTab('2026-09-05')}
+                            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                              evaluationDateTab === '2026-09-05'
+                                ? 'bg-emerald-600 text-white shadow-sm ring-1 ring-emerald-400/50'
+                                : 'text-slate-400 hover:text-white hover:bg-slate-900'
+                            }`}
+                          >
+                            <span>🌟 最新版 (2026年9月5日 改定)</span>
+                          </button>
+                          <button
                             onClick={() => setEvaluationDateTab('2026-08-24')}
                             className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                               evaluationDateTab === '2026-08-24'
@@ -3907,7 +3936,7 @@ export const AdminDeploymentGuideBlock = ({
                                 : 'text-slate-400 hover:text-white hover:bg-slate-900'
                             }`}
                           >
-                            <span>🌟 最新版 (2026年8月24日 改定)</span>
+                            <span>📜 第2版 (2026年8月24日 改定)</span>
                           </button>
                           <button
                             onClick={() => setEvaluationDateTab('2026-08-15')}
