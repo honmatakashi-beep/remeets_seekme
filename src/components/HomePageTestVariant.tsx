@@ -417,20 +417,6 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
                   </p>
                 </div>
               </div>
-
-              {/* 信頼性・安心アイコンタグ */}
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.4 }}
-                className="flex flex-wrap items-center justify-center gap-3 sm:gap-5 text-[11px] sm:text-xs text-slate-600 font-sans pt-1 font-medium"
-              >
-                <span className="flex items-center gap-1.5"><ShieldCheck size={14} className="text-sky-600 shrink-0" /> 投稿は完全無料</span>
-                <span className="text-slate-300">•</span>
-                <span className="flex items-center gap-1.5"><Lock size={14} className="text-sky-600 shrink-0" /> 匿名掲載・個人情報は非公開</span>
-                <span className="text-slate-300">•</span>
-                <span className="flex items-center gap-1.5"><Sparkles size={14} className="text-sky-600 shrink-0" /> 秘密の質問で安全照合</span>
-              </motion.div>
             </div>
           </div>
         </div>

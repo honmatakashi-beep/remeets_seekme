@@ -178,20 +178,25 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
       {/* 🔍 上部統合検索 & 絞り込み & 新着通知コントロールカード */}
       <div className="glass-card p-5 sm:p-7 bg-white rounded-3xl border border-brand-border shadow-sm space-y-4 font-sans text-left">
         {/* 検索入力バー */}
-        <form onSubmit={handleSearch} className="flex gap-2 sm:gap-3">
-          <div className="relative flex-grow">
-            <input 
-              type="text"
-              value={query}
-              onChange={e => setQuery(e.target.value)}
-              placeholder="あなたのお名前（苗字・旧姓・ニックネーム）、ゆかりの都道府県など..."
-              className="w-full pl-4 sm:pl-5 pr-10 sm:pr-12 py-3 text-xs sm:text-sm border border-brand-border rounded-2xl bg-slate-50/60 focus:bg-white focus:border-brand-primary outline-none focus:ring-2 focus:ring-brand-primary/20 transition-all font-sans placeholder:text-slate-400 text-black shadow-inner"
-            />
-            <Search className="absolute right-4 top-3.5 text-slate-400" size={18} />
+        <form onSubmit={handleSearch} className="space-y-2">
+          <label className="block text-xs sm:text-sm font-bold text-slate-800 font-sans">
+            あなたのお名前のフルネーム（旧姓・ニックネーム）を入れてください
+          </label>
+          <div className="flex gap-2 sm:gap-3">
+            <div className="relative flex-grow">
+              <input 
+                type="text"
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                placeholder="あなたのお名前"
+                className="w-full pl-4 sm:pl-5 pr-10 sm:pr-12 py-3 text-xs sm:text-sm border border-brand-border rounded-2xl bg-slate-50/60 focus:bg-white focus:border-brand-primary outline-none focus:ring-2 focus:ring-brand-primary/20 transition-all font-sans placeholder:text-slate-400 text-black shadow-inner"
+              />
+              <Search className="absolute right-4 top-3.5 text-slate-400" size={18} />
+            </div>
+            <button type="submit" className="btn-primary px-5 sm:px-7 py-3 text-xs sm:text-sm whitespace-nowrap animate-none shrink-0 rounded-2xl font-bold cursor-pointer">
+              検索する
+            </button>
           </div>
-          <button type="submit" className="btn-primary px-5 sm:px-7 py-3 text-xs sm:text-sm whitespace-nowrap animate-none shrink-0 rounded-2xl font-bold cursor-pointer">
-            検索する
-          </button>
         </form>
 
         {/* 絞り込みセレクター */}
