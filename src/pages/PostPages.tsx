@@ -5596,7 +5596,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
             {isOwner && post.status === 'resolved' ? (
               <span className="block whitespace-normal md:whitespace-nowrap max-w-full text-emerald-600 font-bold">再会が成功しました！✨</span>
             ) : (!isOwner && showDetails) ? (
-              <span className="block whitespace-normal md:whitespace-nowrap max-w-full text-emerald-600 font-bold">再会おめでとうございます！🎉</span>
+              <span className="block whitespace-normal md:whitespace-nowrap max-w-full text-emerald-600 font-bold">再会おめでとうございます！</span>
             ) : (!isOwner && (isQuestionVerified || post.status === 'resolved')) ? (
               <span className="block whitespace-normal md:whitespace-nowrap max-w-full text-emerald-600 font-bold">思い出の鍵が解かれました！✨</span>
             ) : (
@@ -5786,26 +5786,42 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                       )}
                     </div>
 
+                    {/* ニックネーム・ゆかりの地・当時の所属（他ページと同一のアイコン＆レイアウト） */}
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                      <div className="p-3 bg-white rounded-xl border border-slate-200 space-y-0.5 shadow-2xs">
-                        <span className="text-[10px] font-bold text-slate-400 block">ニックネーム・呼称</span>
-                        <p className="text-sm sm:text-base font-bold text-slate-900 font-serif">
-                          {post.searcher_name || revealedContact?.searcherName || '差出人'}
-                        </p>
+                      <div className="flex items-center gap-3 p-3 bg-white/90 rounded-xl border border-slate-200/80 text-xs shadow-2xs">
+                        <div className="w-8 h-8 rounded-lg bg-teal-100 text-teal-800 flex items-center justify-center shrink-0 font-bold">
+                          <User size={16} />
+                        </div>
+                        <div>
+                          <span className="text-[10px] text-slate-400 font-bold block">ニックネーム・呼称</span>
+                          <span className="font-bold text-slate-800 text-sm">
+                            {post.searcher_name || revealedContact?.searcherName || '差出人'}
+                          </span>
+                        </div>
                       </div>
 
-                      <div className="p-3 bg-white rounded-xl border border-slate-200 space-y-0.5 shadow-2xs">
-                        <span className="text-[10px] font-bold text-slate-400 block">ゆかりの地</span>
-                        <p className="text-sm sm:text-base font-bold text-slate-900 font-serif">
-                          {post.target_hometown || '未設定'}
-                        </p>
+                      <div className="flex items-center gap-3 p-3 bg-white/90 rounded-xl border border-slate-200/80 text-xs shadow-2xs">
+                        <div className="w-8 h-8 rounded-lg bg-teal-100 text-teal-800 flex items-center justify-center shrink-0 font-bold">
+                          <MapPin size={16} />
+                        </div>
+                        <div>
+                          <span className="text-[10px] text-slate-400 font-bold block">ゆかりの地</span>
+                          <span className="font-bold text-slate-800 text-sm">
+                            {post.target_hometown || '未設定'}
+                          </span>
+                        </div>
                       </div>
 
-                      <div className="p-3 bg-white rounded-xl border border-slate-200 space-y-0.5 shadow-2xs">
-                        <span className="text-[10px] font-bold text-slate-400 block">当時の所属（学校・職場など）</span>
-                        <p className="text-sm sm:text-base font-bold text-slate-900 font-serif">
-                          {post.target_school || '未設定'}
-                        </p>
+                      <div className="flex items-center gap-3 p-3 bg-white/90 rounded-xl border border-slate-200/80 text-xs shadow-2xs">
+                        <div className="w-8 h-8 rounded-lg bg-teal-100 text-teal-800 flex items-center justify-center shrink-0 font-bold">
+                          <School size={16} />
+                        </div>
+                        <div>
+                          <span className="text-[10px] text-slate-400 font-bold block">当時の所属（学校・職場など）</span>
+                          <span className="font-bold text-slate-800 text-sm">
+                            {post.target_school || '未設定'}
+                          </span>
+                        </div>
                       </div>
                     </div>
 
