@@ -14,8 +14,8 @@ import { WaterRippleRainbowText } from '../components/WaterRippleRainbowText';
 import stepWriteImg from '../assets/images/step_01_photo_write_1785857630366.jpg';
 import stepDriftImg from '../assets/images/step_02_photo_drift_1785857647101.jpg';
 import stepReconnectImg from '../assets/images/step_03_photo_read_v2_1785857978640.jpg';
-import heroBottleMail from '../assets/images/hero_small_bottle_mail_1785944479619.jpg';
 import { CreditCardPaymentForm } from '../components/CreditCardPaymentForm';
+import { ConceptStoryModal } from '../components/ConceptStoryModal';
 
 export const HomePage = ({ onOpenOnboarding, heroCopyStyle }: { onOpenOnboarding?: () => void, heroCopyStyle: 'proposal1' | 'proposal2' | 'proposal3' }) => {
   const [posts, setPosts] = useState<any[]>([]);
@@ -169,112 +169,11 @@ export const HomePage = ({ onOpenOnboarding, heroCopyStyle }: { onOpenOnboarding
           onOpenConceptModal={() => setIsConceptModalOpen(true)}
         />
 
-        {/* Concept Story Modal (Handwritten Letter) */}
-        <AnimatePresence>
-          {isConceptModalOpen && (
-            <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 md:p-6" data-lenis-prevent>
-              {/* Darkened overlay */}
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setIsConceptModalOpen(false)}
-                className="absolute inset-0 bg-black/65 cursor-pointer"
-              />
-
-              {/* Sharp Cornered Yellowed Letter Paper */}
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.96, y: 15 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.96, y: 15 }}
-                transition={{ duration: 0.25, ease: "easeOut" }}
-                className="relative w-full max-w-2xl bg-[#FAF5DF] border border-[#d8cc9c] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] p-6 md:p-10 pt-12 md:pt-14 text-[#3D3014] font-serif select-text z-10 rounded-none max-h-[85vh] flex flex-col"
-                data-lenis-prevent
-              >
-                {/* Close Button */}
-                <button 
-                  type="button"
-                  onClick={() => setIsConceptModalOpen(false)}
-                  className="absolute top-3 right-3 md:top-4 md:right-4 text-[#8e7f4b]/60 hover:text-brand-dark transition-colors p-2 focus:outline-none cursor-pointer rounded-full hover:bg-black/5 z-20"
-                  aria-label="閉じる"
-                >
-                  <X size={20} />
-                </button>
-
-                <div className="relative z-10 flex flex-col h-full overflow-hidden font-serif">
-                  <div className="text-center mb-6 shrink-0 select-none pt-2 font-serif">
-                    <div className="flex items-center justify-center gap-3 text-[#5c491e]/80 mb-1">
-                      <span className="h-[2.5px] w-12 bg-[#968344]"></span>
-                      <span className="text-[10px] tracking-widest font-serif">✦</span>
-                      <span className="h-[2.5px] w-12 bg-[#968344]"></span>
-                    </div>
-                    <h2 className="text-sm sm:text-base md:text-lg font-bold text-center tracking-[0.2em] sm:tracking-[0.3em] text-[#5c491e] py-1 font-serif">
-                      ボトルメールが届ける、再会の奇跡
-                    </h2>
-                    <div className="flex items-center justify-center gap-3 text-[#5c491e]/80 mt-1">
-                      <span className="h-[2.5px] w-24 bg-[#968344]"></span>
-                      <span className="text-[6px] rotate-45 select-none text-[#5c491e]">◆</span>
-                      <span className="h-[2.5px] w-24 bg-[#968344]"></span>
-                    </div>
-                  </div>
-
-                  <div 
-                    className="flex-1 overflow-y-auto pr-2 md:pr-4 text-sm md:text-base tracking-[0.06em] sm:tracking-[0.08em] custom-scrollbar scrollbar-thin scrollbar-thumb-[#c1b278] scrollbar-track-transparent h-full space-y-4 md:space-y-5 font-serif"
-                    data-lenis-prevent
-                  >
-                    <p className="border-b border-dashed border-[#b8a663]/35 pb-2.5 font-bold text-[#5c491e] font-serif">
-                      拝啓、いつかこの手紙を見つけるあなたへ。
-                    </p>
-                    
-                    <p className="border-b border-dashed border-[#b8a663]/35 pb-2.5 indent-4 md:indent-6 leading-relaxed font-serif font-medium">
-                      インターネットという広い海に、ボトルを託すこと。
-                    </p>
-
-                    <p className="border-b border-dashed border-[#b8a663]/35 pb-2.5 indent-4 md:indent-6 leading-relaxed font-serif font-medium">
-                      あなたがここで流す「再会のボトルメール」は、インターネットという果てしない大海原を漂流し始めます。
-                    </p>
-
-                    <p className="border-b border-dashed border-[#b8a663]/35 pb-2.5 indent-4 md:indent-6 leading-relaxed font-serif font-medium">
-                      ある日、あの人がふとした瞬間に、かつての思い出を懐かしみ、自分の名前やゆかりの場所を検索エンジンでふと検索したとしたら——。
-                    </p>
-
-                    <p className="border-b border-dashed border-[#b8a663]/35 pb-2.5 indent-4 md:indent-6 leading-relaxed font-serif font-medium">
-                      検索結果の静かな波間に、あなたの流したボトルメールが、奇跡の光となってぷかりと浮かび上がります。
-                    </p>
-
-                    <p className="border-b border-dashed border-[#b8a663]/35 pb-2.5 font-semibold text-center text-[#5c491e] leading-relaxed font-serif">
-                      「まさか、私を探している人がいる……？」
-                    </p>
-
-                    <p className="border-b border-dashed border-[#b8a663]/35 pb-2.5 indent-4 md:indent-6 leading-relaxed font-serif font-medium">
-                      導かれるようにこの波打ち際にたどり着いたあの人は、あなたからのメッセージと、設定された「秘密の質問」を目にします。
-                    </p>
-
-                    <p className="border-b border-dashed border-[#b8a663]/35 pb-2.5 indent-4 md:indent-6 leading-relaxed font-serif font-medium">
-                      それは、世界であなたとあの人だけしか答えを知らない、かけがえのない記憶の鍵。
-                    </p>
-
-                    <p className="border-b border-dashed border-[#b8a663]/35 pb-2.5 indent-4 md:indent-6 leading-relaxed font-serif font-medium">
-                      正解の鍵を回した瞬間、止まっていた二人の時間が再び動き出します。
-                    </p>
-
-                    <p className="border-b border-dashed border-[#b8a663]/35 pb-2.5 indent-4 md:indent-6 leading-relaxed font-serif font-medium">
-                      あなたが今日流す一通のボトルは、風に乗り、波に揺られ、いつか必ず大切なあの人の元へと流れ着きます。
-                    </p>
-
-                    <p className="border-b border-dashed border-[#b8a663]/35 pb-2.5 font-bold text-center text-[#5c491e] leading-relaxed font-serif">
-                      想いが届く、いつかのその日まで。
-                    </p>
-
-                    <p className="text-right text-[#8c7843] font-serif font-bold pt-4 pb-1">
-                      ーーー ReMEETs TEAM より
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-          )}
-        </AnimatePresence>
+        {/* Concept Story Modal (Vintage Deckle-Edged Letter) */}
+        <ConceptStoryModal 
+          isOpen={isConceptModalOpen} 
+          onClose={() => setIsConceptModalOpen(false)} 
+        />
       </>
     );
   }
@@ -905,114 +804,11 @@ export const HomePage = ({ onOpenOnboarding, heroCopyStyle }: { onOpenOnboarding
         )}
       </div>
 
-      {/* Concept Story Modal (Handwritten Letter) */}
-      <AnimatePresence>
-        {isConceptModalOpen && (
-          <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 md:p-6" data-lenis-prevent>
-            {/* Darkened overlay - ultra-lightweight and silky smooth, avoids expensive full-page blur repaints */}
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsConceptModalOpen(false)}
-              className="absolute inset-0 bg-black/65 cursor-pointer"
-            />
-
-            {/* Sharp Cornered Yellowed Letter Paper - flex container with defined max height to enforce inner scroll */}
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.96, y: 15 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.96, y: 15 }}
-              transition={{ duration: 0.25, ease: "easeOut" }}
-              className="relative w-full max-w-2xl bg-[#FAF5DF] border border-[#d8cc9c] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] p-6 md:p-10 pt-12 md:pt-14 text-[#3D3014] font-serif select-text z-10 rounded-none max-h-[85vh] flex flex-col"
-              data-lenis-prevent
-            >
-              {/* Close Button at top-right, absolutely safe from overlapping the header decorative elements */}
-              <button 
-                type="button"
-                onClick={() => setIsConceptModalOpen(false)}
-                className="absolute top-3 right-3 md:top-4 md:right-4 text-[#8e7f4b]/60 hover:text-brand-dark transition-colors p-2 focus:outline-none cursor-pointer rounded-full hover:bg-black/5 z-20"
-                aria-label="閉じる"
-              >
-                <X size={20} />
-              </button>
-
-              <div className="relative z-10 flex flex-col h-full overflow-hidden font-serif">
-                {/* Elegant Letter Header with Premium Classical Ornaments (padded to prevent hidden overlaps) */}
-                <div className="text-center mb-6 shrink-0 select-none pt-2 font-serif">
-                  <div className="flex items-center justify-center gap-3 text-[#5c491e]/80 mb-1">
-                    <span className="h-[2.5px] w-12 bg-[#968344]"></span>
-                    <span className="text-[10px] tracking-widest font-serif">✦</span>
-                    <span className="h-[2.5px] w-12 bg-[#968344]"></span>
-                  </div>
-                  <h2 className="text-sm sm:text-base md:text-lg font-bold text-center tracking-[0.2em] sm:tracking-[0.3em] text-[#5c491e] py-1 font-serif">
-                    ボトルメールが届ける、再会の奇跡
-                  </h2>
-                  <div className="flex items-center justify-center gap-3 text-[#5c491e]/80 mt-1">
-                    <span className="h-[2.5px] w-24 bg-[#968344]"></span>
-                    <span className="text-[6px] rotate-45 select-none text-[#5c491e]">◆</span>
-                    <span className="h-[2.5px] w-24 bg-[#968344]"></span>
-                  </div>
-                </div>
-
-                {/* Beautiful handwriting-lined paragraphs container inside a lightweight native scrollbox */}
-                <div 
-                  className="flex-1 overflow-y-auto pr-2 md:pr-4 text-sm md:text-base tracking-[0.06em] sm:tracking-[0.08em] custom-scrollbar scrollbar-thin scrollbar-thumb-[#c1b278] scrollbar-track-transparent h-full space-y-4 md:space-y-5 font-serif"
-                  data-lenis-prevent
-                >
-                  <p className="border-b border-dashed border-[#b8a663]/35 pb-2.5 font-bold text-[#5c491e] font-serif">
-                    拝啓、いつかこの手紙を見つけるあなたへ。
-                  </p>
-                  
-                  <p className="border-b border-dashed border-[#b8a663]/35 pb-2.5 indent-4 md:indent-6 leading-relaxed font-serif font-medium">
-                    インターネットという広い海に、ボトルを託すこと。
-                  </p>
-
-                  <p className="border-b border-dashed border-[#b8a663]/35 pb-2.5 indent-4 md:indent-6 leading-relaxed font-serif font-medium">
-                    あなたがここで流す「再会のボトルメール」は、インターネットという果てしない大海原を漂流し始めます。
-                  </p>
-
-                  <p className="border-b border-dashed border-[#b8a663]/35 pb-2.5 indent-4 md:indent-6 leading-relaxed font-serif font-medium">
-                    ある日、あの人がふとした瞬間に、かつての思い出を懐かしみ、自分の名前やゆかりの場所を検索エンジンでふと検索したとしたら——。
-                  </p>
-
-                  <p className="border-b border-dashed border-[#b8a663]/35 pb-2.5 indent-4 md:indent-6 leading-relaxed font-serif font-medium">
-                    検索結果の静かな波間に、あなたの流したボトルメールが、奇跡の光となってぷかりと浮かび上がります。
-                  </p>
-
-                  <p className="border-b border-dashed border-[#b8a663]/35 pb-2.5 font-semibold text-center text-[#5c491e] leading-relaxed font-serif">
-                    「まさか、私を探している人がいる……？」
-                  </p>
-
-                  <p className="border-b border-dashed border-[#b8a663]/35 pb-2.5 indent-4 md:indent-6 leading-relaxed font-serif font-medium">
-                    導かれるようにこの波打ち際にたどり着いたあの人は、あなたからのメッセージと、設定された「秘密の質問」を目にします。
-                  </p>
-
-                  <p className="border-b border-dashed border-[#b8a663]/35 pb-2.5 indent-4 md:indent-6 leading-relaxed font-serif font-medium">
-                    それは、世界であなたとあの人だけしか答えを知らない、かけがえのない記憶の鍵。
-                  </p>
-
-                  <p className="border-b border-dashed border-[#b8a663]/35 pb-2.5 indent-4 md:indent-6 leading-relaxed font-serif font-medium">
-                    正解の鍵を回した瞬間、止まっていた二人の時間が再び動き出します。
-                  </p>
-
-                  <p className="border-b border-dashed border-[#b8a663]/35 pb-2.5 indent-4 md:indent-6 leading-relaxed font-serif font-medium">
-                    あなたが今日流す一通のボトルは、風に乗り、波に揺られ、いつか必ず大切なあの人の元へと流れ着きます。
-                  </p>
-
-                  <p className="border-b border-dashed border-[#b8a663]/35 pb-2.5 font-bold text-center text-[#5c491e] leading-relaxed font-serif">
-                    想いが届く、いつかのその日まで。
-                  </p>
-
-                  <p className="text-right text-[#8c7843] font-serif font-bold pt-4 pb-1">
-                    ーーー ReMEETs TEAM より
-                  </p>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+      {/* Concept Story Modal (Vintage Deckle-Edged Letter) */}
+      <ConceptStoryModal 
+        isOpen={isConceptModalOpen} 
+        onClose={() => setIsConceptModalOpen(false)} 
+      />
 
       {/* eKYC Verification Modal */}
       <AnimatePresence>

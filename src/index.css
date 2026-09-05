@@ -1,10 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@200;300;400;500;600;700&family=New+Tegomin&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@200;300;400;500;600;700&family=New+Tegomin&family=Shippori+Mincho:wght@400;500;600;700&family=Kaisei+Decol:wght@400;500;700&family=Yuji+Boku&family=Yuji+Mai&display=swap');
 @import "tailwindcss";
 
 @theme {
   --font-sans: "Noto Sans JP", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
   --font-serif: "Noto Serif JP", serif;
   --font-chalk: "New Tegomin", serif;
+  --font-letter: "Shippori Mincho", "Noto Serif JP", "Yu Mincho", "YuMincho", "Hiragino Mincho ProN", serif;
   
   --color-brand-primary: #1B2B34; /* Deep Indigo Navy */
   --color-brand-light: #FDF9F0; /* Pale Yellow Japanese Washi Base */
@@ -18,6 +19,11 @@
 @layer base {
   * {
     @apply border-brand-border;
+  }
+
+  .font-handwritten-mincho,
+  .font-letter-mincho {
+    font-family: "Shippori Mincho", "Noto Serif JP", "Yu Mincho", "YuMincho", "Hiragino Mincho ProN", serif !important;
   }
 
   ::placeholder {
