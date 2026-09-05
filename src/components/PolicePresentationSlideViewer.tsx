@@ -81,6 +81,49 @@ export const PolicePresentationSlideViewer: React.FC<PolicePresentationSlideView
     return () => clearInterval(interval);
   }, [isTimerRunning]);
 
+  // Fullscreen API toggle
+  const toggleFullscreen = async () => {
+    try {
+      const elem = slideContainerRef.current;
+      const isCurrentlyFs = !!(document.fullscreenElement || (document as any).webkitFullscreenElement);
+      if (!isCurrentlyFs && elem) {
+        if (elem.requestFullscreen) {
+          await elem.requestFullscreen();
+        } else if ((elem as any).webkitRequestFullscreen) {
+          await (elem as any).webkitRequestFullscreen();
+        }
+        setIsFullscreen(true);
+      } else if (isCurrentlyFs) {
+        if (document.exitFullscreen) {
+          await document.exitFullscreen();
+        } else if ((document as any).webkitExitFullscreen) {
+          await (document as any).webkitExitFullscreen();
+        }
+        setIsFullscreen(false);
+      } else {
+        setIsFullscreen((prev) => !prev);
+      }
+    } catch (e) {
+      console.warn('Native Fullscreen API failed, falling back to CSS fullscreen:', e);
+      setIsFullscreen((prev) => !prev);
+    }
+  };
+
+  // Listen to fullscreen changes from browser (e.g. Esc key or F11)
+  React.useEffect(() => {
+    const handleFsChange = () => {
+      const isFs = !!(document.fullscreenElement || (document as any).webkitFullscreenElement);
+      setIsFullscreen(isFs);
+    };
+
+    document.addEventListener('fullscreenchange', handleFsChange);
+    document.addEventListener('webkitfullscreenchange', handleFsChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFsChange);
+      document.removeEventListener('webkitfullscreenchange', handleFsChange);
+    };
+  }, []);
+
   // Keyboard navigation
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -94,8 +137,12 @@ export const PolicePresentationSlideViewer: React.FC<PolicePresentationSlideView
         e.preventDefault();
         setActiveSlideIdx((prev) => Math.max(0, prev - 1));
       } else if (e.key === 'f' || e.key === 'F') {
-        setIsFullscreen((prev) => !prev);
+        e.preventDefault();
+        toggleFullscreen();
       } else if (e.key === 'Escape' && isFullscreen) {
+        if (document.fullscreenElement) {
+          document.exitFullscreen().catch(() => {});
+        }
         setIsFullscreen(false);
       } else if (e.key === 'l' || e.key === 'L') {
         setIsLaserActive((prev) => !prev);
@@ -1203,10 +1250,10 @@ export const PolicePresentationSlideViewer: React.FC<PolicePresentationSlideView
       <div
         ref={slideContainerRef}
         onMouseMove={handleMouseMove}
-        className={`w-full relative overflow-hidden rounded-3xl border border-slate-300 shadow-xl transition-all duration-300 ${
+        className={`w-full relative overflow-hidden transition-all duration-300 ${
           isFullscreen
-            ? 'fixed inset-0 z-50 rounded-none bg-black flex flex-col justify-center items-center p-4 sm:p-8'
-            : 'bg-slate-900'
+            ? '!fixed !inset-0 !z-[999999] !w-screen !h-screen !rounded-none bg-black flex flex-col justify-center items-center p-2 sm:p-6 select-none'
+            : 'rounded-3xl border border-slate-300 shadow-xl bg-slate-900'
         }`}
       >
         {/* Virtual Laser Pointer */}
@@ -1220,7 +1267,9 @@ export const PolicePresentationSlideViewer: React.FC<PolicePresentationSlideView
         {/* 16:9 Canvas */}
         <div
           id="active-slide-preview"
-          className={`aspect-[16/9] w-full max-w-6xl mx-auto p-4 sm:p-6 md:p-10 flex flex-col justify-between select-none relative overflow-hidden transition-all duration-300 ${
+          className={`aspect-[16/9] w-full mx-auto p-4 sm:p-6 md:p-10 flex flex-col justify-between select-none relative overflow-hidden transition-all duration-300 ${
+            isFullscreen ? 'max-w-[96vw] max-h-[86vh] shadow-2xl rounded-2xl' : 'max-w-6xl'
+          } ${
             activeSlide?.layout === 'title'
               ? 'bg-[#1A2735] text-[#FAFAF8]'
               : 'bg-white text-slate-900 border border-slate-200/60 shadow-sm'
@@ -1296,6 +1345,7 @@ export const PolicePresentationSlideViewer: React.FC<PolicePresentationSlideView
         {isFullscreen && (
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-slate-900/90 backdrop-blur border border-slate-700 px-4 py-2 rounded-2xl flex items-center gap-4 text-white z-50 shadow-2xl">
             <button
+              type="button"
               onClick={() => setActiveSlideIdx((prev) => Math.max(0, prev - 1))}
               disabled={activeSlideIdx === 0}
               className="p-1.5 hover:bg-slate-800 rounded-lg disabled:opacity-30 cursor-pointer"
@@ -1306,6 +1356,7 @@ export const PolicePresentationSlideViewer: React.FC<PolicePresentationSlideView
               {activeSlideIdx + 1} / {slides.length}
             </span>
             <button
+              type="button"
               onClick={() => setActiveSlideIdx((prev) => Math.min(slides.length - 1, prev + 1))}
               disabled={activeSlideIdx === slides.length - 1}
               className="p-1.5 hover:bg-slate-800 rounded-lg disabled:opacity-30 cursor-pointer"
@@ -1314,6 +1365,7 @@ export const PolicePresentationSlideViewer: React.FC<PolicePresentationSlideView
             </button>
             <div className="h-4 w-[1px] bg-slate-700" />
             <button
+              type="button"
               onClick={() => setIsLaserActive((prev) => !prev)}
               className={`px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer ${
                 isLaserActive ? 'bg-rose-600 text-white' : 'bg-slate-800 text-slate-300'
@@ -1323,17 +1375,53 @@ export const PolicePresentationSlideViewer: React.FC<PolicePresentationSlideView
               <span>レーザー</span>
             </button>
             <button
+              type="button"
               onClick={() => setShowNotesDrawer((prev) => !prev)}
-              className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs font-bold cursor-pointer"
+              className={`px-2.5 py-1 rounded-lg text-xs font-bold cursor-pointer ${
+                showNotesDrawer ? 'bg-emerald-600 text-white' : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+              }`}
             >
               台本
             </button>
             <button
-              onClick={() => setIsFullscreen(false)}
+              type="button"
+              onClick={toggleFullscreen}
               className="p-1.5 hover:bg-slate-800 rounded-lg cursor-pointer text-slate-300"
+              title="フルスクリーン解除 (Esc / F)"
             >
               <Minimize2 size={18} />
             </button>
+          </div>
+        )}
+
+        {/* Fullscreen Notes Drawer */}
+        {isFullscreen && showNotesDrawer && (
+          <div className="absolute top-4 right-4 bottom-20 w-80 md:w-96 bg-slate-900/95 backdrop-blur-md border border-slate-700/80 rounded-2xl p-4 text-white z-50 shadow-2xl flex flex-col justify-between animate-fadeIn">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+              <span className="text-xs font-bold text-emerald-400 flex items-center gap-1.5 font-sans">
+                🎤 口頭発表台本 (SLIDE {activeSlideIdx + 1})
+              </span>
+              <button
+                type="button"
+                onClick={() => setShowNotesDrawer(false)}
+                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="flex-grow overflow-y-auto py-3 text-xs leading-relaxed font-serif text-slate-200 whitespace-pre-wrap">
+              {scenarios[activeSlideIdx] || 'このスライドの口頭シナリオは設定されていません。'}
+            </div>
+            <div className="pt-2 border-t border-slate-800 text-[10px] text-slate-400 font-mono flex justify-between items-center">
+              <span>[F] で全画面解除</span>
+              <button
+                type="button"
+                onClick={copyCurrentScenario}
+                className="text-emerald-400 hover:underline cursor-pointer flex items-center gap-1"
+              >
+                {copiedScript ? 'コピー完了 ✓' : '台本をコピー'}
+              </button>
+            </div>
           </div>
         )}
       </div>
@@ -1407,7 +1495,7 @@ export const PolicePresentationSlideViewer: React.FC<PolicePresentationSlideView
           {/* Fullscreen toggle */}
           <button
             type="button"
-            onClick={() => setIsFullscreen((prev) => !prev)}
+            onClick={toggleFullscreen}
             className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
           >
             {isFullscreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
