@@ -5624,7 +5624,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
             <span>
               {isOwner 
                 ? (post.status === 'resolved' ? "再会を達成しました！" : "あなたの大切な手紙が漂流中") 
-                : (isQuestionVerified ? "思い出の鍵が繋がりました！" : "記憶の交差点に到着しました")}
+                : (showDetails ? "✨ 奇跡の再会が叶いました！" : isQuestionVerified ? "✨ 思い出の鍵が繋がりました！" : "記憶の交差点に到着しました")}
             </span>
           </div>
           <h1 className="text-xl xs:text-2xl sm:text-3xl md:text-5xl font-serif text-black font-[500] tracking-wider leading-relaxed flex flex-col items-center gap-2 text-center px-4 w-full">
@@ -5632,7 +5632,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
             {isOwner && post.status === 'resolved' ? (
               <span className="block whitespace-normal md:whitespace-nowrap max-w-full text-emerald-600 font-bold">再会が成功しました！✨</span>
             ) : (!isOwner && showDetails) ? (
-              <span className="block whitespace-normal md:whitespace-nowrap max-w-full text-emerald-600 font-bold">思い出の鍵が解かれました！✨</span>
+              <span className="block whitespace-normal md:whitespace-nowrap max-w-full text-emerald-600 font-bold">再会おめでとうございます！🎉</span>
             ) : (!isOwner && (isQuestionVerified || post.status === 'resolved')) ? (
               <span className="block whitespace-normal md:whitespace-nowrap max-w-full text-emerald-600 font-bold">思い出の鍵が解かれました！✨</span>
             ) : (
@@ -5649,13 +5649,13 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               </>
             ) : (!isOwner && showDetails) ? (
               <>
-                <span className="block whitespace-normal md:whitespace-nowrap">思い出の鍵が解かれ、ボトルメールが安全に開封されました。</span>
-                <span className="block whitespace-normal md:whitespace-nowrap text-emerald-600 font-bold">大切なメッセージを読み、差出人の連絡先へ直接お返事をお送りください。</span>
+                <span className="block whitespace-normal md:whitespace-nowrap">手紙の本文と連絡先が開示されました。</span>
+                <span className="block whitespace-normal md:whitespace-nowrap text-emerald-600 font-bold">直接連絡を取り合い、止まっていた大切な時間の続きを始めましょう。</span>
               </>
             ) : (!isOwner && (isQuestionVerified || post.status === 'resolved')) ? (
               <>
                 <span className="block whitespace-normal md:whitespace-nowrap">秘密の質問にすべて正解し、お互いの記憶が完全に合致しました。</span>
-                <span className="block whitespace-normal md:whitespace-nowrap text-brand-primary font-bold">メッセージ閲覧まであと一歩です。</span>
+                <span className="block whitespace-normal md:whitespace-nowrap text-brand-primary font-bold">手紙と連絡先を開封してお返事をお送りください。</span>
               </>
             ) : (
               <>
@@ -6471,280 +6471,6 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
           </motion.div>
         )}
       </AnimatePresence>
-
-        {/* 以前のshowDetailsまたはロック画面の残り領域は、Step3, Step4などとして下部へ */}
-        <div style={{ display: 'none' }}>
-          {showDetails ? (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.99, y: 15 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.99, y: -15 }}
-              transition={{ duration: 0.4 }}
-              className="space-y-8"
-            >
-              {!isOwner && searcherId && (
-                <div className="p-6 md:p-8 bg-gradient-to-br from-emerald-50 to-emerald-500/5 border border-emerald-200/80 rounded-[32px] space-y-5 shadow-lg font-sans relative overflow-hidden">
-                  <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-emerald-500/5 rounded-full blur-xl" />
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center animate-bounce shadow-lg shadow-emerald-600/20 shrink-0 mt-1">
-                      <MessageSquare size={22} />
-                    </div>
-                    <div className="space-y-1">
-                      <h4 className="font-bold text-brand-dark text-base flex flex-wrap items-center gap-2">
-                        <span>【次のステップ】 {searcherName} さんへお返事を送りましょう！</span>
-                        <span className="bg-emerald-600 text-white text-[9px] px-2 py-0.5 rounded-full font-bold">通信スタート</span>
-                      </h4>
-                      <p className="text-xs text-zinc-600 leading-relaxed">
-                        思い出の鍵が解かれ、誓約および署名ログが正常に登録されました。
-                        これにより、お相手の <b>{searcherName}さん</b> の連絡先が開示され、直接ご連絡いただける状態になりました。
-                      </p>
-                    </div>
-                  </div>
-                  <div className="bg-white/90 p-4 rounded-2xl border border-emerald-500/10 text-xs text-zinc-750 leading-relaxed font-sans space-y-2">
-                    <div className="font-bold text-emerald-800 flex items-center gap-1.5">
-                      <ShieldCheck size={14} className="text-emerald-600" />
-                      <span>ReMEETs 連絡先開示の特徴：</span>
-                    </div>
-                    <ul className="list-disc list-inside space-y-1 pl-1 bg-transparent text-zinc-600 text-[11px] leading-relaxed">
-                      <li>正解したあなただけに開示されます。外部の不特定多数には一切非開示。</li>
-                      <li>開示された連絡先（LINE ID・メールアドレス等）を使って、直接お相手へご連絡いただけます。</li>
-                    </ul>
-                  </div>
-                  <button
-                    onClick={handleScrollToChat}
-                    className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-2xl flex items-center justify-center gap-2 text-sm shadow-xl shadow-emerald-600/15 hover:scale-[1.01] transition-all font-sans"
-                  >
-                    <span>📬 開示された手紙・連絡先を確認する</span>
-                    <ArrowDown size={16} className="animate-bounce" />
-                  </button>
-                </div>
-              )}
-            </motion.div>
-          ) : (
-            <div className={`glass-card p-8 md:p-12 relative overflow-hidden transition-all duration-500 ${
-              isQuestionVerified 
-                ? 'bg-emerald-50/20 border-2 border-emerald-500/30' 
-                : 'bg-white/20 border-2 border-dashed border-brand-border'
-            }`}>
-              {isQuestionVerified ? (
-                /* Unlocked / Pending Verification State */
-                <div className="relative z-10 space-y-6">
-                  {/* ステップ案内バー */}
-                  <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-200 flex flex-col md:flex-row items-center justify-between gap-3 font-sans">
-                    <div className="flex items-center gap-2 text-xs font-bold text-emerald-900">
-                      <span className="w-6 h-6 bg-emerald-600 text-white rounded-full flex items-center justify-center text-xs shrink-0">1</span>
-                      <span className="line-through text-emerald-700">秘密の質問クイズ正解</span>
-                      <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
-                    </div>
-                    <div className="hidden md:block text-slate-300 font-bold">→</div>
-                    <div className="flex items-center gap-2 text-xs font-extrabold text-amber-900 bg-amber-100/80 px-3 py-1.5 rounded-xl border border-amber-300/80 animate-pulse">
-                      <span className="w-6 h-6 bg-amber-600 text-white rounded-full flex items-center justify-center text-xs shrink-0 font-bold">2</span>
-                      <span>【次の操作】年齢確認手続きを選ぶ</span>
-                      <ArrowDown size={14} className="text-amber-700 animate-bounce" />
-                    </div>
-                    <div className="hidden md:block text-slate-300 font-bold">→</div>
-                    <div className="flex items-center gap-2 text-xs font-bold text-slate-400">
-                      <span className="w-6 h-6 bg-slate-200 text-slate-500 rounded-full flex items-center justify-center text-xs shrink-0">3</span>
-                      <span>手紙と連絡先の開封</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-4 mb-2">
-                    <div className="w-12 h-12 bg-emerald-500/15 rounded-full flex items-center justify-center text-emerald-600">
-                      <Unlock size={24} className="animate-bounce" />
-                    </div>
-                    <div>
-                      <h2 className="text-lg md:text-2xl font-serif text-black font-bold">思い出の鍵が解かれました！🔓</h2>
-                      <p className="text-[10.5px] uppercase tracking-widest font-extrabold text-emerald-600 font-sans mt-0.5">Unlocked • Select Verification Below</p>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-6 p-6 md:p-8 bg-[#f6fcf8] rounded-3xl border-2 border-emerald-500/30 shadow-md relative overflow-hidden">
-                    {/* 背景イラスト（ReMEETs応援ページスタイルの背景＆周囲グラデーションフェード） */}
-                    <div className="absolute inset-0 flex justify-center items-center pointer-events-none overflow-hidden select-none">
-                      <div className="relative w-full h-full" style={{ opacity: 0.75 }}>
-                        <img 
-                          src={quizMatchHearts} 
-                          alt="心が通い合うキーとハート" 
-                          className="w-full h-full object-cover object-center"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-r from-[#f6fcf8]/50 via-transparent to-[#f6fcf8]/50" />
-                        <div className="absolute inset-0 bg-gradient-to-b from-[#f6fcf8]/50 via-transparent to-[#f6fcf8]/50" />
-                      </div>
-                    </div>
-
-                    <div className="relative z-10 space-y-5">
-                      <div className="text-sm font-extrabold text-emerald-800 uppercase tracking-[0.2em] flex items-center justify-between">
-                        <span>あなた宛の大切なメッセージ</span>
-                        <span className="text-xs font-bold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200 shadow-2xs">
-                          🔒 開封待ち
-                        </span>
-                      </div>
-
-                      <div className="flex flex-col items-center justify-center py-2 space-y-4">
-                        <p className="text-sm md:text-base font-serif leading-relaxed text-center text-emerald-950 font-medium bg-white/90 p-3.5 rounded-2xl border border-emerald-200/60 shadow-2xs backdrop-blur-2xs">
-                          秘密の質問にすべて正解しました！<br className="hidden md:inline" />
-                          {(isUserAlreadyVerified || isAgeVerified) ? (
-                            <>手紙の本文と連絡先を開封できます。お相手と直接連絡を取り合うために、下記よりお手続きをお進めください。</>
-                          ) : (
-                            <>手紙本文と連絡先を開封するために、まず年齢確認手続きをお選びください。</>
-                          )}
-                        </p>
-
-                        {/* 目立つ次への導線ボタン */}
-                        <button
-                          onClick={() => {
-                            if (isUserAlreadyVerified || isAgeVerified) {
-                              setShowRevealModal(true);
-                            } else {
-                              const target = ageVerificationRef.current || questionsSectionRef.current;
-                              if (target) {
-                                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                              }
-                            }
-                          }}
-                          className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white font-extrabold text-sm rounded-2xl shadow-lg shadow-emerald-600/20 hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center gap-2.5 font-sans cursor-pointer group"
-                        >
-                          <Sparkles size={18} className="text-amber-300 animate-spin-slow" />
-                          <span>{(isUserAlreadyVerified || isAgeVerified) ? '【ここをタップ】手紙と連絡先を開封する（開示手続きへ）' : '【ここをタップ】年齢確認手続きへ進む'}</span>
-                          <ArrowDown size={18} className="animate-bounce group-hover:translate-y-1 transition-transform" />
-                        </button>
-                      </div>
-
-                      <div className="pt-4 border-t border-emerald-500/20 flex items-center justify-between">
-                        <p className="text-sm font-serif text-emerald-800/80 font-medium font-bold">
-                          — {post.searcher_name} さんより
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                /* Fully Locked State */
-                <div className="relative z-10">
-                  <div className="flex items-center gap-4 mb-6 opacity-50">
-                    <div className="w-12 h-12 bg-brand-dark/5 rounded-full flex items-center justify-center">
-                      <Lock size={24} />
-                    </div>
-                    <div>
-                      <h2 className="text-lg md:text-2xl font-serif text-black font-bold">メッセージは保護されています</h2>
-                      <p className="text-[10px] uppercase tracking-widest font-bold text-black mt-0.5">Message Protected</p>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-6 p-6 md:p-8 bg-[#fffbfb] rounded-3xl border border-brand-dark/20 shadow-sm relative overflow-hidden">
-                    {/* 背景イラスト（合致する光とキー - 心が通い合う瞬間） */}
-                    <div className="absolute inset-0 flex justify-center items-center pointer-events-none overflow-hidden select-none">
-                      <div className="relative w-full h-full" style={{ opacity: 0.75 }}>
-                        <img 
-                          src={quizMatchHearts} 
-                          alt="心が通い合う光" 
-                          className="w-full h-full object-cover object-center"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-r from-[#fffbfb]/50 via-transparent to-[#fffbfb]/50" />
-                        <div className="absolute inset-0 bg-gradient-to-b from-[#fffbfb]/50 via-transparent to-[#fffbfb]/50" />
-                      </div>
-                    </div>
-
-                    <div className="relative z-10 space-y-5">
-                      {/* アートフレームディスプレイ（心が通い合う瞬間） */}
-                      <div className="w-24 h-24 md:w-28 md:h-28 mx-auto rounded-full overflow-hidden border-2 border-amber-200/80 shadow-md relative group">
-                        <img 
-                          src={quizMatchHearts} 
-                          alt="心が通い合う光のアート" 
-                          className="w-full h-full object-cover object-center"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-teal-900/30 via-transparent to-transparent" />
-                      </div>
-
-                      <div className="text-center space-y-1">
-                        <div className="text-base font-bold text-black uppercase tracking-[0.25em]">あなた宛の大切なメッセージ</div>
-                        <p className="text-xs text-slate-500 font-serif">二人の思い出の鍵（秘密の質問）で保護されています</p>
-                      </div>
-
-                      <div className="flex flex-col items-center justify-center space-y-3">
-                        <p className="text-sm md:text-base font-serif leading-relaxed text-center text-slate-800 font-medium bg-white/90 p-4 rounded-2xl backdrop-blur-xs border border-amber-100/80 shadow-2xs">
-                          「秘密の質問に正解すると、ここに差出人からのメッセージが表示されます」
-                        </p>
-                        <div className="flex items-center gap-2 text-[11px] font-bold text-teal-900 bg-teal-50 px-4 py-2 rounded-full border border-teal-200 shadow-xs animate-pulse">
-                          <HelpCircle size={14} className="text-teal-600" />
-                          <span>「秘密の質問」に回答して思い出の封を解く</span>
-                        </div>
-                      </div>
-                      <div className="pt-4 border-t border-brand-border/50 flex items-center justify-between">
-                        <p className="text-sm font-serif text-black/80 font-medium">
-                          — {post.searcher_name} さんより
-                        </p>
-                        {post.user_is_verified && (
-                          <div className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-100 shadow-sm">
-                            <UserCheck size={12} />
-                            <span>本人確認済み</span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {post.status === 'resolved' && (
-            <div className="p-8 bg-brand-primary/5 rounded-3xl border border-brand-primary/20 text-center space-y-6 my-12">
-              <div className="w-16 h-16 bg-brand-primary/10 rounded-full flex items-center justify-center text-black mx-auto">
-                <Sparkles size={32} className="animate-pulse" />
-              </div>
-              <div className="space-y-2">
-                <h3 className="text-2xl font-serif text-black">再会おめでとうございます！</h3>
-                <p className="text-sm text-black/70 leading-relaxed">
-                  この奇跡のような再会の物語を、ぜひ運営チームにもお聞かせください。<br />
-                  あなたのメッセージが、他の誰かの希望になるかもしれません。
-                </p>
-              </div>
-              <button 
-                onClick={() => {
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                  setShowStoryModal(true);
-                }}
-                className="btn-primary w-full py-4 bg-brand-primary hover:bg-brand-dark shadow-xl shadow-brand-primary/20 flex items-center justify-center gap-3"
-              >
-                <Gift size={18} />
-                <span>管理者に感謝のメッセージを送る</span>
-              </button>
-            </div>
-          )}
-
-
-
-          {isOwner && (
-            <div className="glass-card p-6 md:p-12 border-brand-primary/20 text-center space-y-8">
-              <div className="space-y-2">
-                <p className="text-black font-serif text-2xl">これはあなたが流したボトルです</p>
-                <p className="text-sm text-brand-dark/90">
-                  誰かが質問に正解し手続きを完了すると、あなたの連絡先とお手紙がお相手に届きます。
-                </p>
-              </div>
-              {post.status !== 'resolved' && (
-                <div className="flex flex-col md:flex-row gap-4 justify-center">
-                  <button 
-                    onClick={handleResolve}
-                    className="btn-primary px-12 bg-emerald-600 hover:bg-emerald-700"
-                  >
-                    <CheckCircle2 size={16} />
-                    <span>再会しました（解決済みにする）</span>
-                  </button>
-                  <Link 
-                    to={`/deletion-request?url=${encodeURIComponent(window.location.href)}`}
-                    className="btn-secondary px-12 border-red-200 text-red-500 hover:bg-red-50 flex items-center justify-center gap-2"
-                  >
-                    <Trash2 size={16} />
-                    <span>削除を依頼する</span>
-                  </Link>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
 
         <div className="lg:col-span-5" ref={questionsSectionRef}>
           <div className="sticky top-32 space-y-8">
