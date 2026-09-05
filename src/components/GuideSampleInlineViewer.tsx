@@ -293,7 +293,7 @@ export const GuideSampleInlineViewer: React.FC<GuideSampleInlineViewerProps> = (
                   <span>合言葉が一致しました！照合成功</span>
                 </div>
                 <p className="text-xs text-emerald-800 leading-relaxed">
-                  お互いしか知らなかった思い出の照合に成功しました。差出人のあおいさんに通知され、公的本人確認（eKYC）後に連絡先が開示されます。
+                  お互いしか知らなかった思い出の照合に成功しました。差出人のあおいさんに通知され、手紙開封・連絡先開示手続き後にSNS連絡先が開示されます。
                 </p>
               </div>
 
@@ -301,7 +301,7 @@ export const GuideSampleInlineViewer: React.FC<GuideSampleInlineViewerProps> = (
                 onClick={() => onSelectScene(4)}
                 className="w-full py-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-xs md:text-sm font-extrabold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.01]"
               >
-                <span>本人確認・連絡先開示画面（Scene 04）へ進む</span>
+                <span>手紙開封・連絡先開示画面（Scene 04）へ進む</span>
                 <ArrowRight size={16} />
               </button>
             </div>

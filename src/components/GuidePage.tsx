@@ -439,7 +439,7 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
               記憶をつづる（ボトルの投函）
             </h3>
             <p className="text-xs md:text-sm text-slate-700 leading-relaxed">
-              「ボトルレターを流す」ボタンから、探している相手へのメッセージを作成できます。あなたの想いが相手に届くよう、以下の項目を丁寧に入力しましょう。
+              トップページの「手紙をつづる」または「ボトルメールを流す」ボタンから、探している相手へのメッセージを作成できます。あなたの想いが相手に届くよう、以下の項目を丁寧に入力しましょう。
             </p>
             <div className="bg-slate-50 p-4 md:p-5 rounded-2xl border border-slate-200/80 space-y-2">
               <p className="text-xs font-bold text-slate-900">入力項目の詳細：</p>
