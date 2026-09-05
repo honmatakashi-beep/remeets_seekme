@@ -3720,12 +3720,7 @@ export const RevealContactModal = ({
                   type="button"
                   onClick={() => {
                     onClose();
-                    setTimeout(() => {
-                      const el = document.getElementById('reunion-success-anchor') || document.getElementById('revealed-contact-section');
-                      if (el) {
-                        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                      }
-                    }, 350);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
                   className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all cursor-pointer"
                 >
@@ -5218,6 +5213,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               contactNote: data.contact_note || data.unlock_message || 'お手紙を見つけていただきありがとうございます！LINEまたはメールにてご連絡をお待ちしております。',
               searcherName: resolvedName,
               searcherFullName: resolvedFullName || resolvedName,
+              searcherMaidenName: data.searcher_maiden_name || data.author_maiden_name || data.author_info?.maiden_name || '',
               message: data.message
             });
           }
@@ -5828,11 +5824,8 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
         onClose={() => {
           setShowRevealModal(false);
           setTimeout(() => {
-            const targetEl = document.getElementById('reunion-success-anchor') || document.getElementById('revealed-contact-section') || chatSectionRef.current;
-            if (targetEl) {
-              smoothScrollWithOffset(targetEl, 100);
-            }
-          }, 300);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }, 100);
         }}
         postId={post.id}
         searcherName={searcherNameToUse || ''}
@@ -5852,11 +5845,8 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
             });
           }
           setTimeout(() => {
-            const targetEl = document.getElementById('reunion-success-anchor') || document.getElementById('revealed-contact-section') || chatSectionRef.current;
-            if (targetEl) {
-              smoothScrollWithOffset(targetEl, 100);
-            }
-          }, 450);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }, 150);
         }}
       />
       <SuccessStoryModal
@@ -5886,7 +5876,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               {/* showDetails が true の場合（開示完了・再会後画面） */}
               {showDetails ? (
                 <div id="reunion-success-anchor" className="space-y-6 scroll-mt-28">
-                  {/* 👤 1. 差出人（本名・呼称）＆ ゆかりの地・所属情報カード */}
+                  {/* 👤 1. 差出人（本名）＆ ゆかりの地・所属情報カード */}
                   <div className="p-5 sm:p-6 bg-slate-50/90 rounded-2xl border border-slate-200/90 space-y-4 font-sans text-left">
                     <div className="flex items-center justify-between gap-2 flex-wrap border-b border-slate-200/80 pb-3">
                       <div className="flex items-center gap-2.5">
@@ -5894,9 +5884,14 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                           👤
                         </div>
                         <div>
-                          <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">差出人（本名・呼称）</span>
-                          <h4 className="text-base sm:text-lg font-bold text-slate-900 font-serif">
-                            {otherUserFullNameToUse || searcherFullName || post.searcher_full_name || post.owner_full_name || post.searcher_name || revealedContact?.searcherFullName} 様
+                          <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">差出人（本名）</span>
+                          <h4 className="text-base sm:text-lg font-bold text-slate-900 font-serif flex items-center flex-wrap gap-1">
+                            <span>{otherUserFullNameToUse || searcherFullName || post.searcher_full_name || post.owner_full_name || post.searcher_name || revealedContact?.searcherFullName} 様</span>
+                            {(post.searcher_maiden_name || post.author_maiden_name || post.author_info?.maiden_name || revealedContact?.searcherMaidenName) && (
+                              <span className="text-xs sm:text-sm text-slate-500 font-normal font-sans ml-1">
+                                （旧姓: {post.searcher_maiden_name || post.author_maiden_name || post.author_info?.maiden_name || revealedContact?.searcherMaidenName}）
+                              </span>
+                            )}
                           </h4>
                         </div>
                       </div>
@@ -6009,6 +6004,11 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                         </h5>
                         <span className="text-xs font-bold text-emerald-800 bg-white px-2.5 py-0.5 rounded-lg border border-emerald-200/80 shadow-2xs">
                           差出人: {otherUserFullNameToUse || searcherFullName || post.searcher_full_name || post.owner_full_name || post.searcher_name || revealedContact?.searcherFullName || '綿矢 りさ'} 様
+                          {(post.searcher_maiden_name || post.author_maiden_name || post.author_info?.maiden_name || revealedContact?.searcherMaidenName) && (
+                            <span className="text-[11px] text-emerald-700 font-normal ml-1">
+                              （旧姓: {post.searcher_maiden_name || post.author_maiden_name || post.author_info?.maiden_name || revealedContact?.searcherMaidenName}）
+                            </span>
+                          )}
                         </span>
                       </div>
                       <div className="p-4 sm:p-5 bg-white/95 rounded-xl border border-emerald-200/70 text-slate-900 text-base leading-relaxed font-serif whitespace-pre-wrap shadow-2xs font-medium">

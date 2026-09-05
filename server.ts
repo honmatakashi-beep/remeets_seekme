@@ -1859,6 +1859,9 @@ async function startServer() {
     try { db.exec("ALTER TABLE users ADD COLUMN birthdate TEXT"); } catch (e) {}
     try { db.exec("ALTER TABLE users ADD COLUMN notify_new_post INTEGER DEFAULT 1"); } catch (e) {}
     
+    // posts columns migration
+    try { db.exec("ALTER TABLE posts ADD COLUMN searcher_maiden_name TEXT"); } catch (e) {}
+    
     // search_alerts columns migration
     try { db.exec("ALTER TABLE search_alerts ADD COLUMN user_id INTEGER"); } catch (e) {}
     try { db.exec("ALTER TABLE search_alerts ADD COLUMN target_last_name TEXT"); } catch (e) {}
@@ -3567,10 +3570,10 @@ async function startServer() {
   app.get("/api/posts/connected-posts", authenticateToken, (req: any, res) => {
     try {
       const posts = db.prepare(`
-        SELECT p.id, p.searcher_name, p.searcher_full_name, p.searcher_profile, p.target_name, p.target_last_name, p.target_first_name, 
+        SELECT p.id, p.searcher_name, p.searcher_full_name, p.searcher_maiden_name, p.searcher_profile, p.target_name, p.target_last_name, p.target_first_name, 
                p.target_hometown, p.target_school, p.era, p.category, p.category as relationship, p.status, p.created_at, p.message,
                p.contact_type, p.contact_id, p.contact_note,
-               u.username as owner_username, u.full_name as owner_full_name, u.nickname as owner_nickname, u.contact_type as owner_contact_type, u.contact_id as owner_contact_id, u.email as owner_email,
+               u.username as owner_username, u.full_name as owner_full_name, u.maiden_name as owner_maiden_name, u.nickname as owner_nickname, u.contact_type as owner_contact_type, u.contact_id as owner_contact_id, u.email as owner_email,
                (SELECT content FROM messages WHERE post_id = p.id ORDER BY id DESC LIMIT 1) as last_message
         FROM posts p
         JOIN users u ON p.user_id = u.id
@@ -3580,6 +3583,7 @@ async function startServer() {
 
       const formattedPosts = (posts || []).map((p: any) => {
         const resolvedFullName = p.searcher_full_name || p.owner_full_name || p.searcher_name || p.owner_username;
+        const resolvedMaidenName = p.searcher_maiden_name || p.owner_maiden_name || '';
         const resolvedContactType = p.contact_type || p.owner_contact_type || 'LINE';
         const resolvedContactId = p.contact_id || p.owner_contact_id || (p.owner_username ? `@${p.owner_username}` : (p.searcher_name ? `@${p.searcher_name}` : ''));
         const resolvedContactNote = p.contact_note || 'お手紙を見つけていただきありがとうございます！LINEまたはメールにてご連絡をお待ちしております。';
@@ -3587,6 +3591,8 @@ async function startServer() {
           ...p,
           searcher_full_name: resolvedFullName,
           owner_full_name: resolvedFullName,
+          searcher_maiden_name: resolvedMaidenName,
+          author_maiden_name: resolvedMaidenName,
           contact_type: resolvedContactType,
           contact_id: resolvedContactId,
           unlock_contact_info: resolvedContactId,
@@ -4092,8 +4098,8 @@ async function startServer() {
       
       const { secret_answer, secret_answer_plain, ...postData } = post;
       
-      const author = post.user_id ? (db.prepare("SELECT id, username, full_name, nickname, email, contact_type, contact_id, is_ekyc_verified FROM users WHERE id = ?").get(post.user_id) as any) : null;
-      const verifier = post.verified_by ? (db.prepare("SELECT id, username, full_name, nickname, email, contact_type, contact_id, is_ekyc_verified FROM users WHERE id = ?").get(post.verified_by) as any) : null;
+      const author = post.user_id ? (db.prepare("SELECT id, username, full_name, nickname, maiden_name, email, contact_type, contact_id, is_ekyc_verified FROM users WHERE id = ?").get(post.user_id) as any) : null;
+      const verifier = post.verified_by ? (db.prepare("SELECT id, username, full_name, nickname, maiden_name, email, contact_type, contact_id, is_ekyc_verified FROM users WHERE id = ?").get(post.verified_by) as any) : null;
 
       const isOwner = !!(req.user && req.user.id === post.user_id);
       const isVerifiedFinder = !!(req.user && post.verified_by === req.user.id);
@@ -4112,6 +4118,7 @@ async function startServer() {
           id: author.id,
           username: author.username,
           full_name: canViewDetails ? author.full_name : undefined,
+          maiden_name: canViewDetails ? (author.maiden_name || post.searcher_maiden_name) : undefined,
           nickname: author.nickname,
           is_ekyc_verified: author.is_ekyc_verified
         };
@@ -4123,12 +4130,15 @@ async function startServer() {
       if (canViewDetails) {
         // Resolve full name and contact information only for author or verified finder
         const resolvedFullName = post.searcher_full_name || author?.full_name || post.searcher_name || author?.username || '綿矢 りさ';
+        const resolvedMaidenName = post.searcher_maiden_name || author?.maiden_name || '';
         const resolvedContactType = post.contact_type || author?.contact_type || 'LINE';
         const resolvedContactId = post.contact_id || author?.contact_id || (author?.username ? `@${author.username}` : (post.searcher_name ? `@${post.searcher_name}` : '@r_wataya_780'));
         const resolvedContactNote = post.contact_note || 'お手紙を見つけていただきありがとうございます！LINEまたはメールにてご連絡をお待ちしております。';
 
         postData.searcher_full_name = resolvedFullName;
         postData.owner_full_name = resolvedFullName;
+        postData.searcher_maiden_name = resolvedMaidenName;
+        postData.author_maiden_name = resolvedMaidenName;
         postData.owner_nickname = author?.nickname || post.searcher_name;
         postData.owner_username = author?.username;
         postData.contact_type = resolvedContactType;
@@ -4327,11 +4337,12 @@ async function startServer() {
       // Fetch author info helper
       let author = null;
       if (post.user_id) {
-        author = db.prepare("SELECT id, username, full_name, email FROM users WHERE id = ?").get(post.user_id) as any;
+        author = db.prepare("SELECT id, username, full_name, nickname, maiden_name, email FROM users WHERE id = ?").get(post.user_id) as any;
       }
       const contactType = post.contact_type || 'LINE';
       const contactId = post.contact_id || `@${author?.username || post.searcher_name || 'remeets_contact'}`;
       const contactNote = post.contact_note || 'お手紙を見つけていただきありがとうございます！LINEまたはメールにてご連絡をお待ちしております。';
+      const searcherMaidenName = post.searcher_maiden_name || author?.maiden_name || '';
 
       // 🛡️ SEC-006: 既存決済の確認（二重課金・連続決済の多重防止制御）
       const existingTx = userId 
@@ -4351,6 +4362,7 @@ async function startServer() {
             contactNote,
             searcherName: post.searcher_name,
             searcherFullName: post.searcher_full_name,
+            searcherMaidenName,
             message: post.message,
             status: 'resolved'
           });
@@ -4403,6 +4415,7 @@ async function startServer() {
         contactNote: contactNote,
         searcherName: post.searcher_name,
         searcherFullName: post.searcher_full_name,
+        searcherMaidenName,
         message: post.message,
         status: 'resolved'
       });

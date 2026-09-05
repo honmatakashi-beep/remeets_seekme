@@ -1581,6 +1581,11 @@ export const AccountPage = () => {
                               <strong className="text-sm font-bold text-emerald-900 bg-white px-2 py-0.5 rounded border border-emerald-300">
                                 {post.owner_full_name || post.searcher_full_name || post.searcher_name} 様
                               </strong>
+                              {(post.author_maiden_name || post.searcher_maiden_name || post.owner_maiden_name) && (
+                                <span className="text-[11px] text-emerald-800 font-medium">
+                                  （旧姓: {post.author_maiden_name || post.searcher_maiden_name || post.owner_maiden_name}）
+                                </span>
+                              )}
                               <span className="text-[11px] text-slate-500 font-normal">
                                 （呼称: {post.owner_nickname || post.searcher_name}）
                               </span>
