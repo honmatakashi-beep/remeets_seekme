@@ -6741,7 +6741,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                       <span className="w-9 h-9 rounded-xl bg-teal-700 text-white flex items-center justify-center font-bold text-base shadow-2xs font-serif">
                         ✉️
                       </span>
-                      <h4 className="text-lg sm:text-xl md:text-2xl font-bold font-serif text-slate-900 tracking-wide leading-snug">
+                      <h4 className="text-lg sm:text-xl md:text-2xl font-black font-serif text-slate-950 tracking-wide leading-snug">
                         手紙開封・連絡先開示手続き（課金サービス）のご案内
                       </h4>
                     </div>
