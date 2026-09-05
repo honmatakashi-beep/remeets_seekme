@@ -1362,13 +1362,22 @@ const detectInappropriateWords = (text: string, isChat = false): string[] => {
   const textNormalized = normalizeJapanese(text);
 
   let defaultForbiddenWords = [
-    "殺す", "死ね", "消えろ", "ごみ", "かす", "援助交際", "えんじょこうさい", 
-    "殺人", "脅迫", "爆破", "自殺", "レイプ", "援助", "パパ活", "殺", "コロス", "シネ", "マック"
+    // 1. 脅迫・ストーカー・暴力・誹謗中傷・執着
+    "死ね", "殺す", "殺してやる", "殺し", "死ぬまで", "消えろ", "ごみ", "かす", "殺人", "脅迫", "爆破", "自殺", "レイプ",
+    "許さない", "特定した", "落とし前", "復讐", "待ち伏せ", "待ちぶせ", "前で待って", "住所教えろ", "逃げられる",
+    "絶対に見つけ出す", "後悔させてやる", "バラしてやる", "ばらしてやる", "暴露", "ばらす",
+    "乗り込んでやる", "乗り込む", "押しかける", "押し掛ける",
+    "晒す", "晒し", "さらす", "さらし", "炎上", "拡散", "道連れ", "みちづれ",
+    "つきまとい", "つきまとう", "つけまわす", "つけ回す", "尾行", "監視", "見てるからな", "見張って", "居場所", "追い詰める", "追い詰め", "許さん", "コロス", "シネ",
+    // 2. 不当出会い・パパ活・商業スパム・闇バイト
+    "援助交際", "えんじょこうさい", "パパ活", "ママ活", "割り切り", "お小遣い稼ぎ", "大人の関係", 
+    "買春", "売春", "性風俗", "痴漢", "高収入バイト", "裏バイト", "闇バイト", "借金返済", "融資します"
   ];
 
   if (isChat) {
     defaultForbiddenWords = [
-      "殺す", "死ね", "消えろ", "殺人", "脅迫", "爆破", "自殺", "レイプ", "殺", "コロス", "シネ"
+      "殺す", "死ね", "消えろ", "殺人", "脅迫", "爆破", "自殺", "レイプ", "コロス", "シネ",
+      "特定した", "落とし前", "復讐", "待ち伏せ", "住所教えろ", "バラしてやる", "乗り込んでやる", "晒す", "炎上", "道連れ"
     ];
   }
 
@@ -1385,20 +1394,21 @@ const detectInappropriateWords = (text: string, isChat = false): string[] => {
 
   // 🛡️ 個人情報（電話番号・メアド・LINE/SNS・URL）の直接記載検知（正規化後の文字列で判定）
   if (!isChat) {
-    // 携帯・固定電話番号（全角・スペース・ハイフン混在を正規化後に検知）
-    if (/0[5789]0\d{8}|0\d{9,10}|\d{2,4}-\d{2,4}-\d{4}/.test(textNormalized)) {
-      detected.push("電話番号の記載");
+    // 携帯・固定・IP・フリーダイヤル（090, 080, 070, 050, 0120, 0800 等）
+    const digitsOnly = textNormalized.replace(/[-\sー－.・]/g, '');
+    if (/0[1-9]0\d{7,8}|0\d{9,10}|0120\d{6}|0800\d{7}|050\d{8}/.test(digitsOnly) || /\d{2,4}-\d{2,4}-\d{4}/.test(text)) {
+      detected.push("直接の電話番号の記載");
     }
     // メールアドレス
     if (/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/i.test(textNormalized) || /@.*?\.(com|jp|net|ne|org)/i.test(textNormalized)) {
       detected.push("メールアドレスの記載");
     }
-    // LINE ID, SNSハンドル
-    if (/lineid|ラインid|line:|ライン:|id:|id：|@[\w_]{4,}/i.test(textNormalized)) {
+    // LINE ID, 各種SNSハンドル
+    if (/lineid|ラインid|らいんid|line:|ライン:|らいん:|line\b|ライン\b|らいん\b|インスタ|いんすた|instagram|twitter|ツイッター|ついったー|tiktok|ティックトック|カカオ|かかお|kakao|facebook|フェイスブック|ふぇいすぶっく|fb|discord|ディスコード|でぃすこーど|telegram|テレグラム|てれぐらむ|id:|id：|@[\w_]{3,}/i.test(textNormalized)) {
       detected.push("LINE/SNS_IDの記載");
     }
     // URLリンク
-    if (/https?:|www\./i.test(textNormalized)) {
+    if (/https?:\/\/|www\./i.test(textNormalized)) {
       detected.push("外部リンクURLの記載");
     }
   }
@@ -7181,9 +7191,9 @@ async function startServer() {
 
       // 2. Personal Info Detection
       const emailDetected = /[\w.-]+@[\w.-]+\.\w+/.test(text);
-      const phoneDetected = /0\d{1,4}[- ]?\d{1,4}[- ]?\d{3,4}/.test(text);
-      const lineIdDetected = /line\s*(?:id)?\s*[:：\s]\s*[\w.-]+/i.test(text) || /line\b/i.test(text);
-      const snsDetected = /twitter|instagram|インスタ|tiktok|kakao|skype|discord/i.test(text);
+      const phoneDetected = /0[1-9]0\d{7,8}|0\d{9,10}|0120\d{6}|0800\d{7}|050\d{8}|\d{2,4}[- ]?\d{2,4}[- ]?\d{3,4}/.test(text.replace(/[-\sー－.・]/g, ''));
+      const lineIdDetected = /line\s*(?:id)?\s*[:：\s]\s*[\w.-]+/i.test(text) || /line\b|ライン|らいん/i.test(text);
+      const snsDetected = /twitter|instagram|インスタ|tiktok|kakao|skype|discord|telegram|facebook|フェイスブック/i.test(text);
       const addressDetected = /(?:東京都|北海道|(?:京都|大阪)府|.{2,3}県).{1,10}(?:市|区|町|村).{1,10}\d+/.test(text);
 
       const hasPersonalInfo = emailDetected || phoneDetected || lineIdDetected || snsDetected || addressDetected;
@@ -7205,7 +7215,7 @@ async function startServer() {
       });
 
       // 4. Gemini AI Risk Assessment (or intelligent fallback rule model)
-      let isFlagged = hasForbiddenWords;
+      let isFlagged = hasForbiddenWords || hasPersonalInfo;
       let riskScore = 0;
       let categories = {
         harassment: 0,
@@ -7223,15 +7233,15 @@ async function startServer() {
         categories.hate_speech += 70;
         categories.harassment += 60;
       }
-      if (addressDetected || phoneDetected || lineIdDetected || emailDetected) {
+      if (addressDetected || phoneDetected || lineIdDetected || emailDetected || snsDetected) {
         riskScore += 40;
         categories.pii_leakage += 85;
       }
-      if (/パパ活|援助交際|割り切り|お小遣い|大人の関係/i.test(text)) {
+      if (/パパ活|援助交際|割り切り|お小遣い|大人の関係|裏バイト|闇バイト|融資/i.test(text)) {
         riskScore += 80;
         categories.inappropriate_meeting += 95;
       }
-      if (/殺す|死ね|消えろ|爆破|特定した/i.test(text)) {
+      if (/殺す|死ね|消えろ|爆破|特定した|バラしてやる|乗り込んでやる|晒す|待ち伏せ/i.test(text)) {
         riskScore += 90;
         categories.harassment += 95;
         categories.hate_speech += 90;
@@ -7337,8 +7347,11 @@ async function startServer() {
     }
   });
 
-  app.post("/api/admin/trigger-simulation-post", authenticateToken, isAdmin, async (req: any, res) => {
-    const { text, searcherName = "模擬テスト投稿者", targetName = "模擬テスト対象者" } = req.body;
+  const handleSimulationPost = async (req: any, res: any) => {
+    const text = req.body.text || req.body.message || "";
+    const searcherName = req.body.searcherName || "模擬テスト投稿者";
+    const targetName = req.body.targetName || "模擬テスト対象者";
+
     if (!text) {
       return res.status(400).json({ error: "テキストを入力してください。" });
     }
@@ -7383,7 +7396,7 @@ async function startServer() {
           INSERT INTO reports (reporter_id, target_type, target_id, report_type, reason, contact_info, status)
           VALUES (?, ?, ?, ?, ?, ?, ?)
         `).run(
-          0,
+          req.user.id,
           'post',
           postId,
           'inappropriate_words',
@@ -7399,7 +7412,9 @@ async function startServer() {
       res.json({
         success: true,
         postId,
+        post_id: postId,
         aiFlagged: aiFlaggedVal === 1,
+        ai_flagged: aiFlaggedVal === 1,
         aiReason: aiReasonVal,
         reportCreated
       });
@@ -7407,7 +7422,10 @@ async function startServer() {
       console.error("Simulation post failed:", err);
       res.status(500).json({ error: "模擬投函の実行に失敗しました。" });
     }
-  });
+  };
+
+  app.post("/api/admin/trigger-simulation-post", authenticateToken, isAdmin, handleSimulationPost);
+  app.post("/api/admin/simulate-post", authenticateToken, isAdmin, handleSimulationPost);
 
   app.post("/api/contact", (req, res) => {
     const { name, email, subject, message } = req.body;

@@ -14,6 +14,7 @@ import { WaterRippleRainbowText } from '../components/WaterRippleRainbowText';
 import stepWriteImg from '../assets/images/step_01_photo_write_1785857630366.jpg';
 import stepDriftImg from '../assets/images/step_02_photo_drift_1785857647101.jpg';
 import stepReconnectImg from '../assets/images/step_03_photo_read_v2_1785857978640.jpg';
+import heroBottleMail from '../assets/images/hero_bottle_mail_1785941809474.jpg';
 import { CreditCardPaymentForm } from '../components/CreditCardPaymentForm';
 import { ConceptStoryModal } from '../components/ConceptStoryModal';
 
