@@ -13,16 +13,13 @@ import {
   Unlock, 
   MessageCircle, 
   Copy, 
-  Mail, 
-  Phone, 
   Layers, 
-  CheckCircle2, 
-  HeartHandshake 
+  Rainbow
 } from 'lucide-react';
 import { ReunionEffectTitle, ReunionEffectType } from '../components/ReunionEffectTitle';
 
 export const ReunionEffectsPreviewPage: React.FC = () => {
-  const [selectedEffect, setSelectedEffect] = useState<ReunionEffectType>('shine-sweep');
+  const [selectedEffect, setSelectedEffect] = useState<ReunionEffectType>('rainbow-to-emerald');
   const [speed, setSpeed] = useState<'slow' | 'normal' | 'fast'>('normal');
   const [triggerKey, setTriggerKey] = useState(0);
   const [autoReplay, setAutoReplay] = useState(false);
@@ -37,7 +34,7 @@ export const ReunionEffectsPreviewPage: React.FC = () => {
     if (!autoReplay) return;
     const interval = setInterval(() => {
       setTriggerKey(prev => prev + 1);
-    }, speed === 'slow' ? 3500 : speed === 'fast' ? 2000 : 2800);
+    }, speed === 'slow' ? 4000 : speed === 'fast' ? 2200 : 3000);
     return () => clearInterval(interval);
   }, [autoReplay, speed, selectedEffect]);
 
@@ -49,36 +46,50 @@ export const ReunionEffectsPreviewPage: React.FC = () => {
     icon: string;
   }[] = [
     {
+      id: 'rainbow-to-emerald',
+      label: '① 高速虹色疾走 ➔ エメラルド定着',
+      badge: '★ ご提案（TOPコピー連携・大本命）',
+      description: 'トップページの虹色が文字の中を高速で美しく駆け巡り、ふわりと落ち着いてブランドの深緑（エメラルド）に定着＋右上で星がキラリンと輝きます。',
+      icon: '🌈'
+    },
+    {
+      id: 'rainbow-sweep-sparkle',
+      label: '② 高速虹色光線ビーム ➔ 緑定着',
+      badge: '光線・スタイリッシュ',
+      description: '左から右へ虹色の光線ビームがシャッと走り抜け、文字をエメラルドに染め上げながらキラリン星が弾けます。',
+      icon: '⚡'
+    },
+    {
       id: 'shine-sweep',
-      label: '① 光の軌跡 ＆ キラリン星',
-      badge: '★ おすすめ（王道・洗練）',
-      description: '左から右へ純白＆エメラルドゴールドの美しい光の帯がスーッと走り抜け、最後に右上で「✨」星がキラリンと光り輝きます。',
+      label: '③ 純白ゴールド光線 ＆ キラリン星',
+      badge: '上品・王道シマー',
+      description: '左から右へ純白＆エメラルドゴールドの光の帯がスーッと走り抜け、最後に右上で「✨」星がキラリンと光り輝きます。',
       icon: '✨'
     },
     {
       id: 'aurora-wave',
-      label: '② オーロラ光彩ウェーブ',
-      badge: '情緒・幻想的',
-      description: '文字色がエメラルド〜ティール〜オーロラゴールドに優雅に波打ちながら、文字の周囲から柔らかい光のオーラが広がります。',
+      label: '④ オーロラ光彩ウェーブ（常時）',
+      badge: '幻想的・継続ループ',
+      description: '文字色がエメラルド〜ティール〜オーロラゴールドに優雅に波打ち続け、文字の周囲から柔らかい光のオーラが広がり続けます。',
       icon: '🌊'
     },
     {
       id: 'sparkle-burst',
-      label: '③ ゴールドグリッター＆星屑',
-      badge: 'お祝い感・華やか',
+      label: '⑤ ゴールドグリッター＆星屑',
+      badge: 'お祝い感・パーティクル',
       description: '文字全体がゴールドに発光しながら、文字の上下から大小の星屑（スパークル）がフワフワと舞い散る祝福の演出です。',
       icon: '🎉'
     },
     {
       id: 'stagger-char',
-      label: '④ 順次ポップ ＋ 黄金フラッシュ',
-      badge: 'ドラマチック・躍動感',
-      description: '一文字ずつ軽やかにポンポンと現れ、最後に全体がパッと黄金の光で包まれて定着するリズミカルな演出です。',
+      label: '⑥ 順次ポップ ＋ 黄金フラッシュ',
+      badge: '躍動感・リズミカル',
+      description: '一文字ずつ軽やかにポンポンと現れ、最後に全体がパッと黄金の光で包まれて定着する演出です。',
       icon: '💫'
     },
     {
       id: 'water-flare',
-      label: '⑤ 水滴波紋 ＋ レンズフレア',
+      label: '⑦ 水滴波紋 ＋ レンズフレア',
       badge: '海・ボトルメール世界観',
       description: '水面に水滴が落ちたような波紋が広がり、レンズフレアの光点が左から右へ滑らかにトレースします。',
       icon: '💧'
@@ -104,7 +115,7 @@ export const ReunionEffectsPreviewPage: React.FC = () => {
             <div className="h-4 w-[1px] bg-slate-200" />
             <span className="text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-1.5">
               <Sparkles size={16} className="text-amber-500" />
-              「再会おめでとうございます」エフェクト比較・検証デモ
+              「再会おめでとうございます」演出エフェクト比較・検証デモ
             </span>
           </div>
 
@@ -119,7 +130,7 @@ export const ReunionEffectsPreviewPage: React.FC = () => {
         </div>
 
         {/* ============================================================ */}
-        {/* 2. エフェクト切り替え・コントロールパネル（固定/上部） */}
+        {/* 2. エフェクト切り替え・コントロールパネル */}
         {/* ============================================================ */}
         <div className="bg-white rounded-2xl border-2 border-indigo-200 p-5 shadow-sm space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
@@ -127,7 +138,7 @@ export const ReunionEffectsPreviewPage: React.FC = () => {
               <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest block">Effect Selector</span>
               <h2 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
                 <Layers size={18} className="text-indigo-600" />
-                演出エフェクトを選択して比較
+                演出エフェクトを選択してリアルタイム比較
               </h2>
             </div>
 
@@ -138,7 +149,7 @@ export const ReunionEffectsPreviewPage: React.FC = () => {
                 className="px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-xs font-bold rounded-xl shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all"
               >
                 <RotateCcw size={14} />
-                <span>もう一度再生</span>
+                <span>もう一度再生（リプレイ）</span>
               </button>
 
               <button
@@ -156,7 +167,7 @@ export const ReunionEffectsPreviewPage: React.FC = () => {
             </div>
           </div>
 
-          {/* 5種類のエフェクト選択カード */}
+          {/* 7種類のエフェクト選択カード */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
             {effectOptions.map((opt) => {
               const isSelected = selectedEffect === opt.id;
@@ -169,7 +180,7 @@ export const ReunionEffectsPreviewPage: React.FC = () => {
                   }}
                   className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
                     isSelected
-                      ? 'bg-gradient-to-br from-indigo-50/90 to-teal-50/50 border-indigo-500 shadow-xs ring-2 ring-indigo-500/20'
+                      ? 'bg-gradient-to-br from-indigo-50/90 via-emerald-50/30 to-teal-50/50 border-indigo-500 shadow-xs ring-2 ring-indigo-500/20'
                       : 'bg-slate-50/70 border-slate-200 hover:bg-slate-100/80 hover:border-slate-300'
                   }`}
                 >
@@ -182,8 +193,10 @@ export const ReunionEffectsPreviewPage: React.FC = () => {
                       {isSelected && <Check size={15} className="text-indigo-600 shrink-0" />}
                     </div>
                     <span className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                      opt.id === 'shine-sweep' 
-                        ? 'bg-amber-100 text-amber-900 border border-amber-200' 
+                      opt.id === 'rainbow-to-emerald' 
+                        ? 'bg-gradient-to-r from-sky-100 via-pink-100 to-emerald-100 text-slate-900 border border-indigo-300 font-extrabold' 
+                        : opt.id === 'shine-sweep'
+                        ? 'bg-amber-100 text-amber-900 border border-amber-200'
                         : 'bg-slate-200/80 text-slate-700'
                     }`}>
                       {opt.badge}
@@ -214,7 +227,7 @@ export const ReunionEffectsPreviewPage: React.FC = () => {
                       : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                   }`}
                 >
-                  {s === 'slow' ? 'ゆっくり' : s === 'normal' ? '標準' : 'クイック'}
+                  {s === 'slow' ? 'ゆっくり' : s === 'normal' ? '標準' : 'クイック（高速）'}
                 </button>
               ))}
             </div>
@@ -231,7 +244,7 @@ export const ReunionEffectsPreviewPage: React.FC = () => {
         <div className="bg-white rounded-3xl border-2 border-slate-300/80 p-6 md:p-10 shadow-lg space-y-8 relative">
           
           {/* プレビュー中バッジ */}
-          <div className="absolute top-4 right-4 bg-indigo-100 text-indigo-900 border border-indigo-200 text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
+          <div className="absolute top-4 right-4 bg-indigo-100 text-indigo-900 border border-indigo-200 text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-2xs">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             <span>プレビュー表示中: {effectOptions.find(o => o.id === selectedEffect)?.label}</span>
           </div>
@@ -250,7 +263,7 @@ export const ReunionEffectsPreviewPage: React.FC = () => {
               </span>
               
               {/* ✨ ここに選択中のエフェクトがリアルタイム反映されます ✨ */}
-              <div className="py-1">
+              <div className="py-2">
                 <ReunionEffectTitle
                   effectType={selectedEffect}
                   speed={speed}
@@ -416,7 +429,7 @@ export const ReunionEffectsPreviewPage: React.FC = () => {
             </div>
           </div>
 
-          {/* 🤝 4. 安全な再会のためのファーストステップ（独立カード） */}
+          {/* 🤝 4. 安全な再会のためのファーストステップ */}
           <div className="p-6 md:p-8 bg-gradient-to-br from-slate-50 via-teal-50/30 to-emerald-50/40 rounded-[28px] border-2 border-teal-200/80 space-y-4 shadow-sm text-left">
             <div className="flex items-center gap-2.5 border-b border-teal-200/60 pb-3">
               <div className="w-8 h-8 rounded-xl bg-teal-700 text-white flex items-center justify-center font-bold text-sm shadow-2xs">
