@@ -23,6 +23,19 @@ const JWT_SECRET = process.env.JWT_SECRET || "kizuna-secret-key-2026";
 
 const isProd = process.env.NODE_ENV === 'production';
 
+// 🛡️ [Auto-Recovery Guard] サーバーのプロセス即死を防ぐ堅牢化ガード
+process.on('uncaughtException', (err: any) => {
+  if (err?.code === 'EADDRINUSE') {
+    console.error(`🚨 [Server Warning] ポート ${err.port || 3000} が使用中です。`);
+  } else {
+    console.error('🛡️ [Auto-Recovery Guard] Uncaught Exception を検知・安全に吸収しました:', err?.message || err);
+  }
+});
+
+process.on('unhandledRejection', (reason: any, promise: Promise<any>) => {
+  console.error('🛡️ [Auto-Recovery Guard] Unhandled Rejection を安全に吸収しました:', reason);
+});
+
 // Rate Limiters (🛡️ SEC-012: 環境連動型レート制限)
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -5381,19 +5394,19 @@ async function startServer() {
       const segment = (req.query.segment as string) || 'all';
       let count = 0;
       if (segment === 'verified') {
-        const row = db.prepare("SELECT COUNT(*) as count FROM users WHERE (age_verified = 1 OR is_ekyc_verified = 1 OR kyc_status = 'verified') AND (status != 'banned' OR status IS NULL)").get() as any;
+        const row = db.prepare("SELECT COUNT(*) as count FROM users WHERE (age_verified = 1 OR is_ekyc_verified = 1 OR kyc_status = 'verified') AND (is_blocked = 0 OR is_blocked IS NULL)").get() as any;
         count = row?.count || 0;
       } else if (segment === 'unverified') {
-        const row = db.prepare("SELECT COUNT(*) as count FROM users WHERE (age_verified = 0 OR age_verified IS NULL) AND (is_ekyc_verified = 0 OR is_ekyc_verified IS NULL) AND (status != 'banned' OR status IS NULL)").get() as any;
+        const row = db.prepare("SELECT COUNT(*) as count FROM users WHERE (age_verified = 0 OR age_verified IS NULL) AND (is_ekyc_verified = 0 OR is_ekyc_verified IS NULL) AND (is_blocked = 0 OR is_blocked IS NULL)").get() as any;
         count = row?.count || 0;
       } else if (segment === 'active_posts') {
-        const row = db.prepare("SELECT COUNT(DISTINCT u.id) as count FROM users u JOIN posts p ON u.id = p.user_id WHERE p.status != 'deleted' AND (u.status != 'banned' OR u.status IS NULL)").get() as any;
+        const row = db.prepare("SELECT COUNT(DISTINCT u.id) as count FROM users u JOIN posts p ON u.id = p.user_id WHERE p.status != 'deleted' AND (u.is_blocked = 0 OR u.is_blocked IS NULL)").get() as any;
         count = row?.count || 0;
       } else if (segment === 'active_chat') {
-        const row = db.prepare("SELECT COUNT(DISTINCT u.id) as count FROM users u JOIN matches m ON (u.id = m.user_id OR u.id = m.finder_id) WHERE (u.status != 'banned' OR u.status IS NULL)").get() as any;
+        const row = db.prepare("SELECT COUNT(DISTINCT u.id) as count FROM users u JOIN matches m ON (u.id = m.user_id OR u.id = m.finder_id) WHERE (u.is_blocked = 0 OR u.is_blocked IS NULL)").get() as any;
         count = row?.count || 0;
       } else {
-        const row = db.prepare("SELECT COUNT(*) as count FROM users WHERE (status != 'banned' OR status IS NULL)").get() as any;
+        const row = db.prepare("SELECT COUNT(*) as count FROM users WHERE (is_blocked = 0 OR is_blocked IS NULL)").get() as any;
         count = row?.count || 0;
       }
       res.json({ segment, count });
@@ -5408,15 +5421,15 @@ async function startServer() {
     if (!content) return res.status(400).json({ error: "Content is required" });
 
     try {
-      let query = "SELECT id, email, username FROM users WHERE (status != 'banned' OR status IS NULL)";
+      let query = "SELECT id, email, username FROM users WHERE (is_blocked = 0 OR is_blocked IS NULL)";
       if (targetSegment === 'verified') {
-        query = "SELECT id, email, username FROM users WHERE (age_verified = 1 OR is_ekyc_verified = 1 OR kyc_status = 'verified') AND (status != 'banned' OR status IS NULL)";
+        query = "SELECT id, email, username FROM users WHERE (age_verified = 1 OR is_ekyc_verified = 1 OR kyc_status = 'verified') AND (is_blocked = 0 OR is_blocked IS NULL)";
       } else if (targetSegment === 'unverified') {
-        query = "SELECT id, email, username FROM users WHERE (age_verified = 0 OR age_verified IS NULL) AND (is_ekyc_verified = 0 OR is_ekyc_verified IS NULL) AND (status != 'banned' OR status IS NULL)";
+        query = "SELECT id, email, username FROM users WHERE (age_verified = 0 OR age_verified IS NULL) AND (is_ekyc_verified = 0 OR is_ekyc_verified IS NULL) AND (is_blocked = 0 OR is_blocked IS NULL)";
       } else if (targetSegment === 'active_posts') {
-        query = "SELECT DISTINCT u.id, u.email, u.username FROM users u JOIN posts p ON u.id = p.user_id WHERE p.status != 'deleted' AND (u.status != 'banned' OR u.status IS NULL)";
+        query = "SELECT DISTINCT u.id, u.email, u.username FROM users u JOIN posts p ON u.id = p.user_id WHERE p.status != 'deleted' AND (u.is_blocked = 0 OR u.is_blocked IS NULL)";
       } else if (targetSegment === 'active_chat') {
-        query = "SELECT DISTINCT u.id, u.email, u.username FROM users u JOIN matches m ON (u.id = m.user_id OR u.id = m.finder_id) WHERE (u.status != 'banned' OR u.status IS NULL)";
+        query = "SELECT DISTINCT u.id, u.email, u.username FROM users u JOIN matches m ON (u.id = m.user_id OR u.id = m.finder_id) WHERE (u.is_blocked = 0 OR u.is_blocked IS NULL)";
       }
 
       const users = db.prepare(query).all() as any[];
@@ -8500,6 +8513,18 @@ ReMEETs カスタマーサポート運営事務局
       res.sendFile(path.join(__dirname, "dist", "index.html"));
     });
   }
+
+  // 🛡️ [Global Express Error Recovery] 未処理のルーティングエラーを安全に吸収
+  app.use((err: any, req: any, res: any, next: any) => {
+    console.error("🚨 [Express Error Caught]:", err?.message || err);
+    if (res.headersSent) {
+      return next(err);
+    }
+    res.status(err.status || 500).json({
+      error: isProd ? "サーバー内部でエラーが発生しました。時間を置いて再度お試しください。" : (err.message || "Internal Server Error"),
+      code: err.code || "INTERNAL_ERROR"
+    });
+  });
 
   server.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on http://localhost:${PORT}`);
