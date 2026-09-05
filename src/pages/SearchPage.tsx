@@ -193,56 +193,80 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
           </button>
         </form>
 
-        {/* 絞り込みセレクター & 新着通知ボタン */}
-        <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 text-xs">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-[11px] font-bold text-slate-600 uppercase tracking-wider flex items-center gap-1">
-              <Info size={13} className="text-teal-600" />
-              <span>絞り込み:</span>
+        {/* 絞り込みセレクター */}
+        <div className="pt-3 border-t border-slate-100 flex items-center gap-2 flex-wrap text-xs">
+          <span className="text-[11px] font-bold text-slate-600 uppercase tracking-wider flex items-center gap-1">
+            <Info size={13} className="text-teal-600" />
+            <span>年代・関係性で絞り込み:</span>
+          </span>
+          <select 
+            value={eraFilter}
+            onChange={e => setEraFilter(e.target.value)}
+            className="px-3 py-1.5 border border-slate-200 rounded-xl bg-white text-xs outline-none text-slate-800 focus:border-teal-600 font-sans cursor-pointer shadow-2xs"
+          >
+            <option value="">すべての年代</option>
+            <option value="1950">1950年代</option>
+            <option value="1960">1960年代</option>
+            <option value="1970">1970年代</option>
+            <option value="1980">1980年代</option>
+            <option value="1990">1990年代</option>
+            <option value="2000">2000年代</option>
+            <option value="2010">2010年代</option>
+            <option value="2020">2020年代</option>
+          </select>
+          <select 
+            value={categoryFilter}
+            onChange={e => setCategoryFilter(e.target.value)}
+            className="px-3 py-1.5 border border-slate-200 rounded-xl bg-white text-xs outline-none text-slate-800 focus:border-teal-600 font-sans cursor-pointer shadow-2xs"
+          >
+            <option value="">すべての関係性</option>
+            <option value="friend">同級生・友人</option>
+            <option value="love">初恋・元恋人</option>
+            <option value="work">元同僚・仕事仲間</option>
+            <option value="other">その他</option>
+          </select>
+        </div>
+
+        {/* 🔔 新着手紙の自動メール通知ガイド＆設定パネル */}
+        <div className="mt-3 p-3.5 sm:p-4 bg-gradient-to-r from-teal-50/90 via-sky-50/50 to-white rounded-2xl border border-teal-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+          <div className="flex items-start sm:items-center gap-2.5">
+            <span className="p-2 bg-teal-600 text-white rounded-xl shrink-0 shadow-2xs mt-0.5 sm:mt-0">
+              <Bell size={15} className={notifyEnabled && user ? "animate-pulse" : ""} />
             </span>
-            <select 
-              value={eraFilter}
-              onChange={e => setEraFilter(e.target.value)}
-              className="px-3 py-1.5 border border-slate-200 rounded-xl bg-white text-xs outline-none text-slate-800 focus:border-teal-600 font-sans cursor-pointer shadow-2xs"
-            >
-              <option value="">すべての年代</option>
-              <option value="1950">1950年代</option>
-              <option value="1960">1960年代</option>
-              <option value="1970">1970年代</option>
-              <option value="1980">1980年代</option>
-              <option value="1990">1990年代</option>
-              <option value="2000">2000年代</option>
-              <option value="2010">2010年代</option>
-              <option value="2020">2020年代</option>
-            </select>
-            <select 
-              value={categoryFilter}
-              onChange={e => setCategoryFilter(e.target.value)}
-              className="px-3 py-1.5 border border-slate-200 rounded-xl bg-white text-xs outline-none text-slate-800 focus:border-teal-600 font-sans cursor-pointer shadow-2xs"
-            >
-              <option value="">すべての関係性</option>
-              <option value="friend">同級生・友人</option>
-              <option value="love">初恋・元恋人</option>
-              <option value="work">元同僚・仕事仲間</option>
-              <option value="other">その他</option>
-            </select>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-teal-950 text-xs sm:text-sm font-serif">
+                  あなた宛て新着手紙の自動メール通知
+                </span>
+                {user && (
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                    notifyEnabled ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-600'
+                  }`}>
+                    {notifyEnabled ? '現在：受信中' : '現在：停止中'}
+                  </span>
+                )}
+              </div>
+              <p className="text-[11px] text-slate-600 font-sans mt-0.5 leading-relaxed">
+                {user 
+                  ? `あなた（${user.fullName || user.username} 様）宛ての手紙が新しく流された際、登録メール宛てにお知らせします。`
+                  : 'あなたを探している大切な人からの手紙が届いた際、メールで自動通知を受け取ることができます。'}
+              </p>
+            </div>
           </div>
 
-          {/* 新着通知登録ボタン */}
-          <div className="flex items-center gap-2">
+          <div className="shrink-0 flex items-center justify-end">
             {user ? (
               <button
                 type="button"
                 onClick={handleToggleNotify}
                 disabled={isUpdatingNotify}
-                className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-bold text-xs transition-all cursor-pointer shadow-xs ${
+                className={`px-4 py-2 rounded-xl font-bold text-xs transition-all cursor-pointer shadow-xs whitespace-nowrap ${
                   notifyEnabled
-                    ? 'bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100'
+                    ? 'bg-white text-rose-600 border border-rose-200 hover:bg-rose-50'
                     : 'bg-teal-600 text-white hover:bg-teal-700'
                 }`}
               >
-                <Bell size={13} className={notifyEnabled ? "text-emerald-600" : "text-white"} />
-                <span>{isUpdatingNotify ? '更新中...' : notifyEnabled ? 'あなた宛て新着通知: ON' : 'あなた宛て新着通知をON'}</span>
+                {isUpdatingNotify ? '更新中...' : notifyEnabled ? '通知を解除する' : 'メール通知を有効化（無料）'}
               </button>
             ) : (
               <button
@@ -251,10 +275,10 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
                   setAlertMessage(null);
                   setIsAlertModalOpen(true);
                 }}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-bold text-xs bg-gradient-to-r from-teal-600 to-indigo-600 hover:from-teal-700 hover:to-indigo-700 text-white transition-all cursor-pointer shadow-xs"
+                className="px-4 py-2 rounded-xl font-bold text-xs bg-gradient-to-r from-teal-600 via-teal-700 to-indigo-600 hover:from-teal-700 hover:to-indigo-700 text-white transition-all cursor-pointer shadow-xs whitespace-nowrap flex items-center gap-1.5"
               >
-                <Bell size={13} />
-                <span>新着手紙のメール通知を受け取る</span>
+                <Mail size={13} />
+                <span>通知を受け取る（無料）</span>
               </button>
             )}
           </div>
