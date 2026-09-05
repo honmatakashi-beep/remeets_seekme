@@ -5758,23 +5758,8 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               
               {/* showDetails が true の場合（開示完了・再会後画面） */}
               {showDetails ? (
-                <div className="space-y-6">
-                  {/* 🎉 1. 再会おめでとうございます！ ヘッダー */}
-                  <div id="reunion-success-anchor" className="p-5 sm:p-6 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 text-white rounded-2xl shadow-md flex items-center gap-3.5 scroll-mt-28">
-                    <div className="w-12 h-12 bg-white/20 backdrop-blur-xs rounded-xl flex items-center justify-center shrink-0 shadow-inner text-2xl">
-                      🎉
-                    </div>
-                    <div className="text-left">
-                      <span className="inline-block px-2.5 py-0.5 bg-white/20 text-white text-[10px] font-extrabold rounded-full tracking-wider uppercase mb-1">
-                        手紙開封・開示完了
-                      </span>
-                      <h3 className="font-serif font-bold text-xl sm:text-2xl text-white">
-                        再会おめでとうございます！✨
-                      </h3>
-                    </div>
-                  </div>
-
-                  {/* 👤 2. 差出人（本名・呼称）＆ ゆかりの地・所属情報カード */}
+                <div id="reunion-success-anchor" className="space-y-6 scroll-mt-28">
+                  {/* 👤 1. 差出人（本名・呼称）＆ ゆかりの地・所属情報カード */}
                   <div className="p-5 sm:p-6 bg-slate-50/90 rounded-2xl border border-slate-200/90 space-y-4 font-sans text-left">
                     <div className="flex items-center justify-between gap-2 flex-wrap border-b border-slate-200/80 pb-3">
                       <div className="flex items-center gap-2.5">
@@ -5801,14 +5786,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                       )}
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                      <div className="p-3 bg-white rounded-xl border border-slate-200 space-y-0.5 shadow-2xs">
-                        <span className="text-[10px] font-bold text-slate-400 block">差出人の実名（本名）</span>
-                        <p className="text-sm sm:text-base font-bold text-slate-900 font-serif">
-                          {otherUserFullNameToUse || searcherFullName || post.searcher_full_name || post.owner_full_name || post.searcher_name || revealedContact?.searcherFullName}
-                        </p>
-                      </div>
-
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
                       <div className="p-3 bg-white rounded-xl border border-slate-200 space-y-0.5 shadow-2xs">
                         <span className="text-[10px] font-bold text-slate-400 block">ニックネーム・呼称</span>
                         <p className="text-sm sm:text-base font-bold text-slate-900 font-serif">
@@ -5845,7 +5823,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                     </div>
                   </div>
 
-                  {/* 📖 3. 差出人を特定するための手がかり（ふたりの思い出） */}
+                  {/* 📖 2. 差出人を特定するための手がかり（ふたりの思い出） */}
                   <div className="p-5 sm:p-6 bg-slate-50/90 rounded-2xl border border-slate-200/90 space-y-3 text-left font-sans">
                     <div className="flex items-center gap-2 text-slate-800 border-b border-slate-200/80 pb-2">
                       <BookOpen size={16} className="text-teal-700 shrink-0" />
@@ -5860,98 +5838,118 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                     </div>
                   </div>
 
-                  {/* 💌 4. 開封されたメッセージ（お手紙の本文） - 上品で薄い背景色 */}
-                  <div className="p-5 sm:p-6 bg-emerald-50/40 rounded-2xl border border-emerald-200/80 space-y-3 font-sans text-left shadow-2xs">
-                    <div className="flex items-center justify-between gap-2 flex-wrap border-b border-emerald-200/70 pb-2">
-                      <h4 className="text-sm sm:text-base font-bold text-emerald-950 flex items-center gap-2">
-                        <Unlock size={18} className="text-emerald-600" />
-                        <span>💌 開封されたメッセージ（お手紙の本文）</span>
-                      </h4>
-                      <span className="text-xs font-bold text-emerald-800 bg-white px-2.5 py-0.5 rounded-lg border border-emerald-200/80 shadow-2xs">
-                        差出人: {otherUserFullNameToUse || searcherFullName || post.searcher_full_name || post.owner_full_name || post.searcher_name || revealedContact?.searcherFullName} 様
+                  {/* 🔒 3. 課金後開示項目（手紙本文・開示連絡先の大枠） */}
+                  <div className="p-5 sm:p-6 bg-gradient-to-br from-emerald-50/40 via-teal-50/30 to-slate-50 rounded-2xl border-2 border-teal-300/80 space-y-5 text-left font-sans shadow-xs">
+                    <div className="flex items-center justify-between gap-2 border-b border-teal-200/80 pb-3 flex-wrap">
+                      <div className="flex items-center gap-2">
+                        <span className="w-7 h-7 rounded-lg bg-teal-700 text-white flex items-center justify-center text-xs font-bold shadow-2xs">
+                          ✨
+                        </span>
+                        <div>
+                          <span className="text-[10px] text-teal-800 font-bold uppercase tracking-wider block">プレミアム開示</span>
+                          <h4 className="text-sm sm:text-base font-bold text-teal-950">
+                            課金後開示項目
+                          </h4>
+                        </div>
+                      </div>
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-white text-teal-800 text-[11px] font-bold rounded-full border border-teal-200 shadow-2xs">
+                        開示手続き完了済
                       </span>
                     </div>
-                    <div className="p-5 sm:p-6 bg-white/95 rounded-xl border border-emerald-200/70 text-slate-900 text-base leading-relaxed font-serif whitespace-pre-wrap shadow-2xs font-medium">
-                      {post.message || revealedContact?.message || '（メッセージ内容はありません）'}
-                    </div>
-                  </div>
 
-                  {/* 📱 5. 開示された連絡先 - 上品で薄い背景色 ＆ 直通アクション */}
-                  <div className="p-5 sm:p-6 bg-teal-50/40 rounded-2xl border border-teal-200/80 space-y-3.5 shadow-2xs font-sans text-left">
-                    <div className="flex items-center justify-between gap-2 flex-wrap border-b border-teal-200/70 pb-2.5">
-                      <span className="text-xs sm:text-sm font-extrabold text-teal-950 flex items-center gap-1.5">
-                        <MessageCircle size={16} className="text-teal-700" />
-                        開示された連絡先 ({post.contact_type || revealedContact?.contactType || 'LINE'})
-                      </span>
-                      <button
-                        onClick={() => {
-                          const info = post.contact_id || revealedContact?.contactId || post.unlock_contact_info || '';
-                          if (info) {
-                            navigator.clipboard.writeText(info);
-                            setCopiedContact(true);
-                            setTimeout(() => setCopiedContact(false), 2500);
+                    {/* 💌 開封されたメッセージ（お手紙の本文） - 独立枠 */}
+                    <div className="p-4 sm:p-5 bg-emerald-50/60 rounded-xl border border-emerald-200/90 space-y-3 shadow-2xs">
+                      <div className="flex items-center justify-between gap-2 flex-wrap border-b border-emerald-200/70 pb-2">
+                        <h5 className="text-sm sm:text-base font-bold text-emerald-950 flex items-center gap-2">
+                          <Unlock size={18} className="text-emerald-600" />
+                          <span>💌 開封されたメッセージ（お手紙の本文）</span>
+                        </h5>
+                        <span className="text-xs font-bold text-emerald-800 bg-white px-2.5 py-0.5 rounded-lg border border-emerald-200/80 shadow-2xs">
+                          差出人: {otherUserFullNameToUse || searcherFullName || post.searcher_full_name || post.owner_full_name || post.searcher_name || revealedContact?.searcherFullName} 様
+                        </span>
+                      </div>
+                      <div className="p-4 sm:p-5 bg-white/95 rounded-xl border border-emerald-200/70 text-slate-900 text-base leading-relaxed font-serif whitespace-pre-wrap shadow-2xs font-medium">
+                        {post.message || revealedContact?.message || '（メッセージ内容はありません）'}
+                      </div>
+                    </div>
+
+                    {/* 📱 開示連絡先 - 独立枠 */}
+                    <div className="p-4 sm:p-5 bg-teal-50/60 rounded-xl border border-teal-200/90 space-y-3 shadow-2xs">
+                      <div className="flex items-center justify-between gap-2 flex-wrap border-b border-teal-200/70 pb-2">
+                        <span className="text-xs sm:text-sm font-extrabold text-teal-950 flex items-center gap-1.5">
+                          <MessageCircle size={16} className="text-teal-700" />
+                          開示連絡先
+                        </span>
+                        <button
+                          onClick={() => {
+                            const info = post.contact_id || revealedContact?.contactId || post.unlock_contact_info || '';
+                            if (info) {
+                              navigator.clipboard.writeText(info);
+                              setCopiedContact(true);
+                              setTimeout(() => setCopiedContact(false), 2500);
+                            }
+                          }}
+                          className="px-3 py-1 bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold rounded-lg shadow-xs transition-all cursor-pointer active:scale-95 flex items-center gap-1"
+                        >
+                          {copiedContact ? '✓ コピー完了！' : 'IDをコピー'}
+                        </button>
+                      </div>
+
+                      <div className="p-3 bg-white/95 rounded-xl border border-teal-200/70 font-mono text-sm sm:text-base font-bold text-slate-900 select-all break-all shadow-inner">
+                        {post.contact_id || revealedContact?.contactId || post.unlock_contact_info || '（連絡先設定あり）'}
+                      </div>
+
+                      {/* ワンタップ直通アクション（LINE / メール / 電話） */}
+                      <div className="pt-0.5 flex flex-wrap items-center gap-2">
+                        {(() => {
+                          const contactVal = post.contact_id || revealedContact?.contactId || post.unlock_contact_info || '';
+                          const contactType = (post.contact_type || revealedContact?.contactType || 'LINE').toUpperCase();
+                          
+                          if (contactType.includes('EMAIL') || contactVal.includes('@')) {
+                            return (
+                              <a
+                                href={`mailto:${contactVal}?subject=${encodeURIComponent('【ReMEETs】手紙を受け取りました')}&body=${encodeURIComponent(`${otherUserFullNameToUse || searcherFullName || post.searcher_full_name || '差出人'}様\n\nReMEETsにてあなたからの手紙を開封いたしました。ご連絡ありがとうございます。`)}`}
+                                className="inline-flex items-center justify-center gap-1.5 py-2.5 px-4 bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold rounded-xl shadow-xs transition-all cursor-pointer w-auto"
+                              >
+                                <Mail size={14} />
+                                <span>メール作成を開く</span>
+                              </a>
+                            );
+                          } else if (contactType.includes('PHONE') || contactType.includes('電話')) {
+                            return (
+                              <a
+                                href={`tel:${contactVal.replace(/[^0-9+]/g, '')}`}
+                                className="inline-flex items-center justify-center gap-1.5 py-2.5 px-4 bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold rounded-xl shadow-xs transition-all cursor-pointer w-auto"
+                              >
+                                <Phone size={14} />
+                                <span>電話アプリを起動</span>
+                              </a>
+                            );
+                          } else {
+                            return (
+                              <a
+                                href="https://line.me/R/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center justify-center gap-1.5 py-2.5 px-4 bg-[#06C755] hover:bg-[#05b34c] text-white text-xs font-bold rounded-xl shadow-xs transition-all cursor-pointer w-auto"
+                              >
+                                <MessageCircle size={14} />
+                                <span>LINEで連絡する</span>
+                              </a>
+                            );
                           }
-                        }}
-                        className="px-3.5 py-1.5 bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold rounded-lg shadow-xs transition-all cursor-pointer active:scale-95 flex items-center gap-1"
-                      >
-                        {copiedContact ? '✓ コピー完了！' : 'IDをコピー'}
-                      </button>
-                    </div>
+                        })()}
+                      </div>
 
-                    <div className="p-3.5 bg-white/95 rounded-xl border border-teal-200/70 font-mono text-sm sm:text-base font-bold text-slate-900 select-all break-all shadow-inner">
-                      {post.contact_id || revealedContact?.contactId || post.unlock_contact_info || '（連絡先設定あり）'}
+                      {(post.contact_note || revealedContact?.contactNote) && (
+                        <p className="text-xs text-teal-950 leading-relaxed pt-1.5 border-t border-teal-200/60">
+                          <span className="font-bold">差出人からのメモ:</span> {post.contact_note || revealedContact?.contactNote}
+                        </p>
+                      )}
                     </div>
-
-                    {/* ワンタップ直通アクション（LINE / メール / 電話） */}
-                    <div className="pt-0.5 flex flex-wrap items-center gap-2">
-                      {(() => {
-                        const contactVal = post.contact_id || revealedContact?.contactId || post.unlock_contact_info || '';
-                        const contactType = (post.contact_type || revealedContact?.contactType || 'LINE').toUpperCase();
-                        
-                        if (contactType.includes('EMAIL') || contactVal.includes('@')) {
-                          return (
-                            <a
-                              href={`mailto:${contactVal}?subject=${encodeURIComponent('【ReMEETs】手紙を受け取りました')}&body=${encodeURIComponent(`${otherUserFullNameToUse || searcherFullName || post.searcher_full_name || '差出人'}様\n\nReMEETsにてあなたからの手紙を開封いたしました。ご連絡ありがとうございます。`)}`}
-                              className="inline-flex items-center justify-center gap-1.5 py-2.5 px-4 bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold rounded-xl shadow-xs transition-all cursor-pointer w-auto"
-                            >
-                              <Mail size={14} />
-                              <span>メール作成を開く</span>
-                            </a>
-                          );
-                        } else if (contactType.includes('PHONE') || contactType.includes('電話')) {
-                          return (
-                            <a
-                              href={`tel:${contactVal.replace(/[^0-9+]/g, '')}`}
-                              className="inline-flex items-center justify-center gap-1.5 py-2.5 px-4 bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold rounded-xl shadow-xs transition-all cursor-pointer w-auto"
-                            >
-                              <Phone size={14} />
-                              <span>電話アプリを起動</span>
-                            </a>
-                          );
-                        } else {
-                          return (
-                            <a
-                              href="https://line.me/R/"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center justify-center gap-1.5 py-2.5 px-4 bg-[#06C755] hover:bg-[#05b34c] text-white text-xs font-bold rounded-xl shadow-xs transition-all cursor-pointer w-auto"
-                            >
-                              <MessageCircle size={14} />
-                              <span>LINEで連絡する</span>
-                            </a>
-                          );
-                        }
-                      })()}
-                    </div>
-
-                    {(post.contact_note || revealedContact?.contactNote) && (
-                      <p className="text-xs text-teal-950 leading-relaxed pt-2 border-t border-teal-200/60">
-                        <span className="font-bold">差出人からのメモ:</span> {post.contact_note || revealedContact?.contactNote}
-                      </p>
-                    )}
                   </div>
 
-                  {/* 🛡️ 6. 安心・プライバシー保護の窓口 */}
+                  {/* 🛡️ 4. 安心・プライバシー保護の窓口 */}
                   <div className="p-4 bg-slate-50/90 rounded-2xl border border-slate-200/90 space-y-2.5 font-sans text-left">
                     <div className="flex items-center gap-2 text-xs text-slate-700 font-bold">
                       <ShieldAlert size={16} className="text-slate-400 shrink-0" />
@@ -5980,7 +5978,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                     </div>
                   </div>
 
-                  {/* 🤝 7. 安全な再会のためのファーストステップ */}
+                  {/* 🤝 5. 安全な再会のためのファーストステップ */}
                   <div className="p-5 sm:p-6 bg-slate-50/80 rounded-2xl border border-slate-200/80 space-y-3 font-sans text-left">
                     <div className="flex items-center gap-2 text-teal-900 border-b border-slate-200 pb-2">
                       <span className="text-base">🤝</span>
@@ -6603,62 +6601,6 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
 
                 </div>
               </div>
-            )}
-
-            {(revealedContact || (showDetails && post?.status === 'resolved')) && (
-              <motion.div 
-                id="revealed-contact-section"
-                ref={chatSectionRef}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="space-y-6 scroll-mt-32 transition-all duration-700 ease-out p-1 md:p-3 rounded-[32px]"
-              >
-                <div className="glass-card p-6 md:p-8 bg-gradient-to-br from-indigo-50/90 via-white to-purple-50/90 border-2 border-indigo-200 rounded-3xl shadow-xl space-y-5 text-slate-800 font-sans">
-                  
-                  {/* 🤝 安全な再会のためのファーストステップ・3つのアドバイス */}
-                  <div className="space-y-3 text-left">
-                    <div className="flex items-center gap-2 font-bold text-indigo-950 font-serif text-sm border-b border-indigo-100 pb-3">
-                      <Sparkles size={16} className="text-indigo-600" />
-                      <span>🤝 安全な再会のためのファーストステップ</span>
-                    </div>
-                    <ul className="space-y-2.5 text-xs text-slate-600 pl-1 leading-relaxed">
-                      <li className="flex items-start gap-2 bg-white/90 p-3 rounded-xl border border-indigo-100/80 shadow-2xs">
-                        <span className="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">1</span>
-                        <span><strong>まずはメッセージで丁寧なご挨拶を</strong>：いきなり通話せず、「ReMEETsで手紙を受け取りました」とテキストでファーストコンタクトを取りましょう。</span>
-                      </li>
-                      <li className="flex items-start gap-2 bg-white/90 p-3 rounded-xl border border-indigo-100/80 shadow-2xs">
-                        <span className="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">2</span>
-                        <span><strong>当時の懐かしい想い出を添えて</strong>：手紙に書かれていた二人だけの共通の話題から始めることで、警戒心を解き自然に会話が弾みます。</span>
-                      </li>
-                      <li className="flex items-start gap-2 bg-white/90 p-3 rounded-xl border border-indigo-100/80 shadow-2xs">
-                        <span className="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">3</span>
-                        <span><strong>相互プライバシーの厳守</strong>：開示された個人情報は再会目的以外での利用や第三者への口外・共有を行わない紳士協定をお守りください。</span>
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-2xs space-y-3">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-slate-500 font-bold">お手紙ID</span>
-                      <span className="font-mono font-bold text-slate-900 bg-slate-100 px-2.5 py-0.5 rounded-md">#{post?.id}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-slate-500 font-bold">開示ステータス</span>
-                      <span className="font-bold text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-md">開示済み・安全保存完了</span>
-                    </div>
-                  </div>
-
-                  <div className="pt-2">
-                    <Link 
-                      to="/account" 
-                      className="w-full py-3.5 bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-sm rounded-2xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98"
-                    >
-                      <UserIcon size={16} />
-                      <span>マイアカウントですべての情報を確認する →</span>
-                    </Link>
-                  </div>
-                </div>
-              </motion.div>
             )}
           </div>
         </div>
