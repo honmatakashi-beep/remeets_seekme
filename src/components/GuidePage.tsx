@@ -582,27 +582,6 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
         </div>
       </div>
 
-      {/* Shared Footer Navigation */}
-      <div className="text-center pt-6 font-sans border-t border-slate-200/80 mt-6">
-        <div className="flex flex-wrap justify-center items-center gap-3 text-xs text-slate-500">
-          <button onClick={() => setActiveTab('flow')} className={`hover:text-teal-600 underline cursor-pointer ${activeTab === 'flow' ? 'font-bold text-teal-700' : ''}`}>
-            再会の流れ（4ステップ）
-          </button>
-          <span>•</span>
-          <button onClick={() => setActiveTab('manual')} className={`hover:text-teal-600 underline cursor-pointer ${activeTab === 'manual' ? 'font-bold text-teal-700' : ''}`}>
-            詳細ご利用マニュアル
-          </button>
-          <span>•</span>
-          <Link to="/pricing" className="hover:text-amber-700 underline font-bold text-amber-800 flex items-center gap-1">
-            <Coins size={13} />
-            利用料金表（専用ページ）
-          </Link>
-          <span>•</span>
-          <Link to="/safety" className="hover:text-teal-600 underline">
-            安心・安全対策
-          </Link>
-        </div>
-      </div>
       </div>
     </div>
   );
