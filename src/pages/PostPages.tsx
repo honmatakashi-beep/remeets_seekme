@@ -5716,7 +5716,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
             ) : (!isOwner && showDetails) ? (
               <ReunionEffectTitle effectType="pure-rainbow-flow" />
             ) : (!isOwner && (isQuestionVerified || post.status === 'resolved')) ? (
-              <span className="block whitespace-normal md:whitespace-nowrap max-w-full text-emerald-600 font-bold">思い出の鍵が解かれました！🔑</span>
+              <span className="block whitespace-normal md:whitespace-nowrap max-w-full text-emerald-600 font-bold">思い出の鍵が解かれました！</span>
             ) : (
               <span className="block whitespace-normal leading-snug max-w-full text-teal-800 font-bold text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl">
                 「{post.searcher_name || '差出人'}さん」があなたを探しています。
@@ -6728,25 +6728,34 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
 
                   <div className="space-y-2">
                     <span className="inline-block px-3.5 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold tracking-wider font-serif shadow-2xs">
-                      🔑 思い出の鍵が解かれました！
+                      思い出の鍵が解かれました！
                     </span>
                     <h3 className="text-xl md:text-2xl font-bold font-serif text-slate-900 pt-1">
                       【{searcherName || post.searcher_name || '差出人'}】さんからの手紙を開封する
                     </h3>
                   </div>
 
-                  {/* 課金サービス（手紙開封・連絡先開示）の明確なご案内 */}
-                  <div className="p-4 bg-emerald-50/90 border-2 border-emerald-200/90 rounded-2xl text-left space-y-2 font-sans shadow-2xs">
-                    <div className="font-extrabold text-emerald-950 flex items-center gap-1.5 text-xs sm:text-sm">
-                      <Sparkles size={16} className="text-emerald-700 shrink-0" />
-                      <span>手紙開封・連絡先開示手続き（課金サービス）のご案内</span>
+                  {/* 課金サービス（手紙開封・連絡先開示）の明確なご案内（明朝体の大型目立つ見出し） */}
+                  <div className="p-5 sm:p-6 bg-gradient-to-br from-emerald-50/95 via-teal-50/80 to-slate-50 border-2 border-emerald-400/90 rounded-2xl text-left space-y-3 font-sans shadow-md">
+                    <div className="flex items-center gap-2.5 border-b border-emerald-200/90 pb-3 flex-wrap">
+                      <span className="w-8 h-8 rounded-xl bg-teal-700 text-white flex items-center justify-center font-bold text-sm shadow-2xs">
+                        ✉️
+                      </span>
+                      <h4 className="text-base sm:text-lg md:text-xl font-bold font-serif text-slate-900 tracking-tight leading-snug">
+                        手紙開封・連絡先開示手続き（課金サービス）のご案内
+                      </h4>
                     </div>
-                    <p className="text-xs text-slate-700 leading-relaxed">
-                      思い出の質問に正解された方限定で、開示手続き（<strong className="text-emerald-900 font-bold bg-emerald-100/80 px-1 py-0.5 rounded">600円 税込・買い切り</strong>）を行うことで、手紙の本文全文とお相手の直通連絡先が安全に開示されます。
+                    <p className="text-xs sm:text-sm text-slate-700 font-serif leading-relaxed">
+                      思い出の質問に正解された方限定で、開示手続き（<strong className="text-teal-950 font-bold bg-teal-100/90 px-1.5 py-0.5 rounded text-xs sm:text-sm font-sans">600円 税込・買い切り</strong>）を行うことで、手紙の本文全文とお相手の直通連絡先が安全に開示されます。
                     </p>
-                    <div className="pt-1 flex items-center justify-between text-[11.5px] text-emerald-900 font-bold border-t border-emerald-200/70">
-                      <span>✓ 1回のみの買い切り（月額課金・自動更新なし）</span>
-                      <span className="font-mono text-sm text-emerald-950">600円（税込）</span>
+                    <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 text-xs text-teal-950 font-medium border-t border-emerald-200/80 bg-white/70 p-2.5 rounded-xl">
+                      <span className="flex items-center gap-1.5">
+                        <CheckCircle2 size={15} className="text-teal-700 shrink-0" />
+                        <span>1回のみの買い切り（月額課金・自動更新は一切ありません）</span>
+                      </span>
+                      <span className="font-mono text-sm sm:text-base font-extrabold text-teal-900 sm:ml-auto">
+                        600円（税込）
+                      </span>
                     </div>
                   </div>
 
