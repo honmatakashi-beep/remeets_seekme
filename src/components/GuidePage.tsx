@@ -363,7 +363,7 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
       </div>
 
       {/* 本人確認（eKYC）の目的と安心設計の追記 */}
-      <div className="bg-gradient-to-br from-amber-50/90 via-slate-50 to-white p-6 md:p-8 rounded-3xl border-2 border-amber-300 shadow-sm space-y-5">
+      <div className="bg-gradient-to-br from-amber-50/90 via-slate-50 to-white p-6 md:p-8 rounded-3xl border-2 border-amber-200/90 shadow-sm space-y-5">
         <div className="flex items-center gap-3 border-b border-amber-200/80 pb-4">
           <div className="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center shadow-xs shrink-0">
             <ShieldCheck size={26} />
@@ -373,7 +373,7 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
               Security & Trust System
             </span>
             <h2 className="text-lg md:text-xl font-bold font-serif text-slate-900 mt-1">
-              ReMEETs の安心・安全な仕組みと連絡先開示（接続）について
+              ReMEETs の安心・安全な仕組みと連絡先開示について
             </h2>
           </div>
         </div>
@@ -560,7 +560,7 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
       )}
 
       {/* Pricing Dedicated Banner */}
-      <div className="p-6 md:p-8 bg-gradient-to-r from-amber-50/90 via-orange-50/40 to-amber-50/90 border-2 border-amber-200/80 rounded-3xl space-y-4 shadow-sm mt-8">
+      <div className="p-6 md:p-8 bg-gradient-to-r from-amber-50/90 via-orange-50/40 to-amber-50/90 border-2 border-amber-200/90 rounded-3xl space-y-4 shadow-sm mt-8">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2 text-amber-900 font-bold font-serif text-base md:text-lg">

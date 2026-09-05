@@ -4805,7 +4805,7 @@ export const ManualContent = () => (
     </section>
 
     {/* Dedicated Pricing & Safety Links */}
-    <div className="p-5 bg-gradient-to-r from-amber-50/90 via-orange-50/40 to-amber-50/90 border border-amber-200/90 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div className="p-5 bg-gradient-to-r from-amber-50/90 via-orange-50/40 to-amber-50/90 border-2 border-amber-200/90 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
       <div className="text-xs text-slate-700">
         <strong className="text-amber-950 font-bold block text-sm mb-0.5">💰 ご利用料金の詳細について</strong>
         基本機能は完全無料（0円）。手紙開封・SNS開示のみ600円（買い切り）です。
