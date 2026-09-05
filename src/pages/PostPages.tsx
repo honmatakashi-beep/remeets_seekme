@@ -3883,55 +3883,18 @@ export const RevealContactModal = ({
           ) : (
             /* 💳 決済フォーム画面 */
             <>
-              <div className="text-center space-y-3">
-                <div className="w-16 h-16 bg-gradient-to-br from-amber-100 via-rose-100 to-amber-200 text-amber-700 rounded-full shadow-md flex items-center justify-center mx-auto ring-4 ring-amber-50">
-                  <Heart size={32} className="animate-pulse text-rose-600 fill-rose-500/20" />
+              <div className="text-center space-y-2 pt-1 pb-1">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-800 text-xs font-bold border border-teal-200/80 shadow-2xs font-sans">
+                  <ShieldCheck size={14} className="text-teal-600 shrink-0" />
+                  <span>安全なお支払い（Stripe暗号化決済）</span>
                 </div>
-                <div className="space-y-1">
-                  <span className="inline-block px-3 py-0.5 rounded-full bg-amber-100 text-amber-900 text-[11px] font-bold tracking-wider font-serif">
-                    ✨ 時を超えて届いた想い出のメッセージ
-                  </span>
-                  <h3 className="text-xl md:text-2xl font-bold font-serif text-slate-900 pt-1">
-                    【{searcherFullName || searcherName}】さんからの手紙を開封する
-                  </h3>
-                </div>
-                <p className="text-xs text-slate-600 font-sans leading-relaxed max-w-md mx-auto">
-                  あなたを探し続けていた【{searcherFullName || searcherName}】さんが残した「手紙の全文」と、今すぐ直接つながる「ご連絡先（LINE・メールアドレス等）」が開示されます。止まっていた大切な時間の続きを、ここから始めましょう。
-                </p>
-              </div>
-
-              <div className="p-4 bg-gradient-to-br from-amber-50/90 via-orange-50/80 to-amber-50/90 border border-amber-200/90 rounded-2xl text-xs space-y-2.5 font-sans shadow-sm">
-                <div className="font-bold text-amber-950 flex items-center gap-2 text-sm border-b border-amber-200/80 pb-2">
-                  <ShieldCheck size={18} className="text-amber-700 shrink-0" />
-                  <span>安全な照合を経て、お相手の手紙と連絡先をお届けします</span>
-                </div>
-                <ul className="space-y-2 text-slate-800 text-xs leading-relaxed font-medium">
-                  <li className="flex items-start gap-2 bg-white/80 p-2.5 rounded-xl border border-amber-100">
-                    <span className="text-base shrink-0">✉️</span>
-                    <div>
-                      <strong>【手紙の全文とエピソードを開封】</strong>
-                      <p className="text-[11px] text-slate-600 leading-snug font-normal pt-0.5">
-                        あの日伝えられなかった言葉、感謝、忘れられない思い出の全貌がそのまま読めます。
-                      </p>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-2 bg-white/80 p-2.5 rounded-xl border border-amber-100">
-                    <span className="text-base shrink-0">📱</span>
-                    <div>
-                      <strong>【直通連絡先（LINE ID・メールアドレス）の表示】</strong>
-                      <p className="text-[11px] text-slate-600 leading-snug font-normal pt-0.5">
-                        画面上にSNS IDが即座に開示され、アプリの枠を超えて直接お返事を送れます。
-                      </p>
-                    </div>
-                  </li>
-                </ul>
-                <p className="text-[11px] text-amber-900 font-medium pt-1 border-t border-amber-200/60">
-                  ※ 開封手数料は初回のみの買い切り価格（通常開封600円 / 公的本人確認eKYC付き1,200円 税込）です。月額課金・自動更新は一切発生いたしません。
-                </p>
+                <h3 className="text-xl sm:text-2xl font-bold font-serif text-slate-900 pt-0.5">
+                  【{searcherName || '差出人'}】さんからの手紙を開封する
+                </h3>
               </div>
 
               {errorMessage && (
-                <div className="p-3.5 bg-rose-50 border border-rose-200 text-rose-800 rounded-xl text-xs flex items-center gap-2">
+                <div className="p-3.5 bg-rose-50 border border-rose-200 text-rose-800 rounded-xl text-xs flex items-center gap-2 font-sans">
                   <AlertCircle size={16} className="text-rose-600 shrink-0" />
                   <span>{errorMessage}</span>
                 </div>
