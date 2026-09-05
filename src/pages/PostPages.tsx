@@ -6761,11 +6761,11 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                     <Heart size={32} className="animate-pulse text-rose-600 fill-rose-500/20" />
                   </div>
 
-                  <div className="space-y-2">
-                    <span className="inline-block px-3.5 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-bold tracking-wider font-serif shadow-2xs">
-                      ✨ 時を超えて届いた想い出のメッセージ
-                    </span>
-                    <h3 className="text-xl md:text-2xl font-bold font-serif text-slate-900 pt-1">
+                  <div className="space-y-3">
+                    <div className="pt-1">
+                      <ReunionEffectTitle effectType="pure-rainbow-flow" className="text-xl sm:text-2xl md:text-3xl" />
+                    </div>
+                    <h3 className="text-lg md:text-xl font-bold font-serif text-slate-900">
                       【{searcherName || post.searcher_name || '差出人'}】さんからの手紙を開封する
                     </h3>
                   </div>
@@ -6774,41 +6774,64 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                     あなたを探し続けていた【{searcherName || post.searcher_name || '差出人'}】さんが残した「手紙の全文」と「差出人の実名（本名）」、今すぐ直接つながる「ご連絡先（LINE・メールアドレス等）」が開示されます。止まっていた大切な時間の続きを、ここから始めましょう。
                   </p>
 
-                  {/* 安全な開示情報案内 */}
-                  <div className="p-4 bg-gradient-to-br from-amber-50/90 via-orange-50/80 to-amber-50/90 border border-amber-200/90 rounded-2xl text-xs space-y-2.5 font-sans shadow-sm text-left">
-                    <div className="font-bold text-amber-950 flex items-center gap-2 text-sm border-b border-amber-200/80 pb-2">
-                      <ShieldCheck size={18} className="text-amber-700 shrink-0" />
-                      <span>安全な照合を経て、お相手の手紙と連絡先をお届けします</span>
+                  {/* 安全な開示情報案内（大きく認知できる独立リッチカード） */}
+                  <div className="p-5 bg-gradient-to-br from-amber-50/90 via-orange-50/70 to-amber-50/90 border-2 border-amber-300/90 rounded-2xl text-xs space-y-3.5 font-sans shadow-md text-left">
+                    <div className="font-extrabold text-amber-950 flex items-center justify-between gap-2 text-sm sm:text-base border-b border-amber-200/90 pb-2.5 flex-wrap">
+                      <span className="flex items-center gap-2">
+                        <ShieldCheck size={20} className="text-amber-700 shrink-0" />
+                        <span>安全な照合を経て、お相手の手紙と連絡先をお届けします</span>
+                      </span>
+                      <span className="text-[11px] font-bold bg-amber-200/80 text-amber-950 px-2.5 py-0.5 rounded-full border border-amber-300">
+                        照合完了
+                      </span>
                     </div>
-                    <ul className="space-y-2 text-slate-800 text-xs leading-relaxed font-medium">
-                      <li className="flex items-start gap-2 bg-white/80 p-2.5 rounded-xl border border-amber-100">
-                        <span className="text-base shrink-0">👤</span>
-                        <div>
-                          <strong>【差出人の実名（フルネーム）の開示】</strong>
-                          <p className="text-[11px] text-slate-600 leading-snug font-normal pt-0.5">
+
+                    <div className="space-y-3 pt-1">
+                      {/* 1. 差出人の実名（フルネーム）の開示 */}
+                      <div className="flex items-start gap-3.5 bg-white p-4 rounded-xl border border-amber-200/80 shadow-2xs hover:border-amber-400 transition-all">
+                        <div className="w-11 h-11 rounded-xl bg-teal-100 text-teal-800 flex items-center justify-center shrink-0 text-xl font-bold shadow-2xs">
+                          👤
+                        </div>
+                        <div className="space-y-1">
+                          <h4 className="text-sm sm:text-base font-extrabold text-slate-900 leading-tight">
+                            【差出人の実名（フルネーム）の開示】
+                          </h4>
+                          <p className="text-xs text-slate-600 leading-relaxed font-normal">
                             思い出の質問を設定したご本人の本名（実名）が安全に開示されます。
                           </p>
                         </div>
-                      </li>
-                      <li className="flex items-start gap-2 bg-white/80 p-2.5 rounded-xl border border-amber-100">
-                        <span className="text-base shrink-0">✉️</span>
-                        <div>
-                          <strong>【手紙の全文とエピソードを開封】</strong>
-                          <p className="text-[11px] text-slate-600 leading-snug font-normal pt-0.5">
+                      </div>
+
+                      {/* 2. 手紙の全文とエピソードを開封 */}
+                      <div className="flex items-start gap-3.5 bg-white p-4 rounded-xl border border-amber-200/80 shadow-2xs hover:border-amber-400 transition-all">
+                        <div className="w-11 h-11 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0 text-xl font-bold shadow-2xs">
+                          💌
+                        </div>
+                        <div className="space-y-1">
+                          <h4 className="text-sm sm:text-base font-extrabold text-slate-900 leading-tight">
+                            【手紙の全文とエピソードを開封】
+                          </h4>
+                          <p className="text-xs text-slate-600 leading-relaxed font-normal">
                             あの日伝えられなかった言葉、感謝、忘れられない思い出の全貌がそのまま読めます。
                           </p>
                         </div>
-                      </li>
-                      <li className="flex items-start gap-2 bg-white/80 p-2.5 rounded-xl border border-amber-100">
-                        <span className="text-base shrink-0">📱</span>
-                        <div>
-                          <strong>【お相手の連絡先（LINE・メール等）】</strong>
-                          <p className="text-[11px] text-slate-600 leading-snug font-normal pt-0.5">
+                      </div>
+
+                      {/* 3. お相手の連絡先（LINE・メール等） */}
+                      <div className="flex items-start gap-3.5 bg-white p-4 rounded-xl border border-amber-200/80 shadow-2xs hover:border-amber-400 transition-all">
+                        <div className="w-11 h-11 rounded-xl bg-indigo-100 text-indigo-800 flex items-center justify-center shrink-0 text-xl font-bold shadow-2xs">
+                          📱
+                        </div>
+                        <div className="space-y-1">
+                          <h4 className="text-sm sm:text-base font-extrabold text-slate-900 leading-tight">
+                            【お相手の連絡先（LINE・メール等）】
+                          </h4>
+                          <p className="text-xs text-slate-600 leading-relaxed font-normal">
                             差出人が直接連絡を受け取るために登録した連絡先を安全に確認できます。
                           </p>
                         </div>
-                      </li>
-                    </ul>
+                      </div>
+                    </div>
                   </div>
 
                   {openingError && (
