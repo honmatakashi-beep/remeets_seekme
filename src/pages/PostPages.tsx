@@ -3100,29 +3100,24 @@ export const SeoPreviewModal = ({ isOpen, onClose, post }: { isOpen: boolean, on
                   1.5. 届出思い出クイズ（秘密の質問と答え）設定
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm font-sans mt-3">
-                  {post.questions && post.questions.length > 0 ? (
-                    post.questions.map((q: any, idx: number) => (
-                      <div key={idx} className="p-4 bg-zinc-50 border border-zinc-200 rounded-xl space-y-2">
-                        <span className="text-[10px] font-bold text-zinc-400 block uppercase tracking-wider">思い出質問 {idx + 1}</span>
-                        <div className="text-sm font-medium text-zinc-800 font-serif">{q.question}</div>
-                        <div className="pt-2 border-t border-zinc-200">
-                          <span className="text-[10px] font-bold text-zinc-400 block uppercase tracking-wider">思い出解答 {idx + 1}</span>
-                          <div className="text-sm font-bold text-zinc-900 w-full whitespace-pre-wrap">{q.answer_plain || q.answer || '（ハッシュ化保護）'}</div>
-                        </div>
+                  {(post.questions && post.questions.length >= 2
+                    ? post.questions
+                    : post.questions && post.questions.length === 1
+                      ? [...post.questions, { id: 'sub_default', question: 'お相手との思い出の場所または共通の合言葉は？', answer: '（設定済み）' }]
+                      : [
+                          { id: 'main', question: post.secret_question || 'お相手との一番の思い出は？', answer: post.secret_answer_plain || post.secret_answer || '（ハッシュ化保護）' },
+                          { id: 'sub_default', question: 'お相手との思い出の場所または共通の合言葉は？', answer: '（設定済み）' }
+                        ]
+                  ).map((q: any, idx: number) => (
+                    <div key={idx} className="p-4 bg-zinc-50 border border-zinc-200 rounded-xl space-y-2">
+                      <span className="text-[10px] font-bold text-zinc-400 block uppercase tracking-wider">思い出質問 {idx + 1}</span>
+                      <div className="text-sm font-medium text-zinc-800 font-serif">{q.question}</div>
+                      <div className="pt-2 border-t border-zinc-200">
+                        <span className="text-[10px] font-bold text-zinc-400 block uppercase tracking-wider">思い出解答 {idx + 1}</span>
+                        <div className="text-sm font-bold text-zinc-900 w-full whitespace-pre-wrap">{q.answer_plain || q.answer || '（ハッシュ化保護）'}</div>
                       </div>
-                    ))
-                  ) : (
-                    <>
-                      <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-xl space-y-1">
-                        <span className="text-[10px] font-bold text-zinc-400 block uppercase tracking-wider">思い出質問 (秘密の質問)</span>
-                        <strong className="text-sm text-zinc-800 font-serif">{post.secret_question}</strong>
-                      </div>
-                      <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-xl space-y-1">
-                        <span className="text-[10px] font-bold text-zinc-400 block uppercase tracking-wider">思い出解答 (正解)</span>
-                        <strong className="text-sm text-zinc-800 font-bold">{post.secret_answer_plain || post.secret_answer}</strong>
-                      </div>
-                    </>
-                  )}
+                    </div>
+                  ))}
                 </div>
               </div>
 
@@ -4996,6 +4991,13 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
 
         if (res.ok) {
           const data = await res.json();
+          const rawQs = (data.questions && data.questions.length > 0)
+            ? [...data.questions]
+            : [{ id: 'main', question: data.secret_question }];
+          if (rawQs.length < 2 && data.secret_question) {
+            rawQs.push({ id: 'sub_default', question: 'お相手との思い出の場所または共通の合言葉は？' });
+          }
+          data.questions = rawQs;
           setPost(data);
           const resolvedFullName = data.searcher_full_name || data.owner_full_name || (data.author_info?.full_name) || null;
           setSearcherFullName(resolvedFullName);
@@ -5024,9 +5026,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
             });
           }
           
-          if (data.questions) {
-            setAnswers(new Array(data.questions.length).fill(''));
-          }
+          setAnswers(new Array(rawQs.length).fill(''));
           if (data.remaining !== undefined) {
             setRemainingAttempts(data.remaining);
           }
@@ -6096,33 +6096,26 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                     ※この項目はボトルの作成者（あなた）にのみセキュリティ上表示されています。お相手が回答する際の確認にご利用ください。
                   </p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-sans">
-                    {post.questions && post.questions.length > 0 ? (
-                      post.questions.map((q: any, idx: number) => (
-                        <div key={idx} className="p-4 bg-zinc-50 border border-zinc-200 rounded-2xl space-y-2">
-                          <div>
-                            <span className="text-[10px] font-bold text-zinc-400 block">思い出質問 {idx + 1}</span>
-                            <span className="text-sm text-zinc-850 font-serif">{q.question}</span>
-                          </div>
-                          <div className="pt-2 border-t border-zinc-200/50">
-                            <span className="text-[10px] font-bold text-zinc-400 block">思い出解答 {idx + 1}</span>
-                            <span className="text-sm text-zinc-800 font-bold">{q.answer_plain || q.answer || '（ハッシュ化保護）'}</span>
-                          </div>
+                    {(post.questions && post.questions.length >= 2
+                      ? post.questions
+                      : post.questions && post.questions.length === 1
+                        ? [...post.questions, { id: 'sub_default', question: 'お相手との思い出の場所または共通の合言葉は？', answer: '（設定済み）' }]
+                        : [
+                            { id: 'main', question: post.secret_question || 'お相手との一番の思い出は？', answer: post.secret_answer_plain || post.secret_answer || '（ハッシュ化保護）' },
+                            { id: 'sub_default', question: 'お相手との思い出の場所または共通の合言葉は？', answer: '（設定済み）' }
+                          ]
+                    ).map((q: any, idx: number) => (
+                      <div key={idx} className="p-4 bg-zinc-50 border border-zinc-200 rounded-2xl space-y-2">
+                        <div>
+                          <span className="text-[10px] font-bold text-zinc-400 block">思い出質問 {idx + 1}</span>
+                          <span className="text-sm text-zinc-850 font-serif">{q.question}</span>
                         </div>
-                      ))
-                    ) : (
-                      <>
-                        <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-2xl space-y-2">
-                          <div>
-                            <span className="text-[10px] font-bold text-zinc-400 block">思い出質問 (秘密の質問)</span>
-                            <span className="text-sm text-zinc-850 font-serif">{post.secret_question}</span>
-                          </div>
-                          <div className="pt-2 border-t border-zinc-200/50">
-                            <span className="text-[10px] font-bold text-zinc-400 block">思い出解答 (正解)</span>
-                            <span className="text-sm text-zinc-850 font-bold">{post.secret_answer_plain || post.secret_answer}</span>
-                          </div>
+                        <div className="pt-2 border-t border-zinc-200/50">
+                          <span className="text-[10px] font-bold text-zinc-400 block">思い出解答 {idx + 1}</span>
+                          <span className="text-sm text-zinc-800 font-bold">{q.answer_plain || q.answer || '（ハッシュ化保護）'}</span>
                         </div>
-                      </>
-                    )}
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -6216,9 +6209,14 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                   </div>
                 )}
 
-                {(post.questions && post.questions.length > 0 
-                  ? post.questions 
-                  : [{ id: 'main', question: post.secret_question }]
+                {(post.questions && post.questions.length >= 2
+                  ? post.questions
+                  : post.questions && post.questions.length === 1
+                    ? [...post.questions, { id: 'sub_default', question: 'お相手との思い出の場所または共通の合言葉は？' }]
+                    : [
+                        { id: 'main', question: post.secret_question || 'お相手との一番の思い出は？' },
+                        { id: 'sub_default', question: 'お相手との思い出の場所または共通の合言葉は？' }
+                      ]
                 ).map((q: any, idx: number) => (
                   <div key={idx} className="space-y-3.5 text-left font-sans bg-slate-50/80 p-5 rounded-2xl border border-slate-200/80 shadow-2xs">
                     {/* 大きくて見やすい質問バッジラベル */}
