@@ -5873,72 +5873,82 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                       </div>
                     </div>
 
-                    {/* 📱 開示連絡先 - 独立枠 */}
+                    {/* 📱 開示連絡先 - 独立枠（ID表示とボタンを横並び配置） */}
                     <div className="p-4 sm:p-5 bg-teal-50/60 rounded-xl border border-teal-200/90 space-y-3 shadow-2xs">
                       <div className="flex items-center justify-between gap-2 flex-wrap border-b border-teal-200/70 pb-2">
                         <span className="text-xs sm:text-sm font-extrabold text-teal-950 flex items-center gap-1.5">
                           <MessageCircle size={16} className="text-teal-700" />
                           開示連絡先
                         </span>
-                        <button
-                          onClick={() => {
-                            const info = post.contact_id || revealedContact?.contactId || post.unlock_contact_info || '';
-                            if (info) {
-                              navigator.clipboard.writeText(info);
-                              setCopiedContact(true);
-                              setTimeout(() => setCopiedContact(false), 2500);
+                        <span className="text-[11px] font-bold text-teal-800 bg-white/90 px-2.5 py-0.5 rounded-md border border-teal-200/80">
+                          {post.contact_type || revealedContact?.contactType || 'LINE'}
+                        </span>
+                      </div>
+
+                      {/* 連絡先ID ＋ アクションボタン（IDコピー ＆ LINE/メール/電話起動）を横並びに配置 */}
+                      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                        {/* 連絡先ID表示フォーム */}
+                        <div className="flex-1 p-3 bg-white/95 rounded-xl border border-teal-200/70 font-mono text-sm sm:text-base font-bold text-slate-900 select-all break-all shadow-inner flex items-center">
+                          {post.contact_id || revealedContact?.contactId || post.unlock_contact_info || '（連絡先設定あり）'}
+                        </div>
+
+                        {/* 右横のアクションボタン群（IDコピー ＆ 直通起動ボタン） */}
+                        <div className="flex items-center gap-2 shrink-0">
+                          <button
+                            onClick={() => {
+                              const info = post.contact_id || revealedContact?.contactId || post.unlock_contact_info || '';
+                              if (info) {
+                                navigator.clipboard.writeText(info);
+                                setCopiedContact(true);
+                                setTimeout(() => setCopiedContact(false), 2500);
+                              }
+                            }}
+                            className="flex-1 sm:flex-initial px-3.5 py-3 sm:py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl border border-slate-300/80 transition-all cursor-pointer active:scale-95 flex items-center justify-center gap-1.5 shadow-2xs"
+                            title="連絡先IDをクリップボードにコピー"
+                          >
+                            <Copy size={14} className="text-slate-500" />
+                            <span>{copiedContact ? '✓ コピー完了！' : 'IDをコピー'}</span>
+                          </button>
+
+                          {(() => {
+                            const contactVal = post.contact_id || revealedContact?.contactId || post.unlock_contact_info || '';
+                            const contactType = (post.contact_type || revealedContact?.contactType || 'LINE').toUpperCase();
+                            
+                            if (contactType.includes('EMAIL') || contactVal.includes('@')) {
+                              return (
+                                <a
+                                  href={`mailto:${contactVal}?subject=${encodeURIComponent('【ReMEETs】手紙を受け取りました')}&body=${encodeURIComponent(`${otherUserFullNameToUse || searcherFullName || post.searcher_full_name || '差出人'}様\n\nReMEETsにてあなたからの手紙を開封いたしました。ご連絡ありがとうございます。`)}`}
+                                  className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 py-3 sm:py-2.5 px-4 bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold rounded-xl shadow-xs transition-all cursor-pointer"
+                                >
+                                  <Mail size={14} />
+                                  <span>メールを開く</span>
+                                </a>
+                              );
+                            } else if (contactType.includes('PHONE') || contactType.includes('電話')) {
+                              return (
+                                <a
+                                  href={`tel:${contactVal.replace(/[^0-9+]/g, '')}`}
+                                  className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 py-3 sm:py-2.5 px-4 bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold rounded-xl shadow-xs transition-all cursor-pointer"
+                                >
+                                  <Phone size={14} />
+                                  <span>発信する</span>
+                                </a>
+                              );
+                            } else {
+                              return (
+                                <a
+                                  href="https://line.me/R/"
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 py-3 sm:py-2.5 px-4 bg-[#06C755] hover:bg-[#05b34c] text-white text-xs font-bold rounded-xl shadow-xs transition-all cursor-pointer"
+                                >
+                                  <MessageCircle size={14} />
+                                  <span>LINEで連絡</span>
+                                </a>
+                              );
                             }
-                          }}
-                          className="px-3 py-1 bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold rounded-lg shadow-xs transition-all cursor-pointer active:scale-95 flex items-center gap-1"
-                        >
-                          {copiedContact ? '✓ コピー完了！' : 'IDをコピー'}
-                        </button>
-                      </div>
-
-                      <div className="p-3 bg-white/95 rounded-xl border border-teal-200/70 font-mono text-sm sm:text-base font-bold text-slate-900 select-all break-all shadow-inner">
-                        {post.contact_id || revealedContact?.contactId || post.unlock_contact_info || '（連絡先設定あり）'}
-                      </div>
-
-                      {/* ワンタップ直通アクション（LINE / メール / 電話） */}
-                      <div className="pt-0.5 flex flex-wrap items-center gap-2">
-                        {(() => {
-                          const contactVal = post.contact_id || revealedContact?.contactId || post.unlock_contact_info || '';
-                          const contactType = (post.contact_type || revealedContact?.contactType || 'LINE').toUpperCase();
-                          
-                          if (contactType.includes('EMAIL') || contactVal.includes('@')) {
-                            return (
-                              <a
-                                href={`mailto:${contactVal}?subject=${encodeURIComponent('【ReMEETs】手紙を受け取りました')}&body=${encodeURIComponent(`${otherUserFullNameToUse || searcherFullName || post.searcher_full_name || '差出人'}様\n\nReMEETsにてあなたからの手紙を開封いたしました。ご連絡ありがとうございます。`)}`}
-                                className="inline-flex items-center justify-center gap-1.5 py-2.5 px-4 bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold rounded-xl shadow-xs transition-all cursor-pointer w-auto"
-                              >
-                                <Mail size={14} />
-                                <span>メール作成を開く</span>
-                              </a>
-                            );
-                          } else if (contactType.includes('PHONE') || contactType.includes('電話')) {
-                            return (
-                              <a
-                                href={`tel:${contactVal.replace(/[^0-9+]/g, '')}`}
-                                className="inline-flex items-center justify-center gap-1.5 py-2.5 px-4 bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold rounded-xl shadow-xs transition-all cursor-pointer w-auto"
-                              >
-                                <Phone size={14} />
-                                <span>電話アプリを起動</span>
-                              </a>
-                            );
-                          } else {
-                            return (
-                              <a
-                                href="https://line.me/R/"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center justify-center gap-1.5 py-2.5 px-4 bg-[#06C755] hover:bg-[#05b34c] text-white text-xs font-bold rounded-xl shadow-xs transition-all cursor-pointer w-auto"
-                              >
-                                <MessageCircle size={14} />
-                                <span>LINEで連絡する</span>
-                              </a>
-                            );
-                          }
-                        })()}
+                          })()}
+                        </div>
                       </div>
 
                       {(post.contact_note || revealedContact?.contactNote) && (
@@ -5975,30 +5985,6 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                         <Trash2 size={14} className="text-rose-500 shrink-0" />
                         <span className="truncate">手紙の削除依頼</span>
                       </Link>
-                    </div>
-                  </div>
-
-                  {/* 🤝 5. 安全な再会のためのファーストステップ */}
-                  <div className="p-5 sm:p-6 bg-slate-50/80 rounded-2xl border border-slate-200/80 space-y-3 font-sans text-left">
-                    <div className="flex items-center gap-2 text-teal-900 border-b border-slate-200 pb-2">
-                      <span className="text-base">🤝</span>
-                      <h4 className="text-sm font-bold text-slate-900">
-                        安全な再会のためのファーストステップ
-                      </h4>
-                    </div>
-                    <div className="space-y-2.5 text-xs text-slate-700 leading-relaxed">
-                      <div className="p-3 bg-white rounded-xl border border-slate-200/80 space-y-1">
-                        <strong className="text-slate-900 font-bold block text-xs">・まずはメッセージで挨拶</strong>
-                        <p className="text-slate-600">連絡先（LINEやメール）を追加したら、まずは「ReMEETsで手紙を受け取りました」と丁寧に挨拶を送りましょう。</p>
-                      </div>
-                      <div className="p-3 bg-white rounded-xl border border-slate-200/80 space-y-1">
-                        <strong className="text-slate-900 font-bold block text-xs">・個人情報の開示は慎重に</strong>
-                        <p className="text-slate-600">信頼関係が再構築されるまでは、現住所や勤務先などの詳細な個人情報を急いで開示しないようご注意ください。</p>
-                      </div>
-                      <div className="p-3 bg-white rounded-xl border border-slate-200/80 space-y-1">
-                        <strong className="text-slate-900 font-bold block text-xs">・トラブル時のサポート</strong>
-                        <p className="text-slate-600">万が一、不当な要求や迷惑行為を受けた場合は、速やかに ReMEETs運営窓口 または警察等の公的機関へご相談ください。</p>
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -6188,7 +6174,75 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               )}
             </div>
 
-            {/* 2. 【受取人様のための安心再会ガイド（一体型プレミアムカード）】 */}
+            {/* 2. 【開示後専用】安全な再会のためのファーストステップ（独立プレミアムカード） */}
+            {showDetails && (
+              <div className="p-6 md:p-8 bg-gradient-to-br from-teal-50/70 via-white to-slate-50 border-2 border-teal-200/90 rounded-[32px] shadow-md space-y-6 text-left font-sans">
+                <div className="flex items-center justify-between gap-3 border-b border-teal-100 pb-3.5 flex-wrap">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-teal-700 text-white flex items-center justify-center text-lg shrink-0 shadow-2xs">
+                      🤝
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-teal-800 font-bold uppercase tracking-wider block">安心して再会するために</span>
+                      <h3 className="text-base sm:text-lg font-bold text-teal-950 font-serif">
+                        安全な再会のためのファーストステップ
+                      </h3>
+                    </div>
+                  </div>
+                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-teal-100/80 text-teal-800 text-xs font-bold rounded-full border border-teal-200 shadow-2xs">
+                    <ShieldCheck size={13} className="text-teal-700" />
+                    安全ガイドライン準拠
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                  <div className="p-4.5 bg-white rounded-2xl border border-teal-100/90 shadow-2xs space-y-2">
+                    <div className="flex items-center gap-2">
+                      <span className="w-6 h-6 rounded-full bg-teal-700 text-white font-bold text-xs flex items-center justify-center shrink-0">1</span>
+                      <h4 className="font-bold text-slate-900 text-xs sm:text-sm">まずはテキストで想い出のご挨拶</h4>
+                    </div>
+                    <p className="text-xs text-slate-600 leading-relaxed">
+                      いきなり通話や面会を求めず、「ReMEETsで手紙を受け取りました」と丁寧にメッセージを送信しましょう。ふたりだけの懐かしいエピソードを添えると自然に会話が弾みます。
+                    </p>
+                  </div>
+
+                  <div className="p-4.5 bg-white rounded-2xl border border-teal-100/90 shadow-2xs space-y-2">
+                    <div className="flex items-center gap-2">
+                      <span className="w-6 h-6 rounded-full bg-teal-700 text-white font-bold text-xs flex items-center justify-center shrink-0">2</span>
+                      <h4 className="font-bold text-slate-900 text-xs sm:text-sm">個人情報の開示は慎重に</h4>
+                    </div>
+                    <p className="text-xs text-slate-600 leading-relaxed">
+                      お互いの信頼関係が再構築されるまでは、現住所や勤務先、金融情報などの詳細な個人情報は急いで開示しないようご注意ください。
+                    </p>
+                  </div>
+
+                  <div className="p-4.5 bg-white rounded-2xl border border-teal-100/90 shadow-2xs space-y-2">
+                    <div className="flex items-center gap-2">
+                      <span className="w-6 h-6 rounded-full bg-teal-700 text-white font-bold text-xs flex items-center justify-center shrink-0">3</span>
+                      <h4 className="font-bold text-slate-900 text-xs sm:text-sm">困ったときの安心サポート体制</h4>
+                    </div>
+                    <p className="text-xs text-slate-600 leading-relaxed">
+                      万が一、不審な金銭要求や迷惑行為を受けた場合は、速やかに連絡を遮断（ブロック）し、ReMEETs運営窓口または警察等の公的機関へご相談ください。
+                    </p>
+                  </div>
+                </div>
+
+                <div className="pt-1 flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/90 p-4 rounded-2xl border border-teal-100/80">
+                  <span className="text-xs text-slate-500 font-sans">
+                    ※ 開示された手紙および連絡先情報はマイアカウントに安全に保存されています。
+                  </span>
+                  <Link
+                    to="/account"
+                    className="w-full sm:w-auto px-4 py-2 bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5 shrink-0"
+                  >
+                    <UserIcon size={14} />
+                    <span>マイアカウントで保存内容を確認</span>
+                  </Link>
+                </div>
+              </div>
+            )}
+
+            {/* 3. 【受取人様のための安心再会ガイド（一体型プレミアムカード）】 */}
             {!isOwner && post.status !== 'resolved' && !showDetails && (
               <RecipientSafetyGuide 
                 roadmapSectionRef={roadmapSectionRef}
