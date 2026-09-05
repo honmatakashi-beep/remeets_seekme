@@ -1382,7 +1382,7 @@ export const CreatePostPage = () => {
         !warnings.searcherProfile
     },
     {
-      title: "二人だけの合言葉",
+      title: "二人だけの思い出の質問",
       description: "プライバシーを守るため、本人確認用の「秘密の質問」を2問作成してください。両方の正解が必須となります。",
       fields: (
         <div className="space-y-8">
@@ -3103,10 +3103,10 @@ export const SeoPreviewModal = ({ isOpen, onClose, post }: { isOpen: boolean, on
                   {(post.questions && post.questions.length >= 2
                     ? post.questions
                     : post.questions && post.questions.length === 1
-                      ? [...post.questions, { id: 'sub_default', question: 'お相手との思い出の場所または共通の合言葉は？', answer: '（設定済み）' }]
+                      ? [...post.questions, { id: 'sub_default', question: 'お相手との思い出の場所または共通のエピソードは？', answer: '（設定済み）' }]
                       : [
                           { id: 'main', question: post.secret_question || 'お相手との一番の思い出は？', answer: post.secret_answer_plain || post.secret_answer || '（ハッシュ化保護）' },
-                          { id: 'sub_default', question: 'お相手との思い出の場所または共通の合言葉は？', answer: '（設定済み）' }
+                          { id: 'sub_default', question: 'お相手との思い出の場所または共通のエピソードは？', answer: '（設定済み）' }
                         ]
                   ).map((q: any, idx: number) => (
                     <div key={idx} className="p-4 bg-zinc-50 border border-zinc-200 rounded-xl space-y-2">
@@ -3421,7 +3421,7 @@ export const RecipientSafetyGuide = ({
             className="w-full py-4 bg-teal-700 hover:bg-teal-800 text-white font-bold rounded-2xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2.5 text-sm sm:text-base cursor-pointer hover:scale-[1.01]"
           >
             <Unlock size={18} />
-            <span>思い出の質問（合言葉）に答えて手紙を開く</span>
+            <span>思い出の質問に答えて手紙を開く</span>
             <ArrowRight size={16} />
           </button>
           <p className="text-[11px] text-slate-500 text-center font-sans mt-2">
@@ -4022,7 +4022,7 @@ export const SuccessModal = ({
             className="relative w-full max-w-2xl bg-white rounded-[28px] md:rounded-[36px] shadow-2xl p-5 sm:p-6 md:p-8 space-y-5 my-auto max-h-[88vh] md:max-h-[85vh] flex flex-col overflow-y-auto overscroll-contain z-10"
             data-lenis-prevent
           >
-            {/* 背景イラスト（合致する心と光の合言葉） */}
+            {/* 背景イラスト（合致する心と光の演出） */}
             <div className="absolute inset-0 flex justify-center items-center pointer-events-none overflow-hidden select-none">
               <div className="relative w-full h-full opacity-30">
                 <img 
@@ -4066,7 +4066,7 @@ export const SuccessModal = ({
                     <span>手続き完了後に安全に開示される内容</span>
                   </span>
                   <span className="text-[10px] bg-emerald-100 text-emerald-900 px-2.5 py-0.5 rounded-full font-bold border border-emerald-200">
-                    合言葉照合 完了
+                    思い出の質問 照合完了
                   </span>
                 </div>
 
@@ -4077,7 +4077,7 @@ export const SuccessModal = ({
                       <span>👤</span> <span>差出人</span>
                     </span>
                     <strong className="text-slate-900 font-bold text-xs sm:text-sm">
-                      {searcherFullName ? `${searcherFullName} (${searcherName})` : searcherName} 様（合言葉を知るご本人）
+                      {searcherFullName ? `${searcherFullName} (${searcherName})` : searcherName} 様（思い出の質問に答えたご本人）
                     </strong>
                   </div>
 
@@ -5109,7 +5109,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
             ? [...data.questions]
             : [{ id: 'main', question: data.secret_question }];
           if (rawQs.length < 2 && data.secret_question) {
-            rawQs.push({ id: 'sub_default', question: 'お相手との思い出の場所または共通の合言葉は？' });
+            rawQs.push({ id: 'sub_default', question: 'お相手との思い出の場所または共通のエピソードは？' });
           }
           data.questions = rawQs;
           setPost(data);
@@ -5493,7 +5493,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                     <span>ボトルメールが海へ流されました</span>
                   </div>
                   <p className="text-xs text-slate-700 font-serif leading-relaxed">
-                    大切なお手紙を朝もやの海へそっと流しました。お相手があなたを見つけて「思い出の合言葉」に正解するまで、安全に保護・保管されます。
+                    大切なお手紙を朝もやの海へそっと流しました。お相手があなたを見つけて「思い出の質問」に正解するまで、安全に保護・保管されます。
                   </p>
                 </div>
 
@@ -5681,7 +5681,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                 <span>差出人「{post.searcher_name || '差出人'}さん」に心当たりがある方へ</span>
               </div>
               <p className="text-xs text-slate-700 font-serif leading-relaxed">
-                「思い出の合言葉（質問）」に正解すると、あなた宛に届いた<strong className="text-teal-900 font-bold bg-teal-100/80 px-1 py-0.5 rounded">差出人のフルネーム・手紙本文・連絡先</strong>が安全に開示されます。
+                「思い出の質問」に正解すると、あなた宛に届いた<strong className="text-teal-900 font-bold bg-teal-100/80 px-1 py-0.5 rounded">差出人のフルネーム・手紙本文・連絡先</strong>が安全に開示されます。
               </p>
             </div>
           )}
@@ -5695,7 +5695,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                   <span>手続き完了後に安全に開示される内容</span>
                 </span>
                 <span className="text-[10px] bg-emerald-100 text-emerald-900 px-2.5 py-0.5 rounded-full font-bold border border-emerald-200">
-                  合言葉照合 完了
+                  思い出の質問 照合完了
                 </span>
               </div>
 
@@ -5706,7 +5706,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                     <span>👤</span> <span>差出人</span>
                   </span>
                   <strong className="text-slate-900 font-bold text-xs sm:text-sm">
-                    {searcherFullName ? `${searcherFullName} (${searcherName || post.searcher_name})` : (otherUserFullNameToUse || post.searcher_full_name || post.owner_full_name || post.searcher_name || searcherName || 'お相手')} 様（合言葉を知るご本人）
+                    {searcherFullName ? `${searcherFullName} (${searcherName || post.searcher_name})` : (otherUserFullNameToUse || post.searcher_full_name || post.owner_full_name || post.searcher_name || searcherName || 'お相手')} 様（思い出の質問に答えたご本人）
                   </strong>
                 </div>
 
@@ -6087,7 +6087,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                   <div className="p-4 sm:p-5 bg-gradient-to-br from-teal-50/90 via-emerald-50/70 to-slate-50 rounded-2xl border border-teal-200/90 space-y-3 font-sans">
                     <div className="flex items-center gap-2 text-teal-950 font-bold text-xs sm:text-sm">
                       <Sparkles size={16} className="text-teal-600 shrink-0" />
-                      <span>合言葉（思い出の質問）に正解すると開放される内容</span>
+                      <span>思い出の質問に正解すると開放される内容</span>
                     </div>
                     
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
@@ -6122,7 +6122,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                     className="w-full py-4 bg-teal-700 hover:bg-teal-800 text-white font-bold rounded-2xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2.5 text-sm sm:text-base cursor-pointer hover:scale-[1.01]"
                   >
                     <Unlock size={18} />
-                    <span>思い出の質問（合言葉）に答えて手紙を開く</span>
+                    <span>思い出の質問に答えて手紙を開く</span>
                     <ArrowRight size={16} />
                   </button>
                   <p className="text-[11px] text-slate-500 text-center font-sans">
@@ -6232,10 +6232,10 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                     {(post.questions && post.questions.length >= 2
                       ? post.questions
                       : post.questions && post.questions.length === 1
-                        ? [...post.questions, { id: 'sub_default', question: 'お相手との思い出の場所または共通の合言葉は？', answer: '（設定済み）' }]
+                        ? [...post.questions, { id: 'sub_default', question: 'お相手との思い出の場所または共通のエピソードは？', answer: '（設定済み）' }]
                         : [
                             { id: 'main', question: post.secret_question || 'お相手との一番の思い出は？', answer: post.secret_answer_plain || post.secret_answer || '（ハッシュ化保護）' },
-                            { id: 'sub_default', question: 'お相手との思い出の場所または共通の合言葉は？', answer: '（設定済み）' }
+                            { id: 'sub_default', question: 'お相手との思い出の場所または共通のエピソードは？', answer: '（設定済み）' }
                           ]
                     ).map((q: any, idx: number) => (
                       <div key={idx} className="p-4 bg-zinc-50 border border-zinc-200 rounded-2xl space-y-2">
@@ -6345,10 +6345,10 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                 {(post.questions && post.questions.length >= 2
                   ? post.questions
                   : post.questions && post.questions.length === 1
-                    ? [...post.questions, { id: 'sub_default', question: 'お相手との思い出の場所または共通の合言葉は？' }]
+                    ? [...post.questions, { id: 'sub_default', question: 'お相手との思い出の場所または共通のエピソードは？' }]
                     : [
                         { id: 'main', question: post.secret_question || 'お相手との一番の思い出は？' },
-                        { id: 'sub_default', question: 'お相手との思い出の場所または共通の合言葉は？' }
+                        { id: 'sub_default', question: 'お相手との思い出の場所または共通のエピソードは？' }
                       ]
                 ).map((q: any, idx: number) => (
                   <div key={idx} className="space-y-3.5 text-left font-sans bg-slate-50/80 p-5 rounded-2xl border border-slate-200/80 shadow-2xs">
