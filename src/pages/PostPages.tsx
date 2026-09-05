@@ -5628,11 +5628,15 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               </>
             )}
 
-            {/* 投函日時（「大切な人との再会を支援する場所です」の下に少し余白を空けて配置） */}
-            <div className="mt-3 pt-3 border-t border-slate-200/60 w-full flex justify-center">
-              <span className="inline-flex items-center gap-1.5 text-xs text-slate-500 font-sans font-medium bg-slate-50 px-3 py-1 rounded-full border border-slate-200/80">
-                <Calendar size={13} className="text-teal-600 shrink-0" />
-                <span>このボトルメールは {new Date(post.created_at).toLocaleDateString('ja-JP').replace(/\//g, '.')} に投函されました</span>
+            {/* 投函日時バッジ（情緒と存在感を際立たせた上品なデザイン） */}
+            <div className="mt-4 pt-3.5 border-t border-teal-100/80 w-full flex justify-center">
+              <span className="inline-flex items-center gap-2 text-xs sm:text-sm text-teal-950 font-sans font-bold bg-gradient-to-r from-teal-50 via-white to-emerald-50 px-4 py-1.5 rounded-full border border-teal-200/90 shadow-xs">
+                <span className="w-5 h-5 rounded-full bg-teal-700 text-white flex items-center justify-center text-[11px] shrink-0 shadow-2xs">
+                  <Calendar size={12} />
+                </span>
+                <span>
+                  このボトルメールは <strong className="font-mono text-teal-900 font-extrabold text-sm sm:text-base tracking-wide px-1 py-0.5 bg-teal-100/60 rounded">{new Date(post.created_at).toLocaleDateString('ja-JP').replace(/\//g, '.')}</strong> に投函されました
+                </span>
               </span>
             </div>
           </div>
