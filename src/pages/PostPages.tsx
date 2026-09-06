@@ -385,19 +385,19 @@ export const EditPostPage = () => {
                     </div>
 
                     {/* 専用記入ガイド（入力欄の下に配置） */}
-                    <div className="p-3.5 sm:p-4 bg-white/95 rounded-2xl border border-amber-200/80 shadow-2xs space-y-2.5 text-stone-800">
+                    <div className="p-3 bg-white/95 rounded-2xl border border-amber-200/80 shadow-2xs space-y-2 text-[11px] text-stone-700">
                       <div className="flex items-center justify-between pb-1.5 border-b border-amber-200/60">
-                        <span className="font-bold text-amber-950 flex items-center gap-1.5 text-xs">
-                          <BookOpen size={14} className="text-amber-700" />
+                        <span className="font-bold text-amber-950 flex items-center gap-1.5 text-[11px]">
+                          <BookOpen size={13} className="text-amber-700" />
                           📖 この欄の専用記入ガイド
                         </span>
-                        <span className="text-[9px] font-semibold text-amber-800 bg-amber-100/80 px-2 py-0.5 rounded-full">
+                        <span className="text-[10px] font-semibold text-amber-800 bg-amber-100/80 px-2 py-0.5 rounded-full">
                           個人情報なしで確定させるコツ
                         </span>
                       </div>
 
                       {/* 常時表示：目的 & 鉄則 */}
-                      <div className="space-y-1.5 text-[11px] text-stone-700 leading-relaxed font-sans">
+                      <div className="space-y-1 text-[11px] text-stone-700 leading-relaxed font-sans">
                         <p>
                           <strong className="text-stone-900">【目的】</strong> お相手が「あ、探しているのはあの時の〇〇さんだ！」と気づくための目印です。
                         </p>
@@ -406,7 +406,7 @@ export const EditPostPage = () => {
                         </p>
                       </div>
 
-                      {/* 具体例・OK/NG例：アコーディオン開閉（誰が見ても押せるとわかるピル型ボタン） */}
+                      {/* 具体例・OK/NG例：アコーディオン開閉（ピル型ボタン） */}
                       <details className="group border-t border-amber-100 pt-1.5">
                         <summary className="w-full flex items-center justify-between cursor-pointer py-1.5 px-3 bg-gradient-to-r from-amber-50 to-orange-50/40 hover:from-amber-100 hover:to-orange-100/60 border border-amber-300 rounded-xl shadow-2xs text-[11px] font-bold text-amber-950 list-none select-none transition-all active:scale-[0.99]">
                           <span className="flex items-center gap-1.5">
@@ -419,7 +419,7 @@ export const EditPostPage = () => {
                           </span>
                         </summary>
 
-                        <div className="pt-2.5 space-y-2.5">
+                        <div className="pt-2 space-y-2 text-[11px]">
                           <p className="text-[10px] text-amber-900 bg-amber-50/80 p-2 rounded-xl border border-amber-200/60 font-medium leading-relaxed">
                             💡 <strong>手紙本文との違い:</strong> お相手へのご挨拶や近況報告、本格的なメッセージ、開示用連絡先は、最後の<strong>【メッセージと開示用連絡先】</strong>欄で安全に入力します。
                           </p>
@@ -1503,19 +1503,19 @@ export const CreatePostPage = () => {
               </div>
 
               {/* 専用記入ガイド（入力欄の下に配置） */}
-              <div className="p-3.5 sm:p-4 bg-white/95 rounded-2xl border border-amber-200/80 shadow-2xs space-y-2.5 text-stone-800">
+              <div className="p-3 bg-white/95 rounded-2xl border border-amber-200/80 shadow-2xs space-y-2 text-[11px] text-stone-700">
                 <div className="flex items-center justify-between pb-1.5 border-b border-amber-200/60">
-                  <span className="font-bold text-amber-950 flex items-center gap-1.5 text-xs">
-                    <BookOpen size={14} className="text-amber-700" />
+                  <span className="font-bold text-amber-950 flex items-center gap-1.5 text-[11px]">
+                    <BookOpen size={13} className="text-amber-700" />
                     📖 この欄の専用記入ガイド
                   </span>
-                  <span className="text-[9px] font-semibold text-amber-800 bg-amber-100/80 px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] font-semibold text-amber-800 bg-amber-100/80 px-2 py-0.5 rounded-full">
                     個人情報なしで確定させるコツ
                   </span>
                 </div>
 
                 {/* 常時表示：目的 & 鉄則 */}
-                <div className="space-y-1.5 text-[11px] text-stone-700 leading-relaxed font-sans">
+                <div className="space-y-1 text-[11px] text-stone-700 leading-relaxed font-sans">
                   <p>
                     <strong className="text-stone-900">【目的】</strong> お相手が「あ、探しているのはあの時の〇〇さんだ！」と気づくための目印です。
                   </p>
@@ -1524,7 +1524,7 @@ export const CreatePostPage = () => {
                   </p>
                 </div>
 
-                {/* 具体例・OK/NG例：アコーディオン開閉（誰が見ても押せるとわかるピル型ボタン） */}
+                {/* 具体例・OK/NG例：アコーディオン開閉（ピル型ボタン） */}
                 <details className="group border-t border-amber-100 pt-1.5">
                   <summary className="w-full flex items-center justify-between cursor-pointer py-1.5 px-3 bg-gradient-to-r from-amber-50 to-orange-50/40 hover:from-amber-100 hover:to-orange-100/60 border border-amber-300 rounded-xl shadow-2xs text-[11px] font-bold text-amber-950 list-none select-none transition-all active:scale-[0.99]">
                     <span className="flex items-center gap-1.5">
@@ -1537,7 +1537,7 @@ export const CreatePostPage = () => {
                     </span>
                   </summary>
 
-                  <div className="pt-2.5 space-y-2.5">
+                  <div className="pt-2 space-y-2 text-[11px]">
                     <p className="text-[10px] text-amber-900 bg-amber-50/80 p-2 rounded-xl border border-amber-200/60 font-medium leading-relaxed">
                       💡 <strong>手紙本文との違い:</strong> お相手へのご挨拶や近況報告、本格的なメッセージ、開示用連絡先は、最後の<strong>【Step 4（非公開の手紙本文）】</strong>で安全に入力します。
                     </p>
