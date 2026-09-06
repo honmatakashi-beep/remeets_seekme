@@ -632,23 +632,15 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
                 </p>
               </div>
 
-              {/* 2大アクションボタン（トップと同じ仕様） */}
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-2 font-sans">
+              {/* アクションボタン（ボトルメールを流す・中央配置） */}
+              <div className="flex items-center justify-center pt-2 font-sans">
                 <Link
                   to="/create"
-                  className="w-full sm:w-auto min-w-[220px] px-7 py-3.5 sm:py-4 bg-gradient-to-r from-sky-600 via-blue-700 to-indigo-800 hover:from-sky-700 hover:to-indigo-900 text-white font-bold rounded-2xl text-xs sm:text-sm transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.01] active:scale-95 group border border-sky-400/30 whitespace-nowrap"
+                  className="w-full sm:w-auto min-w-[260px] px-8 py-4 bg-gradient-to-r from-sky-600 via-blue-700 to-indigo-800 hover:from-sky-700 hover:to-indigo-900 text-white font-bold rounded-2xl text-sm transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2.5 cursor-pointer hover:scale-[1.01] active:scale-95 group border border-sky-400/30 whitespace-nowrap"
                 >
-                  <PenTool size={17} className="text-sky-200 group-hover:rotate-12 transition-transform shrink-0" />
-                  <span className="font-bold tracking-wide">ボトルメールを流す</span>
-                  <ArrowRight size={16} className="shrink-0 text-sky-200" />
-                </Link>
-
-                <Link
-                  to="/search"
-                  className="w-full sm:w-auto min-w-[220px] px-7 py-3.5 sm:py-4 bg-white hover:bg-sky-50/50 text-slate-800 font-bold rounded-2xl text-xs sm:text-sm transition-all border-2 border-sky-200 hover:border-sky-500 shadow-2xs hover:shadow-md flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.01] active:scale-95 group whitespace-nowrap"
-                >
-                  <Search size={17} className="text-sky-600 shrink-0 group-hover:scale-110 transition-transform" />
-                  <span className="font-bold text-slate-800 tracking-wide">自分宛ての手紙を探す</span>
+                  <PenTool size={18} className="text-sky-200 group-hover:rotate-12 transition-transform shrink-0" />
+                  <span className="font-bold tracking-wide text-sm sm:text-base">ボトルメールを流す</span>
+                  <ArrowRight size={18} className="shrink-0 text-sky-200 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </div>
 
