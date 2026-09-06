@@ -8020,13 +8020,68 @@ async function startServer() {
       res.json({
         success: true,
         transactionId: txId,
+        isPass,
         status,
         ekycStatus,
-        message: isPass ? `模擬決済（${amount}円）とeKYC承認が正常に完了しました。` : `模擬決済（${amount}円）と審査NGに伴う即時自動返金が正常に執行されました。`
+        amount,
+        netProfit,
+        stripeFee,
+        refundReason
       });
     } catch (err) {
-      console.error("Failed to simulate charge:", err);
-      res.status(500).json({ error: "模擬決済の実行に失敗しました。" });
+      console.error("Failed to simulate payment charge:", err);
+      res.status(500).json({ error: "Failed to simulate payment charge" });
+    }
+  });
+
+  // Record custom payment or donation endpoint
+  app.post("/api/payments/record", optionalAuthenticateToken, async (req: any, res) => {
+    try {
+      const {
+        amount = 500,
+        type = 'donation',
+        status = 'completed',
+        payment_method = 'stripe_card',
+        transaction_id,
+        ekyc_status = 'none',
+        description = 'サポーター寄付金',
+        postId = null
+      } = req.body;
+
+      const userId = req.user?.id || null;
+      const txId = transaction_id || `tx_don_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`;
+      const numAmount = Number(amount) || 500;
+      const stripeFee = Math.round(numAmount * 0.036);
+      const netProfit = status === 'completed' ? Math.max(0, numAmount - stripeFee) : 0;
+
+      const stmt = db.prepare(`
+        INSERT INTO payment_transactions (
+          transaction_id, user_id, post_id, type, amount, net_profit, stripe_fee, status, ekyc_status, description, created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+      `);
+
+      stmt.run(
+        txId, userId, postId, type, numAmount, netProfit, stripeFee, status, ekycStatusValue(ekyc_status), description
+      );
+
+      function ekycStatusValue(s: string) {
+        if (s === 'verified' || s === 'passed') return 'verified';
+        if (s === 'rejected' || s === 'failed') return 'rejected';
+        return 'none';
+      }
+
+      logAction(userId, "PAYMENT_RECORDED", `Recorded payment ${txId}: ${numAmount} JPY (${type})`, req.ip);
+
+      res.json({
+        success: true,
+        transactionId: txId,
+        amount: numAmount,
+        status: status,
+        message: "決済レコードが正常に記録されました。"
+      });
+    } catch (err) {
+      console.error("Failed to record payment:", err);
+      res.status(500).json({ error: "決済記録の保存に失敗しました。" });
     }
   });
 
