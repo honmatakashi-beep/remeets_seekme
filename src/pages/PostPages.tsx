@@ -2435,6 +2435,11 @@ export const CreatePostPage = () => {
     if (step < steps.length - 1) {
       return;
     }
+
+    // Step遷移直後（800ms以内）の誤クリック・連打を安全にガード
+    if (Date.now() - stepEnteredTime < 800) {
+      return;
+    }
     
     // Check previous steps
     if (!steps[0].isValid()) {
@@ -2673,20 +2678,31 @@ export const CreatePostPage = () => {
                 <ArrowRight size={16} />
               </button>
             ) : (
-              <button 
-                type="submit"
-                disabled={isSubmitting}
-                className="btn-primary px-12 bg-brand-accent border-brand-accent hover:bg-brand-dark hover:border-brand-dark disabled:opacity-30 font-sans flex items-center gap-2 shadow-lg hover:shadow-xl transition-all"
-              >
-                {isSubmitting ? (
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                ) : (
-                  <>
-                    <span>手紙を海へ流す（投函）</span>
-                    <Heart size={16} />
-                  </>
+              <div className="flex flex-col items-end gap-1.5">
+                <button 
+                  type="submit"
+                  disabled={isSubmitting || !agreed || captchaAnswer !== captchaQuestion.a}
+                  className={`btn-primary px-12 font-sans flex items-center gap-2 shadow-lg transition-all ${
+                    !agreed || captchaAnswer !== captchaQuestion.a
+                      ? 'bg-slate-300 border-slate-300 text-slate-500 cursor-not-allowed opacity-60'
+                      : 'bg-brand-accent border-brand-accent hover:bg-brand-dark hover:border-brand-dark cursor-pointer hover:shadow-xl'
+                  }`}
+                >
+                  {isSubmitting ? (
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  ) : (
+                    <>
+                      <span>ボトルメールを海へ流す</span>
+                      <Heart size={16} />
+                    </>
+                  )}
+                </button>
+                {(!agreed || captchaAnswer !== captchaQuestion.a) && (
+                  <span className="text-[11px] font-bold text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-md border border-amber-200">
+                    ※ 上の「ボットチェック」と「規約同意」を入力すると投函できます
+                  </span>
                 )}
-              </button>
+              </div>
             )}
           </div>
         </form>
