@@ -1022,14 +1022,20 @@
 }
 
 .aurora-animate-1 {
+  will-change: transform;
+  transform: translateZ(0);
   animation: aurora-ambient-1 35s ease-in-out infinite alternate;
 }
 
 .aurora-animate-2 {
+  will-change: transform;
+  transform: translateZ(0);
   animation: aurora-ambient-2 42s ease-in-out infinite alternate;
 }
 
 .aurora-animate-3 {
+  will-change: transform;
+  transform: translateZ(0);
   animation: aurora-ambient-3 48s ease-in-out infinite alternate;
 }
 /* --- chat input first blink & pulse highlight --- */
