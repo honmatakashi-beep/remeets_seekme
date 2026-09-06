@@ -6239,34 +6239,34 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
 
       {/* 差出人様専用・公開プレビュー＆個人情報保護案内バナー */}
       {isOwner && (
-        <div className="mb-6 p-4 md:p-5 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl border border-indigo-500/30 shadow-lg font-sans text-left space-y-3">
+        <div className="mb-6 p-4 md:p-5 bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 text-white rounded-2xl border border-blue-500/30 shadow-lg font-sans text-left space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-3">
-            {/* 2大切り替えセグメントタブ（ネット公開画面 / 正解後の開示画面） */}
-            <div className="flex items-center gap-1.5 p-1 bg-white/10 backdrop-blur-md rounded-2xl border border-white/15">
+            {/* 2大切り替えセグメントタブ（ブルー基調の高コントラストデザイン） */}
+            <div className="flex items-center gap-1.5 p-1 bg-slate-950/80 backdrop-blur-md rounded-2xl border border-blue-400/20">
               <button 
                 type="button"
                 onClick={() => setOwnerPreviewRevealed(false)}
-                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   !ownerPreviewRevealed 
-                    ? 'bg-teal-700 text-white shadow-md ring-2 ring-teal-400/60' 
-                    : 'text-slate-300 hover:text-white hover:bg-white/10'
+                    ? 'bg-blue-600 text-white shadow-md ring-2 ring-blue-400/60 font-extrabold' 
+                    : 'text-slate-400 hover:text-white hover:bg-white/5'
                 }`}
               >
                 <span>🌐 ネット公開画面</span>
-                {!ownerPreviewRevealed && <span className="w-2 h-2 rounded-full bg-teal-300 animate-pulse" />}
+                {!ownerPreviewRevealed && <span className="w-2 h-2 rounded-full bg-white shadow-xs animate-pulse" />}
               </button>
 
               <button 
                 type="button"
                 onClick={() => setOwnerPreviewRevealed(true)}
-                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   ownerPreviewRevealed 
-                    ? 'bg-emerald-600 text-white shadow-md ring-2 ring-emerald-400/60' 
-                    : 'text-slate-300 hover:text-white hover:bg-white/10'
+                    ? 'bg-blue-600 text-white shadow-md ring-2 ring-blue-400/60 font-extrabold' 
+                    : 'text-slate-400 hover:text-white hover:bg-white/5'
                 }`}
               >
                 <span>🔓 正解後の開示画面</span>
-                {ownerPreviewRevealed && <span className="w-2 h-2 rounded-full bg-emerald-300 animate-pulse" />}
+                {ownerPreviewRevealed && <span className="w-2 h-2 rounded-full bg-white shadow-xs animate-pulse" />}
               </button>
             </div>
 
@@ -6274,7 +6274,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
             <div className="flex items-center gap-2">
               <Link 
                 to="/account"
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white/15 hover:bg-white/25 text-white text-xs font-bold rounded-xl border border-white/20 transition-all shadow-2xs"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-200 hover:text-white text-xs font-bold rounded-xl border border-blue-400/30 transition-all shadow-2xs"
               >
                 <User size={14} />
                 <span>マイアカウント</span>
@@ -6284,15 +6284,15 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
 
           <div className="text-xs text-slate-300 space-y-1.5 leading-relaxed">
             <p className="flex items-start gap-1.5">
-              <ShieldCheck size={15} className="text-emerald-400 shrink-0 mt-0.5" />
+              <ShieldCheck size={15} className="text-blue-400 shrink-0 mt-0.5" />
               <span>
                 {!ownerPreviewRevealed ? (
                   <>
-                    <strong className="text-white">【🌐 ネット公開画面を表示中】</strong> Google検索やエゴサーチでお相手が最初に見る初期画面です。手紙本文・連絡先・質問の答えはすべて伏せられ（🔒）、安全に保護されています。
+                    <strong className="text-blue-300">【🌐 ネット公開画面を表示中】</strong> Google検索やエゴサーチでお相手が最初に見る初期画面です。手紙本文・連絡先・質問の答えはすべて伏せられ（🔒）、安全に保護されています。
                   </>
                 ) : (
                   <>
-                    <strong className="text-emerald-300">【🔓 正解後の開示画面を表示中】</strong> お相手が「思い出の質問」に全問正解し、安全な開示手続きを完了した後にのみ表示される手紙本文・連絡先・実名の画面です。
+                    <strong className="text-sky-300">【🔓 正解後の開示画面を表示中】</strong> お相手が「思い出の質問」に全問正解し、安全な開示手続きを完了した後にのみ表示される手紙本文・連絡先・実名の画面です。
                   </>
                 )}
               </span>
