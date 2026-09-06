@@ -1143,11 +1143,18 @@ export const CreatePostPage = () => {
   const [agreed, setAgreed] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [captchaAnswer, setCaptchaAnswer] = useState('');
-  const [captchaQuestion] = useState(() => {
+  const [captchaQuestion, setCaptchaQuestion] = useState(() => {
     const a = Math.floor(Math.random() * 10);
     const b = Math.floor(Math.random() * 10);
     return { q: `${a} + ${b} = ?`, a: (a + b).toString() };
   });
+
+  const refreshCaptcha = () => {
+    const a = Math.floor(Math.random() * 10);
+    const b = Math.floor(Math.random() * 10);
+    setCaptchaQuestion({ q: `${a} + ${b} = ?`, a: (a + b).toString() });
+    setCaptchaAnswer('');
+  };
   const [nameWarning, setNameWarning] = useState(false);
   const [warnings, setWarnings] = useState<Record<string, string | null>>({});
   const [showSearchPreview, setShowSearchPreview] = useState(false);
