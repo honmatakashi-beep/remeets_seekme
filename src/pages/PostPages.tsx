@@ -2396,8 +2396,6 @@ export const CreatePostPage = () => {
         alert('【Step 2】思い出の質問（2問）と答えをすべてご入力ください。');
       } else if (step === 2) {
         alert('【Step 3】手紙のメッセージ本文と、開示用連絡先IDをご入力ください。');
-      } else {
-        alert(`${steps[step].title}の入力内容をご確認ください。`);
       }
     }
   };
@@ -2411,28 +2409,38 @@ export const CreatePostPage = () => {
       return;
     }
     
-    // Check all previous steps for validity
-    for (let i = 0; i < steps.length - 1; i++) {
-      if (!steps[i].isValid()) {
-        setStep(i);
-        alert(`「${steps[i].title}」の入力内容に不備があります。各項目をご確認ください。`);
-        return;
-      }
+    // Check previous steps
+    if (!steps[0].isValid()) {
+      setStep(0);
+      alert('【Step 1: お相手と記憶】の入力項目（お相手の姓名、ゆかりの地、年代、差出人情報など）をご確認ください。');
+      return;
+    }
+
+    if (!steps[1].isValid()) {
+      setStep(1);
+      alert('【Step 2: 思い出の質問】の質問2問と答えをご確認ください。');
+      return;
+    }
+
+    if (!steps[2].isValid()) {
+      setStep(2);
+      alert('【Step 3: 手紙と連絡先】の手紙本文と開示用連絡先IDをご確認ください。');
+      return;
     }
     
     const hasWarnings = Object.values(warnings).some(w => w !== null);
     if (hasWarnings) {
-      alert('禁止文字が含まれている項目があります。内容を修正してください。');
+      alert('禁止文字が含まれている項目があります。内容をご確認・修正してください。');
       return;
     }
 
     if (!agreed) {
-      alert('利用規約およびプライバシーポリシーへの同意にチェックを入れてください。');
+      alert('「利用規約・投稿ガイドラインへの同意」のチェックボックスにチェックを入れてください。');
       return;
     }
 
-    if (captchaAnswer !== captchaQuestion.a) {
-      alert('ボットチェック（計算問題）の答えを正しく入力してください。');
+    if (!captchaAnswer || captchaAnswer !== captchaQuestion.a) {
+      alert(`ボットチェック（計算問題: ${captchaQuestion.q}）の答えを正しく入力してください。`);
       return;
     }
 
