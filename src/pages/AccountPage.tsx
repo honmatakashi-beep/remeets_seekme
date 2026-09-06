@@ -508,12 +508,12 @@ export const AccountPage = () => {
     ? (urlTab as 'profile' | 'chats' | 'sent' | 'notifications')
     : (location.state?.defaultTab || 'profile');
   const [activeSubTab, setActiveSubTab] = useState<'profile' | 'chats' | 'sent' | 'notifications'>(initialSubTab);
-  const scrollToTabs = (immediate = false) => {
+  const scrollToTarget = (targetId = 'sent-bottles', immediate = false) => {
     const doScroll = () => {
-      const targetEl = document.getElementById('account-tabs');
+      const targetEl = document.getElementById(targetId) || document.getElementById('account-tabs');
       if (targetEl) {
         if ((window as any).lenis) {
-          (window as any).lenis.scrollTo(targetEl, { offset: 0, duration: immediate ? 0 : 0.6 });
+          (window as any).lenis.scrollTo(targetEl, { offset: -10, duration: immediate ? 0 : 0.6 });
         } else {
           targetEl.scrollIntoView({ behavior: immediate ? 'auto' : 'smooth', block: 'start' });
         }
@@ -528,7 +528,8 @@ export const AccountPage = () => {
     if (tab && ['profile', 'chats', 'sent', 'notifications'].includes(tab)) {
       setActiveSubTab(tab as any);
       if (!loading) {
-        scrollToTabs();
+        const targetId = tab === 'sent' ? 'sent-bottles' : 'account-tabs';
+        scrollToTarget(targetId);
       }
     }
   }, [searchParams, loading]);
@@ -1673,11 +1674,11 @@ export const AccountPage = () => {
             )}
 
             {activeSubTab === 'sent' && (
-              <div id="sent-bottles" className="space-y-6 animate-fade-in text-black scroll-mt-24">
+              <div id="sent-bottles" className="space-y-6 animate-fade-in text-black">
                 {/* Section 2: Owned Bottle Letters */}
                 <div className="space-y-6">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-brand-border pb-3 gap-3">
-                    <h2 className="text-lg font-serif font-bold text-brand-dark tracking-widest flex items-center gap-2">
+                    <h2 id="sent-bottles-title" className="text-lg font-serif font-bold text-brand-dark tracking-widest flex items-center gap-2">
                       <span>あなたが流したボトルメールの一覧</span>
                       {myPosts.length > 0 && (
                         <span className="text-xs bg-brand-primary/10 text-brand-primary px-2.5 py-0.5 rounded-full font-bold font-sans">
