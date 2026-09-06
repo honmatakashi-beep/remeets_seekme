@@ -6252,7 +6252,8 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                     : 'text-slate-400 hover:text-white hover:bg-white/5'
                 }`}
               >
-                <span>🌐 ネット公開画面</span>
+                <Globe size={15} className={!ownerPreviewRevealed ? "text-white" : "text-emerald-400"} />
+                <span>ネット公開画面</span>
                 {!ownerPreviewRevealed && <span className="w-2 h-2 rounded-full bg-white shadow-xs animate-pulse" />}
               </button>
 
@@ -6265,7 +6266,8 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                     : 'text-slate-400 hover:text-white hover:bg-white/5'
                 }`}
               >
-                <span>🔓 正解後の開示画面</span>
+                <Eye size={15} className={ownerPreviewRevealed ? "text-white" : "text-blue-400"} />
+                <span>正解後の開示画面</span>
                 {ownerPreviewRevealed && <span className="w-2 h-2 rounded-full bg-white shadow-xs animate-pulse" />}
               </button>
             </div>
