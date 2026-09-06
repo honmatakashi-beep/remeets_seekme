@@ -6241,14 +6241,14 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
       {isOwner && (
         <div className="mb-6 p-4 md:p-5 bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 text-white rounded-2xl border border-blue-500/30 shadow-lg font-sans text-left space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-3">
-            {/* 2大切り替えセグメントタブ（ブルー基調の高コントラストデザイン） */}
-            <div className="flex items-center gap-1.5 p-1 bg-slate-950/80 backdrop-blur-md rounded-2xl border border-blue-400/20">
+            {/* 2大切り替えセグメントタブ（左: グリーン、右: ブルー） */}
+            <div className="flex items-center gap-1.5 p-1 bg-slate-950/80 backdrop-blur-md rounded-2xl border border-white/10">
               <button 
                 type="button"
                 onClick={() => setOwnerPreviewRevealed(false)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   !ownerPreviewRevealed 
-                    ? 'bg-blue-600 text-white shadow-md ring-2 ring-blue-400/60 font-extrabold' 
+                    ? 'bg-emerald-600 text-white shadow-md ring-2 ring-emerald-400/60 font-extrabold' 
                     : 'text-slate-400 hover:text-white hover:bg-white/5'
                 }`}
               >
