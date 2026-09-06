@@ -6312,7 +6312,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
             {/* マイアカウントリンク */}
             <div className="flex items-center gap-2">
               <Link 
-                to="/account?tab=sent"
+                to="/account?tab=sent#sent-bottles"
                 className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-200 hover:text-white text-xs font-bold rounded-xl border border-blue-400/30 transition-all shadow-2xs"
               >
                 <User size={14} />

@@ -513,6 +513,13 @@ export const AccountPage = () => {
     const tab = searchParams.get('tab');
     if (tab && ['profile', 'chats', 'sent', 'notifications'].includes(tab)) {
       setActiveSubTab(tab as any);
+
+      setTimeout(() => {
+        const targetEl = document.getElementById('account-tabs') || document.getElementById('sent-bottles');
+        if (targetEl) {
+          targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 150);
     }
   }, [searchParams]);
 
@@ -1407,7 +1414,7 @@ export const AccountPage = () => {
           )}
 
           {/* Tab Selection Segments: Modern Pill Card Control */}
-          <div className="space-y-2">
+          <div id="account-tabs" className="space-y-2 scroll-mt-24">
             <div className="flex items-center justify-between px-1 text-[11px] font-bold text-slate-500">
               <span className="flex items-center gap-1.5 font-sans">
                 <UserIcon size={13} className="text-teal-600" />
@@ -1656,7 +1663,7 @@ export const AccountPage = () => {
             )}
 
             {activeSubTab === 'sent' && (
-              <div className="space-y-6 animate-fade-in text-black">
+              <div id="sent-bottles" className="space-y-6 animate-fade-in text-black scroll-mt-24">
                 {/* Section 2: Owned Bottle Letters */}
                 <div className="space-y-6">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-brand-border pb-3 gap-3">
