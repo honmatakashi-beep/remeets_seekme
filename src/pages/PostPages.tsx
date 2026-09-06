@@ -6371,7 +6371,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                     </span>
                   </div>
                   <h3 className="text-xl sm:text-2xl font-serif font-bold text-teal-950 tracking-wide drop-shadow-xs">
-                    {post.target_name} 様宛のお手紙
+                    {post.target_name} 様宛のボトルメールが海へ流されました
                   </h3>
                 </div>
               </div>
@@ -6379,12 +6379,8 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               {/* カード本文エリア */}
               <div className="p-6 space-y-5">
                 <div className="p-4 bg-teal-50/80 rounded-2xl border border-teal-200/80 space-y-2">
-                  <div className="flex items-center gap-2 text-teal-950 font-bold text-sm font-serif">
-                    <Sparkles size={16} className="text-teal-600 shrink-0" />
-                    <span>ボトルメールが海へ流されました</span>
-                  </div>
                   <p className="text-xs text-slate-700 font-serif leading-relaxed">
-                    大切なお手紙を朝もやの海へそっと流しました。お相手があなたを見つけて「思い出の質問」に正解するまで、手紙本文や連絡先は安全に暗号化され保護されます。
+                    大切な想いを込めたボトルメールを朝もやの海へそっと流しました。お相手があなたを見つけて「思い出の質問」に正解するまで、本文や連絡先は安全に暗号化され保護されます。
                   </p>
                 </div>
 
