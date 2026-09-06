@@ -872,19 +872,32 @@ export const EditPostPage = () => {
                 </details>
               </div>
 
-              {/* 3. プライベートメッセージ（手紙本文）カード */}
+              {/* 3. 【お相手 様】へ届ける手紙 カード */}
               <div className="space-y-5 bg-white/95 p-5 md:p-6 rounded-2xl border border-indigo-200/80 shadow-xs overflow-hidden transition-all">
                 <div className="flex items-center justify-between border-b border-indigo-200/80 bg-gradient-to-r from-indigo-50/70 via-sky-50/30 to-[#FAF6F0] -mx-5 -mt-5 p-4 md:-mx-6 md:-mt-6 md:p-5 border-l-4 border-l-indigo-700">
                   <div className="flex items-center gap-2.5">
+                    <span className="w-1.5 h-5 bg-indigo-700 rounded-full inline-block shrink-0" />
                     <Mail size={22} className="text-indigo-800 shrink-0" />
                     <h3 className="text-base sm:text-lg md:text-xl font-bold text-slate-900 tracking-tight">
-                      3. プライベートメッセージ（手紙本文）
+                      3. 【{formData.targetName || 'お相手'} 様】へ届ける手紙
                     </h3>
                   </div>
                   <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wider bg-indigo-800 text-white shadow-2xs shrink-0 flex items-center gap-1">
                     <span>LETTER</span>
-                    <span className="text-[9px] opacity-75">正解者のみ開示</span>
+                    <span className="text-[9px] opacity-75">正解後のみ開示</span>
                   </span>
+                </div>
+
+                {/* 安心ガイダンス・AI検閲注意 */}
+                <div className="bg-indigo-50/70 border border-indigo-200/80 p-3.5 rounded-xl text-xs space-y-1 text-indigo-950 font-sans">
+                  <div className="font-bold flex items-center gap-1.5 text-indigo-900">
+                    <ShieldCheck size={15} className="text-indigo-700 shrink-0" />
+                    <span>🔒 {formData.targetName || 'お相手'} 様が思い出の質問に全問正解した後にのみ開示される非公開の手紙です</span>
+                  </div>
+                  <p className="text-indigo-900/85 leading-relaxed text-[11px] pl-5">
+                    ※ 手紙本文には電話番号・LINE ID・メールアドレス等の連絡先や詳細な住所は直接書かないでください（AI安全監査により更新エラーとなります）。<br />
+                    ※ お相手に開示する連絡先は、すぐ下の<strong>「4. 開示用連絡先設定」欄に1つだけ</strong>ご入力ください。
+                  </p>
                 </div>
 
                 <div className="space-y-2">
@@ -903,13 +916,14 @@ export const EditPostPage = () => {
                 </div>
               </div>
 
-              {/* 4. 開示用連絡先設定カード */}
+              {/* 4. 【お相手 様】へ開示するSNS・連絡先設定 カード */}
               <div className="space-y-5 bg-white/95 p-5 md:p-6 rounded-2xl border border-teal-200/80 shadow-xs overflow-hidden transition-all">
                 <div className="flex items-center justify-between border-b border-teal-200/80 bg-gradient-to-r from-teal-50/70 via-emerald-50/30 to-[#FAF6F0] -mx-5 -mt-5 p-4 md:-mx-6 md:-mt-6 md:p-5 border-l-4 border-l-teal-700">
                   <div className="flex items-center gap-2.5">
+                    <span className="w-1.5 h-5 bg-teal-700 rounded-full inline-block shrink-0" />
                     <Share2 size={22} className="text-teal-800 shrink-0" />
                     <h3 className="text-base sm:text-lg md:text-xl font-bold text-slate-900 tracking-tight">
-                      4. 正解者へ開示するSNS・連絡先設定
+                      4. 【{formData.targetName || 'お相手'} 様】へ開示するSNS・連絡先設定
                     </h3>
                   </div>
                   <div className="flex items-center gap-2">
@@ -1290,87 +1304,11 @@ export const CreatePostPage = () => {
     }
   }, [step]);
 
-  const nextStep = () => setStep(s => s + 1);
-  const prevStep = () => {
-    setStep(s => s - 1);
+  const jumpToStep = (targetStep: number) => {
+    setStep(targetStep);
     window.scrollTo(0, 0);
     if ((window as any).lenis) {
       (window as any).lenis.scrollTo(0, { immediate: true });
-    }
-  };
-
-  const checkRealName = (name: string) => {
-    // Simple check for real name patterns (e.g. contains common kanji or matches user's name)
-    const commonKanji = /[\u4e00-\u9faf]/;
-    const isRealName = name.length > 1 && (commonKanji.test(name) || (user.name && name.includes(user.name)));
-    setNameWarning(isRealName);
-  };
-
-  const handleSearcherNameChange = (name: string) => {
-    const ngLabel = checkNg(name);
-    setWarnings(prev => ({ ...prev, searcherName: ngLabel ? `禁止文字（${ngLabel}）が含まれています。` : null }));
-    setFormData({...formData, searcherName: name});
-    checkRealName(name);
-  };
-
-  const handleInputChange = (field: string, value: string) => {
-    const ngLabel = checkNg(value);
-    setWarnings(prev => ({ ...prev, [field]: ngLabel ? `禁止文字（${ngLabel}）が含まれています。` : null }));
-    setFormData(prev => {
-      const nextData = { ...prev, [field]: value };
-      if (field === 'targetHometownPref' || field === 'targetHometownArea') {
-        const pref = field === 'targetHometownPref' ? value : prev.targetHometownPref;
-        const area = field === 'targetHometownArea' ? value : prev.targetHometownArea;
-        nextData.targetHometown = `${pref}${area}`;
-      }
-      return nextData;
-    });
-  };
-
-  const handleQuestionChange = (idx: number, field: string, value: string) => {
-    const ngLabel = checkNg(value);
-    const warningKey = `question_${idx}_${field}`;
-    setWarnings(prev => ({ ...prev, [warningKey]: ngLabel ? `禁止文字（${ngLabel}）が含まれています。` : null }));
-    const newQs = [...questions];
-    newQs[idx] = { ...newQs[idx], [field]: value };
-    setQuestions(newQs);
-  };
-
-  const handleTargetLastNameChange = (val: string) => {
-    const ngLabel = checkNg(val);
-    setWarnings(prev => ({ ...prev, targetLastName: ngLabel ? `禁止文字（${ngLabel}）が含まれています。` : null }));
-    setFormData({...formData, targetLastName: val, targetName: `${val} ${formData.targetFirstName}`.trim()});
-  };
-
-  const handleTargetFirstNameChange = (val: string) => {
-    const ngLabel = checkNg(val);
-    setWarnings(prev => ({ ...prev, targetFirstName: ngLabel ? `禁止文字（${ngLabel}）が含まれています。` : null }));
-    setFormData({...formData, targetFirstName: val, targetName: `${formData.targetLastName} ${val}`.trim()});
-  };
-
-  const handleAiDiagnosis = async (idx: number) => {
-    const q = questions[idx].question;
-    const a = questions[idx].answer;
-    if (!q || !a) {
-      setWarnings(prev => ({ ...prev, [`question_${idx}_ai`]: '質問と答えの両方を入力してください。' }));
-      return;
-    }
-
-    setWarnings(prev => ({ ...prev, [`question_${idx}_ai`]: null }));
-    setIsAiDiagnosing(true);
-    try {
-      const res = await fetch('/api/ai/diagnose-qa', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: q, answer: a })
-      });
-      const result = await res.json();
-      setAiDiagnosisResult(result);
-    } catch (err) {
-      console.error(err);
-      setWarnings(prev => ({ ...prev, [`question_${idx}_ai`]: '診断に失敗しました。時間をおいて再度お試しください。' }));
-    } finally {
-      setIsAiDiagnosing(false);
     }
   };
 
@@ -1483,151 +1421,119 @@ export const CreatePostPage = () => {
             <WarningMessage message={warnings.targetNameEn} />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label className="text-xs sm:text-sm font-bold text-black flex items-center gap-1.5">
-                  <MapPin size={14} className="text-black" />
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-black flex items-center gap-1">
                   ゆかりの地（都道府県）<span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
                 </label>
                 <select 
                   required
+                  className="w-full px-4 py-2.5 border-b-2 border-brand-primary/50 rounded-xl bg-[#faf9f6] focus:bg-white text-sm outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/10 transition-all text-[#000000] font-sans letter-field-select"
                   value={formData.targetHometownPref}
                   onChange={e => handleInputChange('targetHometownPref', e.target.value)}
-                  className="w-full px-4 py-3 border-b-2 border-brand-primary/50 rounded-xl bg-[#faf9f6] focus:bg-white text-base outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all text-[#000000] font-sans letter-field-select"
                 >
-                  <option value="">都道府県を選択</option>
+                  <option value="">選択してください</option>
                   {PREFECTURES.map(pref => (
                     <option key={pref} value={pref}>{pref}</option>
                   ))}
                 </select>
                 <WarningMessage message={warnings.targetHometownPref} />
               </div>
-
-              <div className="space-y-2">
-                <label className="text-xs sm:text-sm font-bold text-black flex items-center gap-1.5">
-                  地域・詳細場所（市区町村以下）<span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-black flex items-center gap-1">
+                  地域・詳細な場所（市区町村以下）<span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
                 </label>
                 <input 
                   required
                   type="text" 
                   placeholder="例：世田谷区、横浜市中区など" 
-                  className="w-full px-4 py-3 border-b-2 border-brand-primary/50 rounded-xl bg-[#faf9f6] focus:bg-white text-base outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all text-[#000000] placeholder:text-zinc-400 font-sans letter-field-input"
+                  className="w-full px-4 py-2.5 border-b-2 border-brand-primary/50 rounded-xl bg-[#faf9f6] focus:bg-white text-sm outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/10 transition-all text-[#000000] placeholder:text-zinc-400 font-sans letter-field-input"
                   value={formData.targetHometownArea}
                   onChange={e => handleInputChange('targetHometownArea', e.target.value)}
                 />
                 <WarningMessage message={warnings.targetHometownArea} />
               </div>
             </div>
-            <p className="text-[11px] text-brand-dark/70 font-sans leading-relaxed">
-              ※番地や詳細な場所は一般公開ページには掲載されず、お相手が思い出の質問に正解した後に開示されます。
-            </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <label className="text-xs sm:text-sm font-bold text-black flex items-center gap-1.5">
-                  <Clock size={14} className="text-black" />
-                  年代<span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
-                </label>
-                <select 
-                  required
-                  value={formData.era}
-                  onChange={(e) => handleInputChange('era', e.target.value)}
-                  className="w-full px-4 py-3 border-b-2 border-brand-primary/50 rounded-xl bg-[#faf9f6] focus:bg-white text-base outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all text-[#000000] font-sans letter-field-select"
-                >
-                  <option value="">年代を選択</option>
-                  <option value="1950">1950年代</option>
-                  <option value="1960">1960年代</option>
-                  <option value="1970">1970年代</option>
-                  <option value="1980">1980年代</option>
-                  <option value="1990">1990年代</option>
-                  <option value="2000">2000年代</option>
-                  <option value="2010">2010年代</option>
-                  <option value="2020">2020年代</option>
-                </select>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-xs sm:text-sm font-bold text-black flex items-center gap-1.5">
-                  <Tag size={14} className="text-black" />
-                  カテゴリー<span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
-                </label>
-                <select 
-                  required
-                  value={formData.category}
-                  onChange={(e) => handleInputChange('category', e.target.value)}
-                  className="w-full px-4 py-3 border-b-2 border-brand-primary/50 rounded-xl bg-[#faf9f6] focus:bg-white text-base outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all text-[#000000] font-sans letter-field-select"
-                >
-                  <option value="">カテゴリーを選択</option>
-                  <option value="school">学校（同級生・先生）</option>
-                  <option value="work">職場（同僚・上司）</option>
-                  <option value="neighborhood">近所・幼馴染</option>
-                  <option value="hobby">趣味・サークル</option>
-                  <option value="love">初恋・大切な人</option>
-                  <option value="other">その他</option>
-                </select>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-xs sm:text-sm font-bold text-black flex items-center gap-1.5">
-                  <School size={14} className="text-black" />
-                  出身校・所属<span className="text-[10px] text-zinc-500 font-bold ml-1">＊任意</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-black flex items-center gap-1">
+                  当時の所属（学校・職場など）<span className="text-[10px] text-zinc-500 font-bold ml-1">＊任意</span>
                 </label>
                 <input 
                   type="text" 
                   placeholder="例：〇〇市立第一中学校" 
-                  className="w-full px-4 py-3 border-b-2 border-brand-primary/50 rounded-xl bg-[#faf9f6] focus:bg-white text-base outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all text-[#000000] placeholder:text-zinc-400 font-sans letter-field-input"
+                  className="w-full px-4 py-2.5 border-b-2 border-brand-primary/50 rounded-xl bg-[#faf9f6] focus:bg-white text-sm outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/10 transition-all text-[#000000] placeholder:text-zinc-400 font-sans letter-field-input"
                   value={formData.targetSchool}
                   onChange={e => handleInputChange('targetSchool', e.target.value)}
                 />
+                <WarningMessage message={warnings.targetSchool} />
               </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-black flex items-center gap-1">
+                  出会った時期・年代<span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
+                </label>
+                <select 
+                  required
+                  className="w-full px-4 py-2.5 border-b-2 border-brand-primary/50 rounded-xl bg-[#faf9f6] focus:bg-white text-sm outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/10 transition-all text-[#000000] font-sans letter-field-select"
+                  value={formData.era}
+                  onChange={e => handleInputChange('era', e.target.value)}
+                >
+                  <option value="">選択してください</option>
+                  <option value="1950s">1950年代</option>
+                  <option value="1960s">1960年代</option>
+                  <option value="1970s">1970年代</option>
+                  <option value="1980s">1980年代</option>
+                  <option value="1990s">1990年代</option>
+                  <option value="2000s">2000年代</option>
+                  <option value="2010s">2010年代</option>
+                  <option value="2020s">2020年代</option>
+                  <option value="other">その他</option>
+                </select>
+                <WarningMessage message={warnings.era} />
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-black flex items-center gap-1">
+                関係性のカテゴリー<span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
+              </label>
+              <select 
+                required
+                className="w-full px-4 py-2.5 border-b-2 border-brand-primary/50 rounded-xl bg-[#faf9f6] focus:bg-white text-sm outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/10 transition-all text-[#000000] font-sans letter-field-select"
+                value={formData.category}
+                onChange={e => handleInputChange('category', e.target.value)}
+              >
+                <option value="">選択してください</option>
+                <option value="school">学校（同級生・先生）</option>
+                <option value="work">職場（同僚・上司）</option>
+                <option value="neighborhood">近所・幼馴染</option>
+                <option value="hobby">趣味・サークル</option>
+                <option value="love">初恋・大切な人</option>
+                <option value="other">その他</option>
+              </select>
+              <WarningMessage message={warnings.category} />
             </div>
           </div>
 
-          {/* あなたの手がかり */}
+          {/* 差出人（あなた）の手がかり */}
           <div className="space-y-5 bg-white/95 p-5 md:p-6 rounded-2xl border border-amber-200/80 shadow-xs overflow-hidden transition-all">
-            <div className="flex items-center justify-between border-b border-amber-200/70 bg-gradient-to-r from-amber-50/70 via-orange-50/30 to-[#FAF6F0] -mx-5 -mt-5 p-4 md:-mx-6 md:-mt-6 md:p-5 border-l-4 border-l-amber-700">
+            <div className="flex items-center justify-between border-b border-amber-200/80 bg-gradient-to-r from-amber-50/70 via-orange-50/30 to-[#FAF6F0] -mx-5 -mt-5 p-4 md:-mx-6 md:-mt-6 md:p-5 border-l-4 border-l-amber-700">
               <div className="flex items-center gap-2.5">
                 <BookOpen size={22} className="text-amber-800 shrink-0" />
-                <h3 className="text-base sm:text-lg md:text-xl font-bold text-stone-900 tracking-tight">
+                <h3 className="text-base sm:text-lg md:text-xl font-bold text-slate-900 tracking-tight">
                   2. 差出人（あなた）の手がかり
                 </h3>
               </div>
-              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wider bg-amber-800 text-amber-50 shadow-2xs shrink-0 flex items-center gap-1">
+              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wider bg-amber-800 text-white shadow-2xs shrink-0 flex items-center gap-1">
                 <span>FROM</span>
                 <span className="text-[9px] opacity-75">差出人</span>
               </span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-black flex items-center justify-between">
-                  <span>表示名（ニックネーム）</span>
-                  <span className="text-[10px] bg-slate-200 px-2 py-0.5 rounded text-zinc-600">自動入力</span>
-                </label>
-                <input 
-                  disabled
-                  type="text" 
-                  className="w-full px-4 py-2.5 border border-brand-border rounded-xl bg-slate-100 text-sm text-zinc-500 cursor-not-allowed font-sans"
-                  value={formData.searcherName}
-                />
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-black flex items-center justify-between">
-                  <span>本名（回答者のみ最終開示）</span>
-                  <span className="text-[10px] bg-slate-200 px-2 py-0.5 rounded text-zinc-600">自動入力</span>
-                </label>
-                <input 
-                  disabled
-                  type="text" 
-                  className="w-full px-4 py-2.5 border border-brand-border rounded-xl bg-slate-100 text-sm text-zinc-500 cursor-not-allowed font-sans"
-                  value={formData.searcherFullName}
-                />
-              </div>
-            </div>
-
-            <div className="space-y-4 pt-1">
+            <div className="space-y-4">
               {/* タイトル & 警告 */}
               <div className="space-y-2">
-                <label className="text-xs sm:text-sm font-bold text-stone-900 flex items-center gap-1.5">
+                <label className="text-xs sm:text-sm font-bold text-black flex items-center gap-1.5">
                   <Sparkles size={15} className="text-amber-700" />
                   お相手にあなただと気づいてもらうための「共通の想い出ヒント」
                   <span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
@@ -1677,7 +1583,7 @@ export const CreatePostPage = () => {
 
                   <div className="pt-3 space-y-3 text-xs md:text-sm">
                     <p className="text-xs md:text-sm text-amber-900 bg-amber-50/80 p-2.5 rounded-xl border border-amber-200/60 font-medium leading-relaxed font-sans">
-                      💡 <strong>手紙本文との違い:</strong> お相手へのご挨拶や近況報告、本格的なメッセージ、開示用連絡先は、最後の<strong>【Step 4（非公開の手紙本文）】</strong>で安全に入力します。
+                      💡 <strong>手紙本文との違い:</strong> お相手へのご挨拶や近況報告、本格的なメッセージ、開示用連絡先は、最後の<strong>【Step 3（非公開の手紙本文）】</strong>で安全に入力します。
                     </p>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 pt-0.5">
@@ -1699,9 +1605,9 @@ export const CreatePostPage = () => {
                           ❌ 書いてはいけない内容（AI検閲対象）
                         </span>
                         <ul className="text-xs md:text-sm text-rose-950/85 space-y-1 list-disc list-inside leading-relaxed font-sans">
-                          <li>電話番号、LINE ID、メールアドレス（※連絡先はStep 4で安全開示）</li>
+                          <li>電話番号、LINE ID、メールアドレス（※連絡先はStep 3で安全開示）</li>
                           <li>詳細な自宅番地、実名フルネーム、勤務先の具体的部署</li>
-                          <li>「元気？会いたいから連絡して」（※手紙の本文はStep 4で書く）</li>
+                          <li>「元気？会いたいから連絡して」（※手紙の本文はStep 3で書く）</li>
                           <li>誹謗中傷、金銭要求、トラブルに関する記述</li>
                         </ul>
                       </div>
@@ -1812,6 +1718,7 @@ export const CreatePostPage = () => {
                   {/* カードヘッダー */}
                   <div className={`flex items-center justify-between border-b ${isFirst ? 'border-indigo-200/80 bg-gradient-to-r from-indigo-50/70 via-sky-50/30 to-[#FAF6F0] border-l-indigo-700' : 'border-teal-200/80 bg-gradient-to-r from-teal-50/70 via-emerald-50/30 to-[#FAF6F0] border-l-teal-700'} -mx-5 -mt-5 p-4 md:-mx-6 md:-mt-6 md:p-5 border-l-4`}>
                     <div className="flex items-center gap-2.5">
+                      <span className={`w-1.5 h-5 rounded-full inline-block shrink-0 ${isFirst ? 'bg-indigo-700' : 'bg-teal-700'}`} />
                       <HelpCircle size={22} className={isFirst ? "text-indigo-800 shrink-0" : "text-teal-800 shrink-0"} />
                       <h3 className="text-base sm:text-lg md:text-xl font-bold text-slate-900 tracking-tight">
                         思い出の質問 {idx + 1}
@@ -1912,8 +1819,8 @@ export const CreatePostPage = () => {
         !warnings.question_1_answer
     },
     {
-      title: "メッセージ・連絡先と投函確認",
-      description: "正解者に届く手紙本文・連絡先を入力し、内容をご確認のうえ投函してください。",
+      title: "手紙と開示用連絡先の設定",
+      description: `${formData.targetName ? `${formData.targetName} 様` : 'お相手'}へ届ける手紙の本文と、質問正解後にのみ安全に開示される連絡先を1つ設定してください。`,
       fields: (
         <div className="space-y-6">
           {/* 📖 メッセージ・連絡先 専用記入ガイド */}
@@ -1949,7 +1856,7 @@ export const CreatePostPage = () => {
 
               <div className="pt-3 space-y-3 text-xs md:text-sm">
                 <p className="text-xs md:text-sm text-amber-900 bg-amber-50/80 p-2.5 rounded-xl border border-amber-200/60 font-medium leading-relaxed font-sans">
-                  💡 <strong>プライベートメッセージについて:</strong> この手紙本文は一般公開されず、質問に全問正解したお相手のみが開封できます。当時の想いや再会へのメッセージを安心してお書きください。
+                  💡 <strong>手紙本文について:</strong> この手紙本文は一般公開されず、質問に全問正解したお相手のみが開封できます。当時の想いや再会へのメッセージを安心してお書きください。
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 pt-0.5">
@@ -1981,19 +1888,32 @@ export const CreatePostPage = () => {
             </details>
           </div>
 
-          {/* 3. プライベートメッセージ（手紙本文）カード */}
+          {/* 3. 【お相手 様】へ届ける手紙 カード */}
           <div className="space-y-5 bg-white/95 p-5 md:p-6 rounded-2xl border border-indigo-200/80 shadow-xs overflow-hidden transition-all">
             <div className="flex items-center justify-between border-b border-indigo-200/80 bg-gradient-to-r from-indigo-50/70 via-sky-50/30 to-[#FAF6F0] -mx-5 -mt-5 p-4 md:-mx-6 md:-mt-6 md:p-5 border-l-4 border-l-indigo-700">
               <div className="flex items-center gap-2.5">
+                <span className="w-1.5 h-5 bg-indigo-700 rounded-full inline-block shrink-0" />
                 <Mail size={22} className="text-indigo-800 shrink-0" />
                 <h3 className="text-base sm:text-lg md:text-xl font-bold text-slate-900 tracking-tight">
-                  3. プライベートメッセージ（手紙本文）
+                  3. 【{formData.targetName || 'お相手'} 様】へ届ける手紙
                 </h3>
               </div>
               <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wider bg-indigo-800 text-white shadow-2xs shrink-0 flex items-center gap-1">
                 <span>LETTER</span>
-                <span className="text-[9px] opacity-75">正解者のみ開示</span>
+                <span className="text-[9px] opacity-75">正解後のみ開示</span>
               </span>
+            </div>
+
+            {/* 安心ガイダンス・AI検閲注意 */}
+            <div className="bg-indigo-50/70 border border-indigo-200/80 p-3.5 rounded-xl text-xs space-y-1 text-indigo-950 font-sans">
+              <div className="font-bold flex items-center gap-1.5 text-indigo-900">
+                <ShieldCheck size={15} className="text-indigo-700 shrink-0" />
+                <span>🔒 {formData.targetName || 'お相手'} 様が思い出の質問に全問正解した後にのみ開示される非公開の手紙です</span>
+              </div>
+              <p className="text-indigo-900/85 leading-relaxed text-[11px] pl-5">
+                ※ 手紙本文には電話番号・LINE ID・メールアドレス等の連絡先や詳細な住所は直接書かないでください（AI安全監査により投函エラーとなります）。<br />
+                ※ お相手に開示する連絡先は、すぐ下の<strong>「4. 開示用連絡先設定」欄に1つだけ</strong>ご入力ください。
+              </p>
             </div>
 
             <div className="space-y-2">
@@ -2012,13 +1932,14 @@ export const CreatePostPage = () => {
             </div>
           </div>
 
-          {/* 4. 開示用連絡先設定カード */}
+          {/* 4. 【お相手 様】へ開示するSNS・連絡先設定 カード */}
           <div className="space-y-5 bg-white/95 p-5 md:p-6 rounded-2xl border border-teal-200/80 shadow-xs overflow-hidden transition-all">
             <div className="flex items-center justify-between border-b border-teal-200/80 bg-gradient-to-r from-teal-50/70 via-emerald-50/30 to-[#FAF6F0] -mx-5 -mt-5 p-4 md:-mx-6 md:-mt-6 md:p-5 border-l-4 border-l-teal-700">
               <div className="flex items-center gap-2.5">
+                <span className="w-1.5 h-5 bg-teal-700 rounded-full inline-block shrink-0" />
                 <Share2 size={22} className="text-teal-800 shrink-0" />
                 <h3 className="text-base sm:text-lg md:text-xl font-bold text-slate-900 tracking-tight">
-                  4. 正解者へ開示するSNS・連絡先設定
+                  4. 【{formData.targetName || 'お相手'} 様】へ開示するSNS・連絡先設定
                 </h3>
               </div>
               <div className="flex items-center gap-2">
@@ -2089,136 +2010,271 @@ export const CreatePostPage = () => {
               />
             </div>
           </div>
-
-          {/* 5. 投函内容の最終確認カード */}
-          <div className="space-y-5 bg-white/95 p-5 md:p-6 rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden transition-all">
-            <div className="flex items-center justify-between border-b border-slate-200/80 bg-gradient-to-r from-slate-50 via-sky-50/40 to-slate-100/60 -mx-5 -mt-5 p-4 md:-mx-6 md:-mt-6 md:p-5 border-l-4 border-l-slate-700">
+        </div>
+      ),
+      isValid: () => formData.message.length > 0 && formData.contactId.length > 0 && !warnings.message && !warnings.contactId
+    },
+    {
+      title: "投函前の最終確認シート",
+      description: "入力したすべての内容をご確認の上、画面下の認証を行って海へ流してください。修正したい箇所は各項目の「変更する」ボタンから修正できます。",
+      fields: (
+        <div className="space-y-6">
+          {/* 1. お相手の情報シート */}
+          <div className="bg-white/95 p-5 md:p-6 rounded-2xl border border-slate-200/90 shadow-xs space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
               <div className="flex items-center gap-2.5">
-                <CheckCircle size={22} className="text-slate-700 shrink-0" />
-                <h3 className="text-base sm:text-lg md:text-xl font-bold text-slate-900 tracking-tight">
-                  5. 投函内容の最終確認プレビュー
-                </h3>
+                <span className="w-1.5 h-5 bg-slate-700 rounded-full inline-block" />
+                <Search size={20} className="text-slate-700" />
+                <h3 className="text-base sm:text-lg font-bold text-slate-900">1. 探しているお相手の情報</h3>
               </div>
-              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wider bg-slate-800 text-white shadow-2xs shrink-0 flex items-center gap-1">
-                <span>CHECK</span>
-                <span className="text-[9px] opacity-75">最終確認</span>
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-slate-50/80 rounded-xl border border-slate-200/80 text-xs font-sans">
-              <div><span className="text-zinc-500">宛先:</span> <strong className="text-zinc-900 text-sm ml-1">{formData.targetName} 様</strong></div>
-              <div><span className="text-zinc-500">差出人:</span> <strong className="text-zinc-900 text-sm ml-1">{formData.searcherName}</strong></div>
-              <div><span className="text-zinc-500">ゆかりの地:</span> <span className="text-zinc-800 font-bold ml-1">{formData.targetHometown || '未入力'}</span></div>
-              <div><span className="text-zinc-500">年代・カテゴリー:</span> <span className="text-zinc-800 font-bold ml-1">{formatEraLabel(formData.era)} / {getCategoryText(formData.category)}</span></div>
-            </div>
-
-            {/* Google検索プレビュー */}
-            <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
               <button
                 type="button"
-                onClick={() => setShowSearchPreview(!showSearchPreview)}
-                className="w-full flex items-center justify-between text-left font-bold text-slate-800 text-xs hover:text-brand-primary cursor-pointer"
+                onClick={() => jumpToStep(0)}
+                className="text-xs text-indigo-600 hover:text-indigo-800 font-bold flex items-center gap-1 bg-indigo-50 hover:bg-indigo-100 px-3 py-1 rounded-full border border-indigo-200 transition-all cursor-pointer active:scale-95"
               >
-                <div className="flex items-center gap-1.5">
-                  <Search size={14} className="text-brand-primary shrink-0" />
-                  <span>💡 Google検索結果での見え方イメージを確認</span>
-                </div>
-                <span className="text-[10px] bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full">
-                  {showSearchPreview ? '閉じる ▲' : 'プレビュー ▼'}
-                </span>
+                <span>✏️ 変更する</span>
               </button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs md:text-sm font-sans">
+              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/60">
+                <span className="text-slate-500 block text-[11px]">お相手のお名前</span>
+                <span className="font-bold text-slate-900 text-sm">{formData.targetName} 様</span>
+                {formData.targetNameEn && <span className="text-xs text-slate-500 ml-1.5">({formData.targetNameEn})</span>}
+              </div>
+              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/60">
+                <span className="text-slate-500 block text-[11px]">ゆかりの地</span>
+                <span className="font-bold text-slate-900 text-sm">{formData.targetHometown || '未入力'}</span>
+              </div>
+              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/60">
+                <span className="text-slate-500 block text-[11px]">当時の所属（学校・職場など）</span>
+                <span className="font-bold text-slate-900 text-sm">{formData.targetSchool || 'なし'}</span>
+              </div>
+              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/60">
+                <span className="text-slate-500 block text-[11px]">出会った年代・関係性</span>
+                <span className="font-bold text-slate-900 text-sm">{formatEraLabel(formData.era)} / {getCategoryText(formData.category)}</span>
+              </div>
+            </div>
+          </div>
 
-              {showSearchPreview && (
-                <div className="pt-3 border-t border-slate-200 space-y-3">
-                  <GoogleSearchResultPreview 
-                    targetName={formData.targetName}
-                    era={formData.era}
-                    location={formData.targetHometown}
-                    searcherName={formData.searcherName}
-                    teaser={formData.searcherProfile}
-                  />
+          {/* 2. 差出人の手がかりシート */}
+          <div className="bg-white/95 p-5 md:p-6 rounded-2xl border border-amber-200/80 shadow-xs space-y-4">
+            <div className="flex items-center justify-between border-b border-amber-200/80 pb-3">
+              <div className="flex items-center gap-2.5">
+                <span className="w-1.5 h-5 bg-amber-700 rounded-full inline-block" />
+                <BookOpen size={20} className="text-amber-800" />
+                <h3 className="text-base sm:text-lg font-bold text-slate-900">2. 差出人（あなた）の手がかり</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => jumpToStep(0)}
+                className="text-xs text-amber-800 hover:text-amber-950 font-bold flex items-center gap-1 bg-amber-50 hover:bg-amber-100 px-3 py-1 rounded-full border border-amber-300 transition-all cursor-pointer active:scale-95"
+              >
+                <span>✏️ 変更する</span>
+              </button>
+            </div>
+            <div className="space-y-2 text-xs md:text-sm font-sans">
+              <div className="bg-amber-50/50 p-3 rounded-xl border border-amber-200/60">
+                <span className="text-amber-900/70 block text-[11px]">あなたの表示名</span>
+                <span className="font-bold text-slate-900">{formData.searcherName}</span>
+              </div>
+              <div className="bg-amber-50/50 p-3.5 rounded-xl border border-amber-200/60 space-y-1">
+                <span className="text-amber-900/70 block text-[11px]">共通の想い出ヒント（一般公開）</span>
+                <p className="text-slate-900 leading-relaxed font-serif whitespace-pre-wrap">{formData.searcherProfile}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* 3. 二人だけの思い出の質問シート */}
+          <div className="bg-white/95 p-5 md:p-6 rounded-2xl border border-teal-200/80 shadow-xs space-y-4">
+            <div className="flex items-center justify-between border-b border-teal-200/80 pb-3">
+              <div className="flex items-center gap-2.5">
+                <span className="w-1.5 h-5 bg-teal-700 rounded-full inline-block" />
+                <HelpCircle size={20} className="text-teal-800" />
+                <h3 className="text-base sm:text-lg font-bold text-slate-900">3. 二人だけの思い出の質問</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => jumpToStep(1)}
+                className="text-xs text-teal-800 hover:text-teal-950 font-bold flex items-center gap-1 bg-teal-50 hover:bg-teal-100 px-3 py-1 rounded-full border border-teal-300 transition-all cursor-pointer active:scale-95"
+              >
+                <span>✏️ 変更する</span>
+              </button>
+            </div>
+            <div className="space-y-2.5 text-xs md:text-sm font-sans">
+              {questions.map((q, idx) => (
+                <div key={idx} className="p-3 bg-teal-50/50 rounded-xl border border-teal-200/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div className="space-y-0.5">
+                    <span className="text-[11px] font-bold text-teal-900">質問 {idx + 1}:</span>
+                    <p className="font-medium text-slate-900">{q.question}</p>
+                  </div>
+                  <div className="sm:text-right shrink-0">
+                    <span className="text-[10px] text-slate-500 block">設定した答え</span>
+                    <span className="font-bold text-teal-900 bg-white px-2.5 py-1 rounded-lg border border-teal-200 shadow-2xs font-mono">
+                      {q.answer}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 4. 手紙本文シート */}
+          <div className="bg-white/95 p-5 md:p-6 rounded-2xl border border-indigo-200/80 shadow-xs space-y-4">
+            <div className="flex items-center justify-between border-b border-indigo-200/80 pb-3">
+              <div className="flex items-center gap-2.5">
+                <span className="w-1.5 h-5 bg-indigo-700 rounded-full inline-block" />
+                <Mail size={20} className="text-indigo-800" />
+                <h3 className="text-base sm:text-lg font-bold text-slate-900">4. 【{formData.targetName || 'お相手'} 様】へ届ける手紙</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => jumpToStep(2)}
+                className="text-xs text-indigo-700 hover:text-indigo-900 font-bold flex items-center gap-1 bg-indigo-50 hover:bg-indigo-100 px-3 py-1 rounded-full border border-indigo-300 transition-all cursor-pointer active:scale-95"
+              >
+                <span>✏️ 変更する</span>
+              </button>
+            </div>
+            <div className="p-4 bg-indigo-50/40 rounded-xl border border-indigo-100">
+              <span className="text-indigo-900/70 block text-[11px] mb-1 font-sans">手紙本文（正解後のみ開示）</span>
+              <p className="text-slate-900 font-serif leading-relaxed whitespace-pre-wrap text-sm md:text-base">{formData.message}</p>
+            </div>
+          </div>
+
+          {/* 5. 開示用連絡先シート */}
+          <div className="bg-white/95 p-5 md:p-6 rounded-2xl border border-teal-200/80 shadow-xs space-y-4">
+            <div className="flex items-center justify-between border-b border-teal-200/80 pb-3">
+              <div className="flex items-center gap-2.5">
+                <span className="w-1.5 h-5 bg-teal-700 rounded-full inline-block" />
+                <Share2 size={20} className="text-teal-800" />
+                <h3 className="text-base sm:text-lg font-bold text-slate-900">5. 開示する連絡先設定</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => jumpToStep(2)}
+                className="text-xs text-teal-800 hover:text-teal-950 font-bold flex items-center gap-1 bg-teal-50 hover:bg-teal-100 px-3 py-1 rounded-full border border-teal-300 transition-all cursor-pointer active:scale-95"
+              >
+                <span>✏️ 変更する</span>
+              </button>
+            </div>
+            <div className="p-3.5 bg-teal-50/40 rounded-xl border border-teal-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs md:text-sm font-sans">
+              <div>
+                <span className="text-slate-500 text-[11px] block">{formData.contactType} アカウント/リンク</span>
+                <span className="font-bold text-slate-900">{formData.contactId}</span>
+              </div>
+              {formData.contactNote && (
+                <div className="text-slate-600 text-xs">
+                  <span>メモ: </span>{formData.contactNote}
                 </div>
               )}
             </div>
+          </div>
 
-            {/* ボットチェック */}
-            <div className="p-4 bg-teal-50/60 rounded-xl border border-teal-300 space-y-3">
-              <div className="flex items-center gap-2 text-teal-950 font-bold text-xs">
-                <Shield size={14} />
-                <span>ボットチェック（スパム防止）</span><span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
+          {/* Google検索プレビュー */}
+          <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+            <button
+              type="button"
+              onClick={() => setShowSearchPreview(!showSearchPreview)}
+              className="w-full flex items-center justify-between text-left font-bold text-slate-800 text-xs hover:text-brand-primary cursor-pointer"
+            >
+              <div className="flex items-center gap-1.5">
+                <Search size={14} className="text-brand-primary shrink-0" />
+                <span>💡 Google検索結果での見え方イメージを確認</span>
               </div>
-              <div className="flex items-center gap-3">
-                <div className="text-base font-serif text-zinc-950 font-bold bg-white px-4 py-1.5 rounded-lg border border-zinc-300 shadow-2xs">
-                  {captchaQuestion.q}
-                </div>
-                <input 
-                  type="text" 
-                  placeholder="答え" 
-                  className="w-20 py-1.5 border-b-2 border-zinc-500 focus:border-brand-primary outline-none bg-transparent font-serif text-base text-center text-zinc-950 font-bold placeholder:text-zinc-400"
-                  value={captchaAnswer}
-                  onChange={e => setCaptchaAnswer(toHalfWidth(e.target.value))}
-                  inputMode="url"
-                  autoCapitalize="off"
-                  autoCorrect="off"
+              <span className="text-[10px] bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full">
+                {showSearchPreview ? '閉じる ▲' : 'プレビュー ▼'}
+              </span>
+            </button>
+
+            {showSearchPreview && (
+              <div className="pt-3 border-t border-slate-200 space-y-3">
+                <GoogleSearchResultPreview 
+                  targetName={formData.targetName}
+                  era={formData.era}
+                  location={formData.targetHometown}
+                  searcherName={formData.searcherName}
+                  teaser={formData.searcherProfile}
                 />
-                <button
-                  type="button"
-                  onClick={refreshCaptcha}
-                  className="text-xs text-teal-800 hover:text-teal-950 font-bold flex items-center gap-1 cursor-pointer bg-white px-2.5 py-1.5 rounded-lg border border-teal-200 shadow-2xs transition-all active:scale-95"
-                >
-                  <RefreshCw size={12} />
-                  <span>別の問題</span>
-                </button>
               </div>
-            </div>
+            )}
+          </div>
 
-            {/* 利用規約同意 */}
-            <div className="flex items-start gap-3 p-4 bg-amber-50/60 rounded-xl border border-amber-300">
+          {/* ボットチェック */}
+          <div className="p-4 bg-teal-50/60 rounded-xl border border-teal-300 space-y-3">
+            <div className="flex items-center gap-2 text-teal-950 font-bold text-xs">
+              <Shield size={14} />
+              <span>ボットチェック（スパム防止）</span><span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="text-base font-serif text-zinc-950 font-bold bg-white px-4 py-1.5 rounded-lg border border-zinc-300 shadow-2xs">
+                {captchaQuestion.q}
+              </div>
               <input 
-                type="checkbox" 
-                id="agreement"
-                checked={agreed}
-                onChange={e => setAgreed(e.target.checked)}
-                className="mt-1 w-5 h-5 rounded border-zinc-500 text-amber-700 focus:ring-amber-500 cursor-pointer shrink-0"
+                type="text" 
+                placeholder="答え" 
+                className="w-20 py-1.5 border-b-2 border-zinc-500 focus:border-brand-primary outline-none bg-transparent font-serif text-base text-center text-zinc-950 font-bold placeholder:text-zinc-400"
+                value={captchaAnswer}
+                onChange={e => setCaptchaAnswer(toHalfWidth(e.target.value))}
+                inputMode="url"
+                autoCapitalize="off"
+                autoCorrect="off"
               />
-              <div className="text-xs text-zinc-900 leading-relaxed font-sans space-y-1.5 select-none">
-                <label htmlFor="agreement" className="cursor-pointer block space-y-1">
-                  <div className="font-bold text-xs text-amber-950 flex items-center gap-1.5">
-                    <ShieldCheck size={16} className="text-amber-700" />
-                    <span>利用規約・投稿ガイドラインへの同意</span><span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
-                  </div>
-                  <p className="text-[11px] text-zinc-800">
-                    純粋な再会・旧交目的にのみ利用し、不適切な表現を行わないことに同意します。
-                  </p>
-                </label>
-                <div className="text-[11px] text-zinc-700 font-normal flex flex-wrap items-center gap-1 pt-0.5">
-                  <span>規約を確認：</span>
-                  <Link 
-                    to="/terms" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    onClick={e => e.stopPropagation()} 
-                    className="text-teal-800 hover:underline font-bold"
-                  >
-                    利用規約
-                  </Link>
-                  <span>・</span>
-                  <Link 
-                    to="/privacy" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    onClick={e => e.stopPropagation()} 
-                    className="text-teal-800 hover:underline font-bold"
-                  >
-                    プライバシーポリシー
-                  </Link>
+              <button
+                type="button"
+                onClick={refreshCaptcha}
+                className="text-xs text-teal-800 hover:text-teal-950 font-bold flex items-center gap-1 cursor-pointer bg-white px-2.5 py-1.5 rounded-lg border border-teal-200 shadow-2xs transition-all active:scale-95"
+              >
+                <RefreshCw size={12} />
+                <span>別の問題</span>
+              </button>
+            </div>
+          </div>
+
+          {/* 利用規約同意 */}
+          <div className="flex items-start gap-3 p-4 bg-amber-50/60 rounded-xl border border-amber-300">
+            <input 
+              type="checkbox" 
+              id="agreement"
+              checked={agreed}
+              onChange={e => setAgreed(e.target.checked)}
+              className="mt-1 w-5 h-5 rounded border-zinc-500 text-amber-700 focus:ring-amber-500 cursor-pointer shrink-0"
+            />
+            <div className="text-xs text-zinc-900 leading-relaxed font-sans space-y-1.5 select-none">
+              <label htmlFor="agreement" className="cursor-pointer block space-y-1">
+                <div className="font-bold text-xs text-amber-950 flex items-center gap-1.5">
+                  <ShieldCheck size={16} className="text-amber-700" />
+                  <span>利用規約・投稿ガイドラインへの同意</span><span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
                 </div>
+                <p className="text-[11px] text-zinc-800">
+                  純粋な再会・旧交目的にのみ利用し、不適切な表現を行わないことに同意します。
+                </p>
+              </label>
+              <div className="text-[11px] text-zinc-700 font-normal flex flex-wrap items-center gap-1 pt-0.5">
+                <span>規約を確認：</span>
+                <Link 
+                  to="/terms" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  onClick={e => e.stopPropagation()} 
+                  className="text-teal-800 hover:underline font-bold"
+                >
+                  利用規約
+                </Link>
+                <span>・</span>
+                <Link 
+                  to="/privacy" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  onClick={e => e.stopPropagation()} 
+                  className="text-teal-800 hover:underline font-bold"
+                >
+                  プライバシーポリシー
+                </Link>
               </div>
             </div>
           </div>
         </div>
       ),
-      isValid: () => formData.message.length > 0 && formData.contactId.length > 0 && captchaAnswer.length > 0 && agreed && !warnings.message && !warnings.contactId
+      isValid: () => agreed && captchaAnswer === captchaQuestion.a
     }
   ];
 
@@ -2391,7 +2447,7 @@ export const CreatePostPage = () => {
                       "text-[11px] font-bold mt-1.5 transition-colors font-sans max-w-[100px] text-center leading-tight hidden xs:block",
                       isCurrent ? "text-indigo-950 font-black" : isDone ? "text-emerald-800" : "text-slate-400"
                     )}>
-                      {i === 0 ? "1. 記憶と手がかり" : i === 1 ? "2. 思い出の質問" : "3. メッセージ投函"}
+                      {i === 0 ? "1. お相手と記憶" : i === 1 ? "2. 思い出の質問" : i === 2 ? "3. 手紙と連絡先" : "4. 最終確認・投函"}
                     </span>
                   </button>
                 );
@@ -2458,22 +2514,22 @@ export const CreatePostPage = () => {
               <button 
                 type="button"
                 onClick={handleNextStep}
-                className="btn-primary px-12 font-sans"
+                className="btn-primary px-10 font-sans flex items-center gap-2"
               >
-                <span>次へ進む</span>
+                <span>{step === 2 ? '確認画面へ進む' : '次へ進む'}</span>
                 <ArrowRight size={16} />
               </button>
             ) : (
               <button 
                 type="submit"
                 disabled={isSubmitting}
-                className="btn-primary px-12 bg-brand-accent border-brand-accent hover:bg-brand-dark hover:border-brand-dark disabled:opacity-30 font-sans"
+                className="btn-primary px-12 bg-brand-accent border-brand-accent hover:bg-brand-dark hover:border-brand-dark disabled:opacity-30 font-sans flex items-center gap-2 shadow-lg hover:shadow-xl transition-all"
               >
                 {isSubmitting ? (
                   <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 ) : (
                   <>
-                    <span>ボトルメールを流す</span>
+                    <span>手紙を海へ流す（投函）</span>
                     <Heart size={16} />
                   </>
                 )}
