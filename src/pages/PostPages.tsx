@@ -1140,7 +1140,8 @@ export const CreatePostPage = () => {
     { question: '', answer: '', hint: '' }
   ]);
   const [step, setStep] = useState(0);
-  const [agreed, setAgreed] = useState(true);
+  const [agreed, setAgreed] = useState(false);
+  const [stepEnteredTime, setStepEnteredTime] = useState<number>(Date.now());
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [captchaQuestion, setCaptchaQuestion] = useState(() => {
     const a = Math.floor(Math.random() * 10);
@@ -1396,6 +1397,7 @@ export const CreatePostPage = () => {
 
   const nextStep = () => {
     setStep(prev => Math.min(prev + 1, 3));
+    setStepEnteredTime(Date.now());
     window.scrollTo(0, 0);
     if ((window as any).lenis) {
       (window as any).lenis.scrollTo(0, { immediate: true });
@@ -1404,6 +1406,7 @@ export const CreatePostPage = () => {
 
   const prevStep = () => {
     setStep(prev => Math.max(prev - 1, 0));
+    setStepEnteredTime(Date.now());
     window.scrollTo(0, 0);
     if ((window as any).lenis) {
       (window as any).lenis.scrollTo(0, { immediate: true });
@@ -1412,6 +1415,7 @@ export const CreatePostPage = () => {
 
   const jumpToStep = (targetStep: number) => {
     setStep(targetStep);
+    setStepEnteredTime(Date.now());
     window.scrollTo(0, 0);
     if ((window as any).lenis) {
       (window as any).lenis.scrollTo(0, { immediate: true });
@@ -2324,13 +2328,17 @@ export const CreatePostPage = () => {
               </div>
               <input 
                 type="text" 
-                placeholder="計算の答え" 
-                className="w-28 py-2 px-3 border-2 border-zinc-400 focus:border-brand-primary rounded-xl outline-none bg-white font-serif text-base text-center text-zinc-950 font-bold placeholder:text-zinc-400"
+                name="quiz_bot_prevention_answer"
+                id="quiz_bot_prevention_input"
+                placeholder="答えを入力" 
+                className="w-32 py-2 px-3 border-2 border-zinc-400 focus:border-brand-primary rounded-xl outline-none bg-white font-serif text-base text-center text-zinc-950 font-bold placeholder:text-zinc-400"
                 value={captchaAnswer}
                 onChange={e => setCaptchaAnswer(toHalfWidth(e.target.value))}
-                inputMode="url"
+                inputMode="numeric"
+                autoComplete="new-password"
                 autoCapitalize="off"
                 autoCorrect="off"
+                spellCheck="false"
               />
               <button
                 type="button"
@@ -2423,9 +2431,13 @@ export const CreatePostPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // 最終ステップ以外でForm Submitがトリガーされた場合は次のステップへ安全に進む
+    // 最終ステップ（Step 4）以外では送信処理は絶対に実行しない
     if (step < steps.length - 1) {
-      handleNextStep();
+      return;
+    }
+
+    // Step 4 遷移直後（500ms以内）の誤発火・二重クリックを安全にガード
+    if (Date.now() - stepEnteredTime < 500) {
       return;
     }
     
