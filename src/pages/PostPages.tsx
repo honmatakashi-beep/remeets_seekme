@@ -5555,8 +5555,8 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
     }, 3500);
   };
 
-  const isOwner = !!(user && post && user.id === post.user_id);
-  const isVerifiedFinder = !!(post && !isOwner && ((post.is_verified_finder || post.verified_by === user?.id) && post.status === 'resolved'));
+  const isOwner = !!(post && (post.is_owner || (user && String(user.id) === String(post.user_id))));
+  const isVerifiedFinder = !!(post && !isOwner && ((post.is_verified_finder || String(post.verified_by) === String(user?.id)) && post.status === 'resolved'));
   const isRevealed = !!((!isOwner && (revealedContact || isVerifiedFinder)) || (isOwner && ownerPreviewRevealed));
   const showDetails = !!(post && isRevealed);
 
@@ -5878,7 +5878,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
     if (post && id) {
       const seoUrl = getPostUrl(post);
       if (seoUrl.startsWith('/name/')) {
-        navigate(seoUrl, { replace: true });
+        navigate(seoUrl, { replace: true, state: location.state });
       }
     }
   }, [post, id]);
@@ -5894,7 +5894,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
       // 2. SEOルート（/name/:name/:location/:year/:relationship）で postId が未特定の場合のみ、SEO照合APIを呼ぶ
       if (!postId && nameParam && locParam && yearParam && relParam) {
         try {
-          const fetchSeoUrl = `/api/posts/seo/${nameParam}/${locParam}/${yearParam}/${relParam}`;
+          const fetchSeoUrl = `/api/posts/seo/${encodeURIComponent(nameParam)}/${encodeURIComponent(locParam)}/${encodeURIComponent(yearParam)}/${encodeURIComponent(relParam)}`;
           const res = await fetch(fetchSeoUrl, {
             headers: token ? { 'Authorization': `Bearer ${token}` } : {}
           });
