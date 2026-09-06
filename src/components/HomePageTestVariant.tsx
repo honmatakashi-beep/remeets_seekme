@@ -130,9 +130,6 @@ const GALLERY_BOTTLES = [
 
 export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onToggleDesign, recentPosts = [], onOpenConceptModal }) => {
   const navigate = useNavigate();
-  const [lastName, setLastName] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedBottle, setSelectedBottle] = useState<any | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLocalConceptModalOpen, setIsLocalConceptModalOpen] = useState(false);
@@ -202,38 +199,6 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
     fetchPublicStats();
     fetchSuccessStories();
   }, []);
-
-  // カテゴリ選択肢（通常版 App.tsx と完全一致）
-  const TRIGGER_CATEGORIES = [
-    { label: '学校（同級生・先生）', category: 'school', icon: '🎓' },
-    { label: '職場（同僚・上司）', category: 'work', icon: '💼' },
-    { label: '近所・幼馴染', category: 'neighborhood', icon: '🏡' },
-    { label: '趣味・サークル', category: 'hobby', icon: '🎨' },
-    { label: '初恋・大切な人', category: 'love', icon: '💕' },
-    { label: 'その他', category: 'other', icon: '🤝' },
-  ];
-
-  // 統合されたフルネーム（表示・引継ぎ用）
-  const fullTargetName = (lastName || firstName) 
-    ? `${lastName} ${firstName}`.trim()
-    : '';
-
-  const handleStartWriting = (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    navigate('/create', { 
-      state: { 
-        initialTargetName: fullTargetName,
-        initialTargetLastName: lastName.trim(),
-        initialTargetFirstName: firstName.trim(),
-        initialCategory: selectedCategory || ''
-      } 
-    });
-  };
-
-  const getCategoryLabel = (catKey: string | null) => {
-    const item = TRIGGER_CATEGORIES.find(c => c.category === catKey);
-    return item ? item.label : '';
-  };
 
   return (
     <div className="min-h-screen bg-transparent text-slate-800 font-sans selection:bg-teal-100 selection:text-teal-900">
@@ -359,21 +324,14 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
                 transition={{ delay: 0.3 }}
                 className="pt-2 max-w-xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-4 font-sans"
               >
-                <button
-                  onClick={() => {
-                    const el = document.getElementById('create-bottle-section');
-                    if (el) {
-                      el.scrollIntoView({ behavior: 'smooth' });
-                    } else {
-                      navigate('/create');
-                    }
-                  }}
+                <Link
+                  to="/create"
                   className="w-full sm:w-auto min-w-[220px] px-7 py-3.5 sm:py-4 bg-gradient-to-r from-sky-600 via-blue-700 to-indigo-800 hover:from-sky-700 hover:to-indigo-900 text-white font-bold rounded-2xl text-xs sm:text-sm transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.01] active:scale-95 group border border-sky-400/30 whitespace-nowrap"
                 >
                   <PenTool size={17} className="text-sky-200 group-hover:rotate-12 transition-transform shrink-0" />
                   <span className="font-bold tracking-wide">ボトルメールを流す</span>
                   <ArrowRight size={16} className="shrink-0 text-sky-200" />
-                </button>
+                </Link>
 
                 <Link
                   to="/search"
@@ -651,115 +609,52 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
         </div>
       </section>
 
-      {/* 4. 洗練されたボトル作成ダイレクトフォームセクション */}
-      <section className="py-6 bg-gradient-to-b from-sky-50/20 to-white">
+      {/* 4. 洗練されたボトル作成CTAセクション */}
+      <section className="py-8 bg-gradient-to-b from-sky-50/20 to-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
-          <div id="create-bottle-section" className="scroll-mt-20 p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-white via-teal-50/40 to-sky-50/30 border-2 border-teal-300/80 shadow-md relative overflow-hidden text-left">
+          <div className="p-8 sm:p-10 rounded-3xl bg-gradient-to-br from-white via-teal-50/40 to-sky-50/30 border-2 border-teal-300/80 shadow-md relative overflow-hidden text-center">
             <div className="absolute top-0 right-0 w-64 h-64 bg-teal-200/20 rounded-full blur-3xl pointer-events-none"></div>
 
-            <div className="max-w-xl mx-auto space-y-4 relative z-10">
-              <div className="text-center space-y-2">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-100 text-teal-800 text-[11px] font-bold border border-teal-200">
+            <div className="max-w-xl mx-auto space-y-6 relative z-10">
+              <div className="space-y-3">
+                <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-teal-100 text-teal-800 text-xs font-bold border border-teal-200 font-sans">
                   <PenTool size={13} className="text-teal-600" />
                   <span>ボトルメール作成</span>
                 </span>
-                <h3 className="text-lg sm:text-2xl font-serif font-bold text-slate-900 tracking-wide leading-snug">
+                <h3 className="text-xl sm:text-2xl md:text-3xl font-serif font-bold text-slate-900 tracking-wide leading-snug">
                   <span>連絡先がわからなくなってしまった、あの人へ。</span>
                   <br />
                   <span>ボトルメールを流してみませんか？</span>
                 </h3>
+                <p className="text-xs sm:text-sm text-slate-600 font-sans leading-relaxed">
+                  想い出の質問を添えて、Webの海にそっと手紙を浮かべましょう。<br className="hidden sm:inline" />
+                  匿名で安心・投函は完全無料（0円）です。
+                </p>
               </div>
 
-              <form onSubmit={handleStartWriting} className="bg-white/95 p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-3.5">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="space-y-1">
-                    <label htmlFor="section-last-name" className="text-xs font-bold text-slate-700 font-sans flex items-center justify-between">
-                      <span>姓</span>
-                    </label>
-                    <input
-                      id="section-last-name"
-                      type="text"
-                      value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
-                      placeholder="例：佐藤"
-                      className="w-full px-3.5 py-2.5 bg-slate-50 text-slate-900 rounded-xl border border-slate-200 focus:border-teal-600 focus:bg-white outline-none text-xs sm:text-sm placeholder:text-slate-400 font-sans transition-all"
-                    />
-                  </div>
-
-                  <div className="space-y-1">
-                    <label htmlFor="section-first-name" className="text-xs font-bold text-slate-700 font-sans flex items-center justify-between">
-                      <span>名</span>
-                    </label>
-                    <input
-                      id="section-first-name"
-                      type="text"
-                      value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
-                      placeholder="例：花子"
-                      className="w-full px-3.5 py-2.5 bg-slate-50 text-slate-900 rounded-xl border border-slate-200 focus:border-teal-600 focus:bg-white outline-none text-xs sm:text-sm placeholder:text-slate-400 font-sans transition-all"
-                    />
-                  </div>
-                </div>
-
-                {/* お相手との関係性（カテゴリー）プルダウン選択 */}
-                <div className="space-y-1">
-                  <label htmlFor="section-category" className="text-xs font-bold text-slate-700 font-sans flex items-center justify-between">
-                    <span>お相手との関係性（カテゴリー）</span>
-                    <span className="text-slate-400 text-[10px]">※任意選択</span>
-                  </label>
-                  <select
-                    id="section-category"
-                    value={selectedCategory || ''}
-                    onChange={(e) => setSelectedCategory(e.target.value || null)}
-                    className="w-full px-3.5 py-2.5 bg-slate-50 text-slate-900 rounded-xl border border-slate-200 focus:border-teal-600 focus:bg-white outline-none text-xs sm:text-sm font-sans transition-all cursor-pointer"
-                  >
-                    <option value="">選択してください</option>
-                    {TRIGGER_CATEGORIES.map((cat) => (
-                      <option key={cat.category} value={cat.category}>
-                        {cat.icon} {cat.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full py-3.5 bg-gradient-to-r from-sky-600 via-blue-700 to-indigo-800 hover:from-sky-700 hover:to-indigo-900 text-white font-bold rounded-xl text-xs sm:text-sm transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.005] active:scale-95 font-sans border border-sky-400/30"
+              {/* 2大アクションボタン（トップと同じ仕様） */}
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-2 font-sans">
+                <Link
+                  to="/create"
+                  className="w-full sm:w-auto min-w-[220px] px-7 py-3.5 sm:py-4 bg-gradient-to-r from-sky-600 via-blue-700 to-indigo-800 hover:from-sky-700 hover:to-indigo-900 text-white font-bold rounded-2xl text-xs sm:text-sm transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.01] active:scale-95 group border border-sky-400/30 whitespace-nowrap"
                 >
-                  <span>
-                    {fullTargetName 
-                      ? `🍾 『${fullTargetName}』様へのボトルメールを書き始める`
-                      : '🍾 このお名前でボトルメールを書き始める'}
-                  </span>
-                  <ArrowRight size={16} />
-                </button>
-              </form>
+                  <PenTool size={17} className="text-sky-200 group-hover:rotate-12 transition-transform shrink-0" />
+                  <span className="font-bold tracking-wide">ボトルメールを流す</span>
+                  <ArrowRight size={16} className="shrink-0 text-sky-200" />
+                </Link>
 
-              {/* 自分宛ての手紙を探す（エゴサーチ）への親切な誘導バナー */}
-              <div className="pt-2 border-t border-teal-200/60 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-sans">
-                <div className="flex items-center gap-2 text-slate-600">
-                  <Search size={15} className="text-teal-600 shrink-0" />
-                  <span>あなた宛ての手紙が届いているかも？</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (fullTargetName) {
-                      navigate(`/search?q=${encodeURIComponent(fullTargetName)}`);
-                    } else {
-                      navigate('/search');
-                    }
-                  }}
-                  className="w-full sm:w-auto px-4 py-2 bg-white hover:bg-teal-50 text-teal-800 border border-teal-300 rounded-xl font-bold transition-all shadow-2xs hover:shadow-xs flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap"
+                <Link
+                  to="/search"
+                  className="w-full sm:w-auto min-w-[220px] px-7 py-3.5 sm:py-4 bg-white hover:bg-sky-50/50 text-slate-800 font-bold rounded-2xl text-xs sm:text-sm transition-all border-2 border-sky-200 hover:border-sky-500 shadow-2xs hover:shadow-md flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.01] active:scale-95 group whitespace-nowrap"
                 >
-                  <Search size={13} className="text-teal-600" />
-                  <span>
-                    {fullTargetName 
-                      ? `『${fullTargetName}』で自分宛ての手紙を検索` 
-                      : '自分宛ての手紙を探す（エゴサーチ）'}
-                  </span>
-                  <ArrowRight size={12} />
-                </button>
+                  <Search size={17} className="text-sky-600 shrink-0 group-hover:scale-110 transition-transform" />
+                  <span className="font-bold text-slate-800 tracking-wide">自分宛ての手紙を探す</span>
+                </Link>
+              </div>
+
+              {/* 親切な料金ポリシー案内 */}
+              <div className="pt-2 border-t border-teal-200/60 text-[11px] sm:text-xs text-slate-500 font-sans text-center">
+                <span>※お相手とクイズで想い出が一致し、連絡先を開示する瞬間まで一切料金はかかりません。</span>
               </div>
             </div>
           </div>
