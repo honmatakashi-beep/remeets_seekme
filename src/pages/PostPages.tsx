@@ -396,26 +396,27 @@ export const EditPostPage = () => {
                         </span>
                       </div>
 
-                      {/* 常時表示：目的 */}
-                      <p className="text-xs sm:text-sm text-stone-700 leading-relaxed">
-                        <strong className="text-stone-900">【目的】</strong> 検索一覧を見たお相手が「あ、探しているのはあの時の〇〇さんだ！」と気づくための目印です。
-                      </p>
+                      {/* 常時表示：目的 & 鉄則 */}
+                      <div className="space-y-2 text-xs sm:text-sm text-stone-700 leading-relaxed">
+                        <p>
+                          <strong className="text-stone-900">【目的】</strong> 検索一覧を見たお相手が「あ、探しているのはあの時の〇〇さんだ！」と気づくための目印です。
+                        </p>
+                        <p>
+                          <strong className="text-stone-900">【鉄則】</strong> 氏名や住所、連絡先などの個人情報を書く必要は一切ありません。<strong>「当時の二人だけが知る共通のシチュエーション・出来事・呼び名」</strong>を書くだけで、お相手には確実に伝わります。
+                        </p>
+                      </div>
 
-                      {/* 鉄則から下：アコーディオン開閉 */}
+                      {/* 具体例・OK/NG例：アコーディオン開閉 */}
                       <details className="group border-t border-amber-100 pt-2">
                         <summary className="flex items-center justify-between cursor-pointer py-2 px-3 bg-amber-50/80 hover:bg-amber-100/80 rounded-xl text-xs font-bold text-amber-900 list-none select-none transition-all">
                           <span className="flex items-center gap-1.5">
                             <Sparkles size={14} className="text-amber-700" />
-                            <span>詳しい書き方の鉄則・OK/NG例を見る</span>
+                            <span>詳しい書き方の具体例・OK/NG例を見る</span>
                           </span>
                           <ChevronDown size={16} className="text-amber-700 transition-transform duration-200 group-open:rotate-180" />
                         </summary>
 
                         <div className="pt-3 space-y-3">
-                          <p className="text-xs sm:text-sm text-stone-700 leading-relaxed">
-                            <strong className="text-stone-900">【鉄則】</strong> 氏名や住所、連絡先などの個人情報を書く必要は一切ありません。<strong>「当時の二人だけが知る共通のシチュエーション・出来事・呼び名」</strong>を書くだけで、お相手には確実に伝わります。
-                          </p>
-
                           <p className="text-xs text-amber-900 bg-amber-50/80 p-2.5 rounded-xl border border-amber-200/60 font-medium leading-relaxed">
                             💡 <strong>手紙本文との違い:</strong> お相手へのご挨拶や近況報告、本格的なメッセージ、開示用連絡先は、最後の<strong>【メッセージと開示用連絡先】</strong>欄で安全に入力します。
                           </p>
@@ -1510,26 +1511,27 @@ export const CreatePostPage = () => {
                   </span>
                 </div>
 
-                {/* 常時表示：目的 */}
-                <p className="text-xs sm:text-sm text-stone-700 leading-relaxed">
-                  <strong className="text-stone-900">【目的】</strong> 検索一覧を見たお相手が「あ、探しているのはあの時の〇〇さんだ！」と気づくための目印です。
-                </p>
+                {/* 常時表示：目的 & 鉄則 */}
+                <div className="space-y-2 text-xs sm:text-sm text-stone-700 leading-relaxed">
+                  <p>
+                    <strong className="text-stone-900">【目的】</strong> 検索一覧を見たお相手が「あ、探しているのはあの時の〇〇さんだ！」と気づくための目印です。
+                  </p>
+                  <p>
+                    <strong className="text-stone-900">【鉄則】</strong> 氏名や住所、連絡先などの個人情報を書く必要は一切ありません。<strong>「当時の二人だけが知る共通のシチュエーション・出来事・呼び名」</strong>を書くだけで、お相手には確実に伝わります。
+                  </p>
+                </div>
 
-                {/* 鉄則から下：アコーディオン開閉 */}
+                {/* 具体例・OK/NG例：アコーディオン開閉 */}
                 <details className="group border-t border-amber-100 pt-2">
                   <summary className="flex items-center justify-between cursor-pointer py-2 px-3 bg-amber-50/80 hover:bg-amber-100/80 rounded-xl text-xs font-bold text-amber-900 list-none select-none transition-all">
                     <span className="flex items-center gap-1.5">
                       <Sparkles size={14} className="text-amber-700" />
-                      <span>詳しい書き方の鉄則・OK/NG例を見る</span>
+                      <span>詳しい書き方の具体例・OK/NG例を見る</span>
                     </span>
                     <ChevronDown size={16} className="text-amber-700 transition-transform duration-200 group-open:rotate-180" />
                   </summary>
 
                   <div className="pt-3 space-y-3">
-                    <p className="text-xs sm:text-sm text-stone-700 leading-relaxed">
-                      <strong className="text-stone-900">【鉄則】</strong> 氏名や住所、連絡先などの個人情報を書く必要は一切ありません。<strong>「当時の二人だけが知る共通のシチュエーション・出来事・呼び名」</strong>を書くだけで、お相手には確実に伝わります。
-                    </p>
-
                     <p className="text-xs text-amber-900 bg-amber-50/80 p-2.5 rounded-xl border border-amber-200/60 font-medium leading-relaxed">
                       💡 <strong>手紙本文との違い:</strong> お相手へのご挨拶や近況報告、本格的なメッセージ、開示用連絡先は、最後の<strong>【Step 4（非公開の手紙本文）】</strong>で安全に入力します。
                     </p>
