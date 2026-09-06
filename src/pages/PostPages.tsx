@@ -357,18 +357,84 @@ export const EditPostPage = () => {
                       <span className="text-[9px] opacity-75">差出人</span>
                     </span>
                   </div>
-                  <div className="p-6 bg-[#FAF7F2] rounded-[28px] border border-amber-200/70 shadow-sm">
-                    <p className="text-base text-stone-800 font-bold leading-relaxed mb-4">
-                      お相手があなただと確信できる、二人だけの思い出やエピソードを入力してください。（※年代、学校・勤務先、ゆかりの地は他の項目で設定するため、ここでは純粋な思い出のみをお書きください）
-                    </p>
-                    <textarea 
-                      required
-                      placeholder="例：部活動の帰りにいつも駄菓子屋でアイスを食べながら将来の夢を語り合った友人です。いつも図書室で一緒に勉強していましたね。" 
-                      className="w-full py-4 px-3 outline-none transition-all letter-field-textarea font-serif text-xl text-[#000000] placeholder:text-black/40 min-h-[200px] resize-none"
-                      value={formData.searcherProfile}
-                      onChange={e => handleInputChange('searcherProfile', e.target.value)}
-                    />
-                    <WarningMessage message={warnings.searcherProfile} />
+
+                  <div className="space-y-4 p-5 sm:p-6 bg-[#FAF7F2] rounded-[28px] border border-amber-200/70 shadow-sm">
+                    {/* タイトル & 警告 */}
+                    <div className="space-y-2">
+                      <label className="text-base sm:text-lg font-bold text-stone-900 flex items-center gap-1.5">
+                        <Sparkles size={18} className="text-amber-700" />
+                        お相手にあなただと気づいてもらうための「共通の想い出ヒント」
+                        <span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
+                      </label>
+                      <div className="flex items-start gap-2 text-xs text-red-800 font-bold bg-red-50/90 p-3 rounded-xl border border-red-200/90 leading-relaxed">
+                        <AlertTriangle size={16} className="shrink-0 mt-0.5 text-red-600" />
+                        <span>ネット上に一般公開されます。お互いの安全のため、個人情報の入力は絶対にやめてください。<br />（※電話番号・住所・実名などの個人情報や禁止用語が含まれる場合、AI安全監査により更新できません）</span>
+                      </div>
+                    </div>
+
+                    {/* 専用記入ガイド */}
+                    <div className="p-4 sm:p-5 bg-white/95 rounded-2xl border border-amber-200/80 shadow-2xs space-y-3.5 text-xs text-stone-800">
+                      <div className="flex items-center justify-between pb-2 border-b border-amber-200/60">
+                        <span className="font-bold text-amber-950 flex items-center gap-1.5 text-sm">
+                          <BookOpen size={16} className="text-amber-700" />
+                          📖 この欄の専用記入ガイド
+                        </span>
+                        <span className="text-[10px] font-semibold text-amber-800 bg-amber-100/80 px-2.5 py-0.5 rounded-full">
+                          個人情報なしで確定させるコツ
+                        </span>
+                      </div>
+
+                      <div className="space-y-2 text-[12px] leading-relaxed text-stone-700">
+                        <p>
+                          <strong className="text-stone-900">【目的】</strong> 検索一覧を見たお相手が「あ、探しているのはあの時の〇〇さんだ！」と気づくための目印です。
+                        </p>
+                        <p>
+                          <strong className="text-stone-900">【鉄則】</strong> 氏名や住所、連絡先などの個人情報を書く必要は一切ありません。<strong>「当時の二人だけが知る共通のシチュエーション・出来事・呼び名」</strong>を書くだけで、お相手には確実に伝わります。
+                        </p>
+                        <p className="text-[11px] text-amber-900 bg-amber-50/80 p-2.5 rounded-lg border border-amber-200/60 font-medium">
+                          💡 <strong>手紙本文との違い:</strong> お相手へのご挨拶や近況報告、本格的なメッセージ、開示用連絡先は、最後の<strong>【メッセージと開示用連絡先】</strong>欄で安全に入力します。
+                        </p>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                        <div className="bg-emerald-50/80 border border-emerald-200/90 rounded-xl p-3.5 space-y-1.5">
+                          <span className="text-xs font-bold text-emerald-900 flex items-center gap-1.5">
+                            <CheckCircle size={14} className="text-emerald-700" />
+                            ⭕️ おすすめの書き方（伝わる例）
+                          </span>
+                          <ul className="text-[11px] text-emerald-950/85 space-y-1 list-disc list-inside leading-relaxed">
+                            <li>当時のあだ名や係（例: <em>「当時『たっちゃん』と呼ばれていた者です」</em>）</li>
+                            <li>二人の共通体験（例: <em>「放課後の図書室でよくおすすめの本を教え合いましたね」</em>）</li>
+                            <li>イベント・出来事（例: <em>「文化祭で一緒に大道具の看板を描いた友人です」</em>）</li>
+                          </ul>
+                        </div>
+
+                        <div className="bg-rose-50/80 border border-rose-200/90 rounded-xl p-3.5 space-y-1.5">
+                          <span className="text-xs font-bold text-rose-900 flex items-center gap-1.5">
+                            <X size={14} className="text-rose-700" />
+                            ❌ 書いてはいけない内容（AI検閲対象）
+                          </span>
+                          <ul className="text-[11px] text-rose-950/85 space-y-1 list-disc list-inside leading-relaxed">
+                            <li>電話番号、LINE ID、メールアドレス（※連絡先は下部で安全開示）</li>
+                            <li>詳細な自宅番地、実名フルネーム、勤務先の具体的部署</li>
+                            <li>「元気？会いたいから連絡して」（※手紙の本文は下部で書く）</li>
+                            <li>誹謗中傷、金銭要求、トラブルに関する記述</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* テキスト入力欄 */}
+                    <div className="space-y-1.5">
+                      <textarea 
+                        required
+                        placeholder="例：部活動で主将をしていた者です。いつも図書室で会っていましたね。あの時一緒に読んだ本の話を覚えていますか？" 
+                        className="w-full py-4 px-4 outline-none transition-all letter-field-textarea font-serif text-lg text-[#000000] placeholder:text-zinc-400 min-h-[180px] resize-none bg-white rounded-xl border border-slate-300 focus:border-brand-primary"
+                        value={formData.searcherProfile}
+                        onChange={e => handleInputChange('searcherProfile', e.target.value)}
+                      />
+                      <WarningMessage message={warnings.searcherProfile} />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1392,18 +1458,78 @@ export const CreatePostPage = () => {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-xs sm:text-sm font-bold text-black flex items-center gap-1.5">
-                特定するための手がかり・エピソード<span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
-              </label>
-              <div className="p-4 sm:p-5 bg-[#FAF7F2] rounded-[24px] border border-amber-200/70 shadow-2xs">
-                <p className="text-xs text-stone-800 font-bold mb-2.5 leading-relaxed">
-                  お相手があなただと確信できる、二人だけの思い出やエピソードを入力してください。（※年代、学校・勤務先、ゆかりの地は他の項目で設定するため、ここでは純粋な思い出のみをお書きください）
-                </p>
+            <div className="space-y-4 pt-1">
+              {/* タイトル & 警告 */}
+              <div className="space-y-2">
+                <label className="text-base sm:text-lg font-bold text-stone-900 flex items-center gap-1.5">
+                  <Sparkles size={18} className="text-amber-700" />
+                  お相手にあなただと気づいてもらうための「共通の想い出ヒント」
+                  <span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
+                </label>
+                <div className="flex items-start gap-2 text-xs text-red-800 font-bold bg-red-50/90 p-3 rounded-xl border border-red-200/90 leading-relaxed">
+                  <AlertTriangle size={16} className="shrink-0 mt-0.5 text-red-600" />
+                  <span>ネット上に一般公開されます。お互いの安全のため、個人情報の入力は絶対にやめてください。<br />（※電話番号・住所・実名などの個人情報や禁止用語が含まれる場合、AI安全監査により投函できません）</span>
+                </div>
+              </div>
+
+              {/* 専用記入ガイド */}
+              <div className="p-4 sm:p-5 bg-white/95 rounded-2xl border border-amber-200/80 shadow-2xs space-y-3.5 text-xs text-stone-800">
+                <div className="flex items-center justify-between pb-2 border-b border-amber-200/60">
+                  <span className="font-bold text-amber-950 flex items-center gap-1.5 text-sm">
+                    <BookOpen size={16} className="text-amber-700" />
+                    📖 この欄の専用記入ガイド
+                  </span>
+                  <span className="text-[10px] font-semibold text-amber-800 bg-amber-100/80 px-2.5 py-0.5 rounded-full">
+                    個人情報なしで確定させるコツ
+                  </span>
+                </div>
+
+                <div className="space-y-2 text-[12px] leading-relaxed text-stone-700">
+                  <p>
+                    <strong className="text-stone-900">【目的】</strong> 検索一覧を見たお相手が「あ、探しているのはあの時の〇〇さんだ！」と気づくための目印です。
+                  </p>
+                  <p>
+                    <strong className="text-stone-900">【鉄則】</strong> 氏名や住所、連絡先などの個人情報を書く必要は一切ありません。<strong>「当時の二人だけが知る共通のシチュエーション・出来事・呼び名」</strong>を書くだけで、お相手には確実に伝わります。
+                  </p>
+                  <p className="text-[11px] text-amber-900 bg-amber-50/80 p-2.5 rounded-lg border border-amber-200/60 font-medium">
+                    💡 <strong>手紙本文との違い:</strong> お相手へのご挨拶や近況報告、本格的なメッセージ、開示用連絡先は、最後の<strong>【Step 4（非公開の手紙本文）】</strong>で安全に入力します。
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                  <div className="bg-emerald-50/80 border border-emerald-200/90 rounded-xl p-3.5 space-y-1.5">
+                    <span className="text-xs font-bold text-emerald-900 flex items-center gap-1.5">
+                      <CheckCircle size={14} className="text-emerald-700" />
+                      ⭕️ おすすめの書き方（伝わる例）
+                    </span>
+                    <ul className="text-[11px] text-emerald-950/85 space-y-1 list-disc list-inside leading-relaxed">
+                      <li>当時のあだ名や係（例: <em>「当時『たっちゃん』と呼ばれていた者です」</em>）</li>
+                      <li>二人の共通体験（例: <em>「放課後の図書室でよくおすすめの本を教え合いましたね」</em>）</li>
+                      <li>イベント・出来事（例: <em>「文化祭で一緒に大道具の看板を描いた友人です」</em>）</li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-rose-50/80 border border-rose-200/90 rounded-xl p-3.5 space-y-1.5">
+                    <span className="text-xs font-bold text-rose-900 flex items-center gap-1.5">
+                      <X size={14} className="text-rose-700" />
+                      ❌ 書いてはいけない内容（AI検閲対象）
+                    </span>
+                    <ul className="text-[11px] text-rose-950/85 space-y-1 list-disc list-inside leading-relaxed">
+                      <li>電話番号、LINE ID、メールアドレス（※連絡先はStep 4で安全開示）</li>
+                      <li>詳細な自宅番地、実名フルネーム、勤務先の具体的部署</li>
+                      <li>「元気？会いたいから連絡して」（※手紙の本文はStep 4で書く）</li>
+                      <li>誹謗中傷、金銭要求、トラブルに関する記述</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              {/* テキスト入力欄 */}
+              <div className="space-y-1.5">
                 <textarea 
                   required
-                  placeholder="例：部活動で主将をしていた者です。いつも図書室で会っていましたね。あの時一緒に読んだ本の話を覚えていますか？" 
-                  className="w-full py-3 px-3 border-b-2 border-brand-primary/60 focus:border-brand-primary outline-none transition-all letter-field-textarea font-serif text-base md:text-lg text-black placeholder:text-black/50 min-h-[150px] resize-none font-medium"
+                  placeholder="例：当時「主将」と呼ばれていた者です。大会前の居残り練習や、帰り道に駄菓子屋で一緒にアイスを食べながら将来の夢を語り合いましたね。" 
+                  className="w-full py-4 px-4 outline-none transition-all letter-field-textarea font-serif text-lg text-[#000000] placeholder:text-zinc-400 min-h-[180px] resize-none bg-white rounded-xl border border-slate-300 focus:border-brand-primary"
                   value={formData.searcherProfile}
                   onChange={e => handleInputChange('searcherProfile', e.target.value)}
                 />
