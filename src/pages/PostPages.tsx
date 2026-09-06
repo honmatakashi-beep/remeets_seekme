@@ -6414,7 +6414,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                 </div>
 
                 {/* ボタンアクション */}
-                <div className="pt-1 space-y-2">
+                <div className="pt-1">
                   <button
                     onClick={() => setShowPostedBanner(false)}
                     className="w-full py-3 bg-teal-700 hover:bg-teal-800 text-white font-bold rounded-xl text-xs shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
@@ -6422,13 +6422,6 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                     <span>お相手から見える【公開画面プレビュー】を確認</span>
                     <Eye size={14} />
                   </button>
-                  <Link
-                    to="/account"
-                    className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-all flex items-center justify-center gap-2"
-                  >
-                    <User size={14} className="text-slate-500" />
-                    <span>【マイアカウント】で手紙の全文・登録内容を確認</span>
-                  </Link>
                 </div>
               </div>
             </motion.div>
