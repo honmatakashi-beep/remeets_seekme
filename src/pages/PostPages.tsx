@@ -4177,11 +4177,11 @@ export const RecipientSafetyGuide = ({
         <div className="pt-2">
           <button
             onClick={onStartQuiz}
-            className="w-full py-4 bg-teal-700 hover:bg-teal-800 text-white font-bold rounded-2xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2.5 text-sm sm:text-base cursor-pointer hover:scale-[1.01]"
+            className="w-full py-4 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold rounded-2xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2.5 text-sm sm:text-base cursor-pointer hover:scale-[1.01] active:scale-[0.99] border border-emerald-400/30 group"
           >
-            <Unlock size={18} />
-            <span>思い出の質問に答えて手紙を開く</span>
-            <ArrowRight size={16} />
+            <Unlock size={18} className="text-emerald-200 group-hover:rotate-12 transition-transform" />
+            <span className="tracking-wide">思い出の質問に答えて手紙を開く</span>
+            <ArrowRight size={16} className="text-emerald-200 group-hover:translate-x-1 transition-transform" />
           </button>
           <p className="text-[11px] text-slate-500 text-center font-sans mt-2">
             ※ 会員登録不要ですぐにお答えいただけます（不正利用防止のため暗号化保護されています）。
@@ -4469,7 +4469,7 @@ export const RevealContactModal = ({
                     onClose();
                     navigate('/account');
                   }}
-                  className="w-full py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                  className="w-full py-3.5 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98 border border-emerald-400/30"
                 >
                   <UserIcon size={16} />
                   <span>マイアカウントで手紙・連絡先を確認する →</span>
@@ -4705,7 +4705,7 @@ export const RevealContactModal = ({
                 <button 
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-4 bg-teal-700 hover:bg-teal-800 text-white font-bold text-sm sm:text-base rounded-2xl shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.01] active:scale-98 transition-all disabled:opacity-75 disabled:cursor-not-allowed font-sans"
+                  className="w-full py-4 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold text-sm sm:text-base rounded-2xl shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.01] active:scale-98 transition-all disabled:opacity-75 disabled:cursor-not-allowed font-sans border border-emerald-400/30"
                 >
                   <Heart size={18} className="fill-current text-rose-300" />
                   <span>600円で【{searcherName || '差出人'}】さんの手紙と連絡先を開く</span>
@@ -5262,7 +5262,7 @@ export const AgeVerificationGate = ({ onVerified, onStartEkyc }: { onVerified: (
                   type="button"
                   onClick={verifyPledge}
                   disabled={isVerifying}
-                  className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-xs md:text-sm cursor-pointer"
+                  className="w-full py-3.5 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 active:scale-[0.99] text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-xs md:text-sm cursor-pointer border border-emerald-400/30"
                 >
                   {isVerifying ? (
                     <span className="flex items-center gap-2">
@@ -7067,14 +7067,14 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                         </div>
                       </div>
 
-                      {/* 鮮やかで目立つグリーンの「質問に答えて手紙を開く」ボタン */}
+                      {/* 鮮やかで目立つグリーンのグラデーション「質問に答えて手紙を開く」ボタン */}
                       <button
                         onClick={handleStartContact}
-                        className="w-full py-4 sm:py-4.5 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-3 text-base sm:text-lg cursor-pointer hover:scale-[1.01] active:scale-[0.99] border border-emerald-400/40 group"
+                        className="w-full py-4 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold rounded-2xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2.5 text-sm sm:text-base cursor-pointer hover:scale-[1.01] active:scale-[0.99] border border-emerald-400/30 group"
                       >
-                        <Unlock size={22} className="text-emerald-200 group-hover:rotate-12 transition-transform" />
+                        <Unlock size={18} className="text-emerald-200 group-hover:rotate-12 transition-transform" />
                         <span className="tracking-wide">思い出の質問に答えて手紙を開く</span>
-                        <ArrowRight size={20} className="text-emerald-200 group-hover:translate-x-1 transition-transform" />
+                        <ArrowRight size={16} className="text-emerald-200 group-hover:translate-x-1 transition-transform" />
                       </button>
                       <p className="text-[11px] text-slate-500 text-center font-sans">
                         ※ 会員登録不要ですぐにお答えいただけます（不正利用防止のため暗号化保護されています）。
@@ -7482,10 +7482,10 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                 <button 
                   type="submit" 
                   disabled={isVerifying || isAttemptsLocked}
-                  className={`w-full py-4 text-white font-bold rounded-2xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2.5 text-sm sm:text-base cursor-pointer hover:scale-[1.01] ${
+                  className={`w-full py-4 text-white font-bold rounded-2xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2.5 text-sm sm:text-base cursor-pointer hover:scale-[1.01] active:scale-[0.99] ${
                     isAttemptsLocked 
                       ? 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none' 
-                      : 'bg-teal-700 hover:bg-teal-800'
+                      : 'bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 border border-emerald-400/30'
                   }`}
                 >
                   {isVerifying ? (
@@ -7643,7 +7643,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                       <button
                         type="button"
                         onClick={() => setShowRevealModal(true)}
-                        className="w-full py-4 px-6 bg-teal-700 hover:bg-teal-800 text-white font-bold text-sm sm:text-base rounded-2xl shadow-md hover:shadow-lg hover:scale-[1.01] active:scale-98 transition-all flex items-center justify-center gap-2.5 cursor-pointer font-sans"
+                        className="w-full py-4 px-6 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold text-sm sm:text-base rounded-2xl shadow-md hover:shadow-lg hover:scale-[1.01] active:scale-98 transition-all flex items-center justify-center gap-2.5 cursor-pointer font-sans border border-emerald-400/30"
                       >
                         <Heart size={18} className="fill-current text-rose-300 animate-pulse" />
                         <span>手紙と連絡先の開示手続きへ進む（600円 税込）</span>
