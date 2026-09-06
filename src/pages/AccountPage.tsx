@@ -515,11 +515,17 @@ export const AccountPage = () => {
       setActiveSubTab(tab as any);
 
       setTimeout(() => {
-        const targetEl = document.getElementById('account-tabs') || document.getElementById('sent-bottles');
+        const targetEl = document.getElementById('account-tabs');
         if (targetEl) {
-          targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          if ((window as any).lenis) {
+            (window as any).lenis.scrollTo(targetEl, { offset: -90, duration: 0.8 });
+          } else {
+            const yOffset = -90;
+            const y = targetEl.getBoundingClientRect().top + window.pageYOffset + yOffset;
+            window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+          }
         }
-      }, 150);
+      }, 200);
     }
   }, [searchParams]);
 
