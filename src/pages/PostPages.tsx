@@ -1443,29 +1443,29 @@ export const CreatePostPage = () => {
             </div>
             
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label className="text-xs sm:text-sm font-bold text-black uppercase tracking-wider flex items-center gap-1">
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-black flex items-center gap-1">
                   お相手の姓<span className="text-[10px] text-red-600 font-bold ml-1 tracking-normal">＊必須</span>
                 </label>
                 <input 
                   required
                   type="text" 
                   placeholder="例：山田" 
-                  className="w-full px-4 py-3 border-b-2 border-brand-primary/50 rounded-xl bg-[#faf9f6] focus:bg-white text-base outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all text-[#000000] placeholder:text-zinc-400 font-sans letter-field-input"
+                  className="w-full px-4 py-2.5 border-b-2 border-brand-primary/50 rounded-xl bg-[#faf9f6] focus:bg-white text-sm outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/10 transition-all text-[#000000] placeholder:text-zinc-400 font-sans letter-field-input"
                   value={formData.targetLastName}
                   onChange={e => handleTargetLastNameChange(e.target.value)}
                 />
                 <WarningMessage message={warnings.targetLastName} />
               </div>
-              <div className="space-y-2">
-                <label className="text-xs sm:text-sm font-bold text-black uppercase tracking-wider flex items-center gap-1">
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-black flex items-center gap-1">
                   お相手の名<span className="text-[10px] text-red-600 font-bold ml-1 tracking-normal">＊必須</span>
                 </label>
                 <input 
                   required
                   type="text" 
                   placeholder="例：太郎" 
-                  className="w-full px-4 py-3 border-b-2 border-brand-primary/50 rounded-xl bg-[#faf9f6] focus:bg-white text-base outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all text-[#000000] placeholder:text-zinc-400 font-sans letter-field-input"
+                  className="w-full px-4 py-2.5 border-b-2 border-brand-primary/50 rounded-xl bg-[#faf9f6] focus:bg-white text-sm outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/10 transition-all text-[#000000] placeholder:text-zinc-400 font-sans letter-field-input"
                   value={formData.targetFirstName}
                   onChange={e => handleTargetFirstNameChange(e.target.value)}
                 />
