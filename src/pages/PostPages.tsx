@@ -1157,7 +1157,7 @@ export const CreatePostPage = () => {
   };
   const [nameWarning, setNameWarning] = useState(false);
   const [warnings, setWarnings] = useState<Record<string, string | null>>({});
-  const [showSearchPreview, setShowSearchPreview] = useState(false);
+  const [showSearchPreview, setShowSearchPreview] = useState(true);
   const [isAiDiagnosing, setIsAiDiagnosing] = useState(false);
   const [aiDiagnosisResult, setAiDiagnosisResult] = useState<{ score: number, feedback: string } | null>(null);
 
@@ -2758,11 +2758,11 @@ export const CreatePostPage = () => {
                         </div>
                       </div>
 
-                      <div className="text-[10.5px] text-zinc-600 space-y-2 leading-relaxed border-t border-emerald-100/80 pt-2.5 font-sans">
-                        <p className="font-medium text-emerald-950">
+                      <div className="text-[10px] text-zinc-600 space-y-1.5 leading-relaxed border-t border-emerald-100/80 pt-2 font-sans">
+                        <p className="text-[10px] text-emerald-950 font-normal leading-normal">
                           お名前と生年月日を公的身分証（免許証・マイナンバー・パスポートなど）で安全に照合します。
                         </p>
-                        <ul className="space-y-1 pl-1 text-[10px] sm:text-[10.5px] text-zinc-600">
+                        <ul className="space-y-1 pl-1 text-[9.5px] text-zinc-500">
                           <li className="flex items-start gap-1.5">
                             <span className="text-emerald-600 font-bold mt-0.5">✓</span>
                             <span>手紙やお相手とのやり取りに<strong>「🛡️ 認証済マーク」</strong>が表示され、なりすましを防止します。</span>
@@ -2903,17 +2903,6 @@ export const CreatePostPage = () => {
                       </button>
                     </div>
 
-                    {/* Checkbox */}
-                    <label className="flex items-start gap-3 p-3 bg-slate-50/80 rounded-xl border border-slate-200/80 hover:bg-slate-100/80 text-xs md:text-sm font-medium text-slate-800 cursor-pointer select-none leading-relaxed transition-all">
-                      <input 
-                        type="checkbox" 
-                        id="ekyc-post-consent"
-                        className="w-4 h-4 mt-0.5 accent-teal-600 focus:ring-teal-500 border-zinc-300 rounded cursor-pointer shrink-0"
-                      />
-                      <span>
-                        <strong>【eKYC申請同意】</strong> eKYC本人確認審査手数料（1回600円）の決済および利用規約に同意し、公的身分証明書によるオンライン本人確認を申請します。
-                      </span>
-                    </label>
                   </div>
 
                   <div className="flex gap-2 pt-2">
@@ -2927,17 +2916,12 @@ export const CreatePostPage = () => {
                     <button
                       type="button"
                       onClick={() => {
-                        const checkConsent = document.getElementById('ekyc-post-consent') as HTMLInputElement;
                         if (!ekycName.trim()) {
                           alert('お名前を入力してください。');
                           return;
                         }
                         if (!ekycBirthdate) {
                           alert('生年月日を入力してください。');
-                          return;
-                        }
-                        if (checkConsent && !checkConsent.checked) {
-                          alert('年齢確認および規約への同意チェックが必要です。');
                           return;
                         }
                         setEkycConfirmStep(3);
@@ -3038,6 +3022,19 @@ export const CreatePostPage = () => {
                     refundGuaranteeText="手紙開封または本人確認（eKYC）手続きが不承認となった場合は、Stripe仮売上システムにより全額即時自動返金されます。"
                   />
 
+                  {/* 18歳以上・利用規約・eKYC決済同意チェックボックス */}
+                  <label className="flex items-start gap-3 p-3 bg-slate-50/90 rounded-xl border border-slate-200/90 hover:bg-slate-100/80 text-xs font-medium text-slate-800 cursor-pointer select-none leading-relaxed transition-all">
+                    <input 
+                      type="checkbox" 
+                      id="ekyc-post-payment-consent"
+                      defaultChecked={true}
+                      className="w-4 h-4 mt-0.5 accent-teal-600 focus:ring-teal-500 border-zinc-300 rounded cursor-pointer shrink-0"
+                    />
+                    <span className="text-[11px] text-slate-700 leading-snug">
+                      <strong>【18歳以上・規約同意】</strong> 私は18歳以上であり、利用規約およびeKYC本人確認審査手数料（600円 税込）の決済に同意します。
+                    </span>
+                  </label>
+
                   <div className="flex gap-2 pt-2">
                     <button
                       type="button"
@@ -3051,6 +3048,7 @@ export const CreatePostPage = () => {
                       type="button"
                       disabled={isPaying}
                       onClick={() => {
+                        const checkConsent = document.getElementById('ekyc-post-payment-consent') as HTMLInputElement;
                         if (!payCardNumber.trim() || payCardNumber.length < 15) {
                           alert('有効なカード番号を入力してください。');
                           return;
@@ -3065,6 +3063,10 @@ export const CreatePostPage = () => {
                         }
                         if (!payCardName.trim()) {
                           alert('カード名義人をお名前で入力してください。');
+                          return;
+                        }
+                        if (checkConsent && !checkConsent.checked) {
+                          alert('18歳以上の年齢確認および利用規約への同意にチェックを入れてください。');
                           return;
                         }
                         setIsPaying(true);
