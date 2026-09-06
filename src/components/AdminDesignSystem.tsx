@@ -6,12 +6,26 @@ import {
   Search, Sliders, ExternalLink, RefreshCw, Eye, Code, Smartphone,
   Monitor, Compass, Heart, Bot, ShieldAlert, ArrowRight, CornerDownRight,
   Info, MessageSquare, Terminal, FileText, CheckCheck, X, Download,
-  Sun, Moon, Loader2, Bell, HelpCircle
+  Sun, Moon, Loader2, Bell, HelpCircle, Coins, Coffee
 } from 'lucide-react';
+import {
+  VisaLogo,
+  MastercardLogo,
+  JcbLogo,
+  AmexLogo,
+  DinersLogo,
+  DiscoverLogo,
+  detectCardBrand,
+  CardBrand
+} from './CreditCardPaymentForm';
 
 export const AdminDesignSystem: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'tokens' | 'components' | 'surfaces' | 'guidelines'>('tokens');
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
+
+  // Interactive Card Brand Tester
+  const [demoCardNumber, setDemoCardNumber] = useState('4111 1111 1111 1111');
+  const demoDetectedBrand = detectCardBrand(demoCardNumber);
 
   // Interactive Button State Playground
   const [btnState, setBtnState] = useState<'idle' | 'loading' | 'success' | 'disabled'>('idle');
@@ -23,6 +37,9 @@ export const AdminDesignSystem: React.FC = () => {
 
   // Card Theme Playground
   const [cardTheme, setCardTheme] = useState<'spring' | 'summer' | 'autumn' | 'winter'>('summer');
+
+  // Active Fee Scenario Playground
+  const [feeScenario, setFeeScenario] = useState<'single' | 'both' | 'ekyc_only' | 'supporter' | 'donation'>('both');
 
   // Toast Notification Simulation
   const [activeToast, setActiveToast] = useState<{ type: 'success' | 'error' | 'info'; message: string } | null>(null);
@@ -739,6 +756,84 @@ module.exports = {
               </div>
             </div>
           </div>
+
+          {/* 🏛️ 6大国際カードブランド公式SVG ＆ リアルタイム判定システム */}
+          <div className="bg-white p-6 md:p-8 rounded-3xl border border-brand-border shadow-sm space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-100 pb-3">
+              <div>
+                <h3 className="text-base font-bold text-black flex items-center gap-2">
+                  <CreditCard className="text-indigo-600" size={18} />
+                  <span>Official Card Brand Vectors & Real-time Detector (公式カードブランド ＆ リアルタイム判定)</span>
+                </h3>
+                <p className="text-xs text-black/60 mt-0.5">
+                  国際6大ブランドの公式ベクターSVGロゴを搭載。番号入力に合わせて即座にブランドを自動認識・ハイライトします。
+                </p>
+              </div>
+              <span className="text-xs px-3 py-1 bg-indigo-50 text-indigo-900 border border-indigo-200 rounded-full font-bold">
+                現在判定: <strong className="font-mono uppercase text-indigo-600">{demoDetectedBrand}</strong>
+              </span>
+            </div>
+
+            {/* Interactive Card Tester Input */}
+            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
+              <label className="text-xs font-bold text-slate-800 block">
+                🔍 テストカード番号を入力（または下のプリセットをクリック）:
+              </label>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <input
+                  type="text"
+                  value={demoCardNumber}
+                  onChange={(e) => setDemoCardNumber(e.target.value)}
+                  placeholder="例: 4111 1111 1111 1111"
+                  className="flex-1 px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-xs font-mono font-bold text-slate-900 focus:outline-none focus:border-indigo-600 shadow-inner"
+                />
+                <button
+                  type="button"
+                  onClick={() => setDemoCardNumber('4111 1111 1111 1111')}
+                  className="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold cursor-pointer transition-all"
+                >
+                  VISAテスト番号
+                </button>
+              </div>
+            </div>
+
+            {/* 6 Brands Grid Showcase */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+              {[
+                { brand: 'visa' as CardBrand, name: 'VISA', prefix: '4...', component: <VisaLogo className="h-7 w-auto" />, testNum: '4111 1111 1111 1111' },
+                { brand: 'mastercard' as CardBrand, name: 'Mastercard', prefix: '51-55 / 22-27', component: <MastercardLogo className="h-7 w-auto" />, testNum: '5555 5555 5555 4444' },
+                { brand: 'jcb' as CardBrand, name: 'JCB', prefix: '35...', component: <JcbLogo className="h-7 w-auto" />, testNum: '3528 1234 5678 9012' },
+                { brand: 'amex' as CardBrand, name: 'Amex', prefix: '34 / 37', component: <AmexLogo className="h-7 w-auto" />, testNum: '3782 8224 6310 005' },
+                { brand: 'diners' as CardBrand, name: 'Diners', prefix: '30 / 36 / 38', component: <DinersLogo className="h-7 w-auto" />, testNum: '3600 0000 0000 00' },
+                { brand: 'discover' as CardBrand, name: 'Discover', prefix: '6011 / 65', component: <DiscoverLogo className="h-7 w-auto" />, testNum: '6011 0000 0000 0000' },
+              ].map((c) => {
+                const isActive = demoDetectedBrand === c.brand;
+                return (
+                  <button
+                    key={c.brand}
+                    type="button"
+                    onClick={() => setDemoCardNumber(c.testNum)}
+                    className={`p-3.5 rounded-2xl border transition-all flex flex-col items-center justify-center gap-1.5 cursor-pointer text-center ${
+                      isActive
+                        ? 'bg-indigo-50/90 border-2 border-indigo-600 shadow-md ring-2 ring-indigo-500/20 scale-[1.03]'
+                        : 'bg-white hover:bg-slate-50 border-slate-200 opacity-70 hover:opacity-100'
+                    }`}
+                  >
+                    <div className="h-8 flex items-center justify-center">
+                      {c.component}
+                    </div>
+                    <span className="text-xs font-bold text-slate-900 mt-1">{c.name}</span>
+                    <span className="text-[10px] font-mono text-slate-500">{c.prefix}</span>
+                    {isActive && (
+                      <span className="inline-flex items-center gap-1 text-[9px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full mt-0.5">
+                        <Check size={10} /> 判定一致
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </motion.div>
       )}
 
@@ -776,17 +871,21 @@ module.exports = {
               </div>
             </div>
 
-            {/* Live Interactive Bottle Card */}
+            {/* Live Interactive Bottle Card & Fee Breakdown */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+              {/* Emotion Bottle Mail Card with Real Full Name & Maiden Name */}
               <div className={`rounded-3xl border ${themeConfig[cardTheme].border} ${themeConfig[cardTheme].bg} p-6 shadow-sm space-y-4 relative overflow-hidden transition-all duration-300`}>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
                     <div className={`w-9 h-9 rounded-full border ${themeConfig[cardTheme].avatarBg} flex items-center justify-center font-bold text-xs shadow-xs`}>
-                      本
+                      綿
                     </div>
                     <div>
-                      <span className="text-xs font-bold text-black block">本間 貴司 (たかし)</span>
-                      <span className="text-[10px] text-black/50">東京都世田谷区 ・ 1990年代</span>
+                      {/* 📜 差出人本名＋旧姓の統一表記仕様 */}
+                      <span className="text-xs font-bold text-black block">
+                        差出人: 綿矢 りさ <span className="text-slate-600 font-normal">（旧姓: 田中）</span>
+                      </span>
+                      <span className="text-[10px] text-black/50">世田谷区立第一中学校 ・ 1990年代（同級生）</span>
                     </div>
                   </div>
                   <span className="text-[10px] bg-emerald-100 text-emerald-800 border border-emerald-200 px-2.5 py-0.5 rounded-full font-bold">
@@ -798,51 +897,125 @@ module.exports = {
                   <p>「あの時、校庭の桜の木の下で話した約束をずっと覚えています。もしこのボトルメールを見つけたら、秘密の質問に答えて手紙を開封してください。」</p>
                 </div>
 
+                {/* 旧姓未登録時のフォールバック見本 */}
+                <div className="p-2.5 bg-white/70 rounded-xl border border-black/5 text-[11px] text-slate-600 space-y-1">
+                  <span className="font-bold text-slate-800 block">💡 差出人本名・旧姓の表示ルール（統一フォーマット）:</span>
+                  <div className="font-mono text-[10px] space-y-0.5 text-slate-700">
+                    <div>・ 旧姓登録あり: <code>綿矢 りさ（旧姓: 田中）</code></div>
+                    <div>・ 旧姓未登録時: <code>山田 太郎（旧姓: 　　　）</code>（枠を維持し信頼感を担保）</div>
+                  </div>
+                </div>
+
                 <div className="flex items-center justify-between pt-2 border-t border-black/5 text-xs text-black/60">
                   <span className={`text-[11px] font-bold px-2 py-0.5 rounded-md border ${themeConfig[cardTheme].tagBg}`}>
                     {themeConfig[cardTheme].badge}
                   </span>
                   <span className="font-bold text-teal-800 flex items-center gap-1">
-                    秘密の質問 2問完備 <ArrowRight size={12} />
+                    想い出クイズ 2問一致必須 <ArrowRight size={12} />
                   </span>
                 </div>
               </div>
 
-              {/* Official 600-Yen Transparent Fee Breakdown Card */}
+              {/* Official Transparent Fee Breakdown Card (All 5 Scenarios) */}
               <div className="bg-teal-50/80 border border-teal-200 rounded-3xl p-6 space-y-4 shadow-sm">
                 <div className="flex items-center justify-between pb-3 border-b border-teal-200/70">
                   <div className="flex items-center gap-2">
                     <CreditCard className="text-teal-700" size={18} />
-                    <h4 className="text-sm font-bold text-teal-950 font-serif">公的証明 ＆ 直通連絡先開示手数料</h4>
+                    <h4 className="text-sm font-bold text-teal-950 font-serif">公的証明 ＆ 決済シナリオ明細</h4>
                   </div>
-                  <span className="text-xs bg-teal-200/60 text-teal-900 px-2.5 py-0.5 rounded-lg font-bold">完全買い切り</span>
+                  <span className="text-xs bg-teal-200/60 text-teal-900 px-2.5 py-0.5 rounded-lg font-bold">明朗会計・返金保証</span>
+                </div>
+
+                {/* Scenario Selector Chips */}
+                <div className="flex flex-wrap gap-1 bg-white/70 p-1.5 rounded-xl border border-teal-200 text-[11px] font-bold">
+                  <button
+                    type="button"
+                    onClick={() => setFeeScenario('single')}
+                    className={`px-2 py-1 rounded-lg transition-all cursor-pointer ${feeScenario === 'single' ? 'bg-teal-700 text-white shadow-xs' : 'text-teal-900 hover:bg-teal-100'}`}
+                  >
+                    ① 通常手紙開示 (¥600)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFeeScenario('both')}
+                    className={`px-2 py-1 rounded-lg transition-all cursor-pointer ${feeScenario === 'both' ? 'bg-indigo-700 text-white shadow-xs' : 'text-indigo-950 hover:bg-indigo-100'}`}
+                  >
+                    ② 開封＋eKYC同時 (¥1,200)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFeeScenario('supporter')}
+                    className={`px-2 py-1 rounded-lg transition-all cursor-pointer ${feeScenario === 'supporter' ? 'bg-amber-600 text-white shadow-xs' : 'text-amber-950 hover:bg-amber-100'}`}
+                  >
+                    ④ サポーター支援 (¥500〜)
+                  </button>
                 </div>
 
                 <div className="space-y-2 text-xs font-sans">
-                  <div className="flex items-center justify-between text-teal-950 pb-1.5 border-b border-teal-200/50">
-                    <span>🪪 公的身分証（eKYC）認証審査料</span>
-                    <span className="font-mono font-medium text-black/60">込み (0 円)</span>
-                  </div>
-                  <div className="flex items-center justify-between text-teal-950 pb-1.5 border-b border-teal-200/50">
-                    <span>📱 SMS携帯番号本人認証通信費</span>
-                    <span className="font-mono font-medium text-black/60">込み (0 円)</span>
-                  </div>
-                  <div className="flex items-center justify-between text-teal-950 pb-1.5 border-b border-teal-200/50">
-                    <span>✉️ 手紙開封 ＆ 直通SNS/メアド開示</span>
-                    <span className="font-mono font-bold text-teal-900">600 円</span>
-                  </div>
-                  <div className="flex items-center justify-between text-teal-950 font-bold pt-1.5 text-sm">
-                    <span className="flex items-center gap-1 text-teal-950">
-                      <Sparkles size={14} className="text-amber-500" />
-                      お引き落とし合計（買い切り）
-                    </span>
-                    <span className="text-base text-teal-900 font-serif">600 円 (税込)</span>
-                  </div>
+                  {feeScenario === 'single' && (
+                    <>
+                      <div className="flex items-center justify-between text-teal-950 pb-1.5 border-b border-teal-200/50">
+                        <span>✉️ 想い出の手紙開示 ＆ 連絡先（LINE等）開示</span>
+                        <span className="font-mono font-bold text-teal-900">600 円</span>
+                      </div>
+                      <div className="flex items-center justify-between text-teal-950 pb-1.5 border-b border-teal-200/50">
+                        <span>🔒 連絡先セキュア引き渡し・暗号化通信</span>
+                        <span className="font-mono font-medium text-black/60">込み (0 円)</span>
+                      </div>
+                      <div className="flex items-center justify-between text-teal-950 font-bold pt-1.5 text-sm">
+                        <span className="flex items-center gap-1 text-teal-950">
+                          <Sparkles size={14} className="text-amber-500" />
+                          お引き落とし合計（買い切り）
+                        </span>
+                        <span className="text-base text-teal-900 font-serif">600 円 (税込)</span>
+                      </div>
+                    </>
+                  )}
+
+                  {feeScenario === 'both' && (
+                    <>
+                      <div className="flex items-center justify-between text-indigo-950 pb-1.5 border-b border-indigo-200/50">
+                        <span>✉️ 想い出の手紙開示・連絡先開示手数料</span>
+                        <span className="font-mono font-bold text-indigo-900">600 円</span>
+                      </div>
+                      <div className="flex items-center justify-between text-indigo-950 pb-1.5 border-b border-indigo-200/50">
+                        <span>🪪 公的身分証eKYC本人確認審査費用</span>
+                        <span className="font-mono font-bold text-indigo-900">600 円</span>
+                      </div>
+                      <div className="flex items-center justify-between text-indigo-950 font-bold pt-1.5 text-sm">
+                        <span className="flex items-center gap-1 text-indigo-950">
+                          <ShieldCheck size={14} className="text-indigo-600" />
+                          同時決済お引き落とし合計
+                        </span>
+                        <span className="text-base text-indigo-900 font-serif">1,200 円 (税込)</span>
+                      </div>
+                    </>
+                  )}
+
+                  {feeScenario === 'supporter' && (
+                    <>
+                      <div className="flex items-center justify-between text-amber-950 pb-1.5 border-b border-amber-200/50">
+                        <span>☕ サポーター支援（コーヒー1杯〜）</span>
+                        <span className="font-mono font-bold text-amber-900">¥500 / 1口</span>
+                      </div>
+                      <div className="flex items-center justify-between text-amber-950 pb-1.5 border-b border-amber-200/50">
+                        <span>❤️ プラットフォームサーバー・AI維持応援</span>
+                        <span className="font-mono font-medium text-black/60">全額運営充当</span>
+                      </div>
+                      <div className="flex items-center justify-between text-amber-950 font-bold pt-1.5 text-sm">
+                        <span className="flex items-center gap-1 text-amber-950">
+                          <Coffee size={14} className="text-amber-600" />
+                          ご支援金額
+                        </span>
+                        <span className="text-base text-amber-900 font-serif">¥500〜（任意口数）</span>
+                      </div>
+                    </>
+                  )}
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-white/70 border border-teal-200/80 text-[11px] text-teal-900 flex items-start gap-1.5">
+                <div className="p-2.5 rounded-xl bg-white/80 border border-teal-200/80 text-[11px] text-teal-950 flex items-start gap-1.5">
                   <CheckCircle2 size={14} className="text-teal-700 shrink-0 mt-0.5" />
-                  <span>審査不合格や通信不達の場合は、Stripe決済が即座に自動返金・キャンセルされます。</span>
+                  <span>【全額即時返金保証】eKYC審査不合格や相手の未開封時は、Stripe仮売上システムにより全額自動返金されます。</span>
                 </div>
               </div>
             </div>
@@ -855,19 +1028,19 @@ module.exports = {
       {/* ======================================================== */}
       {activeTab === 'guidelines' && (
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
-          {/* 4 Core Principles */}
+          {/* 5 Core Principles */}
           <div className="bg-white p-6 md:p-8 rounded-3xl border border-brand-border shadow-sm space-y-6">
             <div className="border-b border-zinc-100 pb-3">
               <h3 className="text-base font-bold text-black flex items-center gap-2">
                 <Code className="text-teal-700" size={18} />
-                <span>Design Principles & Architecture Rules (設計原則 4大鉄則)</span>
+                <span>Design Principles & Architecture Rules (設計原則 5大鉄則)</span>
               </h3>
               <p className="text-xs text-black/60 mt-0.5">
-                ReMEETsのUI品質を長期にわたって担保するための設計ルール
+                ReMEETsのUI品質・法的信頼性・情緒体験を長期にわたって担保するための設計ルール
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div className="p-5 rounded-2xl bg-zinc-50 border border-brand-border space-y-2">
                 <div className="w-7 h-7 rounded-lg bg-teal-100 text-teal-800 flex items-center justify-center font-bold text-xs">
                   01
@@ -904,7 +1077,17 @@ module.exports = {
                 </div>
                 <h4 className="text-sm font-bold text-black font-serif">完全買い切り・透明な料金表示</h4>
                 <p className="text-xs text-black/60 leading-relaxed">
-                  料金表示は「eKYC ＋ SMS ＋ 連絡先開示 ＝ 600 円（完全買い切り）」を明示し、ユーザーに予期せぬ月額課金の不安を与えないUIを徹底します。
+                  料金表示は「手紙開示 600円 / eKYC同時 1,200円（完全買い切り）」を明示し、ユーザーに予期せぬ月額課金の不安を与えないUIを徹底します。
+                </p>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-zinc-50 border border-brand-border space-y-2 lg:col-span-2">
+                <div className="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-800 flex items-center justify-center font-bold text-xs">
+                  05
+                </div>
+                <h4 className="text-sm font-bold text-indigo-950 font-serif">差出人「本名＋旧姓」常時統一フォーマット</h4>
+                <p className="text-xs text-black/60 leading-relaxed">
+                  手紙差出人の表記はニックネームへのフォールバックを排除し、必ず本名を表示します。旧姓未登録時も <code>（旧姓: 　　　）</code> とブランク枠を維持して統一フォーマットを堅持します。
                 </p>
               </div>
             </div>
