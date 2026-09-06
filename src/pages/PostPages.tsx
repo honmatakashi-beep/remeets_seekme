@@ -1311,6 +1311,103 @@ export const CreatePostPage = () => {
     }
   }, [step]);
 
+  const toHalfWidth = (str: string) => {
+    return str.replace(/[０-９]/g, (s) => {
+      return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+    }).replace(/[ａ-ｚＡ-Ｚ]/g, (s) => {
+      return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+    });
+  };
+
+  const checkRealName = (name: string) => {
+    const commonKanji = /[\u4e00-\u9faf]/;
+    const isRealName = name.length > 1 && (commonKanji.test(name) || (user?.name && name.includes(user.name)));
+    setNameWarning(isRealName);
+  };
+
+  const handleSearcherNameChange = (name: string) => {
+    const ngLabel = checkNg(name);
+    setWarnings(prev => ({ ...prev, searcherName: ngLabel ? `禁止文字（${ngLabel}）が含まれています。` : null }));
+    setFormData(prev => ({ ...prev, searcherName: name }));
+    checkRealName(name);
+  };
+
+  const handleInputChange = (field: string, value: string) => {
+    const ngLabel = checkNg(value);
+    setWarnings(prev => ({ ...prev, [field]: ngLabel ? `禁止文字（${ngLabel}）が含まれています。` : null }));
+    setFormData(prev => {
+      const nextData = { ...prev, [field]: value };
+      if (field === 'targetHometownPref' || field === 'targetHometownArea') {
+        const pref = field === 'targetHometownPref' ? value : prev.targetHometownPref;
+        const area = field === 'targetHometownArea' ? value : prev.targetHometownArea;
+        nextData.targetHometown = `${pref}${area}`;
+      }
+      return nextData;
+    });
+  };
+
+  const handleQuestionChange = (idx: number, field: string, value: string) => {
+    const ngLabel = checkNg(value);
+    const warningKey = `question_${idx}_${field}`;
+    setWarnings(prev => ({ ...prev, [warningKey]: ngLabel ? `禁止文字（${ngLabel}）が含まれています。` : null }));
+    const newQs = [...questions];
+    newQs[idx] = { ...newQs[idx], [field]: value };
+    setQuestions(newQs);
+  };
+
+  const handleTargetLastNameChange = (val: string) => {
+    const ngLabel = checkNg(val);
+    setWarnings(prev => ({ ...prev, targetLastName: ngLabel ? `禁止文字（${ngLabel}）が含まれています。` : null }));
+    setFormData(prev => ({ ...prev, targetLastName: val, targetName: `${val} ${prev.targetFirstName}`.trim() }));
+  };
+
+  const handleTargetFirstNameChange = (val: string) => {
+    const ngLabel = checkNg(val);
+    setWarnings(prev => ({ ...prev, targetFirstName: ngLabel ? `禁止文字（${ngLabel}）が含まれています。` : null }));
+    setFormData(prev => ({ ...prev, targetFirstName: val, targetName: `${prev.targetLastName} ${val}`.trim() }));
+  };
+
+  const handleAiDiagnosis = async (idx: number) => {
+    const q = questions[idx].question;
+    const a = questions[idx].answer;
+    if (!q || !a) {
+      setWarnings(prev => ({ ...prev, [`question_${idx}_ai`]: '質問と答えの両方を入力してください。' }));
+      return;
+    }
+    setWarnings(prev => ({ ...prev, [`question_${idx}_ai`]: null }));
+    setIsAiDiagnosing(true);
+    try {
+      const res = await fetch('/api/ai/diagnose-qa', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: q, answer: a })
+      });
+      const result = await res.json();
+      setAiDiagnosisResult(result);
+    } catch (err) {
+      console.error(err);
+      setWarnings(prev => ({ ...prev, [`question_${idx}_ai`]: '診断に失敗しました。時間をおいて再度お試しください。' }));
+    } finally {
+      setIsAiDiagnosing(false);
+    }
+  };
+
+  const nextStep = () => {
+    setStep(prev => Math.min(prev + 1, 3));
+    window.scrollTo(0, 0);
+    if ((window as any).lenis) {
+      (window as any).lenis.scrollTo(0, { immediate: true });
+    }
+  };
+
+  const prevStep = () => {
+    setStep(prev => Math.max(prev - 1, 0));
+    window.scrollTo(0, 0);
+    if ((window as any).lenis) {
+      (window as any).lenis.scrollTo(0, { immediate: true });
+    }
+  };
+
   const jumpToStep = (targetStep: number) => {
     setStep(targetStep);
     window.scrollTo(0, 0);
@@ -2284,14 +2381,6 @@ export const CreatePostPage = () => {
       isValid: () => agreed && captchaAnswer === captchaQuestion.a
     }
   ];
-
-  const toHalfWidth = (str: string) => {
-    return str.replace(/[０-９]/g, (s) => {
-      return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
-    }).replace(/[ａ-ｚＡ-Ｚ]/g, (s) => {
-      return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
-    });
-  };
 
   const handleNextStep = () => {
     if (steps[step].isValid()) {
