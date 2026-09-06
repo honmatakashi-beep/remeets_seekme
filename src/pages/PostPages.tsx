@@ -397,12 +397,12 @@ export const EditPostPage = () => {
                       </div>
 
                       {/* 常時表示：目的 & 鉄則 */}
-                      <div className="space-y-1.5 text-xs md:text-sm text-zinc-700 font-sans leading-relaxed">
+                      <div className="space-y-1 text-xs md:text-sm text-zinc-700 font-sans leading-relaxed">
                         <p>
-                          <strong className="text-stone-900">【目的】</strong> お相手が「あ、探しているのはあの時の〇〇さんだ！」と気づくための目印です。
+                          【目的】 お相手が「あ、探しているのはあの時の〇〇さんだ！」と気づくための目印です。
                         </p>
                         <p>
-                          <strong className="text-stone-900">【鉄則】</strong> 氏名や住所、連絡先などの個人情報は一切記入できません。<strong>「当時の二人だけが知る共通のシチュエーション・出来事・呼び名」</strong>を書いてください。
+                          【鉄則】 氏名や住所、連絡先などの個人情報は一切記入できません。「当時の二人だけが知る共通のシチュエーション・出来事・呼び名」を書いてください。
                         </p>
                       </div>
 
@@ -1515,12 +1515,12 @@ export const CreatePostPage = () => {
                 </div>
 
                 {/* 常時表示：目的 & 鉄則 */}
-                <div className="space-y-1.5 text-xs md:text-sm text-zinc-700 font-sans leading-relaxed">
+                <div className="space-y-1 text-xs md:text-sm text-zinc-700 font-sans leading-relaxed">
                   <p>
-                    <strong className="text-stone-900">【目的】</strong> お相手が「あ、探しているのはあの時の〇〇さんだ！」と気づくための目印です。
+                    【目的】 お相手が「あ、探しているのはあの時の〇〇さんだ！」と気づくための目印です。
                   </p>
                   <p>
-                    <strong className="text-stone-900">【鉄則】</strong> 氏名や住所、連絡先などの個人情報は一切記入できません。<strong>「当時の二人だけが知る共通のシチュエーション・出来事・呼び名」</strong>を書いてください。
+                    【鉄則】 氏名や住所、連絡先などの個人情報は一切記入できません。「当時の二人だけが知る共通のシチュエーション・出来事・呼び名」を書いてください。
                   </p>
                 </div>
 
