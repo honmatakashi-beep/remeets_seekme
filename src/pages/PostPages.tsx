@@ -347,12 +347,18 @@ export const EditPostPage = () => {
                 </div>
 
                 <div className="space-y-4">
-                  <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-indigo-100/90 to-sky-100/70 border-b-2 border-indigo-600/70 rounded-xl mb-3">
-                    <Info className="text-indigo-800 shrink-0" size={24} />
-                    <h2 className="text-lg sm:text-xl md:text-2xl font-black text-indigo-950">2. 差出人（あなた）の手がかり</h2>
+                  <div className="flex items-center justify-between p-4 sm:p-5 bg-gradient-to-r from-amber-50/80 via-orange-50/30 to-[#FAF6F0] border border-amber-200/70 rounded-2xl mb-3 border-l-4 border-l-amber-700 shadow-2xs">
+                    <div className="flex items-center gap-2.5">
+                      <BookOpen className="text-amber-800 shrink-0" size={22} />
+                      <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-stone-900">2. 差出人（あなた）の手がかり</h2>
+                    </div>
+                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wider bg-amber-800 text-amber-50 shadow-2xs shrink-0 flex items-center gap-1">
+                      <span>FROM</span>
+                      <span className="text-[9px] opacity-75">差出人</span>
+                    </span>
                   </div>
-                  <div className="p-6 bg-brand-primary/5 rounded-[32px] border-2 border-brand-primary/20 shadow-xl shadow-brand-primary/5">
-                    <p className="text-base text-black font-bold leading-relaxed mb-4">
+                  <div className="p-6 bg-[#FAF7F2] rounded-[28px] border border-amber-200/70 shadow-sm">
+                    <p className="text-base text-stone-800 font-bold leading-relaxed mb-4">
                       お相手があなただと確信できる、二人だけの思い出やエピソードを入力してください。（※年代、学校・勤務先、ゆかりの地は他の項目で設定するため、ここでは純粋な思い出のみをお書きください）
                     </p>
                     <textarea 
@@ -370,9 +376,15 @@ export const EditPostPage = () => {
 
             {/* 探しているお相手のこと */}
             <section className="space-y-8">
-              <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-teal-100/90 to-sky-100/70 border-b-2 border-teal-600/70 rounded-xl">
-                <Search className="text-teal-800 shrink-0" size={24} />
-                <h2 className="text-lg sm:text-xl md:text-2xl font-black text-teal-950">1. 探しているお相手の情報</h2>
+              <div className="flex items-center justify-between p-4 sm:p-5 bg-gradient-to-r from-slate-50 via-sky-50/40 to-slate-100/60 border border-slate-200/80 rounded-2xl border-l-4 border-l-slate-700 shadow-2xs">
+                <div className="flex items-center gap-2.5">
+                  <Search className="text-slate-700 shrink-0" size={22} />
+                  <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-slate-900">1. 探しているお相手の情報</h2>
+                </div>
+                <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wider bg-slate-800 text-white shadow-2xs shrink-0 flex items-center gap-1">
+                  <span>TO</span>
+                  <span className="text-[9px] opacity-75">宛先</span>
+                </span>
               </div>
 
               <div className="space-y-6">
@@ -1137,11 +1149,19 @@ export const CreatePostPage = () => {
       fields: (
         <div className="space-y-6">
           {/* お相手の情報 */}
-          <div className="space-y-5 bg-white/80 p-5 md:p-6 rounded-2xl border-2 border-teal-200/90 shadow-xs overflow-hidden">
-            <h3 className="text-base sm:text-lg md:text-xl font-black text-teal-950 flex items-center gap-2.5 border-b-2 border-teal-600/70 bg-gradient-to-r from-teal-100/80 to-sky-100/60 -mx-5 -mt-5 p-4 md:-mx-6 md:-mt-6 md:p-5">
-              <UserIcon size={24} className="text-teal-700 shrink-0" />
-              <span>1. 探しているお相手の情報</span>
-            </h3>
+          <div className="space-y-5 bg-white/95 p-5 md:p-6 rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden transition-all">
+            <div className="flex items-center justify-between border-b border-slate-200/80 bg-gradient-to-r from-slate-50 via-sky-50/40 to-slate-100/60 -mx-5 -mt-5 p-4 md:-mx-6 md:-mt-6 md:p-5 border-l-4 border-l-slate-700">
+              <div className="flex items-center gap-2.5">
+                <Search size={22} className="text-slate-700 shrink-0" />
+                <h3 className="text-base sm:text-lg md:text-xl font-bold text-slate-900 tracking-tight">
+                  1. 探しているお相手の情報
+                </h3>
+              </div>
+              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wider bg-slate-800 text-white shadow-2xs shrink-0 flex items-center gap-1">
+                <span>TO</span>
+                <span className="text-[9px] opacity-75">宛先</span>
+              </span>
+            </div>
             
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -1331,11 +1351,19 @@ export const CreatePostPage = () => {
           </div>
 
           {/* あなたの手がかり */}
-          <div className="space-y-5 bg-white/80 p-5 md:p-6 rounded-2xl border-2 border-indigo-200/90 shadow-xs overflow-hidden">
-            <h3 className="text-base sm:text-lg md:text-xl font-black text-indigo-950 flex items-center gap-2.5 border-b-2 border-indigo-600/70 bg-gradient-to-r from-indigo-100/80 to-sky-100/60 -mx-5 -mt-5 p-4 md:-mx-6 md:-mt-6 md:p-5">
-              <Info size={24} className="text-indigo-700 shrink-0" />
-              <span>2. 差出人（あなた）の手がかり</span>
-            </h3>
+          <div className="space-y-5 bg-white/95 p-5 md:p-6 rounded-2xl border border-amber-200/80 shadow-xs overflow-hidden transition-all">
+            <div className="flex items-center justify-between border-b border-amber-200/70 bg-gradient-to-r from-amber-50/70 via-orange-50/30 to-[#FAF6F0] -mx-5 -mt-5 p-4 md:-mx-6 md:-mt-6 md:p-5 border-l-4 border-l-amber-700">
+              <div className="flex items-center gap-2.5">
+                <BookOpen size={22} className="text-amber-800 shrink-0" />
+                <h3 className="text-base sm:text-lg md:text-xl font-bold text-stone-900 tracking-tight">
+                  2. 差出人（あなた）の手がかり
+                </h3>
+              </div>
+              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wider bg-amber-800 text-amber-50 shadow-2xs shrink-0 flex items-center gap-1">
+                <span>FROM</span>
+                <span className="text-[9px] opacity-75">差出人</span>
+              </span>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1.5">
@@ -1368,8 +1396,8 @@ export const CreatePostPage = () => {
               <label className="text-xs sm:text-sm font-bold text-black flex items-center gap-1.5">
                 特定するための手がかり・エピソード<span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
               </label>
-              <div className="p-4 sm:p-5 bg-brand-primary/5 rounded-[24px] border border-brand-primary/20">
-                <p className="text-xs text-black font-bold mb-2.5 leading-relaxed">
+              <div className="p-4 sm:p-5 bg-[#FAF7F2] rounded-[24px] border border-amber-200/70 shadow-2xs">
+                <p className="text-xs text-stone-800 font-bold mb-2.5 leading-relaxed">
                   お相手があなただと確信できる、二人だけの思い出やエピソードを入力してください。（※年代、学校・勤務先、ゆかりの地は他の項目で設定するため、ここでは純粋な思い出のみをお書きください）
                 </p>
                 <textarea 
