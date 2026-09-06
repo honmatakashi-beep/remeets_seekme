@@ -6254,7 +6254,6 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               >
                 <Globe size={15} className={!ownerPreviewRevealed ? "text-white" : "text-emerald-400"} />
                 <span>ネット公開画面</span>
-                {!ownerPreviewRevealed && <span className="w-2 h-2 rounded-full bg-white shadow-xs animate-pulse" />}
               </button>
 
               <button 
@@ -6268,7 +6267,6 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               >
                 <Eye size={15} className={ownerPreviewRevealed ? "text-white" : "text-blue-400"} />
                 <span>正解後の開示画面</span>
-                {ownerPreviewRevealed && <span className="w-2 h-2 rounded-full bg-white shadow-xs animate-pulse" />}
               </button>
             </div>
 
@@ -6290,11 +6288,11 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               <span>
                 {!ownerPreviewRevealed ? (
                   <>
-                    <strong className="text-blue-300">【🌐 ネット公開画面を表示中】</strong> Google検索やエゴサーチでお相手が最初に見る初期画面です。手紙本文・連絡先・質問の答えはすべて伏せられ（🔒）、安全に保護されています。
+                    <strong className="text-emerald-300">【ネット公開画面を表示中】</strong> Google検索やエゴサーチでお相手が最初に見る初期画面です。手紙本文・連絡先・質問の答えはすべて伏せられ、安全に保護されています。
                   </>
                 ) : (
                   <>
-                    <strong className="text-sky-300">【🔓 正解後の開示画面を表示中】</strong> お相手が「思い出の質問」に全問正解し、安全な開示手続きを完了した後にのみ表示される手紙本文・連絡先・実名の画面です。
+                    <strong className="text-blue-300">【正解後の開示画面を表示中】</strong> お相手が「思い出の質問」に全問正解し、安全な開示手続きを完了した後にのみ表示される手紙本文・連絡先・実名の画面です。
                   </>
                 )}
               </span>
