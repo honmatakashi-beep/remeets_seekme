@@ -2390,18 +2390,32 @@ export const CreatePostPage = () => {
         (window as any).lenis.scrollTo(0, { immediate: true });
       }
     } else {
-      alert(`${steps[step].title}の入力内容に不備があります。確認してください。`);
+      if (step === 0) {
+        alert('【Step 1】お相手のお名前、ゆかりの地、年代、関係性、あなたのニックネーム・フルネーム・手がかりをすべてご入力ください。');
+      } else if (step === 1) {
+        alert('【Step 2】思い出の質問（2問）と答えをすべてご入力ください。');
+      } else if (step === 2) {
+        alert('【Step 3】手紙のメッセージ本文と、開示用連絡先IDをご入力ください。');
+      } else {
+        alert(`${steps[step].title}の入力内容をご確認ください。`);
+      }
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Check all steps for validity
-    for (let i = 0; i < steps.length; i++) {
+    // 最終ステップ以外でForm Submitがトリガーされた場合は次のステップへ安全に進む
+    if (step < steps.length - 1) {
+      handleNextStep();
+      return;
+    }
+    
+    // Check all previous steps for validity
+    for (let i = 0; i < steps.length - 1; i++) {
       if (!steps[i].isValid()) {
         setStep(i);
-        alert(`${steps[i].title}の入力内容に不備があります。確認してください。`);
+        alert(`「${steps[i].title}」の入力内容に不備があります。各項目をご確認ください。`);
         return;
       }
     }
@@ -2412,13 +2426,13 @@ export const CreatePostPage = () => {
       return;
     }
 
-    if (captchaAnswer !== captchaQuestion.a) {
-      alert('ボットチェックの答えが正しくありません。');
+    if (!agreed) {
+      alert('利用規約およびプライバシーポリシーへの同意にチェックを入れてください。');
       return;
     }
 
-    if (!agreed) {
-      alert('利用規約への同意が必要です。');
+    if (captchaAnswer !== captchaQuestion.a) {
+      alert('ボットチェック（計算問題）の答えを正しく入力してください。');
       return;
     }
 
@@ -2571,7 +2585,15 @@ export const CreatePostPage = () => {
       </div>
 
       <div className="glass-card p-8 md:p-12 mb-8">
-        <form onSubmit={handleSubmit} className="space-y-8">
+        <form 
+          onSubmit={handleSubmit} 
+          onKeyDown={(e) => { 
+            if (e.key === 'Enter' && (e.target as HTMLElement).tagName !== 'TEXTAREA') {
+              e.preventDefault(); 
+            }
+          }} 
+          className="space-y-8"
+        >
           <motion.div
             key={step}
             initial={{ opacity: 0, y: 10 }}
@@ -2638,88 +2660,57 @@ export const CreatePostPage = () => {
       <div className="text-center">
         <p className="text-sm text-black leading-relaxed max-w-lg mx-auto">
           ※ 投函された内容は、お相手が検索で見つけられるよう公開されます。<br />
-          プライベートメッセージは、思い出の質問に正解した方のみが閲覧可能です。
+          ※ プライベートメッセージと連絡先は、質問に正解したお相手のみに安全に開示されます。
         </p>
       </div>
 
-      {/* 投函前・本人確認（eKYC）選択モーダル */}
-      <AnimatePresence>
-        {showPostConfirmModal && (
-          <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 md:p-6 text-black font-sans" data-lenis-prevent>
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => {
-                if (!isSubmitting && ekycConfirmStep !== 3) {
-                  setShowPostConfirmModal(false);
-                }
-              }}
-              className="absolute inset-0 bg-black/65 cursor-pointer"
-            />
-
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.96, y: 15 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.96, y: 15 }}
-              transition={{ duration: 0.25, ease: "easeOut" }}
-              className="relative w-full max-w-lg bg-white shadow-2xl p-6 md:p-8 text-zinc-900 z-10 rounded-2xl max-h-[90vh] flex flex-col overflow-y-auto"
-              data-lenis-prevent
-            >
-              {!isSubmitting && ekycConfirmStep !== 3 && (
-                <button 
-                  type="button"
-                  onClick={() => setShowPostConfirmModal(false)}
-                  className="absolute top-4 right-4 text-zinc-400 hover:text-brand-dark transition-colors p-1.5 focus:outline-none cursor-pointer rounded-full hover:bg-zinc-100 z-20"
-                  aria-label="閉じる"
-                >
-                  <X size={18} />
-                </button>
-              )}
-
-              {/* ステップ進行プログレスインジケーター */}
-              <div className="mb-4 space-y-1.5 font-sans border-b border-slate-100 pb-3">
-                <div className="flex items-center justify-between text-[11px] font-bold text-slate-500">
-                  <span className="flex items-center gap-1.5">
-                    <ShieldCheck size={14} className="text-teal-600" />
-                    <span>本人確認＆投函手続き</span>
-                  </span>
-                  <span className="font-mono text-teal-700 font-extrabold bg-teal-50 px-2 py-0.5 rounded-full text-[10px] border border-teal-200/60">
-                    {ekycConfirmStep === 1 && 'STEP 1 / 4 (コース選択)'}
-                    {ekycConfirmStep === 2 && 'STEP 2 / 4 (身元情報)'}
-                    {ekycConfirmStep === 3 && 'STEP 3 / 4 (撮影ガイド)'}
-                    {ekycConfirmStep === 4 && 'STEP 4 / 4 (安全決済)'}
-                    {ekycConfirmStep === 5 && '処理中 (照合・投函)'}
-                  </span>
-                </div>
-                <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden relative shadow-inner">
-                  <div 
-                    className="bg-gradient-to-r from-teal-500 via-emerald-500 to-amber-400 h-full transition-all duration-300 rounded-full shadow-xs"
-                    style={{
-                      width: ekycConfirmStep === 1 ? '25%' : ekycConfirmStep === 2 ? '50%' : ekycConfirmStep === 3 ? '75%' : ekycConfirmStep === 4 ? '90%' : `${ekycProgress}%`
-                    }}
-                  />
+      {/* 投函前 eKYC 確認モーダル（5ステップ構成：1.コース選択 2.情報入力 3.カメラ撮影 4.Stripe決済 5.AI監査中） */}
+      {showPostConfirmModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-zinc-200 overflow-hidden text-left flex flex-col max-h-[92vh]">
+            {/* モーダルヘッダー */}
+            <div className="p-5 border-b border-zinc-100 flex items-center justify-between bg-gradient-to-r from-teal-50/50 to-indigo-50/50">
+              <div className="flex items-center gap-2">
+                <span className="p-2 rounded-xl bg-teal-600 text-white shadow-xs">
+                  <ShieldCheck size={20} />
+                </span>
+                <div>
+                  <h3 className="font-bold text-zinc-900 text-base font-serif">
+                    {ekycConfirmStep === 1 && '手紙の投函・本人確認コースの選択'}
+                    {ekycConfirmStep === 2 && '本人確認（eKYC）基本情報入力'}
+                    {ekycConfirmStep === 3 && '本人確認書類の撮影'}
+                    {ekycConfirmStep === 4 && '本人確認審査手数料のお支払い'}
+                    {ekycConfirmStep === 5 && 'AI本人確認・照合処理中'}
+                  </h3>
+                  <p className="text-[11px] text-zinc-500 font-sans">
+                    {ekycConfirmStep === 1 && '安心・安全な再会をお届けするための選択です'}
+                    {ekycConfirmStep === 2 && '公的身分証明書に記載の正確な情報をご入力ください'}
+                    {ekycConfirmStep === 3 && '原本を枠内に収めて鮮明に撮影してください'}
+                    {ekycConfirmStep === 4 && 'Stripeセキュア決済（審査手数料: 600円）'}
+                    {ekycConfirmStep === 5 && '数秒で自動照合と暗号化安全投函が完了します'}
+                  </p>
                 </div>
               </div>
+              <button 
+                type="button"
+                onClick={() => {
+                  if (ekycConfirmStep === 5) return;
+                  setShowPostConfirmModal(false);
+                }}
+                className="p-2 rounded-full hover:bg-zinc-100 text-zinc-400 hover:text-zinc-600 transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
 
-              {/* Step 1: 投函方法の選択 */}
+            {/* モーダル本文 */}
+            <div className="p-6 overflow-y-auto space-y-4 text-xs text-zinc-600 font-sans flex-1">
+              {/* STEP 1: コース選択 */}
               {ekycConfirmStep === 1 && (
-                <div className="space-y-5 py-2 text-left">
-                  <div className="text-center space-y-2">
-                    <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-brand-primary/10 text-brand-primary">
-                      <Wind size={28} className="animate-pulse" />
-                    </div>
-                    <h3 className="text-xl font-serif font-bold text-zinc-900">
-                      ボトルメールを流す準備ができました
-                    </h3>
-                    <p className="text-xs text-zinc-500 leading-relaxed text-center">
-                      いつか大切な人が手紙を見つけた時に、100%「本物のあなただ」と信じてもらうために、認証マークを設定しませんか？
-                    </p>
-                  </div>
-
+                <>
                   <div className="space-y-4">
                     {/* 【メイン枠】本人確認（eKYC）推奨推進カード */}
-                    <div className="border-2 border-emerald-500 bg-emerald-50/50 rounded-2xl p-5 space-y-4 shadow-sm relative overflow-hidden">
+                    <div className="border-2 border-emerald-500 bg-emerald-50/50 rounded-2xl p-4 md:p-5 space-y-3 shadow-sm relative overflow-hidden">
                       <div className="absolute top-0 right-0 bg-emerald-500 text-white text-[9px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider font-sans">
                         推奨・安心バッジ付
                       </div>
@@ -2741,11 +2732,11 @@ export const CreatePostPage = () => {
                         </div>
                       </div>
 
-                      <div className="text-[11px] text-zinc-700 space-y-2 leading-relaxed border-t border-emerald-100 pt-3 font-sans">
-                        <p>
+                      <div className="text-[10.5px] text-zinc-600 space-y-2 leading-relaxed border-t border-emerald-100/80 pt-2.5 font-sans">
+                        <p className="font-medium text-emerald-950">
                           お名前と生年月日を公的身分証（免許証・マイナンバー・パスポートなど）で安全に照合します。
                         </p>
-                        <ul className="space-y-1.5 pl-1">
+                        <ul className="space-y-1 pl-1 text-[10px] sm:text-[10.5px] text-zinc-600">
                           <li className="flex items-start gap-1.5">
                             <span className="text-emerald-600 font-bold mt-0.5">✓</span>
                             <span>手紙やお相手とのやり取りに<strong>「🛡️ 認証済マーク」</strong>が表示され、なりすましを防止します。</span>
@@ -3177,10 +3168,10 @@ export const CreatePostPage = () => {
                   </div>
                 </div>
               )}
-            </motion.div>
+            </div>
           </div>
-        )}
-      </AnimatePresence>
+        </div>
+      )}
     </div>
   );
 };

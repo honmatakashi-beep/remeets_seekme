@@ -597,41 +597,41 @@ export const GoogleSearchResultPreview = ({ targetName, era, location, searcherN
         </span>
       </div>
 
-      <div className="p-4 md:p-5 space-y-3.5 bg-white">
+      <div className="p-3.5 md:p-4 space-y-3 bg-white">
         {/* Google Result Box */}
         <div className="space-y-1">
-          <div className="text-[11px] md:text-xs text-slate-500 flex items-center gap-1.5 overflow-hidden text-ellipsis whitespace-nowrap font-mono">
-            <div className="w-4 h-4 rounded-full bg-emerald-600 text-white flex items-center justify-center font-serif text-[9px] font-bold shrink-0">
+          <div className="text-[10.5px] text-slate-500 flex items-center gap-1.5 overflow-hidden text-ellipsis whitespace-nowrap font-mono">
+            <div className="w-3.5 h-3.5 rounded-full bg-emerald-600 text-white flex items-center justify-center font-serif text-[8px] font-bold shrink-0">
               R
             </div>
             <span className="text-slate-700 font-sans font-medium">ReMEETs 再会プラットフォーム</span>
             <span className="text-slate-300">›</span>
             <span className="text-slate-500 truncate">{displayUrl}</span>
           </div>
-          <h3 className="text-base md:text-lg text-[#1a0dab] hover:underline leading-snug cursor-pointer font-medium font-sans">
+          <h3 className="text-sm md:text-[15px] text-[#1a0dab] hover:underline leading-snug cursor-pointer font-medium font-sans">
             {title}
           </h3>
-          <p className="text-xs md:text-sm text-[#4d5156] leading-relaxed font-normal font-sans">
+          <p className="text-xs text-[#4d5156] leading-relaxed font-normal font-sans">
             {snippet}
           </p>
         </div>
 
         {/* Informative Note / Protection Guide */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-3 border-t border-slate-100 text-[11px]">
-          <div className="bg-blue-50/80 border border-blue-100 p-3 rounded-xl space-y-1">
-            <p className="font-bold text-blue-900 flex items-center gap-1 text-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2.5 border-t border-slate-100 text-[10.5px]">
+          <div className="bg-blue-50/80 border border-blue-100/90 p-2.5 rounded-xl space-y-0.5">
+            <p className="font-bold text-blue-900 flex items-center gap-1 text-[11px]">
               <span>💡</span> 検索されたお相手の視点
             </p>
-            <p className="text-blue-800/90 leading-relaxed">
+            <p className="text-blue-800/90 leading-relaxed text-[10.5px]">
               お相手がご自身の名前をGoogle検索した際、「自分宛の手紙がある！」と一目で気づくことができます。
             </p>
           </div>
 
-          <div className="bg-emerald-50/80 border border-emerald-100 p-3 rounded-xl space-y-1">
-            <p className="font-bold text-emerald-900 flex items-center gap-1 text-xs">
+          <div className="bg-emerald-50/80 border border-emerald-100/90 p-2.5 rounded-xl space-y-0.5">
+            <p className="font-bold text-emerald-900 flex items-center gap-1 text-[11px]">
               <span>🔒</span> プライバシー保護機能
             </p>
-            <p className="text-emerald-800/90 leading-relaxed">
+            <p className="text-emerald-800/90 leading-relaxed text-[10.5px]">
               手紙の本文全文・秘密の質問・連絡先はGoogleには載りません。正解者のみに安全に開示されます。
             </p>
           </div>
