@@ -1163,8 +1163,8 @@ export const CreatePostPage = () => {
   const [aiDiagnosisResult, setAiDiagnosisResult] = useState<{ score: number, feedback: string } | null>(null);
 
   // eKYC Pre-submit Confirmation Modal States
-  const [showPostConfirmModal, setShowPostConfirmModal] = useState(() => sessionStorage.getItem('show_post_confirm_modal') === 'true');
-  const [ekycConfirmStep, setEkycConfirmStep] = useState<number>(() => Number(sessionStorage.getItem('ekyc_confirm_step')) || 1); // 1: Select Type, 2: eKYC Form, 3: Camera Capture, 4: Payment, 5: Processing
+  const [showPostConfirmModal, setShowPostConfirmModal] = useState(false);
+  const [ekycConfirmStep, setEkycConfirmStep] = useState<number>(1); // 1: Select Type, 2: eKYC Form, 3: Camera Capture, 4: Payment, 5: Processing
   const [payCardNumber, setPayCardNumber] = useState('');
   const [payCardExpiry, setPayCardExpiry] = useState('');
   const [payCardCvc, setPayCardCvc] = useState('');
@@ -1178,6 +1178,12 @@ export const CreatePostPage = () => {
   const [isEkycCompleted, setIsEkycCompleted] = useState(() => 
     localStorage.getItem('ekyc_verified') === 'true' || user?.is_ekyc_verified === true
   );
+
+  // マウント時に前回のモーダル状態セッションを安全に消去
+  useEffect(() => {
+    sessionStorage.removeItem('show_post_confirm_modal');
+    sessionStorage.removeItem('ekyc_confirm_step');
+  }, []);
 
   useEffect(() => {
     const checkEkycStatus = () => {
@@ -1200,11 +1206,6 @@ export const CreatePostPage = () => {
   }, [ekycConfirmStep, showPostConfirmModal]);
 
   const hasSubmittedRef = useRef(false);
-
-  useEffect(() => {
-    sessionStorage.setItem('show_post_confirm_modal', showPostConfirmModal ? 'true' : 'false');
-    sessionStorage.setItem('ekyc_confirm_step', ekycConfirmStep.toString());
-  }, [showPostConfirmModal, ekycConfirmStep]);
 
   useEffect(() => {
     let interval: any;
