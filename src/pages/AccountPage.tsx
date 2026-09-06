@@ -508,26 +508,32 @@ export const AccountPage = () => {
     ? (urlTab as 'profile' | 'chats' | 'sent' | 'notifications')
     : (location.state?.defaultTab || 'profile');
   const [activeSubTab, setActiveSubTab] = useState<'profile' | 'chats' | 'sent' | 'notifications'>(initialSubTab);
+  const scrollToTabs = (immediate = false) => {
+    const doScroll = () => {
+      const targetEl = document.getElementById('account-tabs');
+      if (targetEl) {
+        if ((window as any).lenis) {
+          (window as any).lenis.scrollTo(targetEl, { offset: -24, duration: immediate ? 0 : 0.6 });
+        } else {
+          const yOffset = -24;
+          const y = targetEl.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: Math.max(0, y), behavior: immediate ? 'auto' : 'smooth' });
+        }
+      }
+    };
+    setTimeout(doScroll, 50);
+    setTimeout(doScroll, 300);
+  };
 
   useEffect(() => {
     const tab = searchParams.get('tab');
     if (tab && ['profile', 'chats', 'sent', 'notifications'].includes(tab)) {
       setActiveSubTab(tab as any);
-
-      setTimeout(() => {
-        const targetEl = document.getElementById('account-tabs');
-        if (targetEl) {
-          if ((window as any).lenis) {
-            (window as any).lenis.scrollTo(targetEl, { offset: -90, duration: 0.8 });
-          } else {
-            const yOffset = -90;
-            const y = targetEl.getBoundingClientRect().top + window.pageYOffset + yOffset;
-            window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
-          }
-        }
-      }, 200);
+      if (!loading) {
+        scrollToTabs();
+      }
     }
-  }, [searchParams]);
+  }, [searchParams, loading]);
 
   useEffect(() => {
     const syncUserInfo = async () => {
