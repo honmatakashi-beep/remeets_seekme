@@ -1147,18 +1147,14 @@ export const CreatePostPage = () => {
     const b = Math.floor(Math.random() * 10);
     return { q: `${a} + ${b} = ?`, a: (a + b).toString() };
   });
-  const [captchaAnswer, setCaptchaAnswer] = useState(() => {
-    const a = Math.floor(Math.random() * 10);
-    const b = Math.floor(Math.random() * 10);
-    return (a + b).toString();
-  });
+  const [captchaAnswer, setCaptchaAnswer] = useState('');
 
   const refreshCaptcha = () => {
     const a = Math.floor(Math.random() * 10);
     const b = Math.floor(Math.random() * 10);
     const ans = (a + b).toString();
     setCaptchaQuestion({ q: `${a} + ${b} = ?`, a: ans });
-    setCaptchaAnswer(ans);
+    setCaptchaAnswer('');
   };
   const [nameWarning, setNameWarning] = useState(false);
   const [warnings, setWarnings] = useState<Record<string, string | null>>({});
