@@ -2474,6 +2474,9 @@ async function startServer() {
     try { db.prepare("ALTER TABLE posts ADD COLUMN contact_type TEXT").run(); } catch (e) {}
     try { db.prepare("ALTER TABLE posts ADD COLUMN contact_id TEXT").run(); } catch (e) {}
     try { db.prepare("ALTER TABLE posts ADD COLUMN contact_note TEXT").run(); } catch (e) {}
+    try { db.prepare("ALTER TABLE posts ADD COLUMN is_ekyc_verified INTEGER DEFAULT 0").run(); } catch (e) {}
+    try { db.prepare("ALTER TABLE posts ADD COLUMN author_ekyc_details TEXT").run(); } catch (e) {}
+    try { db.prepare("ALTER TABLE users ADD COLUMN is_ekyc_verified INTEGER DEFAULT 0").run(); } catch (e) {}
 
     // Backfill any existing users that have missing email or nickname
     try {
@@ -3625,10 +3628,18 @@ async function startServer() {
         era || null, category || null, firstQ.question, hashedA1, req.body.questions[0].answer, message, safeImageUrl || null,
         aiFlaggedVal, aiReasonVal, aiDiagnosedVal
       );
-      const postId = result.lastInsertRowid as number;
-
+      const postId = result.lastInsertRowid;
       const qStmt = db.prepare("INSERT INTO post_questions (post_id, question, answer, answer_plain) VALUES (?, ?, ?, ?)");
       qStmt.run(postId, secondQ.question, hashedA2, req.body.questions[1].answer);
+
+      // eKYC認証情報の確実な反映
+      if (req.body.isEkycVerified || req.user.is_ekyc_verified) {
+        db.prepare("UPDATE users SET is_ekyc_verified = 1 WHERE id = ?").run(req.user.id);
+        db.prepare("UPDATE posts SET is_ekyc_verified = 1, author_ekyc_details = ? WHERE id = ?").run(
+          JSON.stringify({ verified: true, verifiedAt: new Date().toISOString() }),
+          postId
+        );
+      }
 
       logAction(req.user.id, "POST_CREATED", `Post ID: ${postId}${hasForbidden ? ' (NG Word Flagged)' : ''}`, req.ip);
 
@@ -4260,6 +4271,7 @@ async function startServer() {
       
       postData.is_owner = isOwner;
       postData.is_verified_finder = isVerifiedFinder;
+      postData.is_ekyc_verified = Boolean(author?.is_ekyc_verified || post.author_ekyc_details || post.is_ekyc_verified);
 
       // Always remove sensitive internal / security fields
       delete postData.secret_answer;
