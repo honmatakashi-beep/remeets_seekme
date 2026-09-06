@@ -801,44 +801,118 @@ export const EditPostPage = () => {
             </section>
 
             {/* メッセージ ＆ 開示用連絡先 */}
-            <section className="space-y-8">
+            <section className="space-y-6">
               <div className="flex items-center gap-3 pb-2 border-b border-brand-primary/20">
                 <Mail className="text-black" size={20} />
                 <h2 className="text-xl font-bold text-black">メッセージと開示用連絡先</h2>
               </div>
-              <div className="space-y-6">
-                <div className="bg-indigo-50 border border-indigo-200 p-5 rounded-2xl space-y-3">
-                  <div className="flex items-center gap-2 text-indigo-700 font-bold text-sm">
-                    <AlertCircle size={18} />
-                    <span>メッセージ・連絡先開示のルール</span>
+
+              {/* 📖 メッセージ・連絡先 専用記入ガイド */}
+              <div className="p-4 bg-white/95 rounded-2xl border border-amber-200/80 shadow-2xs space-y-3 text-xs md:text-sm text-zinc-700 font-sans">
+                <div className="flex items-center justify-between pb-2 border-b border-amber-200/60">
+                  <span className="font-bold text-amber-950 flex items-center gap-1.5 text-xs md:text-sm">
+                    <BookOpen size={16} className="text-amber-700" />
+                    📖 メッセージと開示用連絡先の専用ルールガイド
+                  </span>
+                  <span className="text-xs font-semibold text-amber-800 bg-amber-100/80 px-2.5 py-0.5 rounded-full">
+                    安心開示 ＆ 法的保護
+                  </span>
+                </div>
+
+                {/* 赤バック注意事項 */}
+                <div className="flex items-start gap-1.5 text-[11px] text-red-800 font-bold bg-red-50/90 p-2.5 rounded-xl border border-red-200/90 leading-relaxed">
+                  <AlertTriangle size={14} className="shrink-0 mt-0.5 text-red-600" />
+                  <span>【連絡先の鉄則】手紙本文には電話番号・住所等を書かず、必ず専用の『開示用連絡先』欄へご入力ください。（※思い出の質問に正解し開示手続きを行ったお相手にのみ安全に暗号化開示されます）</span>
+                </div>
+
+                {/* 具体例・OK/NG例：アコーディオン開閉（ピル型ボタン） */}
+                <details className="group pt-0.5">
+                  <summary className="w-full flex items-center justify-between cursor-pointer py-2 px-3.5 bg-gradient-to-r from-amber-50 to-orange-50/40 hover:from-amber-100 hover:to-orange-100/60 border border-amber-300 rounded-xl shadow-2xs text-xs md:text-sm font-bold text-amber-950 list-none select-none transition-all active:scale-[0.99]">
+                    <span className="flex items-center gap-1.5">
+                      <Sparkles size={15} className="text-amber-700 shrink-0" />
+                      <span>💡 メッセージ作成のコツや「OK・NG例」を見る</span>
+                    </span>
+                    <span className="flex items-center gap-1 text-xs font-bold text-amber-800 bg-white/90 px-2.5 py-0.5 rounded-md border border-amber-200 shadow-2xs shrink-0">
+                      <span className="group-open:hidden">＋ タップで開く ▼</span>
+                      <span className="hidden group-open:inline">− 閉じる ▲</span>
+                    </span>
+                  </summary>
+
+                  <div className="pt-3 space-y-3 text-xs md:text-sm">
+                    <p className="text-xs md:text-sm text-amber-900 bg-amber-50/80 p-2.5 rounded-xl border border-amber-200/60 font-medium leading-relaxed font-sans">
+                      💡 <strong>プライベートメッセージについて:</strong> この手紙本文は一般公開されず、質問に全問正解したお相手のみが開封できます。当時の想いや再会へのメッセージを安心してお書きください。
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 pt-0.5">
+                      <div className="bg-emerald-50/80 border border-emerald-200/90 rounded-xl p-3 space-y-1.5">
+                        <span className="text-xs md:text-sm font-bold text-emerald-900 flex items-center gap-1.5">
+                          <CheckCircle size={15} className="text-emerald-700" />
+                          ⭕️ 心温まるおすすめの書き方
+                        </span>
+                        <ul className="text-xs md:text-sm text-emerald-950/85 space-y-1.5 list-disc list-inside leading-relaxed font-sans">
+                          <li>近況報告や当時の感謝の気持ち（例: <em>「あの時助けてくれたこと、ずっと心に残っていました」</em>）</li>
+                          <li>再会したら話したいこと（例: <em>「もし見てくれたら、お茶でもしながら昔の話をしましょう」</em>）</li>
+                          <li>お相手への温かい気遣い（例: <em>「お元気で過ごされていることを祈っています」</em>）</li>
+                        </ul>
+                      </div>
+
+                      <div className="bg-rose-50/80 border border-rose-200/90 rounded-xl p-3 space-y-1.5">
+                        <span className="text-xs md:text-sm font-bold text-rose-900 flex items-center gap-1.5">
+                          <X size={15} className="text-rose-700" />
+                          ❌ 書いてはいけない内容（AI検閲対象）
+                        </span>
+                        <ul className="text-xs md:text-sm text-rose-950/85 space-y-1.5 list-disc list-inside leading-relaxed font-sans">
+                          <li>手紙本文内への直接の電話番号・住所・口座番号の記入（※連絡先は下の専用欄へ）</li>
+                          <li>威圧的な要求、金銭の催促、トラブルに関する記述</li>
+                          <li>誹謗中傷、プライバシー侵害、わいせつな表現</li>
+                        </ul>
+                      </div>
+                    </div>
                   </div>
-                  <p className="text-xs text-indigo-700 leading-relaxed">
-                    手紙本文欄には電話番号やメールアドレスを直接書かず、下部の『開示用連絡先』欄にご入力ください。<br />
-                    お相手が質問に正解し、開示手続きを行った際でのみ安全にお相手へ共有されます。
-                  </p>
+                </details>
+              </div>
+
+              {/* 3. プライベートメッセージ（手紙本文）カード */}
+              <div className="space-y-5 bg-white/95 p-5 md:p-6 rounded-2xl border border-indigo-200/80 shadow-xs overflow-hidden transition-all">
+                <div className="flex items-center justify-between border-b border-indigo-200/80 bg-gradient-to-r from-indigo-50/70 via-sky-50/30 to-[#FAF6F0] -mx-5 -mt-5 p-4 md:-mx-6 md:-mt-6 md:p-5 border-l-4 border-l-indigo-700">
+                  <div className="flex items-center gap-2.5">
+                    <Mail size={22} className="text-indigo-800 shrink-0" />
+                    <h3 className="text-base sm:text-lg md:text-xl font-bold text-slate-900 tracking-tight">
+                      3. プライベートメッセージ（手紙本文）
+                    </h3>
+                  </div>
+                  <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wider bg-indigo-800 text-white shadow-2xs shrink-0 flex items-center gap-1">
+                    <span>LETTER</span>
+                    <span className="text-[9px] opacity-75">正解者のみ開示</span>
+                  </span>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[17px] font-bold text-brand-dark uppercase tracking-widest flex items-center gap-2">
-                    プライベートメッセージ<span className="text-red-500 text-xs ml-1">*必須</span>
+                  <label className="text-xs sm:text-sm font-bold text-black flex items-center gap-1.5">
+                    <Mail size={14} className="text-black" />
+                    手紙のメッセージ本文<span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
                   </label>
                   <textarea 
                     required
-                    placeholder="例：ずっと探していました。もしこれを見ていたら、ぜひ連絡をください。またあの頃のように話したいです。" 
-                    className="w-full px-4 py-3 outline-none transition-all text-black placeholder:text-zinc-400 min-h-[160px] resize-none letter-field-textarea font-serif"
+                    placeholder="例：ずっと探していました。もしこれを見ていたら、ぜひ連絡をください。またあの頃のように話したいです。"
+                    className="w-full py-3.5 px-4 border-b-2 border-brand-primary/50 focus:border-brand-primary outline-none transition-all letter-field-textarea font-serif text-base md:text-lg text-black placeholder:text-zinc-400 min-h-[160px] resize-none bg-[#faf9f6] focus:bg-white rounded-xl"
                     value={formData.message}
                     onChange={e => handleInputChange('message', e.target.value)}
                   />
                   <WarningMessage message={warnings.message} />
                 </div>
+              </div>
 
-                {/* 開示用連絡先 */}
-                <div className="p-6 bg-slate-50 border border-slate-200 rounded-[24px] space-y-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
-                    <div className="flex items-center gap-2 text-slate-800 font-bold text-base">
-                      <Share2 size={18} className="text-brand-primary" />
-                      <span>正解者へ開示するSNS・連絡先設定</span>
-                    </div>
+              {/* 4. 開示用連絡先設定カード */}
+              <div className="space-y-5 bg-white/95 p-5 md:p-6 rounded-2xl border border-teal-200/80 shadow-xs overflow-hidden transition-all">
+                <div className="flex items-center justify-between border-b border-teal-200/80 bg-gradient-to-r from-teal-50/70 via-emerald-50/30 to-[#FAF6F0] -mx-5 -mt-5 p-4 md:-mx-6 md:-mt-6 md:p-5 border-l-4 border-l-teal-700">
+                  <div className="flex items-center gap-2.5">
+                    <Share2 size={22} className="text-teal-800 shrink-0" />
+                    <h3 className="text-base sm:text-lg md:text-xl font-bold text-slate-900 tracking-tight">
+                      4. 正解者へ開示するSNS・連絡先設定
+                    </h3>
+                  </div>
+                  <div className="flex items-center gap-2">
                     {(localStorage.getItem('remeets_default_contact_id') || (user as any)?.contact_id) && (
                       <button
                         type="button"
@@ -848,52 +922,62 @@ export const EditPostPage = () => {
                           handleInputChange('contactType', savedType);
                           handleInputChange('contactId', savedId);
                         }}
-                        className="px-3 py-1.5 bg-indigo-100 hover:bg-indigo-200 text-indigo-900 border border-indigo-300 rounded-xl text-xs font-bold font-sans transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 shadow-2xs shrink-0"
+                        className="text-xs text-slate-700 hover:text-teal-700 flex items-center gap-1 font-bold tracking-wider bg-white px-3 py-1 rounded-full border border-slate-200 shadow-2xs transition-all active:scale-95 shrink-0"
                       >
-                        <span>💡 マイアカウントのSNS IDを自動反映</span>
+                        <span>💡 マイSNS IDを自動反映</span>
                       </button>
                     )}
+                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wider bg-teal-800 text-white shadow-2xs shrink-0 flex items-center gap-1">
+                      <span>CONTACT</span>
+                      <span className="text-[9px] opacity-75">必須</span>
+                    </span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-xs sm:text-sm font-bold text-black flex items-center gap-1.5">
+                      連絡先の種類<span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
+                    </label>
+                    <select 
+                      className="w-full px-4 py-3 border-b-2 border-brand-primary/50 rounded-xl bg-[#faf9f6] focus:bg-white text-base outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all text-[#000000] font-sans letter-field-select"
+                      value={formData.contactType}
+                      onChange={e => handleInputChange('contactType', e.target.value)}
+                    >
+                      <option value="LINE">LINE ID / 友だち追加リンク</option>
+                      <option value="X">X (旧Twitter) ID</option>
+                      <option value="Instagram">Instagram ID</option>
+                      <option value="Email">メールアドレス</option>
+                    </select>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-700">連絡先の種類<span className="text-red-500 ml-0.5">*</span></label>
-                      <select 
-                        className="w-full px-3 py-2.5 border border-slate-300 rounded-xl bg-white text-sm font-medium text-slate-900 outline-none focus:border-brand-primary"
-                        value={formData.contactType}
-                        onChange={e => handleInputChange('contactType', e.target.value)}
-                      >
-                        <option value="LINE">LINE ID / 友だち追加リンク</option>
-                        <option value="X">X (旧Twitter) ID</option>
-                        <option value="Instagram">Instagram ID</option>
-                        <option value="Email">メールアドレス</option>
-                      </select>
-                    </div>
-
-                    <div className="md:col-span-2 space-y-1.5">
-                      <label className="text-xs font-bold text-slate-700">開示用ID / アドレス / リンク<span className="text-red-500 ml-0.5">*</span></label>
-                      <input 
-                        type="text"
-                        required
-                        placeholder="例：@my_line_id や https://line.me/ti/p/xxx"
-                        className="w-full px-3 py-2.5 border border-slate-300 rounded-xl bg-white text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-brand-primary"
-                        value={formData.contactId}
-                        onChange={e => handleInputChange('contactId', e.target.value)}
-                      />
-                      <WarningMessage message={warnings.contactId} />
-                    </div>
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-700">お相手への連絡時メモ・補足（任意）</label>
+                  <div className="md:col-span-2 space-y-2">
+                    <label className="text-xs sm:text-sm font-bold text-black flex items-center gap-1.5">
+                      開示用ID / アドレス / リンク<span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
+                    </label>
                     <input 
                       type="text"
-                      placeholder="例：LINEで『ReMEETsを見た』とお知らせください。"
-                      className="w-full px-3 py-2.5 border border-slate-300 rounded-xl bg-white text-xs text-slate-900 placeholder:text-slate-400 outline-none focus:border-brand-primary"
-                      value={formData.contactNote}
-                      onChange={e => handleInputChange('contactNote', e.target.value)}
+                      required
+                      placeholder="例：@my_line_id や https://line.me/ti/p/xxx"
+                      className="w-full px-4 py-3 border-b-2 border-brand-primary/50 rounded-xl bg-[#faf9f6] focus:bg-white text-base outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all text-[#000000] placeholder:text-zinc-400 font-sans letter-field-input"
+                      value={formData.contactId}
+                      onChange={e => handleInputChange('contactId', e.target.value)}
                     />
+                    <WarningMessage message={warnings.contactId} />
                   </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-xs sm:text-sm font-bold text-black flex items-center gap-1.5">
+                    お相手への連絡時メモ・補足<span className="text-[10px] text-zinc-500 font-bold ml-1">＊任意</span>
+                  </label>
+                  <input 
+                    type="text"
+                    placeholder="例：LINEで『ReMEETsを見た』とお知らせください。"
+                    className="w-full px-4 py-3 border-b-2 border-brand-primary/50 rounded-xl bg-[#faf9f6] focus:bg-white text-base outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all text-[#000000] placeholder:text-zinc-400 font-sans letter-field-input"
+                    value={formData.contactNote}
+                    onChange={e => handleInputChange('contactNote', e.target.value)}
+                  />
                 </div>
               </div>
             </section>
@@ -1832,58 +1916,140 @@ export const CreatePostPage = () => {
       description: "正解者に届く手紙本文・連絡先を入力し、内容をご確認のうえ投函してください。",
       fields: (
         <div className="space-y-6">
-          <div className="bg-indigo-50 border border-indigo-200 p-4 rounded-2xl space-y-2">
-            <div className="flex items-center gap-2 text-indigo-700 font-bold text-sm">
-              <AlertCircle size={16} />
-              <span>メッセージ・連絡先開示のルール</span>
+          {/* 📖 メッセージ・連絡先 専用記入ガイド */}
+          <div className="p-4 bg-white/95 rounded-2xl border border-amber-200/80 shadow-2xs space-y-3 text-xs md:text-sm text-zinc-700 font-sans">
+            <div className="flex items-center justify-between pb-2 border-b border-amber-200/60">
+              <span className="font-bold text-amber-950 flex items-center gap-1.5 text-xs md:text-sm">
+                <BookOpen size={16} className="text-amber-700" />
+                📖 メッセージと開示用連絡先の専用ルールガイド
+              </span>
+              <span className="text-xs font-semibold text-amber-800 bg-amber-100/80 px-2.5 py-0.5 rounded-full">
+                安心開示 ＆ 法的保護
+              </span>
             </div>
-            <p className="text-xs text-indigo-700 leading-relaxed font-sans">
-              手紙本文には電話番号等を書かず、下部の『開示用連絡先』欄にご入力ください。お相手が質問に正解し開示手続きを行った際でのみ安全にお相手へ共有されます。
-            </p>
-          </div>
 
-          <div className="space-y-2">
-            <label className="text-base font-bold text-brand-dark uppercase tracking-widest flex items-center gap-2">
-              プライベートメッセージ<span className="text-[10px] text-red-600 font-bold ml-1.5 tracking-normal">＊必須</span>
-            </label>
-            <textarea 
-              required
-              placeholder="例：ずっと探していました。もしこれを見ていたら、ぜひ連絡をください。またあの頃のように話したいです。"
-              className="w-full py-4 px-3 border-b-2 border-brand-primary/60 focus:border-brand-primary outline-none transition-all letter-field-textarea font-serif text-lg text-black placeholder:text-zinc-400 min-h-[150px] resize-none"
-              value={formData.message}
-              onChange={e => handleInputChange('message', e.target.value)}
-            />
-            <WarningMessage message={warnings.message} />
-          </div>
+            {/* 赤バック注意事項（前ページと同じスタイル） */}
+            <div className="flex items-start gap-1.5 text-[11px] text-red-800 font-bold bg-red-50/90 p-2.5 rounded-xl border border-red-200/90 leading-relaxed">
+              <AlertTriangle size={14} className="shrink-0 mt-0.5 text-red-600" />
+              <span>【連絡先の鉄則】手紙本文には電話番号・住所等を書かず、必ず専用の『開示用連絡先』欄へご入力ください。（※思い出の質問に正解し開示手続きを行ったお相手にのみ安全に暗号化開示されます）</span>
+            </div>
 
-          {/* 開示用連絡先入力セクション */}
-          <div className="p-5 bg-slate-50 border border-slate-200 rounded-[24px] space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
-              <div className="flex items-center gap-2 text-slate-800 font-bold text-sm sm:text-base">
-                <Share2 size={18} className="text-brand-primary" />
-                <span>正解者へ開示するSNS・連絡先設定</span>
+            {/* 具体例・OK/NG例：アコーディオン開閉（ピル型ボタン） */}
+            <details className="group pt-0.5">
+              <summary className="w-full flex items-center justify-between cursor-pointer py-2 px-3.5 bg-gradient-to-r from-amber-50 to-orange-50/40 hover:from-amber-100 hover:to-orange-100/60 border border-amber-300 rounded-xl shadow-2xs text-xs md:text-sm font-bold text-amber-950 list-none select-none transition-all active:scale-[0.99]">
+                <span className="flex items-center gap-1.5">
+                  <Sparkles size={15} className="text-amber-700 shrink-0" />
+                  <span>💡 メッセージ作成のコツや「OK・NG例」を見る</span>
+                </span>
+                <span className="flex items-center gap-1 text-xs font-bold text-amber-800 bg-white/90 px-2.5 py-0.5 rounded-md border border-amber-200 shadow-2xs shrink-0">
+                  <span className="group-open:hidden">＋ タップで開く ▼</span>
+                  <span className="hidden group-open:inline">− 閉じる ▲</span>
+                </span>
+              </summary>
+
+              <div className="pt-3 space-y-3 text-xs md:text-sm">
+                <p className="text-xs md:text-sm text-amber-900 bg-amber-50/80 p-2.5 rounded-xl border border-amber-200/60 font-medium leading-relaxed font-sans">
+                  💡 <strong>プライベートメッセージについて:</strong> この手紙本文は一般公開されず、質問に全問正解したお相手のみが開封できます。当時の想いや再会へのメッセージを安心してお書きください。
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 pt-0.5">
+                  <div className="bg-emerald-50/80 border border-emerald-200/90 rounded-xl p-3 space-y-1.5">
+                    <span className="text-xs md:text-sm font-bold text-emerald-900 flex items-center gap-1.5">
+                      <CheckCircle size={15} className="text-emerald-700" />
+                      ⭕️ 心温まるおすすめの書き方
+                    </span>
+                    <ul className="text-xs md:text-sm text-emerald-950/85 space-y-1.5 list-disc list-inside leading-relaxed font-sans">
+                      <li>近況報告や当時の感謝の気持ち（例: <em>「あの時助けてくれたこと、ずっと心に残っていました」</em>）</li>
+                      <li>再会したら話したいこと（例: <em>「もし見てくれたら、お茶でもしながら昔の話をしましょう」</em>）</li>
+                      <li>お相手への温かい気遣い（例: <em>「お元気で過ごされていることを祈っています」</em>）</li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-rose-50/80 border border-rose-200/90 rounded-xl p-3 space-y-1.5">
+                    <span className="text-xs md:text-sm font-bold text-rose-900 flex items-center gap-1.5">
+                      <X size={15} className="text-rose-700" />
+                      ❌ 書いてはいけない内容（AI検閲対象）
+                    </span>
+                    <ul className="text-xs md:text-sm text-rose-950/85 space-y-1.5 list-disc list-inside leading-relaxed font-sans">
+                      <li>手紙本文内への直接の電話番号・住所・口座番号の記入（※連絡先は下の専用欄へ）</li>
+                      <li>威圧的な要求、金銭の催促、トラブルに関する記述</li>
+                      <li>誹謗中傷、プライバシー侵害、わいせつな表現</li>
+                    </ul>
+                  </div>
+                </div>
               </div>
-              {(localStorage.getItem('remeets_default_contact_id') || (user as any)?.contact_id) && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    const savedType = localStorage.getItem('remeets_default_contact_type') || (user as any)?.contact_type || 'LINE';
-                    const savedId = localStorage.getItem('remeets_default_contact_id') || (user as any)?.contact_id || '';
-                    handleInputChange('contactType', savedType);
-                    handleInputChange('contactId', savedId);
-                  }}
-                  className="px-3 py-1 bg-indigo-100 hover:bg-indigo-200 text-indigo-900 border border-indigo-300 rounded-xl text-xs font-bold font-sans transition-all flex items-center gap-1 cursor-pointer shrink-0"
-                >
-                  <span>💡 マイアカウントのSNS IDを自動反映</span>
-                </button>
-              )}
+            </details>
+          </div>
+
+          {/* 3. プライベートメッセージ（手紙本文）カード */}
+          <div className="space-y-5 bg-white/95 p-5 md:p-6 rounded-2xl border border-indigo-200/80 shadow-xs overflow-hidden transition-all">
+            <div className="flex items-center justify-between border-b border-indigo-200/80 bg-gradient-to-r from-indigo-50/70 via-sky-50/30 to-[#FAF6F0] -mx-5 -mt-5 p-4 md:-mx-6 md:-mt-6 md:p-5 border-l-4 border-l-indigo-700">
+              <div className="flex items-center gap-2.5">
+                <Mail size={22} className="text-indigo-800 shrink-0" />
+                <h3 className="text-base sm:text-lg md:text-xl font-bold text-slate-900 tracking-tight">
+                  3. プライベートメッセージ（手紙本文）
+                </h3>
+              </div>
+              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wider bg-indigo-800 text-white shadow-2xs shrink-0 flex items-center gap-1">
+                <span>LETTER</span>
+                <span className="text-[9px] opacity-75">正解者のみ開示</span>
+              </span>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs sm:text-sm font-bold text-black flex items-center gap-1.5">
+                <Mail size={14} className="text-black" />
+                手紙のメッセージ本文<span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
+              </label>
+              <textarea 
+                required
+                placeholder="例：ずっと探していました。もしこれを見ていたら、ぜひ連絡をください。またあの頃のように話したいです。"
+                className="w-full py-3.5 px-4 border-b-2 border-brand-primary/50 focus:border-brand-primary outline-none transition-all letter-field-textarea font-serif text-base md:text-lg text-black placeholder:text-zinc-400 min-h-[160px] resize-none bg-[#faf9f6] focus:bg-white rounded-xl"
+                value={formData.message}
+                onChange={e => handleInputChange('message', e.target.value)}
+              />
+              <WarningMessage message={warnings.message} />
+            </div>
+          </div>
+
+          {/* 4. 開示用連絡先設定カード */}
+          <div className="space-y-5 bg-white/95 p-5 md:p-6 rounded-2xl border border-teal-200/80 shadow-xs overflow-hidden transition-all">
+            <div className="flex items-center justify-between border-b border-teal-200/80 bg-gradient-to-r from-teal-50/70 via-emerald-50/30 to-[#FAF6F0] -mx-5 -mt-5 p-4 md:-mx-6 md:-mt-6 md:p-5 border-l-4 border-l-teal-700">
+              <div className="flex items-center gap-2.5">
+                <Share2 size={22} className="text-teal-800 shrink-0" />
+                <h3 className="text-base sm:text-lg md:text-xl font-bold text-slate-900 tracking-tight">
+                  4. 正解者へ開示するSNS・連絡先設定
+                </h3>
+              </div>
+              <div className="flex items-center gap-2">
+                {(localStorage.getItem('remeets_default_contact_id') || (user as any)?.contact_id) && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const savedType = localStorage.getItem('remeets_default_contact_type') || (user as any)?.contact_type || 'LINE';
+                      const savedId = localStorage.getItem('remeets_default_contact_id') || (user as any)?.contact_id || '';
+                      handleInputChange('contactType', savedType);
+                      handleInputChange('contactId', savedId);
+                    }}
+                    className="text-xs text-slate-700 hover:text-teal-700 flex items-center gap-1 font-bold tracking-wider bg-white px-3 py-1 rounded-full border border-slate-200 shadow-2xs transition-all active:scale-95 shrink-0"
+                  >
+                    <span>💡 マイSNS IDを自動反映</span>
+                  </button>
+                )}
+                <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wider bg-teal-800 text-white shadow-2xs shrink-0 flex items-center gap-1">
+                  <span>CONTACT</span>
+                  <span className="text-[9px] opacity-75">必須</span>
+                </span>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-700">連絡先の種類<span className="text-red-500 ml-0.5">*</span></label>
+              <div className="space-y-2">
+                <label className="text-xs sm:text-sm font-bold text-black flex items-center gap-1.5">
+                  連絡先の種類<span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
+                </label>
                 <select 
-                  className="w-full px-3 py-2.5 border-b-2 border-slate-400 rounded-xl bg-white text-sm font-medium text-slate-900 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/10 letter-field-select"
+                  className="w-full px-4 py-3 border-b-2 border-brand-primary/50 rounded-xl bg-[#faf9f6] focus:bg-white text-base outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all text-[#000000] font-sans letter-field-select"
                   value={formData.contactType}
                   onChange={e => handleInputChange('contactType', e.target.value)}
                 >
@@ -1894,13 +2060,15 @@ export const CreatePostPage = () => {
                 </select>
               </div>
 
-              <div className="md:col-span-2 space-y-1.5">
-                <label className="text-xs font-bold text-slate-700">開示用ID / アドレス / リンク<span className="text-red-500 ml-0.5">*</span></label>
+              <div className="md:col-span-2 space-y-2">
+                <label className="text-xs sm:text-sm font-bold text-black flex items-center gap-1.5">
+                  開示用ID / アドレス / リンク<span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
+                </label>
                 <input 
                   type="text"
                   required
                   placeholder="例：@my_line_id や https://line.me/ti/p/xxx"
-                  className="w-full px-3 py-2.5 border-b-2 border-slate-400 rounded-xl bg-white text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/10 letter-field-input"
+                  className="w-full px-4 py-3 border-b-2 border-brand-primary/50 rounded-xl bg-[#faf9f6] focus:bg-white text-base outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all text-[#000000] placeholder:text-zinc-400 font-sans letter-field-input"
                   value={formData.contactId}
                   onChange={e => handleInputChange('contactId', e.target.value)}
                 />
@@ -1908,25 +2076,36 @@ export const CreatePostPage = () => {
               </div>
             </div>
 
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-700">お相手への連絡時メモ・補足（任意）</label>
+            <div className="space-y-2">
+              <label className="text-xs sm:text-sm font-bold text-black flex items-center gap-1.5">
+                お相手への連絡時メモ・補足<span className="text-[10px] text-zinc-500 font-bold ml-1">＊任意</span>
+              </label>
               <input 
                 type="text"
                 placeholder="例：LINEで『ReMEETsを見た』とお知らせください。"
-                className="w-full px-3 py-2.5 border border-slate-300 rounded-xl bg-white text-xs text-slate-900 placeholder:text-slate-400 outline-none focus:border-brand-primary"
+                className="w-full px-4 py-3 border-b-2 border-brand-primary/50 rounded-xl bg-[#faf9f6] focus:bg-white text-base outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all text-[#000000] placeholder:text-zinc-400 font-sans letter-field-input"
                 value={formData.contactNote}
                 onChange={e => handleInputChange('contactNote', e.target.value)}
               />
             </div>
           </div>
 
-          {/* 内容確認アコーディオン・プレビュー */}
-          <div className="bg-white p-5 space-y-5 border border-zinc-300 rounded-2xl shadow-xs">
-            <h4 className="text-sm font-bold text-zinc-900 border-b border-zinc-200 pb-2 flex items-center justify-between">
-              <span>投函内容の確認プレビュー</span>
-              <span className="text-xs font-normal text-zinc-500">（間違いがないかご確認ください）</span>
-            </h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+          {/* 5. 投函内容の最終確認カード */}
+          <div className="space-y-5 bg-white/95 p-5 md:p-6 rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden transition-all">
+            <div className="flex items-center justify-between border-b border-slate-200/80 bg-gradient-to-r from-slate-50 via-sky-50/40 to-slate-100/60 -mx-5 -mt-5 p-4 md:-mx-6 md:-mt-6 md:p-5 border-l-4 border-l-slate-700">
+              <div className="flex items-center gap-2.5">
+                <CheckCircle size={22} className="text-slate-700 shrink-0" />
+                <h3 className="text-base sm:text-lg md:text-xl font-bold text-slate-900 tracking-tight">
+                  5. 投函内容の最終確認プレビュー
+                </h3>
+              </div>
+              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wider bg-slate-800 text-white shadow-2xs shrink-0 flex items-center gap-1">
+                <span>CHECK</span>
+                <span className="text-[9px] opacity-75">最終確認</span>
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-slate-50/80 rounded-xl border border-slate-200/80 text-xs font-sans">
               <div><span className="text-zinc-500">宛先:</span> <strong className="text-zinc-900 text-sm ml-1">{formData.targetName} 様</strong></div>
               <div><span className="text-zinc-500">差出人:</span> <strong className="text-zinc-900 text-sm ml-1">{formData.searcherName}</strong></div>
               <div><span className="text-zinc-500">ゆかりの地:</span> <span className="text-zinc-800 font-bold ml-1">{formData.targetHometown || '未入力'}</span></div>
@@ -1982,6 +2161,14 @@ export const CreatePostPage = () => {
                   autoCapitalize="off"
                   autoCorrect="off"
                 />
+                <button
+                  type="button"
+                  onClick={refreshCaptcha}
+                  className="text-xs text-teal-800 hover:text-teal-950 font-bold flex items-center gap-1 cursor-pointer bg-white px-2.5 py-1.5 rounded-lg border border-teal-200 shadow-2xs transition-all active:scale-95"
+                >
+                  <RefreshCw size={12} />
+                  <span>別の問題</span>
+                </button>
               </div>
             </div>
 
