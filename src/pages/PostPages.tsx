@@ -1109,8 +1109,8 @@ export const CreatePostPage = () => {
     targetNameEn: '',
     targetLastNameEn: '',
     targetFirstNameEn: '',
-    targetHometown: '東京都',
-    targetHometownPref: '東京都',
+    targetHometown: '',
+    targetHometownPref: '',
     targetHometownArea: '',
     targetSchool: '',
     era: '',
@@ -6506,18 +6506,20 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
           <div className="inline-flex items-center gap-2 bg-brand-primary/5 px-4 py-2 rounded-full border border-brand-primary/15 text-brand-primary text-[10px] font-bold uppercase tracking-[0.3em]">
             <Sparkles size={14} className="animate-pulse" />
             <span>
-              {isOwner 
-                ? (post.status === 'resolved' ? "再会を達成しました！" : "あなたの大切な手紙が漂流中") 
-                : (showDetails ? "✨ 奇跡の再会が叶いました！" : isQuestionVerified ? "✨ 思い出の鍵が解かれました！" : "記憶の交差点に到着しました")}
+              {showDetails || post.status === 'resolved' 
+                ? "✨ 奇跡の再会が叶いました！" 
+                : isQuestionVerified 
+                  ? "✨ 思い出の鍵が解かれました！" 
+                  : isOwner 
+                    ? "あなたの大切な手紙が漂流中" 
+                    : "記憶の交差点に到着しました"}
             </span>
           </div>
           <h1 className="text-xl xs:text-2xl sm:text-3xl md:text-5xl font-serif text-black font-[500] tracking-wider leading-relaxed flex flex-col items-center gap-2 text-center px-4 w-full">
             <span className="block whitespace-normal md:whitespace-nowrap max-w-full font-serif font-bold text-slate-900">{post.target_name} 様、</span>
-            {isOwner && post.status === 'resolved' ? (
+            {(showDetails || post.status === 'resolved') ? (
               <ReunionEffectTitle effectType="pure-rainbow-flow" />
-            ) : (!isOwner && showDetails) ? (
-              <ReunionEffectTitle effectType="pure-rainbow-flow" />
-            ) : (!isOwner && (isQuestionVerified || post.status === 'resolved')) ? (
+            ) : isQuestionVerified ? (
               <span className="block whitespace-normal md:whitespace-nowrap max-w-full text-emerald-600 font-bold">思い出の鍵が解かれました！</span>
             ) : (
               <span className="block whitespace-normal leading-snug max-w-full text-teal-800 font-bold text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl">
@@ -6526,17 +6528,12 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
             )}
           </h1>
           <div className="max-w-xl mx-auto text-black/75 text-[10px] xs:text-xs sm:text-sm md:text-base font-serif leading-relaxed mt-4 flex flex-col items-center gap-2 text-center px-4 w-full">
-            {isOwner && post.status === 'resolved' ? (
-              <>
-                <span className="block whitespace-normal md:whitespace-nowrap">お相手の本人確認が完了し、無事に再会することができました。</span>
-                <span className="block whitespace-normal md:whitespace-nowrap text-brand-primary font-bold">思い出を守り抜いた、奇跡の再会です。</span>
-              </>
-            ) : (!isOwner && showDetails) ? (
+            {(showDetails || post.status === 'resolved') ? (
               <>
                 <span className="block whitespace-normal md:whitespace-nowrap">手紙の本文と連絡先が開示されました。</span>
                 <span className="block whitespace-normal md:whitespace-nowrap text-emerald-600 font-bold">直接連絡を取り合い、止まっていた大切な時間の続きを始めましょう。</span>
               </>
-            ) : (!isOwner && (isQuestionVerified || post.status === 'resolved')) ? (
+            ) : isQuestionVerified ? (
               <>
                 <span className="block whitespace-normal md:whitespace-nowrap">思い出の質問にすべて正解し、お互いの記憶が完全に合致しました。</span>
                 <span className="block whitespace-normal md:whitespace-nowrap text-emerald-700 font-bold">下のボタンからお手紙の本文と連絡先を開封してください。</span>
