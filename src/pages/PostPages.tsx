@@ -2303,19 +2303,27 @@ export const CreatePostPage = () => {
           </div>
 
           {/* ボットチェック */}
-          <div className="p-4 bg-teal-50/60 rounded-xl border border-teal-300 space-y-3">
-            <div className="flex items-center gap-2 text-teal-950 font-bold text-xs">
-              <Shield size={14} />
-              <span>ボットチェック（スパム防止）</span><span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
+          <div className="p-4 bg-teal-50/70 rounded-2xl border-2 border-teal-300/80 space-y-3 shadow-2xs">
+            <div className="flex items-center justify-between text-teal-950 font-bold text-xs">
+              <div className="flex items-center gap-2">
+                <Shield size={16} className="text-teal-700" />
+                <span>ボットチェック（スパム防止）</span>
+                <span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
+              </div>
+              {captchaAnswer === captchaQuestion.a && (
+                <span className="text-[10px] bg-teal-700 text-white font-bold px-2 py-0.5 rounded-md">
+                  ✓ 正解
+                </span>
+              )}
             </div>
-            <div className="flex items-center gap-3">
-              <div className="text-base font-serif text-zinc-950 font-bold bg-white px-4 py-1.5 rounded-lg border border-zinc-300 shadow-2xs">
+            <div className="flex items-center gap-3 flex-wrap">
+              <div className="text-base font-serif text-zinc-950 font-bold bg-white px-4 py-2 rounded-xl border border-zinc-300 shadow-2xs">
                 {captchaQuestion.q}
               </div>
               <input 
                 type="text" 
-                placeholder="答え" 
-                className="w-20 py-1.5 border-b-2 border-zinc-500 focus:border-brand-primary outline-none bg-transparent font-serif text-base text-center text-zinc-950 font-bold placeholder:text-zinc-400"
+                placeholder="計算の答え" 
+                className="w-28 py-2 px-3 border-2 border-zinc-400 focus:border-brand-primary rounded-xl outline-none bg-white font-serif text-base text-center text-zinc-950 font-bold placeholder:text-zinc-400"
                 value={captchaAnswer}
                 onChange={e => setCaptchaAnswer(toHalfWidth(e.target.value))}
                 inputMode="url"
@@ -2325,7 +2333,7 @@ export const CreatePostPage = () => {
               <button
                 type="button"
                 onClick={refreshCaptcha}
-                className="text-xs text-teal-800 hover:text-teal-950 font-bold flex items-center gap-1 cursor-pointer bg-white px-2.5 py-1.5 rounded-lg border border-teal-200 shadow-2xs transition-all active:scale-95"
+                className="text-xs text-teal-800 hover:text-teal-950 font-bold flex items-center gap-1 cursor-pointer bg-white px-3 py-2 rounded-xl border border-teal-200 shadow-2xs transition-all active:scale-95"
               >
                 <RefreshCw size={12} />
                 <span>別の問題</span>
@@ -2334,25 +2342,35 @@ export const CreatePostPage = () => {
           </div>
 
           {/* 利用規約同意 */}
-          <div className="flex items-start gap-3 p-4 bg-amber-50/60 rounded-xl border border-amber-300">
+          <div 
+            onClick={() => setAgreed(!agreed)}
+            className={`flex items-start gap-3.5 p-4 rounded-2xl border-2 transition-all cursor-pointer select-none ${agreed ? 'bg-emerald-50/80 border-emerald-500 shadow-xs' : 'bg-amber-50/60 border-amber-300 hover:border-amber-400'}`}
+          >
             <input 
               type="checkbox" 
               id="agreement"
               checked={agreed}
               onChange={e => setAgreed(e.target.checked)}
-              className="mt-1 w-5 h-5 rounded border-zinc-500 text-amber-700 focus:ring-amber-500 cursor-pointer shrink-0"
+              onClick={e => e.stopPropagation()}
+              className="mt-0.5 w-5 h-5 rounded border-zinc-400 text-emerald-600 focus:ring-emerald-500 cursor-pointer shrink-0"
             />
-            <div className="text-xs text-zinc-900 leading-relaxed font-sans space-y-1.5 select-none">
-              <label htmlFor="agreement" className="cursor-pointer block space-y-1">
-                <div className="font-bold text-xs text-amber-950 flex items-center gap-1.5">
-                  <ShieldCheck size={16} className="text-amber-700" />
-                  <span>利用規約・投稿ガイドラインへの同意</span><span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
+            <div className="text-xs text-zinc-900 leading-relaxed font-sans space-y-1.5 flex-1">
+              <div className="flex items-center justify-between">
+                <div className="font-bold text-xs sm:text-sm text-zinc-900 flex items-center gap-1.5">
+                  <ShieldCheck size={18} className={agreed ? "text-emerald-600" : "text-amber-700"} />
+                  <span>利用規約・投稿ガイドラインへの同意</span>
+                  <span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
                 </div>
-                <p className="text-[11px] text-zinc-800">
-                  純粋な再会・旧交目的にのみ利用し、不適切な表現を行わないことに同意します。
-                </p>
-              </label>
-              <div className="text-[11px] text-zinc-700 font-normal flex flex-wrap items-center gap-1 pt-0.5">
+                {agreed && (
+                  <span className="text-[10px] bg-emerald-600 text-white font-bold px-2 py-0.5 rounded-md">
+                    ✓ 同意済
+                  </span>
+                )}
+              </div>
+              <p className="text-[11px] text-zinc-700 font-medium">
+                純粋な再会・旧交目的にのみ利用し、誹謗中傷や不適切な表現を行わないことに同意します。
+              </p>
+              <div className="text-[11px] text-zinc-600 font-normal flex flex-wrap items-center gap-1 pt-0.5">
                 <span>規約を確認：</span>
                 <Link 
                   to="/terms" 
@@ -5492,9 +5510,9 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
   };
 
   const isOwner = !!(user && post && user.id === post.user_id);
-  const isVerifiedFinder = !!(post && !isOwner && ((post.is_verified_finder || post.verified_by === user?.id) && (post.status === 'resolved' || revealedContact)));
-  const isRevealed = !!(revealedContact || (post && post.status === 'resolved' && (isVerifiedFinder || post.contact_id)));
-  const showDetails = !!(post && ((isOwner && (post.status === 'resolved' || ownerPreviewRevealed)) || isVerifiedFinder || (!isOwner && isRevealed)));
+  const isVerifiedFinder = !!(post && !isOwner && ((post.is_verified_finder || post.verified_by === user?.id) && post.status === 'resolved'));
+  const isRevealed = !!((!isOwner && (revealedContact || isVerifiedFinder)) || (isOwner && ownerPreviewRevealed));
+  const showDetails = !!(post && isRevealed);
 
   // 確実に実在する連絡先ID・メッセージを解決する（プレースホルダー文言の完全排除）
   const displayContactId = (() => {
@@ -5876,8 +5894,8 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
           setSearcherFullName(resolvedFullName);
           setVerifiedByUser(data.verified_by_user || null);
           
-          // Restore verification states, searcherId, searcherName, and revealedContact if the logged in user is verified finder or resolved
-          const isResolvedOrVerified = !!(data.is_verified_finder || (data.status === 'resolved' && data.verified_by_user));
+          // Restore verification states, searcherId, searcherName, and revealedContact ONLY if the logged in user is a verified finder (not owner)
+          const isResolvedOrVerified = !data.is_owner && !!(data.is_verified_finder || (data.status === 'resolved' && data.verified_by_user));
           if (isResolvedOrVerified) {
             setIsQuestionVerified(true);
             setIsAgeVerified(true);
