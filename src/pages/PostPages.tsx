@@ -656,12 +656,12 @@ export const EditPostPage = () => {
               </div>
 
               {/* 💡 答え設定の親切なアドバイスバナー */}
-              <div className="p-4 bg-amber-50/80 rounded-2xl border border-amber-200/80 text-xs text-amber-950 space-y-1.5 font-sans shadow-2xs">
+              <div className="p-4 bg-amber-50/80 rounded-2xl border border-amber-200/80 text-xs md:text-sm text-amber-950 space-y-1.5 font-sans shadow-2xs">
                 <div className="font-bold flex items-center gap-1.5 text-amber-900">
-                  <Sparkles size={15} className="text-amber-600 shrink-0" />
+                  <Sparkles size={16} className="text-amber-700 shrink-0" />
                   <span>💡 正解率を高める「答え（正解）」の設定アドバイス</span>
                 </div>
-                <p className="leading-relaxed text-amber-900/90 text-[11px]">
+                <p className="leading-relaxed text-amber-900/90 text-xs md:text-sm">
                   答えは<strong>「短い単語（名詞・キーワード）」</strong>で設定してください。<br />
                   ※「〜です」「〜だった」などの文章や、「！」「？」などの記号は含めず、単語のみ（例: <code>さくらや</code>、<code>お餅</code>）で設定すると、お相手が迷わず正解しやすくなります。
                 </p>
@@ -670,51 +670,71 @@ export const EditPostPage = () => {
               <div className="space-y-6">
                 {[0, 1].map((idx) => {
                   const hasSentenceEnding = questions[idx]?.answer ? /(です|でした|だよ|だね|だった|である|！|!|？|\?|。|、)$/.test(questions[idx].answer.trim()) : false;
+                  const isFirst = idx === 0;
                   return (
-                    <div key={idx} className="p-6 bg-brand-primary/5 rounded-[32px] border border-brand-primary/10 space-y-6">
-                      <div className="space-y-3">
-                        <div className="flex items-center justify-between">
-                          <label className="text-[16px] font-bold text-black uppercase tracking-widest flex items-center gap-2">
-                            思い出の質問 {idx + 1}（必須）
-                          </label>
+                    <div key={idx} className="space-y-5 bg-white/95 p-5 md:p-6 rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden transition-all">
+                      {/* カードヘッダー */}
+                      <div className={`flex items-center justify-between border-b ${isFirst ? 'border-indigo-200/80 bg-gradient-to-r from-indigo-50/70 via-sky-50/30 to-[#FAF6F0] border-l-indigo-700' : 'border-teal-200/80 bg-gradient-to-r from-teal-50/70 via-emerald-50/30 to-[#FAF6F0] border-l-teal-700'} -mx-5 -mt-5 p-4 md:-mx-6 md:-mt-6 md:p-5 border-l-4`}>
+                        <div className="flex items-center gap-2.5">
+                          <HelpCircle size={22} className={isFirst ? "text-indigo-800 shrink-0" : "text-teal-800 shrink-0"} />
+                          <h3 className="text-base sm:text-lg md:text-xl font-bold text-slate-900 tracking-tight">
+                            思い出の質問 {idx + 1}
+                          </h3>
+                        </div>
+                        <div className="flex items-center gap-2">
                           <button 
                             type="button"
                             onClick={() => {
                               setActiveQuestionIdx(idx);
                               setIsSampleModalOpen(true);
                             }}
-                            className="btn-secondary py-1 px-3 text-[10px] flex items-center gap-1"
+                            className="text-xs text-slate-700 hover:text-indigo-600 flex items-center gap-1 font-bold tracking-wider bg-white px-3 py-1 rounded-full border border-slate-200 shadow-2xs transition-all active:scale-95"
                           >
-                            <BookOpen size={12} /> サンプルから選ぶ
+                            <BookOpen size={12} className="text-indigo-600" /> サンプルから選ぶ
                           </button>
+                          <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wider ${isFirst ? 'bg-indigo-800' : 'bg-teal-800'} text-white shadow-2xs shrink-0 flex items-center gap-1`}>
+                            <span>Q{idx + 1}</span>
+                            <span className="text-[9px] opacity-75">必須</span>
+                          </span>
                         </div>
+                      </div>
+
+                      {/* 質問入力欄 */}
+                      <div className="space-y-2">
+                        <label className="text-xs sm:text-sm font-bold text-black flex items-center gap-1.5">
+                          <HelpCircle size={14} className="text-black" />
+                          質問内容<span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
+                        </label>
                         <input 
                           required
                           type="text" 
                           placeholder="例：部活の帰りに寄っていた店の名前は？" 
-                          className="w-full px-4 py-3 outline-none transition-all text-black placeholder:text-zinc-400 font-sans letter-field-input"
+                          className="w-full px-4 py-3 border-b-2 border-brand-primary/50 rounded-xl bg-[#faf9f6] focus:bg-white text-base outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all text-[#000000] placeholder:text-zinc-400 font-sans letter-field-input"
                           value={questions[idx].question}
                           onChange={e => handleQuestionChange(idx, 'question', e.target.value)}
                         />
                         <WarningMessage message={warnings[`question_${idx}_question`]} />
                       </div>
-                      <div className="space-y-3">
+
+                      {/* 答え入力欄 */}
+                      <div className="space-y-2">
                         <div className="flex items-center justify-between">
-                          <label className="text-[16px] font-bold text-black uppercase tracking-widest flex items-center gap-2">
-                            その答え（単語・名詞）
+                          <label className="text-xs sm:text-sm font-bold text-black flex items-center gap-1.5">
+                            <Key size={14} className="text-black" />
+                            答え（単語・名詞）<span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
                           </label>
-                          <span className="text-[11px] text-slate-500 font-medium">※ 単語のみ（例: さくらや）</span>
+                          <span className="text-xs text-slate-500 font-medium">※ 単語のみ（例: さくらや）</span>
                         </div>
                         <input 
                           required
                           type="text" 
                           placeholder="例：さくらや（※単語・キーワードのみ）" 
-                          className="w-full px-4 py-3 outline-none transition-all text-black placeholder:text-zinc-400 font-sans letter-field-input"
+                          className="w-full px-4 py-3 border-b-2 border-brand-primary/50 rounded-xl bg-[#faf9f6] focus:bg-white text-base outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all text-[#000000] placeholder:text-zinc-400 font-sans letter-field-input"
                           value={questions[idx].answer}
                           onChange={e => handleQuestionChange(idx, 'answer', e.target.value)}
                         />
                         {hasSentenceEnding && (
-                          <p className="text-[11px] text-amber-700 bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-200 flex items-center gap-1 font-bold animate-fade-in">
+                          <p className="text-xs text-amber-700 bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-200 flex items-center gap-1 font-bold animate-fade-in">
                             <span>💡 「です」「！」などの語尾や記号を省いた単語のみ（例: <code>さくらや</code>）で設定すると、相手が正解しやすくなります。</span>
                           </p>
                         )}
@@ -1580,12 +1600,12 @@ export const CreatePostPage = () => {
       fields: (
         <div className="space-y-6">
           {/* 💡 答え設定の親切なアドバイスバナー */}
-          <div className="p-4 bg-amber-50/80 rounded-2xl border border-amber-200/80 text-xs text-amber-950 space-y-1.5 font-sans shadow-2xs">
+          <div className="p-4 bg-amber-50/80 rounded-2xl border border-amber-200/80 text-xs md:text-sm text-amber-950 space-y-1.5 font-sans shadow-2xs">
             <div className="font-bold flex items-center gap-1.5 text-amber-900">
-              <Sparkles size={15} className="text-amber-600 shrink-0" />
+              <Sparkles size={16} className="text-amber-700 shrink-0" />
               <span>💡 正解率を高める「答え（正解）」の設定アドバイス</span>
             </div>
-            <p className="leading-relaxed text-amber-900/90 text-[11px]">
+            <p className="leading-relaxed text-amber-900/90 text-xs md:text-sm">
               答えは<strong>「短い単語（名詞・キーワード）」</strong>で設定してください。<br />
               ※「〜です」「〜だった」などの文章や、「！」「？」などの記号は含めず、単語のみ（例: <code>さくらや</code>、<code>お餅</code>、<code>家庭科室</code>）で設定すると、お相手が迷わず正解しやすくなります。
             </p>
@@ -1594,27 +1614,40 @@ export const CreatePostPage = () => {
           <div className="space-y-6">
             {questions.map((q, idx) => {
               const hasSentenceEnding = /(です|でした|だよ|だね|だった|である|！|!|？|\?|。|、)$/.test(q.answer.trim());
+              const isFirst = idx === 0;
               return (
-                <div key={idx} className="p-6 bg-brand-primary/5 rounded-[32px] border border-brand-primary/10 space-y-6">
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <label 
-                        className="text-lg font-bold uppercase tracking-widest flex items-center gap-2"
-                        style={{ color: idx === 0 ? '#000000' : '#000000' }}
-                      >
-                        <HelpCircle size={18} className="text-black" />
-                        思い出の質問 {idx + 1}<span className="text-[10px] text-red-600 font-bold ml-1.5 tracking-normal">＊必須</span>
-                      </label>
+                <div key={idx} className="space-y-5 bg-white/95 p-5 md:p-6 rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden transition-all">
+                  {/* カードヘッダー */}
+                  <div className={`flex items-center justify-between border-b ${isFirst ? 'border-indigo-200/80 bg-gradient-to-r from-indigo-50/70 via-sky-50/30 to-[#FAF6F0] border-l-indigo-700' : 'border-teal-200/80 bg-gradient-to-r from-teal-50/70 via-emerald-50/30 to-[#FAF6F0] border-l-teal-700'} -mx-5 -mt-5 p-4 md:-mx-6 md:-mt-6 md:p-5 border-l-4`}>
+                    <div className="flex items-center gap-2.5">
+                      <HelpCircle size={22} className={isFirst ? "text-indigo-800 shrink-0" : "text-teal-800 shrink-0"} />
+                      <h3 className="text-base sm:text-lg md:text-xl font-bold text-slate-900 tracking-tight">
+                        思い出の質問 {idx + 1}
+                      </h3>
+                    </div>
+                    <div className="flex items-center gap-2">
                       <button 
                         type="button"
                         onClick={() => handleAiDiagnosis(idx)}
                         disabled={isAiDiagnosing}
-                        className="text-xs text-black hover:text-brand-accent flex items-center gap-1 font-bold tracking-wider bg-white px-3 py-1.5 rounded-full border border-brand-primary/20 shadow-sm"
+                        className="text-xs text-slate-700 hover:text-indigo-600 flex items-center gap-1 font-bold tracking-wider bg-white px-3 py-1 rounded-full border border-slate-200 shadow-2xs transition-all active:scale-95"
                       >
-                        <Sparkles size={14} />
+                        <Sparkles size={13} className="text-amber-600" />
                         {isAiDiagnosing ? '診断中...' : 'セキュリティ診断'}
                       </button>
+                      <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wider ${isFirst ? 'bg-indigo-800' : 'bg-teal-800'} text-white shadow-2xs shrink-0 flex items-center gap-1`}>
+                        <span>Q{idx + 1}</span>
+                        <span className="text-[9px] opacity-75">必須</span>
+                      </span>
                     </div>
+                  </div>
+
+                  {/* 質問入力欄 */}
+                  <div className="space-y-2">
+                    <label className="text-xs sm:text-sm font-bold text-black flex items-center gap-1.5">
+                      <HelpCircle size={14} className="text-black" />
+                      質問内容<span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
+                    </label>
                     <input 
                       required
                       type="text" 
@@ -1625,16 +1658,15 @@ export const CreatePostPage = () => {
                     />
                     <WarningMessage message={warnings[`question_${idx}_question`]} />
                   </div>
-                  <div className="space-y-3">
+
+                  {/* 答え入力欄 */}
+                  <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <label 
-                        className="text-lg font-bold uppercase tracking-widest flex items-center gap-2"
-                        style={{ color: idx === 0 ? '#000000' : '#000000' }}
-                      >
-                        <Key size={18} className="text-black" />
-                        答え（単語・名詞）<span className="text-[10px] text-red-600 font-bold ml-1.5 tracking-normal">＊必須</span>
+                      <label className="text-xs sm:text-sm font-bold text-black flex items-center gap-1.5">
+                        <Key size={14} className="text-black" />
+                        答え（単語・名詞）<span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
                       </label>
-                      <span className="text-[11px] text-slate-500 font-medium">※ 単語のみ（例: さくらや）</span>
+                      <span className="text-xs text-slate-500 font-medium">※ 単語のみ（例: さくらや）</span>
                     </div>
                     <input 
                       required
@@ -1648,25 +1680,26 @@ export const CreatePostPage = () => {
                       autoCorrect="off"
                     />
                     {hasSentenceEnding && (
-                      <p className="text-[11px] text-amber-700 bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-200 flex items-center gap-1 font-bold animate-fade-in">
+                      <p className="text-xs text-amber-700 bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-200 flex items-center gap-1 font-bold animate-fade-in">
                         <span>💡 「です」「！」などの語尾や記号を省いた単語のみ（例: <code>さくらや</code>）で設定すると、相手が正解しやすくなります。</span>
                       </p>
                     )}
                     <WarningMessage message={warnings[`question_${idx}_answer`]} />
                   </div>
 
+                  {/* AI診断結果表示 */}
                   {aiDiagnosisResult && questions[idx].question === q.question && (
-                    <div className="p-4 bg-white/50 rounded-2xl border border-brand-primary/10 text-sm space-y-2">
+                    <div className="p-4 bg-slate-50/90 rounded-2xl border border-slate-200 text-sm space-y-2">
                       <div className="flex items-center justify-between">
                         <span className="font-bold text-black">AI診断スコア: {aiDiagnosisResult.score}/100</span>
-                        <div className="w-24 h-2 bg-brand-border rounded-full overflow-hidden">
+                        <div className="w-24 h-2 bg-slate-200 rounded-full overflow-hidden">
                           <div 
-                            className={`h-full transition-all duration-1000 ${aiDiagnosisResult.score > 70 ? 'bg-green-500' : aiDiagnosisResult.score > 40 ? 'bg-yellow-500' : 'bg-red-500'}`}
+                            className={`h-full transition-all duration-1000 ${aiDiagnosisResult.score > 70 ? 'bg-emerald-500' : aiDiagnosisResult.score > 40 ? 'bg-amber-500' : 'bg-red-500'}`}
                             style={{ width: `${aiDiagnosisResult.score}%` }}
                           />
                         </div>
                       </div>
-                      <p className="text-black/70 text-xs leading-relaxed">{aiDiagnosisResult.feedback}</p>
+                      <p className="text-slate-600 text-xs leading-relaxed">{aiDiagnosisResult.feedback}</p>
                     </div>
                   )}
                 </div>
