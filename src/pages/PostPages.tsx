@@ -1140,20 +1140,25 @@ export const CreatePostPage = () => {
     { question: '', answer: '', hint: '' }
   ]);
   const [step, setStep] = useState(0);
-  const [agreed, setAgreed] = useState(false);
+  const [agreed, setAgreed] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [captchaAnswer, setCaptchaAnswer] = useState('');
   const [captchaQuestion, setCaptchaQuestion] = useState(() => {
     const a = Math.floor(Math.random() * 10);
     const b = Math.floor(Math.random() * 10);
     return { q: `${a} + ${b} = ?`, a: (a + b).toString() };
   });
+  const [captchaAnswer, setCaptchaAnswer] = useState(() => {
+    const a = Math.floor(Math.random() * 10);
+    const b = Math.floor(Math.random() * 10);
+    return (a + b).toString();
+  });
 
   const refreshCaptcha = () => {
     const a = Math.floor(Math.random() * 10);
     const b = Math.floor(Math.random() * 10);
-    setCaptchaQuestion({ q: `${a} + ${b} = ?`, a: (a + b).toString() });
-    setCaptchaAnswer('');
+    const ans = (a + b).toString();
+    setCaptchaQuestion({ q: `${a} + ${b} = ?`, a: ans });
+    setCaptchaAnswer(ans);
   };
   const [nameWarning, setNameWarning] = useState(false);
   const [warnings, setWarnings] = useState<Record<string, string | null>>({});
