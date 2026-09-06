@@ -6241,19 +6241,19 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
       {isOwner && (
         <div className="mb-6 p-4 md:p-5 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl border border-indigo-500/30 shadow-lg font-sans text-left space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-3">
-            {/* 2大切り替えボタン（ネット公開画面 / 質問正解後の公開画面） */}
+            {/* 2大切り替えセグメントタブ（ネット公開画面 / 正解後の開示画面） */}
             <div className="flex items-center gap-1.5 p-1 bg-white/10 backdrop-blur-md rounded-2xl border border-white/15">
               <button 
                 type="button"
                 onClick={() => setOwnerPreviewRevealed(false)}
                 className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   !ownerPreviewRevealed 
-                    ? 'bg-teal-600 text-white shadow-md ring-2 ring-teal-400/50' 
+                    ? 'bg-teal-700 text-white shadow-md ring-2 ring-teal-400/60' 
                     : 'text-slate-300 hover:text-white hover:bg-white/10'
                 }`}
               >
                 <span>🌐 ネット公開画面</span>
-                {!ownerPreviewRevealed && <span className="w-2 h-2 rounded-full bg-white animate-pulse" />}
+                {!ownerPreviewRevealed && <span className="w-2 h-2 rounded-full bg-teal-300 animate-pulse" />}
               </button>
 
               <button 
@@ -6261,12 +6261,12 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                 onClick={() => setOwnerPreviewRevealed(true)}
                 className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   ownerPreviewRevealed 
-                    ? 'bg-amber-500 text-slate-950 shadow-md ring-2 ring-amber-300/60 font-extrabold' 
+                    ? 'bg-emerald-600 text-white shadow-md ring-2 ring-emerald-400/60' 
                     : 'text-slate-300 hover:text-white hover:bg-white/10'
                 }`}
               >
-                <span>🔓 質問正解後の公開画面</span>
-                {ownerPreviewRevealed && <span className="w-2 h-2 rounded-full bg-slate-950 animate-pulse" />}
+                <span>🔓 正解後の開示画面</span>
+                {ownerPreviewRevealed && <span className="w-2 h-2 rounded-full bg-emerald-300 animate-pulse" />}
               </button>
             </div>
 
@@ -6288,11 +6288,11 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               <span>
                 {!ownerPreviewRevealed ? (
                   <>
-                    <strong className="text-white">【🌐 ネット公開画面を表示中】</strong> Google検索やエゴサーチでお相手が最初に見る画面です。手紙本文・連絡先・質問の答えはすべて伏せられ（🔒）、安全に保護されています。
+                    <strong className="text-white">【🌐 ネット公開画面を表示中】</strong> Google検索やエゴサーチでお相手が最初に見る初期画面です。手紙本文・連絡先・質問の答えはすべて伏せられ（🔒）、安全に保護されています。
                   </>
                 ) : (
                   <>
-                    <strong className="text-amber-300">【🔓 質問正解後の公開画面を表示中】</strong> お相手が「思い出の質問」に正解し、開示手続きを完了した後に表示される手紙本文・連絡先・実名の画面です。
+                    <strong className="text-emerald-300">【🔓 正解後の開示画面を表示中】</strong> お相手が「思い出の質問」に全問正解し、安全な開示手続きを完了した後にのみ表示される手紙本文・連絡先・実名の画面です。
                   </>
                 )}
               </span>
