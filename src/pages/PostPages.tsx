@@ -563,58 +563,80 @@ export const EditPostPage = () => {
             </section>
 
             {/* 思い出の質問 */}
-            <section className="space-y-8">
+            <section className="space-y-6">
               <div className="flex items-center gap-3 pb-2 border-b border-brand-primary/20">
                 <HelpCircle className="text-black" size={20} />
                 <h2 className="text-xl font-bold text-black">思い出の質問</h2>
               </div>
 
-              <div className="space-y-8">
-                {[0, 1].map((idx) => (
-                  <div key={idx} className="p-6 bg-brand-primary/5 rounded-[32px] border border-brand-primary/10 space-y-6">
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <label className="text-[16px] font-bold text-black uppercase tracking-widest flex items-center gap-2">
-                          思い出の質問 {idx + 1}（必須）
-                        </label>
-                        <button 
-                          type="button"
-                          onClick={() => {
-                            setActiveQuestionIdx(idx);
-                            setIsSampleModalOpen(true);
-                          }}
-                          className="btn-secondary py-1 px-3 text-[10px] flex items-center gap-1"
-                        >
-                          <BookOpen size={12} /> サンプルから選ぶ
-                        </button>
-                      </div>
-                      <input 
-                        required
-                        type="text" 
-                        placeholder="例：中学の卒業式の日、二人で約束した場所は？" 
-                        className="w-full px-4 py-3 outline-none transition-all text-black placeholder:text-zinc-400 font-sans letter-field-input"
-                        value={questions[idx].question}
-                        onChange={e => handleQuestionChange(idx, 'question', e.target.value)}
-                      />
-                      <WarningMessage message={warnings[`question_${idx}_question`]} />
-                    </div>
-                    <div className="space-y-3">
-                      <label className="text-[16px] font-bold text-black uppercase tracking-widest flex items-center gap-2">
-                        その答え
-                      </label>
-                      <input 
-                        required
-                        type="text" 
-                        placeholder="例：校庭の桜の木の下" 
-                        className="w-full px-4 py-3 outline-none transition-all text-black placeholder:text-zinc-400 font-sans letter-field-input"
-                        value={questions[idx].answer}
-                        onChange={e => handleQuestionChange(idx, 'answer', e.target.value)}
-                      />
-                      <WarningMessage message={warnings[`question_${idx}_answer`]} />
-                    </div>
+              {/* 💡 答え設定の親切なアドバイスバナー */}
+              <div className="p-4 bg-amber-50/80 rounded-2xl border border-amber-200/80 text-xs text-amber-950 space-y-1.5 font-sans shadow-2xs">
+                <div className="font-bold flex items-center gap-1.5 text-amber-900">
+                  <Sparkles size={15} className="text-amber-600 shrink-0" />
+                  <span>💡 正解率を高める「答え（正解）」の設定アドバイス</span>
+                </div>
+                <p className="leading-relaxed text-amber-900/90 text-[11px]">
+                  答えは<strong>「短い単語（名詞・キーワード）」</strong>で設定してください。<br />
+                  ※「〜です」「〜だった」などの文章や、「！」「？」などの記号は含めず、単語のみ（例: <code>さくらや</code>、<code>お餅</code>）で設定すると、お相手が迷わず正解しやすくなります。
+                </p>
+              </div>
 
-                  </div>
-                ))}
+              <div className="space-y-6">
+                {[0, 1].map((idx) => {
+                  const hasSentenceEnding = questions[idx]?.answer ? /(です|でした|だよ|だね|だった|である|！|!|？|\?|。|、)$/.test(questions[idx].answer.trim()) : false;
+                  return (
+                    <div key={idx} className="p-6 bg-brand-primary/5 rounded-[32px] border border-brand-primary/10 space-y-6">
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <label className="text-[16px] font-bold text-black uppercase tracking-widest flex items-center gap-2">
+                            思い出の質問 {idx + 1}（必須）
+                          </label>
+                          <button 
+                            type="button"
+                            onClick={() => {
+                              setActiveQuestionIdx(idx);
+                              setIsSampleModalOpen(true);
+                            }}
+                            className="btn-secondary py-1 px-3 text-[10px] flex items-center gap-1"
+                          >
+                            <BookOpen size={12} /> サンプルから選ぶ
+                          </button>
+                        </div>
+                        <input 
+                          required
+                          type="text" 
+                          placeholder="例：部活の帰りに寄っていた店の名前は？" 
+                          className="w-full px-4 py-3 outline-none transition-all text-black placeholder:text-zinc-400 font-sans letter-field-input"
+                          value={questions[idx].question}
+                          onChange={e => handleQuestionChange(idx, 'question', e.target.value)}
+                        />
+                        <WarningMessage message={warnings[`question_${idx}_question`]} />
+                      </div>
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <label className="text-[16px] font-bold text-black uppercase tracking-widest flex items-center gap-2">
+                            その答え（単語・名詞）
+                          </label>
+                          <span className="text-[11px] text-slate-500 font-medium">※ 単語のみ（例: さくらや）</span>
+                        </div>
+                        <input 
+                          required
+                          type="text" 
+                          placeholder="例：さくらや（※単語・キーワードのみ）" 
+                          className="w-full px-4 py-3 outline-none transition-all text-black placeholder:text-zinc-400 font-sans letter-field-input"
+                          value={questions[idx].answer}
+                          onChange={e => handleQuestionChange(idx, 'answer', e.target.value)}
+                        />
+                        {hasSentenceEnding && (
+                          <p className="text-[11px] text-amber-700 bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-200 flex items-center gap-1 font-bold animate-fade-in">
+                            <span>💡 「です」「！」などの語尾や記号を省いた単語のみ（例: <code>さくらや</code>）で設定すると、相手が正解しやすくなります。</span>
+                          </p>
+                        )}
+                        <WarningMessage message={warnings[`question_${idx}_answer`]} />
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </section>
 
@@ -1386,77 +1408,100 @@ export const CreatePostPage = () => {
       title: "二人だけの思い出の質問",
       description: "プライバシーを守るため、本人確認用の「思い出の質問」を2問作成してください。両方の正解が必須となります。",
       fields: (
-        <div className="space-y-8">
-          <div className="space-y-6">
-            {questions.map((q, idx) => (
-              <div key={idx} className="p-6 bg-brand-primary/5 rounded-[32px] border border-brand-primary/10 space-y-6">
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <label 
-                      className="text-lg font-bold uppercase tracking-widest flex items-center gap-2"
-                      style={{ color: idx === 0 ? '#000000' : '#000000' }}
-                    >
-                      <HelpCircle size={18} className="text-black" />
-                      思い出の質問 {idx + 1}<span className="text-[10px] text-red-600 font-bold ml-1.5 tracking-normal">＊必須</span>
-                    </label>
-                    <button 
-                      type="button"
-                      onClick={() => handleAiDiagnosis(idx)}
-                      disabled={isAiDiagnosing}
-                      className="text-xs text-black hover:text-brand-accent flex items-center gap-1 font-bold tracking-wider bg-white px-3 py-1.5 rounded-full border border-brand-primary/20 shadow-sm"
-                    >
-                      <Sparkles size={14} />
-                      {isAiDiagnosing ? '診断中...' : 'セキュリティ診断'}
-                    </button>
-                  </div>
-                  <input 
-                    required
-                    type="text" 
-                    placeholder="例：部活の帰りに寄っていた店の名前は？" 
-                    className="w-full px-4 py-3 border-b-2 border-brand-primary/50 rounded-xl bg-[#faf9f6] focus:bg-white text-base outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all text-[#000000] placeholder:text-zinc-400 font-sans letter-field-input"
-                    value={q.question}
-                    onChange={e => handleQuestionChange(idx, 'question', e.target.value)}
-                  />
-                  <WarningMessage message={warnings[`question_${idx}_question`]} />
-                </div>
-                <div className="space-y-3">
-                  <label 
-                    className="text-lg font-bold uppercase tracking-widest flex items-center gap-2"
-                    style={{ color: idx === 0 ? '#000000' : '#000000' }}
-                  >
-                    <Key size={18} className="text-black" />
-                    答え<span className="text-[10px] text-red-600 font-bold ml-1.5 tracking-normal">＊必須</span>
-                  </label>
-                  <input 
-                    required
-                    type="text" 
-                    placeholder="例：さくらや" 
-                    className="w-full px-4 py-3 border-b-2 border-brand-primary/50 rounded-xl bg-[#faf9f6] focus:bg-white text-base outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all text-[#000000] placeholder:text-zinc-400 font-sans letter-field-input"
-                    value={q.answer}
-                    onChange={e => handleQuestionChange(idx, 'answer', toHalfWidth(e.target.value))}
-                    inputMode="url"
-                    autoCapitalize="off"
-                    autoCorrect="off"
-                  />
-                  <WarningMessage message={warnings[`question_${idx}_answer`]} />
-                </div>
+        <div className="space-y-6">
+          {/* 💡 答え設定の親切なアドバイスバナー */}
+          <div className="p-4 bg-amber-50/80 rounded-2xl border border-amber-200/80 text-xs text-amber-950 space-y-1.5 font-sans shadow-2xs">
+            <div className="font-bold flex items-center gap-1.5 text-amber-900">
+              <Sparkles size={15} className="text-amber-600 shrink-0" />
+              <span>💡 正解率を高める「答え（正解）」の設定アドバイス</span>
+            </div>
+            <p className="leading-relaxed text-amber-900/90 text-[11px]">
+              答えは<strong>「短い単語（名詞・キーワード）」</strong>で設定してください。<br />
+              ※「〜です」「〜だった」などの文章や、「！」「？」などの記号は含めず、単語のみ（例: <code>さくらや</code>、<code>お餅</code>、<code>家庭科室</code>）で設定すると、お相手が迷わず正解しやすくなります。
+            </p>
+          </div>
 
-                {aiDiagnosisResult && questions[idx].question === q.question && (
-                  <div className="p-4 bg-white/50 rounded-2xl border border-brand-primary/10 text-sm space-y-2">
+          <div className="space-y-6">
+            {questions.map((q, idx) => {
+              const hasSentenceEnding = /(です|でした|だよ|だね|だった|である|！|!|？|\?|。|、)$/.test(q.answer.trim());
+              return (
+                <div key={idx} className="p-6 bg-brand-primary/5 rounded-[32px] border border-brand-primary/10 space-y-6">
+                  <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-black">AI診断スコア: {aiDiagnosisResult.score}/100</span>
-                      <div className="w-24 h-2 bg-brand-border rounded-full overflow-hidden">
-                        <div 
-                          className={`h-full transition-all duration-1000 ${aiDiagnosisResult.score > 70 ? 'bg-green-500' : aiDiagnosisResult.score > 40 ? 'bg-yellow-500' : 'bg-red-500'}`}
-                          style={{ width: `${aiDiagnosisResult.score}%` }}
-                        />
-                      </div>
+                      <label 
+                        className="text-lg font-bold uppercase tracking-widest flex items-center gap-2"
+                        style={{ color: idx === 0 ? '#000000' : '#000000' }}
+                      >
+                        <HelpCircle size={18} className="text-black" />
+                        思い出の質問 {idx + 1}<span className="text-[10px] text-red-600 font-bold ml-1.5 tracking-normal">＊必須</span>
+                      </label>
+                      <button 
+                        type="button"
+                        onClick={() => handleAiDiagnosis(idx)}
+                        disabled={isAiDiagnosing}
+                        className="text-xs text-black hover:text-brand-accent flex items-center gap-1 font-bold tracking-wider bg-white px-3 py-1.5 rounded-full border border-brand-primary/20 shadow-sm"
+                      >
+                        <Sparkles size={14} />
+                        {isAiDiagnosing ? '診断中...' : 'セキュリティ診断'}
+                      </button>
                     </div>
-                    <p className="text-black/70 text-xs leading-relaxed">{aiDiagnosisResult.feedback}</p>
+                    <input 
+                      required
+                      type="text" 
+                      placeholder="例：部活の帰りに寄っていた店の名前は？" 
+                      className="w-full px-4 py-3 border-b-2 border-brand-primary/50 rounded-xl bg-[#faf9f6] focus:bg-white text-base outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all text-[#000000] placeholder:text-zinc-400 font-sans letter-field-input"
+                      value={q.question}
+                      onChange={e => handleQuestionChange(idx, 'question', e.target.value)}
+                    />
+                    <WarningMessage message={warnings[`question_${idx}_question`]} />
                   </div>
-                )}
-              </div>
-            ))}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <label 
+                        className="text-lg font-bold uppercase tracking-widest flex items-center gap-2"
+                        style={{ color: idx === 0 ? '#000000' : '#000000' }}
+                      >
+                        <Key size={18} className="text-black" />
+                        答え（単語・名詞）<span className="text-[10px] text-red-600 font-bold ml-1.5 tracking-normal">＊必須</span>
+                      </label>
+                      <span className="text-[11px] text-slate-500 font-medium">※ 単語のみ（例: さくらや）</span>
+                    </div>
+                    <input 
+                      required
+                      type="text" 
+                      placeholder="例：さくらや（※単語・キーワードのみ）" 
+                      className="w-full px-4 py-3 border-b-2 border-brand-primary/50 rounded-xl bg-[#faf9f6] focus:bg-white text-base outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all text-[#000000] placeholder:text-zinc-400 font-sans letter-field-input"
+                      value={q.answer}
+                      onChange={e => handleQuestionChange(idx, 'answer', toHalfWidth(e.target.value))}
+                      inputMode="url"
+                      autoCapitalize="off"
+                      autoCorrect="off"
+                    />
+                    {hasSentenceEnding && (
+                      <p className="text-[11px] text-amber-700 bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-200 flex items-center gap-1 font-bold animate-fade-in">
+                        <span>💡 「です」「！」などの語尾や記号を省いた単語のみ（例: <code>さくらや</code>）で設定すると、相手が正解しやすくなります。</span>
+                      </p>
+                    )}
+                    <WarningMessage message={warnings[`question_${idx}_answer`]} />
+                  </div>
+
+                  {aiDiagnosisResult && questions[idx].question === q.question && (
+                    <div className="p-4 bg-white/50 rounded-2xl border border-brand-primary/10 text-sm space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-black">AI診断スコア: {aiDiagnosisResult.score}/100</span>
+                        <div className="w-24 h-2 bg-brand-border rounded-full overflow-hidden">
+                          <div 
+                            className={`h-full transition-all duration-1000 ${aiDiagnosisResult.score > 70 ? 'bg-green-500' : aiDiagnosisResult.score > 40 ? 'bg-yellow-500' : 'bg-red-500'}`}
+                            style={{ width: `${aiDiagnosisResult.score}%` }}
+                          />
+                        </div>
+                      </div>
+                      <p className="text-black/70 text-xs leading-relaxed">{aiDiagnosisResult.feedback}</p>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       ),
@@ -6548,6 +6593,18 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                 </p>
               </div>
 
+              {/* 💡 回答の親切な単語入力ガイド */}
+              <div className="p-4 bg-teal-50/70 rounded-2xl border border-teal-200/80 text-xs text-teal-950 space-y-1 font-sans shadow-2xs">
+                <div className="font-bold flex items-center gap-1.5 text-teal-900">
+                  <Sparkles size={15} className="text-teal-600 shrink-0" />
+                  <span>💡 回答入力のアドバイス</span>
+                </div>
+                <p className="leading-relaxed text-[11px] text-teal-900/90">
+                  答えは<strong>「短い単語（名詞・キーワード）」</strong>でお答えください。<br />
+                  ※「〜です」「〜だった」などの文章ではなく、単語のみ（例: <code>さくらや</code>、<code>お餅</code>）で入力すると正解しやすくなります。ひらがな・カタカナ・漢字・送り仮名の違いは自動で柔軟に判定されます。
+                </p>
+              </div>
+
               <form onSubmit={handleVerify} className="space-y-6 pt-1">
                 {remainingAttempts !== null && remainingAttempts < 5 && !isAttemptsLocked && (
                   <div className="flex items-center gap-2 px-4 py-3 bg-amber-50 rounded-2xl border border-amber-200/70 text-amber-800 text-xs font-semibold font-sans animate-pulse">
@@ -6617,7 +6674,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                             ? "ロック中のため入力できません" 
                             : verificationResults[idx]?.correct 
                               ? "このクイズはすでに正解されています" 
-                              : "答えを入力してください（ひらがな・カタカナ・漢字など）"
+                              : "答えを入力（例: さくらや / 単語のみでお答えください）"
                         } 
                         className={`w-full px-4 py-3.5 rounded-xl border-2 outline-none transition-all font-sans text-base text-slate-900 bg-white placeholder:text-slate-400 ${
                           isAttemptsLocked 
@@ -6658,7 +6715,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                         ) : (
                           <p className={`text-xs font-bold flex items-center gap-1.5 p-2.5 rounded-xl border ${verificationResults[idx].close ? 'bg-amber-50 text-amber-800 border-amber-200' : 'bg-red-50 text-red-700 border-red-200'}`}>
                             <AlertCircle size={15} className="shrink-0" />
-                            {verificationResults[idx].close ? '惜しいです！ローマ字、カタカナ、漢字などの表記ゆれをご確認ください。' : '回答が一致しません。もう一度お確かめください。'}
+                            {verificationResults[idx].hint || (verificationResults[idx].close ? '惜しいです！漢字・ひらがな・送り仮名を変えて、短い単語でお試しください。' : '回答が一致しません。単語のみで再度お確かめください。')}
                           </p>
                         )}
                       </motion.div>

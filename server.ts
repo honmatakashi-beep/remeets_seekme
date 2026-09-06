@@ -1357,6 +1357,159 @@ const normalizeJapanese = (str: string): string => {
     .toLowerCase();
 };
 
+// 🌟 想い出クイズ専用 スマート正規化＆表記ゆれ・語尾・接頭辞吸収エンジン
+const cleanQuizString = (str: string): string => {
+  if (!str) return "";
+  let s = str.normalize("NFKC");
+  // カタカナをひらがなに統一
+  s = s.replace(/[\u30a1-\u30f6]/g, (match) => {
+    return String.fromCharCode(match.charCodeAt(0) - 0x60);
+  });
+  // 全角英数を半角にし、小文字化
+  s = s.replace(/[\uff01-\uff5e]/g, (match) => {
+    return String.fromCharCode(match.charCodeAt(0) - 0xfee0);
+  }).toLowerCase();
+  
+  // 記号類（！、？、。、句読点、括弧、長音、チルダなど）を除去
+  s = s.replace(/[!！?？.。、,・~〜ー\-_/／:：;；（）\(\)「」『』"'\s]/g, "");
+
+  // 文末の語尾・助動詞（です、でした、だよ、だね、だな、だ、よ、ね、だった、である、とおもいます、と思います等）を除去
+  const suffixRegex = /(とおもいます|とおもう|とおもわれます|とおもった|とおもいました|とおもって|と思います|と思う|と思われます|と思った|と思いました|と思って|でした|ですよ|ですね|だよ|だね|だな|だった|である|です|だ|よ|ね)$/;
+  s = s.replace(suffixRegex, "");
+
+  return s;
+};
+
+// 派生バリエーション（接頭辞「お」「ご」除去、送り仮名統一など）を生成
+const generateQuizVariations = (rawStr: string): string[] => {
+  if (!rawStr) return [];
+  const base = cleanQuizString(rawStr);
+  if (!base) return [];
+
+  const set = new Set<string>();
+  set.add(base);
+
+  // 1. 接頭辞「お」「ご」「御」を除去した語根
+  if (base.startsWith("お") && base.length > 1) {
+    set.add(base.slice(1));
+  }
+  if (base.startsWith("ご") && base.length > 1) {
+    set.add(base.slice(1));
+  }
+  if (base.startsWith("御") && base.length > 1) {
+    set.add(base.slice(1));
+  }
+
+  // 2. 代表的な送り仮名・表記ゆらぎ吸収テーブル
+  const okuriganaMap: Record<string, string[]> = {
+    "引っ越し": ["引越し", "引越", "ひっこし", "ひきこし"],
+    "引越し": ["引っ越し", "引越", "ひっこし", "ひきこし"],
+    "受け付け": ["受付", "うけつけ"],
+    "受付": ["受け付け", "うけつけ"],
+    "問い合わせ": ["問合せ", "といあわせ"],
+    "問合せ": ["問い合わせ", "といあわせ"],
+    "申し込み": ["申込", "もうしこみ"],
+    "申込": ["申し込み", "もうしこみ"],
+    "取り消し": ["取消", "とりけし"],
+    "取消": ["取り消し", "とりけし"],
+    "売り上げ": ["売上", "うりあげ"],
+    "売上": ["売り上げ", "うりあげ"],
+    "お餅": ["餅", "もち", "おもち"],
+    "餅": ["お餅", "おもち", "もち"],
+    "おにぎり": ["にぎり", "お握り", "握り"],
+    "お寿司": ["寿司", "鮨", "すし", "おすし"],
+    "寿司": ["お寿司", "鮨", "すし", "おすし"],
+    "ご褒美": ["褒美", "ほうび", "ごほうび"],
+    "お祝い": ["祝い", "祝", "おいわい", "いわい"],
+    "桜屋": ["さくらや", "サクラヤ", "さくら屋", "桜や"],
+    "さくら屋": ["さくらや", "桜屋", "サクラヤ", "桜や"],
+    "桜や": ["さくらや", "桜屋", "サクラヤ", "さくら屋"],
+    "さくらや": ["桜屋", "サクラヤ", "さくら屋", "桜や"],
+    "駄菓子屋": ["だがしや", "だがし屋", "お菓子屋", "おかしや"],
+    "だがし屋": ["駄菓子屋", "だがしや", "お菓子屋", "おかしや"],
+    "だがしや": ["駄菓子屋", "だがし屋", "お菓子屋", "おかしや"]
+  };
+
+  for (const [key, variants] of Object.entries(okuriganaMap)) {
+    const normKey = cleanQuizString(key);
+    if (base === normKey || rawStr.includes(key)) {
+      variants.forEach(v => {
+        set.add(cleanQuizString(v));
+      });
+    }
+  }
+
+  return Array.from(set).filter(Boolean);
+};
+
+// クイズ回答の一致判定エンジン（表記ゆれ・語尾・接頭辞・惜しい判定を完全網羅）
+const evaluateQuizAnswerMatch = async (
+  userAnswer: string,
+  plainAnswer: string,
+  hashedAnswer: string
+): Promise<{ isMatch: boolean; isClose: boolean; hint?: string }> => {
+  if (!userAnswer || !userAnswer.trim()) {
+    return { isMatch: false, isClose: false };
+  }
+
+  const cleanUser = cleanQuizString(userAnswer);
+  if (!cleanUser) {
+    return { isMatch: false, isClose: false };
+  }
+
+  // 1. bcrypt での完全一致チェック
+  let exactBcrypt = false;
+  try {
+    if (hashedAnswer) {
+      exactBcrypt = await bcrypt.compare(userAnswer.trim().toLowerCase(), hashedAnswer);
+    }
+  } catch (_) {}
+
+  if (exactBcrypt) {
+    return { isMatch: true, isClose: false };
+  }
+
+  // 2. スマート正規化（語尾・記号除去・カタカナひらがな統一・接頭辞吸収）での一致チェック
+  if (plainAnswer) {
+    const userVars = generateQuizVariations(userAnswer);
+    const plainVars = generateQuizVariations(plainAnswer);
+
+    for (const u of userVars) {
+      for (const p of plainVars) {
+        if (u === p) {
+          return { isMatch: true, isClose: false };
+        }
+      }
+    }
+
+    // 3. 編集距離（Levenshtein Distance）による惜しい判定・ヒント生成
+    let minDistance = 999;
+    for (const u of userVars) {
+      for (const p of plainVars) {
+        const d = getLevenshteinDistance(u, p);
+        if (d < minDistance) minDistance = d;
+      }
+    }
+
+    const normPlain = cleanQuizString(plainAnswer);
+    const isClose = minDistance <= 1 || (normPlain.length >= 4 && minDistance <= 2);
+
+    let hint: string | undefined = undefined;
+    if (isClose) {
+      const hasKanji = /[\u4e00-\u9faf]/.test(plainAnswer);
+      if (hasKanji) {
+        hint = "💡 惜しいです！漢字・ひらがな・送り仮名を変えて、短い単語のみでお試しください。";
+      } else {
+        hint = "💡 惜しいです！ひらがな・カタカナや単語のみで再度お確かめください。";
+      }
+    }
+
+    return { isMatch: false, isClose, hint };
+  }
+
+  return { isMatch: false, isClose: false };
+};
+
 const detectInappropriateWords = (text: string, isChat = false): string[] => {
   if (!text) return [];
   const textNormalized = normalizeJapanese(text);
@@ -4224,33 +4377,21 @@ async function startServer() {
       for (let i = 0; i < hashedAnswers.length; i++) {
         const userAnswer = (answers[i] || "").trim();
         if (!userAnswer) {
-          results.push({ correct: false, close: false });
+          results.push({ correct: false, close: false, hint: undefined });
           allCorrect = false;
           continue;
         }
 
-        // 1. Exact match with bcrypt
-        let isMatch = await bcrypt.compare(userAnswer.toLowerCase(), hashedAnswers[i]);
-        
-        // 2. Fuzzy match if plain answer is available
-        let isClose = false;
-        if (!isMatch && plainAnswers[i]) {
-          const normUser = normalizeJapanese(userAnswer);
-          const normPlain = normalizeJapanese(plainAnswers[i]);
-          
-          if (normUser === normPlain) {
-            isMatch = true;
-          } else {
-            const distance = getLevenshteinDistance(normUser, normPlain);
-            // Close if distance is small relative to length
-            if (distance <= 1 || (normPlain.length >= 4 && distance <= 2)) {
-              isClose = true;
-            }
-          }
-        }
+        const evalResult = await evaluateQuizAnswerMatch(userAnswer, plainAnswers[i], hashedAnswers[i]);
+        results.push({ 
+          correct: evalResult.isMatch, 
+          close: evalResult.isClose,
+          hint: evalResult.hint 
+        });
 
-        results.push({ correct: isMatch, close: isClose });
-        if (!isMatch) allCorrect = false;
+        if (!evalResult.isMatch) {
+          allCorrect = false;
+        }
       }
 
       if (allCorrect) {
