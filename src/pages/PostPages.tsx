@@ -2802,7 +2802,7 @@ export const CreatePostPage = () => {
                       </button>
                     </div>
                   </div>
-                </div>
+                </>
               )}
 
               {/* Step 2: eKYC フォーム入力 */}
