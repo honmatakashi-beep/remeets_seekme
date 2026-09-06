@@ -6370,8 +6370,9 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                       BTL-{post.id?.toString().padStart(5, '0')}
                     </span>
                   </div>
-                  <h3 className="text-xl sm:text-2xl font-serif font-bold text-teal-950 tracking-wide drop-shadow-xs">
-                    {post.target_name} 様宛のボトルメールが海へ流されました
+                  <h3 className="text-xl sm:text-2xl font-serif font-bold text-teal-950 tracking-wide drop-shadow-xs leading-snug">
+                    <span>{post.target_name} 様宛の</span>
+                    <span className="block mt-0.5">ボトルメールが海へ流されました</span>
                   </h3>
                 </div>
               </div>
