@@ -508,24 +508,6 @@ export const AccountPage = () => {
     ? (urlTab as 'profile' | 'chats' | 'sent' | 'notifications')
     : (location.state?.defaultTab || 'profile');
   const [activeSubTab, setActiveSubTab] = useState<'profile' | 'chats' | 'sent' | 'notifications'>(initialSubTab);
-  const scrollToTarget = (targetId = 'sent-bottles-title', immediate = false) => {
-    const doScroll = () => {
-      const targetEl = document.getElementById(targetId) || document.getElementById('sent-bottles') || document.getElementById('account-tabs');
-      if (targetEl) {
-        if ((window as any).lenis) {
-          (window as any).lenis.scrollTo(targetEl, { offset: -12, duration: immediate ? 0 : 0.6 });
-        } else {
-          const y = targetEl.getBoundingClientRect().top + window.pageYOffset - 12;
-          window.scrollTo({ top: Math.max(0, y), behavior: immediate ? 'auto' : 'smooth' });
-        }
-      }
-    };
-    requestAnimationFrame(doScroll);
-    setTimeout(doScroll, 100);
-    setTimeout(doScroll, 300);
-    setTimeout(doScroll, 600);
-  };
-
   useEffect(() => {
     const tab = searchParams.get('tab');
     if (tab && ['profile', 'chats', 'sent', 'notifications'].includes(tab)) {
@@ -538,12 +520,15 @@ export const AccountPage = () => {
       const tab = searchParams.get('tab');
       if (tab === 'sent' || location.hash.includes('sent')) {
         setActiveSubTab('sent');
-        scrollToTarget('sent-bottles-title');
-      } else if (tab) {
-        scrollToTarget('account-tabs');
+        setTimeout(() => {
+          const el = document.getElementById('account-tabs');
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 150);
       }
     }
-  }, [loading, location.hash, searchParams]);
+  }, [loading, searchParams, location.hash]);
 
   useEffect(() => {
     const syncUserInfo = async () => {
