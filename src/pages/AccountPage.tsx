@@ -508,31 +508,42 @@ export const AccountPage = () => {
     ? (urlTab as 'profile' | 'chats' | 'sent' | 'notifications')
     : (location.state?.defaultTab || 'profile');
   const [activeSubTab, setActiveSubTab] = useState<'profile' | 'chats' | 'sent' | 'notifications'>(initialSubTab);
-  const scrollToTarget = (targetId = 'sent-bottles', immediate = false) => {
+  const scrollToTarget = (targetId = 'sent-bottles-title', immediate = false) => {
     const doScroll = () => {
-      const targetEl = document.getElementById(targetId) || document.getElementById('account-tabs');
+      const targetEl = document.getElementById(targetId) || document.getElementById('sent-bottles') || document.getElementById('account-tabs');
       if (targetEl) {
         if ((window as any).lenis) {
-          (window as any).lenis.scrollTo(targetEl, { offset: -10, duration: immediate ? 0 : 0.6 });
+          (window as any).lenis.scrollTo(targetEl, { offset: -12, duration: immediate ? 0 : 0.6 });
         } else {
-          targetEl.scrollIntoView({ behavior: immediate ? 'auto' : 'smooth', block: 'start' });
+          const y = targetEl.getBoundingClientRect().top + window.pageYOffset - 12;
+          window.scrollTo({ top: Math.max(0, y), behavior: immediate ? 'auto' : 'smooth' });
         }
       }
     };
-    setTimeout(doScroll, 80);
-    setTimeout(doScroll, 350);
+    requestAnimationFrame(doScroll);
+    setTimeout(doScroll, 100);
+    setTimeout(doScroll, 300);
+    setTimeout(doScroll, 600);
   };
 
   useEffect(() => {
     const tab = searchParams.get('tab');
     if (tab && ['profile', 'chats', 'sent', 'notifications'].includes(tab)) {
       setActiveSubTab(tab as any);
-      if (!loading) {
-        const targetId = tab === 'sent' ? 'sent-bottles' : 'account-tabs';
-        scrollToTarget(targetId);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (!loading) {
+      const tab = searchParams.get('tab');
+      if (tab === 'sent' || location.hash.includes('sent')) {
+        setActiveSubTab('sent');
+        scrollToTarget('sent-bottles-title');
+      } else if (tab) {
+        scrollToTarget('account-tabs');
       }
     }
-  }, [searchParams, loading]);
+  }, [loading, location.hash, searchParams]);
 
   useEffect(() => {
     const syncUserInfo = async () => {
