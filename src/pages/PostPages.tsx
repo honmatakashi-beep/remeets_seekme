@@ -2435,11 +2435,6 @@ export const CreatePostPage = () => {
     if (step < steps.length - 1) {
       return;
     }
-
-    // Step 4 遷移直後（500ms以内）の誤発火・二重クリックを安全にガード
-    if (Date.now() - stepEnteredTime < 500) {
-      return;
-    }
     
     // Check previous steps
     if (!steps[0].isValid()) {
@@ -2703,6 +2698,25 @@ export const CreatePostPage = () => {
           ※ プライベートメッセージと連絡先は、質問に正解したお相手のみに安全に開示されます。
         </p>
       </div>
+
+      {/* 投函処理中フルスクリーンローディング */}
+      {isSubmitting && !showPostConfirmModal && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm animate-in fade-in duration-150">
+          <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl border border-teal-100 text-center space-y-4 font-sans">
+            <div className="w-16 h-16 rounded-full bg-teal-50 border border-teal-200 text-teal-600 flex items-center justify-center mx-auto">
+              <div className="w-8 h-8 border-3 border-teal-200 border-t-teal-600 rounded-full animate-spin" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="font-serif font-bold text-slate-900 text-base">
+                手紙を海へ流しています...
+              </h3>
+              <p className="text-xs text-slate-500">
+                思い出の暗号化と安全な保護を行っています
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 投函前 eKYC 確認モーダル（5ステップ構成：1.コース選択 2.情報入力 3.カメラ撮影 4.Stripe決済 5.AI監査中） */}
       {showPostConfirmModal && (
