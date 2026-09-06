@@ -6388,31 +6388,6 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                   </p>
                 </div>
 
-                {/* 投函情報ダイジェスト */}
-                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 text-xs space-y-2.5">
-                  <div className="flex justify-between items-center border-b border-slate-200/60 pb-2">
-                    <span className="text-slate-500 font-medium">お届け先（探しているお相手）</span>
-                    <span className="font-bold text-slate-900">{post.target_name} 様</span>
-                  </div>
-                  <div className="flex justify-between items-center border-b border-slate-200/60 pb-2">
-                    <span className="text-slate-500 font-medium">差出人（あなた）</span>
-                    <span className="font-bold text-slate-900">{post.searcher_name || '匿名'}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-500 font-medium">認証ステータス</span>
-                    <span className={`font-bold flex items-center gap-1 ${postedWithEkycFlag ? 'text-emerald-700' : 'text-slate-600'}`}>
-                      {postedWithEkycFlag ? (
-                        <>
-                          <ShieldCheck size={14} className="text-emerald-600" />
-                          <span>本人確認済（🛡️ 認証マーク付）</span>
-                        </>
-                      ) : (
-                        <span>通常投函（未認証）</span>
-                      )}
-                    </span>
-                  </div>
-                </div>
-
                 {/* ボタンアクション */}
                 <div className="pt-1">
                   <button
