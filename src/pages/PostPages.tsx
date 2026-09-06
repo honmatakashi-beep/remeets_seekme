@@ -396,18 +396,8 @@ export const EditPostPage = () => {
                         </span>
                       </div>
 
-                      {/* 常時表示：目的 & 鉄則 */}
-                      <div className="space-y-1 text-xs md:text-sm text-zinc-700 font-sans leading-relaxed" style={{ fontSize: 'var(--text-sm, 14px)', lineHeight: '1.625', fontWeight: 400 }}>
-                        <p style={{ margin: '0 0 4px 0' }}>
-                          【目的】 お相手が「あ、探しているのはあの時の〇〇さんだ！」と気づくための目印です。
-                        </p>
-                        <p style={{ margin: 0 }}>
-                          【鉄則】 氏名や住所、連絡先などの個人情報は一切記入できません。「当時の二人だけが知る共通のシチュエーション・出来事・呼び名」を書いてください。
-                        </p>
-                      </div>
-
                       {/* 具体例・OK/NG例：アコーディオン開閉（ピル型ボタン） */}
-                      <details className="group border-t border-amber-100 pt-2">
+                      <details className="group pt-0.5">
                         <summary className="w-full flex items-center justify-between cursor-pointer py-2 px-3.5 bg-gradient-to-r from-amber-50 to-orange-50/40 hover:from-amber-100 hover:to-orange-100/60 border border-amber-300 rounded-xl shadow-2xs text-xs md:text-sm font-bold text-amber-950 list-none select-none transition-all active:scale-[0.99]">
                           <span className="flex items-center gap-1.5">
                             <Sparkles size={15} className="text-amber-700 shrink-0" />
@@ -1514,18 +1504,8 @@ export const CreatePostPage = () => {
                   </span>
                 </div>
 
-                {/* 常時表示：目的 & 鉄則 */}
-                <div className="space-y-1 text-xs md:text-sm text-zinc-700 font-sans leading-relaxed" style={{ fontSize: 'var(--text-sm, 14px)', lineHeight: '1.625', fontWeight: 400 }}>
-                  <p style={{ margin: '0 0 4px 0' }}>
-                    【目的】 お相手が「あ、探しているのはあの時の〇〇さんだ！」と気づくための目印です。
-                  </p>
-                  <p style={{ margin: 0 }}>
-                    【鉄則】 氏名や住所、連絡先などの個人情報は一切記入できません。「当時の二人だけが知る共通のシチュエーション・出来事・呼び名」を書いてください。
-                  </p>
-                </div>
-
                 {/* 具体例・OK/NG例：アコーディオン開閉（ピル型ボタン） */}
-                <details className="group border-t border-amber-100 pt-2">
+                <details className="group pt-0.5">
                   <summary className="w-full flex items-center justify-between cursor-pointer py-2 px-3.5 bg-gradient-to-r from-amber-50 to-orange-50/40 hover:from-amber-100 hover:to-orange-100/60 border border-amber-300 rounded-xl shadow-2xs text-xs md:text-sm font-bold text-amber-950 list-none select-none transition-all active:scale-[0.99]">
                     <span className="flex items-center gap-1.5">
                       <Sparkles size={15} className="text-amber-700 shrink-0" />
