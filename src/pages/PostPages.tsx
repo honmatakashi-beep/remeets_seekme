@@ -5731,25 +5731,25 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
     }
   }, [currentStep]);
 
-  // 投稿完了直後の案内バナー・スクロール処理
+  // ページ初期表示時のトップスクロール保証
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    if ((window as any).lenis) {
+      (window as any).lenis.scrollTo(0, { immediate: true });
+    }
+  }, [id, idQuery]);
+
+  // 投稿完了直後の案内バナー処理
   useEffect(() => {
     if (post) {
       if (justPostedFlag && isOwner) {
         setShowPostedBanner(true);
-        const timer = setTimeout(() => {
-          if (welcomeBannerRef.current) {
-            smoothScrollWithOffset(welcomeBannerRef.current, 120);
-          }
-        }, 500);
-        return () => clearTimeout(timer);
+        window.scrollTo(0, 0);
+        if ((window as any).lenis) {
+          (window as any).lenis.scrollTo(0, { immediate: true });
+        }
       } else if (isKeyConnectedFlag && !isOwner) {
         setShowKeyConnectedBanner(true);
-        const timer = setTimeout(() => {
-          if (welcomeBannerRef.current) {
-            smoothScrollWithOffset(welcomeBannerRef.current, 120);
-          }
-        }, 500);
-        return () => clearTimeout(timer);
       }
     }
   }, [post, isOwner, isKeyConnectedFlag, justPostedFlag, postedWithEkycFlag]);
@@ -6236,45 +6236,42 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
       {isOwner && (
         <div className="mb-6 p-4 md:p-5 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl border border-indigo-500/30 shadow-lg font-sans text-left space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-3">
-            <div className="flex items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-full bg-indigo-500/30 text-indigo-300 border border-indigo-400/40 text-[10px] font-extrabold uppercase tracking-wider">
-                差出人プレビュー
-              </span>
-              <h3 className="text-sm sm:text-base font-bold text-white flex items-center gap-1.5">
-                <Eye size={16} className="text-indigo-400" />
-                <span>
-                  {ownerPreviewRevealed 
-                    ? 'お相手視点の「回答正解後の開示画面」をプレビュー中' 
-                    : 'お相手視点の「初期公開プレビュー画面」を表示中'}
-                </span>
-              </h3>
-            </div>
-            <div className="flex items-center gap-2 flex-wrap">
-              {/* 回答正解後のページ確認切り替えボタン */}
+            {/* 2大切り替えボタン（ネット公開画面 / 質問正解後の公開画面） */}
+            <div className="flex items-center gap-1.5 p-1 bg-white/10 backdrop-blur-md rounded-2xl border border-white/15">
               <button 
                 type="button"
-                onClick={() => setOwnerPreviewRevealed(!ownerPreviewRevealed)}
-                className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all shadow-sm cursor-pointer ${
-                  ownerPreviewRevealed 
-                    ? 'bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold' 
-                    : 'bg-emerald-600 hover:bg-emerald-500 text-white'
+                onClick={() => setOwnerPreviewRevealed(false)}
+                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  !ownerPreviewRevealed 
+                    ? 'bg-teal-600 text-white shadow-md ring-2 ring-teal-400/50' 
+                    : 'text-slate-300 hover:text-white hover:bg-white/10'
                 }`}
               >
-                {ownerPreviewRevealed ? <Lock size={13} /> : <Unlock size={13} />}
-                <span>{ownerPreviewRevealed ? '🔒 初期公開画面に戻す' : '🔓 回答正解後のページを確認'}</span>
+                <span>🌐 ネット公開画面</span>
+                {!ownerPreviewRevealed && <span className="w-2 h-2 rounded-full bg-white animate-pulse" />}
               </button>
-              <Link 
-                to={`/edit/${post.id}`}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/15 hover:bg-white/25 text-white text-xs font-bold rounded-xl border border-white/20 transition-all shadow-2xs"
+
+              <button 
+                type="button"
+                onClick={() => setOwnerPreviewRevealed(true)}
+                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  ownerPreviewRevealed 
+                    ? 'bg-amber-500 text-slate-950 shadow-md ring-2 ring-amber-300/60 font-extrabold' 
+                    : 'text-slate-300 hover:text-white hover:bg-white/10'
+                }`}
               >
-                <Edit3 size={13} />
-                <span>手紙を編集</span>
-              </Link>
+                <span>🔓 質問正解後の公開画面</span>
+                {ownerPreviewRevealed && <span className="w-2 h-2 rounded-full bg-slate-950 animate-pulse" />}
+              </button>
+            </div>
+
+            {/* マイアカウントリンク */}
+            <div className="flex items-center gap-2">
               <Link 
                 to="/account"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white text-xs font-bold rounded-xl transition-all"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white/15 hover:bg-white/25 text-white text-xs font-bold rounded-xl border border-white/20 transition-all shadow-2xs"
               >
-                <User size={13} />
+                <User size={14} />
                 <span>マイアカウント</span>
               </Link>
             </div>
@@ -6284,11 +6281,16 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
             <p className="flex items-start gap-1.5">
               <ShieldCheck size={15} className="text-emerald-400 shrink-0 mt-0.5" />
               <span>
-                <strong>個人情報の保護について:</strong> ネット検索（Google等）やエゴサーチで見つけた方には、手紙本文・連絡先・質問の答えがすべて伏せられた状態（🔒 初期公開画面）で安全に表示されます。
+                {!ownerPreviewRevealed ? (
+                  <>
+                    <strong className="text-white">【🌐 ネット公開画面を表示中】</strong> Google検索やエゴサーチでお相手が最初に見る画面です。手紙本文・連絡先・質問の答えはすべて伏せられ（🔒）、安全に保護されています。
+                  </>
+                ) : (
+                  <>
+                    <strong className="text-amber-300">【🔓 質問正解後の公開画面を表示中】</strong> お相手が「思い出の質問」に正解し、開示手続きを完了した後に表示される手紙本文・連絡先・実名の画面です。
+                  </>
+                )}
               </span>
-            </p>
-            <p className="text-slate-400 text-[11px] pl-5">
-              ※ お相手が「思い出の質問（2問）」に正解し、公的本人確認・年齢誓約による開示手続きを完了した場合にのみ、手紙本文と連絡先（🔓 回答正解後のページ）が開示されます。
             </p>
           </div>
         </div>
