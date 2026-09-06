@@ -667,17 +667,8 @@ export const EditPostPage = () => {
                   </span>
                 </div>
 
-                <div className="space-y-1.5 text-xs md:text-sm text-zinc-700 font-sans leading-relaxed">
-                  <p>
-                    【答えの鉄則】 答えは<strong>「短い単語（名詞・キーワード）」</strong>のみで設定してください。「〜です」「〜だった」などの文章や記号は含めないのが正解率を高めるコツです。
-                  </p>
-                  <p className="text-red-700 font-medium">
-                    【AI安全監査】 質問・答えともに、電話番号・住所・実名などの個人情報や禁止用語は入力できません（投函エラーとなります）。
-                  </p>
-                </div>
-
                 {/* 具体例・OK/NG例：アコーディオン開閉（ピル型ボタン） */}
-                <details className="group border-t border-amber-100 pt-2">
+                <details className="group pt-0.5">
                   <summary className="w-full flex items-center justify-between cursor-pointer py-2 px-3.5 bg-gradient-to-r from-amber-50 to-orange-50/40 hover:from-amber-100 hover:to-orange-100/60 border border-amber-300 rounded-xl shadow-2xs text-xs md:text-sm font-bold text-amber-950 list-none select-none transition-all active:scale-[0.99]">
                     <span className="flex items-center gap-1.5">
                       <Sparkles size={15} className="text-amber-700 shrink-0" />
@@ -691,7 +682,7 @@ export const EditPostPage = () => {
 
                   <div className="pt-3 space-y-3 text-xs md:text-sm">
                     <p className="text-xs md:text-sm text-amber-900 bg-amber-50/80 p-2.5 rounded-xl border border-amber-200/60 font-medium leading-relaxed font-sans">
-                      💡 <strong>表記ゆれ自動対応:</strong> お相手の回答は、ひらがな・カタカナ・漢字の違いや送り仮名のゆれをシステムが自動で柔軟に判定します。そのため、答えは安心して最も自然な単語でご登録ください。
+                      💡 <strong>答えの鉄則 ＆ 表記ゆれ自動対応:</strong> 答えは「〜です」などの文章や記号を省き、<strong>「短い単語（名詞）」</strong>のみで設定してください。ひらがな・カタカナ・漢字や送り仮名のゆれはシステムが自動で柔軟に正解判定します。
                     </p>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 pt-0.5">
@@ -1668,17 +1659,8 @@ export const CreatePostPage = () => {
               </span>
             </div>
 
-            <div className="space-y-1.5 text-xs md:text-sm text-zinc-700 font-sans leading-relaxed">
-              <p>
-                【答えの鉄則】 答えは<strong>「短い単語（名詞・キーワード）」</strong>のみで設定してください。「〜です」「〜だった」などの文章や記号は含めないのが正解率を高めるコツです。
-              </p>
-              <p className="text-red-700 font-medium">
-                【AI安全監査】 質問・答えともに、電話番号・住所・実名などの個人情報や禁止用語は入力できません（投函エラーとなります）。
-              </p>
-            </div>
-
             {/* 具体例・OK/NG例：アコーディオン開閉（ピル型ボタン） */}
-            <details className="group border-t border-amber-100 pt-2">
+            <details className="group pt-0.5">
               <summary className="w-full flex items-center justify-between cursor-pointer py-2 px-3.5 bg-gradient-to-r from-amber-50 to-orange-50/40 hover:from-amber-100 hover:to-orange-100/60 border border-amber-300 rounded-xl shadow-2xs text-xs md:text-sm font-bold text-amber-950 list-none select-none transition-all active:scale-[0.99]">
                 <span className="flex items-center gap-1.5">
                   <Sparkles size={15} className="text-amber-700 shrink-0" />
@@ -1692,7 +1674,7 @@ export const CreatePostPage = () => {
 
               <div className="pt-3 space-y-3 text-xs md:text-sm">
                 <p className="text-xs md:text-sm text-amber-900 bg-amber-50/80 p-2.5 rounded-xl border border-amber-200/60 font-medium leading-relaxed font-sans">
-                  💡 <strong>表記ゆれ自動対応:</strong> お相手の回答は、ひらがな・カタカナ・漢字の違いや送り仮名のゆれをシステムが自動で柔軟に判定します。そのため、答えは安心して最も自然な単語でご登録ください。
+                  💡 <strong>答えの鉄則 ＆ 表記ゆれ自動対応:</strong> 答えは「〜です」などの文章や記号を省き、<strong>「短い単語（名詞）」</strong>のみで設定してください。ひらがな・カタカナ・漢字や送り仮名のゆれはシステムが自動で柔軟に正解判定します。
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 pt-0.5">
