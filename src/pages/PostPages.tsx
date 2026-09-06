@@ -655,16 +655,64 @@ export const EditPostPage = () => {
                 <h2 className="text-xl font-bold text-black">思い出の質問</h2>
               </div>
 
-              {/* 💡 答え設定の親切なアドバイスバナー */}
-              <div className="p-4 bg-amber-50/80 rounded-2xl border border-amber-200/80 text-xs md:text-sm text-amber-950 space-y-1.5 font-sans shadow-2xs">
-                <div className="font-bold flex items-center gap-1.5 text-amber-900">
-                  <Sparkles size={16} className="text-amber-700 shrink-0" />
-                  <span>💡 正解率を高める「答え（正解）」の設定アドバイス</span>
+              {/* 📖 思い出の質問・答え 専用記入ガイド */}
+              <div className="p-4 bg-white/95 rounded-2xl border border-amber-200/80 shadow-2xs space-y-3 text-xs md:text-sm text-zinc-700 font-sans">
+                <div className="flex items-center justify-between pb-2 border-b border-amber-200/60">
+                  <span className="font-bold text-amber-950 flex items-center gap-1.5 text-xs md:text-sm">
+                    <BookOpen size={16} className="text-amber-700" />
+                    📖 思い出の質問・答えの専用記入ガイド
+                  </span>
+                  <span className="text-xs font-semibold text-amber-800 bg-amber-100/80 px-2.5 py-0.5 rounded-full">
+                    正解率UP ＆ 安全設定
+                  </span>
                 </div>
-                <p className="leading-relaxed text-amber-900/90 text-xs md:text-sm">
-                  答えは<strong>「短い単語（名詞・キーワード）」</strong>で設定してください。<br />
-                  ※「〜です」「〜だった」などの文章や、「！」「？」などの記号は含めず、単語のみ（例: <code>さくらや</code>、<code>お餅</code>）で設定すると、お相手が迷わず正解しやすくなります。
-                </p>
+
+                {/* 具体例・OK/NG例：アコーディオン開閉（ピル型ボタン） */}
+                <details className="group pt-0.5">
+                  <summary className="w-full flex items-center justify-between cursor-pointer py-2 px-3.5 bg-gradient-to-r from-amber-50 to-orange-50/40 hover:from-amber-100 hover:to-orange-100/60 border border-amber-300 rounded-xl shadow-2xs text-xs md:text-sm font-bold text-amber-950 list-none select-none transition-all active:scale-[0.99]">
+                    <span className="flex items-center gap-1.5">
+                      <Sparkles size={15} className="text-amber-700 shrink-0" />
+                      <span>💡 どんな質問・答えが良い？ 具体的な「OK・NG例」を見る</span>
+                    </span>
+                    <span className="flex items-center gap-1 text-xs font-bold text-amber-800 bg-white/90 px-2.5 py-0.5 rounded-md border border-amber-200 shadow-2xs shrink-0">
+                      <span className="group-open:hidden">＋ タップで開く ▼</span>
+                      <span className="hidden group-open:inline">− 閉じる ▲</span>
+                    </span>
+                  </summary>
+
+                  <div className="pt-3 space-y-3 text-xs md:text-sm">
+                    <p className="text-xs md:text-sm text-amber-900 bg-amber-50/80 p-2.5 rounded-xl border border-amber-200/60 font-medium leading-relaxed font-sans">
+                      💡 <strong>答えの鉄則 ＆ 表記ゆれ自動対応:</strong> 答えは「〜です」などの文章や記号を省き、<strong>「短い単語（名詞）」</strong>のみで設定してください。ひらがな・カタカナ・漢字や送り仮名のゆれはシステムが自動で柔軟に正解判定します。
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 pt-0.5">
+                      <div className="bg-emerald-50/80 border border-emerald-200/90 rounded-xl p-3 space-y-1.5">
+                        <span className="text-xs md:text-sm font-bold text-emerald-900 flex items-center gap-1.5">
+                          <CheckCircle size={15} className="text-emerald-700" />
+                          ⭕️ 正解しやすいおすすめ例
+                        </span>
+                        <ul className="text-xs md:text-sm text-emerald-950/85 space-y-1.5 list-disc list-inside leading-relaxed font-sans">
+                          <li><strong>質問:</strong> 放課後によく二人で買い食いした駄菓子屋の名前は？<br />➔ <strong>答え:</strong> <code>さくらや</code></li>
+                          <li><strong>質問:</strong> 文化祭の劇であなたが担当した役の動物は？<br />➔ <strong>答え:</strong> <code>タヌキ</code></li>
+                          <li><strong>質問:</strong> 部活の合宿で夜にこっそり集合した場所は？<br />➔ <strong>答え:</strong> <code>非常階段</code></li>
+                        </ul>
+                      </div>
+
+                      <div className="bg-rose-50/80 border border-rose-200/90 rounded-xl p-3 space-y-1.5">
+                        <span className="text-xs md:text-sm font-bold text-rose-900 flex items-center gap-1.5">
+                          <X size={15} className="text-rose-700" />
+                          ❌ やってはいけない設定（AI検閲対象 / 不一致）
+                        </span>
+                        <ul className="text-xs md:text-sm text-rose-950/85 space-y-1.5 list-disc list-inside leading-relaxed font-sans">
+                          <li><strong>文章や記号:</strong> <code>さくらやです！</code>、<code>〇〇でした</code>（※単語のみにする）</li>
+                          <li><strong>個人情報:</strong> 電話番号、LINE ID、実名フルネーム、詳細な番地</li>
+                          <li><strong>主観的な質問:</strong> 「あの時私がどう思ったか」（※相手が答えにくい）</li>
+                          <li><strong>禁止表現:</strong> 誹謗中傷、金銭要求、トラブルに関する記述</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </details>
               </div>
 
               <div className="space-y-6">
@@ -1599,16 +1647,64 @@ export const CreatePostPage = () => {
       description: "プライバシーを守るため、本人確認用の「思い出の質問」を2問作成してください。両方の正解が必須となります。",
       fields: (
         <div className="space-y-6">
-          {/* 💡 答え設定の親切なアドバイスバナー */}
-          <div className="p-4 bg-amber-50/80 rounded-2xl border border-amber-200/80 text-xs md:text-sm text-amber-950 space-y-1.5 font-sans shadow-2xs">
-            <div className="font-bold flex items-center gap-1.5 text-amber-900">
-              <Sparkles size={16} className="text-amber-700 shrink-0" />
-              <span>💡 正解率を高める「答え（正解）」の設定アドバイス</span>
+          {/* 📖 思い出の質問・答え 専用記入ガイド */}
+          <div className="p-4 bg-white/95 rounded-2xl border border-amber-200/80 shadow-2xs space-y-3 text-xs md:text-sm text-zinc-700 font-sans">
+            <div className="flex items-center justify-between pb-2 border-b border-amber-200/60">
+              <span className="font-bold text-amber-950 flex items-center gap-1.5 text-xs md:text-sm">
+                <BookOpen size={16} className="text-amber-700" />
+                📖 思い出の質問・答えの専用記入ガイド
+              </span>
+              <span className="text-xs font-semibold text-amber-800 bg-amber-100/80 px-2.5 py-0.5 rounded-full">
+                正解率UP ＆ 安全設定
+              </span>
             </div>
-            <p className="leading-relaxed text-amber-900/90 text-xs md:text-sm">
-              答えは<strong>「短い単語（名詞・キーワード）」</strong>で設定してください。<br />
-              ※「〜です」「〜だった」などの文章や、「！」「？」などの記号は含めず、単語のみ（例: <code>さくらや</code>、<code>お餅</code>、<code>家庭科室</code>）で設定すると、お相手が迷わず正解しやすくなります。
-            </p>
+
+            {/* 具体例・OK/NG例：アコーディオン開閉（ピル型ボタン） */}
+            <details className="group pt-0.5">
+              <summary className="w-full flex items-center justify-between cursor-pointer py-2 px-3.5 bg-gradient-to-r from-amber-50 to-orange-50/40 hover:from-amber-100 hover:to-orange-100/60 border border-amber-300 rounded-xl shadow-2xs text-xs md:text-sm font-bold text-amber-950 list-none select-none transition-all active:scale-[0.99]">
+                <span className="flex items-center gap-1.5">
+                  <Sparkles size={15} className="text-amber-700 shrink-0" />
+                  <span>💡 どんな質問・答えが良い？ 具体的な「OK・NG例」を見る</span>
+                </span>
+                <span className="flex items-center gap-1 text-xs font-bold text-amber-800 bg-white/90 px-2.5 py-0.5 rounded-md border border-amber-200 shadow-2xs shrink-0">
+                  <span className="group-open:hidden">＋ タップで開く ▼</span>
+                  <span className="hidden group-open:inline">− 閉じる ▲</span>
+                </span>
+              </summary>
+
+              <div className="pt-3 space-y-3 text-xs md:text-sm">
+                <p className="text-xs md:text-sm text-amber-900 bg-amber-50/80 p-2.5 rounded-xl border border-amber-200/60 font-medium leading-relaxed font-sans">
+                  💡 <strong>答えの鉄則 ＆ 表記ゆれ自動対応:</strong> 答えは「〜です」などの文章や記号を省き、<strong>「短い単語（名詞）」</strong>のみで設定してください。ひらがな・カタカナ・漢字や送り仮名のゆれはシステムが自動で柔軟に正解判定します。
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 pt-0.5">
+                  <div className="bg-emerald-50/80 border border-emerald-200/90 rounded-xl p-3 space-y-1.5">
+                    <span className="text-xs md:text-sm font-bold text-emerald-900 flex items-center gap-1.5">
+                      <CheckCircle size={15} className="text-emerald-700" />
+                      ⭕️ 正解しやすいおすすめ例
+                    </span>
+                    <ul className="text-xs md:text-sm text-emerald-950/85 space-y-1.5 list-disc list-inside leading-relaxed font-sans">
+                      <li><strong>質問:</strong> 放課後によく二人で買い食いした駄菓子屋の名前は？<br />➔ <strong>答え:</strong> <code>さくらや</code></li>
+                      <li><strong>質問:</strong> 文化祭の劇であなたが担当した役の動物は？<br />➔ <strong>答え:</strong> <code>タヌキ</code></li>
+                      <li><strong>質問:</strong> 部活の合宿で夜にこっそり集合した場所は？<br />➔ <strong>答え:</strong> <code>非常階段</code></li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-rose-50/80 border border-rose-200/90 rounded-xl p-3 space-y-1.5">
+                    <span className="text-xs md:text-sm font-bold text-rose-900 flex items-center gap-1.5">
+                      <X size={15} className="text-rose-700" />
+                      ❌ やってはいけない設定（AI検閲対象 / 不一致）
+                    </span>
+                    <ul className="text-xs md:text-sm text-rose-950/85 space-y-1.5 list-disc list-inside leading-relaxed font-sans">
+                      <li><strong>文章や記号:</strong> <code>さくらやです！</code>、<code>〇〇でした</code>（※単語のみにする）</li>
+                      <li><strong>個人情報:</strong> 電話番号、LINE ID、実名フルネーム、詳細な番地</li>
+                      <li><strong>主観的な質問:</strong> 「あの時私がどう思ったか」（※相手が答えにくい）</li>
+                      <li><strong>禁止表現:</strong> 誹謗中傷、金銭要求、トラブルに関する記述</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </details>
           </div>
 
           <div className="space-y-6">
