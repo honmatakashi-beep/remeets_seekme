@@ -667,6 +667,12 @@ export const EditPostPage = () => {
                   </span>
                 </div>
 
+                {/* 赤バック注意事項（前ページと同じスタイル） */}
+                <div className="flex items-start gap-1.5 text-[11px] text-red-800 font-bold bg-red-50/90 p-2.5 rounded-xl border border-red-200/90 leading-relaxed">
+                  <AlertTriangle size={14} className="shrink-0 mt-0.5 text-red-600" />
+                  <span>【答えの鉄則】答えは「短い単語（名詞・キーワード）」のみで設定してください。（※質問・答えともに、電話番号・住所・実名などの個人情報や禁止用語が含まれる場合、AI安全監査により投函できません）</span>
+                </div>
+
                 {/* 具体例・OK/NG例：アコーディオン開閉（ピル型ボタン） */}
                 <details className="group pt-0.5">
                   <summary className="w-full flex items-center justify-between cursor-pointer py-2 px-3.5 bg-gradient-to-r from-amber-50 to-orange-50/40 hover:from-amber-100 hover:to-orange-100/60 border border-amber-300 rounded-xl shadow-2xs text-xs md:text-sm font-bold text-amber-950 list-none select-none transition-all active:scale-[0.99]">
@@ -1657,6 +1663,12 @@ export const CreatePostPage = () => {
               <span className="text-xs font-semibold text-amber-800 bg-amber-100/80 px-2.5 py-0.5 rounded-full">
                 正解率UP ＆ 安全設定
               </span>
+            </div>
+
+            {/* 赤バック注意事項（前ページと同じスタイル） */}
+            <div className="flex items-start gap-1.5 text-[11px] text-red-800 font-bold bg-red-50/90 p-2.5 rounded-xl border border-red-200/90 leading-relaxed">
+              <AlertTriangle size={14} className="shrink-0 mt-0.5 text-red-600" />
+              <span>【答えの鉄則】答えは「短い単語（名詞・キーワード）」のみで設定してください。（※質問・答えともに、電話番号・住所・実名などの個人情報や禁止用語が含まれる場合、AI安全監査により投函できません）</span>
             </div>
 
             {/* 具体例・OK/NG例：アコーディオン開閉（ピル型ボタン） */}
