@@ -513,16 +513,14 @@ export const AccountPage = () => {
       const targetEl = document.getElementById('account-tabs');
       if (targetEl) {
         if ((window as any).lenis) {
-          (window as any).lenis.scrollTo(targetEl, { offset: -24, duration: immediate ? 0 : 0.6 });
+          (window as any).lenis.scrollTo(targetEl, { offset: 0, duration: immediate ? 0 : 0.6 });
         } else {
-          const yOffset = -24;
-          const y = targetEl.getBoundingClientRect().top + window.pageYOffset + yOffset;
-          window.scrollTo({ top: Math.max(0, y), behavior: immediate ? 'auto' : 'smooth' });
+          targetEl.scrollIntoView({ behavior: immediate ? 'auto' : 'smooth', block: 'start' });
         }
       }
     };
-    setTimeout(doScroll, 50);
-    setTimeout(doScroll, 300);
+    setTimeout(doScroll, 80);
+    setTimeout(doScroll, 350);
   };
 
   useEffect(() => {
@@ -1426,7 +1424,7 @@ export const AccountPage = () => {
           )}
 
           {/* Tab Selection Segments: Modern Pill Card Control */}
-          <div id="account-tabs" className="space-y-2 scroll-mt-24">
+          <div id="account-tabs" className="space-y-2">
             <div className="flex items-center justify-between px-1 text-[11px] font-bold text-slate-500">
               <span className="flex items-center gap-1.5 font-sans">
                 <UserIcon size={13} className="text-teal-600" />
