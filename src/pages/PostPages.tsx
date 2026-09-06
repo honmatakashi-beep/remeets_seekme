@@ -5325,6 +5325,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
   const [showHints, setShowHints] = useState<Record<number, boolean>>({});
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showRevealModal, setShowRevealModal] = useState(false);
+  const [ownerPreviewRevealed, setOwnerPreviewRevealed] = useState(false);
 
   // 既にログイン済み（アカウント保有者）、または一度でも本人確認・eKYCを完了しているユーザーの判定
   const isUserAlreadyVerified = Boolean(
@@ -5492,8 +5493,8 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
 
   const isOwner = !!(user && post && user.id === post.user_id);
   const isVerifiedFinder = !!(post && !isOwner && ((post.is_verified_finder || post.verified_by === user?.id) && (post.status === 'resolved' || revealedContact)));
-  const isRevealed = !!(revealedContact || (post && post.status === 'resolved' && (isOwner || isVerifiedFinder || post.contact_id)));
-  const showDetails = !!(post && (isOwner || isRevealed));
+  const isRevealed = !!(revealedContact || (post && post.status === 'resolved' && (isVerifiedFinder || post.contact_id)));
+  const showDetails = !!(post && ((isOwner && (post.status === 'resolved' || ownerPreviewRevealed)) || isVerifiedFinder || (!isOwner && isRevealed)));
 
   // 確実に実在する連絡先ID・メッセージを解決する（プレースホルダー文言の完全排除）
   const displayContactId = (() => {
@@ -5875,8 +5876,8 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
           setSearcherFullName(resolvedFullName);
           setVerifiedByUser(data.verified_by_user || null);
           
-          // Restore verification states, searcherId, searcherName, and revealedContact if the logged in user is owner, verified finder, or contact info is available
-          const isResolvedOrVerified = !!(data.is_verified_finder || data.is_owner || (data.status === 'resolved' && (data.contact_id || data.is_verified_finder)));
+          // Restore verification states, searcherId, searcherName, and revealedContact if the logged in user is verified finder or resolved
+          const isResolvedOrVerified = !!(data.is_verified_finder || (data.status === 'resolved' && data.verified_by_user));
           if (isResolvedOrVerified) {
             setIsQuestionVerified(true);
             setIsAgeVerified(true);
@@ -6210,6 +6211,67 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
           <span>ボトル検索へ戻る</span>
         </button>
       </div>
+
+      {/* 差出人様専用・公開プレビュー＆個人情報保護案内バナー */}
+      {isOwner && (
+        <div className="mb-6 p-4 md:p-5 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl border border-indigo-500/30 shadow-lg font-sans text-left space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3">
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-0.5 rounded-full bg-indigo-500/30 text-indigo-300 border border-indigo-400/40 text-[10px] font-extrabold uppercase tracking-wider">
+                差出人モード
+              </span>
+              <h3 className="text-sm sm:text-base font-bold text-white flex items-center gap-1.5">
+                <Eye size={16} className="text-indigo-400" />
+                <span>お相手視点の「公開プレビュー画面」を表示中</span>
+              </h3>
+            </div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <Link 
+                to="/account"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-white/15 hover:bg-white/25 text-white text-xs font-bold rounded-xl border border-white/20 transition-all shadow-2xs"
+              >
+                <User size={13} />
+                <span>マイアカウントで全文確認</span>
+              </Link>
+              <Link 
+                to={`/edit/${post.id}`}
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition-all shadow-2xs"
+              >
+                <Edit3 size={13} />
+                <span>手紙を編集</span>
+              </Link>
+            </div>
+          </div>
+
+          <div className="text-xs text-slate-300 space-y-1.5 leading-relaxed">
+            <p className="flex items-start gap-1.5">
+              <ShieldCheck size={15} className="text-emerald-400 shrink-0 mt-0.5" />
+              <span>
+                <strong>個人情報の保護について:</strong> ネット検索（Google等）やエゴサーチで見つけた方には、このように<strong>手紙本文・連絡先・質問の答えがすべて伏せられた状態（🔒）</strong>で安全に表示されます。
+              </span>
+            </p>
+            <p className="text-slate-400 text-[11px] pl-5">
+              ※ お相手が「思い出の質問（2問）」に正解し、公的本人確認・年齢誓約による開示手続きを完了した場合にのみ、手紙本文と連絡先が開示されます。<br />
+              ※ あなたが作成したすべての登録内容（手紙全文・連絡先・秘密の答え）は、画面右上の<strong>【マイアカウント】</strong>からいつでも確認・管理できます。
+            </p>
+          </div>
+
+          {/* 開示後プレビュー切り替えトグル */}
+          <div className="pt-2 border-t border-white/10 flex flex-wrap items-center justify-between gap-2 text-xs">
+            <span className="text-slate-400 text-[11px]">
+              {ownerPreviewRevealed ? '💡 正解・開示後のお相手の見え方をプレビューしています' : '💡 お相手が最初に見る未正解（ロック）状態を表示しています'}
+            </span>
+            <button
+              type="button"
+              onClick={() => setOwnerPreviewRevealed(!ownerPreviewRevealed)}
+              className="px-3 py-1 rounded-lg bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 border border-indigo-400/30 font-bold text-[11px] transition-all cursor-pointer"
+            >
+              {ownerPreviewRevealed ? '🔒 お相手の初期表示（ロック画面）に戻す' : '🔓 正解後の開示画面をプレビューする'}
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* 投函完了お知らせ画面・モーダル (投稿者向け: 大きく鮮明なイラストヘッダー付き特別カード) */}
       <AnimatePresence>
         {showPostedBanner && (
@@ -6230,7 +6292,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                 <X size={16} />
               </button>
 
-              {/* 上部: 朝もやの海へ流れるボトルのイラストアートヘッダー（淡くもしっかり伝わるトーン＆グラデーションフェード） */}
+              {/* 上部: 朝もやの海へ流れるボトルのイラストアートヘッダー */}
               <div className="relative h-44 sm:h-52 w-full overflow-hidden bg-slate-50 border-b border-teal-100">
                 <div className="absolute inset-0 flex justify-center items-center pointer-events-none select-none">
                   <div className="relative w-full h-full opacity-75">
@@ -6270,7 +6332,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                     <span>ボトルメールが海へ流されました</span>
                   </div>
                   <p className="text-xs text-slate-700 font-serif leading-relaxed">
-                    大切なお手紙を朝もやの海へそっと流しました。お相手があなたを見つけて「思い出の質問」に正解するまで、安全に保護・保管されます。
+                    大切なお手紙を朝もやの海へそっと流しました。お相手があなたを見つけて「思い出の質問」に正解するまで、手紙本文や連絡先は安全に暗号化され保護されます。
                   </p>
                 </div>
 
@@ -6303,11 +6365,18 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                 <div className="pt-1 space-y-2">
                   <button
                     onClick={() => setShowPostedBanner(false)}
-                    className="w-full py-3.5 bg-teal-700 hover:bg-teal-800 text-white font-bold rounded-xl text-xs shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    className="w-full py-3 bg-teal-700 hover:bg-teal-800 text-white font-bold rounded-xl text-xs shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
                   >
-                    <span>手紙の詳細画面を確認する</span>
-                    <ArrowRight size={14} />
+                    <span>お相手から見える【公開画面プレビュー】を確認</span>
+                    <Eye size={14} />
                   </button>
+                  <Link
+                    to="/account"
+                    className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-all flex items-center justify-center gap-2"
+                  >
+                    <User size={14} className="text-slate-500" />
+                    <span>【マイアカウント】で手紙の全文・登録内容を確認</span>
+                  </Link>
                 </div>
               </div>
             </motion.div>
