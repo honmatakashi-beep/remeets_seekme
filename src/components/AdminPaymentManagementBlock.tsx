@@ -845,6 +845,19 @@ export const AdminPaymentManagementBlock: React.FC = () => {
       </div>
 
       {/* ======================================================== */}
+      {/* SUBTAB 0: 💳 Live Payment Showroom                      */}
+      {/* ======================================================== */}
+      {activeSubTab === 'showroom' && (
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="space-y-6"
+        >
+          <AdminPaymentShowroom />
+        </motion.div>
+      )}
+
+      {/* ======================================================== */}
       {/* SUBTAB 1: 💳 Transactions Ledger Table                   */}
       {/* ======================================================== */}
       {activeSubTab === 'ledger' && (
