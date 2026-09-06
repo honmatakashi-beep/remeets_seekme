@@ -6542,7 +6542,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
           </div>
 
           {/* ご本人様向け早めの手紙開封仕組み案内カード (正解前) */}
-          {!isOwner && !isQuestionVerified && !showDetails && post.status !== 'resolved' && (
+          {!isQuestionVerified && !showDetails && post.status !== 'resolved' && (
             <div className="max-w-xl mx-auto mt-6 p-4.5 bg-gradient-to-br from-teal-50/90 via-emerald-50/70 to-slate-50 border border-teal-200/90 rounded-2xl shadow-xs text-left font-sans space-y-2.5 relative overflow-hidden">
               <div className="flex items-center gap-2 text-teal-950 font-bold text-xs sm:text-sm font-serif">
                 <span className="w-6 h-6 rounded-full bg-teal-600 text-white flex items-center justify-center text-xs shrink-0 shadow-2xs font-sans">💡</span>
@@ -7006,7 +7006,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                   </div>
 
                   {/* カード下部: ダイレクトな手紙開封アクション CTA */}
-                  {!isOwner && post.status !== 'resolved' && (
+                  {post.status !== 'resolved' && (
                     <div className="pt-2 space-y-4 text-left border-t border-slate-200/80">
                       <div className="p-4 sm:p-5 bg-gradient-to-br from-teal-50/90 via-emerald-50/70 to-slate-50 rounded-2xl border-2 border-teal-300/80 space-y-3.5 font-sans shadow-xs">
                         <div className="flex items-center justify-between gap-2 border-b border-teal-200/80 pb-2 flex-wrap">
@@ -7055,13 +7055,14 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                         </div>
                       </div>
 
+                      {/* 鮮やかで目立つグリーンの「質問に答えて手紙を開く」ボタン */}
                       <button
                         onClick={handleStartContact}
-                        className="w-full py-4 bg-teal-700 hover:bg-teal-800 text-white font-bold rounded-2xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2.5 text-sm sm:text-base cursor-pointer hover:scale-[1.01]"
+                        className="w-full py-4 sm:py-4.5 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-3 text-base sm:text-lg cursor-pointer hover:scale-[1.01] active:scale-[0.99] border border-emerald-400/40 group"
                       >
-                        <Unlock size={18} />
-                        <span>思い出の質問に答えて手紙を開く</span>
-                        <ArrowRight size={16} />
+                        <Unlock size={22} className="text-emerald-200 group-hover:rotate-12 transition-transform" />
+                        <span className="tracking-wide">思い出の質問に答えて手紙を開く</span>
+                        <ArrowRight size={20} className="text-emerald-200 group-hover:translate-x-1 transition-transform" />
                       </button>
                       <p className="text-[11px] text-slate-500 text-center font-sans">
                         ※ 会員登録不要ですぐにお答えいただけます（不正利用防止のため暗号化保護されています）。
@@ -7181,7 +7182,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
             )}
 
             {/* 3. 【受取人様のための安心再会ガイド（一体型プレミアムカード）】 */}
-            {!isOwner && post.status !== 'resolved' && !showDetails && (
+            {post.status !== 'resolved' && !showDetails && (
               <RecipientSafetyGuide 
                 roadmapSectionRef={roadmapSectionRef}
                 onStartQuiz={handleStartContact}
@@ -7499,7 +7500,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
 
         <div className="lg:col-span-5" ref={questionsSectionRef}>
           <div className="sticky top-32 space-y-8">
-            {!isOwner && isQuestionVerified && !revealedContact && !showDetails && post.status !== 'resolved' && (
+            {isQuestionVerified && !revealedContact && !showDetails && post.status !== 'resolved' && (
               <div id="step3-unlocked-section" className="glass-card p-6 md:p-8 space-y-6 font-sans transition-all duration-500 border-2 border-emerald-400 bg-white shadow-xl rounded-[32px] scroll-mt-28">
                 <div className="space-y-6 animate-fade-in text-center">
                   
