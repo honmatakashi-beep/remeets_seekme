@@ -8010,10 +8010,24 @@ async function startServer() {
       // Also log eKYC log
       try {
         db.prepare(`
-          INSERT INTO age_verification_logs (user_id, ip, is_verified, age, reason, document_type, created_at)
+          INSERT INTO age_verification_logs (user_id, ip, is_verified, age, reason, metadata_json, created_at)
           VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
-        `).run(userId, req.ip || '127.0.0.1', isPass ? 1 : 0, 28, isPass ? 'AI多層画像照合一致 (スコア98/100)' : '画像不鮮明・反射検知 (スコア42/100)', '運転免許証');
-      } catch (e) {}
+        `).run(
+          userId,
+          req.ip || '127.0.0.1',
+          isPass ? 1 : 0,
+          28,
+          isPass ? 'AI多層画像照合一致 (スコア98/100)' : '画像不鮮明・反射検知 (スコア42/100)',
+          JSON.stringify({
+            scenario: ekycScenario,
+            document_type: '運転免許証',
+            score: isPass ? 98 : 42,
+            auto_refund: !isPass
+          })
+        );
+      } catch (e) {
+        console.error("Failed to log age verification in simulation:", e);
+      }
 
       logAction(req.user.id, "PAYMENT_SIMULATED", `Simulated transaction ${txId} (${isPass ? 'APPROVED' : 'AUTO_REFUNDED'})`, req.ip);
 
@@ -8048,7 +8062,7 @@ async function startServer() {
         postId = null
       } = req.body;
 
-      const userId = req.user?.id || null;
+      const userId = req.user?.id || 1;
       const txId = transaction_id || `tx_don_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`;
       const numAmount = Number(amount) || 500;
       const stripeFee = Math.round(numAmount * 0.036);
@@ -8063,6 +8077,22 @@ async function startServer() {
       stmt.run(
         txId, userId, postId, type, numAmount, netProfit, stripeFee, status, ekycStatusValue(ekyc_status), description
       );
+
+      // If eKYC involved, also create an eKYC log record
+      if (ekyc_status === 'verified' || ekyc_status === 'passed') {
+        try {
+          db.prepare(`
+            INSERT INTO age_verification_logs (user_id, ip, is_verified, age, reason, metadata_json, created_at)
+            VALUES (?, ?, 1, 28, 'eKYC本人確認認証承認（公的身分証照合完了）', ?, CURRENT_TIMESTAMP)
+          `).run(userId, req.ip || '127.0.0.1', JSON.stringify({ source: 'payment_record', type, description }));
+          // Update user age_verified flag
+          if (userId) {
+            db.prepare("UPDATE users SET age_verified = 1 WHERE id = ?").run(userId);
+          }
+        } catch (e) {
+          console.error("Failed to log age verification:", e);
+        }
+      }
 
       function ekycStatusValue(s: string) {
         if (s === 'verified' || s === 'passed') return 'verified';
