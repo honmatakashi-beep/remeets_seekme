@@ -621,10 +621,9 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
                   <PenTool size={13} className="text-teal-600" />
                   <span>ボトルメール作成</span>
                 </span>
-                <h3 className="text-xl sm:text-2xl md:text-3xl font-serif font-bold text-slate-900 tracking-wide leading-snug">
-                  <span>連絡先がわからなくなってしまった、あの人へ。</span>
-                  <br />
-                  <span>ボトルメールを流してみませんか？</span>
+                <h3 className="text-base sm:text-xl md:text-2xl font-serif font-bold text-slate-900 tracking-wide leading-relaxed space-y-1">
+                  <span className="block">連絡先がわからなくなってしまった、あの人へ。</span>
+                  <span className="block text-sky-900">ボトルメールを流してみませんか？</span>
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-600 font-sans leading-relaxed">
                   想い出の質問を添えて、Webの海にそっと手紙を浮かべましょう。<br className="hidden sm:inline" />
