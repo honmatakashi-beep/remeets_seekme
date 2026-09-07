@@ -315,7 +315,13 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
                   </span>
                   
                   {/* 水面のように滲んで揺れる WebGL/Canvas インタラクティブ虹色コピー */}
-                  <WaterRippleRainbowText className="my-1" />
+                  <WaterRippleRainbowText 
+                    className="my-1" 
+                    lines={[
+                      'いつか、また巡り合えると信じて。',
+                      '記憶の海へ浮かべる、再会の言葉。'
+                    ]}
+                  />
                 </motion.div>
 
                 <motion.p 
