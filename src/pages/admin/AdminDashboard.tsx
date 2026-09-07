@@ -3944,7 +3944,7 @@ export const AdminDashboard = () => {
       {/* Admin Post Detail Modal */}
       <AnimatePresence>
         {selectedPost && (
-          <div className="fixed inset-0 z-[9999] flex items-start justify-center pt-28 pb-12 px-4 md:px-8 overflow-y-auto" data-lenis-prevent>
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-6 overflow-hidden" data-lenis-prevent>
             <motion.div 
                initial={{ opacity: 0 }}
                animate={{ opacity: 1 }}
@@ -3953,12 +3953,12 @@ export const AdminDashboard = () => {
                className="absolute inset-0 bg-brand-dark/80 backdrop-blur-sm"
             />
             <motion.div 
-               initial={{ opacity: 0, scale: 0.9, y: 20 }}
+               initial={{ opacity: 0, scale: 0.95, y: 15 }}
                animate={{ opacity: 1, scale: 1, y: 0 }}
-               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-               className="relative w-full max-w-4xl bg-white rounded-[32px] shadow-2xl overflow-hidden flex flex-col max-h-[calc(100vh-140px)]"
+               exit={{ opacity: 0, scale: 0.95, y: 15 }}
+               className="relative w-full max-w-4xl bg-white rounded-[32px] shadow-2xl overflow-hidden flex flex-col max-h-[85vh] z-10"
             >
-              <div className="p-8 border-b border-brand-border flex justify-between items-center bg-brand-light/30">
+              <div className="p-6 md:p-8 border-b border-brand-border flex justify-between items-center bg-brand-light/30 shrink-0">
                 <div>
                   <h2 className="text-2xl font-serif text-black">{selectedPost.target_name} 様へのボトルメール</h2>
                   <div className="flex items-center gap-4 mt-1">
@@ -3980,8 +3980,8 @@ export const AdminDashboard = () => {
                 </button>
               </div>
 
-              <div className="flex-grow overflow-y-auto p-8 md:p-12 space-y-12">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+              <div className="flex-1 overflow-y-auto p-6 md:p-10 space-y-8 min-h-0">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-8">
                     <section className="space-y-4">
                       <h3 className="text-lg font-bold text-black uppercase tracking-[0.2em]">基本情報</h3>
@@ -4032,30 +4032,30 @@ export const AdminDashboard = () => {
                     </section>
 
                     <section className="space-y-4">
-                      <h3 className="text-lg font-bold text-black uppercase tracking-[0.2em]">秘密の質問と答え</h3>
+                      <h3 className="text-lg font-bold text-black uppercase tracking-[0.2em]">思い出クイズ（質問と答え）</h3>
                       <div className="space-y-4">
-                        {selectedPost.questions && selectedPost.questions.length > 0 ? (
+                        {Array.isArray(selectedPost.questions) && selectedPost.questions.length > 0 ? (
                           selectedPost.questions.map((q: any, idx: number) => (
-                            <div key={idx} className="p-6 bg-brand-light/50 rounded-2xl space-y-4 border border-brand-border">
+                            <div key={idx} className="p-5 bg-slate-50 rounded-2xl space-y-3 border border-slate-200">
                               <div>
-                                <p className="text-xs font-bold text-black/50 uppercase tracking-widest mb-1.5">質問 {idx + 1}</p>
-                                <p className="text-base font-serif text-black">{q.question}</p>
+                                <p className="text-xs font-bold text-teal-800 uppercase tracking-widest mb-1">質問 {idx + 1}</p>
+                                <p className="text-base font-serif text-slate-900">{typeof q === 'object' ? q.question : q}</p>
                               </div>
-                              <div className="pt-4 border-t border-brand-border/50">
-                                <p className="text-xs font-bold text-black/50 uppercase tracking-widest mb-1.5">答え {idx + 1}</p>
-                                <p className="text-base font-bold text-black">{q.answer_plain || q.answer}</p>
+                              <div className="pt-3 border-t border-slate-200">
+                                <p className="text-xs font-bold text-emerald-800 uppercase tracking-widest mb-1">答え {idx + 1}</p>
+                                <p className="text-base font-bold text-emerald-900">{typeof q === 'object' ? (q.answer_plain || q.answer) : '-'}</p>
                               </div>
                             </div>
                           ))
                         ) : (
-                          <div className="p-6 bg-brand-light/50 rounded-2xl space-y-4 border border-brand-border">
+                          <div className="p-5 bg-slate-50 rounded-2xl space-y-3 border border-slate-200">
                             <div>
-                              <p className="text-xs font-bold text-black/50 uppercase tracking-widest mb-1.5">質問</p>
-                              <p className="text-base font-serif text-black">{selectedPost.secret_question}</p>
+                              <p className="text-xs font-bold text-teal-800 uppercase tracking-widest mb-1">質問 1</p>
+                              <p className="text-base font-serif text-slate-900">{selectedPost.secret_question}</p>
                             </div>
-                            <div className="pt-4 border-t border-brand-border/50">
-                              <p className="text-xs font-bold text-black/50 uppercase tracking-widest mb-1.5">答え</p>
-                              <p className="text-base font-bold text-black">{selectedPost.secret_answer_plain || selectedPost.secret_answer}</p>
+                            <div className="pt-3 border-t border-slate-200">
+                              <p className="text-xs font-bold text-emerald-800 uppercase tracking-widest mb-1">答え 1</p>
+                              <p className="text-base font-bold text-emerald-900">{selectedPost.secret_answer_plain || selectedPost.secret_answer}</p>
                             </div>
                           </div>
                         )}
@@ -4065,9 +4065,9 @@ export const AdminDashboard = () => {
 
                   <div className="space-y-8">
                     <section className="space-y-4">
-                      <h3 className="text-[12px] font-bold text-black uppercase tracking-[0.2em]">プライベートメッセージ</h3>
+                      <h3 className="text-[12px] font-bold text-black uppercase tracking-[0.2em]">手紙の本文</h3>
                       <div className="p-6 bg-white text-black border border-brand-border rounded-2xl">
-                        <p className="text-base font-serif leading-relaxed opacity-90">
+                        <p className="text-base font-serif leading-relaxed opacity-90 whitespace-pre-wrap">
                           "{selectedPost.message}"
                         </p>
                       </div>
@@ -4081,10 +4081,10 @@ export const AdminDashboard = () => {
                     </section>
 
                     <section className="space-y-4">
-                      <h3 className="text-[12px] font-bold text-black uppercase tracking-[0.2em]">手紙の一般公開ページ ＆ SEO証明書</h3>
+                      <h3 className="text-[12px] font-bold text-black uppercase tracking-[0.2em]">手紙の一般公開ページ</h3>
                       <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-2xl flex flex-col justify-between gap-3 shadow-sm">
                         <p className="text-[11px] text-emerald-900 leading-relaxed font-sans font-semibold">
-                          思い出クイズへの解答や、差出人への返事が行える一般ユーザー向けの実際の手紙公開確認ページです。また、Google検索インデックス見本や開業法務クリア証明書の印刷・確認が行えます。
+                          思い出クイズへの解答や、差出人への返事が行える一般ユーザー向けの実際の手紙公開確認ページです。
                         </p>
                         <div>
                           <Link 

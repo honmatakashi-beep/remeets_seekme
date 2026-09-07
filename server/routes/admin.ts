@@ -507,8 +507,25 @@ export const adminRouter = express.Router();
         FROM posts p 
         LEFT JOIN users u ON p.user_id = u.id 
         ORDER BY p.created_at DESC
-      `).all();
-      res.json(posts);
+      `).all() as any[];
+
+      const allExtraQuestions = db.prepare("SELECT post_id, question, answer, answer_plain FROM post_questions").all() as any[];
+      const qMap = new Map<number, any[]>();
+      allExtraQuestions.forEach(q => {
+        if (!qMap.has(q.post_id)) qMap.set(q.post_id, []);
+        qMap.get(q.post_id)!.push({ question: q.question, answer: q.answer, answer_plain: q.answer_plain });
+      });
+
+      const enrichedPosts = posts.map(post => {
+        const extra = qMap.get(post.id) || [];
+        const questions = [
+          { question: post.secret_question, answer: post.secret_answer, answer_plain: post.secret_answer_plain },
+          ...extra
+        ];
+        return { ...post, questions };
+      });
+
+      res.json(enrichedPosts);
     } catch (err) {
       res.status(500).json({ error: "Failed to fetch posts" });
     }
