@@ -56,7 +56,7 @@ export const AdminMasterKnowledgeBase: React.FC<AdminMasterKnowledgeBaseProps> =
   
   // サブタブ
   const [activeSubTab, setActiveSubTab] = useState<
-    'deployment17' | 'auth_costs' | 'police_ekyc' | 'liability_contract' | 'secure_bridge_model' | 'scratchpad'
+    'deployment17' | 'zero_knowledge_vault' | 'auth_costs' | 'police_ekyc' | 'liability_contract' | 'secure_bridge_model' | 'scratchpad'
   >('deployment17');
 
   const [activeTemplateId, setActiveTemplateId] = useState<string>('tpl-police');
@@ -106,22 +106,25 @@ export const AdminMasterKnowledgeBase: React.FC<AdminMasterKnowledgeBaseProps> =
   const [contactsSaved, setContactsSaved] = useState(false);
 
   // Custom Scratchpad Note State (stored in localStorage)
-  const defaultAuthMemo = `【ReMEETs 本番運用 ＆ 認証設計 決定事項メモ】
-■ 1. 認証基本構成
-- メインログイン: LINE Login / Google OAuth (API利用料: 完全無料)
-- 二重登録防止 & 警察照会用担保: 携帯SMS認証 (1通 12円)
-- 本人確認: TRUSTDOCK / LIQUID eKYC (1件 150〜200円)
+  const defaultAuthMemo = `【ReMEETs 本番運用 ＆ 認証・個人情報非保持 決定事項メモ】
+■ 1. 個人情報をサーバーに置かない「完全分離金庫モデル (Zero-Knowledge)」
+- 本名・身分証画像: eKYC専門機関 (TRUSTDOCK/LIQUID) にのみ保管 (サーバー非保持)
+- パスワード・メアド・電話番号: 外部OAuth (Google/LINE) および SMS金庫に委託
+- ReMEETs本体DB: 一意の識別ID (usr_xxx) のみを保持し、画面表示時のみオンデマンド一時取得 (テンポラリ表示) して即時破棄。
+- 万が一サーバーがハッキング・不正アクセスされても「盗まれる個人情報が存在しない」最強の防御構造。
 
-■ 2. 課金 & 黒字化モデル (完全買い切り)
-- 開通手数料: 600 円 (税込)
-  ├ 売上: +600 円
-  ├ Stripe手数料 (3.6%): -22 円
-  ├ SMS送信費: -12 円
-  ├ eKYC身元確認費: -200 円
-  └ 1件あたり純手元利益: +366 円 (確実に黒字回収)
+■ 2. 本番移行時の必須連携タスク
+- 外部セキュアVault連携設定の指示
+- 警察（生活安全課・サイバー課）向けプレゼン資料・シナリオの一括改訂（漏洩リスクゼロ構造の提示）
+- 利用規約・プライバシーポリシー・安全ガイドラインの完全分離金庫モデル準拠改訂
 
-■ 3. 警察 (公安・サイバー課) 照会対応
-- サービス建付け: 過去の既知の想い出照合ツールであり、インターネット異性紹介事業には非該当。
+■ 3. 認証基本構成 ＆ 600円黒字化モデル
+- メインログイン: LINE Login / Google OAuth (完全無料)
+- 二重登録防止 & 警察照会用: 携帯SMS認証 (開通決済時のみトリガー / 12円)
+- 開通手数料: 600円 (税込) 買い切り ─ 1件あたり手元純利益 +366円 (完全黒字回収)
+
+■ 4. 警察 (公安・サイバー課) 照会対応
+- サービス建付け: 過去の想い出照合ツールであり異性紹介事業に非該当。
 - 令状受領時の開示可能項目: SNS UID, Google Email, SMS認証番号, eKYC氏名/年齢, アクセスIP/日時, AI検閲隔離ログ。`;
 
   const [scratchpadMemo, setScratchpadMemo] = useState<string>(() => {
@@ -657,8 +660,8 @@ ReMEETs カスタマーサポート`
       {/* ========================================================================= */}
       {viewMode === 'master_memo' && (
         <div className="space-y-6">
-          {/* 🧭 6大サブタブ ナビゲーションカード */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2.5">
+          {/* 🧭 7大サブタブ ナビゲーションカード */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-2">
             {/* TAB 1: 17大デプロイチェックリスト */}
             <button
               type="button"
@@ -677,11 +680,33 @@ ReMEETs カスタマーサポート`
                   </span>
                 </div>
                 <div className="font-bold text-xs text-black">17大デプロイ</div>
-                <div className="text-[10px] text-black/60 line-clamp-1">本番公開チェックリスト</div>
+                <div className="text-[10px] text-black/60 line-clamp-1">本番公開チェック</div>
               </div>
             </button>
 
-            {/* TAB 2: SNS・SMSコスト仕様 */}
+            {/* TAB 2: 完全分離金庫・警察連携 (NEW) */}
+            <button
+              type="button"
+              onClick={() => setActiveSubTab('zero_knowledge_vault')}
+              className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                activeSubTab === 'zero_knowledge_vault'
+                  ? 'bg-white border-teal-600 shadow-md ring-2 ring-teal-500/10'
+                  : 'bg-zinc-50/80 hover:bg-white border-brand-border/80'
+              }`}
+            >
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-base">🔒</span>
+                  <span className="text-[10px] font-mono font-bold text-indigo-800 bg-indigo-50 px-1.5 py-0.5 rounded">
+                    完全非保持
+                  </span>
+                </div>
+                <div className="font-bold text-xs text-black">完全分離金庫</div>
+                <div className="text-[10px] text-black/60 line-clamp-1">個人情報非保持・警察</div>
+              </div>
+            </button>
+
+            {/* TAB 3: SNS・SMSコスト仕様 */}
             <button
               type="button"
               onClick={() => setActiveSubTab('auth_costs')}
@@ -699,11 +724,11 @@ ReMEETs カスタマーサポート`
                   </span>
                 </div>
                 <div className="font-bold text-xs text-black">認証・コスト仕様</div>
-                <div className="text-[10px] text-black/60 line-clamp-1">LINE/Google/SMS設計</div>
+                <div className="text-[10px] text-black/60 line-clamp-1">LINE/Google/SMS</div>
               </div>
             </button>
 
-            {/* TAB 3: 警察・eKYC連携 */}
+            {/* TAB 4: 警察・eKYC連携 */}
             <button
               type="button"
               onClick={() => setActiveSubTab('police_ekyc')}
@@ -721,11 +746,11 @@ ReMEETs カスタマーサポート`
                   </span>
                 </div>
                 <div className="font-bold text-xs text-black">警察・eKYC連携</div>
-                <div className="text-[10px] text-black/60 line-clamp-1">捜査照会・令状開示基準</div>
+                <div className="text-[10px] text-black/60 line-clamp-1">捜査照会・令状基準</div>
               </div>
             </button>
 
-            {/* TAB 4: 責任の所在・契約決定 */}
+            {/* TAB 5: 責任の所在・契約決定 */}
             <button
               type="button"
               onClick={() => setActiveSubTab('liability_contract')}
@@ -747,7 +772,7 @@ ReMEETs カスタマーサポート`
               </div>
             </button>
 
-            {/* TAB 5: 連絡先開示モデル移行 */}
+            {/* TAB 6: 連絡先開示モデル移行 */}
             <button
               type="button"
               onClick={() => setActiveSubTab('secure_bridge_model')}
@@ -764,12 +789,12 @@ ReMEETs カスタマーサポート`
                     完結型
                   </span>
                 </div>
-                <div className="font-bold text-xs text-black">連絡先開示モデル</div>
-                <div className="text-[10px] text-black/60 line-clamp-1">セキュア・ブリッジ完結設計</div>
+                <div className="font-bold text-xs text-black">連絡先開示</div>
+                <div className="text-[10px] text-black/60 line-clamp-1">セキュア・ブリッジ</div>
               </div>
             </button>
 
-            {/* TAB 6: 編集可能メモボード */}
+            {/* TAB 7: 編集可能メモボード */}
             <button
               type="button"
               onClick={() => setActiveSubTab('scratchpad')}
@@ -873,7 +898,177 @@ ReMEETs カスタマーサポート`
           )}
 
           {/* ======================================================== */}
-          {/* 💰 SUBTAB 2: SNS・SMSコスト仕様 ＆ 600円黒字化設計備忘録   */}
+          {/* 🔒 SUBTAB 2: 個人情報非保持・完全分離金庫モデル ＆ 警察連携 (NEW) */}
+          {/* ======================================================== */}
+          {activeSubTab === 'zero_knowledge_vault' && (
+            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+              {/* Card 1: Zero-Knowledge Vault Architecture */}
+              <div className="p-6 rounded-3xl bg-white border border-brand-border shadow-sm space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-100 pb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl">🔒</span>
+                    <div>
+                      <h4 className="text-sm font-bold text-black">1. 個人情報をサーバーに置かない完全分離金庫モデル (Zero-Knowledge Vault)</h4>
+                      <p className="text-xs text-black/60">万が一Webサーバーが侵入されても、盗まれる個人データがサーバー上に存在しない最強の防御設計</p>
+                    </div>
+                  </div>
+                  <span className="self-start sm:self-auto text-[10px] font-mono font-bold bg-indigo-50 text-indigo-800 px-2.5 py-1 rounded-full border border-indigo-200">
+                    ゼロトラスト・データ完全分離
+                  </span>
+                </div>
+
+                <div className="space-y-3 text-xs leading-relaxed text-black/70">
+                  <p>
+                    ReMEETsでは、本名・メールアドレス・電話番号・身分証画像などの最重要個人情報を、ReMEETs本体のWebサーバーやデータベース（PostgreSQL）に<b>恒常保存しません</b>。
+                    外部の最高水準セキュリティ金庫（Google OAuth, LINE, Twilio, TRUSTDOCK）にのみ保管し、画面表示時のみ一時的（オンデマンド）に取得・表示し、ページ遷移やリロードと同時にメモリから即時破棄（テンポラリ表示）されます。
+                  </p>
+
+                  {/* Vault Storage Table */}
+                  <div className="overflow-x-auto rounded-2xl border border-brand-border">
+                    <table className="w-full text-left border-collapse text-xs">
+                      <thead>
+                        <tr className="bg-zinc-100/80 border-b border-brand-border text-black font-bold">
+                          <th className="p-3 w-1/4">個人情報カテゴリ</th>
+                          <th className="p-3 w-1/3">実際の保管場所（外部金庫）</th>
+                          <th className="p-3">ReMEETs サーバーの関与・表示方式</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-zinc-100 bg-white">
+                        <tr className="hover:bg-zinc-50/50">
+                          <td className="p-3 font-bold text-rose-950 flex items-center gap-1.5">
+                            <span>🪪</span>
+                            <span>身分証画像・公的本名</span>
+                          </td>
+                          <td className="p-3 font-mono text-[11px] text-zinc-700">
+                            <b>eKYC専門機関</b> (TRUSTDOCK / LIQUID)
+                          </td>
+                          <td className="p-3 text-emerald-800">
+                            <b>❌ サーバー非保持</b><br />
+                            端末からeKYC金庫へ直接送信。承認ステータス（合格証跡）のみを受信。
+                          </td>
+                        </tr>
+                        <tr className="hover:bg-zinc-50/50">
+                          <td className="p-3 font-bold text-amber-950 flex items-center gap-1.5">
+                            <span>💳</span>
+                            <span>カード・決済情報</span>
+                          </td>
+                          <td className="p-3 font-mono text-[11px] text-zinc-700">
+                            <b>Stripe PCI-DSS 金庫</b>
+                          </td>
+                          <td className="p-3 text-emerald-800">
+                            <b>❌ サーバー非保持</b><br />
+                            Elements API経由で直接決済。決済完了トークンのみを受領。
+                          </td>
+                        </tr>
+                        <tr className="hover:bg-zinc-50/50">
+                          <td className="p-3 font-bold text-indigo-950 flex items-center gap-1.5">
+                            <span>🔑</span>
+                            <span>メアド・電話・認証</span>
+                          </td>
+                          <td className="p-3 font-mono text-[11px] text-zinc-700">
+                            <b>Google / LINE / Twilio Vault</b>
+                          </td>
+                          <td className="p-3 text-indigo-900">
+                            <b>⚡ テンポラリ（一時）表示</b><br />
+                            識別ID（usr_xxx）のみ保持。表示時のみ一時取得し、画面切替で即破棄。
+                          </td>
+                        </tr>
+                        <tr className="hover:bg-zinc-50/50">
+                          <td className="p-3 font-bold text-purple-950 flex items-center gap-1.5">
+                            <span>📱</span>
+                            <span>合意開示用連絡先</span>
+                          </td>
+                          <td className="p-3 font-mono text-[11px] text-zinc-700">
+                            <b>独立暗号化セキュアストレージ</b>
+                          </td>
+                          <td className="p-3 text-purple-900">
+                            <b>🔒 合意者2名限定開示</b><br />
+                            想い出クイズ完全一致＋本人確認＋決済完了時のみ一時復号して引き渡し。
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card 2: Production Migration & Police Protocol */}
+              <div className="p-6 rounded-3xl bg-white border border-brand-border shadow-sm space-y-4">
+                <div className="flex items-center gap-2 border-b border-zinc-100 pb-3">
+                  <span className="text-xl">🏛️</span>
+                  <div>
+                    <h4 className="text-sm font-bold text-black">2. 本番環境移行時の必須指示 ＆ 警察プレゼン・安全記述改訂プロトコル</h4>
+                    <p className="text-xs text-black/60">本番移行のフェーズに入った際、AIエージェントから案内・一括実行される3大タスク</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                  {/* Step 1 */}
+                  <div className="p-4 rounded-2xl bg-indigo-50/60 border border-indigo-200 space-y-2">
+                    <div className="flex items-center gap-1.5 font-bold text-indigo-950">
+                      <span className="bg-indigo-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px]">1</span>
+                      <span>外部金庫連携設定の指示</span>
+                    </div>
+                    <p className="text-indigo-900/80 leading-relaxed text-[11px]">
+                      PostgreSQL DBから個人情報カラムを排除し、外部OAuth/SMS/eKYC金庫のトークン連携パイプラインを本番環境変数とともに整備します。
+                    </p>
+                  </div>
+
+                  {/* Step 2 */}
+                  <div className="p-4 rounded-2xl bg-teal-50/60 border border-teal-200 space-y-2">
+                    <div className="flex items-center gap-1.5 font-bold text-teal-950">
+                      <span className="bg-teal-700 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px]">2</span>
+                      <span>警察プレゼン資料の改訂</span>
+                    </div>
+                    <p className="text-teal-900/80 leading-relaxed text-[11px]">
+                      「サーバーに侵入されても個人情報は1文字も存在しないため漏洩事故が起き得ない」構造を前面にアピールするプレゼンシナリオへ一括書き直します。
+                    </p>
+                  </div>
+
+                  {/* Step 3 */}
+                  <div className="p-4 rounded-2xl bg-zinc-50 border border-brand-border space-y-2">
+                    <div className="flex items-center gap-1.5 font-bold text-black">
+                      <span className="bg-zinc-800 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px]">3</span>
+                      <span>規約・安全記述の一括改訂</span>
+                    </div>
+                    <p className="text-black/70 leading-relaxed text-[11px]">
+                      利用規約・プライバシーポリシー・安全ガイドライン等において、完全分離金庫モデルに基づく安全設計を法的に明文化・統一します。
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card 3: Copyable Police Presentation Snippet */}
+              <div className="p-6 rounded-3xl bg-zinc-900 text-zinc-100 shadow-sm space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck size={16} className="text-teal-400" />
+                    <h5 className="font-bold text-xs text-white">警察・生活安全課向け 安全説明要約スニペット</h5>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => copyToClipboard(`【ReMEETs 個人情報漏洩防止・完全分離金庫モデル説明】
+当プラットフォームは、ユーザーの氏名・メールアドレス・電話番号・身分証原本などの個人情報を自社サーバー・データベース内に一切保持しない「Zero-Knowledge Vault モデル」を採用しております。
+
+1. 個人情報はGoogle/LINE/Twilio/TRUSTDOCK等の外部公的セキュリティ金庫にのみ保管されます。
+2. 自社サーバーには暗号化された一意識別トークン（UID）のみが存在し、画面表示時のみ一時取得（テンポラリ表示）され、画面遷移と同時に即時破棄されます。
+3. 万が一当サーバーがサイバー攻撃・不正アクセスを受けた場合でも、サーバー上に個人データが存在しないため、情報漏洩事故が発生しない物理的防御構造を確立しております。
+4. 捜査照会（刑事訴訟法第197条第2項）を受領した際は、外部認証金庫と連携し、令状に基づく正規のログ開示協力を行います。`, 'police_vault_summary')}
+                    className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold bg-teal-600 hover:bg-teal-500 text-white transition-all cursor-pointer shadow-sm"
+                  >
+                    {copiedSection === 'police_vault_summary' ? <Check size={13} className="text-white" /> : <Copy size={13} />}
+                    <span>{copiedSection === 'police_vault_summary' ? 'コピー完了！' : '要約をコピー'}</span>
+                  </button>
+                </div>
+                <p className="text-xs text-zinc-300 leading-relaxed font-mono">
+                  「自社サーバーに個人情報を1文字も置かないため、ハッキングされても漏洩事故が構造的に起きない」という安全性を警察署や行政機関への説明時にご活用いただけます。
+                </p>
+              </div>
+            </motion.div>
+          )}
+
+          {/* ======================================================== */}
+          {/* 💰 SUBTAB 3: SNS・SMSコスト仕様 ＆ 600円黒字化設計備忘録   */}
           {/* ======================================================== */}
           {activeSubTab === 'auth_costs' && (
             <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">

@@ -3571,7 +3571,6 @@ export const AdminDashboard = () => {
               handleAiAnalyze={handleAiAnalyze}
               isAiAnalyzing={isAiAnalyzing}
               handleTogglePostStatus={handleTogglePostStatus}
-              setAdminSeoPreviewPost={setAdminSeoPreviewPost}
               triggerDeletePost={triggerDeletePost}
             />
           ) : activeTab === 'security' ? (
@@ -4087,22 +4086,15 @@ export const AdminDashboard = () => {
                         <p className="text-[11px] text-emerald-900 leading-relaxed font-sans font-semibold">
                           思い出クイズへの解答や、差出人への返事が行える一般ユーザー向けの実際の手紙公開確認ページです。また、Google検索インデックス見本や開業法務クリア証明書の印刷・確認が行えます。
                         </p>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <div>
                           <Link 
                             to={getPostUrl(selectedPost)} 
                             target="_blank"
-                            className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm hover:shadow flex items-center justify-center gap-1.5 cursor-pointer text-center"
+                            className="w-full px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm hover:shadow flex items-center justify-center gap-1.5 cursor-pointer text-center"
                           >
                             <span>手紙の公開ページを開く</span>
                             <ExternalLink size={14} />
                           </Link>
-                          <button
-                            onClick={() => setAdminSeoPreviewPost(selectedPost)}
-                            className="px-4 py-2.5 bg-teal-800 hover:bg-teal-900 text-white rounded-xl text-xs font-bold transition-all shadow-sm hover:shadow flex items-center justify-center gap-1.5 cursor-pointer text-center"
-                          >
-                            <FileText size={14} />
-                            <span>SEO証明書・見本を表示</span>
-                          </button>
                         </div>
                       </div>
                     </section>

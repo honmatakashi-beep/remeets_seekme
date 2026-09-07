@@ -48,7 +48,6 @@ export const AdminPostsTab: React.FC<AdminPostsTabProps> = (props) => {
     handleAiAnalyze = () => {},
     isAiAnalyzing = false,
     handleTogglePostStatus = () => {},
-    setAdminSeoPreviewPost = () => {},
     triggerDeletePost = () => {}
   } = props;
 
@@ -583,15 +582,6 @@ export const AdminPostsTab: React.FC<AdminPostsTabProps> = (props) => {
                                           title="ボトルメール詳細・思い出の質問・メッセージ履歴を表示"
                                         >
                                           <Eye size={14} />
-                                        </button>
-
-                                        {/* SEO / Search Preview */}
-                                        <button
-                                          onClick={() => setAdminSeoPreviewPost(p)}
-                                          className="p-1.5 text-teal-600 hover:text-teal-800 hover:bg-teal-50 rounded-lg transition-colors cursor-pointer"
-                                          title="SEO証明書・Google検索プレビューを表示"
-                                        >
-                                          <FileText size={14} />
                                         </button>
 
                                         {/* Toggle Resolved */}
