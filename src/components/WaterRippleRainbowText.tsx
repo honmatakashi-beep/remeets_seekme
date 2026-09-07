@@ -127,7 +127,7 @@ export const WaterRippleRainbowText: React.FC<WaterRippleRainbowTextProps> = ({
       const lineHeight = fontSize * 1.42;
       const startY = (height - (lines.length * lineHeight)) / 2 + fontSize * 0.95;
 
-      textCtx.font = `800 ${fontSize}px "Shippori Mincho", "Noto Serif JP", "Kaisei Decol", "Yu Mincho", "Hiragino Mincho ProN", serif`;
+      textCtx.font = `600 ${fontSize}px "Shippori Mincho", "Noto Serif JP", "Kaisei Decol", "Yu Mincho", "Hiragino Mincho ProN", serif`;
       textCtx.textAlign = 'center';
       textCtx.textBaseline = 'alphabetic';
 
@@ -155,16 +155,16 @@ export const WaterRippleRainbowText: React.FC<WaterRippleRainbowTextProps> = ({
       }
       grad.addColorStop(1.0, rainbowColors[0]);
 
-      // テキスト描画（背面ホワイトグロー ＋ 前面虹色グラデーション）
+      // テキスト描画（繊細な背面ホワイトグロー ＋ 前面虹色グラデーション）
       lines.forEach((line, index) => {
         const y = startY + index * lineHeight;
 
-        // 背面ホワイトグロー（視認性向上）
+        // 繊細な背面ホワイトグロー（文字の細さを保ちつつ視認性を確保）
         textCtx.save();
         textCtx.shadowColor = 'rgba(255, 255, 255, 0.98)';
-        textCtx.shadowBlur = 12;
-        textCtx.strokeStyle = 'rgba(255, 255, 255, 0.92)';
-        textCtx.lineWidth = 4.2;
+        textCtx.shadowBlur = 8;
+        textCtx.strokeStyle = 'rgba(255, 255, 255, 0.90)';
+        textCtx.lineWidth = 2.2;
         textCtx.lineJoin = 'round';
         textCtx.strokeText(line, width / 2, y);
         textCtx.restore();
