@@ -202,25 +202,25 @@ export const AdminAssetCleanerTab: React.FC = () => {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-6 pt-6 border-t border-white/10">
           <div className="bg-white/5 backdrop-blur-md rounded-2xl p-4 border border-white/10">
             <span className="text-[11px] text-slate-400 font-bold block mb-1">全保存画像</span>
-            <div className="text-xl sm:text-2xl font-black text-white">{stats.totalCount} <span className="text-xs font-normal text-slate-400">枚</span></div>
+            <div className="text-xl sm:text-2xl font-serif font-bold text-white">{stats.totalCount} <span className="text-xs font-normal text-slate-400 font-sans">枚</span></div>
             <span className="text-[10px] text-slate-400 font-mono mt-0.5 block">容量: {stats.totalFormatted}</span>
           </div>
 
           <div className="bg-rose-500/10 backdrop-blur-md rounded-2xl p-4 border border-rose-500/20">
             <span className="text-[11px] text-rose-300 font-bold block mb-1">🗑️ 未使用（削除推奨）</span>
-            <div className="text-xl sm:text-2xl font-black text-rose-400">{stats.unusedCount} <span className="text-xs font-normal text-rose-300/70">枚</span></div>
+            <div className="text-xl sm:text-2xl font-serif font-bold text-rose-400">{stats.unusedCount} <span className="text-xs font-normal text-rose-300/70 font-sans">枚</span></div>
             <span className="text-[10px] text-rose-300/80 font-mono mt-0.5 block">削減可能: {stats.unusedFormatted}</span>
           </div>
 
           <div className="bg-emerald-500/10 backdrop-blur-md rounded-2xl p-4 border border-emerald-500/20">
             <span className="text-[11px] text-emerald-300 font-bold block mb-1">✅ 稼働中（使用中）</span>
-            <div className="text-xl sm:text-2xl font-black text-emerald-400">{stats.usedCount} <span className="text-xs font-normal text-emerald-300/70">枚</span></div>
+            <div className="text-xl sm:text-2xl font-serif font-bold text-emerald-400">{stats.usedCount} <span className="text-xs font-normal text-emerald-300/70 font-sans">枚</span></div>
             <span className="text-[10px] text-emerald-300/80 font-mono mt-0.5 block">サイト上で表示中</span>
           </div>
 
           <div className="bg-indigo-500/10 backdrop-blur-md rounded-2xl p-4 border border-indigo-500/20">
             <span className="text-[11px] text-indigo-300 font-bold block mb-1">現在選択中</span>
-            <div className="text-xl sm:text-2xl font-black text-indigo-300">{selectedIds.size} <span className="text-xs font-normal text-indigo-300/70">枚</span></div>
+            <div className="text-xl sm:text-2xl font-serif font-bold text-indigo-300">{selectedIds.size} <span className="text-xs font-normal text-indigo-300/70 font-sans">枚</span></div>
             <span className="text-[10px] text-indigo-300/80 font-mono mt-0.5 block">対象サイズ: {selectedFormatted}</span>
           </div>
         </div>
