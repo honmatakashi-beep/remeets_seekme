@@ -423,7 +423,7 @@ export const POLICE_PRESENTATION_SCENARIOS = [
   "知らない人とマッチングすること（ネットナンパ等）を嫌い、事件やプライバシー侵害を強く不安に感じる、セキュリティ意識の高い一般市民を対象としています。本当に探している信頼できるお相手にだけエピソードを届けたいと願う安心なユーザーが集う空間です。",
   "ボトルメールの投函時、本名や連絡先、過度なプロファイル情報は一切露呈されません。漂流ボトルを検索キーワード等でお相手が探し当てるまでの間、完全に匿名の思い出話としてのみ表示されます。アタッカーがターゲットを直接特定し晒し行為を行う余地はありません。",
   "本サービスの絶対的なセーフガードである『想い出クイズ』です。メッセージを解凍して連絡先開示（引き渡し）を受けるには、投函者が設定した『当事者二人以外は一生知り得ない独自のクイズ』（例：一緒に海で食べたアイスの味、高橋先生のお祝いなど）に1文字の狂いもなく完全正答する必要があります。無関係な他者の強行突破を数学的・構造的に完封します。さらに、表記ゆれ救済アルゴリズム（ひらがな/カタカナ正規化・レーベンシュタイン距離）により、正当な当事者同士の再会をスムーズに支援します。",
-  "クイズの一致に成功し本人確認（eKYC）と開通手続きを経た後、安全な連絡先引き渡し（ブリッジ）を実施します。アプリ内で永続的な無差別チャットを強いるのではなく、必要な連絡先を合意開示した段階でプラットフォームの役割を美しく完結させるモデルを採用。万が一の不審な接触に対しては、1タップで即座に通報・遮断できる緊急ブロックを常備しています。",
+  "クイズの一致に成功し本人確認（eKYC）と開通手続きを経た後、安全な連絡先引き渡し（ブリッジ）を実施します。必要な連絡先（LINE ID等）を安全に合意開示した段階でプラットフォームの役割を美しく完結させるセキュア・ブリッジモデルを採用。万が一の不審な接触に対しては、1タップで即座に通報・遮断できる緊急ブロックを常備しています。",
   "運営管理者側では、不当な言葉の連続試行や、ブルートフォース（総当たり解答攻撃）、複数ボトルへの連続アプローチなどの怪しい兆候を、リアルタイムかつ24時間体制でセキュア監視するオペレーション・ダッシュボードを完備し、不正接続を即座に検知・自動排除します。",
   "AIやフィルタによって悪質ストーカー・迷惑業者と検知されたログに対し、単に使用停止エラーを返すと彼らは改ざんして再アプローチしてきます。当店では、アタッカー側のみ送信成功（擬態表示）としつつ、内部DBでは一瞬で隔離・非表示とする『シャドウフラグ技術』を採用。攻撃側の犯行意欲を無音で根絶します。",
   "個人情報保護のため、すべての送受信データはTLS 1.3により高度暗号化され、クイズ解答やパスワード等の核心データは、不可逆かつ強力なソルトハッシュにて保管されます。いかなるクラッキングや漏洩の恐れもない、金融機関クラスの安全性を遵守します。",
@@ -822,7 +822,7 @@ export const AdminDeploymentGuideBlock = ({
       { id: 10, category: "5. eKYC・電子的宣誓", title: "公的証明書（免許証/マイナンバー）アップロード＆eKYC審査テスト", description: "身分証画像が安全にアップロードされ、審査合否ステータスおよび公的認証バッジが正しく更新されるか検証します。", completed: false, date: "", notes: "" },
       { id: 11, category: "5. eKYC・電子的宣誓", title: "電子的利用宣誓（法令遵守・ストーカー禁止）合意テスト", description: "連絡先開示前の誓約確認画面で、利用宣誓チェック項目への明示的同意が必須化され、合意タイムスタンプ・IPログが安全保存されるか検証します。", completed: false, date: "", notes: "" },
       { id: 12, category: "6. 決済・連絡先開示", title: "Stripe本番決済（開通手数料600円〜1,200円）疎通テスト", description: "開通ボタン押下時にStripe決済画面が起動し、クレジットカード決済が遅延なく正常に完了するか検証します。", completed: false, date: "", notes: "" },
-      { id: 13, category: "6. 決済・連絡先開示", title: "決済完了後の即時連絡先開示（引き渡し完結）検証", description: "決済完了直後にお手紙全文と相手の優先開示連絡先（LINE ID等）が表示され、アプリ内永続チャットを介さず完結するか検証します。", completed: false, date: "", notes: "" },
+      { id: 13, category: "6. 決済・連絡先開示", title: "決済完了後の即時連絡先開示（引き渡し完結）検証", description: "決済完了直後にお手紙全文と相手の優先開示連絡先（LINE ID等）が表示され、安全な連絡先引き渡しをもって完結するか検証します。", completed: false, date: "", notes: "" },
       { id: 14, category: "6. 決済・連絡先開示", title: "eKYC審査不合格時のStripe自動返金（仮売上取消）テスト", description: "本人確認審査で不合格となった場合、Stripeで仮決済された手数料が自動的かつ即座にオーソリ取消・返金されるか検証します。", completed: false, date: "", notes: "" },
       { id: 15, category: "7. マイページ・手紙管理", title: "優先開示連絡先の設定・投函ボトル回収（削除）テスト", description: "自身のLINE ID等の更新保存、および投函ボトルの回収（完全消去）時に検索結果から即時非表示となるか検証します。", completed: false, date: "", notes: "" },
       { id: 16, category: "8. 管理者・警察連携", title: "管理者ダッシュボードKPI・AI通報ログ＆ユーザー緊急凍結検証", description: "統計メトリクス表示、AI検閲通報ログのリアルタイム確認、問題ユーザーのワンクリックBAN機能が正常動作するか検証します。", completed: false, date: "", notes: "" },
@@ -1026,7 +1026,7 @@ export const AdminDeploymentGuideBlock = ({
       layout: 'content',
       points: [
         "「厳格な合意ベース開通」：投函者・受取人双方が「想い出クイズ」に100%完全合致し、公的本人確認（eKYC）と開通手続き（600円）が完了した段階でのみ、双方が希望する連絡先（LINE ID, メールアドレス等）を安全に相互開示・引き渡し（ブリッジ）します。",
-        "「密室メッセージ空間の完全排除」：サービス内に継続的なメッセージング（密室チャット）空間を持たない「ワンウェイ引き渡し完結型」のクリーン設計を採用。不特定多数との無差別なやり取りや密室でのトラブル・犯罪リスクをシステム構造上ゼロにします。",
+        "「連絡先安全引き渡し完結型モデル」：想い出の照合と本人確認完了後に合意された連絡先（LINE ID等）を安全に引き渡してプラットフォームの役割を完結させるクリーン設計を採用。不特定多数との無差別なやり取りやトラブル・犯罪リスクをシステム構造上ゼロにします。",
         "「24時間常設の緊急ブロック・通報機能」：連絡先引き渡し後も、万が一お相手の言動にしつこさや不審を感じた場合には、常設された「通報・削除申請」「緊急ブロック」により、1タップで即座に遮断・運営通報が可能です。"
       ]
     },
@@ -2433,7 +2433,7 @@ export const AdminDeploymentGuideBlock = ({
         pptxSlide.addText('開示連絡先: LINE ID: @sample_friend', { x: 6.35, y: 2.3, w: 2.65, h: 0.45, fontSize: 7.5, fontFace: 'Courier New', color: '047857', bold: true, valign: 'middle' });
 
         pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.3, y: 2.85, w: 2.75, h: 0.65, fill: { color: 'ECFDF5' }, line: { color: 'A7F3D0', width: 1 } });
-        pptxSlide.addText('🔒 密室チャットを持たないクリーン設計で、\nトラブルや犯罪リスクをシステム構造上ゼロに。', { x: 6.35, y: 2.85, w: 2.65, h: 0.65, fontSize: 7, fontFace: 'Hiragino Kaku Gothic ProN', color: '065F46', valign: 'middle' });
+        pptxSlide.addText('🔒 連絡先安全引き渡し完結型設計で、\nトラブルや犯罪リスクをシステム構造上ゼロに。', { x: 6.35, y: 2.85, w: 2.65, h: 0.65, fontSize: 7, fontFace: 'Hiragino Kaku Gothic ProN', color: '065F46', valign: 'middle' });
 
         pptxSlide.addText('🛡️ 緊急通報・ワンタップブロック機能常備', { x: 6.05, y: 3.8, w: 3.25, h: 0.4, fontSize: 8.5, fontFace: 'Hiragino Kaku Gothic ProN', color: '047857', align: 'center', bold: true });
         break;
@@ -2932,7 +2932,7 @@ export const AdminDeploymentGuideBlock = ({
                   <div className="font-bold text-[#3B627F]">LINE ID: @sample_friend</div>
                 </div>
                 <div className="bg-emerald-50 text-emerald-900 text-[7.5px] p-1.5 rounded-lg border border-emerald-200">
-                  🔒 密室チャットを持たないクリーン設計で、トラブルや犯罪リスクをシステム構造上ゼロに。
+                  🔒 連絡先安全引き渡し完結型設計で、トラブルや犯罪リスクをシステム構造上ゼロに。
                 </div>
               </div>
             </div>
@@ -4434,7 +4434,7 @@ export const AdminDeploymentGuideBlock = ({
                   bg: "bg-gradient-to-r from-rose-50/70 to-pink-50/30 border-rose-100",
                   text: "text-slate-950",
                   badge: "bg-rose-600 text-white",
-                  desc: "Stripe本番決済（600円〜1,200円）、決済後の連絡先安全開示（永続チャットを介さない引き渡し）、審査否認時の自動返金をテストします。",
+                  desc: "Stripe本番決済（600円〜1,200円）、決済後の連絡先安全開示（セキュア・ブリッジ引き渡し）、審査否認時の自動返金をテストします。",
                   itemIds: [12, 13, 14]
                 },
                 {
@@ -4683,10 +4683,10 @@ export const ManualContent = () => (
     <section className="space-y-3">
       <h3 className="text-base md:text-lg font-bold font-serif text-slate-900 flex items-center gap-3 border-b border-slate-100 pb-2">
         <span className="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-sans shrink-0">01</span>
-        記憶をつづる（ボトルの投函）
+        手紙を書く（ボトルメールの投函）
       </h3>
       <p className="text-xs md:text-sm text-slate-700 leading-relaxed">
-        トップページの「手紙をつづる」または「ボトルメールを流す」ボタンから、探している相手へのメッセージを作成できます。あなたの想いが相手に届くよう、以下の項目を丁寧に入力しましょう。
+        トップページの「ボトルメールを流す」ボタンから、探している相手へのメッセージを作成できます。あなたの想いが相手に届くよう、以下の項目を丁寧に入力しましょう。
       </p>
       <div className="bg-slate-50 p-4 md:p-5 rounded-2xl border border-slate-200/80 space-y-2">
         <p className="text-xs font-bold text-slate-900">入力項目の詳細：</p>
@@ -4695,9 +4695,9 @@ export const ManualContent = () => (
           <li><strong>出身地・ゆかりの地：</strong> 相手の出身地や、二人が出会った場所などを入力します。公開されるのは「都道府県」までとなりますが、市区町村まで入力することで検索精度が向上します。</li>
           <li><strong>交流のあった年代：</strong> 相手と過ごした時代（例：1990年代）を選択します。</li>
           <li><strong>あなたの表示名：</strong> 当時のあだ名や、二人の間だけで通じる呼び名を使用してください。</li>
-          <li><strong>秘密の質問：</strong> 本人確認のための重要なステップです。<strong>秘密の質問（2問）</strong>を設定してください。第三者が推測しにくい二人の記憶に基づく具体的なエピソードを質問にすることを強く推奨します。</li>
-          <li><strong>開示用SNS・連絡先：</strong> 質問に正解し、開示手続きを行ったお相手だけに公開されるSNS ID（LINE ID、Instagram、メールアドレスなど）を設定します。手紙の本文欄には直接書き込まず、こちらの専用欄にご入力ください。</li>
-          <li><strong>メッセージ：</strong> 相手が質問に正解した後に表示される手紙本文です。</li>
+          <li><strong>思い出クイズ：</strong> 本人確認のための重要なステップです。<strong>思い出クイズ（2問）</strong>を設定してください。第三者が推測しにくい二人の記憶に基づく具体的なエピソードを質問にすることを強く推奨します。</li>
+          <li><strong>開示用連絡先（LINE等）：</strong> クイズに正解し、手続きを行ったお相手だけに安全に公開される連絡先（LINE ID、メールアドレスなど）を設定します。手紙の本文欄には直接書き込まず、こちらの専用欄にご入力ください。</li>
+          <li><strong>メッセージ：</strong> 相手が思い出クイズに正解した後に表示される手紙本文です。</li>
           <li><strong>AIによる検閲：</strong> 投稿内容はAIによって自動的に解析され、不適切な表現や個人情報の過度な露出がある場合は投稿が制限されることがあります。</li>
         </ul>
       </div>
@@ -4737,18 +4737,18 @@ export const ManualContent = () => (
     <section className="space-y-3">
       <h3 className="text-base md:text-lg font-bold font-serif text-slate-900 flex items-center gap-3 border-b border-slate-100 pb-2">
         <span className="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-sans shrink-0">03</span>
-        再会への一歩（本人確認とSNS連絡先の開示）
+        再会への一歩（本人確認と連絡先の受け取り）
       </h3>
       <p className="text-xs md:text-sm text-slate-700 leading-relaxed">
-        自分宛てと思われるボトルメールを見つけたら、詳細を確認します。メッセージ本文と連絡先を開示するには、差出人が設定した「秘密の質問」に答える必要があります。
+        自分宛てと思われる手紙を見つけたら、詳細を確認します。メッセージ本文と連絡先を開示するには、差出人が設定した「思い出クイズ」に答える必要があります。
       </p>
       <div className="bg-amber-50/60 p-4 md:p-5 rounded-2xl border border-amber-200/80 space-y-2">
         <p className="text-xs font-bold text-amber-900">再会のプロセス：</p>
         <ol className="list-decimal pl-5 space-y-1.5 text-xs text-amber-800 leading-relaxed">
-          <li><strong>質問に回答：</strong> 秘密の質問に正解すると、ロックが解除されます。</li>
-          <li><strong>手紙の開封と開示手続き：</strong> 差出人からの手紙本文を確認し、開示手続き（600円 / eKYC認証付き1,200円）を行います。</li>
-          <li><strong>SNS連絡先の開示：</strong> 差出人が設定したSNS ID（LINE ID、Instagram等）および連絡先が表示されます。</li>
-          <li><strong>直接連絡・再会成功：</strong> 開示されたSNS IDをコピーし、差出人へ直接メッセージをお送りいただくことで再会が果たせます（サイト内のクローズドチャットを介さない安全な直接接続モデルです）。</li>
+          <li><strong>クイズに回答：</strong> 思い出クイズに正解すると、ロックが解除されます。</li>
+          <li><strong>手紙の開封と受け取り手続き：</strong> 差出人からの手紙本文を確認し、手続き（600円 / 公的本人確認付き1,200円）を行います。</li>
+          <li><strong>連絡先（LINE等）の開示：</strong> 差出人が設定した連絡先（LINE ID、メールアドレス等）が表示されます。</li>
+          <li><strong>直接連絡・再会成功：</strong> 開示された連絡先へ直接メッセージをお送りいただくことで再会が果たせます。</li>
         </ol>
       </div>
     </section>

@@ -56,7 +56,7 @@ export const AdminMasterKnowledgeBase: React.FC<AdminMasterKnowledgeBaseProps> =
   
   // サブタブ
   const [activeSubTab, setActiveSubTab] = useState<
-    'deployment17' | 'auth_costs' | 'police_ekyc' | 'liability_contract' | 'closed_chat_transition' | 'scratchpad'
+    'deployment17' | 'auth_costs' | 'police_ekyc' | 'liability_contract' | 'secure_bridge_model' | 'scratchpad'
   >('deployment17');
 
   const [activeTemplateId, setActiveTemplateId] = useState<string>('tpl-police');
@@ -219,7 +219,7 @@ export const AdminMasterKnowledgeBase: React.FC<AdminMasterKnowledgeBaseProps> =
     {
       group: '【C. 本番データ管理】',
       items: [
-        { id: 'step_07', icon: '🧹', title: '7. 開発用テストデータの完全クリーンアップ (初期化) 実行', desc: '開発デバッグ期間中に蓄積された不要なテストユーザー、デバッグボトルメール、不完全なチャット・監査ログを管理者ダッシュボードから物理的に一括安全消去（初期化）。' },
+        { id: 'step_07', icon: '🧹', title: '7. 開発用テストデータの完全クリーンアップ (初期化) 実行', desc: '開発デバッグ期間中に蓄積された不要なテストユーザー、デバッグボトルメール、不完全な一時データ・監査ログを管理者ダッシュボードから物理的に一括安全消去（初期化）。' },
         { id: 'step_08', icon: '🌱', title: '8. 情緒豊かな300件以上の本番サンプルデータの一括自動生成', desc: 'ローンチ直後の「誰もいない寂しさ」を完全排除するため、自動Seeding機能（/api/admin/production-seed）を用いて、実在感のある日本の想い出ボトルメールや感謝レターを一括流し込み。' }
       ]
     },
@@ -373,8 +373,8 @@ ReMEETs カスタマーサポート`
 一般的なマッチングアプリと異なり、年齢・容姿・年収等による異性の検索・閲覧機能は一切存在しません。
 (2) 二人だけの想い出クイズによる厳格な合意照合
 手紙の閲覧および連絡先開示には、差出人と受取人のみが知る「想い出クイズ（共通記憶）」の完全一致が必須であり、見知らぬ第三者が偶然マッチングすることは不可能です。
-(3) プラットフォーム内チャットの非提供（引き渡し完結型）
-アプリ内で継続的なメッセージ交換（チャット）を提供せず、照合・本人確認後に連絡先を引き渡して終了するため、出会い系サイト規制法第2条第2号に定める「異性交際の機会を提供する役務」には該当いたしません。
+(3) 連絡先安全引き渡し（セキュア・ブリッジ）完結型モデルの採用
+想い出の照合・本人確認後に合意された連絡先（LINE ID等）を安全に引き渡して完結するモデルであり、出会い系サイト規制法第2条第2号に定める「異性交際の機会を提供する役務」には該当いたしません。
 
 3. 安全防衛体制
 ・Google Gemini AI によるストーカー・脅迫表現のリアルタイム自動隔離（ai_flagged = 1）
@@ -750,9 +750,9 @@ ReMEETs カスタマーサポート`
             {/* TAB 5: 連絡先開示モデル移行 */}
             <button
               type="button"
-              onClick={() => setActiveSubTab('closed_chat_transition')}
+              onClick={() => setActiveSubTab('secure_bridge_model')}
               className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
-                activeSubTab === 'closed_chat_transition'
+                activeSubTab === 'secure_bridge_model'
                   ? 'bg-white border-teal-600 shadow-md ring-2 ring-teal-500/10'
                   : 'bg-zinc-50/80 hover:bg-white border-brand-border/80'
               }`}
@@ -765,7 +765,7 @@ ReMEETs カスタマーサポート`
                   </span>
                 </div>
                 <div className="font-bold text-xs text-black">連絡先開示モデル</div>
-                <div className="text-[10px] text-black/60 line-clamp-1">チャット廃止の法的背景</div>
+                <div className="text-[10px] text-black/60 line-clamp-1">セキュア・ブリッジ完結設計</div>
               </div>
             </button>
 
@@ -909,7 +909,7 @@ ReMEETs カスタマーサポート`
                 <div className="space-y-3 text-xs">
                   <p className="text-black/70 leading-relaxed">
                     <b>なぜSMS認証が必要なのか</b>: 無料のSNS認証だけでは複アカやサクラを防げないため、<b>「1ユーザー＝1物理携帯番号」</b>を担保し、警察・公安照会時の最重要接点とします。<br />
-                    <b>従量課金対策</b>: SMS送信費（1通約12円）を無料ログイン段階で走らせると赤字になるため、<b>「お相手とのチャット開通（600円決済）」の内部でのみトリガー</b>します。
+                    <b>従量課金対策</b>: SMS送信費（1通約12円）を無料ログイン段階で走らせると赤字になるため、<b>「お相手との手紙開封・連絡先開示（600円決済）」の内部でのみトリガー</b>します。
                   </p>
 
                   {/* Profit breakdown diagram */}
@@ -1052,20 +1052,20 @@ ReMEETs カスタマーサポート`
           )}
 
           {/* ======================================================== */}
-          {/* ✉️ SUBTAB 5: 連絡先開示モデル移行検討備忘録                 */}
+          {/* ✉️ SUBTAB 5: 連絡先安全引き渡し（セキュア・ブリッジ）完結モデル備忘録 */}
           {/* ======================================================== */}
-          {activeSubTab === 'closed_chat_transition' && (
+          {activeSubTab === 'secure_bridge_model' && (
             <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
               <div className="p-6 rounded-3xl bg-white border border-brand-border shadow-sm space-y-4">
                 <div className="flex items-center gap-2 border-b border-zinc-100 pb-3">
                   <span className="text-xl">✉️</span>
-                  <h4 className="text-sm font-bold text-black">連絡先開示（引き渡し）モデル移行の背景とメリット</h4>
+                  <h4 className="text-sm font-bold text-black">連絡先安全引き渡し（セキュア・ブリッジ）完結モデルの優位性と法的合理性</h4>
                 </div>
                 <div className="space-y-3 text-xs leading-relaxed text-black/70">
                   <div className="p-4 rounded-2xl bg-teal-50/60 border border-teal-200 space-y-1.5">
-                    <span className="font-bold text-teal-950 block">法的・運営リスクの劇的軽減</span>
+                    <span className="font-bold text-teal-950 block">完全非該当と運営リスクゼロの実現</span>
                     <p>
-                      アプリ内で継続的な1対1クローズドチャットを提供し続ける場合、「インターネット異性紹介事業」該当懸念や「24時間メッセージ監視・検閲義務」が発生します。想い出の照合後に安全に連絡先（SNS ID / メール）を引き渡してプラットフォームの役割を完結させることで、安全防衛と法令適合を両立させています。
+                      想い出の照合後に安全に連絡先（LINE ID / メール等）を引き渡してプラットフォームの役割を完結させるセキュア・ブリッジ設計を採用。不特定多数との無差別なやり取りやトラブルリスクを構造的に排除し、安全防衛と法令適合を両立させています。
                     </p>
                   </div>
 

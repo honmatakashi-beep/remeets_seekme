@@ -3248,291 +3248,6 @@ export const CreatePostPage = () => {
   );
 };
 
-export const ChatComponent = ({ postId, otherUserId, otherUserName, otherUserFullName, isHighlighted, post }: { postId: number, otherUserId: number, otherUserName: string, otherUserFullName?: string, isHighlighted?: boolean, post?: any }) => {
-  const { user, token } = useAuth();
-  const { showConfirm } = useConfirm();
-  const { check: checkNg } = useNgFilter();
-  const [messages, setMessages] = useState<any[]>([]);
-  const [newMessage, setNewMessage] = useState('');
-  const [warning, setWarning] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [agreed, setAgreed] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  const fetchMessages = async () => {
-    try {
-      const res = await fetch(`/api/messages/${postId}?otherUserId=${otherUserId}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const data = await res.json();
-      setMessages(data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchMessages();
-    const interval = setInterval(fetchMessages, 5000);
-    return () => clearInterval(interval);
-  }, [postId, otherUserId]);
-
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [messages]);
-
-  const handleSend = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newMessage.trim()) return;
-
-    if (warning) {
-      showConfirm('送信の確認', `${warning}\n\n個人情報の交換はトラブルの原因となる可能性があります。安全のため、外部サービスへの誘導や直接の連絡先交換は推奨していません。\n\nこのまま送信しますか？`, async () => {
-        try {
-          const res = await fetch('/api/messages', {
-            method: 'POST',
-            headers: { 
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ postId, receiverId: otherUserId, content: newMessage })
-          });
-          if (res.ok) {
-            setNewMessage('');
-            fetchMessages();
-          }
-        } catch (err) {
-          console.error(err);
-        }
-      });
-      return;
-    }
-
-    try {
-      const res = await fetch('/api/messages', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ postId, receiverId: otherUserId, content: newMessage })
-      });
-      if (res.ok) {
-        setNewMessage('');
-        fetchMessages();
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  return (
-    <div className={`flex flex-col h-[650px] bg-white rounded-[40px] overflow-hidden shadow-2xl relative transition-all duration-700 ease-out ${
-      isHighlighted 
-        ? 'border-2 border-emerald-500 shadow-[0_0_50px_rgba(16,185,129,0.55)] scale-[1.01] z-30' 
-        : 'border-2 border-brand-border shadow-brand-primary/5'
-    }`}>
-      {/* Chat Header */}
-      <div className="px-6 md:px-8 py-4 md:py-5 bg-white border-b border-brand-border flex items-center gap-4 md:gap-6 relative z-20 shadow-sm">
-        <div className="relative flex-shrink-0">
-          <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-brand-primary/10 flex items-center justify-center text-black shadow-inner border border-brand-primary/5">
-            <UserIcon size={24} className="md:w-7 md:h-7" />
-          </div>
-          <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 md:w-4 md:h-4 rounded-full bg-emerald-500 border-2 md:border-4 border-white shadow-sm" />
-        </div>
-        
-        <div className="flex flex-col justify-center">
-          <div className="flex items-center gap-2 mb-0.5">
-            <h2 className="font-serif text-lg md:text-xl font-[400] leading-tight text-black">
-              {otherUserFullName ? otherUserFullName : otherUserName}
-            </h2>
-            <span className={`text-[11px] md:text-[13px] font-bold tracking-[0.1em] px-3 py-1 rounded-full border shadow-sm transition-all duration-700 ${
-              isHighlighted 
-                ? 'bg-emerald-500 text-white border-emerald-400' 
-                : 'bg-brand-accent/20 text-black border-brand-accent/30'
-            }`}>
-              プライベート
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-[10px] md:text-[11px] font-bold text-emerald-600 uppercase tracking-[0.2em]">Online</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Messages Area */}
-      <div ref={scrollRef} className="flex-grow overflow-y-auto p-6 md:p-8 space-y-6 md:space-y-8 relative z-10 bg-slate-50/50">
-        {messages.map((m, idx) => {
-          const isMe = m.sender_id === user?.id;
-          return (
-            <React.Fragment key={m.id || idx}>
-              <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                className={cn(
-                  "flex flex-col max-w-[80%]",
-                  isMe ? "ml-auto items-end" : "mr-auto items-start"
-                )}
-              >
-                <div className={cn(
-                  "p-4 md:p-5 text-sm md:text-base leading-relaxed break-words",
-                  isMe 
-                    ? "bg-brand-dark text-white rounded-[24px] rounded-tr-none shadow-md shadow-brand-dark/10" 
-                    : "bg-white text-black border-2 border-brand-border rounded-[24px] rounded-tl-none"
-                )}>
-                  {m.content}
-                </div>
-                <div className={cn(
-                  "flex items-center gap-2 mt-2.5 px-1",
-                  isMe ? "flex-row-reverse" : "flex-row"
-                )}>
-                  <span className="text-[11px] font-bold text-black/40 uppercase tracking-widest">
-                    {new Date(m.created_at).toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })}
-                  </span>
-                  {/* 本人確認済バッジの表示 */}
-                  {((m.sender_id === post?.user_id && post?.user_is_verified) || 
-                    (m.sender_id !== post?.user_id && (isMe ? (localStorage.getItem('ekyc_verified') === 'true') : true))) && (
-                    <span className="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/50 flex items-center gap-0.5 select-none animate-fade-in">
-                      <ShieldCheck size={10} className="text-emerald-500" />
-                      <span>本人確認済</span>
-                    </span>
-                  )}
-                  {isMe && <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
-                </div>
-              </motion.div>
-            </React.Fragment>
-          );
-        })}
-        
-        {messages.length === 0 && !loading && (
-          <div className="h-full flex flex-col items-center justify-center text-center">
-            <div className="w-24 h-24 bg-brand-primary/10 rounded-[32px] flex items-center justify-center text-black mb-8 shadow-inner">
-              <Mail size={48} />
-            </div>
-            <p className="text-lg font-serif text-black/70 max-w-xs leading-relaxed">
-              再会を祝して、最初のメッセージを送りましょう。<br />
-              ここから新しい物語が始まります。
-            </p>
-          </div>
-        )}
-      </div>
-
-      {/* Input Area */}
-      <div className="p-4 md:p-8 bg-white border-t border-brand-border relative z-20">
-        {messages.length === 0 && !agreed && (
-          <div className="mb-6 p-6 bg-brand-primary/5 rounded-[24px] border border-brand-primary/10 space-y-4">
-            <div className="flex items-center gap-2 text-brand-primary">
-              <ShieldCheck size={18} />
-              <span className="text-sm font-bold">メッセージ送信前の安全同意</span>
-            </div>
-            <p className="text-xs text-brand-dark/70 leading-relaxed font-serif">
-              最初のメッセージを送信する前に、以下の点にご同意ください：
-              <br />・私は18歳以上（高校生を除く）です
-              <br />・児童との交際、性的勧誘、犯罪行為を目的としません
-              <br />・個人情報を不必要に開示せず、安全に配慮して会話します
-            </p>
-            <div className="flex items-center gap-3">
-              <input 
-                type="checkbox" 
-                id="msg_agreement"
-                checked={agreed}
-                onChange={e => setAgreed(e.target.checked)}
-                className="w-5 h-5 rounded border-brand-border text-brand-primary focus:ring-brand-primary cursor-pointer"
-              />
-              <label htmlFor="msg_agreement" className="text-xs font-bold text-brand-dark cursor-pointer">
-                上記の規約と安全基準に同意し、メッセージのやり取りを開始します
-              </label>
-            </div>
-          </div>
-        )}
-        {/* 1st Chat Highlight: Blink/Pulse box & text when first entering the chat and agreed */}
-        <form onSubmit={handleSend} className="relative group">
-          <div className={cn(
-            "absolute inset-0 rounded-[24px] blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-500",
-            warning ? "bg-red-500/5" : "bg-brand-primary/5"
-          )} />
-          {(() => {
-            const isFirstChat = messages.length === 0 && agreed;
-            const shouldBlink = (isFirstChat || isHighlighted) && !newMessage.trim();
-            return (
-              <div className={cn(
-                "relative flex items-center gap-2 md:gap-4 rounded-[24px] p-1.5 md:p-2 transition-all duration-500 border-2",
-                warning 
-                  ? "bg-red-50/30 border-red-300 focus-within:border-red-500 shadow-md shadow-red-500/5" 
-                  : (shouldBlink
-                      ? "bg-emerald-50/60 shadow-lg ring-4 ring-emerald-500/20 animate-chat-pulse duration-1000"
-                      : "bg-emerald-50/30 border-slate-200 focus-within:border-emerald-500 focus-within:bg-white focus-within:shadow-md focus-within:shadow-emerald-500/5"),
-                (messages.length === 0 && !agreed) && "opacity-40 pointer-events-none"
-              )}>
-                <div 
-                  role="button"
-                  aria-label="ファイルを添付する"
-                  tabIndex={0}
-                  className={cn(
-                    "p-2 md:p-3 transition-colors cursor-pointer flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-emerald-500 rounded-full",
-                    warning ? "text-red-400" : "text-black/30 hover:text-emerald-600"
-                  )}
-                >
-                  {warning ? <AlertCircle size={20} className="animate-pulse" /> : <Plus size={20} />}
-                </div>
-                <input 
-                  type="text" 
-                  placeholder={shouldBlink ? "💌 メッセージを送信してください..." : "メッセージを送信..."} 
-                  aria-label="メッセージの入力"
-                  className={cn(
-                    "flex-grow bg-transparent border-none outline-none py-2 md:py-3 placeholder:text-slate-500/90 font-sans min-w-0 transition-colors duration-300",
-                    shouldBlink ? "placeholder:text-emerald-700 placeholder:font-bold animate-pulse text-slate-800" : "placeholder:text-slate-500/90 text-slate-800",
-                    warning ? "text-red-700" : "text-slate-800"
-                  )}
-                  value={newMessage}
-                  onChange={e => {
-                    const val = e.target.value;
-                    const ngLabel = checkNg(val);
-                    setWarning(ngLabel ? `不適切な表現が含まれています（${ngLabel}）` : null);
-                    setNewMessage(val);
-                  }}
-                />
-                <button 
-                  type="submit" 
-                  disabled={!newMessage.trim()}
-                  aria-label="メッセージを送信する"
-                  title="メッセージを送信する"
-                  className={cn(
-                    "w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl flex items-center justify-center transition-all duration-500 shadow-lg flex-shrink-0",
-                    newMessage.trim() 
-                      ? (warning ? "bg-red-500 text-white shadow-red-500/20 hover:scale-105 active:scale-95" : "bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-600/20 hover:scale-105 active:scale-95")
-                      : (shouldBlink
-                          ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/20 animate-pulse hover:scale-105 active:scale-95 cursor-pointer"
-                          : "bg-slate-100 text-slate-400 shadow-none cursor-not-allowed")
-                  )}
-                >
-                  <Send size={18} className={cn("md:w-5 md:h-5", shouldBlink && "animate-bounce")} />
-                </button>
-              </div>
-            );
-          })()}
-          <AnimatePresence>
-            {warning && (
-              <motion.div 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 10 }}
-                className="absolute -top-12 left-0 right-0 bg-red-50 text-red-600 text-[11px] font-bold py-2 px-4 rounded-xl border border-red-100 flex items-center gap-2 shadow-sm"
-              >
-                <AlertCircle size={14} className="animate-bounce" />
-                <span>{warning}</span>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </form>
-      </div>
-    </div>
-  );
-};
 
 export const ScrollToTop = () => {
   const { pathname, hash } = useLocation();
@@ -3739,7 +3454,7 @@ export const SeoPreviewModal = ({ isOpen, onClose, post }: { isOpen: boolean, on
               </p>
               <p className="p-3 bg-brand-primary/5 rounded-2xl border border-brand-primary/10 font-bold text-brand-dark flex items-center gap-2">
                 📢 <span className="text-brand-accent text-xs font-bold">【公開プレビューについて】</span>
-                お相手（ゲスト）が検索等で見つけて最初に表示されるブラウザページは、まさにこの詳細ページ（秘密の質問フォームが出ている状態）です。質問に正解した後に大切なメッセージが表示されます。
+                お相手（ゲスト）が検索等で見つけて最初に表示されるブラウザページは、まさにこの詳細ページ（思い出クイズのフォームが出ている状態）です。クイズに正解した後に大切なメッセージが表示されます。
               </p>
             </div>
           </div>
@@ -5360,7 +5075,6 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
   const queryParams = new URLSearchParams(location.search);
   const idQuery = queryParams.get('id');
   const [showSeoPreviewModal, setShowSeoPreviewModal] = useState(false);
-  const chatWithParam = queryParams.get('chatWith');
 
   const justPostedFlag = Boolean(location.state?.justPosted);
   const postedWithEkycFlag = Boolean(location.state?.postedWithEkyc);
@@ -5376,7 +5090,6 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
   const [isQuestionVerified, setIsQuestionVerified] = useState(false);
   const [tempVerificationData, setTempVerificationData] = useState<any>(null);
   const [answers, setAnswers] = useState<string[]>([]);
-  const [searcherId, setSearcherId] = useState<number | null>(chatWithParam ? Number(chatWithParam) : null);
   const [searcherName, setSearcherName] = useState<string | null>(null);
   const [searcherFullName, setSearcherFullName] = useState<string | null>(null);
   const [verifiedByUser, setVerifiedByUser] = useState<{ id: number, username: string, full_name?: string } | null>(null);
@@ -5420,8 +5133,6 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
   const [showStoryModal, setShowStoryModal] = useState(false);
   const [showCopyToast, setShowCopyToast] = useState(false);
   const [reportTarget, setReportTarget] = useState<{ type: 'post' | 'user', id: number } | null>(null);
-  const [showMobileChatShortcut, setShowMobileChatShortcut] = useState(false);
-  const [isChatHighlighted, setIsChatHighlighted] = useState(false);
 
   // Finder's eKYC states
   const [showFinderEkycModal, setShowFinderEkycModal] = useState(() => sessionStorage.getItem('show_finder_ekyc_modal') === 'true');
@@ -5545,14 +5256,11 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
     return () => clearInterval(interval);
   }, [finderEkycStep, showFinderEkycModal, token, post?.id, finderEkycDocType, finderEkycName, finderEkycBirthdate, finderEkycCapturedImages]);
 
-  const chatSectionRef = useRef<HTMLDivElement>(null);
-
-  const handleScrollToChat = () => {
-    chatSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    setIsChatHighlighted(true);
-    setTimeout(() => {
-      setIsChatHighlighted(false);
-    }, 3500);
+  const handleScrollToRevealedContact = () => {
+    const el = document.getElementById('revealed-contact-section') || document.getElementById('letter-content-section');
+    if (el) {
+      smoothScrollWithOffset(el, 90);
+    }
   };
 
   const isOwner = !!(post && (post.is_owner || (user && String(user.id) === String(post.user_id))));
@@ -5595,35 +5303,6 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [revealedContact, showDetails]);
-
-  useEffect(() => {
-    if (showDetails && !isOwner && searcherId) {
-      const handleScroll = () => {
-        if (!chatSectionRef.current) return;
-        const rect = chatSectionRef.current.getBoundingClientRect();
-        // If chat is closer than 100px from the bottom or already in view / passed, hide the shortcut
-        if (rect.top < window.innerHeight - 80) {
-          setShowMobileChatShortcut(false);
-        } else {
-          setShowMobileChatShortcut(true);
-        }
-      };
-
-      const timer = setTimeout(() => {
-        handleScroll();
-      }, 500);
-
-      window.addEventListener("scroll", handleScroll, { passive: true });
-      window.addEventListener("resize", handleScroll, { passive: true });
-      return () => {
-        window.removeEventListener("scroll", handleScroll);
-        window.removeEventListener("resize", handleScroll);
-        clearTimeout(timer);
-      };
-    } else {
-      setShowMobileChatShortcut(false);
-    }
-  }, [showDetails, isOwner, searcherId]);
 
   const [hasClickedStartContact, setHasClickedStartContact] = useState(false);
   const [isOpeningLetter, setIsOpeningLetter] = useState(false);
@@ -5810,8 +5489,6 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
       if (toStep > fromStep) {
         if (toStep === 4) {
           window.scrollTo({ top: 0, behavior: 'smooth' });
-          setIsChatHighlighted(true);
-          setTimeout(() => setIsChatHighlighted(false), 3000);
           return;
         }
 
@@ -5984,11 +5661,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
     };
 
     fetchPost();
-    
-    if (chatWithParam) {
-      setSearcherName("メッセージ相手");
-    }
-  }, [id, idQuery, nameParam, locParam, yearParam, relParam, chatWithParam]);
+  }, [id, idQuery, nameParam, locParam, yearParam, relParam]);
 
   useEffect(() => {
     if (post) {
@@ -6585,8 +6258,6 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               const el = document.getElementById('age-verification-gate');
               if (el) {
                 smoothScrollWithOffset(el, 90);
-              } else if (chatSectionRef.current) {
-                smoothScrollWithOffset(chatSectionRef.current, 120);
               }
             }
           }, 350);
@@ -8073,7 +7744,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                       setShowFinderEkycModal(false);
                       // 本人確認が完了したら、手紙・連絡先表示位置までスクロール誘導
                       setTimeout(() => {
-                        handleScrollToChat();
+                        handleScrollToRevealedContact();
                       }, 300);
                     }}
                     className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold shadow transition-all cursor-pointer"

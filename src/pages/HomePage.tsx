@@ -412,7 +412,7 @@ export const HomePage = ({ onOpenOnboarding, heroCopyStyle }: { onOpenOnboarding
         </div>
       </div>
 
-      {/* Primary Hero Action: Write & Send Bottle Mail (手紙をつづるメイン構造) */}
+      {/* Primary Hero Action: Write & Send Bottle Mail (ボトルメールを流すメイン構造) */}
       <div className="max-w-4xl mx-auto space-y-6 relative z-10 font-sans">
         
         {/* Main Card: Write & Send Letter */}
@@ -425,7 +425,7 @@ export const HomePage = ({ onOpenOnboarding, heroCopyStyle }: { onOpenOnboarding
             </span>
             <h3 className="text-xl md:text-2xl font-serif font-bold pt-1 text-center">
               <span className="animated-rainbow-text inline-block drop-shadow-[0_1px_8px_rgba(255,255,255,0.9)] pb-0.5">
-                逢いたい人へ、再会のボトルメールをつづる
+                逢いたい人へ、再会のボトルメールを流す
               </span>
             </h3>
             <div className="flex items-center justify-center gap-2 text-[11px] text-slate-500 font-sans pt-0.5">
@@ -446,7 +446,7 @@ export const HomePage = ({ onOpenOnboarding, heroCopyStyle }: { onOpenOnboarding
                 className="w-full h-14 bg-brand-dark hover:bg-[#1e4f7a] text-white rounded-2xl text-sm font-bold font-sans tracking-wider text-center flex items-center justify-center gap-3 transition-all duration-300 shadow-md hover:shadow-lg active:scale-[0.99] cursor-pointer group"
               >
                 <Send size={18} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" />
-                <span>再会のボトルメールをつづる（無料）</span>
+                <span>ボトルメールを流す（無料）</span>
               </Link>
             </div>
           </div>
@@ -473,12 +473,12 @@ export const HomePage = ({ onOpenOnboarding, heroCopyStyle }: { onOpenOnboarding
                       <span className="text-xs font-sans font-bold tracking-[0.22em] text-emerald-700/80 uppercase">STEP</span>
                       <span className="text-xl sm:text-2xl font-serif font-extrabold tracking-wider text-emerald-600">01</span>
                     </div>
-                    <span className="text-xs font-serif font-bold bg-emerald-50 text-emerald-700 px-2.5 py-0.5 rounded-full border border-emerald-200">【綴る】</span>
+                    <span className="text-xs font-serif font-bold bg-emerald-50 text-emerald-700 px-2.5 py-0.5 rounded-full border border-emerald-200">【手紙を書く】</span>
                   </div>
                   <div className="relative overflow-hidden rounded-xl aspect-[16/10] bg-slate-100 border border-emerald-200 p-1 shadow-inner group-hover:border-emerald-400 transition-colors duration-300">
                     <img 
                       src={stepWriteImg} 
-                      alt="記憶をつづる" 
+                      alt="手紙を書く" 
                       className="w-full h-full object-cover object-center rounded-lg group-hover:scale-[1.04] transition-transform duration-500 ease-out"
                     />
                   </div>
@@ -540,10 +540,10 @@ export const HomePage = ({ onOpenOnboarding, heroCopyStyle }: { onOpenOnboarding
                   </div>
                   <div className="space-y-1">
                     <h5 className="font-extrabold text-slate-900 text-sm sm:text-base font-serif flex items-center gap-1.5 leading-snug">
-                      <span>秘密の質問で再会・SNS開示</span>
+                      <span>思い出クイズで再会・連絡先受取</span>
                     </h5>
                     <p className="text-xs text-slate-600 leading-relaxed font-sans">
-                      お相手が検索で見つけ、秘密の質問に正解すると手紙が開封され、LINEやSNS連絡先が開示されて直接つながれます。
+                      お相手が検索で見つけ、思い出クイズに正解すると手紙が開き、LINEや連絡先を受け取って直接つながれます。
                     </p>
                   </div>
                 </div>

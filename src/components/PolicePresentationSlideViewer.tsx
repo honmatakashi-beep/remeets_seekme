@@ -645,7 +645,7 @@ export const PolicePresentationSlideViewer: React.FC<PolicePresentationSlideView
         pptxSlide.addText('開示連絡先: LINE ID: @sample_friend', { x: 6.35, y: 2.3, w: 2.65, h: 0.45, fontSize: 7.5, fontFace: 'Courier New', color: '047857', bold: true, valign: 'middle' });
 
         pptxSlide.addShape(pptx.shapes.ROUNDED_RECTANGLE || 'roundRect', { x: 6.3, y: 2.85, w: 2.75, h: 0.65, fill: { color: 'ECFDF5' }, line: { color: 'A7F3D0', width: 1 } });
-        pptxSlide.addText('🔒 密室チャットを持たないクリーン設計で、\nトラブルや犯罪リスクをシステム構造上ゼロに。', { x: 6.35, y: 2.85, w: 2.65, h: 0.65, fontSize: 7, fontFace: 'Hiragino Kaku Gothic ProN', color: '065F46', valign: 'middle' });
+        pptxSlide.addText('🔒 連絡先安全引き渡し完結型設計で、\nトラブルや犯罪リスクをシステム構造上ゼロに。', { x: 6.35, y: 2.85, w: 2.65, h: 0.65, fontSize: 7, fontFace: 'Hiragino Kaku Gothic ProN', color: '065F46', valign: 'middle' });
 
         pptxSlide.addText('🛡️ 緊急通報・ワンタップブロック機能常備', { x: 6.05, y: 3.8, w: 3.25, h: 0.4, fontSize: 8.5, fontFace: 'Hiragino Kaku Gothic ProN', color: '047857', align: 'center', bold: true });
         break;
@@ -1258,7 +1258,7 @@ export const PolicePresentationSlideViewer: React.FC<PolicePresentationSlideView
                   <div className="font-bold text-emerald-700">LINE ID: @sample_friend</div>
                 </div>
                 <div className="bg-emerald-50 text-emerald-900 text-[7.5px] p-1.5 rounded-lg border border-emerald-200">
-                  🔒 密室チャットを持たないクリーン設計で、トラブルや犯罪リスクをシステム構造上ゼロに。
+                  🔒 連絡先安全引き渡し完結型設計で、トラブルや犯罪リスクをシステム構造上ゼロに。
                 </div>
               </div>
             </div>

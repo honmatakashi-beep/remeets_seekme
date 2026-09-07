@@ -36,7 +36,7 @@ interface BroadcastItem {
   category: 'general' | 'maintenance' | 'feature' | 'security' | 'campaign';
   priority: 'normal' | 'important' | 'urgent';
   channels: { inApp: boolean; email: boolean };
-  target_segment: 'all' | 'verified' | 'unverified' | 'active_posts' | 'active_chat';
+  target_segment: 'all' | 'verified' | 'unverified' | 'active_posts' | 'active_disclosure';
   content: string;
   full_message?: string;
   link?: string | null;
@@ -159,7 +159,7 @@ export const AdminBroadcastView: React.FC = () => {
   const [statusMsg, setStatusMsg] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
   // Form State
-  const [targetSegment, setTargetSegment] = useState<'all' | 'verified' | 'unverified' | 'active_posts' | 'active_chat'>('all');
+  const [targetSegment, setTargetSegment] = useState<'all' | 'verified' | 'unverified' | 'active_posts' | 'active_disclosure'>('all');
   const [segmentCount, setSegmentCount] = useState<number | null>(null);
   const [category, setCategory] = useState<'general' | 'maintenance' | 'feature' | 'security' | 'campaign'>('general');
   const [priority, setPriority] = useState<'normal' | 'important' | 'urgent'>('normal');
@@ -403,7 +403,7 @@ export const AdminBroadcastView: React.FC = () => {
         return '⏳ 本人確認未完了ユーザー';
       case 'active_posts':
         return '📮 ボトル投稿・利用中ユーザー';
-      case 'active_chat':
+      case 'active_disclosure':
         return '💌 照合・連絡先開示済みユーザー';
       default:
         return '🌐 全登録ユーザー';
@@ -668,7 +668,7 @@ export const AdminBroadcastView: React.FC = () => {
                 <option value="verified">🪪 本人確認 (eKYC) 完了ユーザー (Verified Only)</option>
                 <option value="unverified">⏳ 本人確認未完了ユーザー (Unverified Only)</option>
                 <option value="active_posts">📮 ボトルメール投稿者・利用中ユーザー (Active Posters)</option>
-                <option value="active_chat">💌 照合・連絡先開示済みユーザー (Disclosure Completed)</option>
+                <option value="active_disclosure">💌 照合・連絡先開示済みユーザー (Disclosure Completed)</option>
               </select>
             </div>
 

@@ -57,7 +57,6 @@ const DEFAULT_ANALYTICS_DATA = {
     paidPosts: 0,
     matchingRate: 0,
     disclosureRate: 100,
-    chatEngagementRate: 100,
     totalQuizAttempts: 0,
     successQuizAttempts: 0,
     failedQuizAttempts: 0,
@@ -134,7 +133,7 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
       ["累計有効ボトル数", `${summary.totalPosts || 0} 通`, "削除除外後の有効データ"],
       ["再会成立 (マッチング成功) 数", `${summary.resolvedPosts || 0} 組`, "秘密の質問正解ボトル"],
       ["マッチング成立比率", `${summary.matchingRate || 0}%`, "投函ボトルに対する再会合意率"],
-      ["連絡先安全開示率", `${summary.disclosureRate || summary.chatEngagementRate || 100}%`, "再会成立後の連絡先引き渡し完了率"],
+      ["連絡先安全開示率", `${summary.disclosureRate || 100}%`, "再会成立後の連絡先引き渡し完了率"],
       ["クイズ総回答試行回数", `${summary.totalQuizAttempts || 0} 回`, "全ユーザーの回答挑戦ログ"],
       ["クイズ総合正答率", `${summary.quizAccuracyRate || 0}%`, "全試行に対する正答割合"],
       ["1回目一発正答率", `${summary.firstAttemptSuccessRate || 0}%`, "即座に完全一致した比率"],
@@ -252,7 +251,7 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
               />
             </div>
             <p className="text-[10px] text-black/50 leading-tight">
-              連絡先開示完了率: <strong>{summary.disclosureRate || summary.chatEngagementRate || 100}%</strong>
+              連絡先開示完了率: <strong>{summary.disclosureRate || 100}%</strong>
             </p>
           </div>
 

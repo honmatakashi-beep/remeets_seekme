@@ -1038,22 +1038,6 @@
   transform: translateZ(0);
   animation: aurora-ambient-3 48s ease-in-out infinite alternate;
 }
-/* --- chat input first blink & pulse highlight --- */
-@keyframes chat-pulse-emerald {
-  0%, 100% {
-    border-color: #10b981;
-    box-shadow: 0 0 15px rgba(16, 185, 129, 0.4), inset 0 0 8px rgba(16, 185, 129, 0.1);
-  }
-  50% {
-    border-color: #34d399;
-    box-shadow: 0 0 25px rgba(52, 211, 153, 0.75), 0 0 10px rgba(16, 185, 129, 0.2), inset 0 0 12px rgba(16, 185, 129, 0.25);
-    background-color: rgba(209, 250, 229, 0.5); /* slightly brighter emerald bg */
-  }
-}
-
-.animate-chat-pulse {
-  animation: chat-pulse-emerald 1.8s ease-in-out infinite;
-}
 
 /* ==========================================
    LETTER FORM LINED INPUT STYLES (便箋風 全周枠線＆罫線表示)

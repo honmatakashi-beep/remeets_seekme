@@ -384,7 +384,6 @@ const seedData = async (force: boolean = false) => {
   try { db.pragma("foreign_keys = OFF"); } catch (e) {}
   db.prepare("DELETE FROM contact_messages").run();
   db.prepare("DELETE FROM post_questions").run();
-  db.prepare("DELETE FROM messages").run();
   db.prepare("DELETE FROM failed_attempts").run();
   db.prepare("DELETE FROM deletion_requests").run();
   db.prepare("DELETE FROM payment_transactions").run();
@@ -837,11 +836,11 @@ const seedData = async (force: boolean = false) => {
         tx_id: "tx_pay_1001",
         user_id: userIds[0] || null,
         post_id: null,
-        type: "chat_unlock",
+        type: "letter_open",
         status: "completed",
         ekyc_status: "passed",
         amount: 600,
-        description: "旧友との再会チャット開通（eKYC確認＋600円オーソリ確定）",
+        description: "旧友との手紙開封・連絡先安全開示（eKYC確認＋600円オーソリ確定）",
         stripe_intent: "pi_stripe_1001_live",
         stripe_fee: 22,
         ekyc_cost: 200,
@@ -855,7 +854,7 @@ const seedData = async (force: boolean = false) => {
         tx_id: "tx_pay_1002",
         user_id: userIds[1] || null,
         post_id: null,
-        type: "chat_unlock",
+        type: "letter_open",
         status: "pending",
         ekyc_status: "rejected",
         amount: 600,
@@ -873,7 +872,7 @@ const seedData = async (force: boolean = false) => {
         tx_id: "tx_pay_1003",
         user_id: userIds[2] || null,
         post_id: null,
-        type: "chat_unlock",
+        type: "letter_open",
         status: "pending",
         ekyc_status: "rejected",
         amount: 600,
@@ -891,7 +890,7 @@ const seedData = async (force: boolean = false) => {
         tx_id: "tx_pay_1004",
         user_id: userIds[3] || null,
         post_id: null,
-        type: "chat_unlock",
+        type: "letter_open",
         status: "refunded",
         ekyc_status: "rejected",
         amount: 600,
@@ -1510,11 +1509,11 @@ const evaluateQuizAnswerMatch = async (
   return { isMatch: false, isClose: false };
 };
 
-const detectInappropriateWords = (text: string, isChat = false): string[] => {
+const detectInappropriateWords = (text: string): string[] => {
   if (!text) return [];
   const textNormalized = normalizeJapanese(text);
 
-  let defaultForbiddenWords = [
+  const defaultForbiddenWords = [
     // 1. 脅迫・ストーカー・暴力・誹謗中傷・執着
     "死ね", "殺す", "殺してやる", "殺し", "死ぬまで", "消えろ", "ごみ", "かす", "殺人", "脅迫", "爆破", "自殺", "レイプ",
     "許さない", "特定した", "落とし前", "復讐", "待ち伏せ", "待ちぶせ", "前で待って", "住所教えろ", "逃げられる",
@@ -1526,13 +1525,6 @@ const detectInappropriateWords = (text: string, isChat = false): string[] => {
     "援助交際", "えんじょこうさい", "パパ活", "ママ活", "割り切り", "お小遣い稼ぎ", "大人の関係", 
     "買春", "売春", "性風俗", "痴漢", "高収入バイト", "裏バイト", "闇バイト", "借金返済", "融資します"
   ];
-
-  if (isChat) {
-    defaultForbiddenWords = [
-      "殺す", "死ね", "消えろ", "殺人", "脅迫", "爆破", "自殺", "レイプ", "コロス", "シネ",
-      "特定した", "落とし前", "復讐", "待ち伏せ", "住所教えろ", "バラしてやる", "乗り込んでやる", "晒す", "炎上", "道連れ"
-    ];
-  }
 
   const detected: string[] = [];
 
@@ -1546,24 +1538,22 @@ const detectInappropriateWords = (text: string, isChat = false): string[] => {
   }
 
   // 🛡️ 個人情報（電話番号・メアド・LINE/SNS・URL）の直接記載検知（正規化後の文字列で判定）
-  if (!isChat) {
-    // 携帯・固定・IP・フリーダイヤル（090, 080, 070, 050, 0120, 0800 等）
-    const digitsOnly = textNormalized.replace(/[-\sー－.・]/g, '');
-    if (/0[1-9]0\d{7,8}|0\d{9,10}|0120\d{6}|0800\d{7}|050\d{8}/.test(digitsOnly) || /\d{2,4}-\d{2,4}-\d{4}/.test(text)) {
-      detected.push("直接の電話番号の記載");
-    }
-    // メールアドレス
-    if (/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/i.test(textNormalized) || /@.*?\.(com|jp|net|ne|org)/i.test(textNormalized)) {
-      detected.push("メールアドレスの記載");
-    }
-    // LINE ID, 各種SNSハンドル
-    if (/lineid|ラインid|らいんid|line:|ライン:|らいん:|line\b|ライン\b|らいん\b|インスタ|いんすた|instagram|twitter|ツイッター|ついったー|tiktok|ティックトック|カカオ|かかお|kakao|facebook|フェイスブック|ふぇいすぶっく|fb|discord|ディスコード|でぃすこーど|telegram|テレグラム|てれぐらむ|id:|id：|@[\w_]{3,}/i.test(textNormalized)) {
-      detected.push("LINE/SNS_IDの記載");
-    }
-    // URLリンク
-    if (/https?:\/\/|www\./i.test(textNormalized)) {
-      detected.push("外部リンクURLの記載");
-    }
+  // 携帯・固定・IP・フリーダイヤル（090, 080, 070, 050, 0120, 0800 等）
+  const digitsOnly = textNormalized.replace(/[-\sー－.・]/g, '');
+  if (/0[1-9]0\d{7,8}|0\d{9,10}|0120\d{6}|0800\d{7}|050\d{8}/.test(digitsOnly) || /\d{2,4}-\d{2,4}-\d{4}/.test(text)) {
+    detected.push("直接の電話番号の記載");
+  }
+  // メールアドレス
+  if (/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/i.test(textNormalized) || /@.*?\.(com|jp|net|ne|org)/i.test(textNormalized)) {
+    detected.push("メールアドレスの記載");
+  }
+  // LINE ID, 各種SNSハンドル
+  if (/lineid|ラインid|らいんid|line:|ライン:|らいん:|line\b|ライン\b|らいん\b|インスタ|いんすた|instagram|twitter|ツイッター|ついったー|tiktok|ティックトック|カカオ|かかお|kakao|facebook|フェイスブック|ふぇいすぶっく|fb|discord|ディスコード|でぃすこーど|telegram|テレグラム|てれぐらむ|id:|id：|@[\w_]{3,}/i.test(textNormalized)) {
+    detected.push("LINE/SNS_IDの記載");
+  }
+  // URLリンク
+  if (/https?:\/\/|www\./i.test(textNormalized)) {
+    detected.push("外部リンクURLの記載");
   }
 
   try {
@@ -1587,25 +1577,22 @@ let cachedNgWords: string[] = [];
 let lastNgWordsFetch = 0;
 const NG_WORDS_CACHE_TTL = 60000; // 1 minute
 
-const filterNGWords = (text: string, isChat = false): string => {
+const filterNGWords = (text: string): string => {
   if (!text) return "";
   let filteredText = text;
 
-  // Default patterns for personal info. Skip if isChat is true
-  let patterns: RegExp[] = [];
-  if (!isChat) {
-    patterns = [
-      /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/gi, // Email
-      /\d{2,4}[-ー―]\d{2,4}[-ー―]\d{4}/g, // Phone with hyphens
-      /0[5789]0[-ー―\s]?\d{4}[-ー―\s]?\d{4}/g, // Mobile phone (half/full)
-      /[０-９]{2,4}[-ー―\s]?[０-９]{2,4}[-ー―\s]?[０-９]{4}/g, // Full-width phone
-      /\b\d{10,11}\b/g, // Phone number no hyphens
-      /LINE\s*ID|ライン\s*ID|ID\s*：|ID\s*:/gi, // LINE ID
-      /[都道府県市区町村].*[0-9０-９]{1,4}[-ー―丁目番地号]/g, // Detailed Address
-      /https?:\/\/[\w/:%#\$&\?\(\)~\.=\+\-]+/gi, // URLs
-      /インスタ|instagram|ツイッター|twitter|x\.com|facebook|フェイスブック/gi, // SNS keywords
-    ];
-  }
+  // Default patterns for personal info
+  const patterns: RegExp[] = [
+    /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/gi, // Email
+    /\d{2,4}[-ー―]\d{2,4}[-ー―]\d{4}/g, // Phone with hyphens
+    /0[5789]0[-ー―\s]?\d{4}[-ー―\s]?\d{4}/g, // Mobile phone (half/full)
+    /[０-９]{2,4}[-ー―\s]?[０-９]{2,4}[-ー―\s]?[０-９]{4}/g, // Full-width phone
+    /\b\d{10,11}\b/g, // Phone number no hyphens
+    /LINE\s*ID|ライン\s*ID|ID\s*：|ID\s*:/gi, // LINE ID
+    /[都道府県市区町村].*[0-9０-９]{1,4}[-ー―丁目番地号]/g, // Detailed Address
+    /https?:\/\/[\w/:%#\$&\?\(\)~\.=\+\-]+/gi, // URLs
+    /インスタ|instagram|ツイッター|twitter|x\.com|facebook|フェイスブック/gi, // SNS keywords
+  ];
 
   const dangerPatterns = [
     /死ね|殺す|消えろ/g,
@@ -1760,18 +1747,6 @@ async function startServer() {
         answer TEXT NOT NULL,
         answer_plain TEXT, -- Added for admin view
         FOREIGN KEY (post_id) REFERENCES posts(id)
-      );
-
-      CREATE TABLE IF NOT EXISTS messages (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        post_id INTEGER NOT NULL,
-        sender_id INTEGER NOT NULL,
-        receiver_id INTEGER NOT NULL,
-        content TEXT NOT NULL,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (post_id) REFERENCES posts(id),
-        FOREIGN KEY (sender_id) REFERENCES users(id),
-        FOREIGN KEY (receiver_id) REFERENCES users(id)
       );
 
       CREATE TABLE IF NOT EXISTS notifications (
@@ -1938,7 +1913,7 @@ async function startServer() {
         transaction_id TEXT UNIQUE NOT NULL,
         user_id INTEGER,
         post_id INTEGER,
-        type TEXT DEFAULT 'chat_unlock',
+        type TEXT DEFAULT 'letter_open',
         status TEXT DEFAULT 'completed',
         ekyc_status TEXT DEFAULT 'passed',
         amount INTEGER DEFAULT 600,
@@ -3211,8 +3186,6 @@ async function startServer() {
         try { db.prepare("UPDATE age_verification_documents SET user_id = NULL WHERE user_id = ?").run(userId); } catch (e) {}
         try { db.prepare("UPDATE success_stories SET user_id = NULL WHERE user_id = ?").run(userId); } catch (e) {}
         try { db.prepare("UPDATE contacts SET user_id = NULL WHERE user_id = ?").run(userId); } catch (e) {}
-        try { db.prepare("UPDATE messages SET sender_id = NULL WHERE sender_id = ?").run(userId); } catch (e) {}
-        try { db.prepare("UPDATE messages SET receiver_id = NULL WHERE receiver_id = ?").run(userId); } catch (e) {}
         try { db.prepare("UPDATE reports SET reporter_id = NULL WHERE reporter_id = ?").run(userId); } catch (e) {}
 
         // 3. 退会ユーザーの手紙の個人情報物理消去（差出人本名・連絡先IDの消去）
@@ -3703,8 +3676,7 @@ async function startServer() {
       const posts = db.prepare(`
         SELECT p.id, p.searcher_name, p.searcher_profile, p.target_name, p.target_last_name, p.target_first_name, 
                p.target_hometown, p.target_school, p.era, p.category, p.category as relationship, p.status, p.created_at, p.verified_by,
-               u.username as verifier_username, u.full_name as verifier_full_name, u.nickname as verifier_nickname,
-               (SELECT content FROM messages WHERE post_id = p.id ORDER BY id DESC LIMIT 1) as last_message
+               u.username as verifier_username, u.full_name as verifier_full_name, u.nickname as verifier_nickname
         FROM posts p
         LEFT JOIN users u ON p.verified_by = u.id
         WHERE p.user_id = ?
@@ -3737,8 +3709,7 @@ async function startServer() {
         SELECT p.id, p.searcher_name, p.searcher_full_name, p.searcher_maiden_name, p.searcher_profile, p.target_name, p.target_last_name, p.target_first_name, 
                p.target_hometown, p.target_school, p.era, p.category, p.category as relationship, p.status, p.created_at, p.message,
                p.contact_type, p.contact_id, p.contact_note,
-               u.username as owner_username, u.full_name as owner_full_name, u.maiden_name as owner_maiden_name, u.nickname as owner_nickname, u.contact_type as owner_contact_type, u.contact_id as owner_contact_id, u.email as owner_email,
-               (SELECT content FROM messages WHERE post_id = p.id ORDER BY id DESC LIMIT 1) as last_message
+               u.username as owner_username, u.full_name as owner_full_name, u.maiden_name as owner_maiden_name, u.nickname as owner_nickname, u.contact_type as owner_contact_type, u.contact_id as owner_contact_id, u.email as owner_email
         FROM posts p
         JOIN users u ON p.user_id = u.id
         WHERE p.verified_by = ? AND p.user_id != ?
@@ -4545,7 +4516,7 @@ async function startServer() {
             INSERT INTO payment_transactions (
               transaction_id, user_id, post_id, type, status, ekyc_status, amount, 
               payment_method, description, net_profit, created_at
-            ) VALUES (?, ?, ?, 'chat_unlock', 'completed', 'passed', ?, 'stripe_card', ?, ?, CURRENT_TIMESTAMP)
+            ) VALUES (?, ?, ?, 'letter_open', 'completed', 'passed', ?, 'stripe_card', ?, ?, CURRENT_TIMESTAMP)
           `).run(txId, userId, postId, finalAmount, desc, netProfit);
         }
       })();
@@ -4792,7 +4763,6 @@ async function startServer() {
             );
 
             db.prepare("DELETE FROM post_questions WHERE post_id = ?").run(post.id);
-            db.prepare("DELETE FROM messages WHERE post_id = ?").run(post.id);
             db.prepare("DELETE FROM notifications WHERE link LIKE ?").run(`%/post/${post.id}%`);
             db.prepare("DELETE FROM reports WHERE target_type = 'post' AND target_id = ?").run(post.id);
             db.prepare("DELETE FROM failed_attempts WHERE post_id = ?").run(post.id);
@@ -4859,7 +4829,6 @@ async function startServer() {
                 );
 
                 db.prepare("DELETE FROM post_questions WHERE post_id = ?").run(post.id);
-                db.prepare("DELETE FROM messages WHERE post_id = ?").run(post.id);
                 db.prepare("DELETE FROM notifications WHERE link LIKE ?").run(`%/post/${post.id}%`);
                 db.prepare("DELETE FROM reports WHERE target_type = 'post' AND target_id = ?").run(post.id);
                 db.prepare("DELETE FROM failed_attempts WHERE post_id = ?").run(post.id);
@@ -4909,125 +4878,6 @@ async function startServer() {
     }
   });
 
-  // --- Messaging Routes ---
-
-  app.post("/api/messages", messageLimiter, authenticateToken, (req: any, res) => {
-    const { postId, receiverId, content } = req.body;
-    if (!postId || !receiverId || !content) return res.status(400).json({ error: "Missing fields" });
-
-    try {
-      const post = db.prepare("SELECT * FROM posts WHERE id = ?").get(postId) as any;
-      if (!post) {
-        return res.status(404).json({ error: "該当のお手紙が見つかりません。" });
-      }
-
-      // 🛡️ SEC-017: 送受信者の権限検証（IDOR防御：差出人または回答受取人のみ送受信可能）
-      const isSenderAuthorized = (post.user_id === req.user.id) || (post.verified_by === req.user.id);
-      const isReceiverAuthorized = (post.user_id === Number(receiverId)) || (post.verified_by === Number(receiverId));
-
-      if (!isSenderAuthorized || !isReceiverAuthorized) {
-        return res.status(403).json({ error: "このお手紙に関するメッセージを送受信する権限がありません。" });
-      }
-
-      // Check for inappropriate buy bypass personal info blockers since we are in a close 1-1 chat
-      const detectedForbidden = detectInappropriateWords(content, true);
-      const hasForbidden = detectedForbidden.length > 0;
-
-      const filteredContent = filterNGWords(content, true);
-
-      const stmt = db.prepare("INSERT INTO messages (post_id, sender_id, receiver_id, content) VALUES (?, ?, ?, ?)");
-      const result = stmt.run(postId, req.user.id, receiverId, filteredContent);
-      const messageId = result.lastInsertRowid;
-      
-      // Broadcast real-time message
-      broadcastToUser(receiverId, {
-        type: "message",
-        message: {
-          id: messageId,
-          post_id: postId,
-          sender_id: req.user.id,
-          sender_name: req.user.username,
-          content: filteredContent,
-          created_at: new Date().toISOString()
-        }
-      });
-
-      // Create notification
-      createNotification(
-        receiverId, 
-        "message", 
-        `${req.user.username}さんから新しいメッセージが届きました。`, 
-        `/messages`
-      );
-
-      // If inappropriate words are detected, submit a safe auto-report
-      if (hasForbidden) {
-        db.prepare(`
-          INSERT INTO reports (reporter_id, target_type, target_id, report_type, reason, contact_info, status)
-          VALUES (?, ?, ?, ?, ?, ?, ?)
-        `).run(
-          0, // 0 = System Auto Report
-          'post', // Associate with the Post ID
-          postId,
-          'inappropriate_message',
-          `【システム安全対策・チャット即時自動通報】\nチャットメッセージ（ボトルメールID: #${postId} に紐づく会話）内に脅迫や援助、その他禁止キーワードが検出されました。\n\n検出されたNGワード:\n- ${detectedForbidden.join(", ")}\n\n送信されたメッセージ内容原稿:\n"${content}"\n\n伏字変換後:\n"${filteredContent}"\n\n発信ユーザーID: #${req.user.id} (@${req.user.username})\n受信ユーザーID: #${receiverId}\n※管理者は必要に応じて該当ユーザーのアカウント制限（凍結）や、ボトルメール（ポスト）全体の削除などの措置を検討してください。`,
-          null,
-          'priority'
-        );
-        logAction(null, "CHAT_AUTO_REPORTED", `Sender ID: ${req.user.id} auto-reported due to inappropriate chat word: ${detectedForbidden.join(", ")}`, req.ip);
-      }
-
-      res.json({ success: true });
-    } catch (err) {
-      res.status(500).json({ error: "Failed to send message" });
-    }
-  });
-
-  app.get("/api/messages/:postId", authenticateToken, (req: any, res) => {
-    const { postId } = req.params;
-    const { otherUserId } = req.query;
-    
-    try {
-      const stmt = db.prepare(`
-        SELECT m.*, u.username as sender_name 
-        FROM messages m
-        JOIN users u ON m.sender_id = u.id
-        WHERE post_id = ? 
-        AND ((sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?))
-        ORDER BY created_at ASC
-      `);
-      const messages = stmt.all(postId, req.user.id, otherUserId, otherUserId, req.user.id);
-      res.json(messages);
-    } catch (err) {
-      res.status(500).json({ error: "Failed to fetch messages" });
-    }
-  });
-
-  app.get("/api/conversations", authenticateToken, (req: any, res) => {
-    try {
-      // Get all unique conversations for the user
-      const stmt = db.prepare(`
-        SELECT DISTINCT 
-          m.post_id, 
-          p.target_name,
-          p.target_hometown,
-          p.era,
-          p.category as relationship,
-          CASE WHEN m.sender_id = ? THEN m.receiver_id ELSE m.sender_id END as other_user_id,
-          u.username as other_user_name,
-          u.full_name as other_user_full_name
-        FROM messages m
-        JOIN posts p ON m.post_id = p.id
-        JOIN users u ON (CASE WHEN m.sender_id = ? THEN m.receiver_id ELSE m.sender_id END) = u.id
-        WHERE m.sender_id = ? OR m.receiver_id = ?
-      `);
-      const conversations = stmt.all(req.user.id, req.user.id, req.user.id, req.user.id);
-      res.json(conversations);
-    } catch (err) {
-      res.status(500).json({ error: "Failed to fetch conversations" });
-    }
-  });
-
   // --- Admin Routes ---
 
   app.get("/api/admin/users", authenticateToken, isAdmin, (req, res) => {
@@ -5053,27 +4903,6 @@ async function startServer() {
       res.json(posts);
     } catch (err) {
       res.status(500).json({ error: "Failed to fetch user posts" });
-    }
-  });
-
-  app.get("/api/admin/users/:id/messages", authenticateToken, isAdmin, (req, res) => {
-    try {
-      const userId = req.params.id;
-      const messages = db.prepare(`
-        SELECT m.*, 
-               p.target_name as post_target_name,
-               s.username as sender_username, s.nickname as sender_nickname,
-               r.username as receiver_username, r.nickname as receiver_nickname
-        FROM messages m
-        LEFT JOIN posts p ON m.post_id = p.id
-        LEFT JOIN users s ON m.sender_id = s.id
-        LEFT JOIN users r ON m.receiver_id = r.id
-        WHERE m.sender_id = ? OR m.receiver_id = ?
-        ORDER BY m.created_at DESC
-      `).all(userId, userId);
-      res.json(messages);
-    } catch (err) {
-      res.status(500).json({ error: "Failed to fetch user messages" });
     }
   });
 
@@ -5105,22 +4934,6 @@ async function startServer() {
         posts = db.prepare("SELECT * FROM posts WHERE user_id = ? ORDER BY created_at DESC").all(userId);
       } catch (e) {}
 
-      let messages: any[] = [];
-      try {
-        messages = db.prepare(`
-          SELECT m.*, 
-                 p.target_name as post_target_name,
-                 s.username as sender_username, s.nickname as sender_nickname, s.email as sender_email,
-                 r.username as receiver_username, r.nickname as receiver_nickname, r.email as receiver_email
-          FROM messages m
-          LEFT JOIN posts p ON m.post_id = p.id
-          LEFT JOIN users s ON m.sender_id = s.id
-          LEFT JOIN users r ON m.receiver_id = r.id
-          WHERE m.sender_id = ? OR m.receiver_id = ?
-          ORDER BY m.created_at DESC
-        `).all(userId, userId);
-      } catch (e) {}
-
       let reportsAsTarget: any[] = [];
       try {
         reportsAsTarget = db.prepare("SELECT * FROM reports WHERE (target_type = 'user' AND target_id = ?) OR (target_type = 'post' AND target_id IN (SELECT id FROM posts WHERE user_id = ?)) ORDER BY created_at DESC").all(userId, userId);
@@ -5146,7 +4959,6 @@ async function startServer() {
         actionLogs,
         accessLogs,
         posts,
-        messages,
         reportsAsTarget,
         reportsAsReporter
       });
@@ -5309,38 +5121,6 @@ async function startServer() {
       res.json({ ...post, questions: allQuestions });
     } catch (err) {
       res.status(500).json({ error: "Failed to fetch post details" });
-    }
-  });
-
-  app.get("/api/admin/posts/:id/messages", authenticateToken, isAdmin, (req, res) => {
-    try {
-      const messages = db.prepare(`
-        SELECT m.*, s.username as sender_name, r.username as receiver_name
-        FROM messages m
-        JOIN users s ON m.sender_id = s.id
-        JOIN users r ON m.receiver_id = r.id
-        WHERE m.post_id = ?
-        ORDER BY m.created_at ASC
-      `).all(req.params.id);
-      res.json(messages);
-    } catch (err) {
-      res.status(500).json({ error: "Failed to fetch post messages" });
-    }
-  });
-
-  app.delete("/api/admin/messages/:id", authenticateToken, isAdmin, (req: any, res) => {
-    console.log(`Admin attempting to delete message ID: ${req.params.id}`);
-    try {
-      const result = db.prepare("DELETE FROM messages WHERE id = ?").run(req.params.id);
-      console.log(`Delete result:`, result);
-      if (result.changes === 0) {
-        console.warn(`No message found with ID: ${req.params.id}`);
-      }
-      logAction(req.user.id, "message_deleted", `Message ID: ${req.params.id}`, req.ip);
-      res.json({ success: true });
-    } catch (err) {
-      console.error(`Failed to delete message ${req.params.id}:`, err);
-      res.status(500).json({ error: "Failed to delete message" });
     }
   });
 
@@ -5595,8 +5375,8 @@ async function startServer() {
       } else if (segment === 'active_posts') {
         const row = db.prepare("SELECT COUNT(DISTINCT u.id) as count FROM users u JOIN posts p ON u.id = p.user_id WHERE p.status != 'deleted' AND (u.is_blocked = 0 OR u.is_blocked IS NULL)").get() as any;
         count = row?.count || 0;
-      } else if (segment === 'active_chat') {
-        const row = db.prepare("SELECT COUNT(DISTINCT u.id) as count FROM users u JOIN matches m ON (u.id = m.user_id OR u.id = m.finder_id) WHERE (u.is_blocked = 0 OR u.is_blocked IS NULL)").get() as any;
+      } else if (segment === 'active_disclosure') {
+        const row = db.prepare("SELECT COUNT(DISTINCT u.id) as count FROM users u JOIN posts p ON (u.id = p.user_id OR u.id = p.verified_by) WHERE p.status = 'resolved' AND (u.is_blocked = 0 OR u.is_blocked IS NULL)").get() as any;
         count = row?.count || 0;
       } else {
         const row = db.prepare("SELECT COUNT(*) as count FROM users WHERE (is_blocked = 0 OR is_blocked IS NULL)").get() as any;
@@ -5621,8 +5401,8 @@ async function startServer() {
         query = "SELECT id, email, username FROM users WHERE (age_verified = 0 OR age_verified IS NULL) AND (is_ekyc_verified = 0 OR is_ekyc_verified IS NULL) AND (is_blocked = 0 OR is_blocked IS NULL)";
       } else if (targetSegment === 'active_posts') {
         query = "SELECT DISTINCT u.id, u.email, u.username FROM users u JOIN posts p ON u.id = p.user_id WHERE p.status != 'deleted' AND (u.is_blocked = 0 OR u.is_blocked IS NULL)";
-      } else if (targetSegment === 'active_chat') {
-        query = "SELECT DISTINCT u.id, u.email, u.username FROM users u JOIN matches m ON (u.id = m.user_id OR u.id = m.finder_id) WHERE (u.is_blocked = 0 OR u.is_blocked IS NULL)";
+      } else if (targetSegment === 'active_disclosure') {
+        query = "SELECT DISTINCT u.id, u.email, u.username FROM users u JOIN posts p ON (u.id = p.user_id OR u.id = p.verified_by) WHERE p.status = 'resolved' AND (u.is_blocked = 0 OR u.is_blocked IS NULL)";
       }
 
       const users = db.prepare(query).all() as any[];
@@ -5783,17 +5563,13 @@ async function startServer() {
   app.get("/api/admin/reunion-funnel", authenticateToken, isAdmin, (req, res) => {
     try {
       const totalPosts = db.prepare("SELECT COUNT(*) as count FROM posts WHERE status != 'deleted'").get() as any;
-      const postsWithMessages = db.prepare(`
-        SELECT COUNT(DISTINCT post_id) as count 
-        FROM messages 
-        WHERE post_id IN (SELECT id FROM posts WHERE status != 'deleted')
-      `).get() as any;
+      const verifiedPosts = db.prepare("SELECT COUNT(*) as count FROM posts WHERE status != 'deleted' AND verified_by IS NOT NULL").get() as any;
       const resolvedPosts = db.prepare("SELECT COUNT(*) as count FROM posts WHERE status = 'resolved'").get() as any;
 
       const funnelData = [
         { step: 'ボトル投函', count: totalPosts.count, description: '作成されたボトルの総数' },
-        { step: 'メッセージ発生', count: postsWithMessages.count, description: '少なくとも1通の返信があったボトル' },
-        { step: '再会成功', count: resolvedPosts.count, description: '秘密の質問が正解されたボトル' }
+        { step: 'クイズ正解・照合', count: verifiedPosts.count, description: '秘密の質問が正答照合されたボトル' },
+        { step: '連絡先開示完了', count: resolvedPosts.count, description: '本人確認と安全な引き渡しが完了したボトル' }
       ];
 
       res.json(funnelData);
@@ -5844,12 +5620,8 @@ async function startServer() {
       const resolvedPostsRes = db.prepare("SELECT COUNT(*) as count FROM posts WHERE status = 'resolved'").get() as any;
       const resolvedPosts = resolvedPostsRes?.count || 0;
 
-      const postsWithMessagesRes = db.prepare(`
-        SELECT COUNT(DISTINCT post_id) as count 
-        FROM messages 
-        WHERE post_id IN (SELECT id FROM posts WHERE status != 'deleted')
-      `).get() as any;
-      const postsWithMessages = postsWithMessagesRes?.count || 0;
+      const verifiedPostsRes = db.prepare("SELECT COUNT(*) as count FROM posts WHERE status != 'deleted' AND verified_by IS NOT NULL").get() as any;
+      const verifiedPosts = verifiedPostsRes?.count || 0;
 
       let paidPosts = 0;
       try {
@@ -6014,10 +5786,9 @@ async function startServer() {
         summary: {
           totalPosts,
           resolvedPosts,
-          postsWithMessages,
+          verifiedPosts,
           paidPosts,
           matchingRate: parseFloat(matchingRate),
-          chatEngagementRate: parseFloat(disclosureRate),
           disclosureRate: parseFloat(disclosureRate),
           totalQuizAttempts: totalAttempts,
           successQuizAttempts: successCount,
@@ -6535,7 +6306,7 @@ async function startServer() {
 
   app.get("/api/admin/db-health", authenticateToken, isAdmin, (req, res) => {
     try {
-      const tables = ['users', 'posts', 'messages', 'notifications', 'reports', 'access_logs', 'action_logs', 'search_logs', 'contacts', 'success_stories', 'ng_words'];
+      const tables = ['users', 'posts', 'notifications', 'reports', 'access_logs', 'action_logs', 'search_logs', 'contacts', 'success_stories', 'ng_words'];
       const tableCounts: any = {};
       
       tables.forEach(table => {
@@ -7034,7 +6805,6 @@ async function startServer() {
         }
 
         db.prepare("DELETE FROM post_questions WHERE post_id = ?").run(req.params.id);
-        db.prepare("DELETE FROM messages WHERE post_id = ?").run(req.params.id);
         db.prepare("DELETE FROM notifications WHERE link LIKE ?").run(`%/post/${req.params.id}%`);
         db.prepare("DELETE FROM reports WHERE target_type = 'post' AND target_id = ?").run(req.params.id);
         db.prepare("DELETE FROM failed_attempts WHERE post_id = ?").run(req.params.id);
@@ -7333,7 +7103,7 @@ async function startServer() {
         "高収入で遊べる簡単なバイトとは何ですか？",
         dummyHash1,
         "お小遣い稼ぎ",
-        "タカシくん、簡単に稼げるお小遣い案件の案内です！アダルト要素は少しありますが、スマホ1台で週に10万以上稼げるチャンスです。興味があれば「秘密の質問」をクリアしてチャットで詳細を聞いてくださいね。男性向け・女性向けどちらも対応可能です。",
+        "タカシくん、簡単に稼げるお小遣い案件の案内です！アダルト要素は少しありますが、スマホ1台で週に10万以上稼げるチャンスです。興味があれば「秘密の質問」をクリアして連絡先を受け取って詳細を聞いてくださいね。男性向け・女性向けどちらも対応可能です。",
         null,
         1,
         "【AI自動検知】商業的スパム、違法性の高い勧誘活動（高収入バイト、アダルト詐欺）の意図が検出されました。",
@@ -7342,7 +7112,7 @@ async function startServer() {
       );
       const postId3 = res3.lastInsertRowid as number;
       db.prepare("INSERT INTO post_questions (post_id, question, answer, answer_plain) VALUES (?, ?, ?, ?)")
-        .run(postId3, "連絡先の詳細はどこに記載していますか？", dummyHash2, "個別チャット");
+        .run(postId3, "連絡先の詳細はどこに記載していますか？", dummyHash2, "連絡先開示");
 
       logAction((req as any).user.id, "MODERATION_SAMPLE_SEEDED", "Seeded 3 moderation sample posts with flags", req.ip);
       res.json({ success: true });
@@ -7430,7 +7200,7 @@ async function startServer() {
           const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
           const prompt = `
             あなたは「ReMEETs（再会の海）」のAI安全防衛監査官です。
-            以下のテキスト（投函ボトルメールまたはチャット文章）をリアルタイムで精密評価し、危険度・カテゴリ別リスクを分析してください。
+            以下のテキスト（投函ボトルメールまたは手紙文章）をリアルタイムで精密評価し、危険度・カテゴリ別リスクを分析してください。
 
             【入力テキスト】: "${text}"
 
@@ -7829,7 +7599,7 @@ async function startServer() {
       const completedCount = db.prepare("SELECT COUNT(*) as count FROM payment_transactions WHERE status = 'completed'").get() as any;
       const refundedGross = db.prepare("SELECT COALESCE(SUM(amount), 0) as total FROM payment_transactions WHERE status = 'refunded'").get() as any;
       const refundedCount = db.prepare("SELECT COUNT(*) as count FROM payment_transactions WHERE status = 'refunded'").get() as any;
-      const unlockedCount = db.prepare("SELECT COUNT(*) as count FROM payment_transactions WHERE type = 'chat_unlock' AND status = 'completed'").get() as any;
+      const unlockedCount = db.prepare("SELECT COUNT(*) as count FROM payment_transactions WHERE type = 'letter_open' AND status = 'completed'").get() as any;
       const donationSum = db.prepare("SELECT COALESCE(SUM(amount), 0) as total FROM payment_transactions WHERE type = 'donation' AND status = 'completed'").get() as any;
       
       const ekycPass = db.prepare("SELECT COUNT(*) as count FROM payment_transactions WHERE ekyc_status = 'passed'").get() as any;
@@ -7846,7 +7616,7 @@ async function startServer() {
         completedTransactions: completedCount?.count || 0,
         totalRefunded: refundedGross?.total || 0,
         refundedTransactions: refundedCount?.count || 0,
-        unlockedChatRooms: unlockedCount?.count || 0,
+        unlockedLetters: unlockedCount?.count || 0,
         donationGross: donationSum?.total || 0,
         ekycPassed: ekycPass?.count || 0,
         ekycTotal: ekycTotal?.count || 0,
@@ -8474,7 +8244,7 @@ async function startServer() {
 
 【サービス概要・重要仕様】
 - ReMEETsは想い出のボトルメールを海に流し、想い出クイズの完全一致によってお相手と再会・照合する安心・安全なプラットフォームです。
-- アプリ内でのメッセージ送受信・チャットは行わず、想い出クイズ照合・eKYC本人確認・決済完了後に「連絡先（LINE ID・メールアドレス等）」とお手紙全文を一度だけ安全に開示・引き渡す仕組みです。
+- アプリ内でのメッセージ送受信は行わず、想い出クイズ照合・eKYC本人確認・決済完了後に「連絡先（LINE ID・メールアドレス等）」とお手紙全文を一度だけ安全に開示・引き渡す仕組みです。
 - 誹謗中傷や悪用を防ぐため、AIリアルタイム安全防衛エンジンとeKYC公的本人確認を備えています。
 
 【お問い合わせ情報】

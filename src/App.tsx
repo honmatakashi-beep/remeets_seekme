@@ -5,7 +5,7 @@ import { FaqPage } from './pages/FaqPage';
 import { LoginPage, TermsModal, RegisterPage, QuestionSampleModal, VerifyEmailPage, ForgotPasswordPage, ResetPasswordPage } from './pages/AuthPages';
 import { SearchPage, SuccessStoryModal, ThankAdminModal } from './pages/SearchPage';
 import { AccountPage } from './pages/AccountPage';
-import { EditPostPage, CreatePostPage, ChatComponent, ScrollToTop, ScrollToTopButton, SeoPreviewModal, FlowExplanation, RevealContactModal, SuccessModal, AgeVerificationGate, ComplianceBanner, PostDetailPage, ReportModal } from './pages/PostPages';
+import { EditPostPage, CreatePostPage, ScrollToTop, ScrollToTopButton, SeoPreviewModal, FlowExplanation, RevealContactModal, SuccessModal, AgeVerificationGate, ComplianceBanner, PostDetailPage, ReportModal } from './pages/PostPages';
 import { SuccessStoriesPage, AdminDeploymentGuideBlock, AdminDeploymentGuidePage, ManualContent, LocalInlineGuidePage, ManualPage } from './pages/MiscPages';
 import { AdminManualContent, OldAdminManualContent, RegionalMatrix, FunnelChart, HeatmapChart, AdminLiveSystemMonitor, AdminDashboard, AdminInfoPage, SitemapPage, ContactPage, ConfirmModal, AuroraAmbientGlow, PageViewTracker, PageViewChart } from './pages/AdminDashboard';
 import { WarningMessage, BottleLoader, Navbar, Footer, ProtectedRoute, GoogleSearchResultPreview } from './components/SharedComponents';

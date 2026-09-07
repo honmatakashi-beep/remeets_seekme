@@ -1216,7 +1216,7 @@ export const AdminSystemCenterView: React.FC<AdminSystemCenterViewProps> = ({
                     </div>
                     <div>
                       <span className="text-xs font-bold text-black block">Stripe 決済 (STRIPE_SECRET_KEY)</span>
-                      <span className="text-[10px] text-black/50">チャット開通手数料（600円）決済 & Webhook</span>
+                      <span className="text-[10px] text-black/50">手紙開封・連絡先開示手数料（600円）決済 & Webhook</span>
                     </div>
                   </div>
                   <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold flex items-center gap-1 ${

@@ -504,13 +504,13 @@ export const AccountPage = () => {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const urlTab = searchParams.get('tab');
-  const initialSubTab = (urlTab && ['profile', 'chats', 'sent', 'notifications'].includes(urlTab))
-    ? (urlTab as 'profile' | 'chats' | 'sent' | 'notifications')
+  const initialSubTab = (urlTab && ['profile', 'received', 'sent', 'notifications'].includes(urlTab))
+    ? (urlTab as 'profile' | 'received' | 'sent' | 'notifications')
     : (location.state?.defaultTab || 'profile');
-  const [activeSubTab, setActiveSubTab] = useState<'profile' | 'chats' | 'sent' | 'notifications'>(initialSubTab);
+  const [activeSubTab, setActiveSubTab] = useState<'profile' | 'received' | 'sent' | 'notifications'>(initialSubTab);
   useEffect(() => {
     const tab = searchParams.get('tab');
-    if (tab && ['profile', 'chats', 'sent', 'notifications'].includes(tab)) {
+    if (tab && ['profile', 'received', 'sent', 'notifications'].includes(tab)) {
       setActiveSubTab(tab as any);
     }
   }, [searchParams]);
@@ -557,7 +557,7 @@ export const AccountPage = () => {
     syncUserInfo();
   }, [token]);
 
-  const handleTabChange = (tab: 'profile' | 'chats' | 'sent' | 'notifications') => {
+  const handleTabChange = (tab: 'profile' | 'received' | 'sent' | 'notifications') => {
     setActiveSubTab(tab);
     setSearchParams({ tab });
   };
@@ -769,7 +769,7 @@ export const AccountPage = () => {
           });
         }
       } catch (err) {
-        console.error('Failed to fetch my posts, chats or profile', err);
+        console.error('Failed to fetch my posts, received letters or profile', err);
       } finally {
         setLoading(false);
       }
@@ -1427,9 +1427,9 @@ export const AccountPage = () => {
                 <UserIcon size={13} className="text-teal-600" />
                 <span>マイアカウント管理（タブを選択して表示項目を切り替え）</span>
               </span>
-              <span className="text-[10px] text-teal-800 font-extrabold bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200/60">
+              <span className="text-[10px] text-teal-800 font-extrabold bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-200/60">
                 {activeSubTab === 'profile' && '🛡️ 本人確認・応援 表示中'}
-                {activeSubTab === 'chats' && '💬 出会えた人 一覧表示中'}
+                {activeSubTab === 'received' && '💌 届いたお手紙 一覧表示中'}
                 {activeSubTab === 'sent' && '🍾 流したボトル 一覧表示中'}
                 {activeSubTab === 'notifications' && '🔔 通知・履歴 表示中'}
               </span>
@@ -1458,27 +1458,27 @@ export const AccountPage = () => {
 
               <button
                 type="button"
-                onClick={() => handleTabChange('chats')}
+                onClick={() => handleTabChange('received')}
                 className={`py-2.5 sm:py-3 px-2 sm:px-4 text-[11px] sm:text-xs md:text-sm font-bold transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 sm:gap-2 rounded-xl relative ${
-                  activeSubTab === 'chats'
+                  activeSubTab === 'received'
                     ? 'bg-white text-slate-900 shadow-md ring-1 ring-slate-900/10 font-serif'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-white/60 font-sans'
                 }`}
               >
                 <span className={`p-1 sm:p-1.5 rounded-lg transition-colors shrink-0 ${
-                  activeSubTab === 'chats' ? 'bg-emerald-600 text-white shadow-2xs' : 'bg-slate-300/60 text-slate-500'
+                  activeSubTab === 'received' ? 'bg-emerald-600 text-white shadow-2xs' : 'bg-slate-300/60 text-slate-500'
                 }`}>
-                  <MessageSquare size={13} />
+                  <Mail size={13} />
                 </span>
-                <span className="truncate">出会えた人</span>
+                <span className="truncate">届いた手紙</span>
                 <span className={`text-[9.5px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full font-bold transition-all shrink-0 ${
                   connectedPosts.length > 0
-                    ? (activeSubTab === 'chats' ? 'bg-emerald-600 text-white shadow-2xs' : 'bg-emerald-100 text-emerald-800 border border-emerald-300')
-                    : (activeSubTab === 'chats' ? 'bg-slate-200 text-slate-700 font-normal' : 'bg-slate-300/80 text-slate-600 font-normal')
+                    ? (activeSubTab === 'received' ? 'bg-emerald-600 text-white shadow-2xs' : 'bg-emerald-100 text-emerald-800 border border-emerald-300')
+                    : (activeSubTab === 'received' ? 'bg-slate-200 text-slate-700 font-normal' : 'bg-slate-300/80 text-slate-600 font-normal')
                 }`}>
                   {connectedPosts.length}通
                 </span>
-                {activeSubTab === 'chats' && (
+                {activeSubTab === 'received' && (
                   <span className="absolute -top-1 -right-1 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-emerald-500 border-2 border-white rounded-full shadow-2xs animate-pulse" />
                 )}
               </button>
@@ -1543,12 +1543,12 @@ export const AccountPage = () => {
           </div>
 
           <div className="py-2">
-            {activeSubTab === 'chats' && (
+            {activeSubTab === 'received' && (
               <div className="space-y-6 animate-fade-in text-black">
                 {/* Section 1: Connected Bottle Messages */}
                 <div className="flex items-center justify-between border-b border-brand-border pb-3">
                   <h2 className="text-lg font-serif font-bold text-brand-dark tracking-widest flex items-center gap-2">
-                    <span>開封されたお手紙（出会えた人一覧）</span>
+                    <span>開封されたお手紙（届いた手紙一覧）</span>
                     {connectedPosts.length > 0 && (
                       <span className="text-xs bg-emerald-500/10 text-emerald-700 px-2.5 py-0.5 rounded-full font-bold font-sans">
                         {connectedPosts.length}
@@ -1559,7 +1559,7 @@ export const AccountPage = () => {
                 
                 {connectedPosts.length === 0 ? (
                   <div className="text-center py-10 border border-dashed border-brand-border rounded-3xl p-6 bg-white/50 space-y-2">
-                    <p className="text-xs font-serif text-brand-dark/50">あなたが出会えた人（手紙を開封・連絡先を開示したお相手）はまだいません。</p>
+                    <p className="text-xs font-serif text-brand-dark/50">あなた宛てに届き、開封したお手紙はまだありません。</p>
                     <p className="text-[11px] text-brand-dark/40 font-sans leading-relaxed">
                       ボトル検索から思い出のキーワードやお名前を入力し、懐かしい人からのメッセージを見つけましょう。
                     </p>
@@ -1606,7 +1606,7 @@ export const AccountPage = () => {
                             </p>
                           </div>
 
-                          {/* 開示された連絡先（SNS ID）の常時表示 */}
+                          {/* 開示された連絡先（LINE ID等）の常時表示 */}
                           {(post.contact_id || post.contact_type || post.unlock_contact_info) && (
                             <div className="mt-2 p-3.5 bg-emerald-50/90 border border-emerald-200/90 rounded-2xl space-y-1.5 font-sans">
                               <div className="flex items-center justify-between gap-2 flex-wrap">
@@ -1636,13 +1636,6 @@ export const AccountPage = () => {
                                   メモ: {post.contact_note || post.unlock_message}
                                 </p>
                               )}
-                            </div>
-                          )}
-                          
-                          {post.last_message && (
-                            <div className="mt-2 text-[11px] bg-slate-50 border border-slate-100 rounded-xl p-2.5 font-sans text-brand-dark/70 flex items-start gap-1.5">
-                              <span className="font-bold text-[9px] uppercase tracking-widest bg-slate-200 px-1.5 py-0.5 rounded text-neutral-500 shrink-0 mt-0.5">最新メッセージ</span>
-                              <span className="truncate block font-medium">{post.last_message}</span>
                             </div>
                           )}
                         </div>
@@ -1828,7 +1821,7 @@ export const AccountPage = () => {
                                 </strong>
                               </div>
                               <div className="p-2.5 bg-white rounded-xl border border-zinc-150 flex flex-col gap-1 shadow-sm">
-                                <span className="text-[9px] text-zinc-400 font-bold block uppercase tracking-wider">🔐 秘密の質問アクセス</span>
+                                <span className="text-[9px] text-zinc-400 font-bold block uppercase tracking-wider">🔐 思い出クイズアクセス</span>
                                 <strong className="text-xs text-zinc-800 block">
                                   {Math.max(1, (post.id * 3) % 9)} <span className="text-[9px] font-normal text-zinc-400">回の解決試行</span>
                                 </strong>
@@ -2007,7 +2000,7 @@ export const AccountPage = () => {
                       let colorClasses = "bg-rose-50 text-rose-700 border-rose-200/50";
                       let actionText = "詳細を見る";
 
-                      if (n.type === "message" || n.type === "chat") {
+                      if (n.type === "reunion_reveal" || n.type === "contact_opened" || n.type === "message") {
                         IconComponent = MessageCircle;
                         badgeText = "想い出照合・開通";
                         colorClasses = "bg-emerald-50 text-emerald-800 border-emerald-200/40";

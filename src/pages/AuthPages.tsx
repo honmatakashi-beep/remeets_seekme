@@ -322,7 +322,7 @@ export const RegisterPage = () => {
             <h3 className="text-xs font-bold text-brand-primary tracking-wider uppercase">お名前（本名・フルネーム）</h3>
             <p className="text-[11px] text-[#ea0736] font-bold leading-relaxed">
               ※安全設計、なりすまし防止のため、本名はお名前（フルネーム）として一度登録すると変更できませんので正しく入力してください。
-              本名は公開されず、あなただと確信して「秘密の質問」に完全正解したお相手のみに、最終確認として公開されます。
+              本名は公開されず、あなただと確信して「思い出クイズ」に完全正解したお相手のみに、最終確認として公開されます。
             </p>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
@@ -564,7 +564,7 @@ export const QuestionSampleModal = ({ isOpen, onClose, onSelect }: { isOpen: boo
               <BookOpen size={24} />
             </div>
             <div>
-              <h3 className="font-bold text-black text-xl">秘密の質問の文例・サンプル</h3>
+              <h3 className="font-bold text-black text-xl">思い出クイズの出題例・サンプル</h3>
               <p className="text-xs text-black/60">二人だけが知る思い出を選んでください</p>
             </div>
           </div>

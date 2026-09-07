@@ -632,7 +632,7 @@ export const GoogleSearchResultPreview = ({ targetName, era, location, searcherN
               <span>🔒</span> プライバシー保護機能
             </p>
             <p className="text-emerald-800/90 leading-relaxed text-[10.5px]">
-              手紙の本文全文・秘密の質問・連絡先はGoogleには載りません。正解者のみに安全に開示されます。
+              手紙の本文全文・思い出クイズ・連絡先はGoogleには載りません。正解者のみに安全に開示されます。
             </p>
           </div>
         </div>

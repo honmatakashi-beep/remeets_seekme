@@ -53,7 +53,7 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
               ReMEETs ご利用ガイド
             </h1>
             <p className="text-xs md:text-sm text-brand-dark/60 font-sans leading-relaxed mt-1">
-              手紙の投函から奇跡の発見、秘密の質問での本人認証、SNS連絡先の安全な開示までのご利用手順をご案内します。
+              手紙の投函から奇跡の発見、思い出クイズでの本人照合、連絡先の安全な受け取りまでのご利用手順をご案内します。
             </p>
           </div>
         </div>
@@ -156,10 +156,10 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
                 </span>
               </div>
               <h3 className="text-lg md:text-xl font-bold font-serif text-slate-900">
-                想いと「秘密の質問」を込め、ボトルを海へ流す
+                想いと「思い出クイズ」を込め、ボトルを海へ流す
               </h3>
               <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans">
-                探したいお相手の名前、忘れられない思い出の地、そして<strong className="text-slate-900">「二人だけしか答えを知らない秘密の質問」</strong>をボトルに詰めて投稿（無料）。
+                探したいお相手の名前、忘れられない思い出の地、そして<strong className="text-slate-900">「二人だけしか答えを知らない思い出クイズ」</strong>をボトルに詰めて投稿（無料）。
                 手紙はWebの大海原へと解き放たれ、静かにお相手を待ち続けます。
               </p>
 
@@ -255,7 +255,7 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
             <div className="absolute top-0 right-0 bottom-0 w-1/2 sm:w-5/12 md:w-1/2 pointer-events-none overflow-hidden select-none">
               <img 
                 src={guideScene03Soft} 
-                alt="秘密の質問に答えるイラスト" 
+                alt="思い出クイズに答えるイラスト" 
                 className="w-full h-full object-cover object-right group-hover:scale-105 transition-transform duration-700 ease-out"
               />
               <div className="absolute inset-0 bg-gradient-to-r from-white via-white/70 via-20% to-transparent" />
@@ -268,14 +268,14 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
                   Scene 03
                 </span>
                 <span className="text-[10px] font-bold text-amber-900 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-full">
-                  費用: 0円（秘密の解読）
+                  費用: 0円（クイズ回答）
                 </span>
               </div>
               <h3 className="text-lg md:text-xl font-bold font-serif text-slate-900">
-                ふたりだけの「秘密の質問」に答えて心がつながる
+                ふたりだけの「思い出クイズ」に答えて心がつながる
               </h3>
               <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans">
-                手紙を開いたお相手は、あなたが出題した「秘密の質問」に回答します（無料）。<br />
+                手紙を開いたお相手は、あなたが出題した「思い出クイズ」に回答します（無料）。<br />
                 第三者やサクラには絶対に答えられない正解を入力することで、時代を超えて「本人であること」が確証されます。
               </p>
 
@@ -326,15 +326,15 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
                   Scene 04
                 </span>
                 <span className="text-[10px] font-bold text-indigo-900 bg-indigo-50 border border-indigo-200 px-2.5 py-0.5 rounded-full">
-                  手紙開封・SNS開示: 600円（買い切り / 任意eKYC対応）
+                  手紙開封・連絡先受取: 600円（公的本人確認は+600円）
                 </span>
               </div>
               <h3 className="text-lg md:text-xl font-bold font-serif text-slate-900">
-                手紙を開封し、差出人のSNS・連絡先を開示！
+                手紙を開いて、差出人の連絡先を受け取る！
               </h3>
               <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans">
-                秘密の質問に正解後、手紙の開封・SNS開示手続き（600円）を実施。<br />
-                差出人が設定した<strong className="text-indigo-900">SNS ID（LINE ID, Instagram等）や連絡先</strong>が画面上に開示されます。IDをコピーして直接メッセージを送ることで、確実に再会を果たせます！（※公的本人確認eKYCは任意オプション+600円）
+                思い出クイズに正解後、手紙の開封・連絡先受取手続き（600円）を実施。<br />
+                差出人が設定した<strong className="text-indigo-900">連絡先（LINE ID, メールアドレス等）</strong>が画面上に開示されます。直接メッセージを送ることで、確実に再会を果たせます！（※公的本人確認は任意オプション+600円）
               </p>
 
               <div className="pt-1">
@@ -380,7 +380,7 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
 
         <div className="space-y-4 text-xs md:text-sm text-slate-800 font-sans leading-relaxed">
           <p className="bg-white/90 p-4 md:p-5 rounded-2xl border border-amber-200/80 text-xs md:text-sm font-medium text-slate-900 shadow-2xs leading-relaxed">
-            「ReMEETsは、大切な旧友や恩師と『もう一度つながる』ための特別な場所です。登録・手紙の投函・検索・秘密の質問回答はすべて<strong className="text-amber-900 font-bold">無料（0円）</strong>でご利用いただけます。不適切な利用や嫌がらせを防止するため、ソーシャル認証による基本年齢確認や自動モデレーションを導入しています。秘密の質問正解後の開示手続き（600円）により、差出人のSNS ID（LINE ID等）が開示され、直接連絡を取ることで安心かつスムーズに再会を果たせます。」
+            「ReMEETsは、大切な旧友や恩師と『もう一度つながる』ための特別な場所です。登録・手紙の投函・検索・思い出クイズ回答はすべて<strong className="text-amber-900 font-bold">無料（0円）</strong>でご利用いただけます。不適切な利用や嫌がらせを防止するため、ソーシャル認証による基本年齢確認や自動モデレーションを導入しています。思い出クイズ正解後の連絡先受取手続き（600円）により、差出人の連絡先が開示され、直接連絡を取ることで安心かつスムーズに再会を果たせます。」
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
@@ -390,17 +390,17 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
                 基本機能は完全無料（0円）
               </span>
               <p className="text-[11px] text-slate-600 leading-snug">
-                手紙の投函、エゴサーチ検索、秘密の質問への回答まで費用は一切発生しません。
+                手紙の投函、エゴサーチ検索、思い出クイズへの回答まで費用は一切発生しません。
               </p>
             </div>
 
             <div className="p-3.5 bg-white rounded-xl border border-slate-200/80 space-y-1 shadow-2xs">
               <span className="font-bold text-amber-900 text-xs font-serif flex items-center gap-1">
                 <CheckCircle2 size={14} className="text-amber-600 shrink-0" />
-                秘密の質問で確実な本人照合
+                思い出クイズで確実な本人照合
               </span>
               <p className="text-[11px] text-slate-600 leading-snug">
-                ふたりだけの思い出の質問に正解したお相手にのみSNS連絡先が開示される安全設計。
+                ふたりだけの思い出のクイズに正解したお相手にのみ連絡先が開示される安全設計。
               </p>
             </div>
 
@@ -436,10 +436,10 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
           <section className="space-y-3">
             <h3 className="text-base md:text-lg font-bold font-serif text-slate-900 flex items-center gap-3 border-b border-slate-100 pb-2">
               <span className="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-sans shrink-0">01</span>
-              記憶をつづる（ボトルの投函）
+              手紙を書く（ボトルメールの投函）
             </h3>
             <p className="text-xs md:text-sm text-slate-700 leading-relaxed">
-              トップページの「手紙をつづる」または「ボトルメールを流す」ボタンから、探している相手へのメッセージを作成できます。あなたの想いが相手に届くよう、以下の項目を丁寧に入力しましょう。
+              トップページの「ボトルメールを流す」ボタンから、探している相手へのメッセージを作成できます。あなたの想いが相手に届くよう、以下の項目を丁寧に入力しましょう。
             </p>
             <div className="bg-slate-50 p-4 md:p-5 rounded-2xl border border-slate-200/80 space-y-2">
               <p className="text-xs font-bold text-slate-900">入力項目の詳細：</p>
@@ -448,9 +448,9 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
                 <li><strong>出身地・ゆかりの地：</strong> 相手の出身地や、二人が出会った場所などを入力します。公開されるのは「都道府県」までとなりますが、市区町村まで入力することで検索精度が向上します。</li>
                 <li><strong>交流のあった年代：</strong> 相手と過ごした時代（例：1990年代）を選択します。</li>
                 <li><strong>あなたの表示名：</strong> 当時のあだ名や、二人の間だけで通じる呼び名を使用してください。</li>
-                <li><strong>秘密の質問：</strong> 本人確認のための重要なステップです。<strong>秘密の質問（2問）</strong>を設定してください。第三者が推測しにくい二人の記憶に基づく具体的なエピソードを質問にすることを強く推奨します。</li>
-                <li><strong>開示用SNS・連絡先：</strong> 質問に正解し、開示手続きを行ったお相手だけに公開されるSNS ID（LINE ID、Instagram、メールアドレスなど）を設定します。手紙の本文欄には直接書き込まず、こちらの専用欄にご入力ください。</li>
-                <li><strong>メッセージ：</strong> 相手が質問に正解した後に表示される手紙本文です。</li>
+                <li><strong>思い出クイズ：</strong> 本人確認のための重要なステップです。<strong>思い出クイズ（2問）</strong>を設定してください。第三者が推測しにくい二人の記憶に基づく具体的なエピソードを質問にすることを強く推奨します。</li>
+                <li><strong>開示用連絡先（LINE等）：</strong> クイズに正解し、手続きを行ったお相手だけに安全に公開される連絡先（LINE ID、メールアドレス等）を設定します。手紙の本文欄には直接書き込まず、こちらの専用欄にご入力ください。</li>
+                <li><strong>メッセージ：</strong> 相手が思い出クイズに正解した後に表示される手紙本文です。</li>
                 <li><strong>AIによる検閲：</strong> 投稿内容はAIによって自動的に解析され、不適切な表現や個人情報の過度な露出がある場合は投稿が制限されることがあります。</li>
               </ul>
             </div>
@@ -490,18 +490,18 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
           <section className="space-y-3">
             <h3 className="text-base md:text-lg font-bold font-serif text-slate-900 flex items-center gap-3 border-b border-slate-100 pb-2">
               <span className="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-sans shrink-0">03</span>
-              再会への一歩（本人確認とSNS連絡先の開示）
+              再会への一歩（本人確認と連絡先の受け取り）
             </h3>
             <p className="text-xs md:text-sm text-slate-700 leading-relaxed">
-              自分宛てと思われるボトルメールを見つけたら、詳細を確認します。メッセージ本文と連絡先を開示するには、差出人が設定した「秘密の質問」に答える必要があります。
+              自分宛てと思われる手紙を見つけたら、詳細を確認します。メッセージ本文と連絡先を開示するには、差出人が設定した「思い出クイズ」に答える必要があります。
             </p>
             <div className="bg-amber-50/60 p-4 md:p-5 rounded-2xl border border-amber-200/80 space-y-2">
               <p className="text-xs font-bold text-amber-900">再会のプロセス：</p>
               <ol className="list-decimal pl-5 space-y-1.5 text-xs text-amber-800 leading-relaxed">
-                <li><strong>質問に回答：</strong> 秘密の質問に正解すると、ロックが解除されます。</li>
-                <li><strong>手紙の開封と開示手続き：</strong> 差出人からの手紙本文を確認し、開示手続き（600円 / eKYC認証付き1,200円）を行います。</li>
-                <li><strong>SNS連絡先の開示：</strong> 差出人が設定したSNS ID（LINE ID、Instagram等）および連絡先が表示されます。</li>
-                <li><strong>直接連絡・再会成功：</strong> 開示されたSNS IDをコピーし、差出人へ直接メッセージをお送りいただくことで再会が果たせます（サイト内のクローズドチャットを介さない安全な直接接続モデルです）。</li>
+                <li><strong>クイズに回答：</strong> 思い出クイズに正解すると、ロックが解除されます。</li>
+                <li><strong>手紙の開封と受け取り手続き：</strong> 差出人からの手紙本文を確認し、手続き（600円 / 公的本人確認付き1,200円）を行います。</li>
+                <li><strong>連絡先（LINE等）の開示：</strong> 差出人が設定した連絡先（LINE ID、メールアドレス等）が表示されます。</li>
+                <li><strong>直接連絡・再会成功：</strong> 開示された連絡先へ直接メッセージをお送りいただくことで再会が果たせます。</li>
               </ol>
             </div>
           </section>

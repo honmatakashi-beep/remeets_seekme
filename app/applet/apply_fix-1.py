@@ -51,7 +51,7 @@ new_code = """      <AnimatePresence>
                       </li>
                       <li className="flex items-start gap-1.5">
                         <span className="text-teal-600 shrink-0">✔</span>
-                        <span><strong>チャット制限の解除</strong>：将来お相手とやり取りを開始する際も、二重署名やeKYCを繰り返す必要なく、非常にスムーズに開通できます。</span>
+                        <span><strong>連絡先開示制限の解除</strong>：将来お相手とやり取りを開始する際も、二重署名やeKYCを繰り返す必要なく、非常にスムーズに開通できます。</span>
                       </li>
                     </ul>
                   </div>
@@ -539,7 +539,7 @@ const PrivacyContent = () => (
       <p className="leading-relaxed text-xs text-black">収集した個人情報は、以下の目的でのみ利用します。</p>
       <ul className="list-disc pl-5 mt-3 space-y-1.5 leading-relaxed text-xs text-black">
         <li>本人確認・年齢確認（18歳未満の利用防止）および多重アカウント（サクラ）の防止</li>
-        <li>「想い出ボトル」のマッチング通知、再開チャット機能の提供</li>
+        <li>「想い出ボトル」のマッチング通知、連絡先開示機能の提供</li>
         <li>重大な規約違反者、不審なスパムアクセスに対するセキュリティ対策およびアクセス制限</li>
       </ul>
     </section>
@@ -637,7 +637,7 @@ const CompanyPage = () => (
         <div className="grid grid-cols-1 md:grid-cols-3 py-4 gap-2">
           <span className="font-bold text-neutral-700">商品の販売価格</span>
           <span className="md:col-span-2 text-neutral-900 font-medium">
-            お相手とのチャット開通手数料：1部屋 600円（税込 / 買い切り型）<br />
+            手紙開封・連絡先開示手数料：1通 600円（税込 / 買い切り型）<br />
             ※アカウント作成、思い出ボトルの投函、公的本人確認（eKYC）手続き自体の登録費用は完全無料（0円）です。
           </span>
         </div>
@@ -647,11 +647,11 @@ const CompanyPage = () => (
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 py-4 gap-2">
           <span className="font-bold text-neutral-700">商品引渡し時期</span>
-          <span className="md:col-span-2 text-neutral-900 font-medium">クレジットカードによる仮売上確保および公的本人確認（eKYC）審査の合格をもって、即時システム上でチャットルームが有効化（解凍）されます。</span>
+          <span className="md:col-span-2 text-neutral-900 font-medium">クレジットカードによる仮売上確保および公的本人確認（eKYC）審査の合格をもって、即時システム上で手紙全文・連絡先が有効化（開示）されます。</span>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 py-4 gap-2">
           <span className="font-bold text-neutral-700">返品・キャンセルについて</span>
-          <span className="md:col-span-2 text-neutral-900 font-medium">本人確認（eKYC）に不合格となった場合、または再会一致フローがキャンセルとなった場合は、Stripeシステムにより即座に「仮売上」が自動取り消し（全額返金）されるため、実質のご負担はありません。成立確定・チャット開通後の任意の退会および不成立以外での返金には応じかねます。</span>
+          <span className="md:col-span-2 text-neutral-900 font-medium">本人確認（eKYC）に不合格となった場合、または再会一致フローがキャンセルとなった場合は、Stripeシステムにより即座に「仮売上」が自動取り消し（全額返金）されるため、実質のご負担はありません。成立確定・手紙開封後の任意の退会および不成立以外での返金には応じかねます。</span>
         </div>
       </div>
     </div>
@@ -726,7 +726,7 @@ const PricingPage = () => (
           </div>
         </div>
 
-        {/* Right Column: Chat Opening (600 Yen) */}
+        {/* Right Column: Letter Opening (600 Yen) */}
         <div className="p-6 bg-rose-50/10 border-2 border-rose-300 rounded-3xl space-y-6 flex flex-col justify-between overflow-hidden shadow-sm relative">
           <div className="absolute top-0 right-0 bg-rose-500 text-white text-[10px] px-4 py-1.5 rounded-bl-2xl font-bold font-sans tracking-wide">
             お相手との再会一致時のみ
@@ -737,15 +737,15 @@ const PricingPage = () => (
               <Zap size={12} className="text-rose-500" />
               <span>思い出のボトル解凍</span>
             </div>
-            <h2 className="text-xl font-serif font-bold text-rose-950">お相手とのチャット開通</h2>
+            <h2 className="text-xl font-serif font-bold text-rose-950">手紙開封・連絡先開示</h2>
             <div className="flex items-baseline gap-1 border-b border-rose-100 pb-3">
               <span className="text-5xl font-bold font-serif text-rose-600">600</span>
               <span className="text-base font-bold text-rose-800 font-sans">円</span>
-              <span className="text-[10px] text-neutral-500 font-sans font-normal ml-2">（1部屋の開通あたり / 税込 / 月額費用なし）</span>
+              <span className="text-[10px] text-neutral-500 font-sans font-normal ml-2">（1通の開封あたり / 税込 / 月額費用なし）</span>
             </div>
 
             <p className="text-xs text-neutral-800 leading-relaxed font-sans font-medium">
-              思い出のクイズに完全一致（お互いが正答）し、実際にメッセージを送り合える<strong>「チャットルーム（対話部屋）」を開通する瞬間のみ、一度だけお支払いいただく</strong>手数料です。
+              思い出のクイズに完全一致（お互いが正答）し、お互いの<strong>連絡先（LINE ID等）とお手紙全文を開示する瞬間のみ、一度だけお支払いいただく</strong>手数料です。
             </p>
 
             <div className="space-y-3 bg-white p-3 rounded-2xl border border-rose-100 text-xs">
@@ -754,7 +754,7 @@ const PricingPage = () => (
                 <span>月額料金は完全0円（買い切り型）</span>
               </div>
               <p className="text-[10px] text-neutral-600 leading-normal pl-5">
-                開通したルーム内でのメッセージ往復、テキスト送信、再会の日程調整に、その後の追加料金は一切発生しません。
+                開通した連絡先を通じての直接のやり取りに、その後の追加料金は一切発生しません。
               </p>
               
               <div className="font-bold text-rose-900 flex items-center gap-1.5">
@@ -768,7 +768,7 @@ const PricingPage = () => (
           </div>
 
           <div className="text-[10px] text-rose-800/90 bg-rose-500/5 p-2.5 rounded-xl border border-rose-100 mt-4 leading-relaxed font-sans">
-            ※チャット開通（ボトル解凍）に伴う手数料決済には、Stripeによる安全なクレジットカード決済がご利用いただけます。
+            ※手紙開封（ボトル解凍）に伴う手数料決済には、Stripeによる安全なクレジットカード決済がご利用いただけます。
           </div>
         </div>
 
@@ -851,7 +851,7 @@ const PricingPage = () => (
             <span className="text-neutral-400 text-[11px] font-bold block">1. eKYC身元検証実費</span>
             <span className="text-sm font-bold font-mono text-neutral-800">約 150 〜 250 円</span>
             <p className="text-[10px] text-neutral-500 leading-normal">
-              専門eKYC機関によるAI画像認識および目視ダブル監査 of API従量料金（チャット開通時のみ発生）
+              専門eKYC機関によるAI画像認識および目視ダブル監査 of API従量料金（手紙開封時のみ発生）
             </p>
           </div>
           <div className="bg-white p-4 rounded-2xl border border-zinc-200 text-center space-y-1 shadow-xs">
@@ -901,7 +901,7 @@ const PricingPage = () => (
             <div>
               <span className="font-bold text-rose-950 block">Q. 支払い後の追加費用や自動更新はありますか？</span>
               <span className="text-neutral-600 mt-0.5 block leading-relaxed">
-                いいえ、一切ありません。月額の定額費用などは一切なく、お相手とのチャットルームを開通した時の1回きりの買い切り手数料（600円）のみです。
+                いいえ、一切ありません。月額の定額費用などは一切なく、お相手への連絡先を開示した時の1回きりの買い切り手数料（600円）のみです。
               </span>
             </div>
             <div>

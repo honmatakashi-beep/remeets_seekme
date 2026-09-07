@@ -27,7 +27,6 @@ import { BottleLoader, WarningMessage, Navbar, BackToHomeButton } from '../compo
 import { SupportModal } from '../components/SupportModal';
 import { ManualGeneralSection, ManualMainSection, ManualModerationSection, ManualSystemSection, ManualSecuritySection } from '../components/AdminManualSections';
 import { GoogleEvaluationMemoTab } from '../components/GoogleEvaluationMemoTab';
-import { ChatComponent } from './PostPages';
 import { AdminLiveAlertMonitor } from '../components/AdminLiveAlertMonitor';
 import { AdminRbacView } from '../components/AdminRbacView';
 import { AdminDesignSystem } from '../components/AdminDesignSystem';
@@ -3071,10 +3070,10 @@ export const AdminDashboard = () => {
           summary: {
             totalPosts: 0,
             resolvedPosts: 0,
-            postsWithMessages: 0,
+            verifiedPosts: 0,
             paidPosts: 0,
             matchingRate: 0,
-            chatEngagementRate: 0,
+            disclosureRate: 100,
             totalQuizAttempts: 0,
             successQuizAttempts: 0,
             failedQuizAttempts: 0,

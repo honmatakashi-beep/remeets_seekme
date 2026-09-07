@@ -134,7 +134,7 @@ export const ConceptStoryModal: React.FC<ConceptStoryModalProps> = ({ isOpen, on
                   </p>
 
                   <p className="border-b border-dashed border-[#7A5B26]/25 pb-1.5 indent-4 sm:indent-6 font-semibold font-letter-mincho">
-                    導かれるようにこの波打ち際にたどり着いたあの人は、あなたからのメッセージと、設定された「秘密の質問」を目にします。
+                    導かれるようにこの波打ち際にたどり着いたあの人は、あなたからのメッセージと、設定された「思い出クイズ」を目にします。
                   </p>
 
                   <p className="border-b border-dashed border-[#7A5B26]/25 pb-1.5 indent-4 sm:indent-6 font-semibold font-letter-mincho">

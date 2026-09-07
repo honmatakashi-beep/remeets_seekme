@@ -1389,7 +1389,7 @@ export const AdminPaymentManagementBlock: React.FC = () => {
                         <CheckCircle2 size={13} className="text-emerald-600" /> ① 審査合格 (承認完了)
                       </span>
                       <span className="text-[10px] text-emerald-800 mt-0.5 block">
-                        売上確定・チャット開通（純粗利 +366円）
+                        売上確定・手紙開封（純粗利 +366円）
                       </span>
                     </button>
 
