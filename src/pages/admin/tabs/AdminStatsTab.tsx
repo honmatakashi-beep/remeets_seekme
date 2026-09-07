@@ -34,7 +34,7 @@ export const AdminStatsTab = (props: any) => {
     revenueByPlan = [],
     conversionFunnel = [],
     regionalStats = [],
-    retentionStats = {},
+    retentionStats = [],
     reports = [],
     contacts = [],
     ageVerificationLogs = [],
@@ -45,8 +45,8 @@ export const AdminStatsTab = (props: any) => {
     handleViewPost = () => {},
     setActiveTab = () => {},
     reunionFunnel = [],
-    reunionDurationStats = {},
-    pageViewStats = {}
+    reunionDurationStats = [],
+    pageViewStats = []
   } = props;
 
   if (!stats) return null;
@@ -555,7 +555,7 @@ export const AdminStatsTab = (props: any) => {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
                       <div className="h-72 w-full md:col-span-2">
                         <ResponsiveContainer width="100%" height="100%">
-                          <BarChart data={reunionDurationStats}>
+                          <BarChart data={Array.isArray(reunionDurationStats) ? reunionDurationStats : []}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                             <XAxis 
                               dataKey="duration" 
@@ -654,7 +654,7 @@ export const AdminStatsTab = (props: any) => {
                       </h3>
                       <span className="text-[10px] font-bold text-slate-500 font-mono">PAGE VIEWS</span>
                     </div>
-                    <PageViewChart data={pageViewStats} />
+                    <PageViewChart data={Array.isArray(pageViewStats) ? pageViewStats : []} />
                   </div>
 
                   {/* Device Distribution */}
@@ -670,7 +670,7 @@ export const AdminStatsTab = (props: any) => {
                       <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
                           <Pie
-                            data={stats?.deviceStats || []}
+                            data={Array.isArray(stats?.deviceStats) ? stats.deviceStats : []}
                             cx="50%"
                             cy="50%"
                             labelLine={false}
@@ -679,7 +679,7 @@ export const AdminStatsTab = (props: any) => {
                             dataKey="value"
                             label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
                           >
-                            {stats?.deviceStats?.map((entry: any, index: number) => (
+                            {(Array.isArray(stats?.deviceStats) ? stats.deviceStats : []).map((entry: any, index: number) => (
                               <Cell key={`cell-${index}`} fill={['#0284c7', '#38bdf8', '#7dd3fc', '#bae6fd'][index % 4]} />
                             ))}
                           </Pie>
@@ -701,7 +701,7 @@ export const AdminStatsTab = (props: any) => {
                     </div>
                     <div className="h-72 w-full">
                       <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={stats.refererStats} layout="vertical">
+                        <BarChart data={Array.isArray(stats?.refererStats) ? stats.refererStats : []} layout="vertical">
                           <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
                           <XAxis type="number" hide />
                           <YAxis 
@@ -779,7 +779,7 @@ export const AdminStatsTab = (props: any) => {
                     </div>
                     <div className="h-72 w-full">
                       <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={stats.searchStats} layout="vertical">
+                        <BarChart data={Array.isArray(stats?.searchStats) ? stats.searchStats : []} layout="vertical">
                           <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
                           <XAxis type="number" hide />
                           <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} width={120} tick={{fontSize: 11, fill: '#64748b'}} />
@@ -801,14 +801,14 @@ export const AdminStatsTab = (props: any) => {
                     </div>
                     <div className="h-72 w-full">
                       <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={retentionStats}>
+                        <LineChart data={Array.isArray(retentionStats) ? retentionStats : []}>
                           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                           <XAxis 
                             dataKey="day" 
                             axisLine={false} 
                             tickLine={false} 
                             tick={{fontSize: 10, fill: '#64748b'}} 
-                            tickFormatter={(val: string) => val.split('-').slice(1).join('/')}
+                            tickFormatter={(val: string) => val && typeof val === 'string' ? val.split('-').slice(1).join('/') : (val || '')}
                           />
                           <YAxis axisLine={false} tickLine={false} tick={{fontSize: 12, fill: '#64748b'}} />
                           <Tooltip contentStyle={{ borderRadius: '16px', border: '1px solid #e2e8f0', boxShadow: '0 10px 25px rgba(0,0,0,0.05)' }} />

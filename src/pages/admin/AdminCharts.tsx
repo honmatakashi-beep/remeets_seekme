@@ -32,9 +32,10 @@ export const RegionalMatrix = ({ data }: { data: any[] }) => {
   ];
 
   const getRegionCount = (regionId: string) => {
-    if (!data) return 0;
+    const safeData = Array.isArray(data) ? data : [];
+    if (safeData.length === 0) return 0;
     let total = 0;
-    data.forEach(d => {
+    safeData.forEach(d => {
       if (!d.region) return;
       
       let found = false;
@@ -98,12 +99,17 @@ export const RegionalMatrix = ({ data }: { data: any[] }) => {
 };
 
 export const FunnelChart = ({ data }: { data: any[] }) => {
+  const safeData = Array.isArray(data) ? data : [];
+  if (safeData.length === 0) {
+    return <div className="h-48 flex items-center justify-center text-slate-400 font-sans text-xs">ファネルデータがありません</div>;
+  }
+
   return (
     <div className="space-y-6">
-      {data.map((item, idx) => {
-        const prevCount = idx > 0 ? data[idx-1].count : item.count;
-        const dropRate = idx > 0 ? ((1 - item.count / prevCount) * 100).toFixed(1) : 0;
-        const width = (item.count / data[0].count) * 100;
+      {safeData.map((item, idx) => {
+        const prevCount = idx > 0 ? safeData[idx-1]?.count || 1 : item.count || 1;
+        const dropRate = idx > 0 ? ((1 - (item.count || 0) / prevCount) * 100).toFixed(1) : 0;
+        const width = safeData[0]?.count ? Math.min(100, Math.max(0, ((item.count || 0) / safeData[0].count) * 100)) : 0;
 
         return (
           <div key={item.step} className="space-y-2">
@@ -137,7 +143,8 @@ export const FunnelChart = ({ data }: { data: any[] }) => {
 };
 
 export const HeatmapChart = ({ data }: { data: any[] }) => {
-  if (!data) return <div className="h-64 flex items-center justify-center text-brand-dark/30">データを読み込み中...</div>;
+  const safeData = Array.isArray(data) ? data : [];
+  if (safeData.length === 0) return <div className="h-64 flex items-center justify-center text-brand-dark/30 font-sans text-xs">アクセスログを集計中...</div>;
   
   const days = ['日', '月', '火', '水', '木', '金', '土'];
   const hours = Array.from({ length: 24 }, (_, i) => i);
@@ -145,7 +152,7 @@ export const HeatmapChart = ({ data }: { data: any[] }) => {
   // Pre-process data into a 2D array
   const matrix = days.map((_, dIdx) => {
     return hours.map(hour => {
-      const item = data.find(d => {
+      const item = safeData.find(d => {
         const dDay = parseInt(d.day_of_week);
         const dHour = parseInt(d.hour_of_day);
         return dDay === dIdx && dHour === hour;
@@ -289,10 +296,11 @@ export const HeatmapChart = ({ data }: { data: any[] }) => {
 
 
 export const PageViewChart = ({ data }: { data: any[] }) => {
+  const safeData = Array.isArray(data) ? data : [];
   return (
     <div className="h-72 w-full">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data}>
+        <BarChart data={safeData}>
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eee" />
           <XAxis 
             dataKey="path" 
