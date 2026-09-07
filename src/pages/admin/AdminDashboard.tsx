@@ -52,7 +52,6 @@ import {
   ACCOUNT_KEYWORDS
 } from '../../utils/contactClassification';
 import { ManualContent, AdminDeploymentGuideBlock } from '../MiscPages';
-import { SeoPreviewModal } from '../PostPages';
 
 import {
   AdminStatsTab,
@@ -2032,8 +2031,6 @@ export const AdminDashboard = () => {
       alert('通信エラーが発生しました。');
     }
   };
-
-  const [adminSeoPreviewPost, setAdminSeoPreviewPost] = useState<any>(null);
 
   const handleApproveDeletionRequest = async (id: number) => {
     if (!confirm('この削除依頼を承認し、対象のボトルメールを完全に削除しますか？')) return;
@@ -5620,13 +5617,6 @@ export const AdminDashboard = () => {
           </div>
         )}
       </AnimatePresence>
-
-      {/* Admin SEO Preview Modal */}
-      <SeoPreviewModal
-        isOpen={Boolean(adminSeoPreviewPost)}
-        onClose={() => setAdminSeoPreviewPost(null)}
-        post={adminSeoPreviewPost}
-      />
 
       {/* Custom Confirm Modal */}
       <AnimatePresence>

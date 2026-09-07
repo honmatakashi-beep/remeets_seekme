@@ -31,7 +31,7 @@ import postSuccessSoft from '../../assets/images/post_success_soft_1785869214309
 
 
 import { ScrollToTop, ScrollToTopButton } from './PostUtils';
-import { SeoPreviewModal, FlowExplanation, RecipientSafetyGuide, RevealContactModal, SuccessModal, AgeVerificationGate, ComplianceBanner, ReportModal } from './PostModals';
+import { FlowExplanation, RecipientSafetyGuide, RevealContactModal, SuccessModal, AgeVerificationGate, ComplianceBanner, ReportModal } from './PostModals';
 
 export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) => {
   const navigate = useNavigate();
@@ -40,7 +40,6 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const idQuery = queryParams.get('id');
-  const [showSeoPreviewModal, setShowSeoPreviewModal] = useState(false);
 
   const justPostedFlag = Boolean(location.state?.justPosted);
   const postedWithEkycFlag = Boolean(location.state?.postedWithEkyc);
@@ -1290,11 +1289,6 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
         isOpen={showStoryModal}
         onClose={() => setShowStoryModal(false)}
       />
-      <SeoPreviewModal
-        isOpen={showSeoPreviewModal}
-        onClose={() => setShowSeoPreviewModal(false)}
-        post={post}
-      />
 
       {/* 差出人属性・思い出の手がかり・手紙開封CTAが一体となったメインカード */}
       <AnimatePresence mode="wait">
@@ -1747,18 +1741,6 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                         </Link>
                       </div>
                     </div>
-
-                    {(user?.role === 'admin' || isOwner) && (
-                      <div className="pt-1 flex justify-start">
-                        <button 
-                          onClick={() => setShowSeoPreviewModal(true)}
-                          className="flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-teal-800 transition-colors bg-slate-100 hover:bg-teal-50 px-3.5 py-1.5 rounded-xl border border-slate-200/80 cursor-pointer font-sans"
-                        >
-                          <FileText size={14} className="text-teal-700" />
-                          <span>📄 開業法務クリア＆SEO証明書（印刷見本）を表示</span>
-                        </button>
-                      </div>
-                    )}
                   </div>
                 </div>
               )}
