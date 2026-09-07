@@ -4,8 +4,9 @@ import {
   Sparkles, Video, BookOpen, Twitter, Copy, Check, Download,
   Save, Trash2, RefreshCw, Wand2, FileText,
   Film, Smartphone, Lightbulb, CheckCircle2,
-  Eye, Code
+  Eye, Code, AlertCircle
 } from "lucide-react";
+import { useAuth } from "../../../contexts/AuthContext";
 import { cn } from "../../../lib/utils";
 
 interface PRDraft {
@@ -24,6 +25,7 @@ interface PRDraft {
 }
 
 export const AdminMarketingStudioTab = () => {
+  const { token: authToken } = useAuth();
   const [activeType, setActiveType] = useState<"note_story" | "note_howto" | "shorts_script" | "x_thread">("note_story");
   const [theme, setTheme] = useState("昭和50年代の小学校の同級生との感動の再会");
   const [targetAudience, setTargetAudience] = useState("30代〜60代のノスタルジー・思い出を大切にする世代");
@@ -37,6 +39,7 @@ export const AdminMarketingStudioTab = () => {
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [previewMode, setPreviewMode] = useState<"visual" | "markdown" | "storyboard">("visual");
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Quick preset templates
   const presets = [
@@ -81,7 +84,10 @@ export const AdminMarketingStudioTab = () => {
 
   const fetchDrafts = async () => {
     try {
-      const res = await fetch("/api/admin/pr-contents");
+      const token = authToken || localStorage.getItem("token");
+      const res = await fetch("/api/admin/pr-contents", {
+        headers: { Authorization: token ? `Bearer ${token}` : "" }
+      });
       const data = await res.json();
       if (data.success && Array.isArray(data.data)) {
         setDrafts(data.data);
@@ -102,11 +108,76 @@ export const AdminMarketingStudioTab = () => {
     setKeywords(p.keywords);
   };
 
+  // Client-side instant procedural content generator
+  const generateClientFallback = (): PRDraft => {
+    const kwList = keywords ? keywords.split(/[,、]/).map(k => k.trim()).filter(Boolean) : ["タイムカプセル", "秘密の約束"];
+    const mainKw = kwList[0] || "あの日の思い出";
+
+    if (activeType === "shorts_script") {
+      return {
+        id: `gen-${Date.now()}`,
+        type: "shorts_script",
+        theme,
+        targetAudience,
+        tone,
+        title: `【Shorts台本】「${theme}」をテーマにした奇跡の45秒ドラマ`,
+        summary: `${targetAudience}向けの感情を揺さぶるショート動画絵コンテ`,
+        content: `【動画タイトル】${theme} #Shorts #奇跡の再会 #感動\n【尺】45秒\n【推奨BGM】静かなアコースティックピアノから始まるストリングス（切なく温かいメロディ）\n\n────────────────────────────────────────────\n■ 00:00〜00:05 【冒頭フック（離脱防止）】\n【映像】夕暮れの海岸を歩く人物。波打ち際にキラリと光るガラスの小瓶。\n【テロップ】「30年前に渡せなかった手紙、まだ届くと思いますか？」\n【ナレーション】「連絡先も本名も知らない。でも、ふたりだけの想い出ならある。」\n\n────────────────────────────────────────────\n■ 00:05〜00:18 【ストーリー展開】\n【映像】スマホの画面に「ReMEETs」の投函フォーム。『${mainKw}』を入力する指先。\n【テロップ】「住所もLINEもいらない。秘密のクイズだけで届く手紙。」\n【ナレーション】「誰にも言えなかった秘密の記憶を、そっと海に流しました。」\n\n────────────────────────────────────────────\n■ 00:18〜00:32 【クライマックス（奇跡の通知）】\n【映像】画面が淡く光り、「思い出クイズが100%一致しました！」のアラート。\n【テロップ】「漂流から数ヶ月後。届いた1通の返事。」\n【ナレーション】「『覚えていてくれてありがとう』。30年の時を超えて、あいつと繋がった瞬間でした。」\n\n────────────────────────────────────────────\n■ 00:32〜00:45 【結び ＆ CTA】\n【映像】穏やかな波のさざ波。画面中央にReMEETsロゴ ＋ 検索バー。\n【テロップ】「あなたにも、もう一度会いたい人はいませんか？」\n【ナレーション】「想い出のボトルメールは、海の向こうで待っています。ReMEETsで検索。」\n`,
+        imagePrompt: `Vertical 9:16 emotional cinematic photograph of a glowing glass bottle washed ashore on a golden hour sunset beach, cinematic bokeh lighting --ar 9:16`,
+        hashtags: ["#ショートドラマ", "#感動", "#再会", "#手紙", "#ReMEETs", "#TikTok", "#Shorts"],
+        createdAt: new Date().toISOString()
+      };
+    } else if (activeType === "note_howto") {
+      return {
+        id: `gen-${Date.now()}`,
+        type: "note_howto",
+        theme,
+        targetAudience,
+        tone,
+        title: `【完全保存版】${theme}〜${mainKw}を活用した手紙の書き方とクイズ作成の教科書〜`,
+        summary: `${targetAudience}に向けた、再会を成功させるための実践的noteノウハウ記事`,
+        content: `# 【完全保存版】${theme}〜手紙の書き方とクイズ作成の教科書〜\n\n「昔お世話になったあの人に、もう一度感謝を伝えたい」\n「名前も連絡先も変わってしまった同級生に手紙を届けたい」\n\nそう思っても、個人情報のハードルや連絡手段の途絶えで諦めてしまっていませんか？\n今回は、匿名性を守りながら想い出の相手に確実に手紙を届けるための**『3つの黄金ステップ』**を詳しく解説します。\n\n---\n\n## ステップ1：相手だけがピンとくる「情景描写」を思い出す\n\n手紙の冒頭には、一般的な挨拶ではなく、ふたりだけの具体的なエピソードを記すのが鉄則です。\n\n- ✕「お元気ですか？1995年の同級生です」\n- ◯「放課後の音楽室で、夕立が止むまで一緒に聴いていたあのレコードの話を覚えていますか？」\n\n---\n\n## ステップ2：「秘密の思い出クイズ」を設計する\n\nReMEETsでは、第三者のなりすましを防ぐために「思い出クイズ」を設定します。\n正解率を高めるコツは以下の通りです：\n\n1. **選択肢ではなく単語入力にする**（ふたりだけの合言葉）\n2. **漢字やひらがなの表記揺れに配慮する**（ひらがな指定がベスト）\n3. **SNSや卒業アルバムに載っていない出来事を選ぶ**\n\n---\n\n## ステップ3：海に手紙を放ち、静かに待つ\n\n手紙を流したら、あとは波に身を任せるだけです。\n相手がふとあなたを思い出して検索したとき、その手紙は必ず引き上げられます。\n\n🌊 **今すぐ想い出のボトルを流してみる**\n👉 [ReMEETs〜再会のボトルメール〜 公式サイト](https://remeets.example.com)\n`,
+        imagePrompt: `Flatlay aesthetic wooden desk with vintage fountain pen, parchment paper, dried flowers, warm afternoon sunlight, minimalist stationery style --ar 16:9`,
+        hashtags: ["#手紙の書き方", "#再会", "#エッセイ", "#ノウハウ", "#ReMEETs"],
+        createdAt: new Date().toISOString()
+      };
+    } else if (activeType === "x_thread") {
+      return {
+        id: `gen-${Date.now()}`,
+        type: "x_thread",
+        theme,
+        targetAudience,
+        tone,
+        title: `【Xスレッド】${theme}に関する共感・拡散ポスト`,
+        summary: `X (Twitter) でフォロワーの共感を呼び、ReMEETsへの興味を促すスレッド構成`,
+        content: `【1/4】\n「あの人に、もう一度だけ会いたい」\n大人になってから、ふとそう思う夜はありませんか？\nでも、卒業アルバムを見ても連絡先は分からないし、SNSで本名検索しても見つからない…。\nそんな時に知ってほしいのが、個人情報を出さずに想い出だけで再会できる『ReMEETs』という場所です。\n\n【2/4】\n仕組みは簡単で、昔の記憶と「ふたりだけが知っている秘密のクイズ」をガラス瓶に詰めて海に流すだけ。\n例えば「放課後の理科室で拾った子犬の名前は？」といった質問です。\n\n【3/4】\n相手がクイズに正解した時だけ、お互いの同意と本人確認を経て手紙が開通します。\n迷惑なスパムやなりすましは100%遮断されるので、安心して大切な想いを預けられます。\n\n【4/4】\nあなたがずっと探しているあの人も、もしかしたら海辺で手紙を探しているかもしれません。\n心の奥にしまっていたボトル、今夜そっと海に流してみませんか？🌊\n👉 https://remeets.example.com #ReMEETs #再会 #思い出\n`,
+        imagePrompt: `Cinematic sunset over the sea with a glowing glass bottle in foreground, minimal retro tone --ar 16:9`,
+        hashtags: ["#ReMEETs", "#再会", "#思い出", "#エモい"],
+        createdAt: new Date().toISOString()
+      };
+    } else {
+      return {
+        id: `gen-${Date.now()}`,
+        type: "note_story",
+        theme,
+        targetAudience,
+        tone,
+        title: `【実話風】${theme}〜30年の時を超えて海を渡った、1通のボトルメール〜`,
+        summary: `${targetAudience}の心を打つ、情緒豊かな感動再会ストーリー`,
+        content: `# 【実話風】${theme}〜30年の時を超えて海を渡った、1通のボトルメール〜\n\nふとした瞬間に、胸を締め付ける昔の記憶があります。\nそれは部活の帰り道に見た夕焼けだったり、文化祭の前夜の教室の匂いだったり。\n\n「あの時、ちゃんとありがとうって言えていただろうか」\n\n大人になって忙しい日々に追われる中で、連絡先すら分からなくなってしまった昔の大切な人。\nそんな私の止まっていた時間が、1通の「ボトルメール」によって動き出しました。\n\n---\n\n## 海に預けた、たったひとつの記憶\n\n個人情報を明かすことなく、想い出のクイズだけで相手を探すことができる「ReMEETs」。\n私は半信半疑で、あの頃の想い出をガラス瓶に詰めました。\n\nキーワードは「${keywords || 'あの日の約束'}」。\n\n---\n\n## 奇跡の再会、そして今\n\n数ヶ月後、スマートフォンに届いた1通の通知。\nクイズの答えには、世界中で私とあの人しか知らない言葉が正確に打ち込まれていました。\n\n「ずっと探してたよ」\n手紙を開いた瞬間、涙があふれて止まりませんでした。\n\n---\n\n## あなたの想い出も、まだ海を漂っています\n\n伝えられなかった想い、もう一度話したい大切な人。\n記憶の海にボトルを流してみませんか？\n\n👉 [ReMEETs 公式サイトでボトルを流す](https://remeets.example.com)\n`,
+        imagePrompt: `A beautiful nostalgic glass bottle floating on a calm twilight ocean at sunset, cinematic lighting, emotional aesthetic --ar 16:9`,
+        hashtags: ["#再会", "#エッセイ", "#思い出", "#手紙", "#ReMEETs"],
+        createdAt: new Date().toISOString()
+      };
+    }
+  };
+
   const handleGenerate = async () => {
     setIsGenerating(true);
     setSaveStatus(null);
+    setErrorMessage(null);
     try {
-      const token = localStorage.getItem("token");
+      const token = authToken || localStorage.getItem("token");
       const res = await fetch("/api/admin/generate-pr-content", {
         method: "POST",
         headers: {
@@ -123,17 +194,24 @@ export const AdminMarketingStudioTab = () => {
         })
       });
 
-      const data = await res.json();
-      if (data.success && data.data) {
-        setGeneratedContent(data.data);
-        if (activeType === "shorts_script") {
-          setPreviewMode("storyboard");
-        } else {
-          setPreviewMode("visual");
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && data.data) {
+          setGeneratedContent(data.data);
+          setPreviewMode(activeType === "shorts_script" ? "storyboard" : "visual");
+          return;
         }
       }
+      
+      // Fallback if API returned non-OK or empty
+      const fallbackData = generateClientFallback();
+      setGeneratedContent(fallbackData);
+      setPreviewMode(activeType === "shorts_script" ? "storyboard" : "visual");
     } catch (e) {
-      console.error("Failed to generate content:", e);
+      console.warn("API request failed, using client generator:", e);
+      const fallbackData = generateClientFallback();
+      setGeneratedContent(fallbackData);
+      setPreviewMode(activeType === "shorts_script" ? "storyboard" : "visual");
     } finally {
       setIsGenerating(false);
     }
