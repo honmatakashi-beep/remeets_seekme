@@ -310,6 +310,255 @@ const createEyecatchCanvas = (
   return canvas.toDataURL("image/png");
 };
 
+// 🎨 Real-time Scene Graphic Canvas Generator (16:9 / 1200x675) for In-article Chapter Illustrations
+interface SceneGraphicItem {
+  id: string;
+  sceneIndex: number;
+  chapterTitle: string;
+  quote: string;
+  dataUrl: string;
+  toneId: string;
+}
+
+const createSceneGraphicCanvas = (
+  chapterTitle: string,
+  quote: string,
+  toneId: string,
+  sceneIndex: number,
+  variant: number = 0
+): string => {
+  if (typeof document === "undefined") return "";
+  const canvas = document.createElement("canvas");
+  canvas.width = 1200;
+  canvas.height = 675; // 16:9
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return "";
+
+  // Color Palettes based on Tone
+  const palettesByTone: Record<string, string[][]> = {
+    watercolor_nostalgia: [
+      ["#2b1810", "#5c2a38", "#a6524a", "#e08d6d", "#f7d6b5"],
+      ["#1e2530", "#384e5b", "#6d828a", "#b5c5b9", "#f2efe9"],
+      ["#2a1e38", "#5e3a6e", "#9e5c8a", "#e088a8", "#fce4ec"]
+    ],
+    twilight_cinematic: [
+      ["#0d1322", "#1a2639", "#3b3a5a", "#78536f", "#d48166"],
+      ["#08141e", "#133042", "#23596d", "#4b939f", "#e0aa78"],
+      ["#181024", "#301d4a", "#5a2e66", "#9c4e6e", "#f29377"]
+    ],
+    vintage_amber_letter: [
+      ["#1c120c", "#382215", "#5e3920", "#945d33", "#d6a16c"],
+      ["#211a14", "#423425", "#6e583e", "#a68860", "#ebd8b7"],
+      ["#261510", "#4d281a", "#7a3f28", "#bd6842", "#f5be93"]
+    ],
+    emerald_ocean_clean: [
+      ["#051821", "#0b2e38", "#144e5a", "#297b82", "#7ec4b5"],
+      ["#091b29", "#113854", "#1b5e80", "#2c92b2", "#8ed0df"],
+      ["#0a221f", "#14423b", "#226e60", "#3ba48e", "#a3e2cf"]
+    ]
+  };
+
+  const tonePalettes = palettesByTone[toneId] || palettesByTone.watercolor_nostalgia;
+  const palette = tonePalettes[(sceneIndex + variant) % tonePalettes.length];
+
+  // 1. Background Gradient
+  const grad = ctx.createLinearGradient(0, 0, 1200, 675);
+  grad.addColorStop(0, palette[0]);
+  grad.addColorStop(0.35, palette[1]);
+  grad.addColorStop(0.7, palette[2]);
+  grad.addColorStop(0.9, palette[3]);
+  grad.addColorStop(1, palette[4]);
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 1200, 675);
+
+  // 2. Artistic Scene Atmosphere (Curves, Light Rays, Glow)
+  ctx.save();
+  ctx.globalAlpha = 0.18;
+  for (let i = 0; i < 4; i++) {
+    ctx.beginPath();
+    ctx.moveTo(-100, 380 + i * 55);
+    ctx.bezierCurveTo(400, 290 + i * 50, 800, 520 - i * 40, 1300, 390 + i * 45);
+    ctx.lineTo(1300, 675);
+    ctx.lineTo(-100, 675);
+    ctx.closePath();
+    ctx.fillStyle = "#ffffff";
+    ctx.fill();
+  }
+
+  // Light Dust / Sparkles
+  ctx.globalAlpha = 0.28;
+  for (let i = 0; i < 30; i++) {
+    const x = (Math.sin(i * 77 + sceneIndex * 13) * 0.5 + 0.5) * 1200;
+    const y = (Math.cos(i * 41 + sceneIndex * 7) * 0.5 + 0.5) * 500;
+    const r = (i % 3) + 1.2;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fillStyle = "#ffffff";
+    ctx.fill();
+  }
+  ctx.restore();
+
+  // 3. Elegant Inner Borders (Double Line Art)
+  ctx.save();
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.3)";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(40, 40, 1200 - 80, 675 - 80);
+
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
+  ctx.lineWidth = 1;
+  ctx.strokeRect(48, 48, 1200 - 96, 675 - 96);
+  ctx.restore();
+
+  // 4. Scene Chapter Badge (e.g., "SCENE 01" / "EPISODE 02")
+  ctx.save();
+  ctx.fillStyle = "rgba(255, 255, 255, 0.2)";
+  ctx.beginPath();
+  if (ctx.roundRect) {
+    ctx.roundRect(72, 64, 210, 36, 18);
+  } else {
+    ctx.rect(72, 64, 210, 36);
+  }
+  ctx.fill();
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "bold 14px 'SF Pro Display', 'Helvetica Neue', sans-serif";
+  ctx.fillText(`SCENE 0${sceneIndex + 1} // 情景挿絵`, 90, 87);
+
+  // Right Top Watermark
+  ctx.fillStyle = "rgba(255, 255, 255, 0.75)";
+  ctx.font = "bold 14px 'Hiragino Mincho ProN', 'Yu Mincho', serif";
+  const brandTag = "ReMEETs 想い出の情景";
+  ctx.fillText(brandTag, 1200 - 72 - ctx.measureText(brandTag).width, 87);
+  ctx.restore();
+
+  // 5. Scene Main Title (Wrapped, Serif, Shadow)
+  ctx.save();
+  ctx.fillStyle = "#ffffff";
+  ctx.shadowColor = "rgba(0, 0, 0, 0.7)";
+  ctx.shadowBlur = 18;
+  ctx.shadowOffsetY = 4;
+
+  const cleanTitle = chapterTitle || `第${sceneIndex + 1}章：想い出が紡ぐ小さな奇跡`;
+  const fontSize = cleanTitle.length > 24 ? 38 : cleanTitle.length > 16 ? 46 : 54;
+  ctx.font = `bold ${fontSize}px 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', serif`;
+
+  const maxLineWidth = 960;
+  const lines: string[] = [];
+  let currentLine = "";
+  for (let i = 0; i < cleanTitle.length; i++) {
+    const char = cleanTitle[i];
+    const testLine = currentLine + char;
+    if (ctx.measureText(testLine).width > maxLineWidth && currentLine.length > 0) {
+      lines.push(currentLine);
+      currentLine = char;
+    } else {
+      currentLine = testLine;
+    }
+  }
+  if (currentLine) lines.push(currentLine);
+
+  const totalTextHeight = lines.length * (fontSize * 1.35);
+  const startY = 280 - (totalTextHeight / 2) + fontSize;
+
+  lines.forEach((line, index) => {
+    const lineWidth = ctx.measureText(line).width;
+    const lineX = (1200 - lineWidth) / 2;
+    const lineY = startY + index * (fontSize * 1.35);
+    ctx.fillText(line, lineX, lineY);
+  });
+  ctx.restore();
+
+  // 6. Scene Emotional Quote / Subphrase
+  if (quote) {
+    ctx.save();
+    ctx.fillStyle = "#fef08a"; // warm soft gold
+    ctx.font = "italic 500 21px 'Hiragino Mincho ProN', 'Yu Mincho', serif";
+    ctx.shadowColor = "rgba(0, 0, 0, 0.8)";
+    ctx.shadowBlur = 12;
+    const cleanQuote = quote.length > 44 ? `「${quote.slice(0, 42)}...」` : `「${quote}」`;
+    const quoteWidth = ctx.measureText(cleanQuote).width;
+    ctx.fillText(cleanQuote, (1200 - quoteWidth) / 2, 480);
+    ctx.restore();
+  }
+
+  // 7. Footer Divider & Brand
+  ctx.save();
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.35)";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(400, 560);
+  ctx.lineTo(800, 560);
+  ctx.stroke();
+
+  ctx.fillStyle = "rgba(255, 255, 255, 0.75)";
+  ctx.font = "400 15px 'Hiragino Mincho ProN', serif";
+  const foot = "ふたりだけの合言葉で繋がる、再会のボトルメール";
+  const fWidth = ctx.measureText(foot).width;
+  ctx.fillText(foot, (1200 - fWidth) / 2, 595);
+  ctx.restore();
+
+  return canvas.toDataURL("image/png");
+};
+
+// Helper: Extract chapters/headings and generate 3 custom scene graphics for this article
+const generateSceneGraphicsForDraft = (
+  content: string,
+  toneId: string,
+  draftTitle: string
+): SceneGraphicItem[] => {
+  const lines = content.split("\n");
+  const extractedSections: { title: string; quote: string }[] = [];
+
+  let currentHeading = "";
+  let currentParagraph = "";
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (trimmed.startsWith("#") || trimmed.startsWith("【") || trimmed.startsWith("■") || trimmed.startsWith("第") || trimmed.startsWith("1.") || trimmed.startsWith("2.") || trimmed.startsWith("3.")) {
+      if (currentHeading) {
+        extractedSections.push({
+          title: currentHeading,
+          quote: currentParagraph.slice(0, 46).trim()
+        });
+        currentParagraph = "";
+      }
+      currentHeading = trimmed.replace(/^[#\s【】■1234567890.:]+/, "").replace(/[】]/, "").trim();
+    } else if (trimmed && !trimmed.startsWith("!") && !trimmed.startsWith(">") && !trimmed.startsWith("-")) {
+      if (!currentParagraph) {
+        currentParagraph = trimmed;
+      }
+    }
+  }
+  if (currentHeading) {
+    extractedSections.push({
+      title: currentHeading,
+      quote: currentParagraph.slice(0, 46).trim()
+    });
+  }
+
+  // Fallback defaults if no headings found
+  if (extractedSections.length === 0) {
+    extractedSections.push(
+      { title: `放課後の記憶と、交わした約束`, quote: "あの日の夕焼けと、消えない記憶の足跡" },
+      { title: `時の流れと、心の奥に眠るボトル`, quote: "何十年経っても色褪せない、たったひとつの想い出" },
+      { title: `奇跡の照合と、ふたりの再会`, quote: "ふたりだけのクイズが解かれた瞬間、時間が動き出す" }
+    );
+  }
+
+  const scenesToGenerate = extractedSections.slice(0, 3);
+  return scenesToGenerate.map((sec, idx) => ({
+    id: `scene_custom_${idx}_${Date.now()}`,
+    sceneIndex: idx,
+    chapterTitle: sec.title,
+    quote: sec.quote || draftTitle,
+    toneId: toneId,
+    dataUrl: createSceneGraphicCanvas(sec.title, sec.quote, toneId, idx)
+  }));
+};
+
 export const AdminMarketingStudioTab = () => {
   const { token: authToken } = useAuth();
 
@@ -353,11 +602,15 @@ export const AdminMarketingStudioTab = () => {
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
 
-  // Generated Eyecatches (AI Canvas generated)
+  // Generated Eyecatches & Scene Graphics (AI Canvas generated in real-time)
   const [generatedEyecatch, setGeneratedEyecatch] = useState<string | null>(null);
+  const [sceneGraphics, setSceneGraphics] = useState<SceneGraphicItem[]>([]);
   const [eyecatchVariant, setEyecatchVariant] = useState<number>(0);
 
-  // Selected Images for current note draft
+  // Excluded/Deleted Image IDs in Step 3 Preview (allows removing unwanted images)
+  const [excludedImageIds, setExcludedImageIds] = useState<string[]>([]);
+
+  // Selected Additional Assets for current note draft
   const [selectedImages, setSelectedImages] = useState<string[]>([heroBottleMail]);
 
   // Video Playback State (for Studio Final Video Preview)
@@ -380,15 +633,15 @@ export const AdminMarketingStudioTab = () => {
       if (data.success && Array.isArray(data.data)) {
         setDrafts(data.data);
         if (data.data.length > 0 && !currentDraft) {
-          setCurrentDraft(data.data[0]);
-          // Generate initial eyecatch based on active tone
+          const first = data.data[0];
+          setCurrentDraft(first);
+          
           const activePreset = STYLE_TONE_PRESETS.find(p => p.id === activeToneId) || STYLE_TONE_PRESETS[0];
-          const eyecatch = createEyecatchCanvas(data.data[0].title, data.data[0].theme, data.data[0].type, activePreset.eyecatchVariant);
+          const eyecatch = createEyecatchCanvas(first.title, first.theme, first.type, activePreset.eyecatchVariant);
           setGeneratedEyecatch(eyecatch);
           
-          // Apply recommended assets for active tone
-          const recommendedAssets = AVAILABLE_ASSETS.filter(a => activePreset.defaultAssetIds.includes(a.id)).map(a => a.path);
-          setSelectedImages([eyecatch, ...recommendedAssets]);
+          const scenes = generateSceneGraphicsForDraft(first.content, activeToneId, first.title);
+          setSceneGraphics(scenes);
         }
       }
     } catch (e) {
@@ -396,12 +649,11 @@ export const AdminMarketingStudioTab = () => {
     }
   };
 
-  // 🎨 Handler: Select and Apply Tone Preset (Updates Eyecatch, Images & Saves as Default)
+  // 🎨 Handler: Select and Apply Tone Preset (Updates Eyecatch, Scene Graphics & Saves as Default)
   const handleApplyTonePreset = (tone: StyleTonePreset) => {
     setActiveToneId(tone.id);
     setEyecatchVariant(tone.eyecatchVariant);
 
-    // Toggle/Add to selectedTones
     let newTones = [...selectedTones];
     if (!newTones.includes(tone.id)) {
       newTones.push(tone.id);
@@ -409,16 +661,15 @@ export const AdminMarketingStudioTab = () => {
     setSelectedTones(newTones);
     localStorage.setItem("remeets_brand_tones", JSON.stringify(newTones));
 
-    // Re-generate Eyecatch with this tone's color palette
     if (currentDraft) {
+      // Re-generate Eyecatch with this tone
       const newEyecatch = createEyecatchCanvas(currentDraft.title, currentDraft.theme, currentDraft.type, tone.eyecatchVariant);
       setGeneratedEyecatch(newEyecatch);
 
-      // Re-populate selected images according to tone
-      const recommendedAssets = AVAILABLE_ASSETS.filter(a => tone.defaultAssetIds.includes(a.id)).map(a => a.path);
-      setSelectedImages([newEyecatch, ...recommendedAssets]);
+      // Re-generate 3 Scene Graphics with this tone
+      const newScenes = generateSceneGraphicsForDraft(currentDraft.content, tone.id, currentDraft.title);
+      setSceneGraphics(newScenes);
 
-      // Update draft with this tone's prompt style
       setCurrentDraft(prev => prev ? {
         ...prev,
         imagePrompt: `${prev.theme}, ${tone.aiPromptStyle}`
@@ -429,12 +680,12 @@ export const AdminMarketingStudioTab = () => {
     setTimeout(() => setToneSaveNotice(null), 3000);
   };
 
-  // Toggle multiple tones selection for future articles
+  // Toggle multiple tones selection
   const handleToggleToneSelection = (toneId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     let updated: string[];
     if (selectedTones.includes(toneId)) {
-      if (selectedTones.length === 1) return; // Keep at least one
+      if (selectedTones.length === 1) return;
       updated = selectedTones.filter(id => id !== toneId);
     } else {
       updated = [...selectedTones, toneId];
@@ -450,7 +701,18 @@ export const AdminMarketingStudioTab = () => {
     setEyecatchVariant(nextVariant);
     const newEyecatch = createEyecatchCanvas(currentDraft.title, currentDraft.theme, currentDraft.type, nextVariant);
     setGeneratedEyecatch(newEyecatch);
-    setSelectedImages(prev => [newEyecatch, ...prev.filter(img => img !== generatedEyecatch)]);
+  };
+
+  // Regenerate single scene graphic
+  const handleRegenerateScene = (sceneIndex: number) => {
+    if (!currentDraft) return;
+    setSceneGraphics(prev => prev.map((sc, i) => {
+      if (i === sceneIndex) {
+        const newDataUrl = createSceneGraphicCanvas(sc.chapterTitle, sc.quote, activeToneId, sceneIndex, Math.floor(Math.random() * 4) + 1);
+        return { ...sc, dataUrl: newDataUrl };
+      }
+      return sc;
+    }));
   };
 
   // Download Generated Eyecatch as PNG
@@ -462,10 +724,29 @@ export const AdminMarketingStudioTab = () => {
     a.click();
   };
 
+  // Download Generated Scene Graphic as PNG
+  const handleDownloadScene = (scene: SceneGraphicItem) => {
+    const a = document.createElement("a");
+    a.href = scene.dataUrl;
+    a.download = `remeets-scene-0${scene.sceneIndex + 1}.png`;
+    a.click();
+  };
+
+  // 🗑️ Remove Image from Step 3 Layout
+  const handleExcludeImage = (imageId: string) => {
+    setExcludedImageIds(prev => [...prev, imageId]);
+  };
+
+  // ↩️ Restore Image to Step 3 Layout
+  const handleRestoreImage = (imageId: string) => {
+    setExcludedImageIds(prev => prev.filter(id => id !== imageId));
+  };
+
   // ── 1. Generate Note Content (Random Story or Next Curriculum Step) ──
   const handleGenerateNote = async (overrideType?: "note_story" | "note_howto") => {
     setIsGenerating(true);
     setSaveStatus(null);
+    setExcludedImageIds([]);
     try {
       const type = overrideType || (noteMode === "curriculum_howto" ? "note_howto" : "note_story");
       const token = authToken || localStorage.getItem("token");
@@ -487,14 +768,17 @@ export const AdminMarketingStudioTab = () => {
 
       const data = await res.json();
       if (data.success && data.data) {
-        // Pick active tone preset from saved selection
         const activePreset = STYLE_TONE_PRESETS.find(p => p.id === activeToneId) || STYLE_TONE_PRESETS[0];
 
-        // Automatically generate AI Canvas Eyecatch for this new note draft
+        // 1. Generate AI Canvas Eyecatch
         const eyecatch = createEyecatchCanvas(data.data.title, data.data.theme, data.data.type, activePreset.eyecatchVariant);
         setGeneratedEyecatch(eyecatch);
 
-        // Auto-select assets matching active tone
+        // 2. Generate 3 Custom Scene Graphic Cards for this article
+        const scenes = generateSceneGraphicsForDraft(data.data.content, activeToneId, data.data.title);
+        setSceneGraphics(scenes);
+
+        // 3. Recommended additional assets
         const recommendedAssets = AVAILABLE_ASSETS.filter(a => activePreset.defaultAssetIds.includes(a.id)).map(a => a.path);
         const initialImages = [eyecatch, ...recommendedAssets];
         setSelectedImages(initialImages);
@@ -504,7 +788,7 @@ export const AdminMarketingStudioTab = () => {
           imagePrompt: `${data.data.theme}, ${activePreset.aiPromptStyle}`,
           selectedImages: initialImages
         });
-        setNoteStep(1);
+        setNoteStep(2);
       }
     } catch (e) {
       console.warn("Note generation fallback:", e);
@@ -593,240 +877,265 @@ export const AdminMarketingStudioTab = () => {
     setTimeout(() => setCopiedField(null), 2000);
   };
 
-  // ── TTS Web Speech Playback for Shorts ──
-  const speakText = (text: string) => {
-    if (!window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "ja-JP";
-    utterance.rate = narrationSpeed;
-    window.speechSynthesis.speak(utterance);
-  };
-
-  // ── Video Final Preview Playback Engine ──
-  useEffect(() => {
-    let timer: any;
-    if (isPlayingVideo && currentDraft?.scenes && currentDraft.scenes.length > 0) {
-      const scene = currentDraft.scenes[currentSceneIndex];
-      if (scene) {
-        speakText(scene.narration);
-      }
-      timer = setTimeout(() => {
-        if (currentSceneIndex < currentDraft.scenes!.length - 1) {
-          setCurrentSceneIndex(prev => prev + 1);
-        } else {
-          setIsPlayingVideo(false);
-          setCurrentSceneIndex(0);
-        }
-      }, 7000);
-    }
-    return () => clearTimeout(timer);
-  }, [isPlayingVideo, currentSceneIndex]);
-
-  const toggleVideoPlay = () => {
-    if (isPlayingVideo) {
-      if (window.speechSynthesis) window.speechSynthesis.cancel();
-      setIsPlayingVideo(false);
-    } else {
-      setIsPlayingVideo(true);
-      setCurrentSceneIndex(0);
-    }
-  };
-
-  // ── Image Toggle for Note ──
+  // ── Toggle Image Selection for Notes ──
   const toggleImageSelect = (path: string) => {
-    setSelectedImages(prev => {
-      if (prev.includes(path)) {
-        return prev.filter(p => p !== path);
-      } else {
-        return [...prev, path];
-      }
-    });
+    if (selectedImages.includes(path)) {
+      setSelectedImages(selectedImages.filter(p => p !== path));
+    } else {
+      setSelectedImages([...selectedImages, path]);
+    }
   };
+
+  // ── Play/Stop Video with Narration (SpeechSynthesis + Web Audio BGM) ──
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const bgmGainRef = useRef<GainNode | null>(null);
+
+  const startVideoPlayback = () => {
+    if (!currentDraft?.scenes || currentDraft.scenes.length === 0) return;
+    setIsPlayingVideo(true);
+    setCurrentSceneIndex(0);
+    setVideoProgress(0);
+
+    // 1. Play Soft Synthetic Ambient BGM
+    try {
+      const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      const ctx = new AudioCtx();
+      audioContextRef.current = ctx;
+
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(220, ctx.currentTime); // Soft warm A3
+      gain.gain.setValueAtTime(0.08, ctx.currentTime);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      bgmGainRef.current = gain;
+    } catch (e) {
+      console.warn("Audio Context init error:", e);
+    }
+
+    // 2. Play first scene TTS
+    playSceneWithTTS(0, currentDraft.scenes);
+  };
+
+  const stopVideoPlayback = () => {
+    setIsPlayingVideo(false);
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+    if (audioContextRef.current) {
+      audioContextRef.current.close().catch(() => {});
+      audioContextRef.current = null;
+    }
+  };
+
+  const playSceneWithTTS = (idx: number, scenes: VideoScene[]) => {
+    if (idx >= scenes.length) {
+      stopVideoPlayback();
+      return;
+    }
+
+    setCurrentSceneIndex(idx);
+    setVideoProgress((idx / scenes.length) * 100);
+
+    const scene = scenes[idx];
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(scene.narration);
+      utter.lang = "ja-JP";
+      utter.rate = narrationSpeed;
+      utter.pitch = 1.05;
+
+      utter.onend = () => {
+        setTimeout(() => {
+          playSceneWithTTS(idx + 1, scenes);
+        }, 600);
+      };
+
+      utter.onerror = () => {
+        setTimeout(() => {
+          playSceneWithTTS(idx + 1, scenes);
+        }, 3000);
+      };
+
+      window.speechSynthesis.speak(utter);
+    } else {
+      setTimeout(() => {
+        playSceneWithTTS(idx + 1, scenes);
+      }, 4000);
+    }
+  };
+
+  // Active Scene Graphics (filtering out excluded)
+  const activeSceneGraphics = sceneGraphics.filter(sc => !excludedImageIds.includes(sc.id));
+  const isEyecatchExcluded = excludedImageIds.includes("eyecatch_hero");
 
   return (
-    <div className="space-y-8 animate-fade-in font-sans">
+    <div className="space-y-8 animate-fade-in pb-16">
       
-      {/* ─── Top Hero Studio Header ─── */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-        <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-600 to-teal-600 text-white flex items-center justify-center shrink-0 shadow-md shadow-indigo-100">
-            <Sparkles size={24} />
-          </div>
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-bold text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-full uppercase tracking-wider font-mono">
-                ReMEETs IN-HOUSE PRODUCTION
-              </span>
-              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                AI自律執筆 ＆ 映像完パケスタジオ
-              </span>
+      {/* Top Header & Studio Mode Switcher */}
+      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 p-6 sm:p-8 rounded-3xl text-white shadow-xl relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+        
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-mono font-bold border border-indigo-500/30">
+              <Sparkles size={14} className="text-yellow-400" />
+              <span>RE-MEETS IN-HOUSE MEDIA STUDIO</span>
             </div>
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-serif font-bold text-slate-900 tracking-wide">
-              メディア制作プロダクション
+            <h1 className="text-2xl sm:text-3xl font-bold font-serif tracking-tight">
+              PRコンテンツ・制作プロダクション
             </h1>
-            <p className="text-xs sm:text-sm text-slate-600 font-sans leading-relaxed">
-              「企画・執筆 → 挿絵・シーン選定 → 完パケ確認 → note・YouTube・TikTokへの手動ワンクリック配信」までを一連の流れで完結させます。
+            <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
+              「企画・執筆 → シーン別AI挿絵生成 → 完パケ確認 → ワンクリック手動配信」までを一連の流れで完結させます。
             </p>
           </div>
-        </div>
 
-        {/* Studio Mode Switcher */}
-        <div className="flex items-center bg-slate-100 p-1 rounded-2xl">
-          <button
-            onClick={() => { setStudioMode("note_studio"); }}
-            className={cn(
-              "px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer",
-              studioMode === "note_studio"
-                ? "bg-white text-indigo-900 shadow-sm"
-                : "text-slate-500 hover:text-slate-900"
-            )}
-          >
-            <BookOpen size={16} className={studioMode === "note_studio" ? "text-indigo-600" : "text-slate-400"} />
-            <span>📝 note・教科書スタジオ</span>
-          </button>
-          <button
-            onClick={() => { setStudioMode("shorts_studio"); }}
-            className={cn(
-              "px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer",
-              studioMode === "shorts_studio"
-                ? "bg-white text-rose-900 shadow-sm"
-                : "text-slate-500 hover:text-slate-900"
-            )}
-          >
-            <Film size={16} className={studioMode === "shorts_studio" ? "text-rose-600" : "text-slate-400"} />
-            <span>🎬 ショート動画プロダクション</span>
-          </button>
+          {/* Mode Tabs: note Studio vs Shorts Production */}
+          <div className="flex items-center p-1.5 bg-white/10 backdrop-blur-md rounded-2xl border border-white/10 shrink-0">
+            <button
+              onClick={() => setStudioMode("note_studio")}
+              className={cn(
+                "px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer",
+                studioMode === "note_studio"
+                  ? "bg-white text-indigo-950 shadow-md font-bold"
+                  : "text-slate-300 hover:text-white"
+              )}
+            >
+              <BookOpen size={16} />
+              <span>📝 note・教科書スタジオ</span>
+            </button>
+            <button
+              onClick={() => setStudioMode("shorts_studio")}
+              className={cn(
+                "px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer",
+                studioMode === "shorts_studio"
+                  ? "bg-gradient-to-r from-rose-500 to-amber-500 text-white shadow-md font-bold"
+                  : "text-slate-300 hover:text-white"
+              )}
+            >
+              <Video size={16} />
+              <span>🎬 ショート動画プロダクション</span>
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* ───────────────────────────────────────────────────────────── */}
-      {/* 📝 MODE 1: note・教科書 制作スタジオ                          */}
-      {/* ───────────────────────────────────────────────────────────── */}
+      {/* ─────────────────────────────────────────────────────────── */}
+      {/* MODE 1: NOTE & CURRICULUM STUDIO                           */}
+      {/* ─────────────────────────────────────────────────────────── */}
       {studioMode === "note_studio" && (
         <div className="space-y-6">
 
-          {/* 5-Step Pipeline Navigation Bar */}
-          <div className="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm flex items-center justify-between overflow-x-auto custom-scrollbar">
-            <div className="flex items-center gap-2 min-w-max">
-              {[
-                { step: 1, label: "1. 執筆・内容確認", icon: FileText },
-                { step: 2, label: "2. 挿絵・画像配置", icon: ImageIcon },
-                { step: 3, label: "3. note風レイアウト確認", icon: Eye },
-                { step: 4, label: "4. 保存 ＆ ワンクリック配信", icon: Share2 },
-              ].map((s) => (
-                <button
-                  key={s.step}
-                  onClick={() => setNoteStep(s.step as any)}
-                  className={cn(
-                    "px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer",
-                    noteStep === s.step
-                      ? "bg-indigo-600 text-white shadow-xs"
-                      : noteStep > s.step
-                        ? "bg-indigo-50 text-indigo-700"
-                        : "text-slate-400 hover:bg-slate-50 hover:text-slate-700"
-                  )}
-                >
-                  <s.icon size={14} />
-                  <span>{s.label}</span>
-                </button>
-              ))}
-            </div>
-
-            <div className="flex items-center gap-2">
+          {/* Stepper Wizard Bar */}
+          <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-xs flex items-center justify-between overflow-x-auto gap-2">
+            {[
+              { step: 1, label: "1. 企画・自動執筆", icon: Wand2 },
+              { step: 2, label: "2. 世界観トーン＆AI挿絵生成", icon: Palette },
+              { step: 3, label: "3. note完成レイアウト確認", icon: Eye },
+              { step: 4, label: "4. ワンクリック手動配信", icon: Send },
+            ].map((st) => (
               <button
-                onClick={handleSaveDraft}
-                disabled={!currentDraft}
-                className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-40"
+                key={st.step}
+                onClick={() => setNoteStep(st.step as 1 | 2 | 3 | 4)}
+                disabled={!currentDraft && st.step > 1}
+                className={cn(
+                  "flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed",
+                  noteStep === st.step
+                    ? "bg-indigo-600 text-white shadow-xs"
+                    : "text-slate-600 hover:bg-slate-100"
+                )}
               >
-                <Save size={14} />
-                <span>下書き保存</span>
+                <st.icon size={14} />
+                <span>{st.label}</span>
               </button>
-            </div>
+            ))}
           </div>
 
-          {saveStatus && (
-            <motion.div initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl text-xs font-bold flex items-center gap-2">
-              <CheckCircle2 size={16} className="text-emerald-600" />
-              <span>{saveStatus}</span>
-            </motion.div>
-          )}
-
-          {/* STEP 1: Draft & Mode Selection */}
+          {/* STEP 1: Plan & Draft Generation */}
           {noteStep === 1 && (
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
               
-              {/* Left Column: Generator Controls */}
+              {/* Left Column: Generation Controls */}
               <div className="lg:col-span-5 bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-6">
-                <div className="border-b border-slate-100 pb-4">
-                  <h2 className="text-base font-bold font-serif text-slate-900 flex items-center gap-2">
-                    <Wand2 size={18} className="text-indigo-600" />
-                    <span>執筆モードの選択</span>
-                  </h2>
+                <div>
+                  <span className="text-[10px] font-bold text-indigo-600 uppercase font-mono">STEP 1: GENERATE</span>
+                  <h2 className="text-base font-bold font-serif text-slate-900">記事タイプの選択とAI執筆</h2>
+                  <p className="text-xs text-slate-500">ボタンを1回押すだけで、AIが最適なテーマを選んで記事全文を書き上げます。</p>
                 </div>
 
-                {/* Mode Selector */}
-                <div className="space-y-3">
+                {/* Sub-mode Select */}
+                <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-2xl">
                   <button
-                    onClick={() => { setNoteMode("random_story"); handleGenerateNote("note_story"); }}
-                    disabled={isGenerating}
+                    onClick={() => setNoteMode("random_story")}
                     className={cn(
-                      "w-full p-4 rounded-2xl border text-left transition-all flex items-start justify-between group cursor-pointer",
+                      "py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer",
                       noteMode === "random_story"
-                        ? "bg-gradient-to-r from-indigo-50/80 to-purple-50/80 border-indigo-300 ring-2 ring-indigo-500/10"
-                        : "bg-slate-50 border-slate-200/80 hover:bg-slate-100"
+                        ? "bg-white text-indigo-900 shadow-xs"
+                        : "text-slate-600 hover:text-slate-900"
                     )}
                   >
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <span className="text-base">🎲</span>
-                        <span className="text-xs font-bold text-slate-900">おまかせランダム実話エッセイ</span>
-                        <span className="text-[10px] font-bold bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full">ワンクリック</span>
-                      </div>
-                      <p className="text-[11px] text-slate-500 leading-relaxed">
-                        昭和・平成の想い出シチュエーションプールから、AIが毎回異なる情緒豊かな感動実話ストーリーを自動生成します。
-                      </p>
-                    </div>
+                    <span>🎲 おまかせ実話</span>
                   </button>
-
                   <button
                     onClick={() => setNoteMode("curriculum_howto")}
                     className={cn(
-                      "w-full p-4 rounded-2xl border text-left transition-all flex items-start justify-between group cursor-pointer",
+                      "py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer",
                       noteMode === "curriculum_howto"
-                        ? "bg-gradient-to-r from-teal-50/80 to-cyan-50/80 border-teal-300 ring-2 ring-teal-500/10"
-                        : "bg-slate-50 border-slate-200/80 hover:bg-slate-100"
+                        ? "bg-white text-indigo-900 shadow-xs"
+                        : "text-slate-600 hover:text-slate-900"
                     )}
                   >
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <span className="text-base">📚</span>
-                        <span className="text-xs font-bold text-slate-900">連載ノウハウ教科書（全12回）</span>
-                        <span className="text-[10px] font-bold bg-teal-100 text-teal-700 px-2 py-0.5 rounded-full">重複なし順次執筆</span>
-                      </div>
-                      <p className="text-[11px] text-slate-500 leading-relaxed">
-                        「第1講: 基本」から「第12講: 応用」まで、順序立ててnote読者をファン化する公式教科書をステップ順に執筆します。
-                      </p>
-                    </div>
+                    <span>📚 全12回教科書</span>
                   </button>
                 </div>
 
-                {/* Curriculum Selector if HowTo is active */}
+                {/* Mode A: Random Story Generator */}
+                {noteMode === "random_story" && (
+                  <div className="p-4 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl border border-indigo-100 space-y-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xl">🎲</span>
+                      <div>
+                        <h3 className="text-xs font-bold text-indigo-950">完全ランダム・想い出実話エッセイ</h3>
+                        <p className="text-[11px] text-indigo-700">学校の屋上、転校生、駅前純喫茶など情緒ある物語をAIが自律執筆。</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => handleGenerateNote("note_story")}
+                      disabled={isGenerating}
+                      className="w-full py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:opacity-90 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                    >
+                      {isGenerating ? <RefreshCw size={14} className="animate-spin" /> : <Wand2 size={14} />}
+                      <span>🎲 おまかせで感動実話を書かせる</span>
+                    </button>
+                  </div>
+                )}
+
+                {/* Mode B: Curriculum Step-by-Step Textbook */}
                 {noteMode === "curriculum_howto" && (
-                  <div className="p-4 bg-teal-50/50 rounded-2xl border border-teal-100 space-y-3">
-                    <div className="flex items-center justify-between text-xs font-bold text-teal-900">
-                      <span>連載カリキュラム進捗: 第 {curriculumStep} / 12 講</span>
-                      <span className="text-[10px] bg-teal-200/70 px-2 py-0.5 rounded-full">{CURRICULUM_STEPS[curriculumStep - 1].phase}</span>
+                  <div className="p-4 bg-gradient-to-br from-teal-50 to-emerald-50 rounded-2xl border border-teal-100 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xl">📚</span>
+                        <div>
+                          <h3 className="text-xs font-bold text-teal-950">全12回ステップアップ教科書</h3>
+                          <p className="text-[11px] text-teal-700">基礎から応用まで重複なく順次作成・アーカイブ</p>
+                        </div>
+                      </div>
+                      <span className="px-2 py-0.5 bg-teal-200/60 text-teal-800 text-[10px] font-mono font-bold rounded-md">
+                        第 {curriculumStep} / 12 講
+                      </span>
                     </div>
 
                     <select
                       value={curriculumStep}
-                      onChange={(e) => setCurriculumStep(parseInt(e.target.value))}
-                      className="w-full p-2.5 bg-white border border-teal-200 rounded-xl text-xs font-bold text-slate-800 outline-none cursor-pointer"
+                      onChange={(e) => setCurriculumStep(Number(e.target.value))}
+                      className="w-full p-2.5 bg-white border border-teal-200 rounded-xl text-xs font-bold text-teal-950 outline-none"
                     >
-                      {CURRICULUM_STEPS.map((s) => (
-                        <option key={s.step} value={s.step}>
-                          {s.title}
+                      {CURRICULUM_STEPS.map((cs) => (
+                        <option key={cs.step} value={cs.step}>
+                          {cs.title} ({cs.phase})
                         </option>
                       ))}
                     </select>
@@ -834,9 +1143,9 @@ export const AdminMarketingStudioTab = () => {
                     <button
                       onClick={() => handleGenerateNote("note_howto")}
                       disabled={isGenerating}
-                      className="w-full py-3 bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
+                      className="w-full py-3 bg-gradient-to-r from-teal-600 to-emerald-600 hover:opacity-90 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                     >
-                      {isGenerating ? <RefreshCw size={14} className="animate-spin" /> : <Sparkles size={14} />}
+                      {isGenerating ? <RefreshCw size={14} className="animate-spin" /> : <BookOpen size={14} />}
                       <span>第 {curriculumStep} 講の原稿を執筆する</span>
                     </button>
                   </div>
@@ -874,7 +1183,14 @@ export const AdminMarketingStudioTab = () => {
                     {drafts.map((d) => (
                       <div
                         key={d.id}
-                        onClick={() => setCurrentDraft(d)}
+                        onClick={() => {
+                          setCurrentDraft(d);
+                          const activePreset = STYLE_TONE_PRESETS.find(p => p.id === activeToneId) || STYLE_TONE_PRESETS[0];
+                          const eyecatch = createEyecatchCanvas(d.title, d.theme, d.type, activePreset.eyecatchVariant);
+                          setGeneratedEyecatch(eyecatch);
+                          const scenes = generateSceneGraphicsForDraft(d.content, activeToneId, d.title);
+                          setSceneGraphics(scenes);
+                        }}
                         className={cn(
                           "p-2.5 rounded-xl border text-left flex items-center justify-between cursor-pointer transition-all text-xs",
                           currentDraft?.id === d.id ? "bg-indigo-50 border-indigo-300 font-bold" : "bg-slate-50/50 border-slate-200/60 hover:bg-slate-100"
@@ -946,9 +1262,9 @@ export const AdminMarketingStudioTab = () => {
             <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-100 shadow-sm space-y-8">
               <div className="flex items-center justify-between border-b border-slate-100 pb-4">
                 <div>
-                  <span className="text-[10px] font-bold text-indigo-600 uppercase font-mono">STEP 2: BRAND TONE & IMAGE ASSETS</span>
-                  <h2 className="text-base font-bold font-serif text-slate-900">世界観トーン ＆ 挿絵・アイキャッチ選定</h2>
-                  <p className="text-xs text-slate-500">おすすめの世界観（トーン）を選ぶと、アイキャッチの配色と挿絵が一括でそのトーンに統一されます。</p>
+                  <span className="text-[10px] font-bold text-indigo-600 uppercase font-mono">STEP 2: BRAND TONE & SCENE GRAPHICS</span>
+                  <h2 className="text-base font-bold font-serif text-slate-900">世界観トーン ＆ シーン別AI挿絵生成</h2>
+                  <p className="text-xs text-slate-500">おすすめの世界観トーンを選ぶと、アイキャッチと記事内の全シーン挿絵が自動で統一生成されます。</p>
                 </div>
                 <button
                   onClick={() => setNoteStep(3)}
@@ -997,7 +1313,6 @@ export const AdminMarketingStudioTab = () => {
                         )}
                       >
                         <div className="space-y-2">
-                          {/* Color bar preview */}
                           <div className={cn("h-2.5 w-full rounded-full bg-gradient-to-r shadow-2xs", tone.gradientClass)} />
 
                           <div className="flex items-start justify-between gap-1 pt-1">
@@ -1047,7 +1362,7 @@ export const AdminMarketingStudioTab = () => {
                     </span>
                     <div>
                       <h3 className="text-sm font-bold font-serif">記事タイトル入り・AI自動生成アイキャッチ (1200×630 note規格)</h3>
-                      <p className="text-[11px] text-slate-300">選んだトーン（{STYLE_TONE_PRESETS.find(p => p.id === activeToneId)?.name}）に合わせて描画・合成されています。</p>
+                      <p className="text-[11px] text-slate-300">選んだトーン（{STYLE_TONE_PRESETS.find(p => p.id === activeToneId)?.name}）に合わせてリアルタイム描画・合成されています。</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -1093,14 +1408,72 @@ export const AdminMarketingStudioTab = () => {
                 )}
               </div>
 
-              {/* 2. Available Official Assets Grid */}
-              <div className="space-y-3">
+              {/* 2. 🖼️ 【NEW】In-article Custom Scene Graphics Generated by AI */}
+              <div className="space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                  <div>
+                    <h3 className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                      <ImageIcon size={14} className="text-indigo-600" />
+                      <span>この記事専用・シーン別AIグラフィック挿絵カード ({sceneGraphics.length}枚)</span>
+                    </h3>
+                    <p className="text-[11px] text-slate-500">記事の章・見出しを解析して自動生成されたオリジナル挿絵です。本文中の各章下に配置されます。</p>
+                  </div>
+                  <span className="text-[10px] font-mono px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded-full border border-indigo-200">
+                    完全オリジナル・0円生成
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {sceneGraphics.map((scene, idx) => (
+                    <div
+                      key={scene.id}
+                      className="bg-slate-50 rounded-2xl p-3 border border-slate-200/80 space-y-2 relative group hover:border-indigo-300 transition-all shadow-2xs"
+                    >
+                      <div className="aspect-[16/9] rounded-xl overflow-hidden border border-slate-200 bg-slate-900 relative">
+                        <img
+                          src={scene.dataUrl}
+                          alt={scene.chapterTitle}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                        />
+                        <div className="absolute top-2 left-2 px-2 py-0.5 bg-black/60 backdrop-blur-md rounded-md text-[9px] font-bold text-white border border-white/20">
+                          SCENE 0{idx + 1}
+                        </div>
+                      </div>
+
+                      <div className="space-y-1">
+                        <h4 className="text-xs font-bold text-slate-900 truncate">{scene.chapterTitle}</h4>
+                        <p className="text-[10px] text-slate-500 truncate">{scene.quote}</p>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-1 border-t border-slate-200/60">
+                        <button
+                          onClick={() => handleRegenerateScene(idx)}
+                          className="text-[10px] text-indigo-600 hover:text-indigo-800 font-bold flex items-center gap-1 cursor-pointer"
+                        >
+                          <RefreshCw size={11} />
+                          <span>再生成</span>
+                        </button>
+                        <button
+                          onClick={() => handleDownloadScene(scene)}
+                          className="text-[10px] text-teal-700 hover:text-teal-900 font-bold flex items-center gap-1 cursor-pointer"
+                        >
+                          <Download size={11} />
+                          <span>PNG保存</span>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 3. Available Official Assets Grid (Optional UI screenshots) */}
+              <div className="space-y-3 pt-4 border-t border-slate-100">
                 <div className="flex items-center justify-between">
                   <h3 className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                    <ImageIcon size={14} className="text-indigo-600" />
-                    <span>公式アセット・挿絵ギャラリー（本文中に差し込む画像を選択）</span>
+                    <ImageIcon size={14} className="text-slate-500" />
+                    <span>公式アセット・追加画像（必要に応じてアプリUI画面等を選択）</span>
                   </h3>
-                  <span className="text-[11px] text-slate-400">トーン推奨画像が自動選択されています（変更も自由）</span>
+                  <span className="text-[11px] text-slate-400">チェックで追加選択可能</span>
                 </div>
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3.5">
@@ -1141,37 +1514,17 @@ export const AdminMarketingStudioTab = () => {
                 </div>
               </div>
 
-              {/* 3. AI Image Generation Prompt Card (for Midjourney / DALL-E) */}
-              {currentDraft.imagePrompt && (
-                <div className="bg-gradient-to-r from-purple-50 to-indigo-50 p-4 rounded-2xl border border-purple-100 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-purple-900 flex items-center gap-1.5">
-                      <Sparkle size={14} className="text-purple-600" />
-                      <span>外部画像AI用プロンプト (Midjourney / Imagen / Canva用)</span>
-                    </span>
-                    <button
-                      onClick={() => copyToClipboard(currentDraft.imagePrompt || "", "prompt")}
-                      className="text-xs text-purple-700 hover:underline font-bold flex items-center gap-1 cursor-pointer"
-                    >
-                      {copiedField === "prompt" ? <Check size={12} /> : <Copy size={12} />}
-                      <span>{copiedField === "prompt" ? "コピー済" : "プロンプトをコピー"}</span>
-                    </button>
-                  </div>
-                  <p className="text-xs font-mono bg-white/80 p-2.5 rounded-xl text-purple-950 border border-purple-200/50 select-all">
-                    {currentDraft.imagePrompt}
-                  </p>
-                </div>
-              )}
             </div>
           )}
 
-          {/* STEP 3: note-style Live Preview */}
+          {/* STEP 3: note-style Live Preview (with In-article Scene Illustrations & Delete button) */}
           {noteStep === 3 && currentDraft && (
             <div className="bg-white p-6 sm:p-10 rounded-3xl border border-slate-100 shadow-sm space-y-8 max-w-3xl mx-auto">
               <div className="flex items-center justify-between border-b border-slate-100 pb-4">
                 <div>
                   <span className="text-[10px] font-bold text-indigo-600 uppercase font-mono">STEP 3: NOTE LIVE PREVIEW</span>
                   <h2 className="text-base font-bold font-serif text-slate-900">note完成レイアウト確認</h2>
+                  <p className="text-xs text-slate-500">不要な挿絵がある場合は「🗑️ 挿絵を外す」で簡単に削除できます。</p>
                 </div>
                 <button
                   onClick={() => setNoteStep(4)}
@@ -1182,10 +1535,18 @@ export const AdminMarketingStudioTab = () => {
                 </button>
               </div>
 
-              {/* note Hero Header */}
-              {selectedImages.length > 0 && (
-                <div className="aspect-[16/9] w-full rounded-2xl overflow-hidden shadow-sm border border-slate-100">
-                  <img src={selectedImages[0]} alt="Hero" className="w-full h-full object-cover" />
+              {/* 1. note Hero Eyecatch Header */}
+              {generatedEyecatch && !isEyecatchExcluded && (
+                <div className="relative aspect-[16/9] w-full rounded-2xl overflow-hidden shadow-sm border border-slate-100 group">
+                  <img src={generatedEyecatch} alt="Hero" className="w-full h-full object-cover" />
+                  <button
+                    onClick={() => handleExcludeImage("eyecatch_hero")}
+                    className="absolute top-3 right-3 px-3 py-1.5 bg-black/70 hover:bg-rose-600 text-white text-[11px] font-bold rounded-xl flex items-center gap-1 backdrop-blur-md transition-colors cursor-pointer opacity-90 group-hover:opacity-100"
+                    title="アイキャッチ画像を外す"
+                  >
+                    <Trash2 size={13} />
+                    <span>アイキャッチを外す</span>
+                  </button>
                 </div>
               )}
 
@@ -1215,20 +1576,87 @@ export const AdminMarketingStudioTab = () => {
                 )}
               </div>
 
-              {/* Body Content with Embedded Images */}
-              <div className="prose prose-slate max-w-none text-slate-800 text-sm sm:text-base leading-relaxed space-y-6 font-serif whitespace-pre-wrap">
-                {currentDraft.content}
+              {/* 2. Body Content with In-article Scene Graphics inserted between sections */}
+              <div className="prose prose-slate max-w-none text-slate-800 text-sm sm:text-base leading-relaxed space-y-6 font-serif">
+                {currentDraft.content.split("\n\n").map((paragraph, pIdx) => {
+                  const isHeading = paragraph.startsWith("#") || paragraph.startsWith("【") || paragraph.startsWith("■");
+                  
+                  // Check if this is a heading where we should insert a corresponding scene illustration
+                  const matchingScene = isHeading ? activeSceneGraphics.find((_, sIdx) => sIdx === Math.floor(pIdx / 3)) : null;
+
+                  return (
+                    <div key={pIdx} className="space-y-4">
+                      {isHeading ? (
+                        <div className="font-bold text-lg text-slate-900 pt-3 border-b border-slate-100 pb-1">
+                          {paragraph.replace(/^[#\s【】■]+/, "").replace(/[】]/, "")}
+                        </div>
+                      ) : (
+                        <p className="whitespace-pre-wrap leading-relaxed text-slate-700">
+                          {paragraph}
+                        </p>
+                      )}
+
+                      {/* Render Matching Scene Graphic under heading if not excluded */}
+                      {matchingScene && !excludedImageIds.includes(matchingScene.id) && (
+                        <div className="relative aspect-[16/9] w-full rounded-2xl overflow-hidden border border-slate-200 shadow-sm my-4 group">
+                          <img
+                            src={matchingScene.dataUrl}
+                            alt={matchingScene.chapterTitle}
+                            className="w-full h-full object-cover"
+                          />
+                          <button
+                            onClick={() => handleExcludeImage(matchingScene.id)}
+                            className="absolute top-3 right-3 px-3 py-1.5 bg-black/70 hover:bg-rose-600 text-white text-[11px] font-bold rounded-xl flex items-center gap-1 backdrop-blur-md transition-colors cursor-pointer opacity-90 group-hover:opacity-100"
+                            title="この挿絵を記事から外す"
+                          >
+                            <Trash2 size={13} />
+                            <span>挿絵を外す</span>
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
 
-              {/* Bottom In-article Image Gallery */}
-              {selectedImages.length > 1 && (
+              {/* 3. Bottom In-article Additional Image Gallery */}
+              {selectedImages.filter(img => !excludedImageIds.includes(img)).length > 1 && (
                 <div className="pt-6 border-t border-slate-100 space-y-4">
-                  <span className="text-xs font-bold text-slate-400 block uppercase font-mono">IN-ARTICLE ILLUSTRATIONS</span>
+                  <span className="text-xs font-bold text-slate-400 block uppercase font-mono">ADDITIONAL ASSETS</span>
                   <div className="grid grid-cols-2 gap-4">
-                    {selectedImages.slice(1).map((img, i) => (
-                      <div key={i} className="aspect-video rounded-xl overflow-hidden border border-slate-200">
+                    {selectedImages.filter(img => !excludedImageIds.includes(img)).slice(1).map((img, i) => (
+                      <div key={i} className="relative aspect-video rounded-xl overflow-hidden border border-slate-200 group">
                         <img src={img} alt="In-article" className="w-full h-full object-cover" />
+                        <button
+                          onClick={() => handleExcludeImage(img)}
+                          className="absolute top-2 right-2 px-2 py-1 bg-black/70 hover:bg-rose-600 text-white text-[10px] font-bold rounded-lg flex items-center gap-1 backdrop-blur-md transition-colors cursor-pointer"
+                        >
+                          <Trash2 size={11} />
+                          <span>削除</span>
+                        </button>
                       </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* 4. Restore Deleted Images Area */}
+              {excludedImageIds.length > 0 && (
+                <div className="p-4 bg-amber-50 rounded-2xl border border-amber-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-2 text-xs font-bold text-amber-900">
+                    <AlertCircle size={15} className="text-amber-600 shrink-0" />
+                    <span>除外された画像 ({excludedImageIds.length}件)</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {excludedImageIds.map((id, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => handleRestoreImage(id)}
+                        className="px-2.5 py-1 bg-white hover:bg-amber-100 text-amber-900 rounded-lg text-xs font-bold border border-amber-300 transition-colors flex items-center gap-1 cursor-pointer shadow-2xs"
+                      >
+                        <RotateCcw size={11} />
+                        <span>復元する</span>
+                      </button>
                     ))}
                   </div>
                 </div>
