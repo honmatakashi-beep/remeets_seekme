@@ -64,7 +64,8 @@ import {
   AdminDeletionTab,
   AdminAgeVerificationTab,
   AdminPostsTab,
-  AdminUsersTab
+  AdminUsersTab,
+  AdminAssetCleanerTab
 } from "./tabs";
 
 
@@ -688,7 +689,7 @@ export const AdminDashboard = () => {
     URL.revokeObjectURL(url);
   };
 
-  const [activeTab, setActiveTab] = useState<'stats' | 'valuation' | 'quizAnalytics' | 'liveAlerts' | 'users' | 'posts' | 'logs' | 'reports' | 'deletion' | 'ngWords' | 'contacts' | 'emailTemplates' | 'successStories' | 'security' | 'system' | 'versions' | 'notifications' | 'moderation' | 'manual' | 'designSystem' | 'ageVerification' | 'settings' | 'deployment' | 'monetization' | 'payments' | 'rbac'>('stats');
+  const [activeTab, setActiveTab] = useState<'stats' | 'valuation' | 'quizAnalytics' | 'liveAlerts' | 'users' | 'posts' | 'logs' | 'reports' | 'deletion' | 'ngWords' | 'contacts' | 'emailTemplates' | 'successStories' | 'security' | 'system' | 'versions' | 'notifications' | 'moderation' | 'manual' | 'designSystem' | 'ageVerification' | 'settings' | 'deployment' | 'monetization' | 'payments' | 'rbac' | 'assetCleaner'>('stats');
   const [quizMatchingAnalytics, setQuizMatchingAnalytics] = useState<any>(null);
   const [guideDocType, setGuideDocType] = useState<'deployment' | 'cost_estimate' | 'cost_list_detailed' | 'permit' | 'police' | 'consult' | 'matrix' | 'slides' | 'scenario' | 'requirements' | 'evaluation' | 'pr_plan' | 'legal_guide'>('deployment');
   const [loading, setLoading] = useState(true);
@@ -964,6 +965,7 @@ export const AdminDashboard = () => {
     {
       title: 'Support & UI Specs',
       items: [
+        { id: 'assetCleaner', label: '🖼️ 画像アセット管理 ＆\n選択クリーンアップ', icon: ImageIcon },
         { id: 'designSystem', label: 'デザインシステム\n(UI/UX Specs)', icon: Palette },
         { id: 'deployment', label: 'マスター備忘録 ＆\n公式運営ライブラリ', icon: BookOpen, onClick: () => { setActiveTab('deployment'); setGuideDocType('deployment'); } },
         { id: 'manual', label: '操作マニュアル', icon: BookOpen },
@@ -3372,6 +3374,10 @@ export const AdminDashboard = () => {
               handleViewPost={handleViewPost}
               setActiveTab={setActiveTab}
             />
+          )}
+
+          {activeTab === 'assetCleaner' && (
+            <AdminAssetCleanerTab />
           )}
 
           {activeTab === 'settings' ? (

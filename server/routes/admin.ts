@@ -3908,4 +3908,222 @@ ReMEETs カスタマーサポート運営事務局
     }
   });
 
+  // ──────────────────────────────────────────────────────────
+  // 🖼️ Asset Cleaner & Image Management APIs
+  // ──────────────────────────────────────────────────────────
+
+  // Helper to format bytes
+  const formatBytes = (bytes: number) => {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const sizes = ["Bytes", "KB", "MB", "GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
+  };
+
+  // Helper to scan codebase for image usage
+  const scanImageUsage = () => {
+    const rootDir = process.cwd();
+    const extensions = [".ts", ".tsx", ".js", ".jsx", ".html", ".css", ".json"];
+    const scanDirs = [
+      path.join(rootDir, "src"),
+      path.join(rootDir, "server"),
+      path.join(rootDir, "public")
+    ];
+
+    const fileMap: { [relPath: string]: string } = {};
+
+    const walk = (dir: string) => {
+      if (!fs.existsSync(dir)) return;
+      const entries = fs.readdirSync(dir, { withFileTypes: true });
+      for (const entry of entries) {
+        if (entry.name.startsWith(".") || entry.name === "node_modules" || entry.name === "dist") continue;
+        const full = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+          walk(full);
+        } else if (extensions.includes(path.extname(entry.name).toLowerCase())) {
+          try {
+            const rel = path.relative(rootDir, full);
+            fileMap[rel] = fs.readFileSync(full, "utf-8");
+          } catch {}
+        }
+      }
+    };
+
+    scanDirs.forEach(walk);
+    return fileMap;
+  };
+
+  // 1. Get all images with usage detection
+  adminRouter.get("/assets/images", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      const rootDir = process.cwd();
+      const targetDirs = [
+        { dir: "src/assets/images", label: "src/assets/images" },
+        { dir: "public", label: "public" }
+      ];
+
+      const fileMap = scanImageUsage();
+      const imageList: any[] = [];
+      let totalBytes = 0;
+      let unusedBytes = 0;
+
+      for (const target of targetDirs) {
+        const fullDir = path.join(rootDir, target.dir);
+        if (!fs.existsSync(fullDir)) continue;
+
+        const entries = fs.readdirSync(fullDir, { withFileTypes: true });
+        for (const entry of entries) {
+          if (!entry.isFile()) continue;
+          const ext = path.extname(entry.name).toLowerCase();
+          if (![".jpg", ".jpeg", ".png", ".svg", ".webp", ".gif"].includes(ext)) continue;
+
+          const filePath = path.join(fullDir, entry.name);
+          const stat = fs.statSync(filePath);
+          const filename = entry.name;
+          const baseName = path.basename(filename, ext);
+
+          // Check usage in scanned codebase
+          const usedInFiles: string[] = [];
+          for (const [relPath, content] of Object.entries(fileMap)) {
+            // Ignore self-references in raw files
+            if (relPath.includes(filename)) continue;
+
+            if (content.includes(filename) || (baseName.length > 6 && content.includes(baseName))) {
+              usedInFiles.push(relPath);
+            }
+          }
+
+          const isUsed = usedInFiles.length > 0;
+          totalBytes += stat.size;
+          if (!isUsed) unusedBytes += stat.size;
+
+          imageList.push({
+            id: `${target.dir}/${filename}`,
+            filename,
+            dir: target.dir,
+            fullPath: filePath,
+            ext,
+            sizeBytes: stat.size,
+            sizeFormatted: formatBytes(stat.size),
+            mtime: stat.mtime.toISOString(),
+            isUsed,
+            usedInFiles,
+            previewUrl: `/api/admin/assets/preview?dir=${encodeURIComponent(target.dir)}&file=${encodeURIComponent(filename)}`
+          });
+        }
+      }
+
+      // Sort: unused first, then by size descending
+      imageList.sort((a, b) => {
+        if (a.isUsed !== b.isUsed) return a.isUsed ? 1 : -1;
+        return b.sizeBytes - a.sizeBytes;
+      });
+
+      res.json({
+        success: true,
+        images: imageList,
+        totalCount: imageList.length,
+        unusedCount: imageList.filter(i => !i.isUsed).length,
+        usedCount: imageList.filter(i => i.isUsed).length,
+        totalBytes,
+        totalFormatted: formatBytes(totalBytes),
+        unusedBytes,
+        unusedFormatted: formatBytes(unusedBytes)
+      });
+    } catch (err) {
+      console.error("Fetch asset images error:", err);
+      res.status(500).json({ error: "Failed to fetch asset images" });
+    }
+  });
+
+  // 2. Preview image binary stream
+  adminRouter.get("/assets/preview", (req: any, res) => {
+    try {
+      const { dir, file } = req.query;
+      if (!dir || !file) return res.status(400).send("Missing parameters");
+
+      // Prevent directory traversal
+      const safeDir = path.normalize(String(dir)).replace(/^(\.\.[\/\\])+/, '');
+      const safeFile = path.basename(String(file));
+      const rootDir = process.cwd();
+      const filePath = path.join(rootDir, safeDir, safeFile);
+
+      if (!fs.existsSync(filePath)) {
+        return res.status(404).send("Image not found");
+      }
+
+      const ext = path.extname(safeFile).toLowerCase();
+      const mimeTypes: { [key: string]: string } = {
+        ".jpg": "image/jpeg",
+        ".jpeg": "image/jpeg",
+        ".png": "image/png",
+        ".svg": "image/svg+xml",
+        ".webp": "image/webp",
+        ".gif": "image/gif"
+      };
+
+      res.setHeader("Content-Type", mimeTypes[ext] || "application/octet-stream");
+      res.setHeader("Cache-Control", "public, max-age=86400");
+      fs.createReadStream(filePath).pipe(res);
+    } catch (err) {
+      console.error("Preview image error:", err);
+      res.status(500).send("Internal server error");
+    }
+  });
+
+  // 3. Delete selected images
+  adminRouter.post("/assets/images/delete", authenticateToken, isAdmin, (req: any, res) => {
+    const { files } = req.body;
+    if (!Array.isArray(files) || files.length === 0) {
+      return res.status(400).json({ error: "No files specified for deletion" });
+    }
+
+    const rootDir = process.cwd();
+    const results: { filename: string; success: boolean; error?: string }[] = [];
+    let deletedCount = 0;
+    let reclaimedBytes = 0;
+
+    for (const item of files) {
+      try {
+        const safeDir = path.normalize(String(item.dir)).replace(/^(\.\.[\/\\])+/, '');
+        const safeFile = path.basename(String(item.filename));
+        const filePath = path.join(rootDir, safeDir, safeFile);
+
+        // Security check: only allow deletion in designated directories
+        if (!safeDir.startsWith("src/assets/images") && !safeDir.startsWith("public")) {
+          results.push({ filename: safeFile, success: false, error: "Unauthorized directory" });
+          continue;
+        }
+
+        if (fs.existsSync(filePath)) {
+          const stat = fs.statSync(filePath);
+          fs.unlinkSync(filePath);
+          reclaimedBytes += stat.size;
+          deletedCount++;
+          results.push({ filename: safeFile, success: true });
+        } else {
+          results.push({ filename: safeFile, success: false, error: "File not found" });
+        }
+      } catch (e: any) {
+        results.push({ filename: item.filename, success: false, error: e.message });
+      }
+    }
+
+    logAction(
+      req.user?.id || 1,
+      "ADMIN_DELETE_ASSETS",
+      `Deleted ${deletedCount} images (${formatBytes(reclaimedBytes)})`,
+      req.ip
+    );
+
+    res.json({
+      success: true,
+      deletedCount,
+      reclaimedBytes,
+      reclaimedFormatted: formatBytes(reclaimedBytes),
+      results
+    });
+  });
+
 
