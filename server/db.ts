@@ -18,14 +18,22 @@ export function initDatabase() {
   try {
     db = new Database("kizuna.db");
     db.pragma("integrity_check");
+    db.pragma("journal_mode = WAL");
+    db.pragma("synchronous = NORMAL");
+    db.pragma("cache_size = -64000");
+    db.pragma("temp_store = MEMORY");
   } catch (dbErr) {
     console.error("Database file was corrupted or unreadable. Backing up and recreating fresh DB...", dbErr);
     if (fs.existsSync("kizuna.db")) {
       fs.renameSync("kizuna.db", `kizuna_corrupt.db.${Date.now()}`);
     }
     db = new Database("kizuna.db");
+    db.pragma("journal_mode = WAL");
+    db.pragma("synchronous = NORMAL");
+    db.pragma("cache_size = -64000");
+    db.pragma("temp_store = MEMORY");
   }
-  console.log("Database file opened.");
+  console.log("Database file opened with WAL mode.");
 
   try {
     db.exec(`
@@ -460,6 +468,18 @@ export function initDatabase() {
     }
     if (!contactCols.some((c: any) => c.name === 'ticket_token')) {
       db.prepare("ALTER TABLE contacts ADD COLUMN ticket_token TEXT").run();
+    }
+
+    // Performance indexes for sub-millisecond query speed
+    try {
+      db.exec(`
+        CREATE INDEX IF NOT EXISTS idx_posts_status_created ON posts(status, created_at);
+        CREATE INDEX IF NOT EXISTS idx_posts_user_id ON posts(user_id);
+        CREATE INDEX IF NOT EXISTS idx_post_questions_post_id ON post_questions(post_id);
+        CREATE INDEX IF NOT EXISTS idx_access_logs_created ON access_logs(created_at);
+      `);
+    } catch (idxErr) {
+      console.error("Index creation error:", idxErr);
     }
 
     // Backfill contact_messages and ticket_token for existing contacts

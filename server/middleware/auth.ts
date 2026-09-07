@@ -155,6 +155,15 @@ export const logAccessMiddleware = (req: any, res: any, next: any) => {
   // We use optional auth here to try and get user info if available
   optionalAuthenticateToken(req, res, () => {
     res.on('finish', () => {
+      // 静的ファイルやViteアセット、画像等の内部リクエストはスキップしてDB負荷を軽減
+      if (
+        req.path.startsWith('/@') || 
+        req.path.startsWith('/src/') || 
+        req.path.startsWith('/node_modules/') || 
+        req.path.match(/\.(png|jpg|jpeg|gif|svg|ico|css|js|map|woff2?|json)$/i)
+      ) {
+        return;
+      }
       try {
         const stmt = db.prepare("INSERT INTO access_logs (user_id, path, method, status_code, ip, user_agent, referer) VALUES (?, ?, ?, ?, ?, ?, ?)");
         stmt.run(req.user?.id || null, req.path, req.method, res.statusCode, req.ip || null, req.headers['user-agent'] || null, req.headers['referer'] || null);
