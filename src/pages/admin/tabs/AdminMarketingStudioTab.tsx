@@ -12,19 +12,6 @@ import {
 import { useAuth } from "../../../contexts/AuthContext";
 import { cn } from "../../../lib/utils";
 
-// Import real image assets for reliable Vite bundling & dev server display
-import heroBottleMail from "../../../assets/images/hero_bottle_mail_1785941809474.jpg";
-import vintageLetterPaper from "../../../assets/images/vintage_bottle_letter_paper_1788601708823.jpg";
-import quizMatchHearts from "../../../assets/images/quiz_match_hearts_pastel_1785940521320.jpg";
-import step01Write from "../../../assets/images/step_01_photo_write_1785857630366.jpg";
-import step02Drift from "../../../assets/images/step_02_photo_drift_1785857647101.jpg";
-import step03Read from "../../../assets/images/step_03_photo_read_v2_1785857978640.jpg";
-import safetyGuardian from "../../../assets/images/safety_guardian_cool_1785864341331.jpg";
-import supporterTwilight from "../../../assets/images/supporter_twilight_cool_1785860735348.jpg";
-import handdrawnWrite from "../../../assets/images/step_01_handdrawn_write_1786375845742.jpg";
-import handdrawnDrift from "../../../assets/images/step_02_handdrawn_drift_1786375870283.jpg";
-import handdrawnReconnect from "../../../assets/images/step_03_handdrawn_reconnect_1786375885799.jpg";
-
 // ── Types ──
 interface VideoScene {
   time: string;
@@ -33,7 +20,7 @@ interface VideoScene {
   narration: string;
   telop: string;
   bgm: string;
-  imagePath?: string;
+  imageUrl?: string;
 }
 
 interface PRDraft {
@@ -70,47 +57,28 @@ const CURRICULUM_STEPS = [
   { step: 12, title: "第12講: ReMEETsが目指す「優しく安全な想い出の交差点」の未来", phase: "未来編", theme: "インターネット時代における温かい縁の再接続" }
 ];
 
-// Available Image Assets in ReMEETs (bundled via Vite import)
-const AVAILABLE_ASSETS = [
-  { id: "hero_bottle", title: "夕暮れの海とガラス瓶", path: heroBottleMail, category: "写真", tone: "twilight_cinematic" },
-  { id: "vintage_paper", title: "万年筆とヴィンテージ便箋", path: vintageLetterPaper, category: "写真", tone: "vintage_amber_letter" },
-  { id: "quiz_match", title: "思い出クイズ照合画面", path: quizMatchHearts, category: "アプリ画面", tone: "emerald_ocean_clean" },
-  { id: "step_write", title: "想い出の手紙を書く情景", path: step01Write, category: "イラスト", tone: "watercolor_nostalgia" },
-  { id: "handdrawn_write", title: "手描き風：手紙をしたためる", path: handdrawnWrite, category: "イラスト", tone: "watercolor_nostalgia" },
-  { id: "handdrawn_drift", title: "手描き風：海を流れるボトル", path: handdrawnDrift, category: "イラスト", tone: "watercolor_nostalgia" },
-  { id: "handdrawn_reconnect", title: "手描き風：再会の光", path: handdrawnReconnect, category: "イラスト", tone: "watercolor_nostalgia" },
-  { id: "safety_shield", title: "安心安全のAIセキュア防衛", path: safetyGuardian, category: "アプリ画面", tone: "emerald_ocean_clean" },
-  { id: "twilight_sea", title: "黄昏時の海辺風景", path: supporterTwilight, category: "風景", tone: "twilight_cinematic" },
-  { id: "step_drift", title: "大海原を漂流するボトル", path: step02Drift, category: "写真", tone: "twilight_cinematic" },
-  { id: "step_read", title: "手紙を優しく開く瞬間", path: step03Read, category: "写真", tone: "vintage_amber_letter" }
-];
-
 // 🎨 Brand Style & Tone Presets (世界観・統一トーン設定)
-interface StyleTonePreset {
+export interface StyleTonePreset {
   id: string;
   name: string;
   tag: string;
   description: string;
   badge: string;
-  eyecatchVariant: number;
-  defaultAssetIds: string[];
   gradientClass: string;
   badgeColor: string;
   aiPromptStyle: string;
 }
 
-const STYLE_TONE_PRESETS: StyleTonePreset[] = [
+export const STYLE_TONE_PRESETS: StyleTonePreset[] = [
   {
     id: "watercolor_nostalgia",
     name: "ノスタルジック水彩イラスト",
     tag: "🎨 水彩・ジブリ風",
     description: "絵本やアニメのような温もり。心に優しく染み入る手描きイラストの世界観。",
     badge: "実話エッセイ・共感連載に最適",
-    eyecatchVariant: 0,
-    defaultAssetIds: ["handdrawn_write", "handdrawn_drift", "handdrawn_reconnect", "step_write"],
     gradientClass: "from-amber-500 via-rose-500 to-indigo-700",
     badgeColor: "bg-rose-50 text-rose-700 border-rose-200",
-    aiPromptStyle: "soft watercolor storybook illustration, warm nostalgic lighting, studio ghibli aesthetic, gentle pastel tones"
+    aiPromptStyle: "nostalgic Japanese anime watercolor painting, soft pastel color palette, Makoto Shinkai aesthetic, emotional warm lighting, gentle brush strokes, masterpiece, ultra-detailed, artistic 8k"
   },
   {
     id: "twilight_cinematic",
@@ -118,11 +86,9 @@ const STYLE_TONE_PRESETS: StyleTonePreset[] = [
     tag: "🌅 映画・夕暮れ実写",
     description: "夕暮れの海辺とガラス瓶。映画のワンシーンのようなエモーショナルな大人向けトーン。",
     badge: "感動エッセイ・ショート動画に最適",
-    eyecatchVariant: 0,
-    defaultAssetIds: ["hero_bottle", "twilight_sea", "vintage_paper", "step_drift"],
     gradientClass: "from-indigo-900 via-purple-900 to-amber-700",
     badgeColor: "bg-purple-50 text-purple-700 border-purple-200",
-    aiPromptStyle: "cinematic 35mm photograph, sunset golden hour ocean, drifting glass bottle, nostalgic film grain, 8k resolution"
+    aiPromptStyle: "cinematic 35mm film photograph, golden hour sunset, anamorphic lens flare, nostalgic Japanese landscape, rich warm tone, emotional atmosphere, 8k resolution, award-winning cinematography"
   },
   {
     id: "vintage_amber_letter",
@@ -130,11 +96,9 @@ const STYLE_TONE_PRESETS: StyleTonePreset[] = [
     tag: "📜 レトロ・羊皮紙",
     description: "万年筆・琥珀色の光・便箋の質感。歴史と品格を感じさせる落ち着いたトーン。",
     badge: "手紙ノウハウ・本格エッセイに最適",
-    eyecatchVariant: 3,
-    defaultAssetIds: ["vintage_paper", "step_read", "step_write", "hero_bottle"],
     gradientClass: "from-amber-950 via-yellow-900 to-amber-700",
     badgeColor: "bg-amber-50 text-amber-800 border-amber-200",
-    aiPromptStyle: "vintage fountain pen on antique textured letter paper, warm sepia tones, nostalgic antique aesthetic, soft candlelight"
+    aiPromptStyle: "vintage antique illustration, sepia and warm amber tone, retro 1990s Japanese aesthetic, fountain pen letter texture, timeless emotional feeling, nostalgic masterpiece"
   },
   {
     id: "emerald_ocean_clean",
@@ -142,386 +106,99 @@ const STYLE_TONE_PRESETS: StyleTonePreset[] = [
     tag: "💎 深海ブルー・モダン",
     description: "安心安全のAI技術と深海ブルー。知的で信頼感あふれるモダンで清潔なデザイン。",
     badge: "ノウハウ教科書・機能解説に最適",
-    eyecatchVariant: 1,
-    defaultAssetIds: ["safety_shield", "quiz_match", "hero_bottle", "twilight_sea"],
     gradientClass: "from-slate-900 via-teal-900 to-emerald-700",
     badgeColor: "bg-teal-50 text-teal-700 border-teal-200",
-    aiPromptStyle: "clean minimalist modern illustration, deep emerald ocean, radiant light particles, secure and trustworthy aura"
+    aiPromptStyle: "clean serene digital art, deep ocean emerald and indigo blue gradient, crystal clear water, glass bottle floating, luminous glowing light, modern sophisticated aesthetic, 8k"
   }
 ];
 
-// 🎨 Real-time Canvas Eyecatch Graphic Generator (1200x630 note / SNS Standard)
-const createEyecatchCanvas = (
-  title: string,
-  theme: string,
-  type: string,
-  variant: number = 0
-): string => {
-  if (typeof document === "undefined") return "";
-  const canvas = document.createElement("canvas");
-  canvas.width = 1200;
-  canvas.height = 630;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return "";
-
-  // Color Palettes
-  const palettes = [
-    // 0: Twilight Nostalgia (夕暮れ・黄昏)
-    ["#14192b", "#271b3e", "#5c2a4d", "#c55a4e", "#f3b06b"],
-    // 1: Emerald Deep Ocean (深海・青緑)
-    ["#061a24", "#0a3641", "#155e63", "#388e7d", "#98d6aa"],
-    // 2: Midnight Starlight (夜空・星明かり)
-    ["#090d16", "#141e30", "#243b55", "#4776e6", "#8e54e9"],
-    // 3: Warm Letter Vintage (ヴィンテージ便箋・琥珀)
-    ["#1c140d", "#362217", "#6b3e26", "#b06d40", "#e4b07a"]
-  ];
-  const palette = palettes[variant % palettes.length];
-
-  // 1. Background Gradient
-  const grad = ctx.createLinearGradient(0, 0, 1200, 630);
-  grad.addColorStop(0, palette[0]);
-  grad.addColorStop(0.3, palette[1]);
-  grad.addColorStop(0.65, palette[2]);
-  grad.addColorStop(0.9, palette[3]);
-  grad.addColorStop(1, palette[4]);
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, 1200, 630);
-
-  // 2. Artistic Ocean Waves & Glow
-  ctx.save();
-  ctx.globalAlpha = 0.15;
-  for (let i = 0; i < 5; i++) {
-    ctx.beginPath();
-    ctx.moveTo(-100, 430 + i * 40);
-    ctx.bezierCurveTo(320, 360 + i * 45, 750, 500 - i * 35, 1300, 420 + i * 35);
-    ctx.lineTo(1300, 630);
-    ctx.lineTo(-100, 630);
-    ctx.closePath();
-    ctx.fillStyle = "#ffffff";
-    ctx.fill();
-  }
-
-  // Sparkling Stars / Bubbles
-  ctx.globalAlpha = 0.3;
-  for (let i = 0; i < 35; i++) {
-    const x = (Math.sin(i * 99 + variant * 3) * 0.5 + 0.5) * 1200;
-    const y = (Math.cos(i * 37 + variant * 5) * 0.5 + 0.5) * 480;
-    const r = (i % 4) + 1.5;
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.fillStyle = "#ffffff";
-    ctx.fill();
-  }
-  ctx.restore();
-
-  // 3. Elegant Outer Border & Paper Frame
-  ctx.save();
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.28)";
-  ctx.lineWidth = 2;
-  ctx.strokeRect(36, 36, 1200 - 72, 630 - 72);
-
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
-  ctx.lineWidth = 1;
-  ctx.strokeRect(44, 44, 1200 - 88, 630 - 88);
-  ctx.restore();
-
-  // 4. Header Badge: ReMEETs Brand & Category
-  ctx.save();
-  ctx.fillStyle = "rgba(255, 255, 255, 0.18)";
-  ctx.beginPath();
-  if (ctx.roundRect) {
-    ctx.roundRect(64, 60, 320, 38, 19);
-  } else {
-    ctx.rect(64, 60, 320, 38);
-  }
-  ctx.fill();
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.35)";
-  ctx.lineWidth = 1;
-  ctx.stroke();
-
-  ctx.fillStyle = "#ffffff";
-  ctx.font = "bold 15px 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', serif";
-  ctx.fillText("✨ ReMEETs 〜再会のボトルメール〜", 82, 84);
-
-  const categoryLabel = type.includes("howto") ? "📖 想い出ノウハウ教科書" : "💌 実話風・再会エッセイ";
-  ctx.fillStyle = "#fef08a";
-  ctx.font = "bold 15px sans-serif";
-  ctx.fillText(categoryLabel, 1200 - 64 - ctx.measureText(categoryLabel).width, 84);
-  ctx.restore();
-
-  // 5. Main Title (Word Wrap, Bold, Drop Shadow)
-  ctx.save();
-  ctx.fillStyle = "#ffffff";
-  ctx.shadowColor = "rgba(0, 0, 0, 0.65)";
-  ctx.shadowBlur = 16;
-  ctx.shadowOffsetX = 0;
-  ctx.shadowOffsetY = 4;
-
-  const cleanTitle = title || "あの頃の大切な人に、もう一度手紙を届ける奇跡";
-  const fontSize = cleanTitle.length > 28 ? 42 : cleanTitle.length > 18 ? 50 : 58;
-  ctx.font = `bold ${fontSize}px 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', serif`;
-
-  const maxLineWidth = 980;
-  const lines: string[] = [];
-  let currentLine = "";
-  for (let i = 0; i < cleanTitle.length; i++) {
-    const char = cleanTitle[i];
-    const testLine = currentLine + char;
-    if (ctx.measureText(testLine).width > maxLineWidth && currentLine.length > 0) {
-      lines.push(currentLine);
-      currentLine = char;
-    } else {
-      currentLine = testLine;
-    }
-  }
-  if (currentLine) lines.push(currentLine);
-
-  const totalTextHeight = lines.length * (fontSize * 1.35);
-  const startY = 300 - (totalTextHeight / 2) + fontSize;
-
-  lines.forEach((line, index) => {
-    const lineWidth = ctx.measureText(line).width;
-    const lineX = (1200 - lineWidth) / 2;
-    const lineY = startY + index * (fontSize * 1.35);
-    ctx.fillText(line, lineX, lineY);
-  });
-  ctx.restore();
-
-  // 6. Subtitle / Theme Bar
-  if (theme) {
-    ctx.save();
-    ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
-    ctx.font = "500 20px 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif";
-    const subText = `「${theme.length > 42 ? theme.slice(0, 40) + "..." : theme}」`;
-    const subWidth = ctx.measureText(subText).width;
-    ctx.fillText(subText, (1200 - subWidth) / 2, 475);
-    ctx.restore();
-  }
-
-  // 7. Footer: Catchphrase
-  ctx.save();
-  ctx.fillStyle = "rgba(255, 255, 255, 0.72)";
-  ctx.font = "400 16px 'Hiragino Mincho ProN', serif";
-  const footerText = "— ふたりだけの思い出クイズで紡ぐ、安心とぬくもりの再会プラットフォーム —";
-  const footWidth = ctx.measureText(footerText).width;
-  ctx.fillText(footerText, (1200 - footWidth) / 2, 560);
-  ctx.restore();
-
-  return canvas.toDataURL("image/png");
-};
-
-// 🎨 Real-time Scene Graphic Canvas Generator (16:9 / 1200x675) for In-article Chapter Illustrations
-interface SceneGraphicItem {
+// 🎨 AI Scene Illustration Item Structure
+export interface SceneIllustrationItem {
   id: string;
   sceneIndex: number;
   chapterTitle: string;
-  quote: string;
-  dataUrl: string;
+  japaneseScenePrompt: string;
+  englishPrompt: string;
+  imageUrl: string;
+  seed: number;
   toneId: string;
 }
 
-const createSceneGraphicCanvas = (
-  chapterTitle: string,
-  quote: string,
-  toneId: string,
-  sceneIndex: number,
-  variant: number = 0
+// 🌐 Pollinations AI URL Generator (100% Free, Instant 0-yen high-res image generator)
+export const buildPollinationsUrl = (
+  prompt: string,
+  seed: number,
+  aspect: "16:9" | "9:16" = "16:9"
 ): string => {
-  if (typeof document === "undefined") return "";
-  const canvas = document.createElement("canvas");
-  canvas.width = 1200;
-  canvas.height = 675; // 16:9
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return "";
-
-  // Color Palettes based on Tone
-  const palettesByTone: Record<string, string[][]> = {
-    watercolor_nostalgia: [
-      ["#2b1810", "#5c2a38", "#a6524a", "#e08d6d", "#f7d6b5"],
-      ["#1e2530", "#384e5b", "#6d828a", "#b5c5b9", "#f2efe9"],
-      ["#2a1e38", "#5e3a6e", "#9e5c8a", "#e088a8", "#fce4ec"]
-    ],
-    twilight_cinematic: [
-      ["#0d1322", "#1a2639", "#3b3a5a", "#78536f", "#d48166"],
-      ["#08141e", "#133042", "#23596d", "#4b939f", "#e0aa78"],
-      ["#181024", "#301d4a", "#5a2e66", "#9c4e6e", "#f29377"]
-    ],
-    vintage_amber_letter: [
-      ["#1c120c", "#382215", "#5e3920", "#945d33", "#d6a16c"],
-      ["#211a14", "#423425", "#6e583e", "#a68860", "#ebd8b7"],
-      ["#261510", "#4d281a", "#7a3f28", "#bd6842", "#f5be93"]
-    ],
-    emerald_ocean_clean: [
-      ["#051821", "#0b2e38", "#144e5a", "#297b82", "#7ec4b5"],
-      ["#091b29", "#113854", "#1b5e80", "#2c92b2", "#8ed0df"],
-      ["#0a221f", "#14423b", "#226e60", "#3ba48e", "#a3e2cf"]
-    ]
-  };
-
-  const tonePalettes = palettesByTone[toneId] || palettesByTone.watercolor_nostalgia;
-  const palette = tonePalettes[(sceneIndex + variant) % tonePalettes.length];
-
-  // 1. Background Gradient
-  const grad = ctx.createLinearGradient(0, 0, 1200, 675);
-  grad.addColorStop(0, palette[0]);
-  grad.addColorStop(0.35, palette[1]);
-  grad.addColorStop(0.7, palette[2]);
-  grad.addColorStop(0.9, palette[3]);
-  grad.addColorStop(1, palette[4]);
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, 1200, 675);
-
-  // 2. Artistic Scene Atmosphere (Curves, Light Rays, Glow)
-  ctx.save();
-  ctx.globalAlpha = 0.18;
-  for (let i = 0; i < 4; i++) {
-    ctx.beginPath();
-    ctx.moveTo(-100, 380 + i * 55);
-    ctx.bezierCurveTo(400, 290 + i * 50, 800, 520 - i * 40, 1300, 390 + i * 45);
-    ctx.lineTo(1300, 675);
-    ctx.lineTo(-100, 675);
-    ctx.closePath();
-    ctx.fillStyle = "#ffffff";
-    ctx.fill();
-  }
-
-  // Light Dust / Sparkles
-  ctx.globalAlpha = 0.28;
-  for (let i = 0; i < 30; i++) {
-    const x = (Math.sin(i * 77 + sceneIndex * 13) * 0.5 + 0.5) * 1200;
-    const y = (Math.cos(i * 41 + sceneIndex * 7) * 0.5 + 0.5) * 500;
-    const r = (i % 3) + 1.2;
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.fillStyle = "#ffffff";
-    ctx.fill();
-  }
-  ctx.restore();
-
-  // 3. Elegant Inner Borders (Double Line Art)
-  ctx.save();
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.3)";
-  ctx.lineWidth = 2;
-  ctx.strokeRect(40, 40, 1200 - 80, 675 - 80);
-
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
-  ctx.lineWidth = 1;
-  ctx.strokeRect(48, 48, 1200 - 96, 675 - 96);
-  ctx.restore();
-
-  // 4. Scene Chapter Badge (e.g., "SCENE 01" / "EPISODE 02")
-  ctx.save();
-  ctx.fillStyle = "rgba(255, 255, 255, 0.2)";
-  ctx.beginPath();
-  if (ctx.roundRect) {
-    ctx.roundRect(72, 64, 210, 36, 18);
-  } else {
-    ctx.rect(72, 64, 210, 36);
-  }
-  ctx.fill();
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
-  ctx.lineWidth = 1;
-  ctx.stroke();
-
-  ctx.fillStyle = "#ffffff";
-  ctx.font = "bold 14px 'SF Pro Display', 'Helvetica Neue', sans-serif";
-  ctx.fillText(`SCENE 0${sceneIndex + 1} // 情景挿絵`, 90, 87);
-
-  // Right Top Watermark
-  ctx.fillStyle = "rgba(255, 255, 255, 0.75)";
-  ctx.font = "bold 14px 'Hiragino Mincho ProN', 'Yu Mincho', serif";
-  const brandTag = "ReMEETs 想い出の情景";
-  ctx.fillText(brandTag, 1200 - 72 - ctx.measureText(brandTag).width, 87);
-  ctx.restore();
-
-  // 5. Scene Main Title (Wrapped, Serif, Shadow)
-  ctx.save();
-  ctx.fillStyle = "#ffffff";
-  ctx.shadowColor = "rgba(0, 0, 0, 0.7)";
-  ctx.shadowBlur = 18;
-  ctx.shadowOffsetY = 4;
-
-  const cleanTitle = chapterTitle || `第${sceneIndex + 1}章：想い出が紡ぐ小さな奇跡`;
-  const fontSize = cleanTitle.length > 24 ? 38 : cleanTitle.length > 16 ? 46 : 54;
-  ctx.font = `bold ${fontSize}px 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', serif`;
-
-  const maxLineWidth = 960;
-  const lines: string[] = [];
-  let currentLine = "";
-  for (let i = 0; i < cleanTitle.length; i++) {
-    const char = cleanTitle[i];
-    const testLine = currentLine + char;
-    if (ctx.measureText(testLine).width > maxLineWidth && currentLine.length > 0) {
-      lines.push(currentLine);
-      currentLine = char;
-    } else {
-      currentLine = testLine;
-    }
-  }
-  if (currentLine) lines.push(currentLine);
-
-  const totalTextHeight = lines.length * (fontSize * 1.35);
-  const startY = 280 - (totalTextHeight / 2) + fontSize;
-
-  lines.forEach((line, index) => {
-    const lineWidth = ctx.measureText(line).width;
-    const lineX = (1200 - lineWidth) / 2;
-    const lineY = startY + index * (fontSize * 1.35);
-    ctx.fillText(line, lineX, lineY);
-  });
-  ctx.restore();
-
-  // 6. Scene Emotional Quote / Subphrase
-  if (quote) {
-    ctx.save();
-    ctx.fillStyle = "#fef08a"; // warm soft gold
-    ctx.font = "italic 500 21px 'Hiragino Mincho ProN', 'Yu Mincho', serif";
-    ctx.shadowColor = "rgba(0, 0, 0, 0.8)";
-    ctx.shadowBlur = 12;
-    const cleanQuote = quote.length > 44 ? `「${quote.slice(0, 42)}...」` : `「${quote}」`;
-    const quoteWidth = ctx.measureText(cleanQuote).width;
-    ctx.fillText(cleanQuote, (1200 - quoteWidth) / 2, 480);
-    ctx.restore();
-  }
-
-  // 7. Footer Divider & Brand
-  ctx.save();
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.35)";
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(400, 560);
-  ctx.lineTo(800, 560);
-  ctx.stroke();
-
-  ctx.fillStyle = "rgba(255, 255, 255, 0.75)";
-  ctx.font = "400 15px 'Hiragino Mincho ProN', serif";
-  const foot = "ふたりだけの合言葉で繋がる、再会のボトルメール";
-  const fWidth = ctx.measureText(foot).width;
-  ctx.fillText(foot, (1200 - fWidth) / 2, 595);
-  ctx.restore();
-
-  return canvas.toDataURL("image/png");
+  const width = aspect === "16:9" ? 1200 : 720;
+  const height = aspect === "16:9" ? 675 : 1280;
+  const cleanPrompt = prompt.replace(/[^\w\s,.-]/gi, " ").trim().replace(/\s+/g, " ");
+  return `https://image.pollinations.ai/prompt/${encodeURIComponent(cleanPrompt)}?width=${width}&height=${height}&nologo=true&seed=${seed}`;
 };
 
-// Helper: Extract chapters/headings and generate 3 custom scene graphics for this article
-const generateSceneGraphicsForDraft = (
+// 📖 Generate Eyecatch Illustration based on Story Theme & Tone
+export const generateEyecatchIllustration = (
+  title: string,
+  theme: string,
+  toneId: string,
+  seed: number = Math.floor(Math.random() * 900000) + 100000
+): { url: string; prompt: string; japaneseScene: string; seed: number } => {
+  const preset = STYLE_TONE_PRESETS.find(p => p.id === toneId) || STYLE_TONE_PRESETS[0];
+
+  let sceneDesc = "a glowing glass bottle with an emotional handwritten letter floating on gentle sunset ocean waves near Japanese beach, romantic nostalgia";
+  let jpDesc = "夕暮れの穏やかな海に浮かぶ、手紙の入ったガラスのボトルメールと茜色の空";
+
+  if (title.includes("教室") || title.includes("学校") || title.includes("放課後") || theme.includes("学校")) {
+    sceneDesc = "a nostalgic Japanese classroom in 1990s at golden sunset, warm orange sunlight shining on empty wooden desks, gentle breeze, emotional memories";
+    jpDesc = "夕焼けの光が差し込む放課後の教室と、想い出の机";
+  } else if (title.includes("駅") || title.includes("旅") || title.includes("電車") || theme.includes("駅")) {
+    sceneDesc = "a nostalgic Japanese countryside train station platform at dusk, warm lantern lights, gentle atmosphere of departure and reunion";
+    jpDesc = "夕暮れの小さな駅のホームと、旅立ちと再会の灯り";
+  } else if (title.includes("再会") || title.includes("奇跡") || theme.includes("再会")) {
+    sceneDesc = "two nostalgic silhouettes meeting near sea at twilight, emotional reunion under starry sky, warm bokeh lights, heartwarming and poetic";
+    jpDesc = "夕暮れの海辺で、奇跡の再会を果たすふたりのシルエットと星空";
+  }
+
+  const fullPrompt = `${sceneDesc}, ${preset.aiPromptStyle}`;
+  const url = buildPollinationsUrl(fullPrompt, seed, "16:9");
+
+  return {
+    url,
+    prompt: fullPrompt,
+    japaneseScene: jpDesc,
+    seed
+  };
+};
+
+// 📖 Story-Driven Scene Illustrations Generator (Parses headings & extracts vivid scene motifs)
+export const generateStoryIllustrationsForDraft = (
   content: string,
   toneId: string,
-  draftTitle: string
-): SceneGraphicItem[] => {
+  draftTitle: string,
+  seedBase: number = Date.now()
+): SceneIllustrationItem[] => {
+  const preset = STYLE_TONE_PRESETS.find(p => p.id === toneId) || STYLE_TONE_PRESETS[0];
   const lines = content.split("\n");
-  const extractedSections: { title: string; quote: string }[] = [];
+  const extractedSections: { title: string; body: string }[] = [];
 
   let currentHeading = "";
   let currentParagraph = "";
 
   for (const line of lines) {
     const trimmed = line.trim();
-    if (trimmed.startsWith("#") || trimmed.startsWith("【") || trimmed.startsWith("■") || trimmed.startsWith("第") || trimmed.startsWith("1.") || trimmed.startsWith("2.") || trimmed.startsWith("3.")) {
+    if (
+      trimmed.startsWith("#") ||
+      trimmed.startsWith("【") ||
+      trimmed.startsWith("■") ||
+      trimmed.startsWith("第") ||
+      trimmed.startsWith("1.") ||
+      trimmed.startsWith("2.") ||
+      trimmed.startsWith("3.")
+    ) {
       if (currentHeading) {
         extractedSections.push({
           title: currentHeading,
-          quote: currentParagraph.slice(0, 46).trim()
+          body: currentParagraph.slice(0, 100).trim()
         });
         currentParagraph = "";
       }
@@ -535,28 +212,69 @@ const generateSceneGraphicsForDraft = (
   if (currentHeading) {
     extractedSections.push({
       title: currentHeading,
-      quote: currentParagraph.slice(0, 46).trim()
+      body: currentParagraph.slice(0, 100).trim()
     });
   }
 
-  // Fallback defaults if no headings found
+  // Fallback defaults
   if (extractedSections.length === 0) {
     extractedSections.push(
-      { title: `放課後の記憶と、交わした約束`, quote: "あの日の夕焼けと、消えない記憶の足跡" },
-      { title: `時の流れと、心の奥に眠るボトル`, quote: "何十年経っても色褪せない、たったひとつの想い出" },
-      { title: `奇跡の照合と、ふたりの再会`, quote: "ふたりだけのクイズが解かれた瞬間、時間が動き出す" }
+      { title: `放課後の記憶と、交わした約束`, body: "あの日の夕焼けと、机に残されたメモ" },
+      { title: `時の流れと、海に託したボトルメール`, body: "何十年経っても色褪せない、たったひとつの想い出" },
+      { title: `奇跡の照合と、ふたりの再会`, body: "ふたりだけの合言葉が解かれた瞬間、時間が動き出す" }
     );
   }
 
+  // Preset Story Motifs per Scene Index
+  const sceneMotifs = [
+    {
+      jp: "放課後の教室、夕暮れの茜色の空と机に残された思い出のメッセージ",
+      en: "a nostalgic Japanese classroom at golden hour sunset, soft light through window blinds, wooden desks, emotional youth memories"
+    },
+    {
+      jp: "静かな砂浜に流れ着いたガラスの小瓶と、万年筆で書かれた大切な手紙",
+      en: "a clear glass bottle letter lying gently on peaceful seashore sand at dusk, soft glowing ocean waves, warm atmospheric lighting"
+    },
+    {
+      jp: "満天の星空の下、街の明かりと再び巡り会うふたりのあたたかな情景",
+      en: "two gentle silhouettes reuniting near sea under a starry night sky, warm glowing lanterns, emotional and heartwarming reunion"
+    }
+  ];
+
   const scenesToGenerate = extractedSections.slice(0, 3);
-  return scenesToGenerate.map((sec, idx) => ({
-    id: `scene_custom_${idx}_${Date.now()}`,
-    sceneIndex: idx,
-    chapterTitle: sec.title,
-    quote: sec.quote || draftTitle,
-    toneId: toneId,
-    dataUrl: createSceneGraphicCanvas(sec.title, sec.quote, toneId, idx)
-  }));
+  return scenesToGenerate.map((sec, idx) => {
+    const motif = sceneMotifs[idx % sceneMotifs.length];
+    
+    // Customize English prompt based on section title keywords
+    let customSceneEn = motif.en;
+    let customSceneJp = motif.jp;
+
+    if (sec.title.includes("手紙") || sec.title.includes("便箋") || sec.title.includes("万年筆")) {
+      customSceneEn = "an antique vintage fountain pen resting on a handwritten letter paper with warm candlelight, timeless feelings";
+      customSceneJp = "柔らかな蝋燭の灯りに照らされた万年筆と、想いが綴られた便箋";
+    } else if (sec.title.includes("海") || sec.title.includes("漂流") || sec.title.includes("波")) {
+      customSceneEn = "a glass bottle floating on deep peaceful ocean with sunset reflections, ethereal glowing water";
+      customSceneJp = "夕焼けを映す静かな海原を、想いを乗せて漂うガラスのボトルメール";
+    } else if (sec.title.includes("再会") || sec.title.includes("合言葉") || sec.title.includes("奇跡")) {
+      customSceneEn = "two people standing face to face by the twilight sea, emotional heartfelt moment, cinematic starry background";
+      customSceneJp = "夕暮れの海辺で向き合い、奇跡の再会を果たすふたりの感動的な情景";
+    }
+
+    const fullPrompt = `${customSceneEn}, ${preset.aiPromptStyle}`;
+    const sceneSeed = (seedBase + idx * 7919) % 1000000;
+    const imageUrl = buildPollinationsUrl(fullPrompt, sceneSeed, "16:9");
+
+    return {
+      id: `scene_ai_${idx}_${Date.now()}`,
+      sceneIndex: idx,
+      chapterTitle: sec.title,
+      japaneseScenePrompt: customSceneJp,
+      englishPrompt: fullPrompt,
+      imageUrl,
+      seed: sceneSeed,
+      toneId
+    };
+  });
 };
 
 export const AdminMarketingStudioTab = () => {
@@ -602,16 +320,17 @@ export const AdminMarketingStudioTab = () => {
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
 
-  // Generated Eyecatches & Scene Graphics (AI Canvas generated in real-time)
-  const [generatedEyecatch, setGeneratedEyecatch] = useState<string | null>(null);
-  const [sceneGraphics, setSceneGraphics] = useState<SceneGraphicItem[]>([]);
-  const [eyecatchVariant, setEyecatchVariant] = useState<number>(0);
+  // 🎨 Story-Driven AI Illustrations (Pollinations AI Real-Time Generator)
+  const [generatedEyecatch, setGeneratedEyecatch] = useState<{
+    url: string;
+    prompt: string;
+    japaneseScene: string;
+    seed: number;
+  } | null>(null);
+  const [sceneIllustrations, setSceneIllustrations] = useState<SceneIllustrationItem[]>([]);
 
   // Excluded/Deleted Image IDs in Step 3 Preview (allows removing unwanted images)
   const [excludedImageIds, setExcludedImageIds] = useState<string[]>([]);
-
-  // Selected Additional Assets for current note draft
-  const [selectedImages, setSelectedImages] = useState<string[]>([heroBottleMail]);
 
   // Video Playback State (for Studio Final Video Preview)
   const [isPlayingVideo, setIsPlayingVideo] = useState(false);
@@ -635,13 +354,12 @@ export const AdminMarketingStudioTab = () => {
         if (data.data.length > 0 && !currentDraft) {
           const first = data.data[0];
           setCurrentDraft(first);
-          
-          const activePreset = STYLE_TONE_PRESETS.find(p => p.id === activeToneId) || STYLE_TONE_PRESETS[0];
-          const eyecatch = createEyecatchCanvas(first.title, first.theme, first.type, activePreset.eyecatchVariant);
+
+          const eyecatch = generateEyecatchIllustration(first.title, first.theme, activeToneId);
           setGeneratedEyecatch(eyecatch);
-          
-          const scenes = generateSceneGraphicsForDraft(first.content, activeToneId, first.title);
-          setSceneGraphics(scenes);
+
+          const scenes = generateStoryIllustrationsForDraft(first.content, activeToneId, first.title);
+          setSceneIllustrations(scenes);
         }
       }
     } catch (e) {
@@ -649,10 +367,9 @@ export const AdminMarketingStudioTab = () => {
     }
   };
 
-  // 🎨 Handler: Select and Apply Tone Preset (Updates Eyecatch, Scene Graphics & Saves as Default)
+  // 🎨 Handler: Select and Apply Tone Preset (Re-generates AI Illustrations with this tone & Saves as Default)
   const handleApplyTonePreset = (tone: StyleTonePreset) => {
     setActiveToneId(tone.id);
-    setEyecatchVariant(tone.eyecatchVariant);
 
     let newTones = [...selectedTones];
     if (!newTones.includes(tone.id)) {
@@ -663,12 +380,12 @@ export const AdminMarketingStudioTab = () => {
 
     if (currentDraft) {
       // Re-generate Eyecatch with this tone
-      const newEyecatch = createEyecatchCanvas(currentDraft.title, currentDraft.theme, currentDraft.type, tone.eyecatchVariant);
+      const newEyecatch = generateEyecatchIllustration(currentDraft.title, currentDraft.theme, tone.id);
       setGeneratedEyecatch(newEyecatch);
 
-      // Re-generate 3 Scene Graphics with this tone
-      const newScenes = generateSceneGraphicsForDraft(currentDraft.content, tone.id, currentDraft.title);
-      setSceneGraphics(newScenes);
+      // Re-generate 3 Scene Illustrations with this tone
+      const newScenes = generateStoryIllustrationsForDraft(currentDraft.content, tone.id, currentDraft.title);
+      setSceneIllustrations(newScenes);
 
       setCurrentDraft(prev => prev ? {
         ...prev,
@@ -694,42 +411,38 @@ export const AdminMarketingStudioTab = () => {
     localStorage.setItem("remeets_brand_tones", JSON.stringify(updated));
   };
 
-  // Regenerate Eyecatch with next color palette
+  // 🔄 Regenerate Eyecatch with new AI seed
   const handleRegenerateEyecatch = () => {
     if (!currentDraft) return;
-    const nextVariant = (eyecatchVariant + 1) % 4;
-    setEyecatchVariant(nextVariant);
-    const newEyecatch = createEyecatchCanvas(currentDraft.title, currentDraft.theme, currentDraft.type, nextVariant);
+    const newSeed = Math.floor(Math.random() * 900000) + 100000;
+    const newEyecatch = generateEyecatchIllustration(currentDraft.title, currentDraft.theme, activeToneId, newSeed);
     setGeneratedEyecatch(newEyecatch);
   };
 
-  // Regenerate single scene graphic
+  // 🔄 Regenerate single scene illustration with new seed
   const handleRegenerateScene = (sceneIndex: number) => {
     if (!currentDraft) return;
-    setSceneGraphics(prev => prev.map((sc, i) => {
+    const preset = STYLE_TONE_PRESETS.find(p => p.id === activeToneId) || STYLE_TONE_PRESETS[0];
+    const newSeed = Math.floor(Math.random() * 900000) + 100000;
+
+    setSceneIllustrations(prev => prev.map((sc, i) => {
       if (i === sceneIndex) {
-        const newDataUrl = createSceneGraphicCanvas(sc.chapterTitle, sc.quote, activeToneId, sceneIndex, Math.floor(Math.random() * 4) + 1);
-        return { ...sc, dataUrl: newDataUrl };
+        const newUrl = buildPollinationsUrl(sc.englishPrompt, newSeed, "16:9");
+        return { ...sc, imageUrl: newUrl, seed: newSeed };
       }
       return sc;
     }));
   };
 
-  // Download Generated Eyecatch as PNG
+  // Download Generated Eyecatch as file
   const handleDownloadEyecatch = () => {
     if (!generatedEyecatch) return;
-    const a = document.createElement("a");
-    a.href = generatedEyecatch;
-    a.download = `remeets-eyecatch-${currentDraft?.id || "draft"}.png`;
-    a.click();
+    window.open(generatedEyecatch.url, "_blank");
   };
 
-  // Download Generated Scene Graphic as PNG
-  const handleDownloadScene = (scene: SceneGraphicItem) => {
-    const a = document.createElement("a");
-    a.href = scene.dataUrl;
-    a.download = `remeets-scene-0${scene.sceneIndex + 1}.png`;
-    a.click();
+  // Download Generated Scene Graphic as file
+  const handleDownloadScene = (scene: SceneIllustrationItem) => {
+    window.open(scene.imageUrl, "_blank");
   };
 
   // 🗑️ Remove Image from Step 3 Layout
@@ -750,7 +463,7 @@ export const AdminMarketingStudioTab = () => {
     try {
       const type = overrideType || (noteMode === "curriculum_howto" ? "note_howto" : "note_story");
       const token = authToken || localStorage.getItem("token");
-      
+
       const res = await fetch("/api/admin/generate-pr-content", {
         method: "POST",
         headers: {
@@ -770,23 +483,17 @@ export const AdminMarketingStudioTab = () => {
       if (data.success && data.data) {
         const activePreset = STYLE_TONE_PRESETS.find(p => p.id === activeToneId) || STYLE_TONE_PRESETS[0];
 
-        // 1. Generate AI Canvas Eyecatch
-        const eyecatch = createEyecatchCanvas(data.data.title, data.data.theme, data.data.type, activePreset.eyecatchVariant);
+        // 1. Generate AI Eyecatch Illustration for this story
+        const eyecatch = generateEyecatchIllustration(data.data.title, data.data.theme, activeToneId);
         setGeneratedEyecatch(eyecatch);
 
-        // 2. Generate 3 Custom Scene Graphic Cards for this article
-        const scenes = generateSceneGraphicsForDraft(data.data.content, activeToneId, data.data.title);
-        setSceneGraphics(scenes);
-
-        // 3. Recommended additional assets
-        const recommendedAssets = AVAILABLE_ASSETS.filter(a => activePreset.defaultAssetIds.includes(a.id)).map(a => a.path);
-        const initialImages = [eyecatch, ...recommendedAssets];
-        setSelectedImages(initialImages);
+        // 2. Generate 3 Story-Driven Scene Illustrations for this article
+        const scenes = generateStoryIllustrationsForDraft(data.data.content, activeToneId, data.data.title);
+        setSceneIllustrations(scenes);
 
         setCurrentDraft({
           ...data.data,
-          imagePrompt: `${data.data.theme}, ${activePreset.aiPromptStyle}`,
-          selectedImages: initialImages
+          imagePrompt: `${data.data.theme}, ${activePreset.aiPromptStyle}`
         });
         setNoteStep(2);
       }
@@ -1361,38 +1068,47 @@ export const AdminMarketingStudioTab = () => {
                       <Sparkles size={16} />
                     </span>
                     <div>
-                      <h3 className="text-sm font-bold font-serif">記事タイトル入り・AI自動生成アイキャッチ (1200×630 note規格)</h3>
-                      <p className="text-[11px] text-slate-300">選んだトーン（{STYLE_TONE_PRESETS.find(p => p.id === activeToneId)?.name}）に合わせてリアルタイム描画・合成されています。</p>
+                      <h3 className="text-sm font-bold font-serif">ストーリー連動・AIアイキャッチイラスト (16:9 / 高解像度)</h3>
+                      <p className="text-[11px] text-slate-300">
+                        記事のタイトル・世界観に合わせてAIが自動描画した完全オリジナルイラストです（完全無料・0円）。
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <button
                       onClick={handleRegenerateEyecatch}
-                      className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer border border-white/20"
+                      className="px-3.5 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer border border-white/20"
                     >
                       <RefreshCw size={13} />
-                      <span>別の色合いで再生成</span>
+                      <span>🔄 別の絵で描き直す（無料）</span>
                     </button>
                     <button
                       onClick={handleDownloadEyecatch}
-                      className="px-3 py-1.5 bg-gradient-to-r from-teal-500 to-emerald-500 hover:opacity-90 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs"
+                      className="px-3.5 py-1.5 bg-gradient-to-r from-teal-500 to-emerald-500 hover:opacity-90 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs"
                     >
                       <Download size={13} />
-                      <span>PNG画像を保存</span>
+                      <span>イラストを保存</span>
                     </button>
                   </div>
                 </div>
 
                 {generatedEyecatch ? (
-                  <div className="relative aspect-[16/9] w-full max-w-2xl mx-auto rounded-2xl overflow-hidden border border-white/20 shadow-2xl group">
-                    <img
-                      src={generatedEyecatch}
-                      alt="AI Generated Eyecatch"
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute top-3 right-3 px-3 py-1 bg-black/60 backdrop-blur-md rounded-full text-[10px] font-bold text-teal-300 border border-teal-500/30 flex items-center gap-1">
-                      <CheckCircle2 size={12} />
-                      <span>アイキャッチ（最上部）に設定中</span>
+                  <div className="space-y-2">
+                    <div className="relative aspect-[16/9] w-full max-w-2xl mx-auto rounded-2xl overflow-hidden border border-white/20 shadow-2xl bg-slate-950 group">
+                      <img
+                        src={generatedEyecatch.url}
+                        alt="AI Generated Eyecatch"
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                      <div className="absolute top-3 right-3 px-3 py-1 bg-black/60 backdrop-blur-md rounded-full text-[10px] font-bold text-teal-300 border border-teal-500/30 flex items-center gap-1">
+                        <CheckCircle2 size={12} />
+                        <span>アイキャッチ（最上部）に自動設定</span>
+                      </div>
+                    </div>
+                    <div className="max-w-2xl mx-auto bg-black/40 border border-white/10 p-2.5 rounded-xl flex items-center justify-between text-xs text-slate-300">
+                      <span className="truncate">🎨 情景描写: {generatedEyecatch.japaneseScene}</span>
+                      <span className="font-mono text-[10px] text-slate-400 shrink-0 ml-2">Seed: #{generatedEyecatch.seed}</span>
                     </div>
                   </div>
                 ) : (
@@ -1402,38 +1118,41 @@ export const AdminMarketingStudioTab = () => {
                       className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold flex items-center gap-2"
                     >
                       <Sparkles size={14} />
-                      <span>アイキャッチ画像を生成する</span>
+                      <span>アイキャッチイラストを生成する</span>
                     </button>
                   </div>
                 )}
               </div>
 
-              {/* 2. 🖼️ 【NEW】In-article Custom Scene Graphics Generated by AI */}
+              {/* 2. 🖼️ Story-Driven In-article Scene Illustrations */}
               <div className="space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                   <div>
                     <h3 className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
                       <ImageIcon size={14} className="text-indigo-600" />
-                      <span>この記事専用・シーン別AIグラフィック挿絵カード ({sceneGraphics.length}枚)</span>
+                      <span>記事のストーリーに連動したシーン別AI挿絵 ({sceneIllustrations.length}枚)</span>
                     </h3>
-                    <p className="text-[11px] text-slate-500">記事の章・見出しを解析して自動生成されたオリジナル挿絵です。本文中の各章下に配置されます。</p>
+                    <p className="text-[11px] text-slate-500">
+                      各章のエピソード・情景をAIが読み取り、シーンごとの本物のアートイラストを完全自動生成しています。
+                    </p>
                   </div>
-                  <span className="text-[10px] font-mono px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded-full border border-indigo-200">
-                    完全オリジナル・0円生成
+                  <span className="text-[10px] font-mono px-2.5 py-0.5 bg-emerald-50 text-emerald-700 rounded-full border border-emerald-200 font-bold">
+                    完全無料・ストーリー専用イラスト
                   </span>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {sceneGraphics.map((scene, idx) => (
+                  {sceneIllustrations.map((scene, idx) => (
                     <div
                       key={scene.id}
-                      className="bg-slate-50 rounded-2xl p-3 border border-slate-200/80 space-y-2 relative group hover:border-indigo-300 transition-all shadow-2xs"
+                      className="bg-slate-50 rounded-2xl p-3.5 border border-slate-200/80 space-y-3 relative group hover:border-indigo-300 transition-all shadow-2xs"
                     >
                       <div className="aspect-[16/9] rounded-xl overflow-hidden border border-slate-200 bg-slate-900 relative">
                         <img
-                          src={scene.dataUrl}
+                          src={scene.imageUrl}
                           alt={scene.chapterTitle}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          loading="lazy"
                         />
                         <div className="absolute top-2 left-2 px-2 py-0.5 bg-black/60 backdrop-blur-md rounded-md text-[9px] font-bold text-white border border-white/20">
                           SCENE 0{idx + 1}
@@ -1442,23 +1161,25 @@ export const AdminMarketingStudioTab = () => {
 
                       <div className="space-y-1">
                         <h4 className="text-xs font-bold text-slate-900 truncate">{scene.chapterTitle}</h4>
-                        <p className="text-[10px] text-slate-500 truncate">{scene.quote}</p>
+                        <p className="text-[11px] text-slate-600 line-clamp-2 leading-tight">
+                          「{scene.japaneseScenePrompt}」
+                        </p>
                       </div>
 
-                      <div className="flex items-center justify-between pt-1 border-t border-slate-200/60">
+                      <div className="flex items-center justify-between pt-2 border-t border-slate-200/60">
                         <button
                           onClick={() => handleRegenerateScene(idx)}
-                          className="text-[10px] text-indigo-600 hover:text-indigo-800 font-bold flex items-center gap-1 cursor-pointer"
+                          className="text-[11px] text-indigo-600 hover:text-indigo-800 font-bold flex items-center gap-1 cursor-pointer bg-indigo-50 px-2 py-1 rounded-lg transition-colors"
                         >
                           <RefreshCw size={11} />
-                          <span>再生成</span>
+                          <span>描き直す</span>
                         </button>
                         <button
                           onClick={() => handleDownloadScene(scene)}
-                          className="text-[10px] text-teal-700 hover:text-teal-900 font-bold flex items-center gap-1 cursor-pointer"
+                          className="text-[11px] text-teal-700 hover:text-teal-900 font-bold flex items-center gap-1 cursor-pointer bg-teal-50 px-2 py-1 rounded-lg transition-colors"
                         >
                           <Download size={11} />
-                          <span>PNG保存</span>
+                          <span>保存</span>
                         </button>
                       </div>
                     </div>
@@ -1466,65 +1187,17 @@ export const AdminMarketingStudioTab = () => {
                 </div>
               </div>
 
-              {/* 3. Available Official Assets Grid (Optional UI screenshots) */}
-              <div className="space-y-3 pt-4 border-t border-slate-100">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                    <ImageIcon size={14} className="text-slate-500" />
-                    <span>公式アセット・追加画像（必要に応じてアプリUI画面等を選択）</span>
-                  </h3>
-                  <span className="text-[11px] text-slate-400">チェックで追加選択可能</span>
-                </div>
-
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3.5">
-                  {AVAILABLE_ASSETS.map((asset) => {
-                    const isSelected = selectedImages.includes(asset.path);
-                    return (
-                      <div
-                        key={asset.id}
-                        onClick={() => toggleImageSelect(asset.path)}
-                        className={cn(
-                          "p-2.5 rounded-2xl border transition-all cursor-pointer group space-y-1.5 relative",
-                          isSelected
-                            ? "bg-indigo-50/90 border-indigo-500 ring-2 ring-indigo-500/20 shadow-xs"
-                            : "bg-slate-50 border-slate-200/80 hover:border-slate-300"
-                        )}
-                      >
-                        <div className="aspect-[4/3] rounded-xl overflow-hidden bg-slate-200 relative">
-                          <img
-                            src={asset.path}
-                            alt={asset.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                            loading="lazy"
-                          />
-                          <div className={cn(
-                            "absolute top-2 right-2 w-5 h-5 rounded-full flex items-center justify-center shadow-md text-xs font-bold transition-all",
-                            isSelected ? "bg-indigo-600 text-white scale-110" : "bg-white/80 text-slate-400"
-                          )}>
-                            {isSelected ? <Check size={12} /> : <Plus size={12} />}
-                          </div>
-                        </div>
-                        <div className="flex items-center justify-between text-[11px]">
-                          <span className="font-bold text-slate-800 truncate pr-1">{asset.title}</span>
-                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-slate-200 text-slate-600 font-mono shrink-0">{asset.category}</span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
             </div>
           )}
 
-          {/* STEP 3: note-style Live Preview (with In-article Scene Illustrations & Delete button) */}
+          {/* STEP 3: note-style Live Preview (with Story-driven Scene Illustrations & Delete button) */}
           {noteStep === 3 && currentDraft && (
             <div className="bg-white p-6 sm:p-10 rounded-3xl border border-slate-100 shadow-sm space-y-8 max-w-3xl mx-auto">
               <div className="flex items-center justify-between border-b border-slate-100 pb-4">
                 <div>
                   <span className="text-[10px] font-bold text-indigo-600 uppercase font-mono">STEP 3: NOTE LIVE PREVIEW</span>
                   <h2 className="text-base font-bold font-serif text-slate-900">note完成レイアウト確認</h2>
-                  <p className="text-xs text-slate-500">不要な挿絵がある場合は「🗑️ 挿絵を外す」で簡単に削除できます。</p>
+                  <p className="text-xs text-slate-500">各章の直下にストーリーAIイラストが配置されています。不要な絵は「🗑️ 挿絵を外す」で簡単に削除できます。</p>
                 </div>
                 <button
                   onClick={() => setNoteStep(4)}
@@ -1536,9 +1209,9 @@ export const AdminMarketingStudioTab = () => {
               </div>
 
               {/* 1. note Hero Eyecatch Header */}
-              {generatedEyecatch && !isEyecatchExcluded && (
+              {generatedEyecatch && !excludedImageIds.includes("eyecatch_hero") && (
                 <div className="relative aspect-[16/9] w-full rounded-2xl overflow-hidden shadow-sm border border-slate-100 group">
-                  <img src={generatedEyecatch} alt="Hero" className="w-full h-full object-cover" />
+                  <img src={generatedEyecatch.url} alt="Hero" className="w-full h-full object-cover" />
                   <button
                     onClick={() => handleExcludeImage("eyecatch_hero")}
                     className="absolute top-3 right-3 px-3 py-1.5 bg-black/70 hover:bg-rose-600 text-white text-[11px] font-bold rounded-xl flex items-center gap-1 backdrop-blur-md transition-colors cursor-pointer opacity-90 group-hover:opacity-100"
@@ -1576,13 +1249,13 @@ export const AdminMarketingStudioTab = () => {
                 )}
               </div>
 
-              {/* 2. Body Content with In-article Scene Graphics inserted between sections */}
+              {/* 2. Body Content with Story-Driven AI Scene Illustrations inserted under each heading */}
               <div className="prose prose-slate max-w-none text-slate-800 text-sm sm:text-base leading-relaxed space-y-6 font-serif">
                 {currentDraft.content.split("\n\n").map((paragraph, pIdx) => {
                   const isHeading = paragraph.startsWith("#") || paragraph.startsWith("【") || paragraph.startsWith("■");
                   
-                  // Check if this is a heading where we should insert a corresponding scene illustration
-                  const matchingScene = isHeading ? activeSceneGraphics.find((_, sIdx) => sIdx === Math.floor(pIdx / 3)) : null;
+                  // Match corresponding scene illustration for each heading
+                  const matchingScene = isHeading ? sceneIllustrations.find((_, sIdx) => sIdx === Math.floor(pIdx / 3)) : null;
 
                   return (
                     <div key={pIdx} className="space-y-4">
@@ -1596,13 +1269,14 @@ export const AdminMarketingStudioTab = () => {
                         </p>
                       )}
 
-                      {/* Render Matching Scene Graphic under heading if not excluded */}
+                      {/* Render Matching Story AI Illustration under heading if not excluded */}
                       {matchingScene && !excludedImageIds.includes(matchingScene.id) && (
                         <div className="relative aspect-[16/9] w-full rounded-2xl overflow-hidden border border-slate-200 shadow-sm my-4 group">
                           <img
-                            src={matchingScene.dataUrl}
+                            src={matchingScene.imageUrl}
                             alt={matchingScene.chapterTitle}
                             className="w-full h-full object-cover"
+                            loading="lazy"
                           />
                           <button
                             onClick={() => handleExcludeImage(matchingScene.id)}
@@ -1619,28 +1293,7 @@ export const AdminMarketingStudioTab = () => {
                 })}
               </div>
 
-              {/* 3. Bottom In-article Additional Image Gallery */}
-              {selectedImages.filter(img => !excludedImageIds.includes(img)).length > 1 && (
-                <div className="pt-6 border-t border-slate-100 space-y-4">
-                  <span className="text-xs font-bold text-slate-400 block uppercase font-mono">ADDITIONAL ASSETS</span>
-                  <div className="grid grid-cols-2 gap-4">
-                    {selectedImages.filter(img => !excludedImageIds.includes(img)).slice(1).map((img, i) => (
-                      <div key={i} className="relative aspect-video rounded-xl overflow-hidden border border-slate-200 group">
-                        <img src={img} alt="In-article" className="w-full h-full object-cover" />
-                        <button
-                          onClick={() => handleExcludeImage(img)}
-                          className="absolute top-2 right-2 px-2 py-1 bg-black/70 hover:bg-rose-600 text-white text-[10px] font-bold rounded-lg flex items-center gap-1 backdrop-blur-md transition-colors cursor-pointer"
-                        >
-                          <Trash2 size={11} />
-                          <span>削除</span>
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* 4. Restore Deleted Images Area */}
+              {/* 3. Restore Deleted Images Area */}
               {excludedImageIds.length > 0 && (
                 <div className="p-4 bg-amber-50 rounded-2xl border border-amber-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="flex items-center gap-2 text-xs font-bold text-amber-900">
@@ -1937,7 +1590,12 @@ export const AdminMarketingStudioTab = () => {
                     </div>
 
                     <div className="aspect-[9/16] rounded-xl overflow-hidden bg-slate-800 relative">
-                      <img src={AVAILABLE_ASSETS[idx % AVAILABLE_ASSETS.length].path} alt="Scene Visual" className="w-full h-full object-cover" />
+                      <img
+                        src={scene.imageUrl || buildPollinationsUrl(`${scene.visual || currentDraft.title}, nostalgic Japanese anime style, golden hour twilight cinematic, vertical 9:16 composition`, 777 + idx * 31, "9:16")}
+                        alt="Scene Visual"
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 flex flex-col justify-between p-3">
                         <span className="text-[10px] bg-rose-600 text-white px-2 py-0.5 rounded font-bold self-start">{scene.label}</span>
                         <p className="text-white text-[11px] font-bold text-center leading-snug drop-shadow-md">
@@ -2042,7 +1700,7 @@ export const AdminMarketingStudioTab = () => {
               {/* 9:16 Smartphone Mock Screen */}
               <div className="aspect-[9/16] w-full rounded-3xl overflow-hidden bg-slate-900 border-2 border-slate-700 relative shadow-2xl">
                 <img
-                  src={AVAILABLE_ASSETS[currentSceneIndex % AVAILABLE_ASSETS.length].path}
+                  src={currentDraft.scenes[currentSceneIndex]?.imageUrl || buildPollinationsUrl(`${currentDraft.scenes[currentSceneIndex]?.visual || currentDraft.title}, nostalgic Japanese anime watercolor, golden hour twilight, 9:16 vertical composition`, 777 + currentSceneIndex * 31, "9:16")}
                   alt="Video Stage"
                   className="w-full h-full object-cover transition-all duration-700"
                 />
