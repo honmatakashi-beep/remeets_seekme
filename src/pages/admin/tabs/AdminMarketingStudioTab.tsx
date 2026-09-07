@@ -112,6 +112,282 @@ export const STYLE_TONE_PRESETS: StyleTonePreset[] = [
   }
 ];
 
+// 🎨 Pure Atmospheric Story Artwork Generator (1200x675 / 16:9) - Zero Network Latency, 100% Reliable Art
+export const createAtmosphericArt = (
+  sceneType: "classroom_sunset" | "beach_bottle" | "starry_reunion" | "vintage_letter",
+  toneId: string = "watercolor_nostalgia"
+): string => {
+  if (typeof document === "undefined") return "";
+  const canvas = document.createElement("canvas");
+  canvas.width = 1200;
+  canvas.height = 675;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return "";
+
+  // 1. Sky & Atmosphere Base
+  const grad = ctx.createLinearGradient(0, 0, 0, 675);
+  if (sceneType === "classroom_sunset") {
+    grad.addColorStop(0, "#2c152a");
+    grad.addColorStop(0.35, "#802e48");
+    grad.addColorStop(0.6, "#d95b43");
+    grad.addColorStop(0.85, "#f39c59");
+    grad.addColorStop(1, "#f9d79b");
+  } else if (sceneType === "beach_bottle") {
+    grad.addColorStop(0, "#191d38");
+    grad.addColorStop(0.3, "#3d2e5a");
+    grad.addColorStop(0.55, "#8a4869");
+    grad.addColorStop(0.75, "#d66d55");
+    grad.addColorStop(1, "#f7aa6d");
+  } else if (sceneType === "starry_reunion") {
+    grad.addColorStop(0, "#080c1d");
+    grad.addColorStop(0.4, "#141c38");
+    grad.addColorStop(0.7, "#222a52");
+    grad.addColorStop(1, "#3b2d54");
+  } else {
+    // vintage_letter
+    grad.addColorStop(0, "#1a120c");
+    grad.addColorStop(0.4, "#382315");
+    grad.addColorStop(0.75, "#694223");
+    grad.addColorStop(1, "#a8713e");
+  }
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 1200, 675);
+
+  // 2. Artistic Elements per Scene
+  if (sceneType === "classroom_sunset") {
+    // Glowing Sun
+    const sunGrad = ctx.createRadialGradient(280, 260, 10, 280, 260, 240);
+    sunGrad.addColorStop(0, "rgba(255, 255, 230, 0.95)");
+    sunGrad.addColorStop(0.3, "rgba(255, 190, 100, 0.6)");
+    sunGrad.addColorStop(1, "rgba(255, 120, 50, 0)");
+    ctx.fillStyle = sunGrad;
+    ctx.fillRect(0, 0, 1200, 675);
+
+    // Light Rays through window
+    ctx.save();
+    ctx.globalAlpha = 0.22;
+    ctx.fillStyle = "#fff8db";
+    for (let i = 0; i < 4; i++) {
+      ctx.beginPath();
+      ctx.moveTo(150 + i * 160, 0);
+      ctx.lineTo(350 + i * 190, 675);
+      ctx.lineTo(240 + i * 190, 675);
+      ctx.lineTo(80 + i * 160, 0);
+      ctx.closePath();
+      ctx.fill();
+    }
+    ctx.restore();
+
+    // Window Frame Silhouette
+    ctx.save();
+    ctx.fillStyle = "rgba(20, 10, 25, 0.7)";
+    ctx.fillRect(0, 0, 40, 675);
+    ctx.fillRect(0, 0, 1200, 40);
+    ctx.fillRect(400, 0, 30, 675);
+    ctx.fillRect(800, 0, 30, 675);
+    ctx.fillRect(0, 340, 1200, 30);
+    ctx.restore();
+
+    // Wooden Desks Silhouette
+    ctx.save();
+    ctx.fillStyle = "rgba(18, 8, 20, 0.85)";
+    ctx.fillRect(180, 460, 260, 20);
+    ctx.fillRect(200, 480, 14, 195);
+    ctx.fillRect(410, 480, 14, 195);
+    ctx.fillRect(580, 480, 260, 20);
+    ctx.fillRect(600, 500, 14, 175);
+    ctx.fillRect(810, 500, 14, 175);
+    ctx.fillRect(960, 510, 260, 20);
+    ctx.fillRect(980, 530, 14, 145);
+    ctx.restore();
+  } else if (sceneType === "beach_bottle") {
+    // Sunset Sea Horizon
+    const seaGrad = ctx.createLinearGradient(0, 380, 0, 675);
+    seaGrad.addColorStop(0, "#26425a");
+    seaGrad.addColorStop(0.4, "#1d364a");
+    seaGrad.addColorStop(0.7, "#162837");
+    seaGrad.addColorStop(1, "#121d28");
+    ctx.fillStyle = seaGrad;
+    ctx.fillRect(0, 380, 1200, 295);
+
+    // Sunset Sun
+    const sunGrad = ctx.createRadialGradient(600, 360, 10, 600, 360, 300);
+    sunGrad.addColorStop(0, "rgba(255, 250, 220, 1)");
+    sunGrad.addColorStop(0.2, "rgba(255, 170, 80, 0.7)");
+    sunGrad.addColorStop(0.6, "rgba(230, 90, 70, 0.2)");
+    sunGrad.addColorStop(1, "rgba(0, 0, 0, 0)");
+    ctx.fillStyle = sunGrad;
+    ctx.fillRect(0, 0, 1200, 500);
+
+    // Glowing Sun Reflection on Water
+    ctx.save();
+    ctx.globalAlpha = 0.4;
+    ctx.fillStyle = "#ffd699";
+    for (let i = 0; i < 18; i++) {
+      const y = 390 + i * 15;
+      const w = 40 + i * 28 + Math.sin(i) * 20;
+      ctx.fillRect(600 - w / 2, y, w, 4);
+    }
+    ctx.restore();
+
+    // Gentle Waves & Sand Shore
+    ctx.save();
+    ctx.fillStyle = "#0c1520";
+    ctx.beginPath();
+    ctx.moveTo(0, 520);
+    ctx.bezierCurveTo(300, 480, 700, 560, 1200, 510);
+    ctx.lineTo(1200, 675);
+    ctx.lineTo(0, 675);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = "#080c14";
+    ctx.beginPath();
+    ctx.moveTo(0, 580);
+    ctx.bezierCurveTo(400, 560, 800, 610, 1200, 590);
+    ctx.lineTo(1200, 675);
+    ctx.lineTo(0, 675);
+    ctx.closePath();
+    ctx.fill();
+
+    // Bottle Glass Body
+    ctx.translate(680, 560);
+    ctx.rotate(0.2);
+    const bGlow = ctx.createRadialGradient(0, 0, 5, 0, 0, 70);
+    bGlow.addColorStop(0, "rgba(255, 230, 150, 0.8)");
+    bGlow.addColorStop(0.5, "rgba(255, 180, 60, 0.3)");
+    bGlow.addColorStop(1, "rgba(0, 0, 0, 0)");
+    ctx.fillStyle = bGlow;
+    ctx.fillRect(-70, -70, 140, 140);
+
+    ctx.fillStyle = "rgba(255, 255, 255, 0.75)";
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(-20, -45, 40, 90, 12);
+    else ctx.rect(-20, -45, 40, 90);
+    ctx.fill();
+    ctx.strokeStyle = "#ffffff";
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    ctx.fillStyle = "#fef08a";
+    ctx.fillRect(-10, -25, 20, 55);
+    ctx.strokeStyle = "#b45309";
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(-10, -25, 20, 55);
+    ctx.fillStyle = "#92400e";
+    ctx.fillRect(-12, -55, 24, 12);
+    ctx.restore();
+  } else if (sceneType === "starry_reunion") {
+    // Stars & Galaxy Dust
+    ctx.save();
+    for (let i = 0; i < 90; i++) {
+      const x = (Math.sin(i * 127) * 0.5 + 0.5) * 1200;
+      const y = (Math.cos(i * 93) * 0.5 + 0.5) * 460;
+      const r = (i % 3) === 0 ? 2 : (i % 2) === 0 ? 1.5 : 1;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fillStyle = i % 5 === 0 ? "#fef08a" : i % 3 === 0 ? "#a5f3fc" : "#ffffff";
+      ctx.globalAlpha = 0.4 + (i % 5) * 0.12;
+      ctx.fill();
+    }
+    ctx.restore();
+
+    // Distant Lighthouse Light Beam
+    ctx.save();
+    ctx.globalAlpha = 0.35;
+    const lGrad = ctx.createLinearGradient(150, 360, 900, 310);
+    lGrad.addColorStop(0, "rgba(255, 255, 220, 0.9)");
+    lGrad.addColorStop(1, "rgba(255, 255, 220, 0)");
+    ctx.fillStyle = lGrad;
+    ctx.beginPath();
+    ctx.moveTo(150, 360);
+    ctx.lineTo(1000, 240);
+    ctx.lineTo(1000, 340);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+
+    // Coastline Hill & Two Silhouettes
+    ctx.save();
+    ctx.fillStyle = "#050711";
+    ctx.beginPath();
+    ctx.moveTo(0, 480);
+    ctx.bezierCurveTo(400, 440, 800, 520, 1200, 470);
+    ctx.lineTo(1200, 675);
+    ctx.lineTo(0, 675);
+    ctx.closePath();
+    ctx.fill();
+
+    // Two Reunited Silhouettes
+    ctx.fillStyle = "#03040a";
+    ctx.beginPath();
+    ctx.arc(580, 425, 14, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillRect(570, 440, 22, 50);
+    ctx.beginPath();
+    ctx.arc(615, 428, 13, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillRect(606, 442, 20, 48);
+
+    const rGlow = ctx.createRadialGradient(600, 440, 5, 600, 440, 90);
+    rGlow.addColorStop(0, "rgba(255, 220, 120, 0.45)");
+    rGlow.addColorStop(1, "rgba(0, 0, 0, 0)");
+    ctx.fillStyle = rGlow;
+    ctx.fillRect(500, 350, 200, 200);
+    ctx.restore();
+  } else {
+    // vintage_letter
+    const cGlow = ctx.createRadialGradient(400, 300, 10, 400, 300, 350);
+    cGlow.addColorStop(0, "rgba(255, 230, 150, 0.9)");
+    cGlow.addColorStop(0.3, "rgba(230, 140, 50, 0.5)");
+    cGlow.addColorStop(1, "rgba(0, 0, 0, 0)");
+    ctx.fillStyle = cGlow;
+    ctx.fillRect(0, 0, 1200, 675);
+
+    ctx.save();
+    ctx.fillStyle = "#edd5be";
+    ctx.shadowColor = "rgba(0, 0, 0, 0.6)";
+    ctx.shadowBlur = 30;
+    ctx.fillRect(320, 180, 560, 380);
+    ctx.strokeStyle = "rgba(160, 110, 70, 0.35)";
+    ctx.lineWidth = 1.5;
+    for (let i = 0; i < 8; i++) {
+      ctx.beginPath();
+      ctx.moveTo(360, 240 + i * 38);
+      ctx.lineTo(840, 240 + i * 38);
+      ctx.stroke();
+    }
+    ctx.translate(680, 320);
+    ctx.rotate(0.5);
+    ctx.fillStyle = "#1e130c";
+    ctx.fillRect(-8, -120, 16, 240);
+    ctx.fillStyle = "#d4af37";
+    ctx.beginPath();
+    ctx.moveTo(-8, 120);
+    ctx.lineTo(8, 120);
+    ctx.lineTo(0, 150);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  // Sparkling light particles
+  ctx.save();
+  ctx.globalAlpha = 0.35;
+  for (let i = 0; i < 25; i++) {
+    const x = (Math.sin(i * 83) * 0.5 + 0.5) * 1200;
+    const y = (Math.cos(i * 47) * 0.5 + 0.5) * 600;
+    const r = (i % 3) + 1.2;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fillStyle = "#ffffff";
+    ctx.fill();
+  }
+  ctx.restore();
+
+  return canvas.toDataURL("image/png");
+};
+
 // 🎨 AI Scene Illustration Item Structure
 export interface SceneIllustrationItem {
   id: string;
@@ -120,6 +396,7 @@ export interface SceneIllustrationItem {
   japaneseScenePrompt: string;
   englishPrompt: string;
   imageUrl: string;
+  fallbackDataUrl: string;
   seed: number;
   toneId: string;
 }
@@ -133,7 +410,7 @@ export const buildPollinationsUrl = (
   const width = aspect === "16:9" ? 1200 : 720;
   const height = aspect === "16:9" ? 675 : 1280;
   const cleanPrompt = prompt.replace(/[^\w\s,.-]/gi, " ").trim().replace(/\s+/g, " ");
-  return `https://image.pollinations.ai/prompt/${encodeURIComponent(cleanPrompt)}?width=${width}&height=${height}&nologo=true&seed=${seed}`;
+  return `https://image.pollinations.ai/prompt/${encodeURIComponent(cleanPrompt)}?width=${width}&height=${height}&nologo=true&seed=${seed}&model=flux`;
 };
 
 // 📖 Generate Eyecatch Illustration based on Story Theme & Tone
@@ -142,28 +419,34 @@ export const generateEyecatchIllustration = (
   theme: string,
   toneId: string,
   seed: number = Math.floor(Math.random() * 900000) + 100000
-): { url: string; prompt: string; japaneseScene: string; seed: number } => {
+): { url: string; fallbackDataUrl: string; prompt: string; japaneseScene: string; seed: number } => {
   const preset = STYLE_TONE_PRESETS.find(p => p.id === toneId) || STYLE_TONE_PRESETS[0];
 
   let sceneDesc = "a glowing glass bottle with an emotional handwritten letter floating on gentle sunset ocean waves near Japanese beach, romantic nostalgia";
   let jpDesc = "夕暮れの穏やかな海に浮かぶ、手紙の入ったガラスのボトルメールと茜色の空";
+  let sceneType: "classroom_sunset" | "beach_bottle" | "starry_reunion" | "vintage_letter" = "beach_bottle";
 
   if (title.includes("教室") || title.includes("学校") || title.includes("放課後") || theme.includes("学校")) {
     sceneDesc = "a nostalgic Japanese classroom in 1990s at golden sunset, warm orange sunlight shining on empty wooden desks, gentle breeze, emotional memories";
     jpDesc = "夕焼けの光が差し込む放課後の教室と、想い出の机";
-  } else if (title.includes("駅") || title.includes("旅") || title.includes("電車") || theme.includes("駅")) {
-    sceneDesc = "a nostalgic Japanese countryside train station platform at dusk, warm lantern lights, gentle atmosphere of departure and reunion";
-    jpDesc = "夕暮れの小さな駅のホームと、旅立ちと再会の灯り";
+    sceneType = "classroom_sunset";
+  } else if (title.includes("手紙") || title.includes("便箋") || title.includes("万年筆")) {
+    sceneDesc = "an antique vintage fountain pen on handwritten letter paper with warm candlelight, timeless feelings";
+    jpDesc = "柔らかな蝋燭の灯りに照らされた万年筆と、想いが綴られた便箋";
+    sceneType = "vintage_letter";
   } else if (title.includes("再会") || title.includes("奇跡") || theme.includes("再会")) {
     sceneDesc = "two nostalgic silhouettes meeting near sea at twilight, emotional reunion under starry sky, warm bokeh lights, heartwarming and poetic";
     jpDesc = "夕暮れの海辺で、奇跡の再会を果たすふたりのシルエットと星空";
+    sceneType = "starry_reunion";
   }
 
   const fullPrompt = `${sceneDesc}, ${preset.aiPromptStyle}`;
   const url = buildPollinationsUrl(fullPrompt, seed, "16:9");
+  const fallbackDataUrl = createAtmosphericArt(sceneType, toneId);
 
   return {
     url,
+    fallbackDataUrl,
     prompt: fullPrompt,
     japaneseScene: jpDesc,
     seed
@@ -225,19 +508,21 @@ export const generateStoryIllustrationsForDraft = (
     );
   }
 
-  // Preset Story Motifs per Scene Index
   const sceneMotifs = [
     {
       jp: "放課後の教室、夕暮れの茜色の空と机に残された思い出のメッセージ",
-      en: "a nostalgic Japanese classroom at golden hour sunset, soft light through window blinds, wooden desks, emotional youth memories"
+      en: "a nostalgic Japanese classroom at golden hour sunset, soft light through window blinds, wooden desks, emotional youth memories",
+      type: "classroom_sunset" as const
     },
     {
       jp: "静かな砂浜に流れ着いたガラスの小瓶と、万年筆で書かれた大切な手紙",
-      en: "a clear glass bottle letter lying gently on peaceful seashore sand at dusk, soft glowing ocean waves, warm atmospheric lighting"
+      en: "a clear glass bottle letter lying gently on peaceful seashore sand at dusk, soft glowing ocean waves, warm atmospheric lighting",
+      type: "beach_bottle" as const
     },
     {
       jp: "満天の星空の下、街の明かりと再び巡り会うふたりのあたたかな情景",
-      en: "two gentle silhouettes reuniting near sea under a starry night sky, warm glowing lanterns, emotional and heartwarming reunion"
+      en: "two gentle silhouettes reuniting near sea under a starry night sky, warm glowing lanterns, emotional and heartwarming reunion",
+      type: "starry_reunion" as const
     }
   ];
 
@@ -245,24 +530,28 @@ export const generateStoryIllustrationsForDraft = (
   return scenesToGenerate.map((sec, idx) => {
     const motif = sceneMotifs[idx % sceneMotifs.length];
     
-    // Customize English prompt based on section title keywords
     let customSceneEn = motif.en;
     let customSceneJp = motif.jp;
+    let sceneType = motif.type;
 
     if (sec.title.includes("手紙") || sec.title.includes("便箋") || sec.title.includes("万年筆")) {
       customSceneEn = "an antique vintage fountain pen resting on a handwritten letter paper with warm candlelight, timeless feelings";
       customSceneJp = "柔らかな蝋燭の灯りに照らされた万年筆と、想いが綴られた便箋";
+      sceneType = "vintage_letter";
     } else if (sec.title.includes("海") || sec.title.includes("漂流") || sec.title.includes("波")) {
       customSceneEn = "a glass bottle floating on deep peaceful ocean with sunset reflections, ethereal glowing water";
       customSceneJp = "夕焼けを映す静かな海原を、想いを乗せて漂うガラスのボトルメール";
+      sceneType = "beach_bottle";
     } else if (sec.title.includes("再会") || sec.title.includes("合言葉") || sec.title.includes("奇跡")) {
       customSceneEn = "two people standing face to face by the twilight sea, emotional heartfelt moment, cinematic starry background";
       customSceneJp = "夕暮れの海辺で向き合い、奇跡の再会を果たすふたりの感動的な情景";
+      sceneType = "starry_reunion";
     }
 
     const fullPrompt = `${customSceneEn}, ${preset.aiPromptStyle}`;
     const sceneSeed = (seedBase + idx * 7919) % 1000000;
     const imageUrl = buildPollinationsUrl(fullPrompt, sceneSeed, "16:9");
+    const fallbackDataUrl = createAtmosphericArt(sceneType, toneId);
 
     return {
       id: `scene_ai_${idx}_${Date.now()}`,
@@ -271,6 +560,7 @@ export const generateStoryIllustrationsForDraft = (
       japaneseScenePrompt: customSceneJp,
       englishPrompt: fullPrompt,
       imageUrl,
+      fallbackDataUrl,
       seed: sceneSeed,
       toneId
     };
@@ -1098,6 +1388,9 @@ export const AdminMarketingStudioTab = () => {
                       <img
                         src={generatedEyecatch.url}
                         alt="AI Generated Eyecatch"
+                        onError={(e) => {
+                          (e.currentTarget as HTMLImageElement).src = generatedEyecatch.fallbackDataUrl;
+                        }}
                         className="w-full h-full object-cover"
                         loading="lazy"
                       />
@@ -1151,6 +1444,9 @@ export const AdminMarketingStudioTab = () => {
                         <img
                           src={scene.imageUrl}
                           alt={scene.chapterTitle}
+                          onError={(e) => {
+                            (e.currentTarget as HTMLImageElement).src = scene.fallbackDataUrl;
+                          }}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           loading="lazy"
                         />
@@ -1211,7 +1507,14 @@ export const AdminMarketingStudioTab = () => {
               {/* 1. note Hero Eyecatch Header */}
               {generatedEyecatch && !excludedImageIds.includes("eyecatch_hero") && (
                 <div className="relative aspect-[16/9] w-full rounded-2xl overflow-hidden shadow-sm border border-slate-100 group">
-                  <img src={generatedEyecatch.url} alt="Hero" className="w-full h-full object-cover" />
+                  <img
+                    src={generatedEyecatch.url}
+                    alt="Hero"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).src = generatedEyecatch.fallbackDataUrl;
+                    }}
+                    className="w-full h-full object-cover"
+                  />
                   <button
                     onClick={() => handleExcludeImage("eyecatch_hero")}
                     className="absolute top-3 right-3 px-3 py-1.5 bg-black/70 hover:bg-rose-600 text-white text-[11px] font-bold rounded-xl flex items-center gap-1 backdrop-blur-md transition-colors cursor-pointer opacity-90 group-hover:opacity-100"
@@ -1275,6 +1578,9 @@ export const AdminMarketingStudioTab = () => {
                           <img
                             src={matchingScene.imageUrl}
                             alt={matchingScene.chapterTitle}
+                            onError={(e) => {
+                              (e.currentTarget as HTMLImageElement).src = matchingScene.fallbackDataUrl;
+                            }}
                             className="w-full h-full object-cover"
                             loading="lazy"
                           />
