@@ -18,7 +18,7 @@ import heroBottleMail from '../assets/images/hero_bottle_mail_1785941809474.jpg'
 import { CreditCardPaymentForm } from '../components/CreditCardPaymentForm';
 import { ConceptStoryModal } from '../components/ConceptStoryModal';
 
-export const HomePage = ({ onOpenOnboarding, heroCopyStyle }: { onOpenOnboarding?: () => void, heroCopyStyle: 'proposal1' | 'proposal2' | 'proposal3' }) => {
+export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) => {
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [homeDesign, setHomeDesign] = useState<'v1' | 'v2'>(() => {
@@ -252,94 +252,17 @@ export const HomePage = ({ onOpenOnboarding, heroCopyStyle }: { onOpenOnboarding
               </span>
             </span>
             
-            <AnimatePresence mode="wait">
-              {heroCopyStyle === 'proposal1' ? (
-                <motion.div 
-                  key="proposal1"
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -15 }}
-                  transition={{ duration: 0.4 }}
-                  className="py-2 sm:py-4 flex flex-col items-center select-none text-center w-full max-w-2xl mx-auto px-1"
-                >
-                  {/* Proposal 1: Interactive Water Ripple & Rainbow Displacement Shader */}
-                  <WaterRippleRainbowText 
-                    className="my-1" 
-                    lines={[
-                      'あの日言えなかった思いを',
-                      'あの人へ',
-                      '再会のボトルメール'
-                    ]}
-                  />
-                  <div className="mt-3 sm:mt-4 w-20 h-[1px] bg-gradient-to-r from-transparent via-brand-primary/20 to-transparent" />
-                </motion.div>
-              ) : heroCopyStyle === 'proposal2' ? (
-                <motion.div
-                  key="proposal2"
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -15 }}
-                  transition={{ duration: 0.4 }}
-                  className="py-8 sm:py-12 flex flex-col items-center select-none relative max-w-3xl mx-auto overflow-visible text-center px-1"
-                >
-                  {/* Proposal 2: Background Rainbow Aura behind Charcoal Text */}
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] md:w-[500px] h-[160px] md:h-[220px] pointer-events-none overflow-hidden rounded-full">
-                    <div className="absolute top-1/2 left-1/2 w-[340px] md:w-[480px] h-[340px] md:h-[480px] rainbow-aura-bg" />
-                  </div>
-
-                  <div className="flex items-center gap-2 text-brand-primary/60 mb-5 font-sans justify-center relative z-10">
-                    <span className="h-[1px] w-8 bg-brand-primary/20 md:w-12" />
-                    <span className="text-[9px] md:text-[10px] uppercase tracking-[0.3em] font-semibold">提案 2：文字背景の波紋虹色オーラ</span>
-                    <span className="h-[1px] w-8 bg-brand-primary/20 md:w-12" />
-                  </div>
-                  
-                  <h1 className="text-[19px] xs:text-[23px] sm:text-[30px] md:text-[38px] lg:text-[46px] xl:text-[50px] font-serif font-extrabold tracking-tight md:tracking-[-0.02em] leading-[1.28] sm:leading-[1.32] max-w-full mx-auto flex flex-col items-center gap-1 sm:gap-1.5 relative z-10 drop-shadow-[0_2px_12px_rgba(252,250,247,0.95)] px-1">
-                    <span className="block text-brand-dark text-center max-w-full">
-                      <span className="block sm:inline-block sm:mr-2">いつか、</span>
-                      <span className="block sm:inline-block">また巡り合えると信じて。</span>
-                    </span>
-                    <span className="block text-brand-dark/90 text-center max-w-full">
-                      <span className="block sm:inline-block sm:mr-2">記憶の海へ浮かべる、</span>
-                      <span className="block sm:inline-block">再会の言葉。</span>
-                    </span>
-                  </h1>
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="proposal3"
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -15 }}
-                  transition={{ duration: 0.4 }}
-                  className="py-8 sm:py-10 px-4 sm:px-8 md:px-16 bg-brand-dark/95 rounded-[32px] sm:rounded-[40px] border border-white/10 shadow-2xl max-w-2xl mx-auto select-none relative overflow-visible flex flex-col items-center text-center"
-                >
-                  {/* Proposal 3: Shimmer Prism & Subtle Background Glow */}
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[240px] md:w-[400px] h-[120px] md:h-[180px] pointer-events-none rounded-full overflow-hidden blur-[40px] opacity-75">
-                    <div className="absolute top-1/2 left-1/2 w-[280px] md:w-[380px] h-[280px] md:h-[380px] rainbow-aura-bg" />
-                  </div>
-                  
-                  <div className="flex items-center gap-2 text-white/50 mb-4 font-sans justify-center relative z-10">
-                    <span className="h-[1px] w-6 bg-white/20 md:w-10" />
-                    <span className="text-[9px] md:text-[10px] uppercase tracking-[0.3em] font-semibold">提案 3：極光プリズムシマー</span>
-                    <span className="h-[1px] w-6 bg-white/20 md:w-10" />
-                  </div>
-
-                  <h1 className="text-[19px] xs:text-[23px] sm:text-[30px] md:text-[38px] lg:text-[46px] xl:text-[50px] font-serif font-extrabold tracking-tight md:tracking-[-0.02em] leading-[1.28] sm:leading-[1.32] flex flex-col items-center gap-1 sm:gap-1.5 relative z-10 px-1 max-w-full">
-                    <span className="animated-prism-text text-center max-w-full">
-                      <span className="block sm:inline-block sm:mr-2">いつか、</span>
-                      <span className="block sm:inline-block">また巡り合えると信じて。</span>
-                    </span>
-                    <span className="text-white/85 text-center max-w-full">
-                      <span className="block sm:inline-block sm:mr-2">記憶の海へ浮かべる、</span>
-                      <span className="block sm:inline-block">再会の言葉。</span>
-                    </span>
-                  </h1>
-                  <span className="text-[9px] uppercase tracking-[0.4em] text-white/40 font-semibold block mt-4 font-sans relative z-10">
-                    AURORA RIPPLES • DRIFTING SENTIMENT
-                  </span>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <div className="py-2 sm:py-4 flex flex-col items-center select-none text-center w-full max-w-2xl mx-auto px-1">
+              <WaterRippleRainbowText 
+                className="my-1" 
+                lines={[
+                  'あの日言えなかった想いを',
+                  'あの人へ',
+                  '再会のボトルメール'
+                ]}
+              />
+              <div className="mt-3 sm:mt-4 w-20 h-[1px] bg-gradient-to-r from-transparent via-brand-primary/20 to-transparent" />
+            </div>
 
             <p className="text-sm md:text-base text-slate-800 font-serif font-semibold max-w-2xl mx-auto leading-relaxed md:leading-loose pt-2.5 px-2 drop-shadow-[0_1px_4px_rgba(255,255,255,0.8)]">
               同窓生、昔の友人、お世話になったあの人。連絡先はわからないけれど、もう一度だけ話してみたい大切な人へ、想いを言葉にして海に流す。そして、あなたを探している誰かが流した手紙を、自分の名前やゆかりの地から見つけ出す。ここは、お互いを想い合う偶然と奇跡が交差する、静かな再会の海です。

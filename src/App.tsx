@@ -79,8 +79,6 @@ import heroBottleMail from './assets/images/hero_small_bottle_mail_1785944479619
 
 // --- Core Auth Context & State Managers ---
 export default function App() {
-  const [heroCopyStyle] = useState<'proposal1' | 'proposal2' | 'proposal3'>('proposal1');
-
   useEffect(() => {
     // Lenis disabled to ensure reliable native scrolling on Mac/trackpad and all popups
     const handleGlobalUnload = () => {
@@ -131,7 +129,7 @@ export default function App() {
             <main className="flex-grow relative">
               <Routes>
                 <Route path="/guide" element={<GuidePage />} />
-                <Route path="/" element={<HomePage onOpenOnboarding={() => {}} heroCopyStyle={heroCopyStyle} />} />
+                <Route path="/" element={<HomePage onOpenOnboarding={() => {}} />} />
                 <Route path="/search" element={<SearchPage onOpenOnboarding={() => {}} />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />

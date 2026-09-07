@@ -8,7 +8,7 @@ interface WaterRippleRainbowTextProps {
 export const WaterRippleRainbowText: React.FC<WaterRippleRainbowTextProps> = ({ 
   className = '',
   lines = [
-    'あの日言えなかった思いを',
+    'あの日言えなかった想いを',
     'あの人へ',
     '再会のボトルメール'
   ]
