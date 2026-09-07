@@ -1,4 +1,3 @@
-import { oceanSound } from "../utils/ambientAudio";
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -6,8 +5,7 @@ import {
   AlertTriangle, ArrowLeft, ArrowRight, BookOpen, Check, Coffee, Copy, CreditCard,
   HeartHandshake, LogIn, LogOut, Mail, Menu, Search, Send, Shield,
   ShieldCheck, Sparkles, User as UserIcon, X, Heart, MapPin, Plus,
-  ChevronDown, ChevronUp, Bell, Settings, Shield as ShieldIcon, HelpCircle,
-  Volume2, VolumeX
+  ChevronDown, ChevronUp, Bell, Settings, Shield as ShieldIcon, HelpCircle
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { cn, formatEraLabel, getPostUrl, getCategoryText, PREFECTURES } from '../lib/utils';
@@ -63,16 +61,6 @@ export const Navbar = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) 
     localStorage.setItem('remeets_home_design', next);
     window.dispatchEvent(new Event('home_design_changed'));
   };
-
-  const [isOceanPlaying, setIsOceanPlaying] = useState<boolean>(() => oceanSound.getStatus());
-
-  useEffect(() => {
-    const handleOceanChange = (e: any) => {
-      setIsOceanPlaying(!!e.detail?.isPlaying);
-    };
-    window.addEventListener("ambient_ocean_changed", handleOceanChange);
-    return () => window.removeEventListener("ambient_ocean_changed", handleOceanChange);
-  }, []);
 
   const buttonRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -260,34 +248,6 @@ export const Navbar = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) 
             <span>ReMEETsを応援（寄付）</span>
           </Link>
 
-          
-          {/* 波の音 (アンビエント環境音) ON/OFF トグル */}
-          <button
-            onClick={() => oceanSound.toggle()}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all shadow-xs cursor-pointer shrink-0 ${
-              isOceanPlaying
-                ? "bg-gradient-to-r from-teal-500 to-emerald-500 text-white border border-teal-400 shadow-teal-500/20"
-                : "bg-slate-100/90 hover:bg-teal-50 text-slate-600 hover:text-teal-700 border border-slate-200/80 hover:border-teal-200"
-            }`}
-            title={isOceanPlaying ? "波の音を止める" : "心地よい波の音（環境BGM）を再生する"}
-          >
-            {isOceanPlaying ? (
-              <>
-                <Volume2 size={13} className="text-white animate-pulse" />
-                <span className="text-[11px] font-bold">波の音</span>
-                <span className="flex h-1.5 w-1.5 relative">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-white"></span>
-                </span>
-              </>
-            ) : (
-              <>
-                <VolumeX size={13} className="text-slate-400" />
-                <span className="text-[11px] font-medium text-slate-500">波の音</span>
-              </>
-            )}
-          </button>
-
           {/* ご利用ガイド Link */}
           <Link
             to="/guide"
@@ -412,31 +372,6 @@ export const Navbar = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) 
                     <BookOpen size={15} className="text-amber-600 shrink-0" />
                     <span>ご利用ガイド</span>
                   </Link>
-
-                {/* 波の音 (モバイルメニュー内) */}
-                <button
-                  onClick={() => oceanSound.toggle()}
-                  className={`w-full flex items-center justify-between px-3 py-2 text-xs rounded-xl transition-all font-semibold cursor-pointer text-left ${
-                    isOceanPlaying
-                      ? "bg-teal-50 text-teal-800 border border-teal-200"
-                      : "text-slate-700 hover:bg-slate-50 border border-transparent"
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    {isOceanPlaying ? (
-                      <Volume2 size={16} className="text-teal-600 animate-pulse" />
-                    ) : (
-                      <VolumeX size={16} className="text-slate-400" />
-                    )}
-                    <span>波の音（環境BGM）</span>
-                  </div>
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                    isOceanPlaying ? "bg-teal-600 text-white" : "bg-slate-200 text-slate-600"
-                  }`}>
-                    {isOceanPlaying ? "ON" : "OFF"}
-                  </span>
-                </button>
-
 
                   <Link
                     to="/safety"
