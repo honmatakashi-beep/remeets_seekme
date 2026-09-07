@@ -378,7 +378,7 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
           {/* 3 Step Flow Guide for Sending */}
           <div className="pt-6 border-t border-brand-border/60 space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 text-left">
-              <span className="text-xs font-bold text-brand-primary uppercase tracking-wider block font-sans">
+              <span className="text-xs font-semibold text-brand-primary uppercase tracking-wider block font-sans">
                 ボトルメールで「あの人」と再会する3つのステップ
               </span>
               <span className="text-[11px] text-slate-500 font-sans flex items-center gap-1 shrink-0">

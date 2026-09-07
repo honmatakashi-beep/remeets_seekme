@@ -448,7 +448,7 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
             </div>
             <div className="flex items-center justify-center gap-3">
               <div className="h-px w-8 sm:w-12 bg-gradient-to-r from-transparent to-teal-400/60 hidden sm:block" />
-              <h2 className="text-base sm:text-xl md:text-2xl font-serif font-extrabold text-slate-900 tracking-tight whitespace-nowrap">
+              <h2 className="text-base sm:text-xl md:text-2xl font-serif font-semibold text-slate-800 tracking-tight whitespace-nowrap">
                 ボトルメールで「あの人」と再会する3つのステップ
               </h2>
               <div className="h-px w-8 sm:w-12 bg-gradient-to-l from-transparent to-teal-400/60 hidden sm:block" />
