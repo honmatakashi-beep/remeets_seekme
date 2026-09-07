@@ -76,7 +76,7 @@ export const AdminUsersTab: React.FC<AdminUsersTabProps> = (props) => {
                         </div>
                       </div>
                       <div className="mt-3">
-                        <div className="text-2xl sm:text-3xl font-black text-black">
+                        <div className="text-2xl sm:text-3xl font-serif font-bold text-black">
                           {totalUsersCount.toLocaleString()}<span className="text-xs font-normal text-black/60 ml-1">名</span>
                         </div>
                         <div className="flex items-center gap-2 mt-1.5 text-[11px] text-black/60">
@@ -97,7 +97,7 @@ export const AdminUsersTab: React.FC<AdminUsersTabProps> = (props) => {
                       </div>
                       <div className="mt-3">
                         <div className="flex items-baseline gap-2">
-                          <span className="text-2xl sm:text-3xl font-black text-emerald-700">{ekycRate}%</span>
+                          <span className="text-2xl sm:text-3xl font-serif font-bold text-emerald-700">{ekycRate}%</span>
                           <span className="text-xs font-bold text-black/60">({ekycCount}名完了)</span>
                         </div>
                         <div className="w-full bg-slate-100 rounded-full h-1.5 mt-2 overflow-hidden">
@@ -115,7 +115,7 @@ export const AdminUsersTab: React.FC<AdminUsersTabProps> = (props) => {
                         </div>
                       </div>
                       <div className="mt-3">
-                        <div className="text-2xl sm:text-3xl font-black text-brand-dark">
+                        <div className="text-2xl sm:text-3xl font-serif font-bold text-brand-dark">
                           {totalLetters.toLocaleString()}<span className="text-xs font-normal text-black/60 ml-1">通</span>
                         </div>
                         <div className="mt-1.5 text-[11px] font-bold text-emerald-650 flex items-center gap-1">
@@ -135,7 +135,7 @@ export const AdminUsersTab: React.FC<AdminUsersTabProps> = (props) => {
                       </div>
                       <div className="mt-3">
                         <div className="flex items-baseline gap-2">
-                          <span className={`text-2xl sm:text-3xl font-black ${blockedCount > 0 ? 'text-rose-600' : 'text-black'}`}>{blockedCount}</span>
+                          <span className={`text-2xl sm:text-3xl font-serif font-bold ${blockedCount > 0 ? 'text-rose-600' : 'text-black'}`}>{blockedCount}</span>
                           <span className="text-xs font-bold text-black/60">名凍結中</span>
                         </div>
                         <div className="mt-1.5 text-[11px] text-rose-600 font-medium">
