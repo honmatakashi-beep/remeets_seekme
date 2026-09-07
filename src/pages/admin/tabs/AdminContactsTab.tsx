@@ -171,7 +171,7 @@ export const AdminContactsTab: React.FC<AdminContactsTabProps> = (props) => {
 
                   {/* 5-Card Triage KPI Overview */}
                   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
-                    {/* All Tickets */}
+                    {/* Total Tickets */}
                     <button
                       onClick={() => { setContactCategoryFilter('all'); setContactStatusFilter('all'); setContactCurrentPage(1); }}
                       className={cn(
@@ -185,7 +185,7 @@ export const AdminContactsTab: React.FC<AdminContactsTabProps> = (props) => {
                         <span className="text-[11px] font-bold uppercase tracking-wider opacity-70 whitespace-nowrap">全チケット</span>
                         <Mail size={16} className={contactCategoryFilter === 'all' && contactStatusFilter === 'all' ? "text-brand-accent" : "text-brand-dark/40"} />
                       </div>
-                      <div className="text-2xl md:text-3xl font-mono font-bold">{enrichedContacts.length}</div>
+                      <div className="text-2xl md:text-3xl font-serif font-bold">{enrichedContacts.length}</div>
                       <div className="text-[10px] mt-1 opacity-70 whitespace-nowrap">総受信数</div>
                     </button>
 
@@ -206,7 +206,7 @@ export const AdminContactsTab: React.FC<AdminContactsTabProps> = (props) => {
                         </span>
                         <span className="text-[9px] px-1.5 py-0.5 rounded-full font-bold bg-rose-200/80 text-rose-800 whitespace-nowrap">最優先</span>
                       </div>
-                      <div className="text-2xl md:text-3xl font-mono font-bold text-rose-950 dark:text-white">{urgentCount}</div>
+                      <div className="text-2xl md:text-3xl font-serif font-bold text-rose-950 dark:text-white">{urgentCount}</div>
                       <div className="text-[10px] mt-1 opacity-80 whitespace-nowrap">緊急・被害・返金</div>
                     </button>
 
@@ -227,7 +227,7 @@ export const AdminContactsTab: React.FC<AdminContactsTabProps> = (props) => {
                         </span>
                         <span className="text-[9px] px-1.5 py-0.5 rounded-full font-bold bg-sky-200/80 text-sky-800 whitespace-nowrap">技術</span>
                       </div>
-                      <div className="text-2xl md:text-3xl font-mono font-bold text-sky-950 dark:text-white">{technicalCount}</div>
+                      <div className="text-2xl md:text-3xl font-serif font-bold text-sky-950 dark:text-white">{technicalCount}</div>
                       <div className="text-[10px] mt-1 opacity-80 whitespace-nowrap">エラー・不具合・障害</div>
                     </button>
 
@@ -248,7 +248,7 @@ export const AdminContactsTab: React.FC<AdminContactsTabProps> = (props) => {
                         </span>
                         <span className="text-[9px] px-1.5 py-0.5 rounded-full font-bold bg-purple-200/80 text-purple-800 whitespace-nowrap">アカウント</span>
                       </div>
-                      <div className="text-2xl md:text-3xl font-mono font-bold text-purple-950 dark:text-white">{accountCount}</div>
+                      <div className="text-2xl md:text-3xl font-serif font-bold text-purple-950 dark:text-white">{accountCount}</div>
                       <div className="text-[10px] mt-1 opacity-80 whitespace-nowrap">認証・退会・eKYC</div>
                     </button>
 
@@ -269,7 +269,7 @@ export const AdminContactsTab: React.FC<AdminContactsTabProps> = (props) => {
                         </span>
                         <span className="text-[9px] px-1.5 py-0.5 rounded-full font-bold bg-amber-200/80 text-amber-800 whitespace-nowrap">要返信</span>
                       </div>
-                      <div className="text-2xl md:text-3xl font-mono font-bold text-amber-950 dark:text-white">{pendingCount}</div>
+                      <div className="text-2xl md:text-3xl font-serif font-bold text-amber-950 dark:text-white">{pendingCount}</div>
                       <div className="text-[10px] mt-1 opacity-80 whitespace-nowrap">返信待ちチケット</div>
                     </button>
                   </div>

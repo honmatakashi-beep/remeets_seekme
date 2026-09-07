@@ -254,7 +254,7 @@ export const AdminVersionsTab: React.FC<AdminVersionsTabProps> = (props) => {
                         <span className="text-[11px] font-bold uppercase tracking-wider opacity-70 whitespace-nowrap">総スナップショット数</span>
                         <HistoryIcon size={16} className="text-brand-primary" />
                       </div>
-                      <div className="text-2xl md:text-3xl font-mono font-bold">{totalCount}</div>
+                      <div className="text-2xl md:text-3xl font-serif font-bold">{totalCount}</div>
                       <div className="text-[10px] mt-1 opacity-70 whitespace-nowrap">保存済み世代数</div>
                     </div>
 
@@ -264,7 +264,7 @@ export const AdminVersionsTab: React.FC<AdminVersionsTabProps> = (props) => {
                         <span className="text-[11px] font-bold uppercase tracking-wider opacity-70 whitespace-nowrap">最新バックアップ</span>
                         <Clock size={16} className="text-emerald-600" />
                       </div>
-                      <div className="text-sm md:text-base font-mono font-bold truncate">
+                      <div className="text-sm md:text-base font-serif font-bold truncate">
                         {latestTimestamp ? new Date(latestTimestamp).toLocaleString('ja-JP', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '未保存'}
                       </div>
                       <div className="text-[10px] mt-1 opacity-70 whitespace-nowrap">最終更新日時</div>
@@ -288,7 +288,7 @@ export const AdminVersionsTab: React.FC<AdminVersionsTabProps> = (props) => {
                         <span className="text-[11px] font-bold uppercase tracking-wider opacity-70 whitespace-nowrap">バックアップ総容量</span>
                         <HardDrive size={16} className="text-sky-600" />
                       </div>
-                      <div className="text-2xl md:text-3xl font-mono font-bold text-sky-950">{totalSizeMb} <span className="text-sm font-normal">MB</span></div>
+                      <div className="text-2xl md:text-3xl font-serif font-bold text-sky-950">{totalSizeMb} <span className="text-sm font-normal">MB</span></div>
                       <div className="text-[10px] mt-1 opacity-70 whitespace-nowrap">ディスク使用量</div>
                     </div>
                   </div>
