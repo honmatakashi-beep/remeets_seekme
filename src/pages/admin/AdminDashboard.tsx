@@ -65,7 +65,8 @@ import {
   AdminDeletionTab,
   AdminAgeVerificationTab,
   AdminPostsTab,
-  AdminUsersTab
+  AdminUsersTab,
+  AdminMarketingStudioTab
 } from "./tabs";
 
 
@@ -689,7 +690,7 @@ export const AdminDashboard = () => {
     URL.revokeObjectURL(url);
   };
 
-  const [activeTab, setActiveTab] = useState<'stats' | 'valuation' | 'quizAnalytics' | 'liveAlerts' | 'users' | 'posts' | 'logs' | 'reports' | 'deletion' | 'ngWords' | 'contacts' | 'emailTemplates' | 'successStories' | 'security' | 'system' | 'versions' | 'notifications' | 'moderation' | 'manual' | 'designSystem' | 'ageVerification' | 'settings' | 'deployment' | 'monetization' | 'payments' | 'rbac'>('stats');
+  const [activeTab, setActiveTab] = useState<'stats' | 'valuation' | 'quizAnalytics' | 'liveAlerts' | 'users' | 'posts' | 'logs' | 'reports' | 'deletion' | 'ngWords' | 'contacts' | 'emailTemplates' | 'successStories' | 'security' | 'system' | 'versions' | 'notifications' | 'moderation' | 'manual' | 'designSystem' | 'ageVerification' | 'settings' | 'deployment' | 'monetization' | 'payments' | 'rbac' | 'marketingStudio'>('stats');
   const [quizMatchingAnalytics, setQuizMatchingAnalytics] = useState<any>(null);
   const [guideDocType, setGuideDocType] = useState<'deployment' | 'cost_estimate' | 'cost_list_detailed' | 'permit' | 'police' | 'consult' | 'matrix' | 'slides' | 'scenario' | 'requirements' | 'evaluation' | 'pr_plan' | 'legal_guide'>('deployment');
   const [loading, setLoading] = useState(true);
@@ -952,6 +953,12 @@ export const AdminDashboard = () => {
         { id: 'versions', label: 'バージョン履歴 (Versions)', icon: History },
         { id: 'security', label: 'セキュリティ', icon: ShieldAlert },
         { id: 'system', label: 'システム', icon: Activity },
+      ]
+    },
+    {
+      title: 'Marketing & PR (自動PR・発信スタジオ)',
+      items: [
+        { id: 'marketingStudio', label: '✍️ PRコンテンツ・\n生成スタジオ (note/Shorts)', icon: Sparkles },
       ]
     },
     {
@@ -3375,6 +3382,10 @@ export const AdminDashboard = () => {
               handleViewPost={handleViewPost}
               setActiveTab={setActiveTab}
             />
+          )}
+
+          {activeTab === "marketingStudio" && (
+            <AdminMarketingStudioTab />
           )}
 
           {activeTab === 'settings' ? (

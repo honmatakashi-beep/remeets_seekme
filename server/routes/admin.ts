@@ -3908,3 +3908,328 @@ ReMEETs カスタマーサポート運営事務局
     }
   });
 
+  // ──────────────────────────────────────────────────────────
+  // ✍️ Marketing PR Studio: AI Content & Video Script Generator
+  // ──────────────────────────────────────────────────────────
+  const prDraftsStore: any[] = [
+    {
+      id: "draft-sample-1",
+      type: "note_story",
+      title: "【実話風】30年前のタイムカプセルと、海を漂った1通のボトルメールの話",
+      theme: "小学校の卒業式で埋めたタイムカプセルと幼馴染の再会",
+      targetAudience: "30代〜50代・ノスタルジー世代",
+      tone: "情緒的・エモーショナル",
+      content: `# 【実話風】30年前のタイムカプセルと、海を漂った1通のボトルメールの話
+
+「あいつ、今どこで何してるんだろうな」
+
+ふとした帰り道、夕焼け空を見上げたときに、名前すら呼ぶ機会のなくなった昔の友人の顔が浮かぶことはありませんか？
+
+昭和から平成の初め。私たちが小学生だった頃、連絡手段といえば固定電話と連絡網、そして年賀状だけでした。
+引っ越しを機に途切れてしまった縁は、インターネットが発達した今でも、名前やLINEを知らなければ二度と繋がることはありません。
+
+---
+
+## 奇跡のきっかけは、1本の「ボトルメール」だった
+
+そんなある日、私は「ReMEETs〜再会のボトルメール〜」というサービスを知りました。
+個人情報を一切明かさずに、あの頃の想い出と、ふたりだけが知っている「秘密のクイズ」を海に流すことができる場所です。
+
+私は半信半疑で、1通の手紙を海に放ちました。
+
+> **宛先**: 1993年 ○○市立南小学校 6年3組のケンジへ  
+> **想い出**: 放課後、理科室の裏で拾った子犬にふたりで秘密の名前をつけたこと。  
+> **秘密のクイズ**: あの時、ふたりで子犬につけた「秘密の名前」は？
+
+---
+
+## 3ヶ月後、静かに届いた「合意の通知」
+
+手紙を流したことすら忘れかけていたある秋の夜、1通のメールが届きました。
+
+『あなたのアカウントに、正解の一致したボトルメールが届いています』
+
+画面を開くと、そこには紛れもなく、あの日のクイズの正解が打ち込まれていました。
+手紙を開封すると、30年ぶりに繋がったケンジからのメッセージ。
+
+「あの犬、うちのばあちゃん家で16年も長生きしたよ。探してくれて本当にありがとう」
+
+涙が止まりませんでした。
+
+---
+
+## あなたも、心の奥に眠るボトルを海に流してみませんか？
+
+誰にでも、もう一度だけ「ありがとう」や「ごめんね」を伝えたい大切な人がいるはずです。
+実名もLINEも知らないままでも、**『ふたりだけの記憶』**があれば、手紙は必ず届きます。
+
+🌊 **想い出のボトルメールを流してみる**  
+👉 [ReMEETs〜再会のボトルメール〜 公式サイト](https://remeets.example.com)
+`,
+      imagePrompt: "A nostalgic glass bottle floating on a calm twilight ocean at sunset, glowing softly with warm light, retro film photography, aesthetic bokeh, emotional and cinematic --ar 16:9",
+      hashtags: ["#再会", "#エッセイ", "#思い出", "#手紙", "#ReMEETs", "#タイムカプセル"],
+      createdAt: new Date().toISOString()
+    },
+    {
+      id: "draft-sample-2",
+      type: "shorts_script",
+      title: "【Shorts台本】30秒で泣ける「30年越しの再会」ショートドラマ",
+      theme: "昔の恩師・先生への感謝を伝えるボトルメール",
+      targetAudience: "TikTok / YouTube Shorts / Instagram Reels 視聴者",
+      tone: "ドラマチック・感動",
+      content: `【動画タイトル】30年前に渡せなかった手紙を、海の底で見つけた話 #Shorts #感動
+【尺】45秒
+【推奨BGM】切なく優しいピアノソロ（徐々に盛り上がるストリングス）
+
+────────────────────────────────────────────
+■ 00:00〜00:05 【フック（開始5秒）】
+【映像】夕暮れの海岸を一人歩く主人公の足元。砂浜に漂着したガラスのボトルがアップ。
+【テロップ】「どうしても謝りたい人がいました」
+【ナレーション】「30年前、急な転校で『さよなら』も言えなかったあいつ。」
+
+────────────────────────────────────────────
+■ 00:05〜00:15 【葛藤と出会い】
+【映像】スマホの画面に「ReMEETs」のボトル投函画面。思い出のクイズを入力する指先。
+【テロップ】「実名もLINEも知らない。手がかりは『2人だけの記憶』だけ。」
+【ナレーション】「大人になってSNSを探しても見つからず、最後に辿り着いたのがこの場所でした。」
+
+────────────────────────────────────────────
+■ 00:15〜00:30 【奇跡の瞬間】
+【映像】画面が光り、「思い出クイズが100%一致しました！」という画面。
+【テロップ】「漂流から120日後。届いた1通の返事。」
+【ナレーション】「奇跡なんて信じてなかった。でも、あいつも私のことを探してくれていたんです。」
+
+────────────────────────────────────────────
+■ 00:30〜00:45 【感動の結末 ＆ CTA】
+【映像】開封された温かい手紙の文字。背景に青く澄んだ穏やかな海原。
+【テロップ】「あなたがずっと探している人は誰ですか？」
+【ナレーション】「心の中にしまっていた想い出、もう一度海に流してみませんか？ ReMEETsで検索。」
+【画面最後】ReMEETs ロゴ ＋ 「検索窓：ReMEETs」
+`,
+      imagePrompt: "Vertical 9:16 cinematic shot of a person holding a smartphone on a serene sandy beach at sunset, showing a glowing glowing bottle mail on screen, emotional drama lighting --ar 9:16",
+      hashtags: ["#ショートドラマ", "#感動", "#再会", "#手紙", "#ReMEETs", "#Shorts", "#TikTok"],
+      createdAt: new Date().toISOString()
+    }
+  ];
+
+  // 1. Generate PR Content (note article, shorts video script, x thread, press release)
+  adminRouter.post("/generate-pr-content", authenticateToken, isAdmin, async (req: any, res) => {
+    const { 
+      type = "note_story", 
+      theme = "昔の同級生との感動の再会", 
+      targetAudience = "30代〜60代のノスタルジー世代", 
+      tone = "情緒的・エモーショナル",
+      keywords = "タイムカプセル, 昭和, 手紙, クイズ",
+      customPrompt = ""
+    } = req.body;
+
+    try {
+      let resultData: any = null;
+
+      if (process.env.GEMINI_API_KEY) {
+        try {
+          const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+          let systemInstruction = "";
+          
+          if (type === "note_story") {
+            systemInstruction = `
+              あなたはnoteで10万PVを獲得する人気エッセイスト・ストーリーライターです。
+              「ReMEETs〜再会のボトルメール〜」の魅力を自然に伝え、読者の涙と共感を誘う【実話風の感動再会ストーリー記事】を作成してください。
+              
+              【要件】:
+              - 読者が思わず自分自身の過去の大切な人を思い出してしまうような、情景描写と心理描写。
+              - 個人情報を出さずに「ふたりだけの思い出クイズ」で安全に繋がれるReMEETsの仕組みを自然にストーリー内に織り込む。
+              - 記事の最後には自然な形でReMEETsへの誘導（CTA）を入れる。
+              - 出力JSONフォーマット:
+                {
+                  "title": "読者を惹きつけるnote記事タイトル",
+                  "content": "Markdown形式の完全な本文（見出し、引用、太字、区切り線入りで2000文字程度）",
+                  "imagePrompt": "noteアイキャッチ用の英語画像生成プロンプト",
+                  "hashtags": ["#ハッシュタグ1", "#ハッシュタグ2", ...],
+                  "summary": "100文字程度の記事要約"
+                }
+            `;
+          } else if (type === "note_howto") {
+            systemInstruction = `
+              あなたはnoteやブログで役立つノウハウを発信するWebマーケター兼ライターです。
+              「昔の知人・同級生に何十年ぶりに手紙を届ける方法」「絶対に相手に気づいてもらえる思い出クイズの作り方」をテーマとした【解説・ノウハウ記事】を作成してください。
+              
+              【要件】:
+              - 具体的で実践的な3つのステップ（記憶の掘り起こし、相手だけが分かるクイズ設計、安全な開通手順）。
+              - 読みやすい見出し構成、箇条書き、チェックリスト付きMarkdown。
+              - 出力JSONフォーマット:
+                {
+                  "title": "読者がクリックしたくなるノウハウタイトル",
+                  "content": "Markdown形式の完全な解説本文（2000文字程度）",
+                  "imagePrompt": "アイキャッチ画像用の英語プロンプト",
+                  "hashtags": ["#手紙の書き方", "#ReMEETs", ...],
+                  "summary": "100文字程度の要約"
+                }
+            `;
+          } else if (type === "shorts_script") {
+            systemInstruction = `
+              あなたはTikTokやYouTube Shortsでミリオン再生を連発するショート動画構成作家です。
+              「ReMEETs」を題材とした【30秒〜60秒の縦型ショート動画・絵コンテ台本】を作成してください。
+              
+              【要件】:
+              - 最初の3秒で視聴維持率を掴む強烈なフック。
+              - タイムスタンプ（00:00〜00:05等）ごとの「映像指示」「テロップ文字」「ナレーション音声」「BGM・効果音」。
+              - 視聴者にコメントしたくなる問いかけ（「あなたにも忘れられない人はいませんか？」等）。
+              - 出力JSONフォーマット:
+                {
+                  "title": "ショート動画タイトル（バズるフック付き）",
+                  "content": "秒数ごとの絵コンテ・セリフ・演出が詳細に書かれたMarkdown台本",
+                  "imagePrompt": "縦型サムネイル用英語プロンプト (9:16)",
+                  "hashtags": ["#Shorts", "#TikTok", "#感動", ...],
+                  "summary": "動画のコンセプト要約"
+                }
+            `;
+          } else if (type === "x_thread") {
+            systemInstruction = `
+              あなたはX (旧Twitter) で万バズを生み出すSNSマーケターです。
+              「ReMEETs」の認知を広げる【共感型・4〜5ツイート連続スレッド】を作成してください。
+              
+              【要件】:
+              - 1ツイート目: 写真やエピソードで引き込む強力なフック（140字以内）。
+              - 2〜4ツイート目: ストーリーの展開とReMEETsの仕組み紹介。
+              - 5ツイート目: リンク誘導と読者への問いかけ。
+              - 出力JSONフォーマット:
+                {
+                  "title": "スレッドの企画テーマ",
+                  "content": "【1/5】〜【5/5】のツイート本文（Markdown）",
+                  "imagePrompt": "添付画像用プロンプト",
+                  "hashtags": ["#ReMEETs", ...],
+                  "summary": "投稿の狙い"
+                }
+            `;
+          }
+
+          const prompt = `
+            【リクエスト詳細】
+            - テーマ: ${theme}
+            - ターゲット層: ${targetAudience}
+            - トーン＆マナー: ${tone}
+            - キーワード: ${keywords}
+            ${customPrompt ? `- 追加指示: ${customPrompt}` : ""}
+
+            ${systemInstruction}
+            JSONのみで返答してください。
+          `;
+
+          const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: prompt,
+            config: { responseMimeType: "application/json" }
+          });
+
+          resultData = JSON.parse(response.text || '{}');
+        } catch (geminiErr) {
+          console.warn("Gemini PR content generation fallback triggered:", geminiErr);
+        }
+      }
+
+      // High-quality procedural fallback if Gemini API is unavailable
+      if (!resultData || !resultData.title || !resultData.content) {
+        if (type === "shorts_script") {
+          resultData = {
+            title: `【Shorts台本】「${theme}」をテーマにした奇跡の30秒ドラマ`,
+            summary: `${targetAudience}向けの感情を揺さぶるショート動画絵コンテ`,
+            content: `【動画タイトル】${theme} #Shorts #奇跡の再会\n【尺】45秒\n【推奨BGM】静かなアコースティックギターから始まるストリングス（切なく温かいメロディ）\n\n────────────────────────────────────────────\n■ 00:00〜00:05 【冒頭フック】\n【映像】夕焼けの砂浜を歩く人物。波打ち際にキラリと光るガラス瓶。\n【テロップ】「あの時言えなかった言葉、まだ覚えてますか？」\n【ナレーション】「連絡先も知らない。でも、ふたりだけの想い出ならある。」\n\n────────────────────────────────────────────\n■ 00:05〜00:18 【ストーリー展開】\n【映像】ReMEETsの投函画面。${keywords || '思い出の秘密'}を入力する画面。\n【テロップ】「住所も名前もいらない。秘密のクイズだけで届く手紙。」\n【ナレーション】「誰にも言えなかった秘密の思い出を、そっと海に流しました。」\n\n────────────────────────────────────────────\n■ 00:18〜00:32 【クライマックス】\n【映像】マッチング通知。クイズが100%一致し、封筒が開くアニメーション。\n【テロップ】「半年後、奇跡の通知が届きました。」\n【ナレーション】「『覚えていてくれてありがとう』。30年の時を超えて、あいつと繋がった瞬間でした。」\n\n────────────────────────────────────────────\n■ 00:32〜00:45 【結び ＆ CTA】\n【映像】穏やかな波のさざ波。スマホ画面にReMEETsロゴ。\n【テロップ】「あなたにも、もう一度会いたい人はいませんか？」\n【ナレーション】「想い出のボトルメールは、海の向こうで待っています。ReMEETsで検索。」\n`,
+            imagePrompt: `Vertical 9:16 emotional cinematic photograph of a glowing glass bottle washed ashore on a sunset beach, cinematic lighting, shallow depth of field --ar 9:16`,
+            hashtags: ["#ショートドラマ", "#感動", "#再会", "#手紙", "#ReMEETs", "#TikTok", "#Shorts"]
+          };
+        } else if (type === "note_howto") {
+          resultData = {
+            title: `【完全保存版】${theme}〜${keywords}を活用した手紙の書き方とクイズ作成の教科書〜`,
+            summary: `${targetAudience}に向けた、再会を成功させるための実践的noteノウハウ記事`,
+            content: `# 【完全保存版】${theme}〜手紙の書き方とクイズ作成の教科書〜\n\n「昔お世話になったあの人に、もう一度感謝を伝えたい」\n「名前もLINEも変わってしまった同級生に手紙を届けたい」\n\nそう思っても、個人情報のハードルや連絡手段の途絶えで諦めてしまっていませんか？\n今回は、匿名性を守りながら想い出の相手に確実に手紙を届けるための**『3つの黄金ステップ』**を詳しく解説します。\n\n---\n\n## ステップ1：相手だけがピンとくる「情景描写」を思い出す\n\n手紙の冒頭には、一般的な挨拶ではなく、ふたりだけの具体的なエピソードを記すのが鉄則です。\n\n- ✕「お元気ですか？1995年の同級生です」\n- ◯「放課後の音楽室で、夕立が止むまで一緒に聴いていたあのレコードの話を覚えていますか？」\n\n---\n\n## ステップ2：「秘密の思い出クイズ」を設計する\n\nReMEETsでは、第三者のなりすましを防ぐために「思い出クイズ」を設定します。\n正解率を高めるコツは以下の通りです：\n\n1. **選択肢ではなく単語入力にする**（ふたりだけの合言葉）\n2. **漢字やひらがなの表記揺れに配慮する**（ひらがな指定がベスト）\n3. **SNSや卒業アルバムに載っていない出来事を選ぶ**\n\n---\n\n## ステップ3：海に手紙を放ち、静かに待つ\n\n手紙を流したら、あとは波に身を任せるだけです。\n相手がふとあなたを思い出して検索したとき、その手紙は必ず引き上げられます。\n\n🌊 **今すぐ想い出のボトルを流してみる**\n👉 [ReMEETs〜再会のボトルメール〜 公式サイト](https://remeets.example.com)\n`,
+            imagePrompt: `Flatlay aesthetic desk with vintage fountain pen, parchment paper, dried flowers, warm afternoon sunlight, minimalist Japanese stationery style --ar 16:9`,
+            hashtags: ["#手紙の書き方", "#再会", "#エッセイ", "#ノウハウ", "#ReMEETs"]
+          };
+        } else if (type === "x_thread") {
+          resultData = {
+            title: `【Xスレッド】${theme}に関する共感・拡散ポスト`,
+            summary: `X (Twitter) でフォロワーの共感を呼び、ReMEETsへの興味を促すスレッド構成`,
+            content: `【1/4】\n「あの人に、もう一度だけ会いたい」\n大人になってから、ふとそう思う夜はありませんか？\nでも、卒業アルバムを見ても連絡先は分からないし、SNSで本名検索しても見つからない…。\nそんな時に知ってほしいのが、個人情報を出さずに想い出だけで再会できる『ReMEETs』という場所です。\n\n【2/4】\n仕組みは簡単で、昔の記憶と「ふたりだけが知っている秘密のクイズ」をガラス瓶に詰めて海に流すだけ。\n例えば「放課後の理科室で拾った子犬の名前は？」といった質問です。\n\n【3/4】\n相手がクイズに正解した時だけ、お互いの同意と本人確認を経て手紙が開通します。\n迷惑なスパムやなりすましは100%遮断されるので、安心して大切な想いを預けられます。\n\n【4/4】\nあなたがずっと探しているあの人も、もしかしたら海辺で手紙を探しているかもしれません。\n心の奥にしまっていたボトル、今夜そっと海に流してみませんか？🌊\n👉 https://remeets.example.com #ReMEETs #再会 #思い出\n`,
+            imagePrompt: `Cinematic sunset over the sea with a glowing glass bottle in foreground, minimal retro tone --ar 16:9`,
+            hashtags: ["#ReMEETs", "#再会", "#思い出", "#エモい"]
+          };
+        } else {
+          // note_story default
+          resultData = {
+            title: `【実話風】${theme}〜30年の時を超えて海を渡った、1通のボトルメール〜`,
+            summary: `${targetAudience}の心を打つ、情緒豊かな感動再会ストーリー`,
+            content: `# 【実話風】${theme}〜30年の時を超えて海を渡った、1通のボトルメール〜\n\nふとした瞬間に、胸を締め付ける昔の記憶があります。\nそれは部活の帰り道に見た夕焼けだったり、文化祭の前夜の教室の匂いだったり。\n\n「あの時、ちゃんとありがとうって言えていただろうか」\n\n大人になって忙しい日々に追われる中で、連絡先すら分からなくなってしまった昔の大切な人。\nそんな私の止まっていた時間が、1通の「ボトルメール」によって動き出しました。\n\n---\n\n## 海に預けた、たったひとつの記憶\n\n個人情報を明かすことなく、想い出のクイズだけで相手を探すことができる「ReMEETs」。\n私は半信半疑で、あの頃の想い出をガラス瓶に詰めました。\n\nキーワードは「${keywords || 'あの日の約束'}」。\n\n---\n\n## 奇跡の再会、そして今\n\n数ヶ月後、スマートフォンに届いた1通の通知。\nクイズの答えには、世界中で私とあの人しか知らない言葉が正確に打ち込まれていました。\n\n「ずっと探してたよ」\n手紙を開いた瞬間、涙があふれて止まりませんでした。\n\n---\n\n## あなたの想い出も、まだ海を漂っています\n\n伝えられなかった想い、もう一度話したい大切な人。\n記憶の海にボトルを流してみませんか？\n\n👉 [ReMEETs 公式サイトでボトルを流す](https://remeets.example.com)\n`,
+            imagePrompt: `A beautiful nostalgic glass bottle floating on a calm twilight ocean at sunset, cinematic lighting, emotional aesthetic --ar 16:9`,
+            hashtags: ["#再会", "#エッセイ", "#思い出", "#手紙", "#ReMEETs"]
+          };
+        }
+      }
+
+      logAction(req.user?.id || 1, "ADMIN_GENERATE_PR_CONTENT", `Generated PR content type: ${type}, theme: ${theme}`, req.ip);
+
+      res.json({
+        success: true,
+        data: {
+          id: `generated-${Date.now()}`,
+          type,
+          theme,
+          targetAudience,
+          tone,
+          title: resultData.title,
+          summary: resultData.summary || "",
+          content: resultData.content,
+          imagePrompt: resultData.imagePrompt || "",
+          hashtags: resultData.hashtags || [],
+          createdAt: new Date().toISOString()
+        }
+      });
+    } catch (err) {
+      console.error("PR Content Generation error:", err);
+      res.status(500).json({ error: "Failed to generate PR content" });
+    }
+  });
+
+  // 2. Get saved PR drafts list
+  adminRouter.get("/pr-contents", authenticateToken, isAdmin, async (req: any, res) => {
+    res.json({ success: true, data: prDraftsStore });
+  });
+
+  // 3. Save or update a PR draft
+  adminRouter.post("/pr-contents", authenticateToken, isAdmin, async (req: any, res) => {
+    const draft = req.body;
+    if (!draft || !draft.title || !draft.content) {
+      return res.status(400).json({ error: "Title and content are required" });
+    }
+
+    const existingIdx = prDraftsStore.findIndex(d => d.id === draft.id);
+    const newDraft = {
+      ...draft,
+      id: draft.id || `draft-${Date.now()}`,
+      updatedAt: new Date().toISOString(),
+      createdAt: draft.createdAt || new Date().toISOString()
+    };
+
+    if (existingIdx >= 0) {
+      prDraftsStore[existingIdx] = newDraft;
+    } else {
+      prDraftsStore.unshift(newDraft);
+    }
+
+    logAction(req.user?.id || 1, "ADMIN_SAVE_PR_DRAFT", `Saved PR draft: ${newDraft.title}`, req.ip);
+    res.json({ success: true, data: newDraft });
+  });
+
+  // 4. Delete a PR draft
+  adminRouter.delete("/pr-contents/:id", authenticateToken, isAdmin, async (req: any, res) => {
+    const { id } = req.params;
+    const initialLen = prDraftsStore.length;
+    const filtered = prDraftsStore.filter(d => d.id !== id);
+    prDraftsStore.length = 0;
+    prDraftsStore.push(...filtered);
+
+    logAction(req.user?.id || 1, "ADMIN_DELETE_PR_DRAFT", `Deleted PR draft id: ${id}`, req.ip);
+    res.json({ success: true, deleted: initialLen > filtered.length });
+  });
+
+
