@@ -3573,6 +3573,8 @@ export const AdminDashboard = () => {
               handleAiAnalyze={handleAiAnalyze}
               isAiAnalyzing={isAiAnalyzing}
               handleTogglePostStatus={handleTogglePostStatus}
+              handleGeneratePoliceReport={handleGeneratePoliceReport}
+              handleAdminResetUserEkyc={handleAdminResetUserEkyc}
               triggerDeletePost={triggerDeletePost}
             />
           ) : activeTab === 'security' ? (

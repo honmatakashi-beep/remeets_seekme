@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import React from "react";
 import {
   ChevronLeft, ChevronRight, Download, Plus, Bot, Heart, Sparkles, X, ArrowUpDown, FileText, Check,
-  Mail, Search, Filter, Eye, EyeOff, Trash2, Edit, ExternalLink,
+  Mail, Search, Filter, Eye, EyeOff, Trash2, Edit, ExternalLink, RotateCcw,
   CheckCircle2, AlertTriangle, Clock, MapPin, Tag, RefreshCw, User, ShieldAlert
 } from "lucide-react";
 import { cn, getPostUrl, formatEraLabel, getCategoryText } from "../../../lib/utils";
@@ -48,6 +48,8 @@ export const AdminPostsTab: React.FC<AdminPostsTabProps> = (props) => {
     handleAiAnalyze = () => {},
     isAiAnalyzing = false,
     handleTogglePostStatus = () => {},
+    handleGeneratePoliceReport = () => {},
+    handleAdminResetUserEkyc = () => {},
     triggerDeletePost = () => {}
   } = props;
 
@@ -575,7 +577,7 @@ export const AdminPostsTab: React.FC<AdminPostsTabProps> = (props) => {
                                     {/* Actions Group - in single horizontal line */}
                                     <td className="px-3 py-2 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
                                       <div className="flex items-center justify-end gap-1">
-                                        {/* View Details */}
+                                        {/* 1. View Details */}
                                         <button
                                           onClick={() => handleViewPost(p)}
                                           className="p-1.5 text-black/60 hover:text-black hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
@@ -584,7 +586,40 @@ export const AdminPostsTab: React.FC<AdminPostsTabProps> = (props) => {
                                           <Eye size={14} />
                                         </button>
 
-                                        {/* Toggle Resolved */}
+                                        {/* 2. Police Disclosure Report */}
+                                        {p.user_id && (
+                                          <button
+                                            onClick={() => handleGeneratePoliceReport(p.user_id)}
+                                            className="p-1.5 text-amber-600 hover:text-amber-800 hover:bg-amber-50 rounded-lg transition-colors cursor-pointer"
+                                            title="警察照会・捜査関係事項照会データ出力（刑事訴訟法第197条第2項）"
+                                          >
+                                            <ShieldAlert size={14} />
+                                          </button>
+                                        )}
+
+                                        {/* 3. Reset eKYC (if verified) */}
+                                        {p.user_id && !!p.is_ekyc_verified && (
+                                          <button
+                                            onClick={() => handleAdminResetUserEkyc(p.user_id)}
+                                            className="p-1.5 text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 rounded-lg transition-colors cursor-pointer"
+                                            title="差出人のeKYC本人確認を未申請状態に戻す"
+                                          >
+                                            <RotateCcw size={14} />
+                                          </button>
+                                        )}
+
+                                        {/* 4. Open Public Page */}
+                                        <a
+                                          href={getPostUrl(p)}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="p-1.5 text-teal-600 hover:text-teal-800 hover:bg-teal-50 rounded-lg transition-colors cursor-pointer inline-flex items-center"
+                                          title="一般公開ページを新しいタブで開く"
+                                        >
+                                          <ExternalLink size={14} />
+                                        </a>
+
+                                        {/* 5. Toggle Resolved */}
                                         <button
                                           onClick={() => handleTogglePostStatus(p.id, p.status)}
                                           className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
@@ -597,7 +632,7 @@ export const AdminPostsTab: React.FC<AdminPostsTabProps> = (props) => {
                                           <Heart size={14} className={isResolved ? "fill-amber-600" : ""} />
                                         </button>
 
-                                        {/* Delete Post */}
+                                        {/* 6. Delete Post */}
                                         <button
                                           onClick={() => triggerDeletePost(p.id)}
                                           className="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
