@@ -2433,7 +2433,7 @@ export const adminRouter = express.Router();
     }
   });
 
-  adminRouter.post("/reset-data", authenticateToken, requirePermission('danger_zone'), async (req, res) => {
+  adminRouter.post("/reset-data", authenticateToken, isAdmin, async (req, res) => {
     try {
       await seedData(true);
       logAction((req as any).user.id, "DATA_RESET", "Sample data reset by admin", req.ip);

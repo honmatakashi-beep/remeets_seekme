@@ -1993,23 +1993,24 @@ export const AdminDashboard = () => {
   };
 
   const handleResetData = async () => {
-    showConfirm('データのリセット', '全てのデータをリセットし、サンプルデータを再生成します。よろしいですか？', async () => {
-      try {
-        const res = await fetch('/api/admin/reset-data', { 
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${token}` } 
-        });
-        if (res.ok) {
-          alert('データをリセットしました。');
-          fetchData();
-        } else {
-          alert('リセットに失敗しました。');
-        }
-      } catch (err) {
-        console.error(err);
-        alert('通信エラーが発生しました。');
+    if (!window.confirm('すべてのデータを初期化し、すべての答えが異なる情緒豊かなサンプルデータ（50件）を再生成します。よろしいですか？')) {
+      return;
+    }
+    try {
+      const res = await fetch('/api/admin/reset-data', { 
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` } 
+      });
+      if (res.ok) {
+        alert('データをリセットし、新しいサンプルデータを生成しました。');
+        fetchData();
+      } else {
+        alert('リセットに失敗しました。');
       }
-    });
+    } catch (err) {
+      console.error(err);
+      alert('通信エラーが発生しました。');
+    }
   };
 
   const handleSeedModeration = async () => {
@@ -3082,9 +3083,10 @@ export const AdminDashboard = () => {
               </button>
               <button 
                 onClick={handleResetData}
-                className="px-3 py-2 md:px-5 md:py-2.5 bg-brand-accent/10 text-brand-accent text-xs font-bold rounded-xl border border-brand-accent/20 hover:bg-brand-accent hover:text-white transition-all duration-200 flex items-center justify-center gap-1.5 shadow-sm whitespace-nowrap"
+                className="px-3.5 py-2 md:px-5 md:py-2.5 bg-rose-50 hover:bg-rose-600 text-rose-700 hover:text-white text-xs font-bold rounded-xl border border-rose-300 transition-all duration-200 flex items-center justify-center gap-1.5 shadow-xs hover:shadow cursor-pointer whitespace-nowrap"
+                title="全データを初期化し、全問ユニークな質問と答えのサンプルデータを再生成"
               >
-                <RefreshCw size={14} />
+                <RefreshCw size={14} className="text-rose-600 hover:text-white" />
                 <span className="hidden sm:inline">サンプルデータをリセット</span>
                 <span className="sm:hidden">リセット</span>
               </button>
