@@ -51,12 +51,23 @@ export const AdminAssetCleanerTab: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
+      const activeToken = token || localStorage.getItem('token');
       const res = await fetch('/api/admin/assets/images', {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': activeToken ? `Bearer ${activeToken}` : ''
         }
       });
-      if (!res.ok) throw new Error(`サーバーエラー (${res.status})`);
+      
+      const contentType = res.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        throw new Error(`サーバーから不正なレスポンスが返されました (HTTP ${res.status})。サーバーが再起動中か確認してください。`);
+      }
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || `サーバーエラー (${res.status})`);
+      }
+
       const data = await res.json();
       if (data.success) {
         setImages(data.images);
@@ -71,6 +82,7 @@ export const AdminAssetCleanerTab: React.FC = () => {
         setSelectedIds(new Set());
       }
     } catch (err: any) {
+      console.error("Asset fetch error:", err);
       setError(err.message || '画像の取得に失敗しました');
     } finally {
       setLoading(false);
@@ -128,11 +140,12 @@ export const AdminAssetCleanerTab: React.FC = () => {
       .map(img => ({ dir: img.dir, filename: img.filename }));
 
     try {
+      const activeToken = token || localStorage.getItem('token');
       const res = await fetch('/api/admin/assets/images/delete', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': activeToken ? `Bearer ${activeToken}` : ''
         },
         body: JSON.stringify({ files: targets })
       });
