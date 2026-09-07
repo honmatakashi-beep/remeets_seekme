@@ -318,8 +318,9 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
                   <WaterRippleRainbowText 
                     className="my-1" 
                     lines={[
-                      'いつか、また巡り合えると信じて。',
-                      '記憶の海へ浮かべる、再会の言葉。'
+                      'あの日言えなかった思いを',
+                      'あの人へ',
+                      '再会のボトルメール'
                     ]}
                   />
                 </motion.div>

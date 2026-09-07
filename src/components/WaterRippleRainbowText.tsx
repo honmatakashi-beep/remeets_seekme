@@ -8,8 +8,9 @@ interface WaterRippleRainbowTextProps {
 export const WaterRippleRainbowText: React.FC<WaterRippleRainbowTextProps> = ({ 
   className = '',
   lines = [
-    'いつか、また巡り合えると信じて。',
-    '記憶の海へ浮かべる、再会の言葉。'
+    'あの日言えなかった思いを',
+    'あの人へ',
+    '再会のボトルメール'
   ]
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -53,21 +54,21 @@ export const WaterRippleRainbowText: React.FC<WaterRippleRainbowTextProps> = ({
       if (width < 380) {
         // 極小スマホ
         const safeWidth = width - 16;
-        targetFontSize = Math.max(14, Math.min(20, Math.floor(safeWidth / (maxLineLen * 1.05))));
+        targetFontSize = Math.max(16, Math.min(22, Math.floor(safeWidth / (maxLineLen * 1.05))));
       } else if (width < 640) {
         // スマホ一般
         const safeWidth = width - 24;
-        targetFontSize = Math.max(17, Math.min(26, Math.floor(safeWidth / (maxLineLen * 1.05))));
+        targetFontSize = Math.max(19, Math.min(28, Math.floor(safeWidth / (maxLineLen * 1.05))));
       } else if (width < 768) {
-        targetFontSize = 34;
+        targetFontSize = 36;
       } else if (width < 1024) {
-        targetFontSize = 42;
+        targetFontSize = 44;
       } else {
         targetFontSize = 48; // 大画面PC
       }
 
-      const lineHeight = targetFontSize * 1.38;
-      height = Math.max(86, Math.ceil(lines.length * lineHeight + (width < 640 ? 20 : 34)));
+      const lineHeight = targetFontSize * 1.42;
+      height = Math.max(110, Math.ceil(lines.length * lineHeight + (width < 640 ? 24 : 40)));
 
       dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = Math.floor(width * dpr);
@@ -111,20 +112,20 @@ export const WaterRippleRainbowText: React.FC<WaterRippleRainbowTextProps> = ({
 
       if (width < 380) {
         const safeWidth = width - 16;
-        fontSize = Math.max(14, Math.min(20, Math.floor(safeWidth / (maxLineLen * 1.05))));
+        fontSize = Math.max(16, Math.min(22, Math.floor(safeWidth / (maxLineLen * 1.05))));
       } else if (width < 640) {
         const safeWidth = width - 24;
-        fontSize = Math.max(17, Math.min(26, Math.floor(safeWidth / (maxLineLen * 1.05))));
+        fontSize = Math.max(19, Math.min(28, Math.floor(safeWidth / (maxLineLen * 1.05))));
       } else if (width < 768) {
-        fontSize = 34;
+        fontSize = 36;
       } else if (width < 1024) {
-        fontSize = 42;
+        fontSize = 44;
       } else {
         fontSize = 48;
       }
 
-      const lineHeight = fontSize * 1.38;
-      const startY = (height - (lines.length * lineHeight)) / 2 + fontSize * 0.92;
+      const lineHeight = fontSize * 1.42;
+      const startY = (height - (lines.length * lineHeight)) / 2 + fontSize * 0.95;
 
       textCtx.font = `800 ${fontSize}px "Shippori Mincho", "Noto Serif JP", "Kaisei Decol", "Yu Mincho", "Hiragino Mincho ProN", serif`;
       textCtx.textAlign = 'center';

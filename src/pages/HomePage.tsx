@@ -266,8 +266,9 @@ export const HomePage = ({ onOpenOnboarding, heroCopyStyle }: { onOpenOnboarding
                   <WaterRippleRainbowText 
                     className="my-1" 
                     lines={[
-                      'いつか、また巡り合えると信じて。',
-                      '記憶の海へ浮かべる、再会の言葉。'
+                      'あの日言えなかった思いを',
+                      'あの人へ',
+                      '再会のボトルメール'
                     ]}
                   />
                   <div className="mt-3 sm:mt-4 w-20 h-[1px] bg-gradient-to-r from-transparent via-brand-primary/20 to-transparent" />
