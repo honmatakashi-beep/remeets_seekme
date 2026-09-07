@@ -674,8 +674,8 @@ export const AdminMarketingStudioTab = () => {
     }
   };
 
-  // Active Scene Graphics (filtering out excluded)
-  const activeSceneGraphics = sceneGraphics.filter(sc => !excludedImageIds.includes(sc.id));
+  // Active Scene Illustrations (filtering out excluded)
+  const activeSceneIllustrations = sceneIllustrations.filter(sc => !excludedImageIds.includes(sc.id));
   const isEyecatchExcluded = excludedImageIds.includes("eyecatch_hero");
 
   return (
