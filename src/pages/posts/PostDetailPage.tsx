@@ -961,21 +961,26 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
             </div>
           </div>
 
-          <div className="text-xs text-slate-300 space-y-1.5 leading-relaxed">
-            <p className="flex items-start gap-1.5">
+          <div className="space-y-1.5 leading-relaxed">
+            <p className="flex items-start gap-1.5 text-xs text-white/95">
               <ShieldCheck size={15} className="text-blue-400 shrink-0 mt-0.5" />
               <span>
                 {!ownerPreviewRevealed ? (
                   <>
-                    <strong className="text-emerald-300">【ネット公開画面を表示中】</strong> Google検索やエゴサーチでお相手が最初に見る初期画面です。手紙本文・連絡先・質問の答えはすべて伏せられ、安全に保護されています。
+                    <strong className="text-emerald-300 font-bold">【ネット公開画面を表示中】</strong> <span className="text-slate-100">Google検索やエゴサーチでお相手が最初に見る初期画面です。手紙本文・連絡先・質問の答えはすべて伏せられ、安全に保護されています。</span>
                   </>
                 ) : (
                   <>
-                    <strong className="text-blue-300">【正解後の開示画面を表示中】</strong> お相手が「思い出の質問」に全問正解し、安全な開示手続きを完了した後にのみ表示される手紙本文・連絡先・実名の画面です。
+                    <strong className="text-blue-300 font-bold">【正解後の開示画面を表示中】</strong> <span className="text-slate-100">お相手が「思い出の質問」に全問正解し、安全な開示手続きを完了した後にのみ表示される手紙本文・連絡先・実名の画面です。</span>
                   </>
                 )}
               </span>
             </p>
+            {!ownerPreviewRevealed && (
+              <p className="text-[11px] text-slate-300/90 pl-5 leading-normal">
+                ※GoogleやYahoo!等の検索エンジンにインデックスされ、検索結果に反映されるまでには通常数日程度（クローラー巡回期間）かかります。
+              </p>
+            )}
           </div>
         </div>
       )}
