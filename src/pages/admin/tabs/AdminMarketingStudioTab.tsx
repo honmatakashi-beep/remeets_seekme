@@ -1,83 +1,112 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles, Video, BookOpen, Twitter, Copy, Check, Download,
   Save, Trash2, RefreshCw, Wand2, FileText,
   Film, Smartphone, Lightbulb, CheckCircle2,
-  Eye, Code, AlertCircle
+  Eye, Code, AlertCircle, Play, Pause, RotateCcw, Volume2,
+  VolumeX, Image as ImageIcon, Plus, ArrowRight, CheckSquare,
+  Layers, Palette, Music, Mic, Share2, Compass, ChevronRight,
+  Sliders, Film as FilmIcon, Send, Sparkle, ExternalLink
 } from "lucide-react";
 import { useAuth } from "../../../contexts/AuthContext";
 import { cn } from "../../../lib/utils";
 
+// ── Types ──
+interface VideoScene {
+  time: string;
+  label: string;
+  visual: string;
+  narration: string;
+  telop: string;
+  bgm: string;
+  imagePath?: string;
+}
+
 interface PRDraft {
   id: string;
-  type: "note_story" | "note_howto" | "shorts_script" | "x_thread" | "press_release";
+  type: "note_story" | "note_howto" | "shorts_script" | "x_thread";
   title: string;
   theme: string;
+  curriculumStep?: number;
   targetAudience: string;
   tone: string;
   summary?: string;
   content: string;
   imagePrompt?: string;
+  selectedImages?: string[];
   hashtags?: string[];
+  scenes?: VideoScene[];
   createdAt: string;
   updatedAt?: string;
 }
 
+// ── Preset Curriculum (12 Steps) ──
+const CURRICULUM_STEPS = [
+  { step: 1, title: "第1講: 昔の大切な人に手紙を届ける第一歩（記憶の整理）", phase: "基礎編", theme: "想い出の手紙の書き方と記憶の整理" },
+  { step: 2, title: "第2講: 実名・住所を出さずに安全に手紙を海に放つ方法", phase: "基礎編", theme: "完全匿名の安全なボトルメール投函" },
+  { step: 3, title: "第3講: 相手が検索した時に必ず届く「キーワード」選定術", phase: "基礎編", theme: "ボトル検索で見つけてもらうためのSEO・単語設計" },
+  { step: 4, title: "第4講: 相手にだけ伝わる「秘密の思い出クイズ」黄金法則", phase: "クイズ編", theme: "ふたりだけの合言葉クイズ作成術" },
+  { step: 5, title: "第5講: 表記揺れ（漢字・ひらがな）による誤答を防ぐ親切な出題法", phase: "クイズ編", theme: "クイズ解答時の表記揺れ防止テクニック" },
+  { step: 6, title: "第6講: 第三者のなりすまし・サクラを100%遮断する仕組み", phase: "安全編", theme: "AI検閲と二段階照合による安全防衛" },
+  { step: 7, title: "第7講: 30年ぶりの再会を果たすための「情景描写」テクニック", phase: "応用編", theme: "胸を打つ情景描写とエピソードの書き方" },
+  { step: 8, title: "第8講: 「恩師」「初恋」「旧友」相手別の手紙の書き分け方", phase: "応用編", theme: "再会したい対象別の心理とアプローチ" },
+  { step: 9, title: "第9講: ボトルが拾われた後の「連絡先セキュア開示」安心ステップ", phase: "開通編", theme: "マッチング成立後の本人確認と安全な連絡先交換" },
+  { step: 10, title: "第10講: 実際の奇跡のマッチング事例から学ぶ成功の共通点", phase: "実例編", theme: "成功事例の分析とボトルの工夫" },
+  { step: 11, title: "第11講: 「すぐに見つからない時」のボトルの漂流期間と更新術", phase: "運用編", theme: "長期ボトルを届けるためのメンテナンスとSNSシェア" },
+  { step: 12, title: "第12講: ReMEETsが目指す「優しく安全な想い出の交差点」の未来", phase: "未来編", theme: "インターネット時代における温かい縁の再接続" }
+];
+
+// Available Image Assets in ReMEETs
+const AVAILABLE_ASSETS = [
+  { id: "hero_bottle", title: "夕暮れの海とガラス瓶", path: "/assets/hero_bottle_mail_1785941809474-DEVslUma.jpg", category: "写真" },
+  { id: "vintage_paper", title: "万年筆とヴィンテージ便箋", path: "/assets/vintage_bottle_letter_paper_1788601708823-C03nb7i-.jpg", category: "写真" },
+  { id: "quiz_match", title: "思い出クイズ照合画面", path: "/assets/quiz_match_hearts_pastel_1785940521320-BuRx364f.jpg", category: "アプリ画面" },
+  { id: "step_write", title: "手紙を書く情景", path: "/assets/step_01_photo_write_1785857630366-BfuUyhkb.jpg", category: "イラスト" },
+  { id: "safety_shield", title: "安心安全のセキュア画面", path: "/assets/safety_guardian_cool_1785864341331-Bo0QXIxf.jpg", category: "アプリ画面" },
+  { id: "twilight_sea", title: "夕暮れの海辺風景", path: "/assets/supporter_twilight_cool_1785860735348-C0uYySdx.jpg", category: "風景" }
+];
+
 export const AdminMarketingStudioTab = () => {
   const { token: authToken } = useAuth();
-  const [activeType, setActiveType] = useState<"note_story" | "note_howto" | "shorts_script" | "x_thread">("note_story");
-  const [theme, setTheme] = useState("昭和50年代の小学校の同級生との感動の再会");
-  const [targetAudience, setTargetAudience] = useState("30代〜60代のノスタルジー・思い出を大切にする世代");
-  const [tone, setTone] = useState("情緒的・エモーショナル");
-  const [keywords, setKeywords] = useState("タイムカプセル, 放課後の夕焼け, 秘密の約束, 手紙");
-  const [customPrompt, setCustomPrompt] = useState("");
-  
+
+  // Top Studio Mode: "note_studio" (Articles/Curriculum) vs "shorts_studio" (Shorts/TikTok Video Production)
+  const [studioMode, setStudioMode] = useState<"note_studio" | "shorts_studio">("note_studio");
+
+  // Workflow Pipeline Steppers
+  // Note: 1: Draft -> 2: Images -> 3: Preview -> 4: Export
+  const [noteStep, setNoteStep] = useState<1 | 2 | 3 | 4>(1);
+  // Shorts: 1: Script -> 2: Visuals -> 3: TTS/Narration -> 4: Final Preview -> 5: Export
+  const [shortsStep, setShortsStep] = useState<1 | 2 | 3 | 4 | 5>(1);
+
+  // Note Options
+  const [noteMode, setNoteMode] = useState<"random_story" | "curriculum_howto" | "custom">("random_story");
+  const [curriculumStep, setCurriculumStep] = useState<number>(1);
+  const [customTheme, setCustomTheme] = useState("");
+  const [customKeywords, setCustomKeywords] = useState("");
+
+  // Video Options
+  const [videoTheme, setVideoTheme] = useState("30年前の初恋の相手を探す思い出クイズの奇跡");
+  const [videoCustomPrompt, setVideoCustomPrompt] = useState("");
+  const [selectedBgm, setSelectedBgm] = useState("切ないピアノソロ");
+  const [narrationSpeed, setNarrationSpeed] = useState<number>(1.0);
+
+  // Content States
   const [isGenerating, setIsGenerating] = useState(false);
-  const [generatedContent, setGeneratedContent] = useState<PRDraft | null>(null);
+  const [currentDraft, setCurrentDraft] = useState<PRDraft | null>(null);
   const [drafts, setDrafts] = useState<PRDraft[]>([]);
   const [copiedField, setCopiedField] = useState<string | null>(null);
-  const [previewMode, setPreviewMode] = useState<"visual" | "markdown" | "storyboard">("visual");
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Quick preset templates
-  const presets = [
-    {
-      label: "🎒 タイムカプセルの約束 (note実話風)",
-      type: "note_story" as const,
-      theme: "小学校の卒業式で埋めたタイムカプセルと、30年ぶりに届いたボトルメール",
-      targetAudience: "30代〜50代・同窓会世代",
-      tone: "情緒的・エモーショナル",
-      keywords: "タイムカプセル, 校庭の桜, 秘密のあだ名, 30年越し"
-    },
-    {
-      label: "🎬 30秒で泣けるショート動画 (Shorts/TikTok)",
-      type: "shorts_script" as const,
-      theme: "突然転校してしまった初恋の相手を、思い出クイズで探す30秒ショートドラマ",
-      targetAudience: "TikTok・Shorts利用の全年代",
-      tone: "ドラマチック・切なく温かい",
-      keywords: "初恋, 図書室の貸出カード, 秘密のクイズ, 奇跡の通知"
-    },
-    {
-      label: "📖 手紙の書き方・クイズ作成術 (noteノウハウ)",
-      type: "note_howto" as const,
-      theme: "何十年ぶりの知人に確実に届く「秘密の思い出クイズ」の設計マニュアル",
-      targetAudience: "再会を望むが個人情報開示が不安なユーザー",
-      tone: "論理的・親切・わかりやすい解説",
-      keywords: "思い出クイズ, 詐欺・なりすまし防止, 表記揺れ対策, 匿名性"
-    },
-    {
-      label: "🐦 共感・拡散スレッド (X / Twitter)",
-      type: "x_thread" as const,
-      theme: "「もう一度会いたい人はいませんか？」大人になってから胸を締め付ける思い出",
-      targetAudience: "SNSアクティブユーザー",
-      tone: "共感・心に寄り添うトーン",
-      keywords: "エモい, 昔の友人, ReMEETs, 安全な再会"
-    }
-  ];
+  // Selected Images for current note draft
+  const [selectedImages, setSelectedImages] = useState<string[]>(["/assets/hero_bottle_mail_1785941809474-DEVslUma.jpg"]);
 
-  // Fetch saved drafts on mount
+  // Video Playback State (for Studio Final Video Preview)
+  const [isPlayingVideo, setIsPlayingVideo] = useState(false);
+  const [currentSceneIndex, setCurrentSceneIndex] = useState(0);
+  const [videoProgress, setVideoProgress] = useState(0);
+
+  // Fetch drafts on mount
   useEffect(() => {
     fetchDrafts();
   }, []);
@@ -91,91 +120,57 @@ export const AdminMarketingStudioTab = () => {
       const data = await res.json();
       if (data.success && Array.isArray(data.data)) {
         setDrafts(data.data);
-        if (data.data.length > 0 && !generatedContent) {
-          setGeneratedContent(data.data[0]);
+        if (data.data.length > 0 && !currentDraft) {
+          setCurrentDraft(data.data[0]);
         }
       }
     } catch (e) {
-      console.warn("Failed to fetch PR drafts:", e);
+      console.warn("Fetch drafts failed:", e);
     }
   };
 
-  const handleApplyPreset = (p: typeof presets[0]) => {
-    setActiveType(p.type);
-    setTheme(p.theme);
-    setTargetAudience(p.targetAudience);
-    setTone(p.tone);
-    setKeywords(p.keywords);
-  };
-
-  // Client-side instant procedural content generator
-  const generateClientFallback = (): PRDraft => {
-    const kwList = keywords ? keywords.split(/[,、]/).map(k => k.trim()).filter(Boolean) : ["タイムカプセル", "秘密の約束"];
-    const mainKw = kwList[0] || "あの日の思い出";
-
-    if (activeType === "shorts_script") {
-      return {
-        id: `gen-${Date.now()}`,
-        type: "shorts_script",
-        theme,
-        targetAudience,
-        tone,
-        title: `【Shorts台本】「${theme}」をテーマにした奇跡の45秒ドラマ`,
-        summary: `${targetAudience}向けの感情を揺さぶるショート動画絵コンテ`,
-        content: `【動画タイトル】${theme} #Shorts #奇跡の再会 #感動\n【尺】45秒\n【推奨BGM】静かなアコースティックピアノから始まるストリングス（切なく温かいメロディ）\n\n────────────────────────────────────────────\n■ 00:00〜00:05 【冒頭フック（離脱防止）】\n【映像】夕暮れの海岸を歩く人物。波打ち際にキラリと光るガラスの小瓶。\n【テロップ】「30年前に渡せなかった手紙、まだ届くと思いますか？」\n【ナレーション】「連絡先も本名も知らない。でも、ふたりだけの想い出ならある。」\n\n────────────────────────────────────────────\n■ 00:05〜00:18 【ストーリー展開】\n【映像】スマホの画面に「ReMEETs」の投函フォーム。『${mainKw}』を入力する指先。\n【テロップ】「住所もLINEもいらない。秘密のクイズだけで届く手紙。」\n【ナレーション】「誰にも言えなかった秘密の記憶を、そっと海に流しました。」\n\n────────────────────────────────────────────\n■ 00:18〜00:32 【クライマックス（奇跡の通知）】\n【映像】画面が淡く光り、「思い出クイズが100%一致しました！」のアラート。\n【テロップ】「漂流から数ヶ月後。届いた1通の返事。」\n【ナレーション】「『覚えていてくれてありがとう』。30年の時を超えて、あいつと繋がった瞬間でした。」\n\n────────────────────────────────────────────\n■ 00:32〜00:45 【結び ＆ CTA】\n【映像】穏やかな波のさざ波。画面中央にReMEETsロゴ ＋ 検索バー。\n【テロップ】「あなたにも、もう一度会いたい人はいませんか？」\n【ナレーション】「想い出のボトルメールは、海の向こうで待っています。ReMEETsで検索。」\n`,
-        imagePrompt: `Vertical 9:16 emotional cinematic photograph of a glowing glass bottle washed ashore on a golden hour sunset beach, cinematic bokeh lighting --ar 9:16`,
-        hashtags: ["#ショートドラマ", "#感動", "#再会", "#手紙", "#ReMEETs", "#TikTok", "#Shorts"],
-        createdAt: new Date().toISOString()
-      };
-    } else if (activeType === "note_howto") {
-      return {
-        id: `gen-${Date.now()}`,
-        type: "note_howto",
-        theme,
-        targetAudience,
-        tone,
-        title: `【完全保存版】${theme}〜${mainKw}を活用した手紙の書き方とクイズ作成の教科書〜`,
-        summary: `${targetAudience}に向けた、再会を成功させるための実践的noteノウハウ記事`,
-        content: `# 【完全保存版】${theme}〜手紙の書き方とクイズ作成の教科書〜\n\n「昔お世話になったあの人に、もう一度感謝を伝えたい」\n「名前も連絡先も変わってしまった同級生に手紙を届けたい」\n\nそう思っても、個人情報のハードルや連絡手段の途絶えで諦めてしまっていませんか？\n今回は、匿名性を守りながら想い出の相手に確実に手紙を届けるための**『3つの黄金ステップ』**を詳しく解説します。\n\n---\n\n## ステップ1：相手だけがピンとくる「情景描写」を思い出す\n\n手紙の冒頭には、一般的な挨拶ではなく、ふたりだけの具体的なエピソードを記すのが鉄則です。\n\n- ✕「お元気ですか？1995年の同級生です」\n- ◯「放課後の音楽室で、夕立が止むまで一緒に聴いていたあのレコードの話を覚えていますか？」\n\n---\n\n## ステップ2：「秘密の思い出クイズ」を設計する\n\nReMEETsでは、第三者のなりすましを防ぐために「思い出クイズ」を設定します。\n正解率を高めるコツは以下の通りです：\n\n1. **選択肢ではなく単語入力にする**（ふたりだけの合言葉）\n2. **漢字やひらがなの表記揺れに配慮する**（ひらがな指定がベスト）\n3. **SNSや卒業アルバムに載っていない出来事を選ぶ**\n\n---\n\n## ステップ3：海に手紙を放ち、静かに待つ\n\n手紙を流したら、あとは波に身を任せるだけです。\n相手がふとあなたを思い出して検索したとき、その手紙は必ず引き上げられます。\n\n🌊 **今すぐ想い出のボトルを流してみる**\n👉 [ReMEETs〜再会のボトルメール〜 公式サイト](https://remeets.example.com)\n`,
-        imagePrompt: `Flatlay aesthetic wooden desk with vintage fountain pen, parchment paper, dried flowers, warm afternoon sunlight, minimalist stationery style --ar 16:9`,
-        hashtags: ["#手紙の書き方", "#再会", "#エッセイ", "#ノウハウ", "#ReMEETs"],
-        createdAt: new Date().toISOString()
-      };
-    } else if (activeType === "x_thread") {
-      return {
-        id: `gen-${Date.now()}`,
-        type: "x_thread",
-        theme,
-        targetAudience,
-        tone,
-        title: `【Xスレッド】${theme}に関する共感・拡散ポスト`,
-        summary: `X (Twitter) でフォロワーの共感を呼び、ReMEETsへの興味を促すスレッド構成`,
-        content: `【1/4】\n「あの人に、もう一度だけ会いたい」\n大人になってから、ふとそう思う夜はありませんか？\nでも、卒業アルバムを見ても連絡先は分からないし、SNSで本名検索しても見つからない…。\nそんな時に知ってほしいのが、個人情報を出さずに想い出だけで再会できる『ReMEETs』という場所です。\n\n【2/4】\n仕組みは簡単で、昔の記憶と「ふたりだけが知っている秘密のクイズ」をガラス瓶に詰めて海に流すだけ。\n例えば「放課後の理科室で拾った子犬の名前は？」といった質問です。\n\n【3/4】\n相手がクイズに正解した時だけ、お互いの同意と本人確認を経て手紙が開通します。\n迷惑なスパムやなりすましは100%遮断されるので、安心して大切な想いを預けられます。\n\n【4/4】\nあなたがずっと探しているあの人も、もしかしたら海辺で手紙を探しているかもしれません。\n心の奥にしまっていたボトル、今夜そっと海に流してみませんか？🌊\n👉 https://remeets.example.com #ReMEETs #再会 #思い出\n`,
-        imagePrompt: `Cinematic sunset over the sea with a glowing glass bottle in foreground, minimal retro tone --ar 16:9`,
-        hashtags: ["#ReMEETs", "#再会", "#思い出", "#エモい"],
-        createdAt: new Date().toISOString()
-      };
-    } else {
-      return {
-        id: `gen-${Date.now()}`,
-        type: "note_story",
-        theme,
-        targetAudience,
-        tone,
-        title: `【実話風】${theme}〜30年の時を超えて海を渡った、1通のボトルメール〜`,
-        summary: `${targetAudience}の心を打つ、情緒豊かな感動再会ストーリー`,
-        content: `# 【実話風】${theme}〜30年の時を超えて海を渡った、1通のボトルメール〜\n\nふとした瞬間に、胸を締め付ける昔の記憶があります。\nそれは部活の帰り道に見た夕焼けだったり、文化祭の前夜の教室の匂いだったり。\n\n「あの時、ちゃんとありがとうって言えていただろうか」\n\n大人になって忙しい日々に追われる中で、連絡先すら分からなくなってしまった昔の大切な人。\nそんな私の止まっていた時間が、1通の「ボトルメール」によって動き出しました。\n\n---\n\n## 海に預けた、たったひとつの記憶\n\n個人情報を明かすことなく、想い出のクイズだけで相手を探すことができる「ReMEETs」。\n私は半信半疑で、あの頃の想い出をガラス瓶に詰めました。\n\nキーワードは「${keywords || 'あの日の約束'}」。\n\n---\n\n## 奇跡の再会、そして今\n\n数ヶ月後、スマートフォンに届いた1通の通知。\nクイズの答えには、世界中で私とあの人しか知らない言葉が正確に打ち込まれていました。\n\n「ずっと探してたよ」\n手紙を開いた瞬間、涙があふれて止まりませんでした。\n\n---\n\n## あなたの想い出も、まだ海を漂っています\n\n伝えられなかった想い、もう一度話したい大切な人。\n記憶の海にボトルを流してみませんか？\n\n👉 [ReMEETs 公式サイトでボトルを流す](https://remeets.example.com)\n`,
-        imagePrompt: `A beautiful nostalgic glass bottle floating on a calm twilight ocean at sunset, cinematic lighting, emotional aesthetic --ar 16:9`,
-        hashtags: ["#再会", "#エッセイ", "#思い出", "#手紙", "#ReMEETs"],
-        createdAt: new Date().toISOString()
-      };
-    }
-  };
-
-  const handleGenerate = async () => {
+  // ── 1. Generate Note Content (Random Story or Next Curriculum Step) ──
+  const handleGenerateNote = async (overrideType?: "note_story" | "note_howto") => {
     setIsGenerating(true);
     setSaveStatus(null);
-    setErrorMessage(null);
+    try {
+      const type = overrideType || (noteMode === "curriculum_howto" ? "note_howto" : "note_story");
+      const token = authToken || localStorage.getItem("token");
+      
+      const res = await fetch("/api/admin/generate-pr-content", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token ? `Bearer ${token}` : ""
+        },
+        body: JSON.stringify({
+          type,
+          theme: customTheme,
+          curriculumStep: noteMode === "curriculum_howto" ? curriculumStep : undefined,
+          keywords: customKeywords,
+          customPrompt: customTheme ? `こだわり指示: ${customTheme}` : ""
+        })
+      });
+
+      const data = await res.json();
+      if (data.success && data.data) {
+        setCurrentDraft({
+          ...data.data,
+          selectedImages: selectedImages
+        });
+        setNoteStep(1);
+      }
+    } catch (e) {
+      console.warn("Note generation fallback:", e);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  // ── 2. Generate Shorts Video Script ──
+  const handleGenerateShorts = async () => {
+    setIsGenerating(true);
+    setSaveStatus(null);
     try {
       const token = authToken || localStorage.getItem("token");
       const res = await fetch("/api/admin/generate-pr-content", {
@@ -185,49 +180,36 @@ export const AdminMarketingStudioTab = () => {
           Authorization: token ? `Bearer ${token}` : ""
         },
         body: JSON.stringify({
-          type: activeType,
-          theme,
-          targetAudience,
-          tone,
-          keywords,
-          customPrompt
+          type: "shorts_script",
+          theme: videoTheme,
+          customPrompt: videoCustomPrompt
         })
       });
 
-      if (res.ok) {
-        const data = await res.json();
-        if (data.success && data.data) {
-          setGeneratedContent(data.data);
-          setPreviewMode(activeType === "shorts_script" ? "storyboard" : "visual");
-          return;
-        }
+      const data = await res.json();
+      if (data.success && data.data) {
+        setCurrentDraft(data.data);
+        setShortsStep(1);
       }
-      
-      // Fallback if API returned non-OK or empty
-      const fallbackData = generateClientFallback();
-      setGeneratedContent(fallbackData);
-      setPreviewMode(activeType === "shorts_script" ? "storyboard" : "visual");
     } catch (e) {
-      console.warn("API request failed, using client generator:", e);
-      const fallbackData = generateClientFallback();
-      setGeneratedContent(fallbackData);
-      setPreviewMode(activeType === "shorts_script" ? "storyboard" : "visual");
+      console.warn("Shorts generation fallback:", e);
     } finally {
       setIsGenerating(false);
     }
   };
 
+  // ── Save Draft ──
   const handleSaveDraft = async () => {
-    if (!generatedContent) return;
+    if (!currentDraft) return;
     try {
-      const token = localStorage.getItem("token");
+      const token = authToken || localStorage.getItem("token");
       const res = await fetch("/api/admin/pr-contents", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: token ? `Bearer ${token}` : ""
         },
-        body: JSON.stringify(generatedContent)
+        body: JSON.stringify(currentDraft)
       });
       const data = await res.json();
       if (data.success) {
@@ -240,347 +222,176 @@ export const AdminMarketingStudioTab = () => {
     }
   };
 
+  // ── Delete Draft ──
   const handleDeleteDraft = async (id: string) => {
     if (!confirm("この下書きを削除しますか？")) return;
     try {
-      const token = localStorage.getItem("token");
+      const token = authToken || localStorage.getItem("token");
       await fetch(`/api/admin/pr-contents/${id}`, {
         method: "DELETE",
         headers: { Authorization: token ? `Bearer ${token}` : "" }
       });
       fetchDrafts();
-      if (generatedContent?.id === id) {
-        setGeneratedContent(null);
+      if (currentDraft?.id === id) {
+        setCurrentDraft(null);
       }
     } catch (e) {
       console.error("Delete draft error:", e);
     }
   };
 
+  // ── Copy Helper ──
   const copyToClipboard = (text: string, field: string) => {
     navigator.clipboard.writeText(text);
     setCopiedField(field);
     setTimeout(() => setCopiedField(null), 2000);
   };
 
-  const downloadMarkdown = () => {
-    if (!generatedContent) return;
-    const blob = new Blob([generatedContent.content], { type: "text/markdown;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `${generatedContent.title.replace(/[^a-zA-Z0-9ぁ-んァ-ヶー一-龠]/g, "_")}.md`;
-    link.click();
-    URL.revokeObjectURL(url);
+  // ── TTS Web Speech Playback for Shorts ──
+  const speakText = (text: string) => {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "ja-JP";
+    utterance.rate = narrationSpeed;
+    window.speechSynthesis.speak(utterance);
+  };
+
+  // ── Video Final Preview Playback Engine ──
+  useEffect(() => {
+    let timer: any;
+    if (isPlayingVideo && currentDraft?.scenes && currentDraft.scenes.length > 0) {
+      const scene = currentDraft.scenes[currentSceneIndex];
+      if (scene) {
+        speakText(scene.narration);
+      }
+      timer = setTimeout(() => {
+        if (currentSceneIndex < currentDraft.scenes!.length - 1) {
+          setCurrentSceneIndex(prev => prev + 1);
+        } else {
+          setIsPlayingVideo(false);
+          setCurrentSceneIndex(0);
+        }
+      }, 7000);
+    }
+    return () => clearTimeout(timer);
+  }, [isPlayingVideo, currentSceneIndex]);
+
+  const toggleVideoPlay = () => {
+    if (isPlayingVideo) {
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+      setIsPlayingVideo(false);
+    } else {
+      setIsPlayingVideo(true);
+      setCurrentSceneIndex(0);
+    }
+  };
+
+  // ── Image Toggle for Note ──
+  const toggleImageSelect = (path: string) => {
+    setSelectedImages(prev => {
+      if (prev.includes(path)) {
+        return prev.filter(p => p !== path);
+      } else {
+        return [...prev, path];
+      }
+    });
   };
 
   return (
     <div className="space-y-8 animate-fade-in font-sans">
-      {/* ─── ヘッダー ─── */}
+      
+      {/* ─── Top Hero Studio Header ─── */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-6">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center shrink-0 shadow-md shadow-indigo-200">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-600 to-teal-600 text-white flex items-center justify-center shrink-0 shadow-md shadow-indigo-100">
             <Sparkles size={24} />
           </div>
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2.5 py-0.5 rounded-full uppercase tracking-wider font-mono">
-                AI MARKETING & PR STUDIO
+              <span className="text-[10px] font-bold text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-full uppercase tracking-wider font-mono">
+                ReMEETs IN-HOUSE PRODUCTION
               </span>
-              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                Gemini 2.5 Flash / Pro Ready
+              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                AI自律執筆 ＆ 映像完パケスタジオ
               </span>
             </div>
             <h1 className="text-xl sm:text-2xl md:text-3xl font-serif font-bold text-slate-900 tracking-wide">
-              PRコンテンツ・生成スタジオ
+              メディア制作プロダクション
             </h1>
             <p className="text-xs sm:text-sm text-slate-600 font-sans leading-relaxed">
-              note用記事、ショート動画（TikTok/Shorts/Reels）台本、XスレッドをAIが一括自動生成。ReMEETsへの動線とファン獲得を加速します。
+              「企画・執筆 → 挿絵・シーン選定 → 完パケ確認 → note・YouTube・TikTokへの手動ワンクリック配信」までを一連の流れで完結させます。
             </p>
           </div>
         </div>
 
-        {/* クイック統計 */}
-        <div className="flex items-center gap-3 bg-slate-50 border border-slate-200/80 p-2.5 rounded-2xl">
-          <div className="px-4 py-2 bg-white rounded-xl border border-slate-100 shadow-2xs text-center">
-            <span className="text-[10px] font-bold text-slate-400 block">保存済み下書き</span>
-            <span className="text-base font-serif font-bold text-slate-900">{drafts.length} <span className="text-xs font-normal text-slate-500">本</span></span>
-          </div>
+        {/* Studio Mode Switcher */}
+        <div className="flex items-center bg-slate-100 p-1 rounded-2xl">
           <button
-            onClick={() => handleApplyPreset(presets[0])}
-            className="px-3.5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
-          >
-            <Wand2 size={14} />
-            <span>おすすめ企画をセット</span>
-          </button>
-        </div>
-      </div>
-
-      {/* ─── プリセットバナー ─── */}
-      <div className="space-y-3">
-        <div className="flex items-center gap-2 text-xs font-bold text-slate-500">
-          <Lightbulb size={14} className="text-amber-500" />
-          <span>ワンクリックで企画プリセットをセット:</span>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          {presets.map((preset, idx) => (
-            <button
-              key={idx}
-              onClick={() => handleApplyPreset(preset)}
-              className="p-3.5 bg-white hover:bg-indigo-50/50 rounded-2xl border border-slate-200/80 hover:border-indigo-300 text-left transition-all shadow-2xs group cursor-pointer flex flex-col justify-between"
-            >
-              <span className="text-xs font-bold text-slate-800 group-hover:text-indigo-700 leading-snug">
-                {preset.label}
-              </span>
-              <span className="text-[10.5px] text-slate-400 mt-2 line-clamp-1">
-                {preset.theme}
-              </span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* ─── メインレイアウト（左：生成コントローラー / 右：リアルタイムプレビュー） ─── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        
-        {/* ─── 左側：AI生成コントロールパネル（5カラム） ─── */}
-        <div className="lg:col-span-5 bg-white rounded-3xl p-6 sm:p-7 border border-slate-100 shadow-sm space-y-6">
-          <div className="border-b border-slate-100 pb-4 flex items-center justify-between">
-            <h2 className="text-base font-bold font-serif text-slate-900 flex items-center gap-2">
-              <Wand2 size={18} className="text-indigo-600" />
-              <span>コンテンツ企画・設定</span>
-            </h2>
-            <span className="text-[10px] font-bold font-mono text-slate-400">STUDIO CONFIG</span>
-          </div>
-
-          {/* 1. フォーマット種別選択 */}
-          <div className="space-y-2">
-            <label className="text-xs font-bold text-slate-700 block">
-              1. 配信フォーマット
-            </label>
-            <div className="grid grid-cols-2 gap-2">
-              {[
-                { id: "note_story", label: "note 実話風エッセイ", icon: BookOpen },
-                { id: "shorts_script", label: "Shorts / TikTok 台本", icon: Video },
-                { id: "note_howto", label: "note ノウハウ・教科書", icon: FileText },
-                { id: "x_thread", label: "X (Twitter) スレッド", icon: Twitter },
-              ].map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => setActiveType(item.id as any)}
-                  className={cn(
-                    "p-3 rounded-2xl border text-left flex items-center gap-2.5 transition-all text-xs font-bold cursor-pointer",
-                    activeType === item.id
-                      ? "bg-indigo-50/80 border-indigo-500 text-indigo-900 shadow-2xs ring-2 ring-indigo-500/10"
-                      : "bg-slate-50/60 border-slate-200/80 text-slate-600 hover:bg-slate-100/80"
-                  )}
-                >
-                  <item.icon size={16} className={activeType === item.id ? "text-indigo-600" : "text-slate-400"} />
-                  <span>{item.label}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* 2. テーマ / シチュエーション */}
-          <div className="space-y-2">
-            <label className="text-xs font-bold text-slate-700 flex items-center justify-between">
-              <span>2. テーマ・想い出のシチュエーション</span>
-              <span className="text-[10px] text-slate-400 font-normal">具体的であるほど高品質</span>
-            </label>
-            <textarea
-              rows={2}
-              value={theme}
-              onChange={(e) => setTheme(e.target.value)}
-              placeholder="例: 中学校の合唱コンクールでピアノを弾いていたあの子との再会"
-              className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs text-slate-900 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all resize-none"
-            />
-          </div>
-
-          {/* 3. ターゲット層 ＆ トーン */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-700 block">3. ターゲット読者層</label>
-              <input
-                type="text"
-                value={targetAudience}
-                onChange={(e) => setTargetAudience(e.target.value)}
-                placeholder="例: 40代〜60代"
-                className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:bg-white focus:border-indigo-500 outline-none"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-700 block">4. 文体・トーン</label>
-              <select
-                value={tone}
-                onChange={(e) => setTone(e.target.value)}
-                className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:bg-white focus:border-indigo-500 outline-none cursor-pointer"
-              >
-                <option value="情緒的・エモーショナル">情緒的・エモーショナル（感動）</option>
-                <option value="親しみやすい・共感">親しみやすい・共感（SNS風）</option>
-                <option value="論理的・わかりやすい解説">論理的・わかりやすい（ノウハウ）</option>
-                <option value="ドラマチック・切なく温かい">ドラマチック・切なく温かい（Shorts）</option>
-                <option value="格調高く信頼感のある公式トーン">格調高く信頼感のある公式トーン</option>
-              </select>
-            </div>
-          </div>
-
-          {/* 4. キーワード */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-700 block">
-              5. 盛り込みたいキーワード (カンマ区切り)
-            </label>
-            <input
-              type="text"
-              value={keywords}
-              onChange={(e) => setKeywords(e.target.value)}
-              placeholder="例: タイムカプセル, 手紙, 秘密の約束, 30年"
-              className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:bg-white focus:border-indigo-500 outline-none"
-            />
-          </div>
-
-          {/* 5. 追加プロンプト (任意) */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-700 block">
-              6. AIへの追加こだわり指示 (任意)
-            </label>
-            <input
-              type="text"
-              value={customPrompt}
-              onChange={(e) => setCustomPrompt(e.target.value)}
-              placeholder="例: 読者がコメント欄で自分の思い出を語りたくなる仕掛けを入れて"
-              className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:bg-white focus:border-indigo-500 outline-none"
-            />
-          </div>
-
-          {/* 生成実行ボタン */}
-          <button
-            onClick={handleGenerate}
-            disabled={isGenerating || !theme.trim()}
+            onClick={() => { setStudioMode("note_studio"); }}
             className={cn(
-              "w-full py-3.5 px-6 rounded-2xl text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer",
-              isGenerating
-                ? "bg-slate-400 cursor-not-allowed"
-                : "bg-gradient-to-r from-indigo-600 via-purple-600 to-teal-600 hover:shadow-lg hover:shadow-indigo-200 active:scale-[0.98]"
+              "px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer",
+              studioMode === "note_studio"
+                ? "bg-white text-indigo-900 shadow-sm"
+                : "text-slate-500 hover:text-slate-900"
             )}
           >
-            {isGenerating ? (
-              <>
-                <RefreshCw size={16} className="animate-spin" />
-                <span>AIが記事・台本を執筆中...</span>
-              </>
-            ) : (
-              <>
-                <Sparkles size={16} />
-                <span>AIコンテンツを生成する</span>
-              </>
-            )}
+            <BookOpen size={16} className={studioMode === "note_studio" ? "text-indigo-600" : "text-slate-400"} />
+            <span>📝 note・教科書スタジオ</span>
           </button>
+          <button
+            onClick={() => { setStudioMode("shorts_studio"); }}
+            className={cn(
+              "px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer",
+              studioMode === "shorts_studio"
+                ? "bg-white text-rose-900 shadow-sm"
+                : "text-slate-500 hover:text-slate-900"
+            )}
+          >
+            <Film size={16} className={studioMode === "shorts_studio" ? "text-rose-600" : "text-slate-400"} />
+            <span>🎬 ショート動画プロダクション</span>
+          </button>
+        </div>
+      </div>
 
-          {/* 保存済み下書きリスト */}
-          <div className="pt-4 border-t border-slate-100 space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-600">📂 保存済み下書き ({drafts.length})</span>
-              <button onClick={fetchDrafts} className="text-[11px] text-indigo-600 hover:underline">更新</button>
-            </div>
-            <div className="space-y-2 max-h-48 overflow-y-auto pr-1 custom-scrollbar">
-              {drafts.map((d) => (
-                <div
-                  key={d.id}
-                  onClick={() => setGeneratedContent(d)}
+      {/* ───────────────────────────────────────────────────────────── */}
+      {/* 📝 MODE 1: note・教科書 制作スタジオ                          */}
+      {/* ───────────────────────────────────────────────────────────── */}
+      {studioMode === "note_studio" && (
+        <div className="space-y-6">
+
+          {/* 5-Step Pipeline Navigation Bar */}
+          <div className="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm flex items-center justify-between overflow-x-auto custom-scrollbar">
+            <div className="flex items-center gap-2 min-w-max">
+              {[
+                { step: 1, label: "1. 執筆・内容確認", icon: FileText },
+                { step: 2, label: "2. 挿絵・画像配置", icon: ImageIcon },
+                { step: 3, label: "3. note風レイアウト確認", icon: Eye },
+                { step: 4, label: "4. 保存 ＆ ワンクリック配信", icon: Share2 },
+              ].map((s) => (
+                <button
+                  key={s.step}
+                  onClick={() => setNoteStep(s.step as any)}
                   className={cn(
-                    "p-3 rounded-xl border text-left flex items-center justify-between group cursor-pointer transition-all",
-                    generatedContent?.id === d.id
-                      ? "bg-indigo-50/80 border-indigo-300"
-                      : "bg-slate-50/50 border-slate-200/70 hover:bg-slate-100/70"
+                    "px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer",
+                    noteStep === s.step
+                      ? "bg-indigo-600 text-white shadow-xs"
+                      : noteStep > s.step
+                        ? "bg-indigo-50 text-indigo-700"
+                        : "text-slate-400 hover:bg-slate-50 hover:text-slate-700"
                   )}
                 >
-                  <div className="min-w-0 flex-1 pr-2">
-                    <span className="text-[10px] font-bold text-indigo-600 uppercase block">
-                      {d.type === "note_story" ? "note 実話" : d.type === "shorts_script" ? "🎬 Shorts台本" : d.type === "x_thread" ? "🐦 Xスレッド" : "📖 noteノウハウ"}
-                    </span>
-                    <p className="text-xs font-bold text-slate-800 truncate">{d.title}</p>
-                  </div>
-                  <button
-                    onClick={(e) => { e.stopPropagation(); handleDeleteDraft(d.id); }}
-                    className="p-1 text-slate-300 hover:text-rose-500 transition-colors opacity-0 group-hover:opacity-100"
-                  >
-                    <Trash2 size={13} />
-                  </button>
-                </div>
+                  <s.icon size={14} />
+                  <span>{s.label}</span>
+                </button>
               ))}
             </div>
-          </div>
-        </div>
 
-        {/* ─── 右側：リッチプレビュー ＆ エクスポート（7カラム） ─── */}
-        <div className="lg:col-span-7 space-y-4">
-          
-          {/* プレビュー切り替えバー ＆ アクションボタン */}
-          <div className="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-1.5 bg-slate-100/80 p-1 rounded-2xl">
-              <button
-                onClick={() => setPreviewMode("visual")}
-                className={cn(
-                  "px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer",
-                  previewMode === "visual"
-                    ? "bg-white text-slate-900 shadow-2xs"
-                    : "text-slate-500 hover:text-slate-900"
-                )}
-              >
-                <Eye size={14} />
-                <span>リアル表示</span>
-              </button>
-              {generatedContent?.type === "shorts_script" && (
-                <button
-                  onClick={() => setPreviewMode("storyboard")}
-                  className={cn(
-                    "px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer",
-                    previewMode === "storyboard"
-                      ? "bg-white text-indigo-700 shadow-2xs"
-                      : "text-slate-500 hover:text-slate-900"
-                  )}
-                >
-                  <Film size={14} />
-                  <span>絵コンテ・タイムライン</span>
-                </button>
-              )}
-              <button
-                onClick={() => setPreviewMode("markdown")}
-                className={cn(
-                  "px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer",
-                  previewMode === "markdown"
-                    ? "bg-white text-slate-900 shadow-2xs"
-                    : "text-slate-500 hover:text-slate-900"
-                )}
-              >
-                <Code size={14} />
-                <span>Markdown 原文</span>
-              </button>
-            </div>
-
-            {/* アクションボタン群 */}
             <div className="flex items-center gap-2">
               <button
-                onClick={() => generatedContent && copyToClipboard(generatedContent.content, "full")}
-                disabled={!generatedContent}
-                className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-40"
-              >
-                {copiedField === "full" ? <Check size={14} className="text-emerald-600" /> : <Copy size={14} />}
-                <span>{copiedField === "full" ? "コピー完了" : "本文コピー"}</span>
-              </button>
-              <button
-                onClick={downloadMarkdown}
-                disabled={!generatedContent}
-                className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-40"
-              >
-                <Download size={14} />
-                <span>.md 保存</span>
-              </button>
-              <button
                 onClick={handleSaveDraft}
-                disabled={!generatedContent}
-                className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs disabled:opacity-40"
+                disabled={!currentDraft}
+                className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-40"
               >
                 <Save size={14} />
                 <span>下書き保存</span>
@@ -589,137 +400,841 @@ export const AdminMarketingStudioTab = () => {
           </div>
 
           {saveStatus && (
-            <motion.div
-              initial={{ opacity: 0, y: -5 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl text-xs font-bold flex items-center gap-2"
-            >
+            <motion.div initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl text-xs font-bold flex items-center gap-2">
               <CheckCircle2 size={16} className="text-emerald-600" />
               <span>{saveStatus}</span>
             </motion.div>
           )}
 
-          {/* プレビュー本体 */}
-          {generatedContent ? (
-            <div className="space-y-4">
+          {/* STEP 1: Draft & Mode Selection */}
+          {noteStep === 1 && (
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
               
-              {/* アイキャッチ画像用プロンプト枠 */}
-              {generatedContent.imagePrompt && (
-                <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-2xl p-4 border border-purple-100 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-bold text-purple-900 flex items-center gap-1.5">
-                      <Sparkles size={13} className="text-purple-600" />
-                      <span>アイキャッチ / サムネイル画像生成プロンプト (Midjourney / Imagen 用)</span>
-                    </span>
-                    <button
-                      onClick={() => copyToClipboard(generatedContent.imagePrompt || "", "image")}
-                      className="text-[11px] text-purple-700 hover:underline flex items-center gap-1 cursor-pointer font-bold"
+              {/* Left Column: Generator Controls */}
+              <div className="lg:col-span-5 bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-6">
+                <div className="border-b border-slate-100 pb-4">
+                  <h2 className="text-base font-bold font-serif text-slate-900 flex items-center gap-2">
+                    <Wand2 size={18} className="text-indigo-600" />
+                    <span>執筆モードの選択</span>
+                  </h2>
+                </div>
+
+                {/* Mode Selector */}
+                <div className="space-y-3">
+                  <button
+                    onClick={() => { setNoteMode("random_story"); handleGenerateNote("note_story"); }}
+                    disabled={isGenerating}
+                    className={cn(
+                      "w-full p-4 rounded-2xl border text-left transition-all flex items-start justify-between group cursor-pointer",
+                      noteMode === "random_story"
+                        ? "bg-gradient-to-r from-indigo-50/80 to-purple-50/80 border-indigo-300 ring-2 ring-indigo-500/10"
+                        : "bg-slate-50 border-slate-200/80 hover:bg-slate-100"
+                    )}
+                  >
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-base">🎲</span>
+                        <span className="text-xs font-bold text-slate-900">おまかせランダム実話エッセイ</span>
+                        <span className="text-[10px] font-bold bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full">ワンクリック</span>
+                      </div>
+                      <p className="text-[11px] text-slate-500 leading-relaxed">
+                        昭和・平成の想い出シチュエーションプールから、AIが毎回異なる情緒豊かな感動実話ストーリーを自動生成します。
+                      </p>
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => setNoteMode("curriculum_howto")}
+                    className={cn(
+                      "w-full p-4 rounded-2xl border text-left transition-all flex items-start justify-between group cursor-pointer",
+                      noteMode === "curriculum_howto"
+                        ? "bg-gradient-to-r from-teal-50/80 to-cyan-50/80 border-teal-300 ring-2 ring-teal-500/10"
+                        : "bg-slate-50 border-slate-200/80 hover:bg-slate-100"
+                    )}
+                  >
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-base">📚</span>
+                        <span className="text-xs font-bold text-slate-900">連載ノウハウ教科書（全12回）</span>
+                        <span className="text-[10px] font-bold bg-teal-100 text-teal-700 px-2 py-0.5 rounded-full">重複なし順次執筆</span>
+                      </div>
+                      <p className="text-[11px] text-slate-500 leading-relaxed">
+                        「第1講: 基本」から「第12講: 応用」まで、順序立ててnote読者をファン化する公式教科書をステップ順に執筆します。
+                      </p>
+                    </div>
+                  </button>
+                </div>
+
+                {/* Curriculum Selector if HowTo is active */}
+                {noteMode === "curriculum_howto" && (
+                  <div className="p-4 bg-teal-50/50 rounded-2xl border border-teal-100 space-y-3">
+                    <div className="flex items-center justify-between text-xs font-bold text-teal-900">
+                      <span>連載カリキュラム進捗: 第 {curriculumStep} / 12 講</span>
+                      <span className="text-[10px] bg-teal-200/70 px-2 py-0.5 rounded-full">{CURRICULUM_STEPS[curriculumStep - 1].phase}</span>
+                    </div>
+
+                    <select
+                      value={curriculumStep}
+                      onChange={(e) => setCurriculumStep(parseInt(e.target.value))}
+                      className="w-full p-2.5 bg-white border border-teal-200 rounded-xl text-xs font-bold text-slate-800 outline-none cursor-pointer"
                     >
-                      {copiedField === "image" ? <Check size={12} /> : <Copy size={12} />}
-                      <span>{copiedField === "image" ? "コピー済" : "プロンプトをコピー"}</span>
+                      {CURRICULUM_STEPS.map((s) => (
+                        <option key={s.step} value={s.step}>
+                          {s.title}
+                        </option>
+                      ))}
+                    </select>
+
+                    <button
+                      onClick={() => handleGenerateNote("note_howto")}
+                      disabled={isGenerating}
+                      className="w-full py-3 bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      {isGenerating ? <RefreshCw size={14} className="animate-spin" /> : <Sparkles size={14} />}
+                      <span>第 {curriculumStep} 講の原稿を執筆する</span>
                     </button>
                   </div>
-                  <p className="text-xs font-mono text-purple-950/80 bg-white/80 p-2.5 rounded-xl border border-purple-200/50 select-all leading-relaxed">
-                    {generatedContent.imagePrompt}
+                )}
+
+                {/* Optional Custom Free Prompt */}
+                <div className="pt-2 space-y-2 border-t border-slate-100">
+                  <label className="text-xs font-bold text-slate-600 flex items-center gap-1.5">
+                    <Lightbulb size={13} className="text-amber-500" />
+                    <span>こだわり自由指示 (任意)</span>
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={customTheme}
+                    onChange={(e) => setCustomTheme(e.target.value)}
+                    placeholder="指定がある場合のみ入力（例: 昭和55年の北海道の同級生、恩師の定年退職など）"
+                    className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:bg-white focus:border-indigo-500 outline-none resize-none"
+                  />
+                  {noteMode === "random_story" && (
+                    <button
+                      onClick={() => handleGenerateNote("note_story")}
+                      disabled={isGenerating}
+                      className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      {isGenerating ? <RefreshCw size={14} className="animate-spin" /> : <Sparkles size={14} />}
+                      <span>🎲 おまかせストーリーを生成する</span>
+                    </button>
+                  )}
+                </div>
+
+                {/* Saved Drafts List */}
+                <div className="pt-4 border-t border-slate-100 space-y-2">
+                  <span className="text-xs font-bold text-slate-500 block">📂 下書きライブラリ ({drafts.length})</span>
+                  <div className="space-y-1.5 max-h-40 overflow-y-auto custom-scrollbar">
+                    {drafts.map((d) => (
+                      <div
+                        key={d.id}
+                        onClick={() => setCurrentDraft(d)}
+                        className={cn(
+                          "p-2.5 rounded-xl border text-left flex items-center justify-between cursor-pointer transition-all text-xs",
+                          currentDraft?.id === d.id ? "bg-indigo-50 border-indigo-300 font-bold" : "bg-slate-50/50 border-slate-200/60 hover:bg-slate-100"
+                        )}
+                      >
+                        <span className="truncate flex-1 pr-2">{d.title}</span>
+                        <button onClick={(e) => { e.stopPropagation(); handleDeleteDraft(d.id); }} className="text-slate-300 hover:text-rose-500">
+                          <Trash2 size={12} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Right Column: Draft Review & Inline Edit */}
+              <div className="lg:col-span-7 bg-white p-6 sm:p-8 rounded-3xl border border-slate-100 shadow-sm space-y-6">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                  <div>
+                    <span className="text-[10px] font-bold text-indigo-600 uppercase font-mono">STEP 1: REVIEW & EDIT</span>
+                    <h2 className="text-base font-bold font-serif text-slate-900">記事の内容確認 ＆ 編集</h2>
+                  </div>
+                  <button
+                    onClick={() => setNoteStep(2)}
+                    disabled={!currentDraft}
+                    className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-teal-600 hover:opacity-90 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs disabled:opacity-40"
+                  >
+                    <span>内容OK！画像配置へ進む</span>
+                    <ArrowRight size={14} />
+                  </button>
+                </div>
+
+                {currentDraft ? (
+                  <div className="space-y-4">
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold text-slate-500">記事タイトル</label>
+                      <input
+                        type="text"
+                        value={currentDraft.title}
+                        onChange={(e) => setCurrentDraft({ ...currentDraft, title: e.target.value })}
+                        className="w-full p-3 font-serif font-bold text-base text-slate-900 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-indigo-500 outline-none"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold text-slate-500">本文 (Markdown編集可能)</label>
+                      <textarea
+                        rows={16}
+                        value={currentDraft.content}
+                        onChange={(e) => setCurrentDraft({ ...currentDraft, content: e.target.value })}
+                        className="w-full p-4 font-mono text-xs text-slate-800 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:border-indigo-500 outline-none leading-relaxed custom-scrollbar"
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="h-80 border border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center p-8 text-center space-y-2">
+                    <Sparkles size={32} className="text-indigo-400" />
+                    <p className="text-xs text-slate-500">左側のボタンを押して、おまかせストーリーまたは教科書を執筆してください。</p>
+                  </div>
+                )}
+              </div>
+
+            </div>
+          )}
+
+          {/* STEP 2: Image Selection & Placement */}
+          {noteStep === 2 && currentDraft && (
+            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-100 shadow-sm space-y-6">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                <div>
+                  <span className="text-[10px] font-bold text-indigo-600 uppercase font-mono">STEP 2: IMAGE ASSETS</span>
+                  <h2 className="text-base font-bold font-serif text-slate-900">挿絵・アイキャッチ画像の選定</h2>
+                  <p className="text-xs text-slate-500">記事に挿入したい画像にチェックを入れてください。自動で最適な位置にレイアウトされます。</p>
+                </div>
+                <button
+                  onClick={() => setNoteStep(3)}
+                  className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-teal-600 hover:opacity-90 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+                >
+                  <span>レイアウト確認へ進む</span>
+                  <ArrowRight size={14} />
+                </button>
+              </div>
+
+              {/* AI Image Generation Prompt Card */}
+              {currentDraft.imagePrompt && (
+                <div className="bg-gradient-to-r from-purple-50 to-indigo-50 p-4 rounded-2xl border border-purple-100 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-purple-900 flex items-center gap-1.5">
+                      <Sparkle size={14} className="text-purple-600" />
+                      <span>AIアイキャッチ生成プロンプト (Midjourney / Imagen / Canva用)</span>
+                    </span>
+                    <button
+                      onClick={() => copyToClipboard(currentDraft.imagePrompt || "", "prompt")}
+                      className="text-xs text-purple-700 hover:underline font-bold flex items-center gap-1"
+                    >
+                      {copiedField === "prompt" ? <Check size={12} /> : <Copy size={12} />}
+                      <span>{copiedField === "prompt" ? "コピー済" : "プロンプトをコピー"}</span>
+                    </button>
+                  </div>
+                  <p className="text-xs font-mono bg-white/80 p-2.5 rounded-xl text-purple-950 border border-purple-200/50 select-all">
+                    {currentDraft.imagePrompt}
                   </p>
                 </div>
               )}
 
-              {/* リアルプレビュー表示 */}
-              {previewMode === "visual" && (
-                <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-sm space-y-6">
-                  {/* note風ヘッダー */}
-                  <div className="border-b border-slate-100 pb-6 space-y-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-teal-700 text-white flex items-center justify-center font-serif font-bold text-sm shadow-xs">
-                        RM
+              {/* Available Assets Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                {AVAILABLE_ASSETS.map((asset) => {
+                  const isSelected = selectedImages.includes(asset.path);
+                  return (
+                    <div
+                      key={asset.id}
+                      onClick={() => toggleImageSelect(asset.path)}
+                      className={cn(
+                        "p-3 rounded-2xl border transition-all cursor-pointer group space-y-2 relative",
+                        isSelected
+                          ? "bg-indigo-50/80 border-indigo-500 ring-2 ring-indigo-500/20"
+                          : "bg-slate-50 border-slate-200/80 hover:border-slate-300"
+                      )}
+                    >
+                      <div className="aspect-video rounded-xl overflow-hidden bg-slate-200 relative">
+                        <img src={asset.path} alt={asset.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                        <div className={cn(
+                          "absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center shadow-md text-xs font-bold",
+                          isSelected ? "bg-indigo-600 text-white" : "bg-white/80 text-slate-400"
+                        )}>
+                          {isSelected ? <Check size={14} /> : <Plus size={14} />}
+                        </div>
                       </div>
-                      <div>
-                        <div className="text-xs font-bold text-slate-800">ReMEETs 公式編集部</div>
-                        <div className="text-[10px] text-slate-400">公式広報・想い出ボトルストーリー</div>
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="font-bold text-slate-800">{asset.title}</span>
+                        <span className="text-[10px] text-slate-400 font-mono">{asset.category}</span>
                       </div>
                     </div>
-
-                    <h1 className="text-xl sm:text-2xl font-serif font-bold text-slate-900 leading-snug">
-                      {generatedContent.title}
-                    </h1>
-
-                    {/* ハッシュタグ */}
-                    {generatedContent.hashtags && generatedContent.hashtags.length > 0 && (
-                      <div className="flex flex-wrap gap-1.5 pt-1">
-                        {generatedContent.hashtags.map((tag, idx) => (
-                          <span key={idx} className="text-xs text-indigo-600 hover:underline cursor-pointer">
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* 本文エリア */}
-                  <div className="prose prose-slate max-w-none text-slate-800 text-sm sm:text-base leading-relaxed space-y-4 whitespace-pre-wrap font-serif">
-                    {generatedContent.content}
-                  </div>
-                </div>
-              )}
-
-              {/* ショート動画 絵コンテ・タイムライン表示 */}
-              {previewMode === "storyboard" && (
-                <div className="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl space-y-6">
-                  <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-                    <div className="flex items-center gap-2">
-                      <Smartphone size={18} className="text-rose-400" />
-                      <h3 className="text-base font-bold font-serif">縦型ショート動画・演出絵コンテ (9:16)</h3>
-                    </div>
-                    <span className="text-[10px] font-mono text-slate-400 bg-slate-800 px-2.5 py-1 rounded-full">
-                      TikTok / YouTube Shorts / Reels
-                    </span>
-                  </div>
-
-                  <div className="space-y-4">
-                    <h2 className="text-lg font-bold text-amber-300 leading-snug">
-                      {generatedContent.title}
-                    </h2>
-
-                    <div className="bg-slate-800/80 rounded-2xl p-4 border border-slate-700/60 whitespace-pre-wrap font-sans text-xs leading-relaxed text-slate-200">
-                      {generatedContent.content}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Markdown 原文表示 */}
-              {previewMode === "markdown" && (
-                <div className="bg-slate-950 text-slate-200 rounded-3xl p-6 border border-slate-800 shadow-sm space-y-4">
-                  <div className="flex items-center justify-between text-xs text-slate-400">
-                    <span className="font-mono">RAW MARKDOWN</span>
-                    <span>{generatedContent.content.length} 文字</span>
-                  </div>
-                  <textarea
-                    rows={18}
-                    readOnly
-                    value={generatedContent.content}
-                    className="w-full bg-slate-900 border border-slate-800 rounded-2xl p-4 text-xs font-mono text-slate-300 focus:outline-none resize-none leading-relaxed"
-                  />
-                </div>
-              )}
-
-            </div>
-          ) : (
-            <div className="h-96 bg-white rounded-3xl border border-dashed border-slate-200 flex flex-col items-center justify-center p-8 text-center space-y-3">
-              <div className="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-500 flex items-center justify-center">
-                <Sparkles size={28} />
-              </div>
-              <div className="space-y-1">
-                <h3 className="text-base font-bold text-slate-800 font-serif">まだコンテンツが生成されていません</h3>
-                <p className="text-xs text-slate-500 max-w-sm">
-                  左側の企画フォームでテーマを入力するか、上部のプリセットを選んで「AIコンテンツを生成する」を押してください。
-                </p>
+                  );
+                })}
               </div>
             </div>
           )}
+
+          {/* STEP 3: note-style Live Preview */}
+          {noteStep === 3 && currentDraft && (
+            <div className="bg-white p-6 sm:p-10 rounded-3xl border border-slate-100 shadow-sm space-y-8 max-w-3xl mx-auto">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                <div>
+                  <span className="text-[10px] font-bold text-indigo-600 uppercase font-mono">STEP 3: NOTE LIVE PREVIEW</span>
+                  <h2 className="text-base font-bold font-serif text-slate-900">note完成レイアウト確認</h2>
+                </div>
+                <button
+                  onClick={() => setNoteStep(4)}
+                  className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-teal-600 hover:opacity-90 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+                >
+                  <span>レイアウトOK！配信へ進む</span>
+                  <ArrowRight size={14} />
+                </button>
+              </div>
+
+              {/* note Hero Header */}
+              {selectedImages.length > 0 && (
+                <div className="aspect-[16/9] w-full rounded-2xl overflow-hidden shadow-sm border border-slate-100">
+                  <img src={selectedImages[0]} alt="Hero" className="w-full h-full object-cover" />
+                </div>
+              )}
+
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-teal-700 text-white flex items-center justify-center font-serif font-bold text-sm">
+                    RM
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-slate-900">ReMEETs 公式編集部</div>
+                    <div className="text-[10px] text-slate-400">公式広報・想い出ボトルストーリー</div>
+                  </div>
+                </div>
+
+                <h1 className="text-2xl sm:text-3xl font-serif font-bold text-slate-900 leading-snug">
+                  {currentDraft.title}
+                </h1>
+
+                {currentDraft.hashtags && (
+                  <div className="flex flex-wrap gap-1.5 pt-1">
+                    {currentDraft.hashtags.map((tag, idx) => (
+                      <span key={idx} className="text-xs text-indigo-600 font-sans">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Body Content with Embedded Images */}
+              <div className="prose prose-slate max-w-none text-slate-800 text-sm sm:text-base leading-relaxed space-y-6 font-serif whitespace-pre-wrap">
+                {currentDraft.content}
+              </div>
+
+              {/* Bottom In-article Image Gallery */}
+              {selectedImages.length > 1 && (
+                <div className="pt-6 border-t border-slate-100 space-y-4">
+                  <span className="text-xs font-bold text-slate-400 block uppercase font-mono">IN-ARTICLE ILLUSTRATIONS</span>
+                  <div className="grid grid-cols-2 gap-4">
+                    {selectedImages.slice(1).map((img, i) => (
+                      <div key={i} className="aspect-video rounded-xl overflow-hidden border border-slate-200">
+                        <img src={img} alt="In-article" className="w-full h-full object-cover" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* STEP 4: One-Click Multi-Platform Publish & Export */}
+          {noteStep === 4 && currentDraft && (
+            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-100 shadow-sm space-y-6">
+              <div className="border-b border-slate-100 pb-4">
+                <span className="text-[10px] font-bold text-indigo-600 uppercase font-mono">STEP 4: EXPORT & PUBLISH</span>
+                <h2 className="text-base font-bold font-serif text-slate-900">各メディアへのワンクリック配信アシスト</h2>
+                <p className="text-xs text-slate-500">ボタンを押して各メディアに貼り付けるだけで、30秒で公開が完了します。</p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* 1. note Direct Copy */}
+                <div className="p-5 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border border-emerald-200/80 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">📋</span>
+                    <h3 className="text-sm font-bold text-emerald-950">note 貼り付け用コピー</h3>
+                  </div>
+                  <p className="text-xs text-emerald-800 leading-relaxed">
+                    見出し・太字・CTAリンク・画像配置情報を含んだ完全な原稿を一括コピーします。
+                  </p>
+                  <button
+                    onClick={() => copyToClipboard(currentDraft.content, "note")}
+                    className="w-full py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    {copiedField === "note" ? <Check size={14} /> : <Copy size={14} />}
+                    <span>{copiedField === "note" ? "コピー完了！noteに貼付" : "本文を一括コピー"}</span>
+                  </button>
+                  <a
+                    href="https://note.com"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-[11px] text-emerald-700 hover:underline flex items-center justify-center gap-1 pt-1 font-bold"
+                  >
+                    <span>noteの投稿画面を開く</span>
+                    <ExternalLink size={12} />
+                  </a>
+                </div>
+
+                {/* 2. X (Twitter) Promo Post Copy */}
+                <div className="p-5 bg-gradient-to-br from-sky-50 to-indigo-50 rounded-2xl border border-sky-200/80 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Twitter size={18} className="text-sky-600" />
+                    <h3 className="text-sm font-bold text-sky-950">X (Twitter) 告知文コピー</h3>
+                  </div>
+                  <p className="text-xs text-sky-800 leading-relaxed">
+                    note記事公開時に同時投稿できる、140文字の共感告知ポスト文です。
+                  </p>
+                  <button
+                    onClick={() => copyToClipboard(`「${currentDraft.title}」\n\n大人になってから、ふと昔の大切な人を思い出す夜はありませんか？\n実名もLINEも知らなくても、記憶のクイズで繋がれる『ReMEETs』の物語をnoteに書きました。\n\n👉 記事を読む: https://note.com/remeets\n\n#ReMEETs #再会 #思い出 #エッセイ`, "x_post")}
+                    className="w-full py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    {copiedField === "x_post" ? <Check size={14} /> : <Copy size={14} />}
+                    <span>{copiedField === "x_post" ? "告知ポスト文コピー完了" : "告知文をコピー"}</span>
+                  </button>
+                </div>
+
+                {/* 3. Markdown (.md) File Download */}
+                <div className="p-5 bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl border border-slate-200 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Download size={18} className="text-slate-700" />
+                    <h3 className="text-sm font-bold text-slate-900">Markdown (.md) 保存</h3>
+                  </div>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    WordPressやブログ、ローカル保管用のMarkdownファイルをダウンロードします。
+                  </p>
+                  <button
+                    onClick={() => {
+                      const blob = new Blob([currentDraft.content], { type: "text/markdown;charset=utf-8;" });
+                      const url = URL.createObjectURL(blob);
+                      const link = document.createElement("a");
+                      link.href = url;
+                      link.download = `${currentDraft.title.replace(/[^a-zA-Z0-9ぁ-んァ-ヶー一-龠]/g, "_")}.md`;
+                      link.click();
+                      URL.revokeObjectURL(url);
+                    }}
+                    className="w-full py-2.5 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    <Download size={14} />
+                    <span>.md ファイル保存</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Progress to Next Curriculum Step */}
+              {noteMode === "curriculum_howto" && curriculumStep < 12 && (
+                <div className="p-4 bg-teal-50 rounded-2xl border border-teal-200 flex items-center justify-between">
+                  <div>
+                    <span className="text-xs font-bold text-teal-900">🎉 第 {curriculumStep} 講の執筆が完了しました！</span>
+                    <p className="text-[11px] text-teal-700">次は「第 {curriculumStep + 1} 講: {CURRICULUM_STEPS[curriculumStep].theme}」です。</p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setCurriculumStep(prev => prev + 1);
+                      setNoteStep(1);
+                      handleGenerateNote("note_howto");
+                    }}
+                    className="px-4 py-2 bg-teal-700 hover:bg-teal-800 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+                  >
+                    <span>次回の第 {curriculumStep + 1} 講を執筆 👉</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
         </div>
-      </div>
+      )}
+
+      {/* ───────────────────────────────────────────────────────────── */}
+      {/* 🎬 MODE 2: ショート動画 制作プロダクション (Shorts/TikTok)    */}
+      {/* ───────────────────────────────────────────────────────────── */}
+      {studioMode === "shorts_studio" && (
+        <div className="space-y-6">
+
+          {/* 5-Step Video Stepper */}
+          <div className="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm flex items-center justify-between overflow-x-auto custom-scrollbar">
+            <div className="flex items-center gap-2 min-w-max">
+              {[
+                { step: 1, label: "1. シナリオ決定", icon: FileText },
+                { step: 2, label: "2. 9:16シーン映像", icon: FilmIcon },
+                { step: 3, label: "3. ナレーション音声", icon: Mic },
+                { step: 4, label: "4. 完パケ試写再生", icon: Play },
+                { step: 5, label: "5. YouTube/TikTok書き出し", icon: Share2 },
+              ].map((s) => (
+                <button
+                  key={s.step}
+                  onClick={() => setShortsStep(s.step as any)}
+                  className={cn(
+                    "px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer",
+                    shortsStep === s.step
+                      ? "bg-rose-600 text-white shadow-xs"
+                      : shortsStep > s.step
+                        ? "bg-rose-50 text-rose-700"
+                        : "text-slate-400 hover:bg-slate-50 hover:text-slate-700"
+                  )}
+                >
+                  <s.icon size={14} />
+                  <span>{s.label}</span>
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={handleSaveDraft}
+              disabled={!currentDraft}
+              className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-40"
+            >
+              <Save size={14} />
+              <span>台本保存</span>
+            </button>
+          </div>
+
+          {/* SHORTS STEP 1: Script Generator */}
+          {shortsStep === 1 && (
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              
+              {/* Left Column: Script Controls */}
+              <div className="lg:col-span-5 bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-6">
+                <div className="border-b border-slate-100 pb-4">
+                  <h2 className="text-base font-bold font-serif text-slate-900 flex items-center gap-2">
+                    <Video size={18} className="text-rose-600" />
+                    <span>ショート動画 シナリオ企画</span>
+                  </h2>
+                </div>
+
+                <div className="space-y-3">
+                  <label className="text-xs font-bold text-slate-700 block">動画のテーマ・題材</label>
+                  <input
+                    type="text"
+                    value={videoTheme}
+                    onChange={(e) => setVideoTheme(e.target.value)}
+                    placeholder="例: 30年前の恩師に感謝を届けるボトルメール"
+                    className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:bg-white focus:border-rose-500 outline-none"
+                  />
+                </div>
+
+                <div className="space-y-3">
+                  <label className="text-xs font-bold text-slate-700 block">BGM雰囲気</label>
+                  <select
+                    value={selectedBgm}
+                    onChange={(e) => setSelectedBgm(e.target.value)}
+                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 outline-none cursor-pointer"
+                  >
+                    <option value="切ないピアノソロ">切ないピアノソロ（感涙系）</option>
+                    <option value="穏やかな波の音とアコギ">穏やかな波の音とアコギ（ノスタルジー）</option>
+                    <option value="ドラマチックなストリングス">ドラマチックなストリングス（奇跡の再会）</option>
+                    <option value="温かいアンビエント">温かいアンビエント（心温まるエピソード）</option>
+                  </select>
+                </div>
+
+                <button
+                  onClick={handleGenerateShorts}
+                  disabled={isGenerating}
+                  className="w-full py-3.5 bg-gradient-to-r from-rose-600 via-pink-600 to-indigo-600 hover:opacity-90 text-white rounded-2xl text-xs font-bold shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  {isGenerating ? <RefreshCw size={14} className="animate-spin" /> : <Sparkles size={14} />}
+                  <span>🎬 45秒ショート動画台本を生成する</span>
+                </button>
+              </div>
+
+              {/* Right Column: Generated Storyboard & Scene Breakdown */}
+              <div className="lg:col-span-7 bg-white p-6 sm:p-8 rounded-3xl border border-slate-100 shadow-sm space-y-6">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                  <div>
+                    <span className="text-[10px] font-bold text-rose-600 uppercase font-mono">STEP 1: SCRIPT BREAKDOWN</span>
+                    <h2 className="text-base font-bold font-serif text-slate-900">シーン別 絵コンテ・タイムライン</h2>
+                  </div>
+                  <button
+                    onClick={() => setShortsStep(2)}
+                    disabled={!currentDraft}
+                    className="px-4 py-2 bg-gradient-to-r from-rose-600 to-indigo-600 hover:opacity-90 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs disabled:opacity-40"
+                  >
+                    <span>シナリオOK！映像設定へ進む</span>
+                    <ArrowRight size={14} />
+                  </button>
+                </div>
+
+                {currentDraft?.scenes ? (
+                  <div className="space-y-4">
+                    <h3 className="text-sm font-bold text-slate-900 font-serif">{currentDraft.title}</h3>
+                    
+                    <div className="space-y-3">
+                      {currentDraft.scenes.map((scene, idx) => (
+                        <div key={idx} className="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-md font-mono">{scene.time}</span>
+                            <span className="text-xs font-bold text-slate-800">{scene.label}</span>
+                          </div>
+                          <div className="text-xs text-slate-600 space-y-1">
+                            <p><span className="font-bold text-slate-800">【映像】:</span> {scene.visual}</p>
+                            <p><span className="font-bold text-slate-800">【ナレーション】:</span> 「{scene.narration}」</p>
+                            <p className="text-amber-700 bg-amber-50/80 p-1.5 rounded-lg text-[11px] font-bold"><span className="font-bold text-amber-900">【テロップ】:</span> {scene.telop}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="h-80 border border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center p-8 text-center space-y-2">
+                    <Film size={32} className="text-rose-400" />
+                    <p className="text-xs text-slate-500">左側のボタンを押して、45秒ショート動画台本を生成してください。</p>
+                  </div>
+                )}
+              </div>
+
+            </div>
+          )}
+
+          {/* SHORTS STEP 2: 9:16 Visuals Mapping */}
+          {shortsStep === 2 && currentDraft?.scenes && (
+            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-100 shadow-sm space-y-6">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                <div>
+                  <span className="text-[10px] font-bold text-rose-600 uppercase font-mono">STEP 2: 9:16 SCENE VISUALS</span>
+                  <h2 className="text-base font-bold font-serif text-slate-900">シーン別の縦型背景・モック設定</h2>
+                </div>
+                <button
+                  onClick={() => setShortsStep(3)}
+                  className="px-4 py-2 bg-gradient-to-r from-rose-600 to-indigo-600 hover:opacity-90 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+                >
+                  <span>ナレーション音声設定へ進む</span>
+                  <ArrowRight size={14} />
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {currentDraft.scenes.map((scene, idx) => (
+                  <div key={idx} className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
+                    <div className="flex items-center justify-between text-xs font-bold">
+                      <span className="text-rose-600 font-mono">{scene.time}</span>
+                      <span className="text-slate-700">シーン {idx + 1}</span>
+                    </div>
+
+                    <div className="aspect-[9/16] rounded-xl overflow-hidden bg-slate-800 relative">
+                      <img src={AVAILABLE_ASSETS[idx % AVAILABLE_ASSETS.length].path} alt="Scene Visual" className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 flex flex-col justify-between p-3">
+                        <span className="text-[10px] bg-rose-600 text-white px-2 py-0.5 rounded font-bold self-start">{scene.label}</span>
+                        <p className="text-white text-[11px] font-bold text-center leading-snug drop-shadow-md">
+                          {scene.telop}
+                        </p>
+                      </div>
+                    </div>
+
+                    <p className="text-[11px] text-slate-500 line-clamp-2">{scene.visual}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* SHORTS STEP 3: Narration & TTS Audio */}
+          {shortsStep === 3 && currentDraft?.scenes && (
+            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-100 shadow-sm space-y-6">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                <div>
+                  <span className="text-[10px] font-bold text-rose-600 uppercase font-mono">STEP 3: NARRATION VOICE</span>
+                  <h2 className="text-base font-bold font-serif text-slate-900">AIナレーション音声の合成・試聴</h2>
+                </div>
+                <button
+                  onClick={() => setShortsStep(4)}
+                  className="px-4 py-2 bg-gradient-to-r from-rose-600 to-indigo-600 hover:opacity-90 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+                >
+                  <span>完パケ試写へ進む</span>
+                  <ArrowRight size={14} />
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
+                    <label className="text-xs font-bold text-slate-700 block">ナレーション読み上げ速度</label>
+                    <div className="flex items-center gap-4">
+                      <input
+                        type="range"
+                        min="0.8"
+                        max="1.3"
+                        step="0.05"
+                        value={narrationSpeed}
+                        onChange={(e) => setNarrationSpeed(parseFloat(e.target.value))}
+                        className="flex-1 accent-rose-600 cursor-pointer"
+                      />
+                      <span className="text-xs font-bold font-mono text-slate-700 w-12">{narrationSpeed.toFixed(2)}x</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    {currentDraft.scenes.map((scene, idx) => (
+                      <div key={idx} className="p-3.5 bg-slate-50 rounded-xl border border-slate-200/80 flex items-center justify-between gap-3">
+                        <div className="text-xs flex-1">
+                          <span className="font-bold text-rose-600 mr-2">{scene.time}</span>
+                          <span className="text-slate-800 font-serif">「{scene.narration}」</span>
+                        </div>
+                        <button
+                          onClick={() => speakText(scene.narration)}
+                          className="px-3 py-1.5 bg-rose-100 hover:bg-rose-200 text-rose-800 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer shrink-0"
+                        >
+                          <Volume2 size={13} />
+                          <span>試聴</span>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="p-6 bg-gradient-to-br from-rose-50 to-pink-50 rounded-3xl border border-rose-100 space-y-4 flex flex-col justify-center text-center">
+                  <div className="w-14 h-14 bg-rose-500 text-white rounded-2xl flex items-center justify-center mx-auto shadow-md shadow-rose-200">
+                    <Mic size={28} />
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="text-sm font-bold text-rose-950 font-serif">Web Speech API によるゼロ遅延音声合成</h3>
+                    <p className="text-xs text-rose-800 leading-relaxed max-w-sm mx-auto">
+                      外部通信費なしで、お使いのブラウザ標準の日本語音声エンジンが高品質にナレーションを自動生成します。
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* SHORTS STEP 4: Final Video Playback Player (9:16) */}
+          {shortsStep === 4 && currentDraft?.scenes && (
+            <div className="bg-slate-950 text-white p-6 sm:p-10 rounded-3xl shadow-2xl space-y-8 max-w-md mx-auto border border-slate-800">
+              <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div className="flex items-center gap-2">
+                  <Smartphone size={16} className="text-rose-400" />
+                  <span className="text-xs font-bold font-mono text-slate-300">FINAL 9:16 PREVIEW</span>
+                </div>
+                <button
+                  onClick={() => setShortsStep(5)}
+                  className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
+                >
+                  <span>書き出しへ</span>
+                  <ArrowRight size={12} />
+                </button>
+              </div>
+
+              {/* 9:16 Smartphone Mock Screen */}
+              <div className="aspect-[9/16] w-full rounded-3xl overflow-hidden bg-slate-900 border-2 border-slate-700 relative shadow-2xl">
+                <img
+                  src={AVAILABLE_ASSETS[currentSceneIndex % AVAILABLE_ASSETS.length].path}
+                  alt="Video Stage"
+                  className="w-full h-full object-cover transition-all duration-700"
+                />
+
+                {/* Video Overlays (Telop & Sound) */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-black/40 flex flex-col justify-between p-6">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold bg-rose-600/90 text-white px-2.5 py-1 rounded-full uppercase tracking-wider font-mono shadow-sm">
+                      {currentDraft.scenes[currentSceneIndex]?.label}
+                    </span>
+                    <span className="text-xs font-mono text-white/80 bg-black/40 px-2 py-0.5 rounded-full">
+                      {currentDraft.scenes[currentSceneIndex]?.time}
+                    </span>
+                  </div>
+
+                  {/* Big Dynamic Telop */}
+                  <div className="space-y-3 text-center">
+                    <motion.div
+                      key={currentSceneIndex}
+                      initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      className="bg-amber-400 text-black px-4 py-2 rounded-2xl text-sm sm:text-base font-black tracking-tight shadow-xl"
+                    >
+                      {currentDraft.scenes[currentSceneIndex]?.telop}
+                    </motion.div>
+
+                    <p className="text-xs text-white/90 font-serif drop-shadow leading-relaxed bg-black/60 p-2.5 rounded-xl backdrop-blur-xs">
+                      「{currentDraft.scenes[currentSceneIndex]?.narration}」
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Player Controller */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between text-xs text-slate-400">
+                  <span>シーン {currentSceneIndex + 1} / {currentDraft.scenes.length}</span>
+                  <span>BGM: {selectedBgm}</span>
+                </div>
+
+                <div className="flex items-center justify-center gap-4">
+                  <button
+                    onClick={toggleVideoPlay}
+                    className="w-14 h-14 rounded-full bg-rose-600 hover:bg-rose-500 text-white flex items-center justify-center shadow-lg transition-transform active:scale-95 cursor-pointer"
+                  >
+                    {isPlayingVideo ? <Pause size={24} /> : <Play size={24} className="ml-1" />}
+                  </button>
+                  <button
+                    onClick={() => { setCurrentSceneIndex(0); speakText(currentDraft.scenes![0].narration); }}
+                    className="p-3 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                  >
+                    <RotateCcw size={18} />
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* SHORTS STEP 5: Multi-Platform Export */}
+          {shortsStep === 5 && currentDraft && (
+            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-100 shadow-sm space-y-6">
+              <div className="border-b border-slate-100 pb-4">
+                <span className="text-[10px] font-bold text-rose-600 uppercase font-mono">STEP 5: PUBLISH PACKAGE</span>
+                <h2 className="text-base font-bold font-serif text-slate-900">各SNS用 概要欄・タイトル一括書き出し</h2>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* YouTube Shorts Package */}
+                <div className="p-5 bg-gradient-to-br from-red-50 to-rose-50 rounded-2xl border border-red-200/80 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">▶️</span>
+                    <h3 className="text-sm font-bold text-red-950">YouTube Shorts 用タイトル＆概要</h3>
+                  </div>
+                  <textarea
+                    rows={4}
+                    readOnly
+                    value={`${currentDraft.title}\n\n30年前に渡せなかった手紙を、海の底で見つけた奇跡の実話ドラマ。\n\n🌊 想い出のボトルメール『ReMEETs』\n👉 https://remeets.example.com\n\n#Shorts #感動 #再会 #手紙 #奇跡`}
+                    className="w-full p-3 bg-white border border-red-200 rounded-xl text-xs font-mono text-slate-800 outline-none resize-none"
+                  />
+                  <button
+                    onClick={() => copyToClipboard(`${currentDraft.title}\n\n30年前に渡せなかった手紙を、海の底で見つけた奇跡の実話ドラマ。\n\n🌊 想い出のボトルメール『ReMEETs』\n👉 https://remeets.example.com\n\n#Shorts #感動 #再会 #手紙 #奇跡`, "yt")}
+                    className="w-full py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    {copiedField === "yt" ? <Check size={14} /> : <Copy size={14} />}
+                    <span>{copiedField === "yt" ? "コピー完了！" : "YouTube用テキストをコピー"}</span>
+                  </button>
+                </div>
+
+                {/* TikTok / Instagram Reels Package */}
+                <div className="p-5 bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl border border-purple-200/80 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">🎵</span>
+                    <h3 className="text-sm font-bold text-purple-950">TikTok / Instagram Reels 用キャプション</h3>
+                  </div>
+                  <textarea
+                    rows={4}
+                    readOnly
+                    value={`【30年越しの再会】あの時言えなかった想い出、まだ海を漂っています。\n\nあなたにも、もう一度会いたい人はいませんか？\n『ReMEETs』で検索してボトルを探してみてね🌊\n\n#TikTok教室 #ショートドラマ #感動 #エモい #再会 #ReMEETs`}
+                    className="w-full p-3 bg-white border border-purple-200 rounded-xl text-xs font-mono text-slate-800 outline-none resize-none"
+                  />
+                  <button
+                    onClick={() => copyToClipboard(`【30年越しの再会】あの時言えなかった想い出、まだ海を漂っています。\n\nあなたにも、もう一度会いたい人はいませんか？\n『ReMEETs』で検索してボトルを探してみてね🌊\n\n#TikTok教室 #ショートドラマ #感動 #エモい #再会 #ReMEETs`, "tt")}
+                    className="w-full py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-bold shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    {copiedField === "tt" ? <Check size={14} /> : <Copy size={14} />}
+                    <span>{copiedField === "tt" ? "コピー完了！" : "TikTok/Reels用テキストをコピー"}</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+        </div>
+      )}
+
     </div>
   );
 };
