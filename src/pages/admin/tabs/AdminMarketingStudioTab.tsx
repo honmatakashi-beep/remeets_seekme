@@ -72,17 +72,82 @@ const CURRICULUM_STEPS = [
 
 // Available Image Assets in ReMEETs (bundled via Vite import)
 const AVAILABLE_ASSETS = [
-  { id: "hero_bottle", title: "夕暮れの海とガラス瓶", path: heroBottleMail, category: "写真" },
-  { id: "vintage_paper", title: "万年筆とヴィンテージ便箋", path: vintageLetterPaper, category: "写真" },
-  { id: "quiz_match", title: "思い出クイズ照合画面", path: quizMatchHearts, category: "アプリ画面" },
-  { id: "step_write", title: "想い出の手紙を書く情景", path: step01Write, category: "イラスト" },
-  { id: "handdrawn_write", title: "手描き風：手紙をしたためる", path: handdrawnWrite, category: "イラスト" },
-  { id: "handdrawn_drift", title: "手描き風：海を流れるボトル", path: handdrawnDrift, category: "イラスト" },
-  { id: "handdrawn_reconnect", title: "手描き風：再会の光", path: handdrawnReconnect, category: "イラスト" },
-  { id: "safety_shield", title: "安心安全のAIセキュア防衛", path: safetyGuardian, category: "アプリ画面" },
-  { id: "twilight_sea", title: "黄昏時の海辺風景", path: supporterTwilight, category: "風景" },
-  { id: "step_drift", title: "大海原を漂流するボトル", path: step02Drift, category: "写真" },
-  { id: "step_read", title: "手紙を優しく開く瞬間", path: step03Read, category: "写真" }
+  { id: "hero_bottle", title: "夕暮れの海とガラス瓶", path: heroBottleMail, category: "写真", tone: "twilight_cinematic" },
+  { id: "vintage_paper", title: "万年筆とヴィンテージ便箋", path: vintageLetterPaper, category: "写真", tone: "vintage_amber_letter" },
+  { id: "quiz_match", title: "思い出クイズ照合画面", path: quizMatchHearts, category: "アプリ画面", tone: "emerald_ocean_clean" },
+  { id: "step_write", title: "想い出の手紙を書く情景", path: step01Write, category: "イラスト", tone: "watercolor_nostalgia" },
+  { id: "handdrawn_write", title: "手描き風：手紙をしたためる", path: handdrawnWrite, category: "イラスト", tone: "watercolor_nostalgia" },
+  { id: "handdrawn_drift", title: "手描き風：海を流れるボトル", path: handdrawnDrift, category: "イラスト", tone: "watercolor_nostalgia" },
+  { id: "handdrawn_reconnect", title: "手描き風：再会の光", path: handdrawnReconnect, category: "イラスト", tone: "watercolor_nostalgia" },
+  { id: "safety_shield", title: "安心安全のAIセキュア防衛", path: safetyGuardian, category: "アプリ画面", tone: "emerald_ocean_clean" },
+  { id: "twilight_sea", title: "黄昏時の海辺風景", path: supporterTwilight, category: "風景", tone: "twilight_cinematic" },
+  { id: "step_drift", title: "大海原を漂流するボトル", path: step02Drift, category: "写真", tone: "twilight_cinematic" },
+  { id: "step_read", title: "手紙を優しく開く瞬間", path: step03Read, category: "写真", tone: "vintage_amber_letter" }
+];
+
+// 🎨 Brand Style & Tone Presets (世界観・統一トーン設定)
+interface StyleTonePreset {
+  id: string;
+  name: string;
+  tag: string;
+  description: string;
+  badge: string;
+  eyecatchVariant: number;
+  defaultAssetIds: string[];
+  gradientClass: string;
+  badgeColor: string;
+  aiPromptStyle: string;
+}
+
+const STYLE_TONE_PRESETS: StyleTonePreset[] = [
+  {
+    id: "watercolor_nostalgia",
+    name: "ノスタルジック水彩イラスト",
+    tag: "🎨 水彩・ジブリ風",
+    description: "絵本やアニメのような温もり。心に優しく染み入る手描きイラストの世界観。",
+    badge: "実話エッセイ・共感連載に最適",
+    eyecatchVariant: 0,
+    defaultAssetIds: ["handdrawn_write", "handdrawn_drift", "handdrawn_reconnect", "step_write"],
+    gradientClass: "from-amber-500 via-rose-500 to-indigo-700",
+    badgeColor: "bg-rose-50 text-rose-700 border-rose-200",
+    aiPromptStyle: "soft watercolor storybook illustration, warm nostalgic lighting, studio ghibli aesthetic, gentle pastel tones"
+  },
+  {
+    id: "twilight_cinematic",
+    name: "黄昏シネマティック写真",
+    tag: "🌅 映画・夕暮れ実写",
+    description: "夕暮れの海辺とガラス瓶。映画のワンシーンのようなエモーショナルな大人向けトーン。",
+    badge: "感動エッセイ・ショート動画に最適",
+    eyecatchVariant: 0,
+    defaultAssetIds: ["hero_bottle", "twilight_sea", "vintage_paper", "step_drift"],
+    gradientClass: "from-indigo-900 via-purple-900 to-amber-700",
+    badgeColor: "bg-purple-50 text-purple-700 border-purple-200",
+    aiPromptStyle: "cinematic 35mm photograph, sunset golden hour ocean, drifting glass bottle, nostalgic film grain, 8k resolution"
+  },
+  {
+    id: "vintage_amber_letter",
+    name: "ヴィンテージ書簡・琥珀",
+    tag: "📜 レトロ・羊皮紙",
+    description: "万年筆・琥珀色の光・便箋の質感。歴史と品格を感じさせる落ち着いたトーン。",
+    badge: "手紙ノウハウ・本格エッセイに最適",
+    eyecatchVariant: 3,
+    defaultAssetIds: ["vintage_paper", "step_read", "step_write", "hero_bottle"],
+    gradientClass: "from-amber-950 via-yellow-900 to-amber-700",
+    badgeColor: "bg-amber-50 text-amber-800 border-amber-200",
+    aiPromptStyle: "vintage fountain pen on antique textured letter paper, warm sepia tones, nostalgic antique aesthetic, soft candlelight"
+  },
+  {
+    id: "emerald_ocean_clean",
+    name: "深海エメラルド・知性クリーン",
+    tag: "💎 深海ブルー・モダン",
+    description: "安心安全のAI技術と深海ブルー。知的で信頼感あふれるモダンで清潔なデザイン。",
+    badge: "ノウハウ教科書・機能解説に最適",
+    eyecatchVariant: 1,
+    defaultAssetIds: ["safety_shield", "quiz_match", "hero_bottle", "twilight_sea"],
+    gradientClass: "from-slate-900 via-teal-900 to-emerald-700",
+    badgeColor: "bg-teal-50 text-teal-700 border-teal-200",
+    aiPromptStyle: "clean minimalist modern illustration, deep emerald ocean, radiant light particles, secure and trustworthy aura"
+  }
 ];
 
 // 🎨 Real-time Canvas Eyecatch Graphic Generator (1200x630 note / SNS Standard)
@@ -257,6 +322,18 @@ export const AdminMarketingStudioTab = () => {
   // Shorts: 1: Script -> 2: Visuals -> 3: TTS/Narration -> 4: Final Preview -> 5: Export
   const [shortsStep, setShortsStep] = useState<1 | 2 | 3 | 4 | 5>(1);
 
+  // 🎨 Brand Tone Selection State (Stored in localStorage)
+  const [selectedTones, setSelectedTones] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem("remeets_brand_tones");
+      return saved ? JSON.parse(saved) : ["watercolor_nostalgia", "twilight_cinematic"];
+    } catch {
+      return ["watercolor_nostalgia", "twilight_cinematic"];
+    }
+  });
+  const [activeToneId, setActiveToneId] = useState<string>("watercolor_nostalgia");
+  const [toneSaveNotice, setToneSaveNotice] = useState<string | null>(null);
+
   // Note Options
   const [noteMode, setNoteMode] = useState<"random_story" | "curriculum_howto" | "custom">("random_story");
   const [curriculumStep, setCurriculumStep] = useState<number>(1);
@@ -304,10 +381,14 @@ export const AdminMarketingStudioTab = () => {
         setDrafts(data.data);
         if (data.data.length > 0 && !currentDraft) {
           setCurrentDraft(data.data[0]);
-          // Generate initial eyecatch for first draft
-          const eyecatch = createEyecatchCanvas(data.data[0].title, data.data[0].theme, data.data[0].type, 0);
+          // Generate initial eyecatch based on active tone
+          const activePreset = STYLE_TONE_PRESETS.find(p => p.id === activeToneId) || STYLE_TONE_PRESETS[0];
+          const eyecatch = createEyecatchCanvas(data.data[0].title, data.data[0].theme, data.data[0].type, activePreset.eyecatchVariant);
           setGeneratedEyecatch(eyecatch);
-          setSelectedImages([eyecatch, heroBottleMail, vintageLetterPaper]);
+          
+          // Apply recommended assets for active tone
+          const recommendedAssets = AVAILABLE_ASSETS.filter(a => activePreset.defaultAssetIds.includes(a.id)).map(a => a.path);
+          setSelectedImages([eyecatch, ...recommendedAssets]);
         }
       }
     } catch (e) {
@@ -315,10 +396,57 @@ export const AdminMarketingStudioTab = () => {
     }
   };
 
+  // 🎨 Handler: Select and Apply Tone Preset (Updates Eyecatch, Images & Saves as Default)
+  const handleApplyTonePreset = (tone: StyleTonePreset) => {
+    setActiveToneId(tone.id);
+    setEyecatchVariant(tone.eyecatchVariant);
+
+    // Toggle/Add to selectedTones
+    let newTones = [...selectedTones];
+    if (!newTones.includes(tone.id)) {
+      newTones.push(tone.id);
+    }
+    setSelectedTones(newTones);
+    localStorage.setItem("remeets_brand_tones", JSON.stringify(newTones));
+
+    // Re-generate Eyecatch with this tone's color palette
+    if (currentDraft) {
+      const newEyecatch = createEyecatchCanvas(currentDraft.title, currentDraft.theme, currentDraft.type, tone.eyecatchVariant);
+      setGeneratedEyecatch(newEyecatch);
+
+      // Re-populate selected images according to tone
+      const recommendedAssets = AVAILABLE_ASSETS.filter(a => tone.defaultAssetIds.includes(a.id)).map(a => a.path);
+      setSelectedImages([newEyecatch, ...recommendedAssets]);
+
+      // Update draft with this tone's prompt style
+      setCurrentDraft(prev => prev ? {
+        ...prev,
+        imagePrompt: `${prev.theme}, ${tone.aiPromptStyle}`
+      } : null);
+    }
+
+    setToneSaveNotice(`「${tone.name}」を基本スタイルとして保存しました！`);
+    setTimeout(() => setToneSaveNotice(null), 3000);
+  };
+
+  // Toggle multiple tones selection for future articles
+  const handleToggleToneSelection = (toneId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    let updated: string[];
+    if (selectedTones.includes(toneId)) {
+      if (selectedTones.length === 1) return; // Keep at least one
+      updated = selectedTones.filter(id => id !== toneId);
+    } else {
+      updated = [...selectedTones, toneId];
+    }
+    setSelectedTones(updated);
+    localStorage.setItem("remeets_brand_tones", JSON.stringify(updated));
+  };
+
   // Regenerate Eyecatch with next color palette
   const handleRegenerateEyecatch = () => {
     if (!currentDraft) return;
-    const nextVariant = eyecatchVariant + 1;
+    const nextVariant = (eyecatchVariant + 1) % 4;
     setEyecatchVariant(nextVariant);
     const newEyecatch = createEyecatchCanvas(currentDraft.title, currentDraft.theme, currentDraft.type, nextVariant);
     setGeneratedEyecatch(newEyecatch);
@@ -359,14 +487,21 @@ export const AdminMarketingStudioTab = () => {
 
       const data = await res.json();
       if (data.success && data.data) {
+        // Pick active tone preset from saved selection
+        const activePreset = STYLE_TONE_PRESETS.find(p => p.id === activeToneId) || STYLE_TONE_PRESETS[0];
+
         // Automatically generate AI Canvas Eyecatch for this new note draft
-        const eyecatch = createEyecatchCanvas(data.data.title, data.data.theme, data.data.type, eyecatchVariant);
+        const eyecatch = createEyecatchCanvas(data.data.title, data.data.theme, data.data.type, activePreset.eyecatchVariant);
         setGeneratedEyecatch(eyecatch);
-        const initialImages = [eyecatch, heroBottleMail, vintageLetterPaper];
+
+        // Auto-select assets matching active tone
+        const recommendedAssets = AVAILABLE_ASSETS.filter(a => activePreset.defaultAssetIds.includes(a.id)).map(a => a.path);
+        const initialImages = [eyecatch, ...recommendedAssets];
         setSelectedImages(initialImages);
 
         setCurrentDraft({
           ...data.data,
+          imagePrompt: `${data.data.theme}, ${activePreset.aiPromptStyle}`,
           selectedImages: initialImages
         });
         setNoteStep(1);
@@ -811,9 +946,9 @@ export const AdminMarketingStudioTab = () => {
             <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-100 shadow-sm space-y-8">
               <div className="flex items-center justify-between border-b border-slate-100 pb-4">
                 <div>
-                  <span className="text-[10px] font-bold text-indigo-600 uppercase font-mono">STEP 2: IMAGE ASSETS & EYECATCH</span>
-                  <h2 className="text-base font-bold font-serif text-slate-900">アイキャッチ画像・挿絵の選定</h2>
-                  <p className="text-xs text-slate-500">記事に最適なアイキャッチ画像を自動生成しました。挿入したい写真・イラストにチェックを入れてください。</p>
+                  <span className="text-[10px] font-bold text-indigo-600 uppercase font-mono">STEP 2: BRAND TONE & IMAGE ASSETS</span>
+                  <h2 className="text-base font-bold font-serif text-slate-900">世界観トーン ＆ 挿絵・アイキャッチ選定</h2>
+                  <p className="text-xs text-slate-500">おすすめの世界観（トーン）を選ぶと、アイキャッチの配色と挿絵が一括でそのトーンに統一されます。</p>
                 </div>
                 <button
                   onClick={() => setNoteStep(3)}
@@ -822,6 +957,85 @@ export const AdminMarketingStudioTab = () => {
                   <span>レイアウト確認へ進む</span>
                   <ArrowRight size={14} />
                 </button>
+              </div>
+
+              {/* 🌟 Brand Tone Presets Selector */}
+              <div className="space-y-3 bg-slate-50/80 p-5 rounded-3xl border border-slate-200/80">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="p-1 rounded-lg bg-indigo-100 text-indigo-700">
+                      <Palette size={15} />
+                    </span>
+                    <div>
+                      <h3 className="text-xs font-bold text-slate-900">🌟 おすすめブランド・トーン（世界観の統一設定）</h3>
+                      <p className="text-[11px] text-slate-500">選んだトーンはブラウザに自動保存され、今後の記事・教科書生成時も自動適用されます。</p>
+                    </div>
+                  </div>
+                  {toneSaveNotice && (
+                    <span className="text-xs font-bold text-teal-700 bg-teal-50 px-3 py-1 rounded-full border border-teal-200 animate-fade-in flex items-center gap-1">
+                      <CheckCircle2 size={12} />
+                      <span>{toneSaveNotice}</span>
+                    </span>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-1">
+                  {STYLE_TONE_PRESETS.map((tone) => {
+                    const isActive = activeToneId === tone.id;
+                    const isPreferred = selectedTones.includes(tone.id);
+                    return (
+                      <div
+                        key={tone.id}
+                        onClick={() => handleApplyTonePreset(tone)}
+                        className={cn(
+                          "p-4 rounded-2xl border transition-all cursor-pointer relative flex flex-col justify-between text-left group",
+                          isActive
+                            ? "bg-white border-indigo-600 ring-2 ring-indigo-500/30 shadow-md scale-[1.02]"
+                            : isPreferred
+                            ? "bg-white/90 border-slate-300 hover:border-indigo-300 shadow-xs"
+                            : "bg-white/50 border-slate-200 hover:bg-white hover:border-slate-300 opacity-80"
+                        )}
+                      >
+                        <div className="space-y-2">
+                          {/* Color bar preview */}
+                          <div className={cn("h-2.5 w-full rounded-full bg-gradient-to-r shadow-2xs", tone.gradientClass)} />
+
+                          <div className="flex items-start justify-between gap-1 pt-1">
+                            <span className="font-serif font-bold text-xs text-slate-900 leading-tight group-hover:text-indigo-600 transition-colors">
+                              {tone.name}
+                            </span>
+                            <button
+                              title={isPreferred ? "標準トーンとして登録中" : "標準トーンに追加"}
+                              onClick={(e) => handleToggleToneSelection(tone.id, e)}
+                              className={cn(
+                                "p-1 rounded-md text-[10px] transition-colors shrink-0",
+                                isPreferred ? "text-indigo-600 bg-indigo-50" : "text-slate-300 hover:text-slate-500"
+                              )}
+                            >
+                              <CheckSquare size={14} />
+                            </button>
+                          </div>
+
+                          <p className="text-[11px] text-slate-600 leading-relaxed">
+                            {tone.description}
+                          </p>
+                        </div>
+
+                        <div className="pt-3 flex items-center justify-between mt-2 border-t border-slate-100">
+                          <span className={cn("text-[9px] px-2 py-0.5 rounded-full border font-mono font-bold", tone.badgeColor)}>
+                            {tone.badge}
+                          </span>
+                          {isActive && (
+                            <span className="text-[10px] font-bold text-indigo-600 flex items-center gap-0.5">
+                              <span>適用中</span>
+                              <Check size={12} />
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
 
               {/* 1. 🎨 AI-Generated Custom Eyecatch Banner */}
@@ -833,7 +1047,7 @@ export const AdminMarketingStudioTab = () => {
                     </span>
                     <div>
                       <h3 className="text-sm font-bold font-serif">記事タイトル入り・AI自動生成アイキャッチ (1200×630 note規格)</h3>
-                      <p className="text-[11px] text-slate-300">この記事のタイトルとテーマに合わせてリアルタイムに描画・合成されています。</p>
+                      <p className="text-[11px] text-slate-300">選んだトーン（{STYLE_TONE_PRESETS.find(p => p.id === activeToneId)?.name}）に合わせて描画・合成されています。</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -886,7 +1100,7 @@ export const AdminMarketingStudioTab = () => {
                     <ImageIcon size={14} className="text-indigo-600" />
                     <span>公式アセット・挿絵ギャラリー（本文中に差し込む画像を選択）</span>
                   </h3>
-                  <span className="text-[11px] text-slate-400">複数選択可能（記事の見出し下に自動配置）</span>
+                  <span className="text-[11px] text-slate-400">トーン推奨画像が自動選択されています（変更も自由）</span>
                 </div>
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3.5">
