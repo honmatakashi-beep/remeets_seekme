@@ -9,4 +9,3 @@ export * from "./AdminDeletionTab";
 export * from "./AdminAgeVerificationTab";
 export * from "./AdminPostsTab";
 export * from "./AdminUsersTab";
-export * from "./AdminMarketingStudioTab";
