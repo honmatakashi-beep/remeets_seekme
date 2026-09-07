@@ -1919,7 +1919,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                 className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-bold transition-all group cursor-pointer shadow-2xs"
               >
                 <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform text-slate-500" />
-                <span>← 手がかり（Step 1）を再確認する</span>
+                <span>手がかり（Step 1）を再確認する</span>
               </button>
             </div>
 
