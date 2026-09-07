@@ -12,6 +12,19 @@ import {
 import { useAuth } from "../../../contexts/AuthContext";
 import { cn } from "../../../lib/utils";
 
+// Import real image assets for reliable Vite bundling & dev server display
+import heroBottleMail from "../../../assets/images/hero_bottle_mail_1785941809474.jpg";
+import vintageLetterPaper from "../../../assets/images/vintage_bottle_letter_paper_1788601708823.jpg";
+import quizMatchHearts from "../../../assets/images/quiz_match_hearts_pastel_1785940521320.jpg";
+import step01Write from "../../../assets/images/step_01_photo_write_1785857630366.jpg";
+import step02Drift from "../../../assets/images/step_02_photo_drift_1785857647101.jpg";
+import step03Read from "../../../assets/images/step_03_photo_read_v2_1785857978640.jpg";
+import safetyGuardian from "../../../assets/images/safety_guardian_cool_1785864341331.jpg";
+import supporterTwilight from "../../../assets/images/supporter_twilight_cool_1785860735348.jpg";
+import handdrawnWrite from "../../../assets/images/step_01_handdrawn_write_1786375845742.jpg";
+import handdrawnDrift from "../../../assets/images/step_02_handdrawn_drift_1786375870283.jpg";
+import handdrawnReconnect from "../../../assets/images/step_03_handdrawn_reconnect_1786375885799.jpg";
+
 // ── Types ──
 interface VideoScene {
   time: string;
@@ -57,15 +70,180 @@ const CURRICULUM_STEPS = [
   { step: 12, title: "第12講: ReMEETsが目指す「優しく安全な想い出の交差点」の未来", phase: "未来編", theme: "インターネット時代における温かい縁の再接続" }
 ];
 
-// Available Image Assets in ReMEETs
+// Available Image Assets in ReMEETs (bundled via Vite import)
 const AVAILABLE_ASSETS = [
-  { id: "hero_bottle", title: "夕暮れの海とガラス瓶", path: "/assets/hero_bottle_mail_1785941809474-DEVslUma.jpg", category: "写真" },
-  { id: "vintage_paper", title: "万年筆とヴィンテージ便箋", path: "/assets/vintage_bottle_letter_paper_1788601708823-C03nb7i-.jpg", category: "写真" },
-  { id: "quiz_match", title: "思い出クイズ照合画面", path: "/assets/quiz_match_hearts_pastel_1785940521320-BuRx364f.jpg", category: "アプリ画面" },
-  { id: "step_write", title: "手紙を書く情景", path: "/assets/step_01_photo_write_1785857630366-BfuUyhkb.jpg", category: "イラスト" },
-  { id: "safety_shield", title: "安心安全のセキュア画面", path: "/assets/safety_guardian_cool_1785864341331-Bo0QXIxf.jpg", category: "アプリ画面" },
-  { id: "twilight_sea", title: "夕暮れの海辺風景", path: "/assets/supporter_twilight_cool_1785860735348-C0uYySdx.jpg", category: "風景" }
+  { id: "hero_bottle", title: "夕暮れの海とガラス瓶", path: heroBottleMail, category: "写真" },
+  { id: "vintage_paper", title: "万年筆とヴィンテージ便箋", path: vintageLetterPaper, category: "写真" },
+  { id: "quiz_match", title: "思い出クイズ照合画面", path: quizMatchHearts, category: "アプリ画面" },
+  { id: "step_write", title: "想い出の手紙を書く情景", path: step01Write, category: "イラスト" },
+  { id: "handdrawn_write", title: "手描き風：手紙をしたためる", path: handdrawnWrite, category: "イラスト" },
+  { id: "handdrawn_drift", title: "手描き風：海を流れるボトル", path: handdrawnDrift, category: "イラスト" },
+  { id: "handdrawn_reconnect", title: "手描き風：再会の光", path: handdrawnReconnect, category: "イラスト" },
+  { id: "safety_shield", title: "安心安全のAIセキュア防衛", path: safetyGuardian, category: "アプリ画面" },
+  { id: "twilight_sea", title: "黄昏時の海辺風景", path: supporterTwilight, category: "風景" },
+  { id: "step_drift", title: "大海原を漂流するボトル", path: step02Drift, category: "写真" },
+  { id: "step_read", title: "手紙を優しく開く瞬間", path: step03Read, category: "写真" }
 ];
+
+// 🎨 Real-time Canvas Eyecatch Graphic Generator (1200x630 note / SNS Standard)
+const createEyecatchCanvas = (
+  title: string,
+  theme: string,
+  type: string,
+  variant: number = 0
+): string => {
+  if (typeof document === "undefined") return "";
+  const canvas = document.createElement("canvas");
+  canvas.width = 1200;
+  canvas.height = 630;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return "";
+
+  // Color Palettes
+  const palettes = [
+    // 0: Twilight Nostalgia (夕暮れ・黄昏)
+    ["#14192b", "#271b3e", "#5c2a4d", "#c55a4e", "#f3b06b"],
+    // 1: Emerald Deep Ocean (深海・青緑)
+    ["#061a24", "#0a3641", "#155e63", "#388e7d", "#98d6aa"],
+    // 2: Midnight Starlight (夜空・星明かり)
+    ["#090d16", "#141e30", "#243b55", "#4776e6", "#8e54e9"],
+    // 3: Warm Letter Vintage (ヴィンテージ便箋・琥珀)
+    ["#1c140d", "#362217", "#6b3e26", "#b06d40", "#e4b07a"]
+  ];
+  const palette = palettes[variant % palettes.length];
+
+  // 1. Background Gradient
+  const grad = ctx.createLinearGradient(0, 0, 1200, 630);
+  grad.addColorStop(0, palette[0]);
+  grad.addColorStop(0.3, palette[1]);
+  grad.addColorStop(0.65, palette[2]);
+  grad.addColorStop(0.9, palette[3]);
+  grad.addColorStop(1, palette[4]);
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 1200, 630);
+
+  // 2. Artistic Ocean Waves & Glow
+  ctx.save();
+  ctx.globalAlpha = 0.15;
+  for (let i = 0; i < 5; i++) {
+    ctx.beginPath();
+    ctx.moveTo(-100, 430 + i * 40);
+    ctx.bezierCurveTo(320, 360 + i * 45, 750, 500 - i * 35, 1300, 420 + i * 35);
+    ctx.lineTo(1300, 630);
+    ctx.lineTo(-100, 630);
+    ctx.closePath();
+    ctx.fillStyle = "#ffffff";
+    ctx.fill();
+  }
+
+  // Sparkling Stars / Bubbles
+  ctx.globalAlpha = 0.3;
+  for (let i = 0; i < 35; i++) {
+    const x = (Math.sin(i * 99 + variant * 3) * 0.5 + 0.5) * 1200;
+    const y = (Math.cos(i * 37 + variant * 5) * 0.5 + 0.5) * 480;
+    const r = (i % 4) + 1.5;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fillStyle = "#ffffff";
+    ctx.fill();
+  }
+  ctx.restore();
+
+  // 3. Elegant Outer Border & Paper Frame
+  ctx.save();
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.28)";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(36, 36, 1200 - 72, 630 - 72);
+
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
+  ctx.lineWidth = 1;
+  ctx.strokeRect(44, 44, 1200 - 88, 630 - 88);
+  ctx.restore();
+
+  // 4. Header Badge: ReMEETs Brand & Category
+  ctx.save();
+  ctx.fillStyle = "rgba(255, 255, 255, 0.18)";
+  ctx.beginPath();
+  if (ctx.roundRect) {
+    ctx.roundRect(64, 60, 320, 38, 19);
+  } else {
+    ctx.rect(64, 60, 320, 38);
+  }
+  ctx.fill();
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.35)";
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "bold 15px 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', serif";
+  ctx.fillText("✨ ReMEETs 〜再会のボトルメール〜", 82, 84);
+
+  const categoryLabel = type.includes("howto") ? "📖 想い出ノウハウ教科書" : "💌 実話風・再会エッセイ";
+  ctx.fillStyle = "#fef08a";
+  ctx.font = "bold 15px sans-serif";
+  ctx.fillText(categoryLabel, 1200 - 64 - ctx.measureText(categoryLabel).width, 84);
+  ctx.restore();
+
+  // 5. Main Title (Word Wrap, Bold, Drop Shadow)
+  ctx.save();
+  ctx.fillStyle = "#ffffff";
+  ctx.shadowColor = "rgba(0, 0, 0, 0.65)";
+  ctx.shadowBlur = 16;
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 4;
+
+  const cleanTitle = title || "あの頃の大切な人に、もう一度手紙を届ける奇跡";
+  const fontSize = cleanTitle.length > 28 ? 42 : cleanTitle.length > 18 ? 50 : 58;
+  ctx.font = `bold ${fontSize}px 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', serif`;
+
+  const maxLineWidth = 980;
+  const lines: string[] = [];
+  let currentLine = "";
+  for (let i = 0; i < cleanTitle.length; i++) {
+    const char = cleanTitle[i];
+    const testLine = currentLine + char;
+    if (ctx.measureText(testLine).width > maxLineWidth && currentLine.length > 0) {
+      lines.push(currentLine);
+      currentLine = char;
+    } else {
+      currentLine = testLine;
+    }
+  }
+  if (currentLine) lines.push(currentLine);
+
+  const totalTextHeight = lines.length * (fontSize * 1.35);
+  const startY = 300 - (totalTextHeight / 2) + fontSize;
+
+  lines.forEach((line, index) => {
+    const lineWidth = ctx.measureText(line).width;
+    const lineX = (1200 - lineWidth) / 2;
+    const lineY = startY + index * (fontSize * 1.35);
+    ctx.fillText(line, lineX, lineY);
+  });
+  ctx.restore();
+
+  // 6. Subtitle / Theme Bar
+  if (theme) {
+    ctx.save();
+    ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+    ctx.font = "500 20px 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif";
+    const subText = `「${theme.length > 42 ? theme.slice(0, 40) + "..." : theme}」`;
+    const subWidth = ctx.measureText(subText).width;
+    ctx.fillText(subText, (1200 - subWidth) / 2, 475);
+    ctx.restore();
+  }
+
+  // 7. Footer: Catchphrase
+  ctx.save();
+  ctx.fillStyle = "rgba(255, 255, 255, 0.72)";
+  ctx.font = "400 16px 'Hiragino Mincho ProN', serif";
+  const footerText = "— ふたりだけの思い出クイズで紡ぐ、安心とぬくもりの再会プラットフォーム —";
+  const footWidth = ctx.measureText(footerText).width;
+  ctx.fillText(footerText, (1200 - footWidth) / 2, 560);
+  ctx.restore();
+
+  return canvas.toDataURL("image/png");
+};
 
 export const AdminMarketingStudioTab = () => {
   const { token: authToken } = useAuth();
@@ -98,8 +276,12 @@ export const AdminMarketingStudioTab = () => {
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
 
+  // Generated Eyecatches (AI Canvas generated)
+  const [generatedEyecatch, setGeneratedEyecatch] = useState<string | null>(null);
+  const [eyecatchVariant, setEyecatchVariant] = useState<number>(0);
+
   // Selected Images for current note draft
-  const [selectedImages, setSelectedImages] = useState<string[]>(["/assets/hero_bottle_mail_1785941809474-DEVslUma.jpg"]);
+  const [selectedImages, setSelectedImages] = useState<string[]>([heroBottleMail]);
 
   // Video Playback State (for Studio Final Video Preview)
   const [isPlayingVideo, setIsPlayingVideo] = useState(false);
@@ -122,11 +304,34 @@ export const AdminMarketingStudioTab = () => {
         setDrafts(data.data);
         if (data.data.length > 0 && !currentDraft) {
           setCurrentDraft(data.data[0]);
+          // Generate initial eyecatch for first draft
+          const eyecatch = createEyecatchCanvas(data.data[0].title, data.data[0].theme, data.data[0].type, 0);
+          setGeneratedEyecatch(eyecatch);
+          setSelectedImages([eyecatch, heroBottleMail, vintageLetterPaper]);
         }
       }
     } catch (e) {
       console.warn("Fetch drafts failed:", e);
     }
+  };
+
+  // Regenerate Eyecatch with next color palette
+  const handleRegenerateEyecatch = () => {
+    if (!currentDraft) return;
+    const nextVariant = eyecatchVariant + 1;
+    setEyecatchVariant(nextVariant);
+    const newEyecatch = createEyecatchCanvas(currentDraft.title, currentDraft.theme, currentDraft.type, nextVariant);
+    setGeneratedEyecatch(newEyecatch);
+    setSelectedImages(prev => [newEyecatch, ...prev.filter(img => img !== generatedEyecatch)]);
+  };
+
+  // Download Generated Eyecatch as PNG
+  const handleDownloadEyecatch = () => {
+    if (!generatedEyecatch) return;
+    const a = document.createElement("a");
+    a.href = generatedEyecatch;
+    a.download = `remeets-eyecatch-${currentDraft?.id || "draft"}.png`;
+    a.click();
   };
 
   // ── 1. Generate Note Content (Random Story or Next Curriculum Step) ──
@@ -154,9 +359,15 @@ export const AdminMarketingStudioTab = () => {
 
       const data = await res.json();
       if (data.success && data.data) {
+        // Automatically generate AI Canvas Eyecatch for this new note draft
+        const eyecatch = createEyecatchCanvas(data.data.title, data.data.theme, data.data.type, eyecatchVariant);
+        setGeneratedEyecatch(eyecatch);
+        const initialImages = [eyecatch, heroBottleMail, vintageLetterPaper];
+        setSelectedImages(initialImages);
+
         setCurrentDraft({
           ...data.data,
-          selectedImages: selectedImages
+          selectedImages: initialImages
         });
         setNoteStep(1);
       }
@@ -597,12 +808,12 @@ export const AdminMarketingStudioTab = () => {
 
           {/* STEP 2: Image Selection & Placement */}
           {noteStep === 2 && currentDraft && (
-            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-100 shadow-sm space-y-6">
+            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-100 shadow-sm space-y-8">
               <div className="flex items-center justify-between border-b border-slate-100 pb-4">
                 <div>
-                  <span className="text-[10px] font-bold text-indigo-600 uppercase font-mono">STEP 2: IMAGE ASSETS</span>
-                  <h2 className="text-base font-bold font-serif text-slate-900">挿絵・アイキャッチ画像の選定</h2>
-                  <p className="text-xs text-slate-500">記事に挿入したい画像にチェックを入れてください。自動で最適な位置にレイアウトされます。</p>
+                  <span className="text-[10px] font-bold text-indigo-600 uppercase font-mono">STEP 2: IMAGE ASSETS & EYECATCH</span>
+                  <h2 className="text-base font-bold font-serif text-slate-900">アイキャッチ画像・挿絵の選定</h2>
+                  <p className="text-xs text-slate-500">記事に最適なアイキャッチ画像を自動生成しました。挿入したい写真・イラストにチェックを入れてください。</p>
                 </div>
                 <button
                   onClick={() => setNoteStep(3)}
@@ -613,17 +824,120 @@ export const AdminMarketingStudioTab = () => {
                 </button>
               </div>
 
-              {/* AI Image Generation Prompt Card */}
+              {/* 1. 🎨 AI-Generated Custom Eyecatch Banner */}
+              <div className="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 p-6 rounded-3xl text-white space-y-4 shadow-md border border-slate-800">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="p-1.5 rounded-lg bg-yellow-400/20 text-yellow-300">
+                      <Sparkles size={16} />
+                    </span>
+                    <div>
+                      <h3 className="text-sm font-bold font-serif">記事タイトル入り・AI自動生成アイキャッチ (1200×630 note規格)</h3>
+                      <p className="text-[11px] text-slate-300">この記事のタイトルとテーマに合わせてリアルタイムに描画・合成されています。</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={handleRegenerateEyecatch}
+                      className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer border border-white/20"
+                    >
+                      <RefreshCw size={13} />
+                      <span>別の色合いで再生成</span>
+                    </button>
+                    <button
+                      onClick={handleDownloadEyecatch}
+                      className="px-3 py-1.5 bg-gradient-to-r from-teal-500 to-emerald-500 hover:opacity-90 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs"
+                    >
+                      <Download size={13} />
+                      <span>PNG画像を保存</span>
+                    </button>
+                  </div>
+                </div>
+
+                {generatedEyecatch ? (
+                  <div className="relative aspect-[16/9] w-full max-w-2xl mx-auto rounded-2xl overflow-hidden border border-white/20 shadow-2xl group">
+                    <img
+                      src={generatedEyecatch}
+                      alt="AI Generated Eyecatch"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute top-3 right-3 px-3 py-1 bg-black/60 backdrop-blur-md rounded-full text-[10px] font-bold text-teal-300 border border-teal-500/30 flex items-center gap-1">
+                      <CheckCircle2 size={12} />
+                      <span>アイキャッチ（最上部）に設定中</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="h-48 border border-dashed border-white/20 rounded-2xl flex flex-col items-center justify-center text-center space-y-2">
+                    <button
+                      onClick={handleRegenerateEyecatch}
+                      className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold flex items-center gap-2"
+                    >
+                      <Sparkles size={14} />
+                      <span>アイキャッチ画像を生成する</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* 2. Available Official Assets Grid */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                    <ImageIcon size={14} className="text-indigo-600" />
+                    <span>公式アセット・挿絵ギャラリー（本文中に差し込む画像を選択）</span>
+                  </h3>
+                  <span className="text-[11px] text-slate-400">複数選択可能（記事の見出し下に自動配置）</span>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3.5">
+                  {AVAILABLE_ASSETS.map((asset) => {
+                    const isSelected = selectedImages.includes(asset.path);
+                    return (
+                      <div
+                        key={asset.id}
+                        onClick={() => toggleImageSelect(asset.path)}
+                        className={cn(
+                          "p-2.5 rounded-2xl border transition-all cursor-pointer group space-y-1.5 relative",
+                          isSelected
+                            ? "bg-indigo-50/90 border-indigo-500 ring-2 ring-indigo-500/20 shadow-xs"
+                            : "bg-slate-50 border-slate-200/80 hover:border-slate-300"
+                        )}
+                      >
+                        <div className="aspect-[4/3] rounded-xl overflow-hidden bg-slate-200 relative">
+                          <img
+                            src={asset.path}
+                            alt={asset.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                            loading="lazy"
+                          />
+                          <div className={cn(
+                            "absolute top-2 right-2 w-5 h-5 rounded-full flex items-center justify-center shadow-md text-xs font-bold transition-all",
+                            isSelected ? "bg-indigo-600 text-white scale-110" : "bg-white/80 text-slate-400"
+                          )}>
+                            {isSelected ? <Check size={12} /> : <Plus size={12} />}
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between text-[11px]">
+                          <span className="font-bold text-slate-800 truncate pr-1">{asset.title}</span>
+                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-slate-200 text-slate-600 font-mono shrink-0">{asset.category}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* 3. AI Image Generation Prompt Card (for Midjourney / DALL-E) */}
               {currentDraft.imagePrompt && (
                 <div className="bg-gradient-to-r from-purple-50 to-indigo-50 p-4 rounded-2xl border border-purple-100 space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-purple-900 flex items-center gap-1.5">
                       <Sparkle size={14} className="text-purple-600" />
-                      <span>AIアイキャッチ生成プロンプト (Midjourney / Imagen / Canva用)</span>
+                      <span>外部画像AI用プロンプト (Midjourney / Imagen / Canva用)</span>
                     </span>
                     <button
                       onClick={() => copyToClipboard(currentDraft.imagePrompt || "", "prompt")}
-                      className="text-xs text-purple-700 hover:underline font-bold flex items-center gap-1"
+                      className="text-xs text-purple-700 hover:underline font-bold flex items-center gap-1 cursor-pointer"
                     >
                       {copiedField === "prompt" ? <Check size={12} /> : <Copy size={12} />}
                       <span>{copiedField === "prompt" ? "コピー済" : "プロンプトをコピー"}</span>
@@ -634,39 +948,6 @@ export const AdminMarketingStudioTab = () => {
                   </p>
                 </div>
               )}
-
-              {/* Available Assets Grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                {AVAILABLE_ASSETS.map((asset) => {
-                  const isSelected = selectedImages.includes(asset.path);
-                  return (
-                    <div
-                      key={asset.id}
-                      onClick={() => toggleImageSelect(asset.path)}
-                      className={cn(
-                        "p-3 rounded-2xl border transition-all cursor-pointer group space-y-2 relative",
-                        isSelected
-                          ? "bg-indigo-50/80 border-indigo-500 ring-2 ring-indigo-500/20"
-                          : "bg-slate-50 border-slate-200/80 hover:border-slate-300"
-                      )}
-                    >
-                      <div className="aspect-video rounded-xl overflow-hidden bg-slate-200 relative">
-                        <img src={asset.path} alt={asset.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                        <div className={cn(
-                          "absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center shadow-md text-xs font-bold",
-                          isSelected ? "bg-indigo-600 text-white" : "bg-white/80 text-slate-400"
-                        )}>
-                          {isSelected ? <Check size={14} /> : <Plus size={14} />}
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="font-bold text-slate-800">{asset.title}</span>
-                        <span className="text-[10px] text-slate-400 font-mono">{asset.category}</span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
             </div>
           )}
 
