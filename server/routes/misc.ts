@@ -1,3 +1,4 @@
+import { GoogleGenAI } from "@google/genai";
 import express from "express";
 import crypto from "crypto";
 import { db } from "../db";

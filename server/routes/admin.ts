@@ -1,3 +1,6 @@
+import Database from "better-sqlite3";
+import { GoogleGenAI } from "@google/genai";
+let lastNgWordsFetch = 0;
 import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -8,7 +11,7 @@ import { execSync } from "child_process";
 import { db, setDb, seedData } from "../db";
 import { JWT_SECRET, ADMIN_ROLES, ROLE_PERMISSIONS } from "../config";
 import { authenticateToken, optionalAuthenticateToken, isAdmin, requirePermission, logAction, sanitizeLogText } from "../middleware/auth";
-import { filterNGWords, detectInappropriateWords } from "../moderation";
+import { filterNGWords, detectInappropriateWords, evaluateContentSafety } from "../moderation";
 import { broadcastToUser, sendNotificationEmail } from "../websocket";
 
 export const adminRouter = express.Router();

@@ -58,9 +58,10 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
   const [answers, setAnswers] = useState<string[]>([]);
   const [searcherName, setSearcherName] = useState<string | null>(null);
   const [searcherFullName, setSearcherFullName] = useState<string | null>(null);
+  const [searcherId, setSearcherId] = useState<number | string | null>(null);
   const [verifiedByUser, setVerifiedByUser] = useState<{ id: number, username: string, full_name?: string } | null>(null);
   const [error, setError] = useState('');
-  const [verificationResults, setVerificationResults] = useState<{correct: boolean, close: boolean}[]>([]);
+  const [verificationResults, setVerificationResults] = useState<{correct: boolean, close: boolean, hint?: string}[]>([]);
   const [isVerifying, setIsVerifying] = useState(false);
   const [remainingAttempts, setRemainingAttempts] = useState<number | null>(null);
   const [isAttemptsLocked, setIsAttemptsLocked] = useState(false);
@@ -83,6 +84,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
     contactNote?: string;
     searcherName?: string;
     searcherFullName?: string;
+    searcherMaidenName?: string;
     message?: string;
   } | null>(() => {
     try {

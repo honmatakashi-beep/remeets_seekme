@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { db } from "../db";
-import { JWT_SECRET, ADMIN_ROLES, ROLE_PERMISSIONS } from "../config";
+import { JWT_SECRET, ADMIN_ROLES as CONFIG_ADMIN_ROLES, ROLE_PERMISSIONS as CONFIG_ROLE_PERMISSIONS } from "../config";
 
 export const sanitizeLogText = (text: string) => {
   if (!text) return "";
