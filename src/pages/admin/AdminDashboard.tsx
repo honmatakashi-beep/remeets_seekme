@@ -1180,10 +1180,39 @@ export const AdminDashboard = () => {
       });
       if (res.ok) {
         const data = await res.json();
-        alert(`✨ サンプルボトル（手紙）を${data.count || count}件正常に生成・追加しました！`);
+        alert(`✨ 重複ゼロ・高リアリティのサンプルボトルを${data.count || count}件正常に生成・追加しました！`);
         fetchData();
       } else {
         alert('サンプルボトルの生成に失敗しました。');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('通信エラーが発生しました。');
+    } finally {
+      setIsGeneratingSamplePosts(false);
+    }
+  };
+
+  const handleReseedUniquePosts = async (count: number = 200) => {
+    if (!window.confirm(`【完全重複ゼロ・想い出再構築】\n既存の重複サンプル手紙を整理し、誰一人としてクイズや本文が被らない「100%ユニークな想い出ボトルメール（${count}通）」を一括再構築しますか？\n（※管理者・テストユーザーは安全に維持されます）`)) {
+      return;
+    }
+    setIsGeneratingSamplePosts(true);
+    try {
+      const res = await fetch('/api/admin/reseed-unique-posts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ count })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        alert(`✨ 重複ゼロの完全ユニークなボトルメールを${data.count || count}件正常に再構築しました！`);
+        fetchData();
+      } else {
+        alert('再構築に失敗しました。');
       }
     } catch (err) {
       console.error(err);
@@ -3562,6 +3591,7 @@ export const AdminDashboard = () => {
               selectedPost={selectedPost}
               handleExportPostsCSV={handleExportPostsCSV}
               handleGenerateSamplePosts={handleGenerateSamplePosts}
+              handleReseedUniquePosts={handleReseedUniquePosts}
               isGeneratingSamplePosts={isGeneratingSamplePosts}
               handleBatchAiAnalyzePosts={handleBatchAiAnalyzePosts}
               isBatchAiAnalyzing={isBatchAiAnalyzing}

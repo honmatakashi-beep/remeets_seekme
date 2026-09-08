@@ -37,6 +37,7 @@ export const AdminPostsTab: React.FC<AdminPostsTabProps> = (props) => {
     onOpenSeoPreview = () => {},
     handleExportPostsCSV = () => {},
     handleGenerateSamplePosts = () => {},
+    handleReseedUniquePosts = () => {},
     isGeneratingSamplePosts = false,
     handleBatchAiAnalyzePosts = () => {},
     isBatchAiAnalyzing = false,
@@ -250,12 +251,24 @@ export const AdminPostsTab: React.FC<AdminPostsTabProps> = (props) => {
                       <span className="hidden sm:inline">CSV出力</span>
                     </button>
 
+                    {/* Reseed 100% Unique Posts Button */}
+                    <button
+                      onClick={() => handleReseedUniquePosts(200)}
+                      disabled={isGeneratingSamplePosts}
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition-colors cursor-pointer shadow-2xs disabled:opacity-50"
+                      title="重複を全排除し、誰一人としてクイズや本文が被らない100%ユニークな200通へ一括再構築"
+                    >
+                      <Sparkles size={13} className={isGeneratingSamplePosts ? "animate-spin" : ""} />
+                      <span className="hidden md:inline">重複ゼロ再構築 (200通)</span>
+                      <span className="md:hidden">再構築 (200)</span>
+                    </button>
+
                     {/* Sample Post Generator Button */}
                     <button
                       onClick={() => handleGenerateSamplePosts(50)}
                       disabled={isGeneratingSamplePosts}
                       className="flex items-center gap-1.5 px-3 py-1.5 bg-black hover:bg-black/80 text-white font-bold rounded-xl text-xs transition-colors cursor-pointer shadow-2xs disabled:opacity-50"
-                      title="実在感のある日本の想い出サンプルボトルを50通一括自動生成"
+                      title="実在感のある日本の想い出サンプルボトルを50通一括自動生成（重複ゼロ保証）"
                     >
                       <Plus size={13} className={isGeneratingSamplePosts ? "animate-spin" : ""} />
                       <span>サンプル生成 (+50)</span>

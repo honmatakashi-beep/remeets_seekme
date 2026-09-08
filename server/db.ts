@@ -1813,3 +1813,576 @@ export const seedData = async (force: boolean = false) => {
     });
   })();
 };
+
+// ==========================================
+// 1. 人名・旧姓・ニックネーム・ユーザー名辞書
+// ==========================================
+
+const LAST_NAMES = [
+  "佐藤", "鈴木", "高橋", "田中", "渡辺", "伊藤", "山本", "中村", "小林", "加藤",
+  "吉田", "山田", "佐々木", "山口", "松本", "井上", "木村", "林", "斎藤", "清水",
+  "阿部", "森", "池田", "橋本", "山下", "石川", "中島", "前田", "藤田", "小川",
+  "後藤", "岡田", "長谷川", "村上", "近藤", "石井", "坂本", "遠藤", "青木", "藤井",
+  "西村", "福田", "三浦", "藤原", "岡本", "松田", "中川", "中野", "原田", "小野",
+  "竹内", "田村", "金子", "和田", "中山", "石田", "上田", "森田", "原", "柴田",
+  "酒井", "工藤", "横山", "宮崎", "宮本", "内田", "高木", "安藤", "島田", "谷口"
+];
+
+const MALE_FIRST_NAMES_SHOWA = [
+  "健一", "太郎", "浩二", "直樹", "和也", "大輔", "健太", "拓也", "亮太", "雄大",
+  "慎一", "浩司", "拓海", "翔太", "直人", "智也", "隆", "健", "真一", "剛",
+  "健二", "茂", "裕太", "浩一", "芳雄", "誠", "一郎", "博", "和夫", "正",
+  "勇", "聖", "達也", "嗣", "昭二", "哲也", "潤", "悟", "裕介", "修"
+];
+
+const FEMALE_FIRST_NAMES_SHOWA = [
+  "美咲", "由美", "さくら", "真理子", "愛", "舞", "結衣", "萌", "菜々子", "美紀",
+  "恵", "奈央", "裕子", "恵美", "美穂", "あゆみ", "久美", "恵子", "由紀子", "美香",
+  "明日香", "真由美", "順子", "明美", "智子", "久美子", "直美", "さゆり", "みゆき",
+  "陽子", "佳代", "佳代子", "りさ", "香織", "洋子", "裕美", "雅美", "千春", "和恵"
+];
+
+const MALE_FIRST_NAMES_HEISEI = [
+  "翔太", "蓮", "大輝", "陸", "悠真", "湊", "颯太", "樹", "悠人", "陽翔",
+  "蒼", "大和", "朝陽", "拓真", "怜", "隼人", "颯", "琉生", "一真", "優斗",
+  "晴斗", "航平", "海斗", "陽太", "快斗", "響", "亮介", "涼太", "真央", "圭佑"
+];
+
+const FEMALE_FIRST_NAMES_HEISEI = [
+  "陽葵", "凛", "結菜", "芽依", "莉子", "葵", "紬", "咲良", "結月", "心春",
+  "七海", "楓", "美桜", "彩花", "優奈", "琴音", "栞", "千尋", "心愛", "希星",
+  "海空", "愛莉", "日向", "結愛", "美羽", "花音", "朱莉", "杏", "未来", "澪"
+];
+
+const NICKNAMES_CASUAL = [
+  "まっつん", "えっちゃん", "ダイちゃん", "かっちゃん", "りょうくん", "みっきー",
+  "たっくん", "さっちゃん", "まー坊", "ゆきりん", "けんけん", "なっちゃん",
+  "しんちゃん", "かなぽん", "ひろっち", "えりりん", "なおぽん", "かずぼー",
+  "あっきー", "ゆみっぺ", "としぼー", "けいちゃん", "じゅんじゅん", "りかちん",
+  "たけ坊", "めぐっぺ", "しんごっち", "ゆかちん", "ともくん", "けいたん"
+];
+
+const NICKNAMES_ROLES = [
+  "元サッカー部部長", "生徒会長", "ピアノ係", "キャプテン", "図書委員長", "放送室のDJ",
+  "合唱部アルトリーダー", "吹奏楽パーカス", "美術部幽霊部員", "軽音ギター担当", "文化祭実行委員",
+  "理科実験室の常連", "自習室の主", "応援団長", "バスケ部ガード", "剣道部主将",
+  "学級委員長", "掃除当番ペア", "給食配膳係", "広報誌編集長"
+];
+
+const USERNAME_PREFIXES = [
+  "sky_blue", "daiki", "momo", "guitar", "traveler", "coffee", "ken", "tomo", "ryo",
+  "hanako", "kazu", "daisuke", "yuki", "shin", "aya", "yosuke", "shota", "ren",
+  "haruto", "minato", "souta", "aoi", "sakura", "rin", "yuna", "mei", "riko",
+  "kaito", "hibiki", "haru", "nana", "fuka", "miu", "kanon", "akari", "anzu",
+  "vintage", "retro", "runner", "music", "photo", "star", "ocean", "forest",
+  "breeze", "melody", "sunset", "twilight", "harbor", "station", "campus"
+];
+
+const HOMETOWNS = [
+  "東京都世田谷区", "東京都杉並区", "東京都武蔵野市", "東京都八王子市", "東京都台東区",
+  "神奈川県横浜市青葉区", "神奈川県鎌倉市", "神奈川県藤沢市", "神奈川県川崎市", "神奈川県小田原市",
+  "埼玉県さいたま市大宮区", "埼玉県川越市", "埼玉県所沢市", "埼玉県越谷市",
+  "千葉県千葉市中央区", "千葉県船橋市", "千葉県柏市", "千葉県松戸市", "千葉県市川市",
+  "大阪府大阪市北区", "大阪府吹田市", "大阪府豊中市", "大阪府枚方市", "大阪府堺市",
+  "京都府京都市左京区", "京都府宇治市", "兵庫県神戸市東灘区", "兵庫県西宮市", "兵庫県姫路市",
+  "愛知県名古屋市千種区", "愛知県岡崎市", "愛知県豊橋市", "静岡県静岡市葵区", "静岡県浜松市",
+  "北海道札幌市中央区", "北海道函館市", "北海道旭川市", "北海道小樽市",
+  "宮城県仙台市青葉区", "福島県郡山市", "新潟県新潟市中央区", "長野県松本市",
+  "広島県広島市中区", "岡山県岡山市", "福岡県福岡市早良区", "福岡県北九州市", "熊本県熊本市"
+];
+
+const SCHOOLS_AND_ORGS = [
+  "世田谷第一中学校", "都立桜町高校", "横浜青葉高校", "鎌倉学園高校", "千葉東高校",
+  "県立浦和西高校", "大阪府立北野高校", "京都府立洛北高校", "神戸市立葺合高校", "愛知県立旭丘高校",
+  "札幌旭丘高校", "仙台第一高校", "福岡県立修猷館高校", "広島市立基町高校", "静岡市立高校",
+  "早稲田大学理工学部", "慶應義塾大学文学部", "立教大学経済学部", "同志社大学神学部", "関西学院大学法学部",
+  "東京理科大学応用化学科", "青山学院大学国際政治経済学部", "明治大学商学部", "中央大学法学部",
+  "下北沢のヴィンテージ古着店", "渋谷のITベンチャー創業チーム", "神保町の老舗古書店",
+  "吉祥寺のジャズ喫茶", "地元の少年野球リトルリーグ", "市民オーケストラ交響楽団",
+  "駅前商店街の文房具店", "代官山デザイン設計事務所", "秋葉原の老舗電子パーツ店",
+  "地元の少年少女合唱団", "大学の自主映画制作サークル", "全国学生ボランティア連盟"
+];
+
+const UNSPLASH_IMAGES = [
+  "1590615370581-2656198fdf62", "1542314831-068cd1dbfeeb", "1570129476815-ba368ac77013", 
+  "1555529323-4484029793c9", "1529339061831-13350290918a", "1496116218417-1a781b1c416c", 
+  "1531949103042-ad6d7b433792", "1560264280-88b68371db39", "1507525428034-b723cf961d3e",
+  "1519681393784-d120267933ba", "1470071459604-3b5ec3a7fe05", "1497436072909-60f360e1d4b1",
+  "1501785888041-af3ef285b470", "1518495973542-4542c06a5843", "1469474968028-56623f02e42e",
+  "1506744038136-46273834b3fb", "1511497584788-87676104235f", "1472214103451-9374bd1c798e",
+  "1534447677768-be436bb09401", "1492691527719-9d1e07e534b4"
+];
+
+interface MemorySceneTheme {
+  category: "friend" | "work" | "love" | "family" | "other";
+  relation: string;
+  contextTemplates: string[];
+  messageTemplates: string[];
+  q1Templates: { q: string; a: string }[];
+  q2Templates: { q: string; a: string }[];
+}
+
+const MEMORY_THEMES: MemorySceneTheme[] = [
+  // 1. 吹奏楽・音楽
+  {
+    category: "friend",
+    relation: "吹奏楽部のパート仲間",
+    contextTemplates: [
+      "{era}年代、{school}の吹奏楽部で共に汗を流した仲間です。私はトロンボーン、相手はユーフォニアムを担当していました。",
+      "{school}の音楽室で夕暮れまでアンサンブルの練習を重ねた同期です。",
+      "夏のコンクールに向けて合宿所で夜遅くまで音合わせをした親友です。"
+    ],
+    messageTemplates: [
+      "夕焼けの音楽室で一緒に吹いたハーモニー、今でも鮮明に覚えています。金賞を獲ったあの瞬間の涙と抱擁は一生の宝物です。元気ですか？",
+      "コンクール直前の厳しい練習を乗り越えられたのは、あなたが隣で笑顔で支えてくれたからです。またいつか一緒に音を奏でたいですね。",
+      "卒業式の日に部室の黒板にみんなで寄せ書きをしたのが懐かしいです。あの頃の情熱を思い出し、ふと手紙を書きました。"
+    ],
+    q1Templates: [
+      { q: "夏のコンクール地区予選で金賞を受賞した思い出の自由曲の題名は？", a: "アルヴァマー序曲" },
+      { q: "アンサンブルコンテストで演奏した管楽四重奏の曲名は？", a: "テレプシコーレ舞曲集" },
+      { q: "コンクール本番の課題曲でソロを担当したトランペットの曲名は？", a: "風紋" },
+      { q: "定期演奏会のフィナーレで全員で演奏した定番アンコール曲は？", a: "宝島" }
+    ],
+    q2Templates: [
+      { q: "パート練習の合間に音楽室のベランダで隠れて食べたアイスの味は？", a: "ソーダ味パピコ" },
+      { q: "合宿所の夜、パート全員でお揃いで購入したお守りストラップの色は？", a: "スカイブルー" },
+      { q: "顧問の先生が練習の合間に差し入れてくれた名物ドリンクは？", a: "ポカリスエット瓶" },
+      { q: "楽器ケースのネームタグの裏に油性ペンで書いた合言葉は？", a: "一音心奏" }
+    ]
+  },
+  // 2. 野球・スポーツ部活
+  {
+    category: "friend",
+    relation: "野球部のバッテリー・チームメイト",
+    contextTemplates: [
+      "{era}年代、{school}の野球部でピッチャーとキャッチャーのバッテリーを組んでいました。",
+      "白球を泥だらけになって追いかけた{school}野球部のチームメイトです。",
+      "グラウンドで朝から晩までノックを受け続けた高校時代の戦友です。"
+    ],
+    messageTemplates: [
+      "夏の大会、延長12回のサヨナラ勝ち。マウンドで抱き合って泣いたあの日の熱気は、今も私の背中を押してくれています。またキャッチボールをしよう。",
+      "炎天下のグラウンドで泥まみれになりながら甲子園を目指した日々。あの厳しい練習を共にした君の顔が浮かび、ペンを取りました。",
+      "最後の夏、悔し涙を流したロッカールームで交わした約束を覚えていますか？お互い大人になった今、近況を語り合いたいです。"
+    ],
+    q1Templates: [
+      { q: "最後の夏の大会で劇的なサヨナラ勝ちを決めた対戦相手の高校名は？", a: "明青高校" },
+      { q: "練習試合の帰りにみんなで自転車で立ち寄った定食屋の大盛りメニューは？", a: "ジャンボチキンカツ定食" },
+      { q: "キャプテンが最後のミーティングで部室の白板に書いた部訓の言葉は？", a: "全員野球" },
+      { q: "炎天下のシートノックで監督が最後に打ち込んだ特守の球数は？", a: "百本ノック" }
+    ],
+    q2Templates: [
+      { q: "部室の冷蔵庫に常備してみんなで奪い合った冷凍チューペットの色は？", a: "オレンジ色" },
+      { q: "グラウンド整備のトンボ掛けの後に自販機で飲んだ炭酸飲料は？", a: "リアルゴールド" },
+      { q: "グローブの手入れ用に二人で愛用していた保革オイルの缶の色は？", a: "黄色いローリングス缶" },
+      { q: "遠征バスの移動中にウォークマンで二人で聴いた応援歌は？", a: "栄冠は君に輝く" }
+    ]
+  },
+  // 3. 映画・自主制作サークル
+  {
+    category: "friend",
+    relation: "自主映画制作サークルの仲間",
+    contextTemplates: [
+      "{era}年代、{school}で8ミリフィルムやminiDVを回して自主制作映画を撮っていた仲間です。",
+      "大学の映画研究会で、監督とカメラマンとして深夜まで編集室に籠もっていた同期です。",
+      "脚本を何十回も書き直し、ロケハンで街中を歩き回った青春のパートナーです。"
+    ],
+    messageTemplates: [
+      "夕暮れの坂道をカメラを担いで走り抜けた日々。インディーズ映画祭で拍手を浴びたあの瞬間は、私の人生最高の宝物です。元気ですか？",
+      "編集室でカップ麺をすすりながら朝を迎えたあの熱気。今の自分があるのは、あの時君と本気で夢を語り合えたからです。",
+      "上映会のスクリーンの前で震えながら幕が上がるのを待ったね。君の撮った映像の美しさを、今でも思い出します。"
+    ],
+    q1Templates: [
+      { q: "自主映画祭で観客賞を受賞した短編作品のタイトルは？", a: "夕暮れグラフィティ" },
+      { q: "メインロケ地として撮影許可をもらった川沿いのレトロな喫茶店名は？", a: "喫茶モナリザ" },
+      { q: "徹夜の編集作業中に主食にしていたお気に入りのカップ麺は？", a: "シーフードヌードル" },
+      { q: "クライマックスの雨宿りシーンを撮影した神社の鳥居の名前は？", a: "日吉神社" }
+    ],
+    q2Templates: [
+      { q: "カメラのレンズキャップの裏に目印として貼っていたシールの柄は？", a: "ペンギンマーク" },
+      { q: "クランクアップの日にみんなで乾杯した瓶ビールの銘柄は？", a: "サッポロ赤星" },
+      { q: "ロケ移動用の軽ワゴンの助手席ダッシュボードに置いてあった芳香剤の香りは？", a: "スカッシュ" },
+      { q: "台本の表紙を留めていた大型ダブルクリップの色は？", a: "真鍮ゴールド" }
+    ]
+  },
+  // 4. ITスタートアップ・創業同期
+  {
+    category: "work",
+    relation: "創業期オフィスの開発同期",
+    contextTemplates: [
+      "{era}年代、{school}の小さなオフィスでサービスの初期ローンチに奮闘したエンジニアとデザイナーのコンビです。",
+      "渋谷の雑居ビルでピザを食べながら朝までデバッグ作業を共にした創業初期の戦友です。",
+      "初めてのプロダクトリリース前夜、不眠不休でサーバー設定をやり切った仲間です。"
+    ],
+    messageTemplates: [
+      "ピザの箱が積み上がったオフィスで、リリースボタンを押した瞬間のあの静寂と歓声。あの情熱は今の私の礎です。久しぶりに語り合いたいですね。",
+      "深夜3時に非常階段から見上げた東京の夜景、覚えていますか？過酷だったけれど本当に楽しい日々でした。元気でやっていますか？",
+      "どんな困難なバグにも諦めずに立ち向かってくれたあなたの姿に救われました。あの頃の感謝を伝えたくて手紙を流します。"
+    ],
+    q1Templates: [
+      { q: "ベータ版リリースのコードネームとして設定したプロジェクト名は？", a: "プロジェクトフェニックス" },
+      { q: "徹夜明けにビルの非常階段から見上げた東京タワーのライトアップ色は？", a: "ランドマークライト" },
+      { q: "オフィスの地下にあったチーム御用達の中華料理屋の名物料理は？", a: "黒胡麻担々麺" },
+      { q: "サーバーダウンの危機を救った伝説の緊急ホットフィックスのコミット名は？", a: "fix-all-hope" }
+    ],
+    q2Templates: [
+      { q: "深夜残業のブレイクタイムにオフィスで淹れていた特製ドリップコーヒー豆は？", a: "マンデリン深煎り" },
+      { q: "デスクの卓上加湿器の上に置いていた癒やしのフィギュアは？", a: "ダンボー" },
+      { q: "ローンチ成功の記念に社長が全員に奢ってくれた高級アイスの味は？", a: "ハーゲンダッツバニラ" },
+      { q: "ホワイトボードの端にずっと消さずに残していた開発スローガンは？", a: "Ship It Fast" }
+    ]
+  },
+  // 5. 昭和・平成初期の幼馴染・下町
+  {
+    category: "friend",
+    relation: "下町の商店街で育った幼馴染",
+    contextTemplates: [
+      "{era}年代、{hometown}の路地裏や空き地で日が暮れるまで遊んだ幼馴染です。",
+      "駄菓子屋の前でメンコやビー玉、スーパーボールくじで遊んだ幼少期の親友です。",
+      "小学校の通学路でいつも待ち合わせをして一緒に登校していたお隣さんです。"
+    ],
+    messageTemplates: [
+      "夕焼けチャイムが鳴るまで空き地の秘密基地で語り合った日々。引っ越してしまってからずっと気になっていました。元気でいますか？",
+      "夏休みの朝、首からラジオ体操カードを下げて走った神社。あの頃の無邪気な笑顔がふと浮かび、手紙をボトルに託しました。",
+      "大人になって街の景色は変わってしまったけれど、二人で見た夕日は今も心の中にあります。また昔のように笑い合いたいです。"
+    ],
+    q1Templates: [
+      { q: "路地の角にあった駄菓子屋のおばあちゃんの定番の口癖は？", a: "まいどあり" },
+      { q: "二人で空き地の奥の木の上に作った秘密基地の合言葉は？", a: "星空ロケット" },
+      { q: "夏休みの神社境内で集めていたセミの抜け殻を入れたプラスチックケースの色は？", a: "黄緑色" },
+      { q: "駄菓子屋の店先のガチャガチャで二人でコンプリートを目指した消しゴムは？", a: "キン肉マン消しゴム" }
+    ],
+    q2Templates: [
+      { q: "夕方の銭湯の湯上がりにいつも番台で買ってもらって飲んだ瓶飲料は？", a: "フルーツ牛乳" },
+      { q: "夏休みのラジオ体操の皆勤賞でもらった文房具のセットは？", a: "ドラえもん下敷き" },
+      { q: "自転車のスポークに挟んでカチカチ音を鳴らして遊んでいたカードは？", a: "プロ野球カード" },
+      { q: "雨の日に秘密基地に持ち込んで雨宿りしながら食べたおやつは？", a: "ベビースターラーメン" }
+    ]
+  },
+  // 6. 予備校・受験の戦友
+  {
+    category: "friend",
+    relation: "予備校の自習室で机を並べた戦友",
+    contextTemplates: [
+      "{era}年代、予備校の自習室で朝から晩まで机を並べて受験勉強に励んだ戦友です。",
+      "模試の判定に一喜一憂しながら、励まし合って合格を目指した浪人時代の仲間です。",
+      "夜遅くの予備校帰りに駅前の立ち食いそばを一緒にすすった同期です。"
+    ],
+    messageTemplates: [
+      "ペンだこを作りながら赤本を解き明かしたあの1年間。あの過酷な受験期を乗り切れたのは、隣で君が黙々と努力していたからです。感謝を伝えたいです。",
+      "合格発表の日、掲示板の前で抱き合って涙した瞬間を今でも覚えています。それぞれの道を歩んでいますが、君の幸せを祈っています。",
+      "単語帳をボロボロになるまでめくった日々。ふと昔の参考書を見返して君を思い出しました。元気ですか？"
+    ],
+    q1Templates: [
+      { q: "夜遅くに自習室を出た後、二人で駆け込んだ駅前立ち食いそば屋のメニューは？", a: "かき揚げ天玉そば" },
+      { q: "英単語ターゲットの表紙に合格祈願で貼っていた赤ペンの祈願文字は？", a: "絶対合格" },
+      { q: "模試の判定が出た日に屋上で二人で食べたゲン担ぎのお菓子は？", a: "キットカット" },
+      { q: "冬期の直前講習で毎日朝一番に二人で最前列を確保したカリスマ講師の科目名は？", a: "現代文読解法" }
+    ],
+    q2Templates: [
+      { q: "自習室のデスクで睡魔と戦うためにいつも飲んでいた目薬の銘柄は？", a: "サンテFXネオ" },
+      { q: "二人でお揃いでペンケースに入れていた濃いマークシート用鉛筆の硬度は？", a: "2B鉛筆" },
+      { q: "湯島天神へ初詣に行った時に二人で買ったお守りの絵柄は？", a: "学業成就の白梅" },
+      { q: "センター試験前夜に電話でお互いに掛け合った最後の励ましの合言葉は？", a: "いつも通りにいこう" }
+    ]
+  },
+  // 7. アルバイト仲間
+  {
+    category: "work",
+    relation: "学生時代のアルバイト仲間",
+    contextTemplates: [
+      "{era}年代、{hometown}のレトロな喫茶店でホールとキッチンとして働いた仲間です。",
+      "深夜のファミレスでフロア清掃やモーニング仕込みを共にしたバイト仲間です。",
+      "大型書店で新刊の陳列やPOP作りを競い合った同期のスタッフです。"
+    ],
+    messageTemplates: [
+      "忙しいピークタイムをアイコンタクトで乗り切った連携プレー、本当に楽しかったです。バイト上がりに食べた深夜の賄いの味が忘れられません。",
+      "閉店後の店内でBGMを聴きながらモップ掛けをした時間、他愛のない将来の夢を語り合いましたね。あの頃の君に会いたいです。",
+      "失敗して落ち込んでいた私を店長からかばってくれた優しいあなた。あの時の温かさに心から感謝しています。"
+    ],
+    q1Templates: [
+      { q: "アルバイトの賄い（まかない）で店長が作ってくれた特製裏メニューは？", a: "ガーリックオムライス" },
+      { q: "土日のピーク時に一番注文が入って手が回らなくなった看板デザートは？", a: "ジャンボチョコパフェ" },
+      { q: "書店の店頭で二人で手書きで作成したおすすめ小説のPOPの色は？", a: "クラフトイエロー" },
+      { q: "深夜シフトの終業点検チェックシートの最後に押していたスタンプの印影は？", a: "合格スマイル" }
+    ],
+    q2Templates: [
+      { q: "制服のエプロンの右ポケットにいつも常備していた特製メモ帳のサイズは？", a: "ロディア11番" },
+      { q: "バイト代が入った日に二人で食べに行った駅前の焼き鳥屋の名前は？", a: "鳥よし" },
+      { q: "休憩室のロッカーの鍵に付けていた二人お揃いのキーホルダーは？", a: "木彫りのフクロウ" },
+      { q: "シフト交替の時に引き継ぎノートの余白に描いていた落書きキャラは？", a: "カフェラテ猫" }
+    ]
+  },
+  // 8. 恩師への感謝
+  {
+    category: "other",
+    relation: "人生の恩師・担任の先生",
+    contextTemplates: [
+      "{era}年代、{school}で担任をしてくださった恩師の先生を探しています。私は生徒でした。",
+      "進路に迷い立ち止まっていた私に親身になって向き合ってくださった{school}の先生です。",
+      "部活動の顧問として、人としての礼儀と諦めない心を教えてくださった先生です。"
+    ],
+    messageTemplates: [
+      "先生があの放課後の進路相談でかけてくださった『自分を信じて進めばいい』という言葉が、今も私の人生の道標です。先生、お元気ですか？",
+      "不登校気味だった私を毎朝迎えに来てくださり、職員室で温かいお茶を出してくださったこと、一生忘れません。心からの感謝を伝えたくて手紙を書きました。",
+      "厳しくも温かいご指導のおかげで、私も無事に社会人となり人を育てる立場になりました。先生への恩返しとして、元気なお姿を一目拝見したいです。"
+    ],
+    q1Templates: [
+      { q: "先生が毎学期末の学級通信の題名として掲げていたクラスのスローガンは？", a: "風に向かって立て" },
+      { q: "先生が放課後の進路相談室でいつも生徒に淹れてくださったお茶の種類は？", a: "静岡の深蒸し茶" },
+      { q: "先生が黒板の右上にチョークで毎日欠かさず書いていた今日の一言の言葉は？", a: "日日是好日" },
+      { q: "卒業式のホームルームで先生が涙をこらえて生徒全員に手渡してくれた文房具は？", a: "名入れの木軸万年筆" }
+    ],
+    q2Templates: [
+      { q: "先生が職員室のデスクに飾っていた愛用の湯呑みの柄は？", a: "鳥獣戯画" },
+      { q: "修学旅行の夜の見回りの時に先生が着ていたジャージの色は？", a: "エンジ色のミズノ" },
+      { q: "文化祭の合唱コンクールで先生が指揮棒を振ってくれた自由曲の題名は？", a: "大地讃頌" },
+      { q: "先生が愛車のトランクにいつも積んでいた部活動の練習道具は？", a: "木製ノックバット" }
+    ]
+  }
+];
+
+function generateRealisticUsername(searcherRomaji: string, era: string, index: number): string {
+  const randType = index % 5;
+  const birthYear = (era === "1970") ? 55 + (index % 10) : (era === "1980") ? 65 + (index % 15) : (era === "1990") ? 80 + (index % 15) : 95 + (index % 10);
+  const birthDate = `${String((index % 12) + 1).padStart(2, '0')}${String((index % 28) + 1).padStart(2, '0')}`;
+  const prefix = USERNAME_PREFIXES[Math.floor(Math.random() * USERNAME_PREFIXES.length)];
+
+  switch (randType) {
+    case 0:
+      return `${prefix}_${Math.floor(Math.random() * 900) + 10}`;
+    case 1:
+      return `${searcherRomaji}_19${birthYear}`;
+    case 2:
+      return `${searcherRomaji}_${birthDate}`;
+    case 3:
+      return `${prefix}.${searcherRomaji.slice(0, 5)}`;
+    case 4:
+    default:
+      return `${prefix}-${Math.floor(Math.random() * 89) + 10}`;
+  }
+}
+
+/**
+ * 既存の手紙・ユーザーデータを一切削除せず、安全に指定件数の想い出ボトルメールを追加生成する関数
+ * （完全重複ゼロ・動的想い出合成エンジン搭載）
+ */
+export const generateAdditionalSamplePosts = async (count: number = 50) => {
+  console.log(`[Procedural Synthesizer] Generating ${count} 100% unique sample posts (Preserving existing posts)...`);
+
+  const hashedPassword = await bcrypt.hash("password123", 10);
+  const insertUser = db.prepare(`
+    INSERT INTO users (username, email, password, role, is_verified, is_ekyc_verified, ekyc_document_type, ekyc_name, ekyc_verified_at, full_name, last_name, first_name, nickname) 
+    VALUES (?, ?, ?, 'user', 1, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?)
+  `);
+  const insertPost = db.prepare(`
+    INSERT INTO posts (
+      user_id, searcher_name, searcher_full_name, searcher_profile, target_name, 
+      target_last_name, target_first_name, target_hometown, target_school, 
+      era, category, secret_question, secret_answer, secret_answer_plain, 
+      message, image_url, status
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `);
+  const insertQ = db.prepare("INSERT INTO post_questions (post_id, question, answer, answer_plain) VALUES (?, ?, ?, ?)");
+
+  // 既存の質問・答え・本文・ユーザー名・メールアドレスをSetにロードして完全重複排除
+  const existingUsernames = new Set<string>(db.prepare("SELECT username FROM users").all().map((r: any) => r.username));
+  const existingEmails = new Set<string>(db.prepare("SELECT email FROM users").all().map((r: any) => r.email));
+  const existingQ1Set = new Set<string>(db.prepare("SELECT secret_question FROM posts").all().map((r: any) => r.secret_question));
+  const existingA1Set = new Set<string>(db.prepare("SELECT secret_answer_plain FROM posts").all().map((r: any) => r.secret_answer_plain));
+  const existingQ2Set = new Set<string>(db.prepare("SELECT question FROM post_questions").all().map((r: any) => r.question));
+  const existingA2Set = new Set<string>(db.prepare("SELECT answer_plain FROM post_questions").all().map((r: any) => r.answer_plain));
+  const existingMessagesSet = new Set<string>(db.prepare("SELECT message FROM posts").all().map((r: any) => r.message));
+
+  const eras = ["1970", "1980", "1990", "2000", "2010"];
+  let insertedCount = 0;
+  const currentMaxPost = (db.prepare("SELECT MAX(id) as max_id FROM posts").get() as any)?.max_id || 0;
+
+  for (let i = 0; i < count; i++) {
+    const seedIndex = currentMaxPost + i + 1;
+    const era = eras[seedIndex % eras.length];
+    const isSearcherFemale = (seedIndex % 2 === 1);
+    const isTargetFemale = (seedIndex % 3 === 0 || seedIndex % 5 === 0);
+
+    const searcherLastName = LAST_NAMES[(seedIndex * 3) % LAST_NAMES.length];
+    const targetLastName = LAST_NAMES[(seedIndex * 5 + 1) % LAST_NAMES.length];
+
+    const femalePool = (era === "1970" || era === "1980") ? FEMALE_FIRST_NAMES_SHOWA : FEMALE_FIRST_NAMES_HEISEI;
+    const malePool = (era === "1970" || era === "1980") ? MALE_FIRST_NAMES_SHOWA : MALE_FIRST_NAMES_HEISEI;
+
+    const searcherFirstName = isSearcherFemale
+      ? femalePool[(seedIndex * 2) % femalePool.length]
+      : malePool[(seedIndex * 2) % malePool.length];
+
+    const targetFirstName = isTargetFemale
+      ? femalePool[(seedIndex * 4 + 3) % femalePool.length]
+      : malePool[(seedIndex * 4 + 3) % malePool.length];
+
+    // 女性の旧姓（婚姻改姓）のリアル付与
+    const hasTargetMaiden = isTargetFemale && (seedIndex % 5 < 2);
+    const targetMaidenLastName = hasTargetMaiden ? LAST_NAMES[(seedIndex * 7 + 13) % LAST_NAMES.length] : null;
+    const targetFullName = hasTargetMaiden
+      ? `${targetLastName}（旧姓: ${targetMaidenLastName}）${targetFirstName}`
+      : `${targetLastName} ${targetFirstName}`;
+
+    const hasSearcherMaiden = isSearcherFemale && (seedIndex % 7 < 3);
+    const searcherMaidenLastName = hasSearcherMaiden ? LAST_NAMES[(seedIndex * 11 + 5) % LAST_NAMES.length] : null;
+    const searcherFullName = hasSearcherMaiden
+      ? `${searcherLastName}（旧姓: ${searcherMaidenLastName}）${searcherFirstName}`
+      : `${searcherLastName} ${searcherFirstName}`;
+
+    // ニックネーム
+    let nickname = "";
+    const nickType = seedIndex % 4;
+    if (nickType === 0) {
+      nickname = NICKNAMES_CASUAL[seedIndex % NICKNAMES_CASUAL.length];
+    } else if (nickType === 1) {
+      nickname = NICKNAMES_ROLES[seedIndex % NICKNAMES_ROLES.length];
+    } else if (nickType === 2) {
+      nickname = searcherFirstName;
+    } else {
+      nickname = `${searcherLastName.slice(0, 1)}.${searcherFirstName.slice(0, 1)}`;
+    }
+
+    // ユーザー名
+    const romajiName = isSearcherFemale ? `f_${searcherFirstName.toLowerCase().slice(0, 3)}` : `m_${searcherFirstName.toLowerCase().slice(0, 3)}`;
+    let username = generateRealisticUsername(romajiName, era, seedIndex);
+    let userSuffix = 100;
+    while (existingUsernames.has(username)) {
+      username = `${generateRealisticUsername(romajiName, era, seedIndex)}_${userSuffix++}`;
+    }
+    existingUsernames.add(username);
+
+    const cleanUserStr = username.replace(/[^a-zA-Z0-9_.-]/g, "").toLowerCase();
+    let email = `${cleanUserStr}@sample.remeets.jp`;
+    let emailSuffix = 100;
+    while (existingEmails.has(email)) {
+      email = `${cleanUserStr}_${emailSuffix++}@sample.remeets.jp`;
+    }
+    existingEmails.add(email);
+    const hometown = HOMETOWNS[seedIndex % HOMETOWNS.length];
+    const school = SCHOOLS_AND_ORGS[seedIndex % SCHOOLS_AND_ORGS.length];
+    const theme = MEMORY_THEMES[seedIndex % MEMORY_THEMES.length];
+    const imgId = UNSPLASH_IMAGES[seedIndex % UNSPLASH_IMAGES.length];
+
+    let rawContext = theme.contextTemplates[seedIndex % theme.contextTemplates.length]
+      .replace("{era}", `${era}`)
+      .replace("{school}", school)
+      .replace("{hometown}", hometown);
+
+    if (hasSearcherMaiden) {
+      rawContext += ` 当時は旧姓の「${searcherMaidenLastName}」でした。`;
+    }
+
+    let rawMessage = theme.messageTemplates[seedIndex % theme.messageTemplates.length];
+    if (hasTargetMaiden) {
+      rawMessage += ` ご結婚されて苗字が変わられているかもしれませんが、当時の旧姓・${targetMaidenLastName}さん宛てにお手紙を託します。`;
+    }
+
+    // クイズ Q1 & A1
+    let q1Obj = theme.q1Templates[seedIndex % theme.q1Templates.length];
+    let q1 = q1Obj.q;
+    let a1 = q1Obj.a;
+    if (existingQ1Set.has(q1) || existingA1Set.has(a1)) {
+      q1 = `【${school.slice(0, 6)}での出来事】` + q1;
+      a1 = `${a1}（${era}年頃）`;
+    }
+    existingQ1Set.add(q1);
+    existingA1Set.add(a1);
+
+    // クイズ Q2 & A2
+    let q2Obj = theme.q2Templates[seedIndex % theme.q2Templates.length];
+    let q2 = q2Obj.q;
+    let a2 = q2Obj.a;
+    if (existingQ2Set.has(q2) || existingA2Set.has(a2)) {
+      q2 = `【${hometown.slice(0, 5)}の思い出】` + q2;
+      a2 = `${a2}・第${seedIndex}節`;
+    }
+    existingQ2Set.add(q2);
+    existingA2Set.add(a2);
+
+    if (existingMessagesSet.has(rawMessage)) {
+      rawMessage += ` （想い出番号: #${seedIndex}）`;
+    }
+    existingMessagesSet.add(rawMessage);
+
+    const isEkyc = (seedIndex % 3 !== 0) ? 1 : 0;
+    const docType = isEkyc ? (seedIndex % 2 === 0 ? 'drivers_license' : 'my_number_card') : null;
+
+    try {
+      const userResult = insertUser.run(
+        username, email, hashedPassword, isEkyc, docType,
+        isEkyc ? searcherFullName : null, searcherFullName, searcherLastName, searcherFirstName, nickname
+      );
+      const userId = userResult.lastInsertRowid as number;
+
+      const hashedA1 = await bcrypt.hash(a1.trim().toLowerCase(), 10);
+      const hashedA2 = await bcrypt.hash(a2.trim().toLowerCase(), 10);
+
+      const postResult = insertPost.run(
+        userId,
+        nickname,
+        searcherFullName,
+        rawContext,
+        targetFullName,
+        targetLastName,
+        targetFirstName,
+        hometown,
+        school,
+        era,
+        theme.category,
+        q1,
+        hashedA1,
+        a1,
+        rawMessage,
+        `https://images.unsplash.com/photo-${imgId}?q=80&w=800&auto=format&fit=crop`,
+        "active"
+      );
+      const postId = postResult.lastInsertRowid as number;
+
+      try {
+        insertQ.run(postId, q2, hashedA2, a2);
+      } catch (qErr) {}
+
+      insertedCount++;
+    } catch (err) {
+      console.error(`[Procedural Synthesizer] Error inserting post #${seedIndex}:`, err);
+    }
+  }
+
+  const totalCount = (db.prepare("SELECT COUNT(*) as count FROM posts").get() as any)?.count || 0;
+  console.log(`[Procedural Synthesizer] Successfully generated ${insertedCount} 100% unique posts. Total posts in DB: ${totalCount}`);
+
+  return { count: insertedCount, totalPosts: totalCount };
+};
+
+/**
+ * 既存の重複サンプル手紙を一括クリーンアップし、完全重複ゼロの指定件数（デフォルト200通）で再構築する関数
+ */
+export const reseedCleanUniquePosts = async (count: number = 200) => {
+  console.log(`[Reseed Unique Engine] Resetting and generating ${count} 100% unique sample posts with zero duplicates...`);
+
+  // 管理者・テストユーザーを保護しつつ、外部キー依存テーブルを安全な順序でクリーンアップ
+  db.transaction(() => {
+    db.prepare("DELETE FROM post_questions").run();
+    db.prepare("DELETE FROM messages").run();
+    db.prepare("DELETE FROM notifications").run();
+    db.prepare("DELETE FROM reports").run();
+    db.prepare("DELETE FROM failed_attempts").run();
+    db.prepare("DELETE FROM deletion_requests").run();
+    db.prepare("DELETE FROM payment_transactions").run();
+    db.prepare("DELETE FROM success_stories").run();
+    db.prepare("DELETE FROM action_logs").run();
+    db.prepare("DELETE FROM access_logs").run();
+    db.prepare("DELETE FROM search_logs").run();
+    db.prepare("DELETE FROM page_views").run();
+    db.prepare("DELETE FROM age_verification_logs").run();
+    db.prepare("DELETE FROM age_verification_documents").run();
+    db.prepare("DELETE FROM posts").run();
+    db.prepare("DELETE FROM users WHERE role = 'user' AND username NOT IN ('admin', 'test', 'superadmin')").run();
+  })();
+
+  const result = await generateAdditionalSamplePosts(count);
+  return result;
+};
+
+

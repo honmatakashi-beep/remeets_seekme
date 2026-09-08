@@ -8,7 +8,7 @@ import crypto from "crypto";
 import fs from "fs";
 import path from "path";
 import { execSync } from "child_process";
-import { db, setDb, seedData } from "../db";
+import { db, setDb, seedData, generateAdditionalSamplePosts, reseedCleanUniquePosts } from "../db";
 import { JWT_SECRET, ADMIN_ROLES, ROLE_PERMISSIONS } from "../config";
 import { authenticateToken, optionalAuthenticateToken, isAdmin, requirePermission, logAction, sanitizeLogText } from "../middleware/auth";
 import { filterNGWords, detectInappropriateWords, evaluateContentSafety } from "../moderation";
@@ -2441,6 +2441,30 @@ export const adminRouter = express.Router();
     } catch (err) {
       console.error("Failed to reset data:", err);
       res.status(500).json({ error: "Failed to reset data" });
+    }
+  });
+
+  adminRouter.post("/generate-sample-posts", authenticateToken, isAdmin, async (req, res) => {
+    try {
+      const count = Number(req.body?.count) || 50;
+      const result = await generateAdditionalSamplePosts(count);
+      logAction((req as any).user.id, "SAMPLE_POSTS_GENERATED", `Generated ${result.count} 100% unique sample posts`, req.ip);
+      res.json({ success: true, count: result.count, totalPosts: result.totalPosts });
+    } catch (err) {
+      console.error("Failed to generate sample posts:", err);
+      res.status(500).json({ error: "Failed to generate sample posts" });
+    }
+  });
+
+  adminRouter.post("/reseed-unique-posts", authenticateToken, isAdmin, async (req, res) => {
+    try {
+      const count = Number(req.body?.count) || 200;
+      const result = await reseedCleanUniquePosts(count);
+      logAction((req as any).user.id, "RESEED_UNIQUE_POSTS", `Reseeded database with ${result.count} completely unique posts (Zero duplicates)`, req.ip);
+      res.json({ success: true, count: result.count, totalPosts: result.totalPosts });
+    } catch (err) {
+      console.error("Failed to reseed unique posts:", err);
+      res.status(500).json({ error: "Failed to reseed unique posts" });
     }
   });
 
