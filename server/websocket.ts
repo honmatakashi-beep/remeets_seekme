@@ -73,7 +73,7 @@ export const sendNotificationEmail = async (userId: number, type: string, conten
 
 export const createNotification = (userId: number, type: string, message: string, link: string = "") => {
   try {
-    const stmt = db.prepare("INSERT INTO notifications (user_id, type, message, link) VALUES (?, ?, ?, ?)");
+    const stmt = db.prepare("INSERT INTO notifications (user_id, type, content, link) VALUES (?, ?, ?, ?)");
     const info = stmt.run(userId, type, message, link);
     
     broadcastToUser(userId, {

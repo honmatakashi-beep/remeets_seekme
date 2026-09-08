@@ -430,15 +430,15 @@
 }
 
 .btn-primary {
-  @apply bg-brand-primary text-brand-light px-8 py-4 rounded-full font-[400] transition-all hover:bg-brand-dark hover:shadow-2xl active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 tracking-[0.2em] text-sm uppercase;
+  @apply bg-brand-primary text-brand-light px-5 sm:px-7 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-bold transition-all hover:bg-brand-dark hover:shadow-lg active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 tracking-normal text-xs sm:text-sm;
 }
 
 .btn-secondary {
-  @apply bg-white text-brand-primary border border-brand-primary/20 px-8 py-4 rounded-full font-[400] transition-all hover:border-brand-primary hover:shadow-lg active:scale-95 flex items-center justify-center gap-2 tracking-[0.2em] text-sm uppercase;
+  @apply bg-white text-brand-primary border border-brand-primary/20 px-5 sm:px-7 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-bold transition-all hover:border-brand-primary hover:shadow-md active:scale-95 flex items-center justify-center gap-2 tracking-normal text-xs sm:text-sm;
 }
 
 .input-field {
-  @apply w-full px-6 py-4 rounded-xl border border-brand-border focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/20 outline-none transition-all bg-white text-lg text-black font-[300];
+  @apply w-full px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl border border-brand-border focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/20 outline-none transition-all bg-white text-xs sm:text-sm text-black font-sans;
 }
 
 .atmosphere-bg {

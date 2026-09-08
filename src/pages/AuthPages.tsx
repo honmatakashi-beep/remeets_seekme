@@ -465,10 +465,10 @@ export const RegisterPage = () => {
           <button 
             type="submit" 
             disabled={!agreed}
-            className="btn-primary w-full py-5 text-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed"
+            className="btn-primary w-full py-2.5 sm:py-3 text-xs sm:text-sm font-bold disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span>登録する</span>
-            <ArrowRight size={22} />
+            <ArrowRight size={18} />
           </button>
         </form>
         <div className="mt-4 pt-4 border-t border-brand-border text-center">

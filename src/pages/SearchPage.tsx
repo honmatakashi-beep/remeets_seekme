@@ -189,12 +189,13 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
                 value={query}
                 onChange={e => setQuery(e.target.value)}
                 placeholder="あなたのお名前"
-                className="w-full pl-4 sm:pl-5 pr-10 sm:pr-12 py-3 text-xs sm:text-sm border border-brand-border rounded-2xl bg-slate-50/60 focus:bg-white focus:border-brand-primary outline-none focus:ring-2 focus:ring-brand-primary/20 transition-all font-sans placeholder:text-slate-400 text-black shadow-inner"
+                className="w-full pl-3.5 sm:pl-5 pr-9 sm:pr-12 py-2.5 sm:py-3 text-xs sm:text-sm border border-brand-border rounded-xl sm:rounded-2xl bg-slate-50/60 focus:bg-white focus:border-brand-primary outline-none focus:ring-2 focus:ring-brand-primary/20 transition-all font-sans placeholder:text-slate-400 text-black shadow-inner"
               />
-              <Search className="absolute right-4 top-3.5 text-slate-400" size={18} />
+              <Search className="absolute right-3 sm:right-4 top-2.5 sm:top-3.5 text-slate-400" size={16} />
             </div>
-            <button type="submit" className="btn-primary px-5 sm:px-7 py-3 text-xs sm:text-sm whitespace-nowrap animate-none shrink-0 rounded-2xl font-bold cursor-pointer">
-              検索する
+            <button type="submit" className="bg-brand-primary hover:bg-brand-dark active:scale-95 text-brand-light px-3.5 sm:px-5 py-2 sm:py-2.5 text-xs rounded-xl font-bold whitespace-nowrap shrink-0 transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm">
+              <Search size={14} />
+              <span>検索する</span>
             </button>
           </div>
         </form>

@@ -521,8 +521,8 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
   useEffect(() => {
     if (post && id) {
       const seoUrl = getPostUrl(post);
-      if (seoUrl.startsWith('/name/')) {
-        navigate(seoUrl, { replace: true, state: location.state });
+      if (seoUrl.startsWith('/name/') && window.location.pathname !== seoUrl) {
+        window.history.replaceState(location.state, '', seoUrl);
       }
     }
   }, [post, id]);

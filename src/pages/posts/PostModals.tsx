@@ -695,9 +695,9 @@ export const RevealContactModal = ({
                         onRevealed(pendingResultData);
                       }
                     }}
-                    className="w-full py-4 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold text-sm md:text-base rounded-2xl shadow-xl hover:shadow-2xl transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98 font-sans ring-4 ring-emerald-200"
+                    className="w-full py-2.5 sm:py-3 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98 font-sans"
                   >
-                    <Heart size={18} className="fill-current text-rose-300 animate-pulse shrink-0" />
+                    <Heart size={16} className="fill-current text-rose-300 animate-pulse shrink-0" />
                     <span>【{searcherFullName || searcherName}】さんの手紙を開封する →</span>
                   </button>
                   <p className="text-[11px] text-slate-500 font-sans">

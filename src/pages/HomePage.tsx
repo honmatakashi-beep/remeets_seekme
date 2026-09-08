@@ -303,21 +303,21 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                     to="/pricing"
                     className="bg-emerald-50/70 hover:bg-emerald-100/80 border border-emerald-200/60 hover:border-emerald-400/80 rounded-xl p-2 flex flex-col items-center justify-center transition-all duration-200 hover:scale-[1.02] hover:shadow-xs group cursor-pointer"
                   >
-                    <span className="text-[10px] text-emerald-800 font-bold group-hover:text-emerald-900">手紙を書く・投函</span>
+                    <span className="text-[10px] text-emerald-800 font-bold group-hover:text-emerald-900 leading-tight">手紙を書く<span className="hidden sm:inline">・</span><br className="sm:hidden" />投函</span>
                     <span className="text-xs sm:text-sm font-black text-emerald-600 font-serif">完全0円</span>
                   </Link>
                   <Link 
                     to="/pricing"
                     className="bg-emerald-50/70 hover:bg-emerald-100/80 border border-emerald-200/60 hover:border-emerald-400/80 rounded-xl p-2 flex flex-col items-center justify-center transition-all duration-200 hover:scale-[1.02] hover:shadow-xs group cursor-pointer"
                   >
-                    <span className="text-[10px] text-emerald-800 font-bold group-hover:text-emerald-900">手紙を探す・閲覧</span>
+                    <span className="text-[10px] text-emerald-800 font-bold group-hover:text-emerald-900 leading-tight">手紙を探す<span className="hidden sm:inline">・</span><br className="sm:hidden" />閲覧</span>
                     <span className="text-xs sm:text-sm font-black text-emerald-600 font-serif">完全0円</span>
                   </Link>
                   <Link 
                     to="/pricing"
                     className="bg-sky-50/70 hover:bg-sky-100/80 border border-sky-200/60 hover:border-sky-400/80 rounded-xl p-2 flex flex-col items-center justify-center transition-all duration-200 hover:scale-[1.02] hover:shadow-xs group cursor-pointer"
                   >
-                    <span className="text-[10px] text-sky-900 font-bold group-hover:text-sky-950">想い出照合・再会時</span>
+                    <span className="text-[10px] text-sky-900 font-bold group-hover:text-sky-950 leading-tight">想い出照合<span className="hidden sm:inline">・</span><br className="sm:hidden" />再会時</span>
                     <span className="text-xs sm:text-sm font-black text-sky-700 font-serif">開通時のみ</span>
                   </Link>
                 </div>
@@ -367,7 +367,7 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
               <Link 
                 to="/create" 
                 id="btn-send-bottle"
-                className="w-full h-14 bg-brand-dark hover:bg-[#1e4f7a] text-white rounded-2xl text-sm font-bold font-sans tracking-wider text-center flex items-center justify-center gap-3 transition-all duration-300 shadow-md hover:shadow-lg active:scale-[0.99] cursor-pointer group"
+                className="w-full h-11 sm:h-13 bg-brand-dark hover:bg-[#1e4f7a] text-white rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold font-sans tracking-normal text-center flex items-center justify-center gap-2.5 transition-all duration-300 shadow-md hover:shadow-lg active:scale-[0.99] cursor-pointer group"
               >
                 <Send size={18} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" />
                 <span>ボトルメールを流す（無料）</span>

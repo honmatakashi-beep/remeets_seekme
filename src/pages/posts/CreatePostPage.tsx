@@ -619,12 +619,12 @@ export const CreatePostPage = () => {
 
                 {/* 具体例・OK/NG例：アコーディオン開閉（ピル型ボタン） */}
                 <details className="group pt-0.5">
-                  <summary className="w-full flex items-center justify-between cursor-pointer py-2 px-3.5 bg-gradient-to-r from-amber-50 to-orange-50/40 hover:from-amber-100 hover:to-orange-100/60 border border-amber-300 rounded-xl shadow-2xs text-xs md:text-sm font-bold text-amber-950 list-none select-none transition-all active:scale-[0.99]">
-                    <span className="flex items-center gap-1.5">
+                  <summary className="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-2 cursor-pointer py-2.5 px-3.5 bg-gradient-to-r from-amber-50 to-orange-50/40 hover:from-amber-100 hover:to-orange-100/60 border border-amber-300 rounded-xl shadow-2xs text-xs md:text-sm font-bold text-amber-950 list-none select-none transition-all active:scale-[0.99]">
+                    <span className="flex items-center gap-1.5 text-left leading-relaxed">
                       <Sparkles size={15} className="text-amber-700 shrink-0" />
                       <span>💡 どんな内容がOK？ 具体的な「OK・NG例」を見る</span>
                     </span>
-                    <span className="flex items-center gap-1 text-xs font-bold text-amber-800 bg-white/90 px-2.5 py-0.5 rounded-md border border-amber-200 shadow-2xs shrink-0">
+                    <span className="flex items-center justify-center self-end sm:self-auto gap-1 text-[11px] sm:text-xs font-bold text-amber-800 bg-white/90 px-2.5 py-1 rounded-md border border-amber-200 shadow-2xs shrink-0">
                       <span className="group-open:hidden">＋ タップで開く ▼</span>
                       <span className="hidden group-open:inline">− 閉じる ▲</span>
                     </span>
@@ -712,12 +712,12 @@ export const CreatePostPage = () => {
 
             {/* 具体例・OK/NG例：アコーディオン開閉（ピル型ボタン） */}
             <details className="group pt-0.5">
-              <summary className="w-full flex items-center justify-between cursor-pointer py-2 px-3.5 bg-gradient-to-r from-amber-50 to-orange-50/40 hover:from-amber-100 hover:to-orange-100/60 border border-amber-300 rounded-xl shadow-2xs text-xs md:text-sm font-bold text-amber-950 list-none select-none transition-all active:scale-[0.99]">
-                <span className="flex items-center gap-1.5">
+              <summary className="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-2 cursor-pointer py-2.5 px-3.5 bg-gradient-to-r from-amber-50 to-orange-50/40 hover:from-amber-100 hover:to-orange-100/60 border border-amber-300 rounded-xl shadow-2xs text-xs md:text-sm font-bold text-amber-950 list-none select-none transition-all active:scale-[0.99]">
+                <span className="flex items-center gap-1.5 text-left leading-relaxed">
                   <Sparkles size={15} className="text-amber-700 shrink-0" />
                   <span>💡 どんな質問・答えが良い？ 具体的な「OK・NG例」を見る</span>
                 </span>
-                <span className="flex items-center gap-1 text-xs font-bold text-amber-800 bg-white/90 px-2.5 py-0.5 rounded-md border border-amber-200 shadow-2xs shrink-0">
+                <span className="flex items-center justify-center self-end sm:self-auto gap-1 text-[11px] sm:text-xs font-bold text-amber-800 bg-white/90 px-2.5 py-1 rounded-md border border-amber-200 shadow-2xs shrink-0">
                   <span className="group-open:hidden">＋ タップで開く ▼</span>
                   <span className="hidden group-open:inline">− 閉じる ▲</span>
                 </span>
@@ -892,12 +892,12 @@ export const CreatePostPage = () => {
 
             {/* 具体例・OK/NG例：アコーディオン開閉（ピル型ボタン） */}
             <details className="group pt-0.5">
-              <summary className="w-full flex items-center justify-between cursor-pointer py-2 px-3.5 bg-gradient-to-r from-amber-50 to-orange-50/40 hover:from-amber-100 hover:to-orange-100/60 border border-amber-300 rounded-xl shadow-2xs text-xs md:text-sm font-bold text-amber-950 list-none select-none transition-all active:scale-[0.99]">
-                <span className="flex items-center gap-1.5">
+              <summary className="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-2 cursor-pointer py-2.5 px-3.5 bg-gradient-to-r from-amber-50 to-orange-50/40 hover:from-amber-100 hover:to-orange-100/60 border border-amber-300 rounded-xl shadow-2xs text-xs md:text-sm font-bold text-amber-950 list-none select-none transition-all active:scale-[0.99]">
+                <span className="flex items-center gap-1.5 text-left leading-relaxed">
                   <Sparkles size={15} className="text-amber-700 shrink-0" />
                   <span>💡 メッセージ作成のコツや「OK・NG例」を見る</span>
                 </span>
-                <span className="flex items-center gap-1 text-xs font-bold text-amber-800 bg-white/90 px-2.5 py-0.5 rounded-md border border-amber-200 shadow-2xs shrink-0">
+                <span className="flex items-center justify-center self-end sm:self-auto gap-1 text-[11px] sm:text-xs font-bold text-amber-800 bg-white/90 px-2.5 py-1 rounded-md border border-amber-200 shadow-2xs shrink-0">
                   <span className="group-open:hidden">＋ タップで開く ▼</span>
                   <span className="hidden group-open:inline">− 閉じる ▲</span>
                 </span>
@@ -1611,7 +1611,7 @@ export const CreatePostPage = () => {
               <button 
                 type="button"
                 onClick={handleNextStep}
-                className="btn-primary px-10 font-sans flex items-center gap-2"
+                className="btn-primary px-5 sm:px-8 py-2.5 sm:py-3 text-xs sm:text-sm font-sans flex items-center gap-2"
               >
                 <span>{step === 2 ? '確認画面へ進む' : '次へ進む'}</span>
                 <ArrowRight size={16} />
@@ -1621,7 +1621,7 @@ export const CreatePostPage = () => {
                 <button 
                   type="submit"
                   disabled={isSubmitting || !agreed || captchaAnswer !== captchaQuestion.a}
-                  className={`btn-primary px-12 font-sans flex items-center gap-2 shadow-lg transition-all ${
+                  className={`btn-primary px-5 sm:px-8 py-2.5 sm:py-3 text-xs sm:text-sm font-sans flex items-center gap-2 shadow-lg transition-all ${
                     !agreed || captchaAnswer !== captchaQuestion.a
                       ? 'bg-slate-300 border-slate-300 text-slate-500 cursor-not-allowed opacity-60'
                       : 'bg-brand-accent border-brand-accent hover:bg-brand-dark hover:border-brand-dark cursor-pointer hover:shadow-xl'
