@@ -13,8 +13,56 @@ import { JWT_SECRET, ADMIN_ROLES, ROLE_PERMISSIONS } from "../config";
 import { authenticateToken, optionalAuthenticateToken, isAdmin, requirePermission, logAction, sanitizeLogText } from "../middleware/auth";
 import { filterNGWords, detectInappropriateWords, evaluateContentSafety } from "../moderation";
 import { broadcastToUser, sendNotificationEmail } from "../websocket";
+import { sendPasswordResetEmail } from "../mail";
 
 export const adminRouter = express.Router();
+
+// 🌟 既存DBユーザーIDの完全UID化マイグレーション即時実行
+export function executeUidMigration() {
+  try {
+    const users = db.prepare("SELECT id, username, email, full_name, nickname FROM users WHERE username != 'admin'").all() as any[];
+    const updateStmt = db.prepare("UPDATE users SET username = ? WHERE id = ?");
+    const updatePostsStmt = db.prepare("UPDATE posts SET searcher_username = ? WHERE user_id = ?");
+
+    const usedUids = new Set<string>();
+    users.forEach(u => {
+      if (u.username && /^UID-\d{6}$/.test(u.username)) {
+        usedUids.add(u.username);
+      }
+    });
+
+    let updatedCount = 0;
+    for (const u of users) {
+      if (!u.username || !/^UID-\d{6}$/.test(u.username)) {
+        let newUid = '';
+        while (true) {
+          const num = Math.floor(100000 + Math.random() * 900000);
+          newUid = `UID-${num}`;
+          if (!usedUids.has(newUid)) {
+            usedUids.add(newUid);
+            break;
+          }
+        }
+        updateStmt.run(newUid, u.id);
+        try {
+          updatePostsStmt.run(newUid, u.id);
+        } catch (e) {}
+        console.log(`[Instant UID Migration] User #${u.id} (${u.email || u.nickname}): "${u.username}" -> "${newUid}"`);
+        updatedCount++;
+      }
+    }
+    if (updatedCount > 0) {
+      console.log(`[Instant UID Migration] Successfully migrated ${updatedCount} users to UID-xxxxxx format!`);
+    }
+  } catch (err) {
+    console.error("[Instant UID Migration] Error migrating users:", err);
+  }
+}
+
+// モジュール読み込み時に即時実行
+try {
+  executeUidMigration();
+} catch (e) {}
 
   adminRouter.get("/reports", authenticateToken, isAdmin, (req, res) => {
     try {
@@ -296,8 +344,11 @@ export const adminRouter = express.Router();
 
   adminRouter.get("/users", authenticateToken, isAdmin, (req, res) => {
     try {
+      // 既存の全ユーザーを確実に UID-xxxxxx（会員番号）へ完全マイグレーション
+      executeUidMigration();
+
       const users = db.prepare(`
-        SELECT u.id, u.username, u.email, u.full_name, u.last_name, u.first_name, u.nickname, u.maiden_name, u.birthdate, u.role, u.is_blocked, u.is_ekyc_verified, u.ekyc_document_type, u.ekyc_verified_at, u.ekyc_name, u.contact_type, u.contact_id, u.created_at,
+        SELECT u.id, u.username, u.email, u.auth_provider, u.full_name, u.last_name, u.first_name, u.nickname, u.maiden_name, u.birthdate, u.role, u.is_blocked, u.is_ekyc_verified, u.ekyc_document_type, u.ekyc_verified_at, u.ekyc_name, u.contact_type, u.contact_id, u.created_at,
                (SELECT COUNT(*) FROM posts p WHERE p.user_id = u.id) as posts_count,
                (SELECT COUNT(*) FROM posts p WHERE p.user_id = u.id AND p.status = 'resolved') as resolved_posts_count,
                (SELECT COUNT(*) FROM reports r WHERE (r.target_type = 'user' AND r.target_id = u.id) OR (r.target_type = 'post' AND r.target_id IN (SELECT p2.id FROM posts p2 WHERE p2.user_id = u.id))) as reports_received_count
@@ -311,10 +362,97 @@ export const adminRouter = express.Router();
     }
   });
 
+  adminRouter.get("/users/:id", authenticateToken, isAdmin, (req, res) => {
+    try {
+      const user = db.prepare(`
+        SELECT u.id, u.username, u.email, u.auth_provider, u.full_name, u.last_name, u.first_name, u.nickname, u.maiden_name, u.birthdate, u.role, u.is_blocked, u.is_ekyc_verified, u.ekyc_document_type, u.ekyc_verified_at, u.ekyc_name, u.contact_type, u.contact_id, u.created_at,
+               (SELECT COUNT(*) FROM posts p WHERE p.user_id = u.id) as posts_count,
+               (SELECT COUNT(*) FROM posts p WHERE p.user_id = u.id AND p.status = 'resolved') as resolved_posts_count,
+               (SELECT COUNT(*) FROM reports r WHERE (r.target_type = 'user' AND r.target_id = u.id) OR (r.target_type = 'post' AND r.target_id IN (SELECT p2.id FROM posts p2 WHERE p2.user_id = u.id))) as reports_received_count
+        FROM users u
+        WHERE u.id = ?
+      `).get(req.params.id) as any;
+
+      if (!user) {
+        return res.status(404).json({ error: "ユーザーが見つかりません" });
+      }
+      res.json(user);
+    } catch (err) {
+      console.error("Failed to fetch user details:", err);
+      res.status(500).json({ error: "Failed to fetch user details" });
+    }
+  });
+
+  // 🔑 管理者によるパスワード再設定メール代理発行
+  adminRouter.post("/users/:id/send-reset-password", authenticateToken, isAdmin, async (req: any, res) => {
+    try {
+      const targetUser = db.prepare("SELECT * FROM users WHERE id = ?").get(req.params.id) as any;
+      if (!targetUser) {
+        return res.status(404).json({ error: "対象のユーザーが見つかりません。" });
+      }
+      if (!targetUser.email) {
+        return res.status(400).json({ error: "このユーザーにはメールアドレスが登録されていません。" });
+      }
+      if (targetUser.auth_provider === 'line' || targetUser.auth_provider === 'google') {
+        return res.status(400).json({ 
+          error: `このユーザーは【${targetUser.auth_provider === 'line' ? 'LINE連携' : 'Google連携'}】でログインしているため、パスワードは設定されていません。` 
+        });
+      }
+
+      const resetToken = crypto.randomBytes(32).toString("hex");
+      const expires = new Date(Date.now() + 30 * 60 * 1000).toISOString(); // 30分間有効
+      db.prepare("UPDATE users SET reset_token = ?, reset_token_expires = ? WHERE id = ?").run(resetToken, expires, targetUser.id);
+
+      await sendPasswordResetEmail(targetUser.email, resetToken);
+
+      logAction(req.user.id, "ADMIN_DISPATCH_PASSWORD_RESET", {
+        target_user_id: targetUser.id,
+        target_email: targetUser.email,
+        target_username: targetUser.username,
+        ip: req.ip
+      });
+
+      res.json({ 
+        success: true, 
+        message: `ユーザー（${targetUser.email}）宛にパスワード再設定メールを安全に送信しました。` 
+      });
+    } catch (err) {
+      console.error("Failed to send admin password reset:", err);
+      res.status(500).json({ error: "パスワード再設定メールの送信に失敗しました。" });
+    }
+  });
+
   adminRouter.get("/users/:id/posts", authenticateToken, isAdmin, (req, res) => {
     try {
-      const posts = db.prepare("SELECT * FROM posts WHERE user_id = ? ORDER BY created_at DESC").all(req.params.id);
-      res.json(posts);
+      const posts = db.prepare(`
+        SELECT p.*, 
+               u.username as searcher_username, 
+               u.nickname as searcher_account_nickname, 
+               u.full_name as searcher_full_name,
+               u.maiden_name as searcher_maiden_name
+        FROM posts p 
+        LEFT JOIN users u ON p.user_id = u.id 
+        WHERE p.user_id = ? 
+        ORDER BY p.created_at DESC
+      `).all(req.params.id) as any[];
+
+      const allExtraQuestions = db.prepare("SELECT post_id, question, answer, answer_plain FROM post_questions WHERE post_id IN (SELECT id FROM posts WHERE user_id = ?)").all(req.params.id) as any[];
+      const qMap = new Map<number, any[]>();
+      allExtraQuestions.forEach(q => {
+        if (!qMap.has(q.post_id)) qMap.set(q.post_id, []);
+        qMap.get(q.post_id)!.push({ question: q.question, answer: q.answer, answer_plain: q.answer_plain });
+      });
+
+      const enrichedPosts = posts.map(post => {
+        const extra = qMap.get(post.id) || [];
+        const questions = [
+          ...(post.secret_question ? [{ question: post.secret_question, answer: post.secret_answer, answer_plain: post.secret_answer_plain }] : []),
+          ...extra
+        ];
+        return { ...post, questions };
+      });
+
+      res.json(enrichedPosts);
     } catch (err) {
       res.status(500).json({ error: "Failed to fetch user posts" });
     }
@@ -348,6 +486,25 @@ export const adminRouter = express.Router();
         posts = db.prepare("SELECT * FROM posts WHERE user_id = ? ORDER BY created_at DESC").all(userId);
       } catch (e) {}
 
+      let matches: any[] = [];
+      try {
+        matches = db.prepare(`
+          SELECT p.*, 
+                 u1.username as author_username, u1.full_name as author_full_name,
+                 u2.username as recipient_username, u2.full_name as recipient_full_name
+          FROM posts p
+          LEFT JOIN users u1 ON p.user_id = u1.id
+          LEFT JOIN users u2 ON p.verified_by_user_id = u2.id
+          WHERE (p.user_id = ? OR p.verified_by_user_id = ?) AND p.status = 'resolved'
+          ORDER BY p.updated_at DESC
+        `).all(userId, userId);
+      } catch (e) {}
+
+      let payments: any[] = [];
+      try {
+        payments = db.prepare("SELECT * FROM payment_transactions WHERE user_id = ? ORDER BY created_at DESC").all(userId);
+      } catch (e) {}
+
       let reportsAsTarget: any[] = [];
       try {
         reportsAsTarget = db.prepare("SELECT * FROM reports WHERE (target_type = 'user' AND target_id = ?) OR (target_type = 'post' AND target_id IN (SELECT id FROM posts WHERE user_id = ?)) ORDER BY created_at DESC").all(userId, userId);
@@ -367,12 +524,14 @@ export const adminRouter = express.Router();
         success: true,
         report_generated_at: new Date().toISOString(),
         legal_basis: "刑事訴訟法第197条第2項（公務所等に対する照会）に基づく捜査関係事項照会回答提出用証明データ",
-        system_name: "ReMEETs 治安防衛・情報開示自動生成システム",
+        system_name: "ReMEETs 治安防衛・情報開示自動生成システム (セキュア・ブリッジ完結モデル)",
         user,
         ageLogs,
         actionLogs,
         accessLogs,
         posts,
+        matches,
+        payments,
         reportsAsTarget,
         reportsAsReporter
       });
@@ -503,7 +662,11 @@ export const adminRouter = express.Router();
   adminRouter.get("/posts", authenticateToken, isAdmin, (req, res) => {
     try {
       const posts = db.prepare(`
-        SELECT p.*, u.username as searcher_username, u.nickname as searcher_nickname, u.full_name as searcher_full_name 
+        SELECT p.*, 
+               u.username as searcher_username, 
+               u.nickname as searcher_account_nickname, 
+               u.full_name as searcher_full_name,
+               u.maiden_name as searcher_maiden_name
         FROM posts p 
         LEFT JOIN users u ON p.user_id = u.id 
         ORDER BY p.created_at DESC
@@ -519,7 +682,7 @@ export const adminRouter = express.Router();
       const enrichedPosts = posts.map(post => {
         const extra = qMap.get(post.id) || [];
         const questions = [
-          { question: post.secret_question, answer: post.secret_answer, answer_plain: post.secret_answer_plain },
+          ...(post.secret_question ? [{ question: post.secret_question, answer: post.secret_answer, answer_plain: post.secret_answer_plain }] : []),
           ...extra
         ];
         return { ...post, questions };
@@ -534,19 +697,22 @@ export const adminRouter = express.Router();
   adminRouter.get("/posts/:id", authenticateToken, isAdmin, (req, res) => {
     try {
       const post = db.prepare(`
-        SELECT p.*, u.username as searcher_username 
+        SELECT p.*, 
+               u.username as searcher_username, 
+               u.nickname as searcher_account_nickname, 
+               u.full_name as searcher_full_name,
+               u.maiden_name as searcher_maiden_name
         FROM posts p 
-        JOIN users u ON p.user_id = u.id 
+        LEFT JOIN users u ON p.user_id = u.id 
         WHERE p.id = ?
       `).get(req.params.id) as any;
       if (!post) return res.status(404).json({ error: "Post not found" });
       
-      const questions = db.prepare("SELECT question, answer, answer_plain FROM post_questions WHERE post_id = ?").all(req.params.id);
+      const extraQuestions = db.prepare("SELECT question, answer, answer_plain FROM post_questions WHERE post_id = ?").all(req.params.id) as any[];
       
-      // Combine main question with additional ones
       const allQuestions = [
-        { question: post.secret_question, answer: post.secret_answer, answer_plain: post.secret_answer_plain },
-        ...questions.map((q: any) => ({ question: q.question, answer: q.answer, answer_plain: q.answer_plain }))
+        ...(post.secret_question ? [{ question: post.secret_question, answer: post.secret_answer, answer_plain: post.secret_answer_plain }] : []),
+        ...extraQuestions
       ];
       
       res.json({ ...post, questions: allQuestions });

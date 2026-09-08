@@ -580,10 +580,34 @@ export const CreatePostPage = () => {
             </div>
 
             <div className="space-y-4">
+              {/* 差出人ニックネーム（手紙ごとの呼び名） */}
+              <div className="space-y-1.5 bg-amber-50/50 p-4 rounded-xl border border-amber-200/80">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs sm:text-sm font-bold text-black flex items-center gap-1.5">
+                    <Sparkles size={15} className="text-amber-700" />
+                    この手紙でのあなたのニックネーム（当時のあだ名・呼び名）
+                    <span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
+                  </label>
+                  <span className="text-[11px] text-amber-900/70 font-medium">※ 手紙ごとに自由に変更可能</span>
+                </div>
+                <input 
+                  required
+                  type="text" 
+                  placeholder="例：たっちゃん、主将、さくら など" 
+                  className="w-full px-4 py-2.5 border-b-2 border-brand-primary/50 rounded-xl bg-white text-sm outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/10 transition-all text-[#000000] placeholder:text-zinc-400 font-sans letter-field-input"
+                  value={formData.searcherName}
+                  onChange={e => handleSearcherNameChange(e.target.value)}
+                />
+                <p className="text-[11px] text-zinc-500">
+                  お相手があなただとピンとくる、当時のあだ名や呼び名を設定してください（初期値: アカウント登録時ニックネーム）。
+                </p>
+                <WarningMessage message={warnings.searcherName} />
+              </div>
+
               {/* タイトル & 警告 */}
               <div className="space-y-2">
                 <label className="text-xs sm:text-sm font-bold text-black flex items-center gap-1.5">
-                  <Sparkles size={15} className="text-amber-700" />
+                  <BookOpen size={15} className="text-amber-700" />
                   お相手にあなただと気づいてもらうための「共通の想い出ヒント」
                   <span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
                 </label>

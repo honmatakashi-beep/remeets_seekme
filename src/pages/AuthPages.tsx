@@ -52,8 +52,42 @@ export const LoginPage = () => {
     }
   };
 
+  const handleSnsLogin = async (provider: 'line' | 'google') => {
+    setLoading(true);
+    setError('');
+    
+    // SNSログインのシミュレーション（実稼働時はOAuthリダイレクト）
+    const demoUser = provider === 'line' ? 'line_user@example.com' : 'google_user@gmail.com';
+    const demoPass = provider === 'line' ? 'LineAuth2026!Sec' : 'GoogleAuth2026!Sec';
+
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: demoUser, password: demoPass })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        login(data.token, data.user);
+        navigate(from, { replace: true });
+      } else {
+        // 未登録の場合は新規登録画面へ案内
+        navigate('/register');
+      }
+    } catch (err) {
+      setError(`${provider.toUpperCase()}認証の通信に失敗しました。`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleQuickFill = (u: string, p: string) => {
+    setUsername(u);
+    setPassword(p);
+  };
+
   return (
-    <div className="max-w-xl mx-auto px-6 py-8 md:py-16 animate-fade-in">
+    <div className="max-w-md mx-auto px-4 sm:px-6 py-6 sm:py-12 animate-fade-in font-sans">
       <BackToHomeButton className="mb-4" />
       <PageHeader
         icon={<LogIn size={24} />}
@@ -62,36 +96,76 @@ export const LoginPage = () => {
         description="海に流されたあの人との言葉を、引き上げる。"
       />
 
-      <div className="glass-card p-8 bg-white/40 border border-brand-border rounded-3xl">
-        <form onSubmit={handleSubmit} className="space-y-5">
+      <div className="glass-card p-6 sm:p-8 bg-white/90 backdrop-blur-xl border border-amber-200/70 rounded-3xl shadow-xl space-y-6">
+        {/* SNSログインボタン群 */}
+        <div className="space-y-3">
+          <button
+            type="button"
+            onClick={() => handleSnsLogin('line')}
+            disabled={loading}
+            className="w-full py-3.5 px-4 bg-white hover:bg-stone-50 text-stone-800 border border-stone-300 rounded-2xl font-bold text-xs sm:text-sm flex items-center justify-center gap-3 shadow-xs hover:shadow-md transition-all cursor-pointer active:scale-[0.99] disabled:opacity-50"
+          >
+            <svg className="w-5 h-5 fill-[#06C755]" viewBox="0 0 24 24">
+              <path d="M24 10.304c0-5.369-5.383-9.738-12-9.738-6.616 0-12 4.369-12 9.738 0 4.814 4.269 8.846 10.019 9.587.39.084.922.256 1.058.588.12.302.079.774.038 1.08l-.164 1.026c-.05.31-.242 1.213 1.063.662 1.306-.55 7.042-4.148 9.608-7.1 1.637-1.821 2.378-3.669 2.378-5.847z"/>
+            </svg>
+            <span>LINEでログイン</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleSnsLogin('google')}
+            disabled={loading}
+            className="w-full py-3.5 px-4 bg-white hover:bg-stone-50 text-stone-800 border border-stone-300 rounded-2xl font-bold text-xs sm:text-sm flex items-center justify-center gap-3 shadow-xs hover:shadow-md transition-all cursor-pointer active:scale-[0.99] disabled:opacity-50"
+          >
+            <svg className="w-5 h-5" viewBox="0 0 24 24">
+              <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z"/>
+              <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.8z"/>
+              <path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.3s.2-1.6.4-2.3L1.9 7.3C.7 9.7 0 12.3 0 15s.7 5.3 1.9 7.7l3.7-2.9z"/>
+              <path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2-6.4-4.8L1.9 16.4C3.7 20.1 7.5 23 12 23z"/>
+            </svg>
+            <span>Googleでログイン</span>
+          </button>
+        </div>
+
+        {/* 区切り線 */}
+        <div className="relative flex py-1 items-center">
+          <div className="flex-grow border-t border-stone-300"></div>
+          <span className="flex-shrink mx-4 text-stone-700 text-xs font-semibold font-serif">またはメールアドレスでログイン</span>
+          <div className="flex-grow border-t border-stone-300"></div>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="p-3 bg-red-50 border border-red-200 text-red-900 text-xs rounded-xl flex items-center gap-2">
+            <div className="p-3 bg-red-50 border border-red-200 text-red-900 text-xs rounded-xl flex items-center gap-2 animate-shake">
               <AlertCircle className="text-red-500 shrink-0" size={14} />
               <span>{error}</span>
             </div>
           )}
 
-          <div className="space-y-2">
-            <label className="text-[10px] font-bold text-brand-dark/80 tracking-widest uppercase block font-sans">
-              ユーザー名 または メールアドレス
+          <div className="space-y-1.5">
+            <label className="text-[11px] font-bold text-stone-800 tracking-wider uppercase block font-sans">
+              メールアドレス または ユーザーID
             </label>
-            <input 
-              type="text"
-              required
-              value={username}
-              onChange={e => setUsername(e.target.value)}
-              placeholder="例：taro_yamada"
-              className="w-full px-4 py-3 border border-brand-border rounded-xl bg-white text-xs outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary text-black"
-            />
+            <div className="relative">
+              <input 
+                type="text"
+                required
+                value={username}
+                onChange={e => setUsername(e.target.value)}
+                placeholder="example@email.com または UID-123456"
+                className="w-full pl-10 pr-4 py-3 border border-stone-300 rounded-xl bg-white text-xs outline-none focus:border-brand-primary focus:ring-2 focus:ring-amber-500/20 text-stone-900 transition-all placeholder:text-stone-400 shadow-inner"
+              />
+              <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-500 pointer-events-none" />
+            </div>
           </div>
 
-          <div className="space-y-2 relative">
+          <div className="space-y-1.5 relative">
             <div className="flex justify-between items-center">
-              <label className="text-[10px] font-bold text-brand-dark/80 tracking-widest uppercase block font-sans">
+              <label className="text-[11px] font-bold text-stone-800 tracking-wider uppercase block font-sans">
                 パスワード
               </label>
-              <Link to="/forgot-password" className="text-[10px] text-brand-primary hover:underline font-bold font-sans">
-                忘れた場合
+              <Link to="/forgot-password" className="text-[11px] text-brand-primary hover:underline font-bold font-sans">
+                パスワードを忘れた場合
               </Link>
             </div>
             <div className="relative">
@@ -101,12 +175,13 @@ export const LoginPage = () => {
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full px-4 py-3 border border-brand-border rounded-xl bg-white text-xs outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary text-black pr-10"
+                className="w-full pl-10 pr-10 py-3 border border-stone-300 rounded-xl bg-white text-xs outline-none focus:border-brand-primary focus:ring-2 focus:ring-amber-500/20 text-stone-900 transition-all placeholder:text-stone-400 shadow-inner"
               />
+              <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-500 pointer-events-none" />
               <button 
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-3 text-brand-dark/30 hover:text-brand-dark/60 cursor-pointer"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500 hover:text-stone-800 cursor-pointer p-1"
               >
                 {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
@@ -116,7 +191,7 @@ export const LoginPage = () => {
           <button 
             type="submit" 
             disabled={loading} 
-            className="w-full py-3 bg-brand-dark text-white rounded-xl text-xs font-bold hover:bg-brand-dark/95 transition-all cursor-pointer font-sans flex items-center justify-center gap-2"
+            className="w-full py-3.5 bg-brand-dark hover:bg-brand-primary text-white rounded-xl text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition-all cursor-pointer font-sans flex items-center justify-center gap-2 mt-2"
           >
             {loading ? (
               <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -126,13 +201,39 @@ export const LoginPage = () => {
           </button>
         </form>
 
-        <div className="mt-6 pt-6 border-t border-brand-border/60 text-center space-y-2">
-          <p className="text-xs text-brand-dark/60 font-serif">
+        {/* 新規登録導線 */}
+        <div className="pt-4 border-t border-stone-200/80 text-center space-y-2">
+          <p className="text-xs sm:text-sm text-stone-700 font-medium font-serif">
             アカウントをお持ちではありませんか？
           </p>
-          <Link to="/register" className="inline-block text-xs text-brand-primary font-bold hover:underline font-sans">
-            新しく会員登録する
+          <Link to="/register" className="inline-block text-xs sm:text-sm text-brand-primary font-bold hover:underline font-sans">
+            新しく会員登録する（無料） →
           </Link>
+        </div>
+
+        {/* 開発・審査用クイック入力 */}
+        <div className="pt-2">
+          <div className="p-2.5 bg-stone-50 rounded-xl border border-stone-200/60 text-center space-y-1">
+            <span className="text-[10px] text-stone-400 block font-mono">
+              【動作確認用クイック入力】
+            </span>
+            <div className="flex items-center justify-center gap-2 flex-wrap">
+              <button
+                type="button"
+                onClick={() => handleQuickFill('admin', 'admin123')}
+                className="px-2 py-0.5 bg-white hover:bg-amber-50 border border-stone-200 text-stone-600 text-[10px] rounded font-medium cursor-pointer shadow-2xs"
+              >
+                👑 管理者
+              </button>
+              <button
+                type="button"
+                onClick={() => handleQuickFill('test@example.com', 'password123')}
+                className="px-2 py-0.5 bg-white hover:bg-amber-50 border border-stone-200 text-stone-600 text-[10px] rounded font-medium cursor-pointer shadow-2xs"
+              >
+                👤 テストユーザー
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -188,9 +289,15 @@ export const TermsModal = ({ isOpen, onClose, onConfirm, mode = 'terms' }: { isO
 
 export const RegisterPage = () => {
   const { check: checkNg } = useNgFilter();
-  const [username, setUsername] = useState('');
+  const [step, setStep] = useState<1 | 2>(1);
+  const [authMethod, setAuthMethod] = useState<'line' | 'google' | 'email'>('email');
+  
+  // Step 1 State
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  
+  // Step 2 State
   const [lastName, setLastName] = useState('');
   const [firstName, setFirstName] = useState('');
   const [nickname, setNickname] = useState('');
@@ -200,13 +307,20 @@ export const RegisterPage = () => {
   const [hasReadPrivacy, setHasReadPrivacy] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
   const [showPrivacy, setShowPrivacy] = useState(false);
+  
+  // Feedback & Loading State
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [warning, setWarning] = useState<string | null>(null);
-  const { login } = useAuth();
   const navigate = useNavigate();
 
-  const [showPassword, setShowPassword] = useState(false);
+  // 全角英数を半角英数に変換するヘルパー
+  const toHalfWidth = (str: string) => {
+    return str
+      .replace(/[！-～]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
+      .replace(/　/g, ' ');
+  };
 
   const passwordStrength = (pw: string) => {
     if (pw.length === 0) return 0;
@@ -221,263 +335,498 @@ export const RegisterPage = () => {
   const strength = passwordStrength(password);
   const isAlphanumeric = /[a-zA-Z]/.test(password) && /[0-9]/.test(password);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (warning) {
-      alert('不適切な入力が含まれています。修正してください。');
-      return;
+  // SNS連携ハンドラー (LINE / Google)
+  const handleSnsSelect = (provider: 'line' | 'google') => {
+    setAuthMethod(provider);
+    setError('');
+    
+    // SNS認証シミュレーション（実稼働時はOAuthリダイレクト）
+    if (provider === 'line') {
+      if (!email) setEmail('line_user@example.com');
+      if (!password) setPassword('LineAuth2026!Sec');
+    } else {
+      if (!email) setEmail('google_user@gmail.com');
+      if (!password) setPassword('GoogleAuth2026!Sec');
     }
-    if (!agreed || !hasReadTerms || !hasReadPrivacy) {
-      setError('利用規約とプライバシーポリシーへの同意が必要です');
+    setStep(2);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleStep1Submit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    if (!email || !email.includes('@')) {
+      setError('有効なメールアドレスを入力してください。');
       return;
     }
     if (password.length < 8 || !isAlphanumeric) {
       setError('パスワードは8文字以上で、英字と数字の両方を含める必要があります。');
       return;
     }
+    setAuthMethod('email');
+    setStep(2);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleFinalSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (warning) {
+      alert('不適切な入力が含まれています。修正してください。');
+      return;
+    }
+    if (!agreed) {
+      setError('利用規約およびプライバシーポリシーへの同意（18歳以上確認）が必要です。');
+      return;
+    }
+    if (captchaAnswer.trim() !== '4') {
+      setError('ボット防止認証の答えが一致しません。「4」を入力してください。');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
 
     try {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email, password, lastName, firstName, nickname, captchaAnswer })
+        body: JSON.stringify({ 
+          email, 
+          password, 
+          lastName, 
+          firstName, 
+          nickname, 
+          captchaAnswer,
+          snsProvider: authMethod !== 'email' ? authMethod : undefined
+        })
       });
       const data = await res.json();
       if (res.ok) {
-        setSuccess(data.message);
-        // Don't login yet, wait for email verification
+        setSuccess(data.message || '登録が完了しました。');
       } else {
-        setError(data.error);
+        setError(data.error || '登録に失敗しました。');
       }
     } catch (err) {
-      setError('登録に失敗しました');
+      setError('サーバーとの通信に失敗しました。時間をおいて再度お試しください。');
+    } finally {
+      setLoading(false);
     }
   };
 
   if (success) {
     return (
-      <div className="max-w-md mx-auto px-6 py-20 text-center">
-        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="glass-card p-10 space-y-6">
-          <Mail className="text-black mx-auto" size={64} />
-          <h1 className="text-2xl font-bold text-black">メールを確認してください</h1>
-          <p className="text-black">{success}</p>
-          <button onClick={() => navigate('/login')} className="btn-primary w-full">ログイン画面へ</button>
+      <div className="max-w-lg mx-auto px-4 sm:px-6 py-12 md:py-20 text-center animate-fade-in font-sans">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }} 
+          animate={{ opacity: 1, scale: 1 }} 
+          className="glass-card p-8 sm:p-10 space-y-6 bg-white/90 backdrop-blur-xl border border-amber-200/80 rounded-3xl shadow-xl text-stone-900"
+        >
+          <div className="w-20 h-20 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto ring-8 ring-emerald-50/50">
+            <CheckCircle2 size={40} />
+          </div>
+          <div className="space-y-2">
+            <span className="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold font-mono">
+              REGISTRATION COMPLETE
+            </span>
+            <h1 className="text-2xl font-bold font-serif text-stone-900">アカウント登録が完了しました</h1>
+            <p className="text-xs sm:text-sm text-stone-600 font-serif leading-relaxed">
+              ご登録いただいたメールアドレス宛てに確認のご案内をお送りいたしました。<br />
+              ログインして、あの頃の想い出を手紙に託しましょう。
+            </p>
+          </div>
+
+          <div className="p-4 bg-amber-50/80 rounded-2xl border border-amber-200/60 text-left text-xs space-y-1 text-stone-700">
+            <p className="font-bold text-brand-primary font-sans flex items-center gap-1.5">
+              <ShieldCheck size={15} />
+              <span>安心・安全のための登録情報</span>
+            </p>
+            <p className="text-stone-600">・メールアドレス: <strong className="font-mono text-stone-900">{email}</strong></p>
+            <p className="text-stone-600">・ニックネーム: <strong className="text-stone-900">{nickname}</strong></p>
+            <p className="text-stone-600">・本名: <strong className="text-stone-900">{lastName} {firstName}</strong>（非公開・クイズ照合用）</p>
+          </div>
+
+          <button 
+            onClick={() => navigate('/login')} 
+            className="w-full py-4 bg-brand-dark hover:bg-brand-primary text-white rounded-2xl text-xs sm:text-sm font-bold font-sans tracking-wider transition-all shadow-md cursor-pointer flex items-center justify-center gap-2"
+          >
+            <span>ログイン画面へ進む</span>
+            <ArrowRight size={16} />
+          </button>
         </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-md mx-auto px-6 py-4 md:py-8">
+    <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-12 animate-fade-in font-sans">
       <BackToHomeButton className="mb-4" />
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="glass-card p-6 md:p-8"
-      >
-        <div className="text-center mb-4">
-          <div className="w-16 h-16 bg-brand-primary/10 rounded-2xl flex items-center justify-center text-black mx-auto mb-4">
-            <PlusCircle size={32} />
+
+      {/* ステップ進行プログレスインジケーター */}
+      <div className="mb-8 max-w-md mx-auto">
+        <div className="flex items-center justify-between relative">
+          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-stone-200 z-0 rounded-full" />
+          <div 
+            className="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-brand-primary z-0 rounded-full transition-all duration-500" 
+            style={{ width: step === 1 ? '50%' : '100%' }}
+          />
+
+          {/* Step 1 Node */}
+          <div className="relative z-10 flex flex-col items-center gap-1.5">
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+              step >= 1 ? 'bg-brand-primary text-white shadow-md' : 'bg-stone-200 text-stone-500'
+            }`}>
+              1
+            </div>
+            <span className={`text-[11px] font-bold ${step === 1 ? 'text-brand-primary' : 'text-stone-600'}`}>
+              登録方法の選択
+            </span>
           </div>
-          <h1 className="text-2xl md:text-3xl font-serif font-[400] text-black mb-2 tracking-widest">新規登録</h1>
-          <p className="text-base text-black font-serif italic font-medium">
-            いつか届くかもしれない手紙を預かる場所。<br />
-            新しいアカウントを作成しましょう。
+
+          {/* Step 2 Node */}
+          <div className="relative z-10 flex flex-col items-center gap-1.5">
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+              step === 2 ? 'bg-brand-primary text-white shadow-md ring-4 ring-amber-100' : 'bg-stone-200 text-stone-500'
+            }`}>
+              2
+            </div>
+            <span className={`text-[11px] font-bold ${step === 2 ? 'text-brand-primary' : 'text-stone-600'}`}>
+              お名前・安心設定
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <motion.div 
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="glass-card p-6 sm:p-10 bg-white/90 backdrop-blur-xl border border-amber-200/70 rounded-3xl shadow-xl"
+      >
+        {/* ヘッダーエリア */}
+        <div className="text-center mb-6 space-y-1.5">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100/80 text-brand-primary text-xs font-bold font-sans mb-1">
+            <Sparkles size={13} />
+            <span>New Account</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900 tracking-wide">
+            {step === 1 ? '新規会員登録' : 'お名前と基本情報の登録'}
+          </h1>
+          <p className="text-xs sm:text-sm text-stone-700 font-medium font-serif leading-relaxed">
+            {step === 1 
+              ? 'ご希望の登録方法を選択してください。' 
+              : '二人の思い出を安全につなぐための大切なお名前を設定します。'}
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <label className="text-sm font-bold text-black uppercase tracking-wider ml-1">ユーザー名（ログイン用）</label>
-            <input 
-              required
-              type="text" 
-              placeholder="ユーザー名" 
-              className="input-field py-4 text-lg"
-              value={username}
-              onChange={e => {
-                const val = e.target.value;
-                const ngLabel = checkNg(val);
-                setWarning(ngLabel ? `不適切な入力が検出されました（${ngLabel}）。` : null);
-                setUsername(val);
-              }}
-            />
-            <WarningMessage message={warning} />
+        {/* エラーメッセージ */}
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-900 text-xs rounded-2xl flex items-center gap-3 animate-shake">
+            <AlertCircle className="text-red-500 shrink-0" size={16} />
+            <span className="font-medium">{error}</span>
           </div>
+        )}
 
-          <div className="space-y-2">
-            <label className="text-lg font-bold text-black uppercase tracking-wider ml-1">メールアドレス</label>
-            <input 
-              required
-              type="email" 
-              placeholder="example@email.com" 
-              className="input-field py-4 text-lg"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-            />
-            <p className="text-xs text-black ml-1 font-medium">※確認メールが送信されます。</p>
-          </div>
-
-          <div className="space-y-3 p-4 bg-slate-50 border border-brand-border rounded-2xl">
-            <h3 className="text-xs font-bold text-brand-primary tracking-wider uppercase">お名前（本名・フルネーム）</h3>
-            <p className="text-[11px] text-[#ea0736] font-bold leading-relaxed">
-              ※安全設計、なりすまし防止のため、本名はお名前（フルネーム）として一度登録すると変更できませんので正しく入力してください。
-              本名は公開されず、あなただと確信して「思い出クイズ」に完全正解したお相手のみに、最終確認として公開されます。
-            </p>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-brand-dark ml-1">姓（苗字）</label>
-                <input 
-                  required
-                  type="text" 
-                  placeholder="例：山田" 
-                  className="input-field py-2.5 text-sm"
-                  value={lastName}
-                  onChange={e => {
-                    const val = e.target.value;
-                    const ngLabel = checkNg(val);
-                    setWarning(ngLabel ? `不適切な入力が検出されました（${ngLabel}）。` : null);
-                    setLastName(val);
-                  }}
-                />
-              </div>
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-brand-dark ml-1">名（名前）</label>
-                <input 
-                  required
-                  type="text" 
-                  placeholder="例：太郎" 
-                  className="input-field py-2.5 text-sm"
-                  value={firstName}
-                  onChange={e => {
-                    const val = e.target.value;
-                    const ngLabel = checkNg(val);
-                    setWarning(ngLabel ? `不適切な入力が検出されました（${ngLabel}）。` : null);
-                    setFirstName(val);
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-2 p-4 bg-amber-50/50 border border-amber-100 rounded-2xl">
-            <label className="text-xs font-bold text-brand-dark block">ニックネーム（表示名） <span className="text-[#ea0736] text-[10px] font-bold">必須</span></label>
-            <p className="text-[11px] text-amber-800 leading-relaxed mb-1">
-              ※ボトルメールを流す際の表示名は、必ずこちらのニックネームが使用されます。実名が不特定多数に公開されることはありません（こちらは後から変更可能です）。
-            </p>
-            <input 
-              required
-              type="text" 
-              placeholder="例：やまたろう" 
-              className="input-field py-2.5 text-sm bg-white"
-              value={nickname}
-              onChange={e => {
-                const val = e.target.value;
-                const ngLabel = checkNg(val);
-                setWarning(ngLabel ? `不適切な入力が検出されました（${ngLabel}）。` : null);
-                setNickname(val);
-              }}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-lg font-bold text-black uppercase tracking-wider ml-1">パスワード</label>
-            <div className="relative">
-              <input 
-                required
-                type={showPassword ? "text" : "password"} 
-                placeholder="8文字以上、英数字混合" 
-                className="input-field py-4 text-lg pr-12"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-              />
+        {/* ========================================================= */}
+        {/* STEP 1: 登録方法の選択 (LINE / Google / メアド) */}
+        {/* ========================================================= */}
+        {step === 1 && (
+          <div className="space-y-6">
+            {/* SNS簡単登録ボタン群 */}
+            <div className="space-y-3">
               <button
                 type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-brand-dark/30 hover:text-brand-primary transition-colors"
+                onClick={() => handleSnsSelect('line')}
+                className="w-full py-3.5 px-4 bg-white hover:bg-stone-50 text-stone-800 border border-stone-300 rounded-2xl font-bold text-xs sm:text-sm flex items-center justify-center gap-3 shadow-xs hover:shadow-md transition-all cursor-pointer active:scale-[0.99]"
               >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                <svg className="w-5 h-5 fill-[#06C755]" viewBox="0 0 24 24">
+                  <path d="M24 10.304c0-5.369-5.383-9.738-12-9.738-6.616 0-12 4.369-12 9.738 0 4.814 4.269 8.846 10.019 9.587.39.084.922.256 1.058.588.12.302.079.774.038 1.08l-.164 1.026c-.05.31-.242 1.213 1.063.662 1.306-.55 7.042-4.148 9.608-7.1 1.637-1.821 2.378-3.669 2.378-5.847z"/>
+                </svg>
+                <span>LINEアカウントで登録（無料）</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleSnsSelect('google')}
+                className="w-full py-3.5 px-4 bg-white hover:bg-stone-50 text-stone-800 border border-stone-300 rounded-2xl font-bold text-xs sm:text-sm flex items-center justify-center gap-3 shadow-xs hover:shadow-md transition-all cursor-pointer active:scale-[0.99]"
+              >
+                <svg className="w-5 h-5" viewBox="0 0 24 24">
+                  <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z"/>
+                  <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.8z"/>
+                  <path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.3s.2-1.6.4-2.3L1.9 7.3C.7 9.7 0 12.3 0 15s.7 5.3 1.9 7.7l3.7-2.9z"/>
+                  <path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2-6.4-4.8L1.9 16.4C3.7 20.1 7.5 23 12 23z"/>
+                </svg>
+                <span>Googleアカウントで登録（無料）</span>
               </button>
             </div>
-            {password && (
-              <div className="flex gap-1 mt-1">
-                {[1, 2, 3, 4].map(i => (
-                  <div key={i} className={cn(
-                    "h-1.5 flex-1 rounded-full transition-all",
-                    i <= strength ? (strength <= 2 ? "bg-yellow-400" : "bg-green-500") : "bg-brand-dark/10"
-                  )} />
-                ))}
+
+            {/* 区切り線 */}
+            <div className="relative flex py-1 items-center">
+              <div className="flex-grow border-t border-stone-300"></div>
+              <span className="flex-shrink mx-4 text-stone-700 text-xs font-semibold font-serif">またはメールアドレスで登録</span>
+              <div className="flex-grow border-t border-stone-300"></div>
+            </div>
+
+            {/* メールアドレス ＆ パスワード入力フォーム */}
+            <form onSubmit={handleStep1Submit} className="space-y-5">
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-stone-800 tracking-wider uppercase block font-sans">
+                  メールアドレス <span className="text-rose-500">*</span>
+                </label>
+                <div className="relative">
+                  <input 
+                    type="email"
+                    required
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    placeholder="example@email.com"
+                    className="w-full pl-11 pr-4 py-3.5 border border-stone-300 rounded-2xl bg-white text-sm outline-none focus:border-brand-primary focus:ring-2 focus:ring-amber-500/20 text-stone-900 transition-all placeholder:text-stone-400 shadow-inner"
+                  />
+                  <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-500 pointer-events-none" />
+                </div>
+                <p className="text-xs text-stone-700 font-medium font-serif">
+                  ※確認案内やマッチング通知が届く、安全なメールアドレスをご入力ください。
+                </p>
               </div>
-            )}
-          </div>
 
-          <div className="space-y-2 p-5 bg-brand-primary/5 rounded-2xl border border-brand-primary/10">
-            <label className="text-lg font-bold text-black uppercase tracking-widest flex items-center gap-2">
-              <Shield size={16} />
-              <span>ボット防止認証</span>
-            </label>
-            <p className="text-sm text-black mb-2 font-medium">「2 + 2」の答えを半角数字で入力してください。</p>
-            <input 
-              required
-              type="text" 
-              placeholder="答えを入力" 
-              className="input-field py-4 text-lg bg-white/50"
-              value={captchaAnswer}
-              onChange={e => setCaptchaAnswer(e.target.value)}
-            />
-          </div>
-          
-          <div className={cn(
-            "flex items-start gap-3 p-5 rounded-2xl border transition-all",
-            (hasReadTerms && hasReadPrivacy) ? "bg-brand-primary/5 border-brand-primary/10" : "bg-brand-light/20 border-brand-border opacity-60"
-          )}>
-            <input 
-              id="terms"
-              type="checkbox" 
-              disabled={!hasReadTerms || !hasReadPrivacy}
-              className="mt-1 w-6 h-6 rounded border-brand-border text-brand-primary focus:ring-brand-primary/20 transition-all cursor-pointer disabled:cursor-not-allowed shrink-0"
-              checked={agreed}
-              onChange={e => setAgreed(e.target.checked)}
-            />
-            <label htmlFor="terms" className="text-sm text-black leading-relaxed cursor-pointer font-medium">
-              {!hasReadTerms || !hasReadPrivacy ? (
-                <span>
-                  <strong>【18歳以上・規約同意】</strong> まず最初に <button type="button" onClick={() => setShowTerms(true)} className="text-black font-bold hover:underline">利用規約</button> と <button type="button" onClick={() => setShowPrivacy(true)} className="text-black font-bold hover:underline">プライバシーポリシー</button> をお読みください（18歳以上確認・SNS連携に伴うプロファイル取得同意を含む）。
-                </span>
-              ) : (
-                <span>
-                  <strong>【18歳以上・規約同意】</strong> 私は18歳以上（高校生を除く）であり、SNSアカウント連携等を含む <button type="button" onClick={() => setShowTerms(true)} className="text-black font-bold hover:underline">利用規約</button> および <button type="button" onClick={() => setShowPrivacy(true)} className="text-black font-bold hover:underline">プライバシーポリシー</button> に同意して登録します。
-                </span>
-              )}
-            </label>
-          </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-stone-800 tracking-wider uppercase block font-sans">
+                  パスワード（8文字以上・英数字） <span className="text-rose-500">*</span>
+                </label>
+                <div className="relative">
+                  <input 
+                    type={showPassword ? "text" : "password"}
+                    required
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className="w-full pl-11 pr-11 py-3.5 border border-stone-300 rounded-2xl bg-white text-sm outline-none focus:border-brand-primary focus:ring-2 focus:ring-amber-500/20 text-stone-900 transition-all placeholder:text-stone-400 shadow-inner"
+                  />
+                  <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-500 pointer-events-none" />
+                  <button 
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-stone-500 hover:text-stone-800 transition-colors p-1 cursor-pointer"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+                {/* パスワード強度メーター */}
+                {password && (
+                  <div className="space-y-1 pt-1">
+                    <div className="flex gap-1">
+                      {[1, 2, 3, 4].map(i => (
+                        <div key={i} className={cn(
+                          "h-1.5 flex-1 rounded-full transition-all",
+                          i <= strength ? (strength <= 2 ? "bg-amber-500" : "bg-emerald-600") : "bg-stone-300"
+                        )} />
+                      ))}
+                    </div>
+                    <p className="text-xs text-stone-800 font-semibold font-mono">
+                      強度: {strength <= 2 ? '⚠️ もう少し複雑にしてください' : '✅ 安全なパスワードです'}
+                    </p>
+                  </div>
+                )}
+              </div>
 
-          {error && (
-            <motion.p 
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="text-red-600 text-sm font-bold bg-red-50 p-4 rounded-2xl border border-red-100 flex items-center gap-3"
-            >
-              <AlertCircle size={18} />
-              {error}
-            </motion.p>
-          )}
-          <button 
-            type="submit" 
-            disabled={!agreed}
-            className="btn-primary w-full py-2.5 sm:py-3 text-xs sm:text-sm font-bold disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <span>登録する</span>
-            <ArrowRight size={18} />
-          </button>
-        </form>
-        <div className="mt-4 pt-4 border-t border-brand-border text-center">
-          <p className="text-sm text-black">
-            既にアカウントをお持ちの方は <Link to="/login" className="text-black font-bold hover:underline">ログイン</Link>
+              <button 
+                type="submit" 
+                className="w-full py-4 bg-brand-dark hover:bg-brand-primary text-white rounded-2xl text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition-all cursor-pointer font-sans flex items-center justify-center gap-2"
+              >
+                <span>次へ進む（お名前・基本情報の設定）</span>
+                <ArrowRight size={16} />
+              </button>
+            </form>
+          </div>
+        )}
+
+        {/* ========================================================= */}
+        {/* STEP 2: お名前・表示名・安心認証の設定 */}
+        {/* ========================================================= */}
+        {step === 2 && (
+          <form onSubmit={handleFinalSubmit} className="space-y-6">
+            {/* 上部：選択された登録メールの確認 ＆ 戻るボタン */}
+            <div className="flex items-center justify-between p-3.5 bg-amber-50/70 border border-amber-200/80 rounded-2xl text-xs">
+              <div className="flex items-center gap-2 text-stone-700">
+                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span className="font-bold">登録メール:</span>
+                <span className="font-mono text-stone-900 font-semibold">{email}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setStep(1)}
+                className="text-xs text-brand-primary hover:underline font-bold font-sans cursor-pointer"
+              >
+                変更する
+              </button>
+            </div>
+
+            {/* 1. 本名（公的氏名）入力欄 ＆ 安心注記 */}
+            <div className="space-y-3 p-5 bg-stone-50/80 border border-stone-200/80 rounded-2xl">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-stone-900 tracking-wider uppercase flex items-center gap-1.5 font-sans">
+                  <ShieldCheck size={16} className="text-brand-primary" />
+                  <span>お名前（本名・公的氏名）</span> <span className="text-rose-500">*</span>
+                </label>
+                <span className="text-[10px] bg-rose-100 text-rose-800 font-bold px-2 py-0.5 rounded">
+                  完全非公開
+                </span>
+              </div>
+
+              <div className="p-3 bg-amber-50/80 border border-amber-200/70 rounded-xl text-[11px] text-amber-900 leading-relaxed font-serif">
+                🔒 <strong>【安全保護・なりすまし防止の重要設計】</strong><br />
+                本名は一度登録すると変更できません。住所や学校名等の個人情報は公開されず、あなただと確信して<strong>「思い出クイズ」に完全正解したお相手のみ</strong>に、最終確認（再会成立時）として安全に開示されます。
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 pt-1">
+                <div className="space-y-1">
+                  <label className="text-[11px] font-bold text-stone-700">姓（苗字）</label>
+                  <input 
+                    required
+                    type="text" 
+                    placeholder="例：山田" 
+                    className="w-full px-3.5 py-3 border border-stone-200 rounded-xl bg-white text-xs outline-none focus:border-brand-primary focus:ring-2 focus:ring-amber-500/20 text-stone-900 shadow-inner"
+                    value={lastName}
+                    onChange={e => {
+                      const val = e.target.value;
+                      const ngLabel = checkNg(val);
+                      setWarning(ngLabel ? `不適切な入力が検出されました（${ngLabel}）。` : null);
+                      setLastName(val);
+                    }}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[11px] font-bold text-stone-700">名（名前）</label>
+                  <input 
+                    required
+                    type="text" 
+                    placeholder="例：太郎" 
+                    className="w-full px-3.5 py-3 border border-stone-200 rounded-xl bg-white text-xs outline-none focus:border-brand-primary focus:ring-2 focus:ring-amber-500/20 text-stone-900 shadow-inner"
+                    value={firstName}
+                    onChange={e => {
+                      const val = e.target.value;
+                      const ngLabel = checkNg(val);
+                      setWarning(ngLabel ? `不適切な入力が検出されました（${ngLabel}）。` : null);
+                      setFirstName(val);
+                    }}
+                  />
+                </div>
+              </div>
+              <WarningMessage message={warning} />
+            </div>
+
+            {/* 2. ニックネーム（公開表示名）入力欄 */}
+            <div className="space-y-2 p-5 bg-amber-50/50 border border-amber-150 rounded-2xl">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-stone-900 tracking-wider block font-sans">
+                  ニックネーム（表示名） <span className="text-rose-500">*</span>
+                </label>
+                <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">
+                  全体公開（変更可能）
+                </span>
+              </div>
+              <p className="text-[11px] text-amber-900 leading-relaxed">
+                ※手紙（ボトルメール）を流す際やマイページで公に表示される名前です。実名が出ないためプライバシーが守られます。
+              </p>
+              <input 
+                required
+                type="text" 
+                placeholder="例：やまたろう、風鈴、としぼー など" 
+                className="w-full px-3.5 py-3 border border-amber-200 rounded-xl bg-white text-xs outline-none focus:border-brand-primary focus:ring-2 focus:ring-amber-500/20 text-stone-900 shadow-inner"
+                value={nickname}
+                onChange={e => {
+                  const val = e.target.value;
+                  const ngLabel = checkNg(val);
+                  setWarning(ngLabel ? `不適切な入力が検出されました（${ngLabel}）。` : null);
+                  setNickname(val);
+                }}
+              />
+            </div>
+
+            {/* 3. ボット防止認証 */}
+            <div className="space-y-2 p-4 bg-stone-50 rounded-2xl border border-stone-200">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-stone-800 uppercase tracking-widest flex items-center gap-2">
+                  <Shield size={14} className="text-brand-primary" />
+                  <span>ボット防止認証</span>
+                </label>
+                {captchaAnswer === '4' && (
+                  <span className="text-[10px] bg-emerald-600 text-white font-bold px-2 py-0.5 rounded-md flex items-center gap-1 animate-fade-in">
+                    ✓ 正解
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-stone-600 font-medium">「2 + 2」の答えを半角数字で入力してください。</p>
+              <input 
+                required
+                type="text" 
+                inputMode="numeric"
+                pattern="[0-9]*"
+                autoComplete="off"
+                autoCapitalize="off"
+                autoCorrect="off"
+                spellCheck="false"
+                placeholder="答えを入力（半角数字: 4）" 
+                className="w-full px-3.5 py-2.5 border border-stone-300 rounded-xl bg-white text-xs outline-none focus:border-brand-primary focus:ring-2 focus:ring-amber-500/20 text-stone-900 font-mono shadow-inner font-bold tracking-wider"
+                value={captchaAnswer}
+                onChange={e => setCaptchaAnswer(toHalfWidth(e.target.value).replace(/[^0-9]/g, ''))}
+              />
+            </div>
+
+            {/* 4. 規約・プライバシー同意 ＆ 18歳以上確認 */}
+            <div className={cn(
+              "flex items-start gap-3 p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer",
+              agreed ? "bg-amber-50/90 border-amber-300 ring-2 ring-amber-400/20" : "bg-stone-50/80 border-stone-200 hover:border-amber-200"
+            )}>
+              <input 
+                id="terms"
+                type="checkbox" 
+                className="mt-1 w-5 h-5 rounded border-stone-300 text-brand-primary focus:ring-amber-500 transition-all cursor-pointer shrink-0"
+                checked={agreed}
+                onChange={e => setAgreed(e.target.checked)}
+              />
+              <label htmlFor="terms" className="text-xs text-stone-800 leading-relaxed cursor-pointer font-medium font-serif select-none">
+                <strong>【18歳以上・規約同意】</strong> 私は18歳以上（高校生を除く）であり、SNSアカウント連携を含む <button type="button" onClick={(e) => { e.preventDefault(); setShowTerms(true); }} className="text-brand-primary font-bold hover:underline cursor-pointer">利用規約</button> および <button type="button" onClick={(e) => { e.preventDefault(); setShowPrivacy(true); }} className="text-brand-primary font-bold hover:underline cursor-pointer">プライバシーポリシー</button> に同意して登録します。
+              </label>
+            </div>
+
+            {/* 送信ボタン ＆ 戻るボタン */}
+            <div className="flex items-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setStep(1)}
+                className="px-5 py-4 bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold rounded-2xl text-xs transition-colors cursor-pointer"
+              >
+                戻る
+              </button>
+              <button 
+                type="submit" 
+                disabled={loading || !agreed}
+                className="flex-1 py-4 bg-brand-dark hover:bg-brand-primary text-white rounded-2xl text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition-all cursor-pointer font-sans flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? (
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <>
+                    <Check size={18} />
+                    <span>規約に同意してアカウントを作成する</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </form>
+        )}
+
+        {/* ログイン導線フッター */}
+        <div className="mt-8 pt-6 border-t border-stone-200/80 text-center space-y-1">
+          <p className="text-xs sm:text-sm text-stone-700 font-medium font-serif">
+            既にアカウントをお持ちの方は
           </p>
+          <Link to="/login" className="inline-block text-xs sm:text-sm text-brand-primary font-bold hover:underline font-sans">
+            ログイン画面へ進む →
+          </Link>
         </div>
       </motion.div>
 
+      {/* 利用規約モーダル */}
       <TermsModal 
         isOpen={showTerms} 
         onClose={() => setShowTerms(false)} 
@@ -485,16 +834,18 @@ export const RegisterPage = () => {
           setHasReadTerms(true);
           if (hasReadPrivacy) setAgreed(true);
         }}
+        mode="terms"
       />
 
+      {/* プライバシーポリシーモーダル */}
       <TermsModal 
         isOpen={showPrivacy} 
-        mode="privacy"
         onClose={() => setShowPrivacy(false)} 
         onConfirm={() => {
           setHasReadPrivacy(true);
           if (hasReadTerms) setAgreed(true);
         }}
+        mode="privacy"
       />
     </div>
   );

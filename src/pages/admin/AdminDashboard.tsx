@@ -155,9 +155,6 @@ export const AdminDashboard = () => {
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [userPosts, setUserPosts] = useState<any[]>([]);
   const [loadingUserPosts, setLoadingUserPosts] = useState(false);
-  const [userMessages, setUserMessages] = useState<any[]>([]);
-  const [loadingUserMessages, setLoadingUserMessages] = useState(false);
-  const [userModalTab, setUserModalTab] = useState<'posts' | 'messages'>('posts');
   const [newNgWord, setNewNgWord] = useState('');
   // NG Words Tab States
   const [ngWordSearchTerm, setNgWordSearchTerm] = useState('');
@@ -303,18 +300,26 @@ export const AdminDashboard = () => {
     }
 
     txt += `-----------------------------------------------------------------\n`;
-    txt += `[4. 1対1メッセージ送受信全履歴 (全${data.messages?.length || 0}件)]\n`;
+    txt += `[4. 連絡先安全開示 (セキュア・ブリッジ) ＆ マッチング決済履歴 (全${data.matches?.length || 0}件)]\n`;
     txt += `-----------------------------------------------------------------\n`;
-    if (data.messages && data.messages.length > 0) {
-      data.messages.forEach((m: any, idx: number) => {
-        txt += ` (${idx + 1}) メッセージID: #${m.id} | 日時: ${new Date(m.created_at).toLocaleString('ja-JP')}\n`;
-        txt += `     送信者: ${m.sender_nickname || m.sender_username} (#${m.sender_id})\n`;
-        txt += `     受信者: ${m.receiver_nickname || m.receiver_username} (#${m.receiver_id})\n`;
-        txt += `     AI隔離フラグ: ${m.ai_flagged ? '⚠️ AI検閲検出' : '正常'}\n`;
-        txt += `     本文: ${m.content || ''}\n\n`;
+    if (data.matches && data.matches.length > 0) {
+      data.matches.forEach((m: any, idx: number) => {
+        txt += ` (${idx + 1}) ボトルID: #${m.id} | マッチング完了日時: ${new Date(m.updated_at || m.created_at).toLocaleString('ja-JP')}\n`;
+        txt += `     差出人: ${m.author_username} (${m.author_full_name || '実名未登録'}) / ボトル表記: ${m.searcher_name}\n`;
+        txt += `     受取人: ${m.recipient_username} (${m.recipient_full_name || '実名未登録'})\n`;
+        txt += `     開示連絡先形式: ${m.contact_method || 'メールアドレス'} (${m.contact_value || '暗号化保全'})\n`;
+        txt += `     想い出クイズ照合: 完了 (正解一致により合意成立)\n\n`;
       });
     } else {
-      txt += ` ※メッセージの送受信記録はありません。\n\n`;
+      txt += ` ※成立したマッチング・連絡先開示記録はありません。\n\n`;
+    }
+
+    if (data.payments && data.payments.length > 0) {
+      txt += ` 【開通・本人確認 決済トランザクション履歴 (全${data.payments.length}件)】\n`;
+      data.payments.forEach((py: any, idx: number) => {
+        txt += `   - [決済${idx + 1}] 日時: ${new Date(py.created_at).toLocaleString('ja-JP')} | 種別: ${py.item_type || '連絡先開示'} | 金額: ¥${py.amount || 0} | 決済ID: ${py.stripe_payment_intent_id || '-'} | 状態: ${py.status}\n`;
+      });
+      txt += `\n`;
     }
 
     txt += `-----------------------------------------------------------------\n`;
@@ -694,8 +699,6 @@ export const AdminDashboard = () => {
   const [guideDocType, setGuideDocType] = useState<'deployment' | 'cost_estimate' | 'cost_list_detailed' | 'permit' | 'police' | 'consult' | 'matrix' | 'slides' | 'scenario' | 'requirements' | 'evaluation' | 'pr_plan' | 'legal_guide'>('deployment');
   const [loading, setLoading] = useState(true);
   const [selectedPost, setSelectedPost] = useState<any>(null);
-  const [postMessages, setPostMessages] = useState<any[]>([]);
-  const [loadingMessages, setLoadingMessages] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   
   // 年齢確認ログ フィルタ＆ダウンロード用ステート
@@ -1989,6 +1992,33 @@ export const AdminDashboard = () => {
     }
   };
 
+  const [isSendingPasswordReset, setIsSendingPasswordReset] = useState(false);
+  const handleAdminSendPasswordReset = async (userId: number, email: string) => {
+    if (!window.confirm(`ユーザー「${email}」宛にパスワード再設定メールを送信しますか？\n（本人の登録メールアドレス宛に30分間有効な再設定リンクが届きます）`)) {
+      return;
+    }
+    setIsSendingPasswordReset(true);
+    try {
+      const res = await fetch(`/api/admin/users/${userId}/send-reset-password`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert(data.message || 'パスワード再設定メールを安全に送信しました。');
+      } else {
+        alert(data.error || '送信に失敗しました。');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('通信エラーが発生しました。');
+    } finally {
+      setIsSendingPasswordReset(false);
+    }
+  };
+
   const handleExportStats = async () => {
     try {
       const res = await fetch('/api/admin/export/stats', {
@@ -2303,36 +2333,6 @@ export const AdminDashboard = () => {
         }
       } catch (err) {
         console.error(err);
-      }
-    });
-  };
-
-  const handleDeleteMessage = async (messageId: number) => {
-    console.log(`handleDeleteMessage called with ID: ${messageId}`);
-    showConfirm('メッセージの削除', 'このメッセージを削除しますか？', async () => {
-      try {
-        console.log(`Sending DELETE request for message ${messageId}...`);
-        const response = await fetch(`/api/admin/messages/${messageId}`, {
-          method: 'DELETE',
-          headers: { 
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        });
-        
-        console.log(`DELETE response status: ${response.status}`);
-        if (response.ok) {
-          console.log('Deletion successful, refreshing messages...');
-          // Refresh messages for the selected post
-          if (selectedPost) {
-            handleViewPost(selectedPost);
-          }
-        } else {
-          const errorData = await response.json().catch(() => ({}));
-          console.error('Deletion failed:', response.status, errorData);
-        }
-      } catch (err) {
-        console.error('Error in handleDeleteMessage:', err);
       }
     });
   };
@@ -2657,16 +2657,10 @@ export const AdminDashboard = () => {
   };
 
   const handleViewPost = async (post: any) => {
-    setLoadingMessages(true);
     try {
-      const [postRes, messagesRes] = await Promise.all([
-        fetch(`/api/admin/posts/${post.id}`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        }),
-        fetch(`/api/admin/posts/${post.id}/messages`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        })
-      ]);
+      const postRes = await fetch(`/api/admin/posts/${post.id}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
 
       if (postRes.ok) {
         const postData = await postRes.json();
@@ -2674,47 +2668,42 @@ export const AdminDashboard = () => {
       } else {
         setSelectedPost(post); // Fallback to basic data
       }
-
-      if (messagesRes.ok) {
-        const messagesData = await messagesRes.json();
-        setPostMessages(messagesData);
-      }
     } catch (err) {
       console.error(err);
       setSelectedPost(post); // Fallback
-    } finally {
-      setLoadingMessages(false);
     }
   };
 
   const handleViewUser = async (user: any) => {
     setSelectedUser(user);
-    setUserModalTab('posts');
     setLoadingUserPosts(true);
-    setLoadingUserMessages(true);
     try {
-      const [postsRes, messagesRes] = await Promise.all([
-        fetch(`/api/admin/users/${user.id}/posts`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        }),
-        fetch(`/api/admin/users/${user.id}/messages`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        })
+      const [detailsRes, postsRes] = await Promise.all([
+        fetch(`/api/admin/users/${user.id}`, { headers: { 'Authorization': `Bearer ${token}` } }),
+        fetch(`/api/admin/users/${user.id}/posts`, { headers: { 'Authorization': `Bearer ${token}` } })
       ]);
-      
+
+      let fullUserData = user;
+      if (detailsRes.ok) {
+        fullUserData = await detailsRes.json();
+      }
+
+      let fetchedPosts: any[] = [];
       if (postsRes.ok) {
-        const fetchedPosts = await postsRes.json();
+        fetchedPosts = await postsRes.json();
         setUserPosts(fetchedPosts);
-        setSelectedUser((prev: any) => prev ? { ...prev, posts_count: fetchedPosts.length } : prev);
+      } else {
+        setUserPosts([]);
       }
-      if (messagesRes.ok) {
-        setUserMessages(await messagesRes.json());
-      }
+
+      setSelectedUser({
+        ...fullUserData,
+        posts_count: fetchedPosts.length || fullUserData.posts_count || 0
+      });
     } catch (err) {
       console.error(err);
     } finally {
       setLoadingUserPosts(false);
-      setLoadingUserMessages(false);
     }
   };
 
@@ -4022,19 +4011,19 @@ export const AdminDashboard = () => {
                       <div className="space-y-4">
                         <div className="flex justify-between py-3 border-b border-brand-border">
                           <span className="text-base text-black/60">差出人（アカウントID）</span>
-                          <span className="text-sm font-bold text-black">{selectedPost.searcher_username}</span>
+                          <span className="text-sm font-bold text-black font-mono">{selectedPost.searcher_username || '不明'}</span>
                         </div>
                         <div className="flex justify-between py-3 border-b border-brand-border">
-                          <span className="text-base text-black/60">差出人ニックネーム</span>
-                          <span className="text-sm font-bold text-emerald-900 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100">{selectedPost.searcher_name || '未設定'}</span>
+                          <span className="text-base text-black/60">差出人ニックネーム（手紙表記）</span>
+                          <span className="text-sm font-bold text-black">{selectedPost.searcher_name || <span className="text-black/35 font-normal">未設定</span>}</span>
                         </div>
                         <div className="flex justify-between py-3 border-b border-brand-border">
                           <span className="text-base text-black/60">アカウント登録ニックネーム</span>
-                          <span className="text-sm font-bold text-brand-dark">{selectedPost.searcher_account_nickname || '未設定'}</span>
+                          <span className="text-sm font-bold text-black">{selectedPost.searcher_account_nickname || <span className="text-black/35 font-normal">未設定</span>}</span>
                         </div>
                         <div className="flex justify-between py-3 border-b border-brand-border">
                           <span className="text-base text-black/60">差出人本名（実名）</span>
-                          <span className="text-sm font-bold text-black">{selectedPost.searcher_full_name || '未設定'}</span>
+                          <span className="text-sm font-bold text-black">{selectedPost.searcher_full_name || <span className="text-black/35 font-normal">未設定</span>}</span>
                         </div>
                         <div className="flex justify-between py-3 border-b border-brand-border">
                           <span className="text-base text-black/60">対象者出身地</span>
@@ -4490,12 +4479,22 @@ export const AdminDashboard = () => {
             >
               <div className="p-6 md:p-8 border-b border-brand-border flex justify-between items-center bg-brand-light/30 shrink-0">
                 <div className="flex items-center gap-4 md:gap-6">
-                  <div className="w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-black/5 flex items-center justify-center text-black font-bold text-xl md:text-2xl shrink-0">
-                    {selectedUser.username[0].toUpperCase()}
+                  <div className="w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-indigo-600/10 text-indigo-700 font-serif font-bold text-xl md:text-2xl flex items-center justify-center shrink-0 ring-4 ring-indigo-50">
+                    {(selectedUser.nickname || selectedUser.full_name || selectedUser.username || '?')[0].toUpperCase()}
                   </div>
                   <div>
-                    <h2 className="text-xl md:text-2xl font-serif text-black">{selectedUser.username}</h2>
-                    <p className="text-xs md:text-sm text-black/50 uppercase tracking-widest">User ID: #{selectedUser.id}</p>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h2 className="text-xl md:text-2xl font-serif font-bold text-slate-900">
+                        {selectedUser.full_name || selectedUser.nickname || '名称未設定'} 様
+                      </h2>
+                      <span className="text-xs font-mono font-bold bg-indigo-100 text-indigo-900 border border-indigo-300 px-2.5 py-0.5 rounded-lg">
+                        {selectedUser.username}
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-600 font-mono mt-1 flex items-center gap-1.5 flex-wrap">
+                      <span className="whitespace-nowrap shrink-0">メールアドレス:</span>
+                      <span className="font-semibold text-slate-800 break-all">{selectedUser.email || '未設定'}</span>
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 md:gap-3">
@@ -4520,30 +4519,102 @@ export const AdminDashboard = () => {
               <div className="flex-1 overflow-y-auto p-6 md:p-10 space-y-8 overscroll-contain" data-lenis-prevent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
                   <section className="space-y-6">
-                    <h3 className="text-base md:text-lg font-bold text-black uppercase tracking-[0.2em]">アカウント情報</h3>
+                    <h3 className="text-base md:text-lg font-bold text-slate-900 uppercase tracking-[0.2em] flex items-center gap-2">
+                      <span>👤 アカウント基本情報</span>
+                    </h3>
                     <div className="space-y-3 md:space-y-4">
-                      <div className="flex justify-between py-2.5 border-b border-brand-border">
-                        <span className="text-sm md:text-base text-black/60">ニックネーム</span>
-                        <span className="text-sm font-bold text-emerald-900">{selectedUser.nickname || '未設定'}</span>
+                      {/* 1. アカウントID（メールアドレス） */}
+                      <div className="flex justify-between items-center py-2.5 border-b border-slate-200 gap-4">
+                        <span className="text-xs md:text-sm font-bold text-slate-600 whitespace-nowrap shrink-0">アカウントID</span>
+                        <span className="text-xs md:text-sm font-bold text-slate-900 font-mono break-all text-right">
+                          {selectedUser.email || <span className="text-slate-400 font-normal">未登録</span>}
+                        </span>
                       </div>
-                      <div className="flex justify-between py-2.5 border-b border-brand-border">
-                        <span className="text-sm md:text-base text-black/60">メールアドレス</span>
-                        <span className="text-sm font-bold text-black">{selectedUser.email || '未設定'}</span>
-                      </div>
-                      <div className="flex justify-between py-2.5 border-b border-brand-border">
-                        <span className="text-sm md:text-base text-black/60">本名</span>
-                        <span className="text-sm font-bold text-black">{selectedUser.full_name || '未設定'}</span>
-                      </div>
-                      {selectedUser.maiden_name && (
-                        <div className="flex justify-between py-2.5 border-b border-brand-border bg-indigo-50/50 px-2 rounded-lg">
-                          <span className="text-sm md:text-base text-indigo-900 font-bold">登録旧姓</span>
-                          <span className="text-sm font-bold text-indigo-950 bg-indigo-100 px-2.5 py-0.5 rounded-md border border-indigo-300">
-                            旧姓: {selectedUser.maiden_name}
-                          </span>
+
+                      {/* 2. ログイン方法 */}
+                      <div className="flex justify-between items-center py-2.5 border-b border-slate-200 gap-4">
+                        <span className="text-xs md:text-sm font-bold text-slate-600 whitespace-nowrap shrink-0">ログイン方法</span>
+                        <div>
+                          {selectedUser.auth_provider === 'line' ? (
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-300 shadow-2xs">
+                              <svg className="w-3.5 h-3.5 fill-[#06C755]" viewBox="0 0 24 24">
+                                <path d="M24 10.304c0-5.369-5.383-9.738-12-9.738-6.616 0-12 4.369-12 9.738 0 4.814 4.269 8.846 10.019 9.587.39.084.922.256 1.058.588.12.302.079.774.038 1.08l-.164 1.026c-.05.31-.242 1.213 1.063.662 1.306-.55 7.042-4.148 9.608-7.1 1.637-1.821 2.378-3.669 2.378-5.847z"/>
+                              </svg>
+                              <span>LINE連携 (OAuth)</span>
+                            </span>
+                          ) : selectedUser.auth_provider === 'google' ? (
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-50 text-blue-800 border border-blue-300 shadow-2xs">
+                              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24">
+                                <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z"/>
+                                <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.8z"/>
+                                <path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.3s.2-1.6.4-2.3L1.9 7.3C.7 9.7 0 12.3 0 15s.7 5.3 1.9 7.7l3.7-2.9z"/>
+                                <path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2-6.4-4.8L1.9 16.4C3.7 20.1 7.5 23 12 23z"/>
+                              </svg>
+                              <span>Google連携 (OAuth)</span>
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-800 border border-slate-300 shadow-2xs">
+                              <Mail size={12} className="text-slate-600" />
+                              <span>メール・パスワード</span>
+                            </span>
+                          )}
                         </div>
-                      )}
-                      <div className="flex items-center justify-between py-2.5 border-b border-brand-border gap-2">
-                        <span className="text-sm md:text-base text-black/60 shrink-0">公的本人確認 (eKYC)</span>
+                      </div>
+
+                      {/* 3. ユーザーID */}
+                      <div className="flex justify-between items-center py-2.5 border-b border-slate-200 gap-4">
+                        <span className="text-xs md:text-sm font-bold text-slate-600 whitespace-nowrap shrink-0">ユーザーID</span>
+                        <span className="text-xs md:text-sm font-bold text-indigo-900 font-mono bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 shrink-0">
+                          {selectedUser.username}
+                        </span>
+                      </div>
+
+                      {/* 4. メールアドレス */}
+                      <div className="flex justify-between items-center py-2.5 border-b border-slate-200 gap-4">
+                        <span className="text-xs md:text-sm font-bold text-slate-600 whitespace-nowrap shrink-0">メールアドレス</span>
+                        <span className="text-xs md:text-sm font-bold text-slate-900 font-mono break-all text-right">
+                          {selectedUser.email || <span className="text-slate-400 font-normal">未登録</span>}
+                        </span>
+                      </div>
+
+                      {/* 4. ニックネーム */}
+                      <div className="flex justify-between items-center py-2.5 border-b border-slate-200 gap-4">
+                        <span className="text-xs md:text-sm font-bold text-slate-600 whitespace-nowrap shrink-0">ニックネーム</span>
+                        <span className="text-xs md:text-sm font-bold text-slate-900 text-right">
+                          {selectedUser.nickname || <span className="text-slate-400 font-normal">未設定</span>}
+                        </span>
+                      </div>
+
+                      {/* 5. 本名 */}
+                      <div className="flex justify-between items-center py-2.5 border-b border-slate-200 gap-4">
+                        <span className="text-xs md:text-sm font-bold text-slate-600 whitespace-nowrap shrink-0">本名</span>
+                        <div className="text-right">
+                          <span className="text-xs md:text-sm font-bold text-slate-900 block">
+                            {selectedUser.full_name || (selectedUser.last_name || selectedUser.first_name ? `${selectedUser.last_name || ''} ${selectedUser.first_name || ''}`.trim() : <span className="text-slate-400 font-normal">未登録</span>)}
+                          </span>
+                          {selectedUser.maiden_name && (
+                            <span className="text-[11px] text-amber-900 font-medium bg-amber-50 border border-amber-200 px-1.5 py-0.2 rounded inline-block mt-0.5 whitespace-nowrap">
+                              旧姓: {selectedUser.maiden_name}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* 6. 開示連絡先 */}
+                      <div className="flex justify-between items-center py-2.5 border-b border-slate-200 gap-4">
+                        <span className="text-xs md:text-sm font-bold text-slate-600 whitespace-nowrap shrink-0">再会時開示連絡先</span>
+                        {selectedUser.contact_type && selectedUser.contact_id ? (
+                          <span className="text-xs font-mono font-bold text-teal-800 bg-teal-50 border border-teal-200 px-2 py-0.5 rounded">
+                            {selectedUser.contact_type.toUpperCase()}: {selectedUser.contact_id}
+                          </span>
+                        ) : (
+                          <span className="text-xs text-slate-400">未設定</span>
+                        )}
+                      </div>
+
+                      {/* 6. 本人確認 (eKYC) */}
+                      <div className="flex items-center justify-between py-2.5 border-b border-slate-200 gap-2">
+                        <span className="text-xs md:text-sm font-bold text-slate-600 shrink-0">本人確認 (eKYC)</span>
                         <div className="flex items-center gap-1.5 shrink-0 flex-nowrap">
                           {selectedUser.is_ekyc_verified ? (
                             <>
@@ -4561,8 +4632,8 @@ export const AdminDashboard = () => {
                               </button>
                             </>
                           ) : (
-                            <span className="text-[11px] bg-zinc-100 text-zinc-600 border border-zinc-200 px-2.5 py-1 rounded-full font-medium whitespace-nowrap">
-                              📝 未承認 / 自己誓約のみ
+                            <span className="text-[11px] bg-slate-100 text-slate-600 border border-slate-200 px-2.5 py-1 rounded-full font-medium whitespace-nowrap">
+                              📝 自己申告（未認証）
                             </span>
                           )}
                         </div>
@@ -4626,12 +4697,50 @@ export const AdminDashboard = () => {
                         <span className="text-sm md:text-base text-black/60">登録日</span>
                         <span className="text-sm font-bold text-black">{new Date(selectedUser.created_at).toLocaleString()}</span>
                       </div>
+
+                      {/* 🔑 パスワード管理 / 再設定メール代理発行 */}
+                      <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2 mt-4">
+                        <div className="flex items-center justify-between font-bold text-xs text-slate-800">
+                          <span className="flex items-center gap-1.5 font-serif text-slate-900">
+                            <Key size={14} className="text-indigo-600" />
+                            <span>パスワード初期化・再設定</span>
+                          </span>
+                          <span className="text-[10px] font-mono text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">
+                            SECURE DISPATCH
+                          </span>
+                        </div>
+                        {selectedUser.auth_provider === 'line' || selectedUser.auth_provider === 'google' ? (
+                          <div className="p-3 bg-white border border-slate-200 rounded-xl text-[11px] text-slate-600 space-y-1">
+                            <p className="font-bold text-slate-800">
+                              💡 {selectedUser.auth_provider === 'line' ? 'LINE連携 (OAuth)' : 'Google連携 (OAuth)'} アカウント
+                            </p>
+                            <p className="text-[10px] text-slate-500">
+                              このユーザーはSNS認証を利用しているため、パスワードは設定されていません（パスワード再設定は不要です）。
+                            </p>
+                          </div>
+                        ) : (
+                          <div className="space-y-2.5">
+                            <p className="text-[11px] text-slate-600 leading-relaxed">
+                              パスワードを忘れたユーザーからの問い合わせ時などに、登録メールアドレス宛へ安全なトークン付き再設定リンクを代理発行します。
+                            </p>
+                            <button
+                              type="button"
+                              onClick={() => handleAdminSendPasswordReset(selectedUser.id, selectedUser.email)}
+                              disabled={isSendingPasswordReset}
+                              className="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 active:scale-[0.99]"
+                            >
+                              <Send size={13} />
+                              <span>{isSendingPasswordReset ? '送信処理中...' : '📧 パスワード再設定メールを代理送信'}</span>
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </div>
 
                     <div className="mt-6">
                       <button
                         onClick={() => {
-                          setPostSearchTerm(selectedUser.nickname || selectedUser.username);
+                          setPostSearchTerm(selectedUser.username || selectedUser.nickname || '');
                           setPostPage(1);
                           setActiveTab('posts');
                           setSelectedUser(null);
@@ -4645,7 +4754,7 @@ export const AdminDashboard = () => {
                           </div>
                           <div className="flex items-baseline gap-1.5">
                             <span className="text-2xl font-bold text-emerald-950">
-                              {loadingUserPosts ? (selectedUser.posts_count ?? 0) : (userPosts ? userPosts.length : (selectedUser.posts_count || 0))}
+                              {loadingUserPosts ? (selectedUser.posts_count ?? 0) : (userPosts.length > 0 ? userPosts.length : (selectedUser.posts_count || 0))}
                             </span>
                             <span className="text-xs text-emerald-700 font-sans">通</span>
                           </div>
@@ -4662,7 +4771,7 @@ export const AdminDashboard = () => {
                     <div className="flex border-b border-brand-border pb-3">
                       <h4 className="text-sm font-bold uppercase tracking-wider text-black flex items-center gap-2">
                         <Mail size={16} className="text-emerald-700" />
-                        <span>投稿したボトル一覧 ({userPosts.length})</span>
+                        <span>投稿したボトル一覧 ({loadingUserPosts ? (selectedUser.posts_count ?? 0) : (userPosts.length > 0 ? userPosts.length : (selectedUser.posts_count || 0))})</span>
                       </h4>
                     </div>
 
@@ -4932,45 +5041,55 @@ export const AdminDashboard = () => {
                   )}
                 </div>
 
-                {/* 5. 1対1メッセージ送受信履歴 (AI隔離ログ含む) */}
+                {/* 4. 連絡先安全開示 (セキュア・ブリッジ) ＆ マッチング決済履歴 */}
                 <div className="space-y-3">
                   <h3 className="text-sm font-bold uppercase tracking-wider text-amber-400 print:text-black flex items-center gap-2 border-b border-slate-800 print:border-gray-300 pb-1.5">
-                    <span>4. 1対1メッセージ送受信全履歴 (AI自動検閲隔離含む : {policeReportData.messages?.length || 0}件)</span>
+                    <span>4. 連絡先安全開示 (セキュア・ブリッジ) ＆ 照合決済履歴 (成立: {policeReportData.matches?.length || 0}件 / 決済: {policeReportData.payments?.length || 0}件)</span>
                   </h3>
-                  {policeReportData.messages && policeReportData.messages.length > 0 ? (
+                  {policeReportData.matches && policeReportData.matches.length > 0 ? (
                     <div className="space-y-2.5">
-                      {policeReportData.messages.map((m: any) => {
-                        const isSender = m.sender_id === policeReportData.user.id;
+                      {policeReportData.matches.map((m: any) => {
+                        const isAuthor = m.user_id === policeReportData.user.id;
                         return (
                           <div key={m.id} className="bg-slate-950 p-3.5 rounded-xl border border-slate-800 print:bg-gray-50 print:border-gray-300 text-xs space-y-1.5">
                             <div className="flex flex-wrap justify-between items-center gap-2 font-mono text-[11px] border-b border-slate-800/80 pb-1.5">
                               <div className="flex items-center gap-2">
-                                <span className={`font-bold px-2 py-0.5 rounded ${isSender ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30' : 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'}`}>
-                                  {isSender ? '送信 (OUTGOING)' : '受信 (INCOMING)'}
+                                <span className={`font-bold px-2 py-0.5 rounded ${isAuthor ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30' : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'}`}>
+                                  {isAuthor ? 'ボトル投函者 (差出人)' : '照合受取人 (回答一致者)'}
                                 </span>
-                                <span>メッセージID: #{m.id} (ボトル#{m.post_id})</span>
+                                <span>ボトルID: #{m.id}</span>
                               </div>
-                              <span className="text-slate-400">{new Date(m.created_at).toLocaleString('ja-JP')}</span>
+                              <span className="text-slate-400">{new Date(m.updated_at || m.created_at).toLocaleString('ja-JP')}</span>
                             </div>
-                            <div className="flex justify-between text-[11px] font-mono">
-                              <span>差出人: <strong>{m.sender_nickname || m.sender_username} (ID:#{m.sender_id})</strong></span>
-                              <span>受取人: <strong>{m.receiver_nickname || m.receiver_username} (ID:#{m.receiver_id})</strong></span>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-[11px] font-mono">
+                              <div>差出人: <strong>{m.author_username} ({m.author_full_name || '実名未登録'})</strong></div>
+                              <div>受取人: <strong>{m.recipient_username} ({m.recipient_full_name || '実名未登録'})</strong></div>
                             </div>
-                            <div className="bg-slate-900 print:bg-white p-2.5 rounded-lg border border-slate-800 print:border-gray-200 text-slate-200 print:text-black leading-relaxed whitespace-pre-wrap">
-                              {m.content}
+                            <div className="bg-slate-900 print:bg-white p-2.5 rounded-lg border border-slate-800 print:border-gray-200 text-slate-200 print:text-black leading-relaxed flex flex-wrap items-center justify-between gap-2">
+                              <div>開示連絡先形式: <strong className="text-amber-300 print:text-black">{m.contact_method || 'メールアドレス'}</strong></div>
+                              <div className="font-mono text-slate-400">想い出クイズ照合: <span className="text-emerald-400 font-bold">完全一致 (合意成立)</span></div>
                             </div>
-                            {m.ai_flagged ? (
-                              <div className="text-[10px] text-rose-400 font-bold flex items-center gap-1">
-                                <span>⚠️ 本メッセージはAI安全防衛エンジンにより不適切/脅迫疑いとして隔離記録されています</span>
-                              </div>
-                            ) : null}
                           </div>
                         );
                       })}
                     </div>
                   ) : (
                     <div className="text-xs text-slate-500 italic p-3 bg-slate-950/40 rounded-xl border border-slate-800">
-                      ※メッセージの送受信記録はありません。
+                      ※成立したマッチング・連絡先開示記録はありません。
+                    </div>
+                  )}
+
+                  {policeReportData.payments && policeReportData.payments.length > 0 && (
+                    <div className="mt-2 space-y-1.5">
+                      <div className="text-xs font-bold text-slate-400 print:text-gray-700">開通・本人確認 決済トランザクションログ ({policeReportData.payments.length}件)</div>
+                      <div className="max-h-40 overflow-y-auto space-y-1 font-mono text-[11px]">
+                        {policeReportData.payments.map((py: any) => (
+                          <div key={py.id} className="p-2 bg-slate-950 rounded border border-slate-850 flex justify-between items-center text-slate-300">
+                            <span>{new Date(py.created_at).toLocaleString('ja-JP')} - {py.item_type || '連絡先開示'} (¥{py.amount || 0})</span>
+                            <span className="font-bold text-emerald-400">{py.status}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>

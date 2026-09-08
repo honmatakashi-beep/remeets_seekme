@@ -1044,14 +1044,14 @@ export const AccountPage = () => {
                     【ユーザーID】
                   </span>
                   <div className="text-xs sm:text-sm font-mono font-bold text-indigo-700 truncate text-right">
-                    @{user?.username}
+                    {user?.username || '未付番'}
                   </div>
                 </div>
 
-                {/* 3. 登録メールアドレス */}
+                {/* 3. メールアドレス */}
                 <div className="bg-white hover:border-indigo-400 px-4 py-2.5 rounded-xl border-2 border-slate-300/90 shadow-xs transition-all flex items-center justify-between gap-3 group">
                   <span className="text-[11px] font-bold text-slate-500 shrink-0">
-                    【登録メールアドレス】
+                    【メールアドレス】
                   </span>
                   <div className="text-xs sm:text-sm font-medium text-slate-800 truncate text-right max-w-[200px]" title={user?.email}>
                     {user?.email || '未設定'}
@@ -1217,19 +1217,19 @@ export const AccountPage = () => {
                       {/* ユーザーID */}
                       <div>
                         <label className="block text-[11px] font-bold text-slate-500 mb-1">
-                          ユーザーID（アカウント識別子）
+                          ユーザーID
                         </label>
                         <div className="relative">
                           <input
                             type="text"
-                            value={`@${user?.username || ''}`}
+                            value={user?.username || ''}
                             disabled
                             className="w-full px-3.5 py-2.5 bg-slate-100/90 border border-slate-200 rounded-xl text-xs font-mono font-bold text-indigo-800/80 cursor-not-allowed select-none"
                           />
                           <Lock size={13} className="absolute right-3 top-3 text-slate-400" />
                         </div>
                         <p className="text-[10px] text-slate-400 mt-1">
-                          ※システム固有IDのため変更不可
+                          ※システム自動付番のため変更不可
                         </p>
                       </div>
 
@@ -1247,6 +1247,25 @@ export const AccountPage = () => {
                           />
                           <Lock size={13} className="absolute right-3 top-3 text-slate-400" />
                         </div>
+                      </div>
+
+                      {/* メールアドレス */}
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-500 mb-1">
+                          メールアドレス
+                        </label>
+                        <div className="relative">
+                          <input
+                            type="text"
+                            value={user?.email || 'メール未設定'}
+                            disabled
+                            className="w-full px-3.5 py-2.5 bg-slate-100/90 border border-slate-200 rounded-xl text-xs font-mono font-medium text-slate-700 cursor-not-allowed select-none"
+                          />
+                          <Lock size={13} className="absolute right-3 top-3 text-slate-400" />
+                        </div>
+                        <p className="text-[10px] text-slate-400 mt-1">
+                          ※SNS連携・セキュリティ保護のため変更不可
+                        </p>
                       </div>
 
                       {/* 本人確認状況 */}
@@ -1311,24 +1330,6 @@ export const AccountPage = () => {
                       />
                       <p className="text-[10px] text-slate-400 mt-1">
                         ※昔の同級生やお知り合いが旧姓でお手紙を探している際に気づきやすくなります。マイアカウントのお名前横に表示されます。
-                      </p>
-                    </div>
-
-                    {/* 登録メールアドレス */}
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1">
-                        登録メールアドレス <span className="text-rose-500">*</span>
-                      </label>
-                      <input
-                        type="email"
-                        value={editingEmail}
-                        onChange={(e) => setEditingEmail(e.target.value)}
-                        placeholder="例: user@example.com"
-                        required
-                        className="w-full px-3.5 py-2.5 bg-white border border-slate-200 hover:border-indigo-400 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 rounded-xl text-xs font-medium text-slate-900 transition-all"
-                      />
-                      <p className="text-[10px] text-slate-400 mt-1">
-                        ※メールアドレスを変更した場合、安全のため確認メールが送信されます。
                       </p>
                     </div>
 

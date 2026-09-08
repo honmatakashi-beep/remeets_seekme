@@ -11,15 +11,32 @@ import { filterNGWords } from "../moderation";
 export const authRouter = express.Router();
 
   authRouter.post("/register", registrationLimiter, async (req, res) => {
-    const { username, email, password, lastName, firstName, nickname, captchaAnswer, captchaId } = req.body;
+    let { username, email, password, lastName, firstName, nickname, captchaAnswer, captchaId, snsProvider } = req.body;
     
     // Simple CAPTCHA validation (mock)
     if (captchaAnswer !== "4") { // Assuming the question was 2+2
-      return res.status(400).json({ error: "ボット防止認証に失敗しました。" });
+      return res.status(400).json({ error: "ボット防止認証に失敗しました。「4」と入力してください。" });
     }
 
-    if (!username || !password || !email || !lastName || !firstName || !nickname) {
-      return res.status(400).json({ error: "すべての項目（ユーザー名、メールアドレス、パスワード、姓名、ニックネーム）を入力してください。" });
+    if (!email || !password || !lastName || !firstName || !nickname) {
+      return res.status(400).json({ error: "すべての必須項目（メールアドレス、パスワード、お名前、ニックネーム）を入力してください。" });
+    }
+
+    // 会員番号（ユーザーID: UID-6桁数字）を自動付番（重複防止チェック付き）
+    if (!username || !username.startsWith('UID-')) {
+      let generatedUid = '';
+      let isUnique = false;
+      let attempts = 0;
+      while (!isUnique && attempts < 10) {
+        attempts++;
+        const randomNum = Math.floor(100000 + Math.random() * 900000);
+        generatedUid = `UID-${randomNum}`;
+        const existing = db.prepare("SELECT id FROM users WHERE username = ?").get(generatedUid);
+        if (!existing) {
+          isUnique = true;
+        }
+      }
+      username = generatedUid;
     }
 
     // Password strength check
@@ -51,7 +68,7 @@ export const authRouter = express.Router();
       await sendVerificationEmail(email, verificationToken);
 
       res.json({ 
-        message: "登録が完了しました。確認メールを送信しましたので、リンクをクリックして有効化してください。",
+        message: "登録が完了しました。確認メールを送信しましたので、メール内の案内をご確認ください。",
         user: { 
           id: result.lastInsertRowid, 
           username, 
@@ -68,7 +85,7 @@ export const authRouter = express.Router();
         if (err.message.includes("users.email")) {
           return res.status(400).json({ error: "このメールアドレスは既に登録されています。" });
         }
-        return res.status(400).json({ error: "このユーザー名は既に存在します。" });
+        return res.status(400).json({ error: "このアカウントは既に登録されています。" });
       }
       res.status(500).json({ error: "登録に失敗しました。" });
     }

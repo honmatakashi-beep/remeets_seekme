@@ -379,12 +379,13 @@ export const AdminUsersTab: React.FC<AdminUsersTabProps> = (props) => {
                                   className="rounded border-brand-border text-brand-primary focus:ring-brand-primary cursor-pointer w-4 h-4"
                                 />
                               </th>
-                              <th className="px-2.5 py-2.5 w-14 whitespace-nowrap">ID</th>
-                              <th className="px-3 py-2.5 whitespace-nowrap">ユーザー情報</th>
-                              <th className="px-3 py-2.5 whitespace-nowrap">氏名 / 旧姓</th>
-                              <th className="px-3 py-2.5 whitespace-nowrap">連絡先 / SNS</th>
+                              <th className="px-3 py-2.5 whitespace-nowrap">ユーザーID</th>
+                              <th className="px-3 py-2.5 whitespace-nowrap">メールアドレス</th>
+                              <th className="px-3 py-2.5 whitespace-nowrap">ニックネーム</th>
+                              <th className="px-3 py-2.5 whitespace-nowrap">本名</th>
+                              <th className="px-3 py-2.5 text-center whitespace-nowrap">本人確認 (eKYC)</th>
+                              <th className="px-3 py-2.5 whitespace-nowrap">開示連絡先</th>
                               <th className="px-3 py-2.5 text-center whitespace-nowrap">活動状況</th>
-                              <th className="px-3 py-2.5 text-center whitespace-nowrap">認証状況</th>
                               <th className="px-3 py-2.5 text-center whitespace-nowrap">状態</th>
                               <th className="px-3 py-2.5 whitespace-nowrap">登録日</th>
                               <th className="px-3 py-2.5 text-right whitespace-nowrap">操作</th>
@@ -393,7 +394,7 @@ export const AdminUsersTab: React.FC<AdminUsersTabProps> = (props) => {
                           <tbody className="divide-y divide-brand-border/50 text-xs">
                             {paginatedUsers.length === 0 ? (
                               <tr>
-                                <td colSpan={10} className="px-6 py-12 text-center text-black/50">
+                                <td colSpan={11} className="px-6 py-12 text-center text-black/50">
                                   <div className="flex flex-col items-center justify-center gap-2">
                                     <Users size={32} className="text-black/20" />
                                     <p className="font-bold">該当するユーザーは見つかりませんでした</p>
@@ -404,14 +405,14 @@ export const AdminUsersTab: React.FC<AdminUsersTabProps> = (props) => {
                             ) : (
                               paginatedUsers.map((u) => {
                                 const isSelected = selectedUserIds.includes(u.id);
-                                const isSample = u.username.startsWith('sample_') || u.email?.includes('example.com') || u.email?.includes('sample.local');
+                                const isSample = u.email?.includes('sample.remeets.jp') || u.email?.includes('example.com') || u.email?.includes('sample.local');
                                 
                                 return (
                                   <tr
                                     key={u.id}
                                     onClick={() => handleViewUser(u)}
-                                    className={`h-12 hover:bg-white/60 transition-colors cursor-pointer group ${
-                                      isSelected ? 'bg-brand-primary/5' : ''
+                                    className={`h-12 hover:bg-indigo-50/40 transition-colors cursor-pointer group ${
+                                      isSelected ? 'bg-indigo-50/60' : ''
                                     } ${u.is_blocked ? 'bg-red-50/30' : ''}`}
                                   >
                                     {/* Checkbox */}
@@ -430,126 +431,144 @@ export const AdminUsersTab: React.FC<AdminUsersTabProps> = (props) => {
                                       />
                                     </td>
 
-                                    {/* ID */}
-                                    <td className="px-2.5 py-2 font-mono text-black/60 font-bold text-xs whitespace-nowrap">
-                                      #{u.id}
-                                    </td>
-
-                                    {/* User Info (Avatar + Username + Nickname in single horizontal line) */}
+                                    {/* 1. ユーザーID */}
                                     <td className="px-3 py-2 whitespace-nowrap">
                                       <div className="flex items-center gap-2">
-                                        <div className={`w-7 h-7 rounded-lg flex items-center justify-center font-black text-xs shrink-0 ${
+                                        <div className={`w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 ${
                                           u.role === 'admin' 
-                                            ? 'bg-black text-white' 
+                                            ? 'bg-slate-900 text-white' 
                                             : isSample 
-                                              ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' 
-                                              : 'bg-brand-primary/10 text-brand-dark'
+                                              ? 'bg-indigo-100 text-indigo-800' 
+                                              : 'bg-amber-100 text-amber-900'
                                         }`}>
-                                          {(u.nickname || u.username || '?')[0].toUpperCase()}
+                                          {(u.nickname || u.full_name || u.username || '?')[0].toUpperCase()}
                                         </div>
-                                        <span className="font-bold text-black text-xs">{u.username}</span>
-                                        {u.nickname && (
-                                          <span className="text-[11px] text-black/50">（{u.nickname}）</span>
-                                        )}
+                                        <span className="font-mono font-bold text-indigo-900 text-xs bg-indigo-50/80 px-2 py-0.5 rounded border border-indigo-200/70">
+                                          {u.username}
+                                        </span>
                                         {u.role === 'admin' && (
-                                          <span className="text-[9px] bg-black text-white px-1.5 py-0.2 rounded font-bold tracking-wider">
+                                          <span className="text-[9px] bg-black text-white px-1.5 py-0.2 rounded font-bold">
                                             ADMIN
                                           </span>
                                         )}
-                                        {isSample && (
-                                          <span className="text-[9px] bg-indigo-50 text-indigo-700 border border-indigo-200 px-1 py-0.2 rounded font-medium">
-                                            SAMPLE
-                                          </span>
-                                        )}
                                       </div>
                                     </td>
 
-                                    {/* Full Name & Maiden Name & Birthdate in single horizontal line */}
+                                    {/* 2. メールアドレス ＆ ログイン方法 */}
                                     <td className="px-3 py-2 whitespace-nowrap">
-                                      <div className="flex items-center gap-2">
-                                        <span className="font-bold text-black/85 text-xs">
-                                          {u.full_name || (u.last_name || u.first_name ? `${u.last_name || ''} ${u.first_name || ''}`.trim() : <span className="text-black/30 font-normal">未登録</span>)}
+                                      <div className="flex flex-col gap-0.5">
+                                        <span className="font-mono text-xs text-slate-800 font-medium">
+                                          {u.email || <span className="text-slate-400 font-sans">未登録</span>}
+                                        </span>
+                                        <div className="flex items-center gap-1 mt-0.5">
+                                          {u.auth_provider === 'line' ? (
+                                            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200/80 px-1.5 py-0.2 rounded">
+                                              <svg className="w-2.5 h-2.5 fill-[#06C755]" viewBox="0 0 24 24">
+                                                <path d="M24 10.304c0-5.369-5.383-9.738-12-9.738-6.616 0-12 4.369-12 9.738 0 4.814 4.269 8.846 10.019 9.587.39.084.922.256 1.058.588.12.302.079.774.038 1.08l-.164 1.026c-.05.31-.242 1.213 1.063.662 1.306-.55 7.042-4.148 9.608-7.1 1.637-1.821 2.378-3.669 2.378-5.847z"/>
+                                              </svg>
+                                              <span>LINE</span>
+                                            </span>
+                                          ) : u.auth_provider === 'google' ? (
+                                            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-blue-800 bg-blue-50 border border-blue-200/80 px-1.5 py-0.2 rounded">
+                                              <svg className="w-2.5 h-2.5" viewBox="0 0 24 24">
+                                                <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z"/>
+                                                <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.8z"/>
+                                                <path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.3s.2-1.6.4-2.3L1.9 7.3C.7 9.7 0 12.3 0 15s.7 5.3 1.9 7.7l3.7-2.9z"/>
+                                                <path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2-6.4-4.8L1.9 16.4C3.7 20.1 7.5 23 12 23z"/>
+                                              </svg>
+                                              <span>Google</span>
+                                            </span>
+                                          ) : (
+                                            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-slate-600 bg-slate-100 border border-slate-200/80 px-1.5 py-0.2 rounded">
+                                              <Mail size={9} className="text-slate-500" />
+                                              <span>メール</span>
+                                            </span>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </td>
+
+                                    {/* 3. 表示ニックネーム */}
+                                    <td className="px-3 py-2 whitespace-nowrap">
+                                      <span className="font-bold text-slate-900 text-xs">
+                                        {u.nickname || <span className="text-slate-400 font-normal">未設定</span>}
+                                      </span>
+                                    </td>
+
+                                    {/* 4. お名前（本名 / 旧姓） */}
+                                    <td className="px-3 py-2 whitespace-nowrap">
+                                      <div className="flex items-center gap-1.5">
+                                        <span className="font-bold text-slate-800 text-xs">
+                                          {u.full_name || (u.last_name || u.first_name ? `${u.last_name || ''} ${u.first_name || ''}`.trim() : <span className="text-slate-400 font-normal">未登録</span>)}
                                         </span>
                                         {u.maiden_name && (
-                                          <span className="bg-amber-50 text-amber-850 px-1.5 py-0.2 rounded border border-amber-200 text-[10px] font-medium">
+                                          <span className="bg-amber-50 text-amber-900 px-1.5 py-0.2 rounded border border-amber-200 text-[10px]">
                                             旧姓: {u.maiden_name}
                                           </span>
                                         )}
-                                        {u.birthdate && (
-                                          <span className="text-[10px] text-black/40 font-mono">
-                                            ({u.birthdate})
-                                          </span>
-                                        )}
                                       </div>
                                     </td>
 
-                                    {/* Email & Contact in single horizontal line */}
-                                    <td className="px-3 py-2 whitespace-nowrap">
-                                      <div className="flex items-center gap-2">
-                                        <span className="font-mono text-[11px] text-black/75">
-                                          {u.email || <span className="text-black/30 font-sans">メール未登録</span>}
+                                    {/* 5. 本人確認 (eKYC) */}
+                                    <td className="px-3 py-2 text-center whitespace-nowrap">
+                                      {u.is_ekyc_verified ? (
+                                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                                          <ShieldCheck size={12} className="text-emerald-700" />
+                                          <span>承認済</span>
                                         </span>
-                                        {u.contact_type && u.contact_id && (
-                                          <span className="inline-flex items-center gap-1 text-[10px] text-black/60 bg-slate-100 px-1.5 py-0.2 rounded font-mono">
-                                            <span className="font-bold text-black/70">{u.contact_type.toUpperCase()}</span>: {u.contact_id}
-                                          </span>
-                                        )}
-                                      </div>
+                                      ) : (
+                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-600 border border-slate-200">
+                                          <span>📝 自己申告</span>
+                                        </span>
+                                      )}
                                     </td>
 
-                                    {/* Activities in single horizontal line */}
+                                    {/* 6. 開示連絡先 */}
+                                    <td className="px-3 py-2 whitespace-nowrap">
+                                      {u.contact_type && u.contact_id ? (
+                                        <span className="inline-flex items-center gap-1 text-[11px] text-teal-800 bg-teal-50 border border-teal-200 px-2 py-0.5 rounded-md font-mono">
+                                          <span className="font-bold">{u.contact_type.toUpperCase()}</span>: {u.contact_id}
+                                        </span>
+                                      ) : (
+                                        <span className="text-slate-400 text-[11px]">未設定</span>
+                                      )}
+                                    </td>
+
+                                    {/* 7. 活動状況 */}
                                     <td className="px-3 py-2 text-center whitespace-nowrap">
                                       <div className="flex items-center justify-center gap-1.5">
-                                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
-                                          (u.posts_count || 0) > 0
-                                            ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                                            : 'bg-slate-50 text-black/40 border-slate-200'
-                                        }`} title={`累計投関数: ${u.posts_count || 0}通`}>
+                                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200" title={`累計投関数: ${u.posts_count || 0}通`}>
                                           ✉️ {u.posts_count || 0}
                                         </span>
                                         {(u.resolved_posts_count || 0) > 0 && (
-                                          <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200" title={`再会成立: ${u.resolved_posts_count}組`}>
+                                          <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300" title={`再会成立: ${u.resolved_posts_count}組`}>
                                             🤝 {u.resolved_posts_count}
                                           </span>
                                         )}
                                         {(u.reports_received_count || 0) > 0 && (
-                                          <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200 animate-pulse" title={`被通報数: ${u.reports_received_count}件`}>
+                                          <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-300 animate-pulse" title={`被通報数: ${u.reports_received_count}件`}>
                                             ⚠️ {u.reports_received_count}
                                           </span>
                                         )}
                                       </div>
                                     </td>
 
-                                    {/* eKYC Verification Badge in single horizontal line */}
-                                    <td className="px-3 py-2 text-center whitespace-nowrap">
-                                      {u.is_ekyc_verified ? (
-                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-2xs" title={`eKYC認証完了 (${u.ekyc_document_type || '公的身分証'})`}>
-                                          <ShieldCheck size={12} className="text-emerald-700" />
-                                          <span>eKYC済</span>
-                                        </span>
-                                      ) : (
-                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-black/60 border border-slate-200" title="自己申告・誓約書署名のみ">
-                                          <span>📝 自己申告</span>
-                                        </span>
-                                      )}
-                                    </td>
-
-                                    {/* Status Badge in single horizontal line */}
+                                    {/* 8. 状態 */}
                                     <td className="px-3 py-2 text-center whitespace-nowrap">
                                       {u.is_blocked ? (
-                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-700 border border-rose-200">
+                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-300">
                                           <LockIcon size={10} />
                                           <span>凍結中</span>
                                         </span>
                                       ) : (
-                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
                                           <span>正常</span>
                                         </span>
                                       )}
                                     </td>
 
-                                    {/* Created Date in single horizontal line */}
-                                    <td className="px-3 py-2 text-black/60 text-[11px] whitespace-nowrap font-mono">
+                                    {/* 9. 登録日 */}
+                                    <td className="px-3 py-2 text-slate-600 text-[11px] whitespace-nowrap font-mono">
                                       {u.created_at ? new Date(u.created_at).toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' }) : '-'}
                                     </td>
 

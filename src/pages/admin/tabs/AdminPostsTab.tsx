@@ -244,35 +244,49 @@ export const AdminPostsTab: React.FC<AdminPostsTabProps> = (props) => {
                     {/* CSV Export Button */}
                     <button
                       onClick={handleExportPostsCSV}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-black/80 font-bold rounded-xl text-xs transition-colors border border-brand-border cursor-pointer shadow-2xs"
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-black/80 font-bold rounded-xl text-xs transition-colors border border-brand-border cursor-pointer shadow-2xs whitespace-nowrap shrink-0"
                       title="現在のフィルター結果をCSVエクスポート"
                     >
                       <Download size={13} />
-                      <span className="hidden sm:inline">CSV出力</span>
+                      <span className="whitespace-nowrap">CSV出力</span>
                     </button>
 
-                    {/* Reseed 100% Unique Posts Button */}
-                    <button
-                      onClick={() => handleReseedUniquePosts(200)}
-                      disabled={isGeneratingSamplePosts}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition-colors cursor-pointer shadow-2xs disabled:opacity-50"
-                      title="重複を全排除し、誰一人としてクイズや本文が被らない100%ユニークな200通へ一括再構築"
-                    >
-                      <Sparkles size={13} className={isGeneratingSamplePosts ? "animate-spin" : ""} />
-                      <span className="hidden md:inline">重複ゼロ再構築 (200通)</span>
-                      <span className="md:hidden">再構築 (200)</span>
-                    </button>
+                    {/* Generator Actions (Reseed on top, Append buttons stacked below) */}
+                    <div className="flex flex-col gap-1.5 shrink-0">
+                      {/* Reseed 100% Unique Posts Button (Reset & Rebuild) */}
+                      <button
+                        onClick={() => handleReseedUniquePosts(200)}
+                        disabled={isGeneratingSamplePosts}
+                        className="w-full flex items-center justify-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition-colors cursor-pointer shadow-2xs disabled:opacity-50 whitespace-nowrap"
+                        title="既存のサンプルを初期化（リセット）し、重複ゼロの完全ユニークな200通に一括再構築します"
+                      >
+                        <RotateCcw size={13} className={isGeneratingSamplePosts ? "animate-spin" : ""} />
+                        <span className="whitespace-nowrap">初期化再構築 (200通)</span>
+                      </button>
 
-                    {/* Sample Post Generator Button */}
-                    <button
-                      onClick={() => handleGenerateSamplePosts(50)}
-                      disabled={isGeneratingSamplePosts}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-black hover:bg-black/80 text-white font-bold rounded-xl text-xs transition-colors cursor-pointer shadow-2xs disabled:opacity-50"
-                      title="実在感のある日本の想い出サンプルボトルを50通一括自動生成（重複ゼロ保証）"
-                    >
-                      <Plus size={13} className={isGeneratingSamplePosts ? "animate-spin" : ""} />
-                      <span>サンプル生成 (+50)</span>
-                    </button>
+                      {/* Stacked Append Buttons (+50 & +200) */}
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={() => handleGenerateSamplePosts(50)}
+                          disabled={isGeneratingSamplePosts}
+                          className="flex-1 flex items-center justify-center gap-1 px-2.5 py-1 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-lg text-[11px] transition-colors cursor-pointer shadow-2xs disabled:opacity-50 whitespace-nowrap"
+                          title="既存の手紙を残したまま、重複ゼロの想い出ボトルメールを50通追加生成します"
+                        >
+                          <Plus size={12} className={isGeneratingSamplePosts ? "animate-spin" : ""} />
+                          <span className="whitespace-nowrap">追加 (+50)</span>
+                        </button>
+
+                        <button
+                          onClick={() => handleGenerateSamplePosts(200)}
+                          disabled={isGeneratingSamplePosts}
+                          className="flex-1 flex items-center justify-center gap-1 px-2.5 py-1 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-lg text-[11px] transition-colors cursor-pointer shadow-2xs disabled:opacity-50 whitespace-nowrap"
+                          title="既存の手紙を残したまま、重複ゼロの想い出ボトルメールを200通追加生成します（例: 200通 → 400通）"
+                        >
+                          <Plus size={12} className={isGeneratingSamplePosts ? "animate-spin" : ""} />
+                          <span className="whitespace-nowrap">追加 (+200)</span>
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -358,6 +372,7 @@ export const AdminPostsTab: React.FC<AdminPostsTabProps> = (props) => {
                     (p.target_name && p.target_name.toLowerCase().includes(term)) ||
                     (p.searcher_name && p.searcher_name.toLowerCase().includes(term)) ||
                     (p.searcher_username && p.searcher_username.toLowerCase().includes(term)) ||
+                    (p.searcher_account_nickname && p.searcher_account_nickname.toLowerCase().includes(term)) ||
                     (p.searcher_nickname && p.searcher_nickname.toLowerCase().includes(term)) ||
                     (p.searcher_full_name && p.searcher_full_name.toLowerCase().includes(term)) ||
                     (p.target_school && p.target_school.toLowerCase().includes(term)) ||
@@ -366,7 +381,8 @@ export const AdminPostsTab: React.FC<AdminPostsTabProps> = (props) => {
                     (p.category && p.category.toLowerCase().includes(term)) ||
                     (p.message && p.message.toLowerCase().includes(term)) ||
                     (p.secret_question && p.secret_question.toLowerCase().includes(term)) ||
-                    String(p.id).includes(term)
+                    String(p.id).includes(term) ||
+                    (p.user_id && String(p.user_id) === term)
                   );
                 });
 
