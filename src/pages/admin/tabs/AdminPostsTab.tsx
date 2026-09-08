@@ -640,10 +640,8 @@ export const AdminPostsTab: React.FC<AdminPostsTabProps> = (props) => {
                                         {/* 4. Open Public Page */}
                                         <a
                                           href={getPostUrl(p)}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
                                           className="p-1.5 text-teal-600 hover:text-teal-800 hover:bg-teal-50 rounded-lg transition-colors cursor-pointer inline-flex items-center"
-                                          title="一般公開ページを新しいタブで開く"
+                                          title="手紙の公開ページを表示（現在のタブで開く）"
                                         >
                                           <ExternalLink size={14} />
                                         </a>

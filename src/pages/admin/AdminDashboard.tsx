@@ -3988,10 +3988,9 @@ export const AdminDashboard = () => {
                     <p className="text-sm text-black/50 uppercase tracking-widest">Post ID: #{selectedPost.id}</p>
                     <Link 
                       to={getPostUrl(selectedPost)} 
-                      target="_blank"
-                      className="text-[10px] font-bold text-black hover:underline flex items-center gap-1 uppercase tracking-widest"
+                      className="text-[10px] font-bold text-teal-700 hover:underline flex items-center gap-1 uppercase tracking-widest bg-teal-50 px-2 py-0.5 rounded border border-teal-200"
                     >
-                      公開ページを表示 <ExternalLink size={10} />
+                      手紙の公開ページを開く <ExternalLink size={10} />
                     </Link>
                   </div>
                 </div>
