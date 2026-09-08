@@ -94,7 +94,7 @@ async function run() {
   const loginARes = await fetchJson('/api/auth/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username: userAUsername, password })
+    body: JSON.stringify({ username: regARes.data?.user?.username || userAEmail, password })
   });
   assert(loginARes.ok && loginARes.data?.token, 'ユーザーA ログイン & JWT発行');
   const tokenA = loginARes.data?.token;
@@ -158,7 +158,7 @@ async function run() {
   const loginBRes = await fetchJson('/api/auth/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username: userBUsername, password })
+    body: JSON.stringify({ username: regBRes.data?.user?.username || userBEmail, password })
   });
   assert(loginBRes.ok && loginBRes.data?.token, '受取人ユーザーB ログイン & JWT発行');
   const tokenB = loginBRes.data?.token;

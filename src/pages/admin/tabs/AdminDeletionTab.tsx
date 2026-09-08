@@ -46,7 +46,7 @@ export const AdminDeletionTab: React.FC<AdminDeletionTabProps> = (props) => {
                     </div>
                   </div>
                   <div className="mt-2 flex items-baseline gap-2">
-                    <span className="text-2xl font-extrabold text-slate-800">{deletionRequests.length}</span>
+                    <span className="text-2xl font-extrabold font-serif text-slate-800">{deletionRequests.length}</span>
                     <span className="text-xs text-slate-500">件</span>
                   </div>
                   <div className="mt-1 text-[11px] text-slate-500 font-medium">全期間の削除救済申請</div>
@@ -60,7 +60,7 @@ export const AdminDeletionTab: React.FC<AdminDeletionTabProps> = (props) => {
                     </div>
                   </div>
                   <div className="mt-2 flex items-baseline gap-2">
-                    <span className="text-2xl font-extrabold text-amber-700">
+                    <span className="text-2xl font-extrabold font-serif text-amber-700">
                       {deletionRequests.filter(r => r.status === 'pending').length}
                     </span>
                     <span className="text-xs text-amber-500 font-semibold">件</span>
@@ -76,7 +76,7 @@ export const AdminDeletionTab: React.FC<AdminDeletionTabProps> = (props) => {
                     </div>
                   </div>
                   <div className="mt-2 flex items-baseline gap-2">
-                    <span className="text-2xl font-extrabold text-emerald-700">
+                    <span className="text-2xl font-extrabold font-serif text-emerald-700">
                       {deletionRequests.filter(r => r.status === 'approved' || r.status === 'resolved').length}
                     </span>
                     <span className="text-xs text-emerald-600 font-semibold">
@@ -94,7 +94,7 @@ export const AdminDeletionTab: React.FC<AdminDeletionTabProps> = (props) => {
                     </div>
                   </div>
                   <div className="mt-2 flex items-baseline gap-2">
-                    <span className="text-2xl font-extrabold text-rose-700">
+                    <span className="text-2xl font-extrabold font-serif text-rose-700">
                       {deletionRequests.filter(r => r.status === 'rejected').length}
                     </span>
                     <span className="text-xs text-rose-500">件</span>

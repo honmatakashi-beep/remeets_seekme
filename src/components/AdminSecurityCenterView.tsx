@@ -26,6 +26,11 @@ import {
   Radio,
   UserCheck,
   CheckCircle2,
+  CheckCircle,
+  XCircle,
+  KeyRound,
+  Sliders,
+  EyeOff,
   X
 } from 'lucide-react';
 import { 
@@ -58,10 +63,28 @@ export const AdminSecurityCenterView: React.FC<AdminSecurityCenterViewProps> = (
   token,
   onNavigateTab
 }) => {
-  const [activeTab, setActiveTab] = useState<'ipDefense' | 'simulator' | 'metrics' | 'policeGuide'>('ipDefense');
+  const [activeTab, setActiveTab] = useState<'ipDefense' | 'simulator' | 'passwordPolicy' | 'metrics' | 'policeGuide'>('ipDefense');
   const [securityStats, setSecurityStats] = useState<SecurityStats | null>(null);
   const [loading, setLoading] = useState(false);
   const [statusMsg, setStatusMsg] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
+
+  // Password Policy State
+  const [passwordPolicy, setPasswordPolicy] = useState<{
+    minLength: number;
+    requireLetters: boolean;
+    requireNumbers: boolean;
+    requireSymbols: boolean;
+    requireMixedCase: boolean;
+  }>({
+    minLength: 8,
+    requireLetters: true,
+    requireNumbers: true,
+    requireSymbols: false,
+    requireMixedCase: false,
+  });
+  const [isSavingPolicy, setIsSavingPolicy] = useState(false);
+  const [policyTestPassword, setPolicyTestPassword] = useState('');
+  const [showTestPassword, setShowTestPassword] = useState(true);
 
   // Manual IP block input
   const [newBlockIp, setNewBlockIp] = useState('');
@@ -78,7 +101,7 @@ export const AdminSecurityCenterView: React.FC<AdminSecurityCenterViewProps> = (
   const [isSampleBookOpen, setIsSampleBookOpen] = useState(false);
   const [activeSampleCategory, setActiveSampleCategory] = useState<string>('cat1');
 
-  // Fetch security stats
+  // Fetch security stats & password policy
   const fetchSecurityStats = async () => {
     if (!token) return;
     try {
@@ -97,8 +120,67 @@ export const AdminSecurityCenterView: React.FC<AdminSecurityCenterViewProps> = (
     }
   };
 
+  const fetchPasswordPolicy = async () => {
+    if (!token) return;
+    try {
+      const res = await fetch('/api/admin/password-policy', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setPasswordPolicy({
+          minLength: typeof data.minLength === 'number' ? data.minLength : 8,
+          requireLetters: data.requireLetters !== undefined ? !!data.requireLetters : true,
+          requireNumbers: data.requireNumbers !== undefined ? !!data.requireNumbers : true,
+          requireSymbols: data.requireSymbols !== undefined ? !!data.requireSymbols : false,
+          requireMixedCase: data.requireMixedCase !== undefined ? !!data.requireMixedCase : false,
+        });
+      }
+    } catch (err) {
+      console.error('Failed to fetch password policy:', err);
+    }
+  };
+
+  const handleSavePasswordPolicy = async () => {
+    if (!token) return;
+    try {
+      setIsSavingPolicy(true);
+      const res = await fetch('/api/admin/password-policy', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(passwordPolicy)
+      });
+      if (res.ok) {
+        setStatusMsg({ text: 'パスワードポリシー設定を正常に保存・適用しました', type: 'success' });
+      } else {
+        setStatusMsg({ text: 'パスワードポリシーの保存に失敗しました', type: 'error' });
+      }
+    } catch (err) {
+      setStatusMsg({ text: '通信エラーが発生しました', type: 'error' });
+    } finally {
+      setIsSavingPolicy(false);
+      setTimeout(() => setStatusMsg(null), 4000);
+    }
+  };
+
+  const applyPasswordPolicyPreset = (preset: 'standard' | 'high' | 'ultra' | 'simple') => {
+    if (preset === 'standard') {
+      setPasswordPolicy({ minLength: 8, requireLetters: true, requireNumbers: true, requireSymbols: false, requireMixedCase: false });
+    } else if (preset === 'high') {
+      setPasswordPolicy({ minLength: 10, requireLetters: true, requireNumbers: true, requireSymbols: true, requireMixedCase: false });
+    } else if (preset === 'ultra') {
+      setPasswordPolicy({ minLength: 12, requireLetters: true, requireNumbers: true, requireSymbols: true, requireMixedCase: true });
+    } else if (preset === 'simple') {
+      setPasswordPolicy({ minLength: 6, requireLetters: true, requireNumbers: true, requireSymbols: false, requireMixedCase: false });
+    }
+  };
+
   useEffect(() => {
     fetchSecurityStats();
+    fetchPasswordPolicy();
   }, [token]);
 
   // Handle Block IP
@@ -352,7 +434,7 @@ export const AdminSecurityCenterView: React.FC<AdminSecurityCenterViewProps> = (
             </div>
           </div>
           <div className="mt-2 flex items-baseline gap-1.5">
-            <span className="text-2xl font-black text-rose-700">
+            <span className="text-2xl font-black font-serif text-rose-700">
               {securityStats?.failedLogins.reduce((acc, curr) => acc + curr.count, 0) || 0}
             </span>
             <span className="text-xs text-rose-600 font-bold">回</span>
@@ -368,7 +450,7 @@ export const AdminSecurityCenterView: React.FC<AdminSecurityCenterViewProps> = (
             </div>
           </div>
           <div className="mt-2 flex items-baseline gap-1.5">
-            <span className="text-2xl font-black text-amber-900">
+            <span className="text-2xl font-black font-serif text-amber-900">
               {securityStats?.suspiciousActivity.length || 0}
             </span>
             <span className="text-xs text-amber-700 font-bold">IP</span>
@@ -384,7 +466,7 @@ export const AdminSecurityCenterView: React.FC<AdminSecurityCenterViewProps> = (
             </div>
           </div>
           <div className="mt-2 flex items-baseline gap-1.5">
-            <span className="text-2xl font-black text-slate-900">
+            <span className="text-2xl font-black font-serif text-slate-900">
               {securityStats?.blockedIps.length || 0}
             </span>
             <span className="text-xs text-slate-600 font-bold">IP</span>
@@ -400,7 +482,7 @@ export const AdminSecurityCenterView: React.FC<AdminSecurityCenterViewProps> = (
             </div>
           </div>
           <div className="mt-2 flex items-baseline gap-1.5">
-            <span className="text-2xl font-black text-emerald-900">100</span>
+            <span className="text-2xl font-black font-serif text-emerald-900">100</span>
             <span className="text-xs text-emerald-700 font-bold">% ONLINE</span>
           </div>
           <p className="text-[11px] text-slate-600 mt-0.5">Gemini AI 多層監視中</p>
@@ -431,6 +513,18 @@ export const AdminSecurityCenterView: React.FC<AdminSecurityCenterViewProps> = (
         >
           <Bot size={14} className="text-indigo-600" />
           AI安全防衛シミュレータ (50選大図鑑)
+        </button>
+
+        <button
+          onClick={() => setActiveTab('passwordPolicy')}
+          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+            activeTab === 'passwordPolicy'
+              ? 'bg-white text-slate-900 shadow-sm'
+              : 'text-slate-600 hover:text-slate-900'
+          }`}
+        >
+          <KeyRound size={14} className="text-amber-600" />
+          パスワードポリシー設定
         </button>
 
         <button
@@ -982,6 +1076,341 @@ export const AdminSecurityCenterView: React.FC<AdminSecurityCenterViewProps> = (
                   <p className="text-xs font-medium">テキストを入力して「リアルタイムAI解析」を実行してください</p>
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Subtab: Password Policy Configuration */}
+      {activeTab === 'passwordPolicy' && (
+        <div className="space-y-6">
+          {/* Header Card & Presets */}
+          <div className="bg-white/95 rounded-2xl p-6 border border-brand-border shadow-sm space-y-5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                    <KeyRound size={18} />
+                  </div>
+                  <h3 className="text-base font-bold text-slate-900 font-serif">アカウント・パスワードポリシー設定</h3>
+                </div>
+                <p className="text-xs text-slate-600 font-sans pl-10">
+                  新規会員登録・パスワード再設定・パスワード変更時に要求されるセキュリティ強度ルールを動的に設定・即時適用します。
+                </p>
+              </div>
+
+              {/* Quick Presets */}
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="text-[11px] font-bold text-slate-500 mr-1 flex items-center gap-1">
+                  <Sliders size={12} />
+                  プリセット:
+                </span>
+                <button
+                  type="button"
+                  onClick={() => applyPasswordPolicyPreset('standard')}
+                  className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[11px] font-bold transition-all cursor-pointer"
+                >
+                  標準 (8文字・英数)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => applyPasswordPolicyPreset('high')}
+                  className="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-lg text-[11px] font-bold transition-all cursor-pointer"
+                >
+                  高セキュリティ (10文字・記号)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => applyPasswordPolicyPreset('ultra')}
+                  className="px-2.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200 rounded-lg text-[11px] font-bold transition-all cursor-pointer"
+                >
+                  超堅牢 (12文字・大文字小文字記号)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => applyPasswordPolicyPreset('simple')}
+                  className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[11px] font-bold transition-all cursor-pointer"
+                >
+                  シンプル (6文字)
+                </button>
+              </div>
+            </div>
+
+            {/* Policy Form Controls */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-2">
+              {/* Left: Rule Sliders and Toggles */}
+              <div className="space-y-4 bg-slate-50/70 p-5 rounded-2xl border border-slate-200/80">
+                <h4 className="text-xs font-bold text-slate-900 flex items-center gap-1.5 mb-3">
+                  <ShieldCheck size={15} className="text-emerald-600" />
+                  ポリシー必須条件の設定
+                </h4>
+
+                {/* 1. 最小桁数 */}
+                <div className="space-y-2 bg-white p-4 rounded-xl border border-slate-200">
+                  <div className="flex justify-between items-center">
+                    <label className="text-xs font-bold text-slate-800">
+                      1. パスワード最小文字数
+                    </label>
+                    <span className="text-sm font-black text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-lg border border-amber-200">
+                      {passwordPolicy.minLength} 文字以上
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3 pt-1">
+                    <input
+                      type="range"
+                      min={6}
+                      max={32}
+                      step={1}
+                      value={passwordPolicy.minLength}
+                      onChange={(e) => setPasswordPolicy({ ...passwordPolicy, minLength: Number(e.target.value) })}
+                      className="w-full accent-amber-600 cursor-pointer"
+                    />
+                  </div>
+                  <div className="flex justify-between text-[10px] text-slate-600 font-mono">
+                    <span>6文字 (最小)</span>
+                    <span>12文字 (推奨)</span>
+                    <span>32文字 (最大)</span>
+                  </div>
+                </div>
+
+                {/* 2. 英字必須 */}
+                <div className="flex items-center justify-between p-3.5 bg-white rounded-xl border border-slate-200">
+                  <div>
+                    <div className="text-xs font-bold text-slate-800">2. 英字の含有（a〜z, A〜Z）</div>
+                    <div className="text-[11px] text-slate-600">パスワードに半角英字を1文字以上必須とする</div>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={passwordPolicy.requireLetters}
+                      onChange={(e) => setPasswordPolicy({ ...passwordPolicy, requireLetters: e.target.checked })}
+                      className="sr-only peer"
+                    />
+                    <div className="w-10 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                  </label>
+                </div>
+
+                {/* 3. 数字必須 */}
+                <div className="flex items-center justify-between p-3.5 bg-white rounded-xl border border-slate-200">
+                  <div>
+                    <div className="text-xs font-bold text-slate-800">3. 数字の含有（0〜9）</div>
+                    <div className="text-[11px] text-slate-600">パスワードに半角数字を1文字以上必須とする</div>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={passwordPolicy.requireNumbers}
+                      onChange={(e) => setPasswordPolicy({ ...passwordPolicy, requireNumbers: e.target.checked })}
+                      className="sr-only peer"
+                    />
+                    <div className="w-10 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                  </label>
+                </div>
+
+                {/* 4. 記号必須 */}
+                <div className="flex items-center justify-between p-3.5 bg-white rounded-xl border border-slate-200">
+                  <div>
+                    <div className="text-xs font-bold text-slate-800">4. 記号の含有（!@#$%^&*等）</div>
+                    <div className="text-[11px] text-slate-600">特殊記号（! @ # $ % ^ & * ( ) _ + - = [ ] 等）を1文字以上必須とする</div>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={passwordPolicy.requireSymbols}
+                      onChange={(e) => setPasswordPolicy({ ...passwordPolicy, requireSymbols: e.target.checked })}
+                      className="sr-only peer"
+                    />
+                    <div className="w-10 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                  </label>
+                </div>
+
+                {/* 5. 大文字小文字混在必須 */}
+                <div className="flex items-center justify-between p-3.5 bg-white rounded-xl border border-slate-200">
+                  <div>
+                    <div className="text-xs font-bold text-slate-800">5. 大文字・小文字の混在</div>
+                    <div className="text-[11px] text-slate-600">英大文字（A〜Z）と英小文字（a〜z）の両方を必須とする</div>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={passwordPolicy.requireMixedCase}
+                      onChange={(e) => setPasswordPolicy({ ...passwordPolicy, requireMixedCase: e.target.checked })}
+                      className="sr-only peer"
+                    />
+                    <div className="w-10 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                  </label>
+                </div>
+
+                {/* Save Button */}
+                <button
+                  type="button"
+                  disabled={isSavingPolicy}
+                  onClick={handleSavePasswordPolicy}
+                  className="w-full py-3 bg-brand-dark hover:bg-brand-primary text-white rounded-xl text-xs font-bold shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2 mt-4 disabled:opacity-50"
+                >
+                  {isSavingPolicy ? (
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  ) : (
+                    <>
+                      <Check size={16} />
+                      <span>パスワードポリシー設定を保存・即時適用する</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {/* Right: Live Policy Tester & Simulator */}
+              <div className="space-y-4 bg-slate-50/70 p-5 rounded-2xl border border-slate-200/80 flex flex-col justify-between">
+                <div className="space-y-3">
+                  <h4 className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                    <Terminal size={15} className="text-indigo-600" />
+                    リアルタイム・強度＆適合シミュレータ
+                  </h4>
+                  <p className="text-[11px] text-slate-600">
+                    現在の設定ポリシーに対して、任意のパスワードを入力してリアルタイムに判定テストを行えます。
+                  </p>
+
+                  <div className="space-y-1.5 pt-2">
+                    <label className="text-[11px] font-bold text-slate-700 block">
+                      テスト入力パスワード
+                    </label>
+                    <div className="relative">
+                      <input
+                        type={showTestPassword ? "text" : "password"}
+                        value={policyTestPassword}
+                        onChange={(e) => setPolicyTestPassword(e.target.value)}
+                        placeholder="テストする文字列を入力 (例: Pass123!#)"
+                        className="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 pr-10 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 font-mono"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowTestPassword(!showTestPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-600 hover:text-slate-800 p-1"
+                      >
+                        {showTestPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Requirements Checklist */}
+                  <div className="space-y-2 pt-2 bg-white p-4 rounded-xl border border-slate-200">
+                    <div className="text-[11px] font-bold text-slate-700 mb-1">ポリシー適合チェックリスト:</div>
+
+                    {/* Rule 1 */}
+                    <div className="flex items-center justify-between text-xs py-1 border-b border-slate-100">
+                      <span className="text-slate-700">最小文字数 ({passwordPolicy.minLength}文字以上):</span>
+                      <span className={`font-bold flex items-center gap-1 ${policyTestPassword.length >= passwordPolicy.minLength ? 'text-emerald-600' : 'text-slate-600'}`}>
+                        {policyTestPassword.length >= passwordPolicy.minLength ? <CheckCircle size={14} /> : <XCircle size={14} />}
+                        {policyTestPassword.length} / {passwordPolicy.minLength} 文字
+                      </span>
+                    </div>
+
+                    {/* Rule 2 */}
+                    <div className="flex items-center justify-between text-xs py-1 border-b border-slate-100">
+                      <span className="text-slate-700">英字（a〜z, A〜Z）:</span>
+                      <span className={`font-bold flex items-center gap-1 ${!passwordPolicy.requireLetters || /[a-zA-Z]/.test(policyTestPassword) ? 'text-emerald-600' : 'text-slate-600'}`}>
+                        {!passwordPolicy.requireLetters ? (
+                          <span className="text-slate-600 text-[10px] font-normal">任意 (OFF)</span>
+                        ) : /[a-zA-Z]/.test(policyTestPassword) ? (
+                          <>
+                            <CheckCircle size={14} />
+                            <span>合格</span>
+                          </>
+                        ) : (
+                          <>
+                            <XCircle size={14} />
+                            <span>未入力</span>
+                          </>
+                        )}
+                      </span>
+                    </div>
+
+                    {/* Rule 3 */}
+                    <div className="flex items-center justify-between text-xs py-1 border-b border-slate-100">
+                      <span className="text-slate-700">数字（0〜9）:</span>
+                      <span className={`font-bold flex items-center gap-1 ${!passwordPolicy.requireNumbers || /[0-9]/.test(policyTestPassword) ? 'text-emerald-600' : 'text-slate-600'}`}>
+                        {!passwordPolicy.requireNumbers ? (
+                          <span className="text-slate-600 text-[10px] font-normal">任意 (OFF)</span>
+                        ) : /[0-9]/.test(policyTestPassword) ? (
+                          <>
+                            <CheckCircle size={14} />
+                            <span>合格</span>
+                          </>
+                        ) : (
+                          <>
+                            <XCircle size={14} />
+                            <span>未入力</span>
+                          </>
+                        )}
+                      </span>
+                    </div>
+
+                    {/* Rule 4 */}
+                    <div className="flex items-center justify-between text-xs py-1 border-b border-slate-100">
+                      <span className="text-slate-700">記号（!@#$%^&*など）:</span>
+                      <span className={`font-bold flex items-center gap-1 ${!passwordPolicy.requireSymbols || /[!@#$%^&*()_+\-=\[\]{}|;:,.<>?/\\~`'"]/.test(policyTestPassword) ? 'text-emerald-600' : 'text-slate-600'}`}>
+                        {!passwordPolicy.requireSymbols ? (
+                          <span className="text-slate-600 text-[10px] font-normal">任意 (OFF)</span>
+                        ) : /[!@#$%^&*()_+\-=\[\]{}|;:,.<>?/\\~`'"]/.test(policyTestPassword) ? (
+                          <>
+                            <CheckCircle size={14} />
+                            <span>合格</span>
+                          </>
+                        ) : (
+                          <>
+                            <XCircle size={14} />
+                            <span>未入力</span>
+                          </>
+                        )}
+                      </span>
+                    </div>
+
+                    {/* Rule 5 */}
+                    <div className="flex items-center justify-between text-xs py-1">
+                      <span className="text-slate-700">大文字・小文字混在:</span>
+                      <span className={`font-bold flex items-center gap-1 ${!passwordPolicy.requireMixedCase || (/[a-z]/.test(policyTestPassword) && /[A-Z]/.test(policyTestPassword)) ? 'text-emerald-600' : 'text-slate-600'}`}>
+                        {!passwordPolicy.requireMixedCase ? (
+                          <span className="text-slate-600 text-[10px] font-normal">任意 (OFF)</span>
+                        ) : (/[a-z]/.test(policyTestPassword) && /[A-Z]/.test(policyTestPassword)) ? (
+                          <>
+                            <CheckCircle size={14} />
+                            <span>合格</span>
+                          </>
+                        ) : (
+                          <>
+                            <XCircle size={14} />
+                            <span>不一致</span>
+                          </>
+                        )}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Final Verdict Banner */}
+                {policyTestPassword.length > 0 ? (
+                  policyTestPassword.length >= passwordPolicy.minLength &&
+                  (!passwordPolicy.requireLetters || /[a-zA-Z]/.test(policyTestPassword)) &&
+                  (!passwordPolicy.requireNumbers || /[0-9]/.test(policyTestPassword)) &&
+                  (!passwordPolicy.requireSymbols || /[!@#$%^&*()_+\-=\[\]{}|;:,.<>?/\\~`'"]/.test(policyTestPassword)) &&
+                  (!passwordPolicy.requireMixedCase || (/[a-z]/.test(policyTestPassword) && /[A-Z]/.test(policyTestPassword))) ? (
+                    <div className="p-3.5 bg-emerald-50 border border-emerald-300 rounded-xl text-emerald-900 text-xs font-bold flex items-center gap-2">
+                      <CheckCircle2 className="text-emerald-600 shrink-0" size={18} />
+                      <span>【適合判定】このパスワードは設定されたポリシー要件を満たしています。</span>
+                    </div>
+                  ) : (
+                    <div className="p-3.5 bg-rose-50 border border-rose-300 rounded-xl text-rose-900 text-xs font-medium flex items-center gap-2">
+                      <AlertTriangle className="text-rose-600 shrink-0" size={18} />
+                      <span>【不適合】赤色の要件を満たすようにパスワードを修正してください。</span>
+                    </div>
+                  )
+                ) : (
+                  <div className="p-3.5 bg-slate-100 border border-slate-200 rounded-xl text-slate-700 text-xs flex items-center gap-2">
+                    <KeyRound className="text-slate-600 shrink-0" size={16} />
+                    <span>上の入力欄にテスト文字列を入力すると、リアルタイム判定が表示されます。</span>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

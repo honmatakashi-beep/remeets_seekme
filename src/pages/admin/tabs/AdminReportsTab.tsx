@@ -48,7 +48,7 @@ export const AdminReportsTab: React.FC<AdminReportsTabProps> = (props) => {
                     </div>
                   </div>
                   <div className="mt-2 flex items-baseline gap-2">
-                    <span className="text-2xl font-extrabold text-slate-800">{reports.length}</span>
+                    <span className="text-2xl font-extrabold font-serif text-slate-800">{reports.length}</span>
                     <span className="text-xs text-slate-500">件</span>
                   </div>
                   <div className="mt-1 text-[11px] text-slate-500 font-medium">全期間のユーザー通報</div>
@@ -62,7 +62,7 @@ export const AdminReportsTab: React.FC<AdminReportsTabProps> = (props) => {
                     </div>
                   </div>
                   <div className="mt-2 flex items-baseline gap-2">
-                    <span className="text-2xl font-extrabold text-amber-700">
+                    <span className="text-2xl font-extrabold font-serif text-amber-700">
                       {reports.filter(r => r.status === 'pending').length}
                     </span>
                     <span className="text-xs text-amber-500 font-semibold">件</span>
@@ -78,7 +78,7 @@ export const AdminReportsTab: React.FC<AdminReportsTabProps> = (props) => {
                     </div>
                   </div>
                   <div className="mt-2 flex items-baseline gap-2">
-                    <span className="text-2xl font-extrabold text-rose-700">
+                    <span className="text-2xl font-extrabold font-serif text-rose-700">
                       {reports.filter(r => {
                         const reason = (r.reason || '').toLowerCase();
                         return reason.includes('ストーカー') || reason.includes('脅迫') || reason.includes('晒し') || reason.includes('嫌がらせ') || r.report_type === 'stalking';
@@ -97,7 +97,7 @@ export const AdminReportsTab: React.FC<AdminReportsTabProps> = (props) => {
                     </div>
                   </div>
                   <div className="mt-2 flex items-baseline gap-2">
-                    <span className="text-2xl font-extrabold text-emerald-700">
+                    <span className="text-2xl font-extrabold font-serif text-emerald-700">
                       {reports.filter(r => r.status === 'resolved').length}
                     </span>
                     <span className="text-xs text-emerald-600 font-semibold">

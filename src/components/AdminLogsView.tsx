@@ -433,7 +433,7 @@ export const AdminLogsView: React.FC<AdminLogsViewProps> = ({
             </div>
           </div>
           <div className="mt-2 flex items-baseline gap-1.5">
-            <span className="text-2xl font-black text-slate-900">{unifiedStream.length.toLocaleString()}</span>
+            <span className="text-2xl font-black font-serif text-slate-900">{unifiedStream.length.toLocaleString()}</span>
             <span className="text-xs text-slate-600 font-bold">件</span>
           </div>
           <p className="text-[11px] text-slate-600 mt-0.5">直近蓄積ストリーム</p>
@@ -447,7 +447,7 @@ export const AdminLogsView: React.FC<AdminLogsViewProps> = ({
             </div>
           </div>
           <div className="mt-2 flex items-baseline gap-1.5">
-            <span className="text-2xl font-black text-indigo-900">{auditLogs.length.toLocaleString()}</span>
+            <span className="text-2xl font-black font-serif text-indigo-900">{auditLogs.length.toLocaleString()}</span>
             <span className="text-xs text-indigo-700 font-bold">件</span>
           </div>
           <p className="text-[11px] text-slate-600 mt-0.5">権限・設定変更・配信</p>
@@ -461,7 +461,7 @@ export const AdminLogsView: React.FC<AdminLogsViewProps> = ({
             </div>
           </div>
           <div className="mt-2 flex items-baseline gap-1.5">
-            <span className="text-2xl font-black text-emerald-900">{actionLogs.length.toLocaleString()}</span>
+            <span className="text-2xl font-black font-serif text-emerald-900">{actionLogs.length.toLocaleString()}</span>
             <span className="text-xs text-emerald-700 font-bold">件</span>
           </div>
           <p className="text-[11px] text-slate-600 mt-0.5">投函・認証・照合操作</p>
@@ -475,7 +475,7 @@ export const AdminLogsView: React.FC<AdminLogsViewProps> = ({
             </div>
           </div>
           <div className="mt-2 flex items-baseline gap-1.5">
-            <span className="text-2xl font-black text-sky-900">{accessLogs.length.toLocaleString()}</span>
+            <span className="text-2xl font-black font-serif text-sky-900">{accessLogs.length.toLocaleString()}</span>
             <span className="text-xs text-sky-700 font-bold">件</span>
           </div>
           <p className="text-[11px] text-slate-600 mt-0.5">HTTPリクエスト通信</p>

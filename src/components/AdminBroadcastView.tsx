@@ -478,7 +478,7 @@ export const AdminBroadcastView: React.FC = () => {
             </div>
           </div>
           <div className="mt-2 flex items-baseline gap-1.5">
-            <span className="text-2xl font-black text-slate-900">{stats.totalCount}</span>
+            <span className="text-2xl font-black font-serif text-slate-900">{stats.totalCount}</span>
             <span className="text-xs text-slate-600 font-bold">件</span>
           </div>
           <p className="text-[11px] text-slate-600 mt-0.5">システム全同報履歴</p>
@@ -492,7 +492,7 @@ export const AdminBroadcastView: React.FC = () => {
             </div>
           </div>
           <div className="mt-2 flex items-baseline gap-1.5">
-            <span className="text-2xl font-black text-slate-900">{stats.totalReach.toLocaleString()}</span>
+            <span className="text-2xl font-black font-serif text-slate-900">{stats.totalReach.toLocaleString()}</span>
             <span className="text-xs text-slate-600 font-bold">名・通</span>
           </div>
           <p className="text-[11px] text-slate-600 mt-0.5">届いた延べユーザー数</p>
@@ -506,7 +506,7 @@ export const AdminBroadcastView: React.FC = () => {
             </div>
           </div>
           <div className="mt-2 flex items-baseline gap-1.5">
-            <span className="text-2xl font-black text-emerald-900">{stats.avgReadRate}</span>
+            <span className="text-2xl font-black font-serif text-emerald-900">{stats.avgReadRate}</span>
             <span className="text-xs text-emerald-700 font-bold">%</span>
           </div>
           <p className="text-[11px] text-slate-600 mt-0.5">アプリ内開封数: {stats.totalReads.toLocaleString()} 件</p>
@@ -520,7 +520,7 @@ export const AdminBroadcastView: React.FC = () => {
             </div>
           </div>
           <div className="mt-2 flex items-baseline gap-1.5">
-            <span className="text-2xl font-black text-amber-900">{segmentCount !== null ? segmentCount.toLocaleString() : '...'}</span>
+            <span className="text-2xl font-black font-serif text-amber-900">{segmentCount !== null ? segmentCount.toLocaleString() : '...'}</span>
             <span className="text-xs text-amber-700 font-bold">名</span>
           </div>
           <p className="text-[11px] text-slate-600 mt-0.5 truncate">{getSegmentLabel(targetSegment)}</p>

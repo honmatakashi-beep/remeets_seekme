@@ -202,6 +202,7 @@ export function initDatabase() {
 
       INSERT OR IGNORE INTO site_settings (key, value) VALUES ('ID_IMAGE_RETENTION_DAYS', '60');
       INSERT OR IGNORE INTO site_settings (key, value) VALUES ('show_home_stats', 'true');
+      INSERT OR IGNORE INTO site_settings (key, value) VALUES ('password_policy', '{"minLength":8,"requireLetters":true,"requireNumbers":true,"requireSymbols":false,"requireMixedCase":false}');
 
       CREATE TABLE IF NOT EXISTS blocked_ips (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -365,6 +366,8 @@ export function initDatabase() {
     try { db.exec("ALTER TABLE users ADD COLUMN birthdate TEXT"); } catch (e) {}
     try { db.exec("ALTER TABLE users ADD COLUMN notify_new_post INTEGER DEFAULT 1"); } catch (e) {}
     try { db.exec("ALTER TABLE users ADD COLUMN auth_provider TEXT DEFAULT 'email'"); } catch (e) {}
+    try { db.exec("ALTER TABLE users ADD COLUMN verification_code TEXT"); } catch (e) {}
+    try { db.exec("ALTER TABLE users ADD COLUMN verification_code_expires DATETIME"); } catch (e) {}
     
     // Distribute sample auth_providers realistically for existing users
     try {
@@ -494,6 +497,8 @@ export function initDatabase() {
         CREATE INDEX IF NOT EXISTS idx_post_questions_post_id ON post_questions(post_id);
         CREATE INDEX IF NOT EXISTS idx_access_logs_created ON access_logs(created_at);
       `);
+    } catch (e) {}
+
     // Backfill & Migrate: 既存ユーザーのユーザー名をすべて UID-xxxxxx（会員番号）形式に一括書き換え
     try {
       const nonUidUsers = db.prepare("SELECT id, username, email, full_name, nickname FROM users WHERE username NOT LIKE 'UID-%' AND username != 'admin'").all();
@@ -836,6 +841,24 @@ export function initDatabase() {
     }
     console.log(`[Safety Seed] NG Words initialization complete. Inserted: ${insertedCount}, Already Exists (Skipped): ${skippedCount}`);
 
+    // Ensure success_stories has initial data
+    try {
+      const storyCount = (db.prepare("SELECT COUNT(*) as count FROM success_stories").get() as any)?.count || 0;
+      if (storyCount === 0) {
+        const stories = [
+          { message: "30年ぶりに中学時代の親友と再会できました！ボトルメールを流して本当に良かったです。最初は半信半疑でしたが、本人確認の質問に答えてくれた時は鳥肌が立ちました。今は週末に一緒にゴルフに行く仲に戻りました。", era: "1980", gender: "男性", is_public: 1, display_position: "left" },
+          { message: "初恋の人を探してボトルを流しました。まさか見つかるとは思っていませんでしたが、共通の知人を通じて連絡が来ました。当時の思い出を懐かしく語り合える友人が増えて、人生が少し豊かになった気がします。", era: "1990", gender: "女性", is_public: 1, display_position: "right" },
+          { message: "高校の部活の先輩へ感謝を伝えたくて投稿しました。無事に届き、当時の厳しい練習や合宿の思い出話に花が咲きました。ReMEETsの安心な仕組みに感謝しています。", era: "2000", gender: "女性", is_public: 1, display_position: "left" },
+          { message: "大学のサークルで一緒だった仲間に20年ぶりに連絡がつきました。お互い家庭を持ち環境は変わりましたが、会った瞬間にあの頃の空気に戻れました。", era: "2010", gender: "男性", is_public: 1, display_position: "right" }
+        ];
+        const insertStory = db.prepare("INSERT INTO success_stories (message, era, gender, is_public, display_position) VALUES (?, ?, ?, ?, ?)");
+        stories.forEach(s => insertStory.run(s.message, s.era, s.gender, s.is_public, s.display_position));
+        console.log("[Success Stories] Initial sample stories seeded successfully.");
+      }
+    } catch (e) {
+      console.error("Failed to seed initial success stories:", e);
+    }
+
     // Migrations: Add target_name_en and target_school if missing
     const columns = db.prepare("PRAGMA table_info(posts)").all();
     const hasColumn = (name: string) => columns.some((c: any) => c.name === name);
@@ -917,7 +940,7 @@ export const seedData = async (force: boolean = false) => {
   const hashedPassword = await bcrypt.hash("password123", 10);
   
   // Ensure admin exists
-  const admin = db.prepare("SELECT * FROM users WHERE username = ?").get("admin");
+  const admin = db.prepare("SELECT * FROM users WHERE username = 'admin' OR email = 'admin@adomin.jp'").get() as any;
   const newAdminPassword = await bcrypt.hash("123", 10);
   if (!admin) {
     console.log("Creating admin user...");
@@ -929,9 +952,9 @@ export const seedData = async (force: boolean = false) => {
     console.log("Updating admin password and ensuring super_admin role...");
     db.prepare(`
       UPDATE users 
-      SET password = ?, email = ?, role = 'super_admin', is_verified = 1, full_name = ?, last_name = ?, first_name = ?, nickname = ? 
-      WHERE username = ?
-    `).run(newAdminPassword, "admin@adomin.jp", "東北 太郎", "東北", "太郎", "かりん", "admin");
+      SET username = 'admin', password = ?, email = 'admin@adomin.jp', role = 'super_admin', is_verified = 1, full_name = ?, last_name = ?, first_name = ?, nickname = ? 
+      WHERE id = ?
+    `).run(newAdminPassword, "東北 太郎", "東北", "太郎", "かりん", admin.id);
   }
 
   // Ensure multi-role staff accounts exist
@@ -942,7 +965,7 @@ export const seedData = async (force: boolean = false) => {
   ];
 
   for (const staff of staffUsers) {
-    const existing = db.prepare("SELECT * FROM users WHERE username = ?").get(staff.username);
+    const existing = db.prepare("SELECT * FROM users WHERE username = ? OR email = ?").get(staff.username, staff.email) as any;
     if (!existing) {
       db.prepare(`
         INSERT INTO users (username, email, password, role, is_verified, full_name, last_name, first_name, nickname)
@@ -951,13 +974,13 @@ export const seedData = async (force: boolean = false) => {
     } else {
       db.prepare(`
         UPDATE users SET password = ?, email = ?, role = ?, is_verified = 1, full_name = ?, last_name = ?, first_name = ?, nickname = ?
-        WHERE username = ?
-      `).run(newAdminPassword, staff.email, staff.role, staff.full_name, staff.last_name, staff.first_name, staff.nickname, staff.username);
+        WHERE id = ?
+      `).run(newAdminPassword, staff.email, staff.role, staff.full_name, staff.last_name, staff.first_name, staff.nickname, existing.id);
     }
   }
 
   // Ensure test user exists (eKYC Verified)
-  const testUser = db.prepare("SELECT * FROM users WHERE username = ?").get("test");
+  const testUser = db.prepare("SELECT * FROM users WHERE username = 'test' OR email = 'test@example.com'").get() as any;
   const testPassword = "123";
   const testHashedPassword = await bcrypt.hash(testPassword, 10);
   
@@ -972,9 +995,9 @@ export const seedData = async (force: boolean = false) => {
     console.log("Updating test user password and profile...");
     db.prepare(`
       UPDATE users 
-      SET password = ?, email = ?, is_verified = 1, is_ekyc_verified = 1, ekyc_document_type = 'drivers_license', ekyc_name = '本間 貴司', ekyc_verified_at = COALESCE(ekyc_verified_at, CURRENT_TIMESTAMP), full_name = ?, last_name = ?, first_name = ?, nickname = ? 
-      WHERE username = ?
-    `).run(testHashedPassword, "test@example.com", "本間 貴司", "本間", "貴司", "たかし", "test");
+      SET password = ?, email = 'test@example.com', is_verified = 1, is_ekyc_verified = 1, ekyc_document_type = 'drivers_license', ekyc_name = '本間 貴司', ekyc_verified_at = COALESCE(ekyc_verified_at, CURRENT_TIMESTAMP), full_name = ?, last_name = ?, first_name = ?, nickname = ? 
+      WHERE id = ?
+    `).run(testHashedPassword, "本間 貴司", "本間", "貴司", "たかし", testUser.id);
     console.log("test user updated successfully.");
   }
 
@@ -1016,7 +1039,7 @@ export const seedData = async (force: boolean = false) => {
   ];
 
   for (const vu of verifiedSampleUsers) {
-    const existingVu = db.prepare("SELECT * FROM users WHERE username = ?").get(vu.username);
+    const existingVu = db.prepare("SELECT * FROM users WHERE username = ? OR email = ?").get(vu.username, vu.email) as any;
     if (!existingVu) {
       db.prepare(`
         INSERT INTO users (username, password, email, role, is_verified, is_ekyc_verified, ekyc_document_type, ekyc_name, ekyc_verified_at, full_name, last_name, first_name, nickname)
@@ -1026,13 +1049,13 @@ export const seedData = async (force: boolean = false) => {
       db.prepare(`
         UPDATE users 
         SET is_ekyc_verified = 1, ekyc_document_type = ?, ekyc_name = ?, ekyc_verified_at = COALESCE(ekyc_verified_at, CURRENT_TIMESTAMP), full_name = ?, last_name = ?, first_name = ?, nickname = ?
-        WHERE username = ?
-      `).run(vu.ekyc_document_type, vu.ekyc_name, vu.full_name, vu.last_name, vu.first_name, vu.nickname, vu.username);
+        WHERE id = ?
+      `).run(vu.ekyc_document_type, vu.ekyc_name, vu.full_name, vu.last_name, vu.first_name, vu.nickname, existingVu.id);
     }
   }
 
   // Ensure guest exists
-  const guest = db.prepare("SELECT * FROM users WHERE username = ?").get("guest");
+  const guest = db.prepare("SELECT * FROM users WHERE username = 'guest' OR email = 'guest@remeets.jp'").get() as any;
   if (!guest) {
     console.log("Creating guest user...");
     db.prepare(`
@@ -1047,8 +1070,8 @@ export const seedData = async (force: boolean = false) => {
           last_name = COALESCE(last_name, 'ゲスト'),
           first_name = COALESCE(first_name, 'ユーザー'),
           nickname = COALESCE(nickname, 'ゲスト')
-      WHERE username = 'guest'
-    `).run();
+      WHERE id = ?
+    `).run(guest.id);
   }
 
   // 🌟 Ensure main verified users (test, sakura, kenji, aoi, admin) always have posts
@@ -1115,9 +1138,7 @@ export const seedData = async (force: boolean = false) => {
   db.prepare("DELETE FROM contacts").run();
   db.prepare("DELETE FROM action_logs").run();
   db.prepare("DELETE FROM access_logs").run();
-  db.prepare("DELETE FROM search_logs").run();
-  db.prepare("DELETE FROM page_views").run();
-  db.prepare("DELETE FROM users WHERE role = 'user' AND username NOT LIKE 'UID-%'").run();
+  db.prepare("DELETE FROM users WHERE role = 'user' AND username NOT IN ('test', 'guest', 'UID-100001', 'UID-100002', 'UID-100003')").run();
   try { db.pragma("foreign_keys = ON"); } catch (e) {}
 
   console.log("Seeding 50 new sample posts and users...");
@@ -2432,8 +2453,8 @@ const NATURAL_ADDITIONAL_QA_BANK = [
 ];
 
 function generateRealisticUsername(searcherRomaji: string, era: string, index: number): string {
-  // 会員番号（ユーザーID）は一貫して UID-6桁数字 の形式で自動付番
-  const baseNum = 100000 + ((index * 37 + 13) % 900000);
+  // 会員番号（ユーザーID）は一貫して UID-6桁数字 の形式で自動付番 (UID-100100〜)
+  const baseNum = 100100 + ((index * 37 + 13) % 899000);
   return `UID-${baseNum}`;
 }
 
@@ -2993,5 +3014,61 @@ export const reseedCleanUniquePosts = async (count: number = 200) => {
   return result;
 };
 
+export interface PasswordPolicy {
+  minLength: number;
+  requireLetters: boolean;
+  requireNumbers: boolean;
+  requireSymbols: boolean;
+  requireMixedCase: boolean;
+}
 
+export function getPasswordPolicy(): PasswordPolicy {
+  try {
+    const row = db.prepare("SELECT value FROM site_settings WHERE key = 'password_policy'").get() as any;
+    if (row && row.value) {
+      const parsed = JSON.parse(row.value);
+      return {
+        minLength: typeof parsed.minLength === 'number' ? Math.max(6, Math.min(32, parsed.minLength)) : 8,
+        requireLetters: parsed.requireLetters !== undefined ? !!parsed.requireLetters : true,
+        requireNumbers: parsed.requireNumbers !== undefined ? !!parsed.requireNumbers : true,
+        requireSymbols: parsed.requireSymbols !== undefined ? !!parsed.requireSymbols : false,
+        requireMixedCase: parsed.requireMixedCase !== undefined ? !!parsed.requireMixedCase : false,
+      };
+    }
+  } catch (e) {
+    console.warn("Failed to get password policy, using defaults:", e);
+  }
+  return {
+    minLength: 8,
+    requireLetters: true,
+    requireNumbers: true,
+    requireSymbols: false,
+    requireMixedCase: false,
+  };
+}
 
+export function validatePasswordAgainstPolicy(password: string, customPolicy?: PasswordPolicy): { valid: boolean; error?: string } {
+  const p = customPolicy || getPasswordPolicy();
+  if (!password || typeof password !== 'string') {
+    return { valid: false, error: "パスワードを入力してください。" };
+  }
+  if (password.length < p.minLength) {
+    return { valid: false, error: `パスワードは${p.minLength}文字以上で入力してください。` };
+  }
+  if (p.requireLetters && !/[a-zA-Z]/.test(password)) {
+    return { valid: false, error: "パスワードに英字（a〜z, A〜Z）を1文字以上含める必要があります。" };
+  }
+  if (p.requireNumbers && !/[0-9]/.test(password)) {
+    return { valid: false, error: "パスワードに数字（0〜9）を1文字以上含める必要があります。" };
+  }
+  if (p.requireLetters && p.requireNumbers && (!/[a-zA-Z]/.test(password) || !/[0-9]/.test(password))) {
+    return { valid: false, error: "パスワードは英字と数字の両方を含める必要があります。" };
+  }
+  if (p.requireMixedCase && (!/[a-z]/.test(password) || !/[A-Z]/.test(password))) {
+    return { valid: false, error: "パスワードに英大文字と英小文字の両方を含める必要があります。" };
+  }
+  if (p.requireSymbols && !/[!@#$%^&*()_+\-=\[\]{}|;:,.<>?/\\~`'"]/.test(password)) {
+    return { valid: false, error: "パスワードに記号（!@#$%^&* など）を1文字以上含める必要があります。" };
+  }
+  return { valid: true };
+}

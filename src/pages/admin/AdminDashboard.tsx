@@ -4753,7 +4753,7 @@ export const AdminDashboard = () => {
                             <span>投稿したボトル</span>
                           </div>
                           <div className="flex items-baseline gap-1.5">
-                            <span className="text-2xl font-bold text-emerald-950">
+                            <span className="text-2xl font-bold font-serif text-emerald-950">
                               {loadingUserPosts ? (selectedUser.posts_count ?? 0) : (userPosts.length > 0 ? userPosts.length : (selectedUser.posts_count || 0))}
                             </span>
                             <span className="text-xs text-emerald-700 font-sans">通</span>

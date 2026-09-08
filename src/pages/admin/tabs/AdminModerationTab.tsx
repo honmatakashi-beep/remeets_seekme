@@ -72,7 +72,7 @@ export const AdminModerationTab: React.FC<AdminModerationTabProps> = (props) => 
                     </div>
                   </div>
                   <div className="mt-2 flex items-baseline gap-2">
-                    <span className="text-2xl font-extrabold text-rose-700">{moderationQueue.length}</span>
+                    <span className="text-2xl font-extrabold font-serif text-rose-700">{moderationQueue.length}</span>
                     <span className="text-xs text-rose-500">件</span>
                   </div>
                   <div className="mt-1 text-[11px] text-rose-600 font-medium">目視確認待ちの隔離ボトル</div>
@@ -86,7 +86,7 @@ export const AdminModerationTab: React.FC<AdminModerationTabProps> = (props) => 
                     </div>
                   </div>
                   <div className="mt-2 flex items-baseline gap-2">
-                    <span className="text-2xl font-extrabold text-amber-700">
+                    <span className="text-2xl font-extrabold font-serif text-amber-700">
                       {moderationQueue.filter(p => {
                         const r = (p.ai_reason || '').toLowerCase();
                         return r.includes('ストーカー') || r.includes('脅迫') || r.includes('住所') || r.includes('個人情報');
@@ -105,7 +105,7 @@ export const AdminModerationTab: React.FC<AdminModerationTabProps> = (props) => 
                     </div>
                   </div>
                   <div className="mt-2 flex items-baseline gap-2">
-                    <span className="text-2xl font-extrabold text-blue-700">
+                    <span className="text-2xl font-extrabold font-serif text-blue-700">
                       {moderationQueue.filter(p => {
                         const r = (p.ai_reason || '').toLowerCase();
                         return r.includes('line') || r.includes('電話') || r.includes('メール') || r.includes('ng') || r.includes('ワード');
@@ -124,7 +124,7 @@ export const AdminModerationTab: React.FC<AdminModerationTabProps> = (props) => 
                     </div>
                   </div>
                   <div className="mt-2 flex items-baseline gap-2">
-                    <span className="text-2xl font-extrabold text-slate-800">{deletedPostsArchive.length}</span>
+                    <span className="text-2xl font-extrabold font-serif text-slate-800">{deletedPostsArchive.length}</span>
                     <span className="text-xs text-slate-500">件</span>
                   </div>
                   <div className="mt-1 text-[11px] text-slate-600 font-medium">物理削除・証跡保全ログ</div>

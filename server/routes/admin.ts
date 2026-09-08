@@ -8,7 +8,7 @@ import crypto from "crypto";
 import fs from "fs";
 import path from "path";
 import { execSync } from "child_process";
-import { db, setDb, seedData, generateAdditionalSamplePosts, reseedCleanUniquePosts } from "../db";
+import { db, setDb, seedData, generateAdditionalSamplePosts, reseedCleanUniquePosts, getPasswordPolicy, validatePasswordAgainstPolicy } from "../db";
 import { JWT_SECRET, ADMIN_ROLES, ROLE_PERMISSIONS } from "../config";
 import { authenticateToken, optionalAuthenticateToken, isAdmin, requirePermission, logAction, sanitizeLogText } from "../middleware/auth";
 import { filterNGWords, detectInappropriateWords, evaluateContentSafety } from "../moderation";
@@ -405,12 +405,12 @@ try {
 
       await sendPasswordResetEmail(targetUser.email, resetToken);
 
-      logAction(req.user.id, "ADMIN_DISPATCH_PASSWORD_RESET", {
-        target_user_id: targetUser.id,
-        target_email: targetUser.email,
-        target_username: targetUser.username,
-        ip: req.ip
-      });
+      logAction(
+        req.user.id,
+        "ADMIN_DISPATCH_PASSWORD_RESET",
+        `Target: ${targetUser.email} (UID: ${targetUser.username}, ID: ${targetUser.id})`,
+        req.ip
+      );
 
       res.json({ 
         success: true, 
@@ -958,6 +958,38 @@ try {
       res.status(500).json({ error: "Failed to unblock IP" });
     }
   });
+
+  adminRouter.get("/password-policy", authenticateToken, isAdmin, (req, res) => {
+    try {
+      const policy = getPasswordPolicy();
+      res.json(policy);
+    } catch (err) {
+      res.status(500).json({ error: "パスワードポリシーの取得に失敗しました" });
+    }
+  });
+
+  const handleUpdatePasswordPolicy = (req: any, res: any) => {
+    const { minLength, requireLetters, requireNumbers, requireSymbols, requireMixedCase } = req.body;
+    const cleanMinLength = typeof minLength === 'number' ? Math.max(6, Math.min(32, Math.floor(minLength))) : 8;
+    const policy = {
+      minLength: cleanMinLength,
+      requireLetters: requireLetters !== undefined ? !!requireLetters : true,
+      requireNumbers: requireNumbers !== undefined ? !!requireNumbers : true,
+      requireSymbols: requireSymbols !== undefined ? !!requireSymbols : false,
+      requireMixedCase: requireMixedCase !== undefined ? !!requireMixedCase : false,
+    };
+    try {
+      db.prepare("INSERT OR REPLACE INTO site_settings (key, value, updated_at) VALUES ('password_policy', ?, CURRENT_TIMESTAMP)")
+        .run(JSON.stringify(policy));
+      logAction(req.user.id, "PASSWORD_POLICY_UPDATE", `Updated password policy: minLength=${policy.minLength}, letters=${policy.requireLetters}, numbers=${policy.requireNumbers}, symbols=${policy.requireSymbols}, mixedCase=${policy.requireMixedCase}`, req.ip);
+      res.json({ success: true, policy, message: "パスワードポリシーを正常に更新・保存しました。" });
+    } catch (err) {
+      console.error("Failed to update password policy:", err);
+      res.status(500).json({ error: "パスワードポリシーの保存に失敗しました" });
+    }
+  };
+  adminRouter.put("/password-policy", authenticateToken, isAdmin, handleUpdatePasswordPolicy);
+  adminRouter.post("/password-policy", authenticateToken, isAdmin, handleUpdatePasswordPolicy);
 
   adminRouter.get("/broadcasts/segment-preview", authenticateToken, isAdmin, (req: any, res) => {
     try {

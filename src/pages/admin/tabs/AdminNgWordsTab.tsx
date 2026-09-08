@@ -68,7 +68,7 @@ export const AdminNgWordsTab: React.FC<AdminNgWordsTabProps> = (props) => {
                         </div>
                       </div>
                       <div className="mt-2 flex items-baseline gap-2">
-                        <span className="text-2xl font-extrabold text-slate-800">{ngWords.length}</span>
+                        <span className="text-2xl font-extrabold font-serif text-slate-800">{ngWords.length}</span>
                         <span className="text-xs text-slate-500">語</span>
                       </div>
                       <div className="mt-1 text-[11px] text-slate-500 font-medium">現在有効な検閲ルール</div>
@@ -82,7 +82,7 @@ export const AdminNgWordsTab: React.FC<AdminNgWordsTabProps> = (props) => {
                         </div>
                       </div>
                       <div className="mt-2 flex items-baseline gap-2">
-                        <span className="text-2xl font-extrabold text-indigo-700">{regexCount}</span>
+                        <span className="text-2xl font-extrabold font-serif text-indigo-700">{regexCount}</span>
                         <span className="text-xs text-indigo-500 font-semibold">件</span>
                       </div>
                       <div className="mt-1 text-[11px] text-indigo-600 font-medium">高度パターン検知</div>
@@ -96,7 +96,7 @@ export const AdminNgWordsTab: React.FC<AdminNgWordsTabProps> = (props) => {
                         </div>
                       </div>
                       <div className="mt-2 flex items-baseline gap-2">
-                        <span className="text-2xl font-extrabold text-teal-700">{plainCount}</span>
+                        <span className="text-2xl font-extrabold font-serif text-teal-700">{plainCount}</span>
                         <span className="text-xs text-teal-600 font-semibold">語</span>
                       </div>
                       <div className="mt-1 text-[11px] text-teal-600 font-medium">完全・部分一致単語</div>
@@ -110,7 +110,7 @@ export const AdminNgWordsTab: React.FC<AdminNgWordsTabProps> = (props) => {
                         </div>
                       </div>
                       <div className="mt-2 flex items-baseline gap-2">
-                        <span className="text-2xl font-extrabold text-emerald-700">常時稼働</span>
+                        <span className="text-2xl font-extrabold font-serif text-emerald-700">常時稼働</span>
                         <span className="text-xs text-emerald-600 font-semibold">100%</span>
                       </div>
                       <div className="mt-1 text-[11px] text-emerald-600 font-medium">投函・登録時リアルタイム適用</div>

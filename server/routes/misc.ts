@@ -80,7 +80,7 @@ export const miscRouter = express.Router();
         SELECT s.*, u.username, u.nickname, u.email,
                p.target_name as post_target_name, p.searcher_name as post_searcher_name, p.era as post_era
         FROM success_stories s 
-        JOIN users u ON s.user_id = u.id 
+        LEFT JOIN users u ON s.user_id = u.id 
         LEFT JOIN posts p ON s.post_id = p.id
         ORDER BY s.created_at DESC
       `).all();

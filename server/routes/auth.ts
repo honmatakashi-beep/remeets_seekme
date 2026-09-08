@@ -2,13 +2,23 @@ import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
-import { db } from "../db";
+import { db, getPasswordPolicy, validatePasswordAgainstPolicy } from "../db";
 import { JWT_SECRET, authLimiter, registrationLimiter } from "../config";
 import { authenticateToken, logAction } from "../middleware/auth";
-import { sendVerificationEmail, sendPasswordResetEmail } from "../mail";
+import { sendVerificationEmail, sendPasswordResetEmail, sendRegistrationCodeEmail } from "../mail";
 import { filterNGWords } from "../moderation";
 
 export const authRouter = express.Router();
+
+  // パスワードポリシー取得（公開エンドポイント）
+  authRouter.get("/password-policy", (req, res) => {
+    try {
+      const policy = getPasswordPolicy();
+      res.json(policy);
+    } catch (err) {
+      res.status(500).json({ error: "パスワードポリシーの取得に失敗しました。" });
+    }
+  });
 
   authRouter.post("/register", registrationLimiter, async (req, res) => {
     let { username, email, password, lastName, firstName, nickname, captchaAnswer, captchaId, snsProvider } = req.body;
@@ -39,10 +49,10 @@ export const authRouter = express.Router();
       username = generatedUid;
     }
 
-    // Password strength check
-    const isAlphanumeric = /[a-zA-Z]/.test(password) && /[0-9]/.test(password);
-    if (password.length < 8 || !isAlphanumeric) {
-      return res.status(400).json({ error: "パスワードは8文字以上で、英字と数字の両方を含める必要があります。" });
+    // 動的パスワードポリシー検証
+    const pwdCheck = validatePasswordAgainstPolicy(password);
+    if (!pwdCheck.valid) {
+      return res.status(400).json({ error: pwdCheck.error });
     }
 
     if (
@@ -55,30 +65,53 @@ export const authRouter = express.Router();
     }
 
     try {
+      // 既存ユーザーの重複チェック
+      const existingUser = db.prepare("SELECT * FROM users WHERE email = ?").get(email) as any;
+      if (existingUser) {
+        if (existingUser.is_verified) {
+          return res.status(400).json({ error: "このメールアドレスは既に本登録されています。ログイン画面からログインしてください。" });
+        }
+        // 未完了（仮登録）の場合は情報を更新して新しいコードを再送
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const code = Math.floor(100000 + Math.random() * 900000).toString();
+        const expiresAt = new Date(Date.now() + 30 * 60 * 1000).toISOString();
+        const fullName = `${lastName} ${firstName}`;
+
+        db.prepare(`
+          UPDATE users 
+          SET username = ?, password = ?, full_name = ?, last_name = ?, first_name = ?, nickname = ?, verification_code = ?, verification_code_expires = ?
+          WHERE id = ?
+        `).run(username, hashedPassword, fullName, lastName, firstName, nickname, code, expiresAt, existingUser.id);
+
+        await sendRegistrationCodeEmail(email, code, nickname || fullName);
+
+        return res.json({
+          requireVerification: true,
+          email,
+          debugCode: code,
+          message: "認証コード（6桁）をメールでお送りしました。メールをご確認の上、コードを入力して本登録を完了してください。"
+        });
+      }
+
       const hashedPassword = await bcrypt.hash(password, 10);
+      const code = Math.floor(100000 + Math.random() * 900000).toString();
+      const expiresAt = new Date(Date.now() + 30 * 60 * 1000).toISOString();
       const verificationToken = crypto.randomBytes(32).toString("hex");
       const fullName = `${lastName} ${firstName}`;
       
       const stmt = db.prepare(`
-        INSERT INTO users (username, email, password, full_name, last_name, first_name, nickname, role, verification_token) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, 'user', ?)
+        INSERT INTO users (username, email, password, full_name, last_name, first_name, nickname, role, verification_token, verification_code, verification_code_expires, is_verified) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, 'user', ?, ?, ?, 0)
       `);
-      const result = stmt.run(username, email, hashedPassword, fullName, lastName, firstName, nickname, verificationToken);
+      stmt.run(username, email, hashedPassword, fullName, lastName, firstName, nickname, verificationToken, code, expiresAt);
       
-      await sendVerificationEmail(email, verificationToken);
+      await sendRegistrationCodeEmail(email, code, nickname || fullName);
 
       res.json({ 
-        message: "登録が完了しました。確認メールを送信しましたので、メール内の案内をご確認ください。",
-        user: { 
-          id: result.lastInsertRowid, 
-          username, 
-          email, 
-          role: 'user', 
-          fullName, 
-          lastName, 
-          firstName, 
-          nickname 
-        } 
+        requireVerification: true,
+        email,
+        debugCode: code,
+        message: "認証コード（6桁）をメールでお送りしました。メールをご確認の上、コードを入力して本登録を完了してください。"
       });
     } catch (err: any) {
       if (err.message.includes("UNIQUE constraint failed")) {
@@ -88,6 +121,110 @@ export const authRouter = express.Router();
         return res.status(400).json({ error: "このアカウントは既に登録されています。" });
       }
       res.status(500).json({ error: "登録に失敗しました。" });
+    }
+  });
+
+  // 認証コード検証＆本登録完了
+  authRouter.post("/verify-code", async (req, res) => {
+    const { email, code } = req.body;
+    const ip = req.ip || null;
+
+    if (!email || !code) {
+      return res.status(400).json({ error: "メールアドレスと6桁の認証コードを入力してください。" });
+    }
+
+    try {
+      const user = db.prepare("SELECT * FROM users WHERE email = ?").get(email) as any;
+      if (!user) {
+        return res.status(404).json({ error: "対象のアカウント情報が見つかりません。新規アカウント登録からやり直してください。" });
+      }
+
+      if (user.is_verified) {
+        return res.json({ 
+          success: true, 
+          alreadyVerified: true,
+          message: "このアカウントは既に本登録が完了しています。ログインしてください。" 
+        });
+      }
+
+      if (!user.verification_code || !user.verification_code_expires) {
+        return res.status(400).json({ error: "有効な認証コードが発行されていません。再送ボタンを押してください。" });
+      }
+
+      if (new Date(user.verification_code_expires).getTime() < Date.now()) {
+        return res.status(400).json({ error: "認証コードの有効期限（30分）が切れています。「認証コードを再送信」ボタンを押して新しいコードを取得してください。" });
+      }
+
+      if (user.verification_code.trim() !== code.trim()) {
+        return res.status(400).json({ error: "認証コードが一致しません。メールに記載された半角数字6桁を正しく入力してください。" });
+      }
+
+      // 本登録完了更新
+      db.prepare(`
+        UPDATE users 
+        SET is_verified = 1, verification_code = NULL, verification_code_expires = NULL, verification_token = NULL 
+        WHERE id = ?
+      `).run(user.id);
+
+      logAction(user.id, "registration_verified", `User ${user.username} successfully verified email code`, ip);
+
+      // ログインJWT発行
+      const role = user.role || 'user';
+      const fullName = user.full_name || null;
+      const lastName = user.last_name || null;
+      const firstName = user.first_name || null;
+      const nickname = user.nickname || null;
+      const maiden_name = user.maiden_name || null;
+      const token = jwt.sign({ id: user.id, username: user.username, role, fullName, lastName, firstName, nickname, email: user.email, maiden_name }, JWT_SECRET);
+
+      res.json({
+        success: true,
+        message: "認証が完了し、本登録が完了しました！ReMEETsへようこそ。",
+        token,
+        user: { id: user.id, username: user.username, role, fullName, lastName, firstName, nickname, email: user.email, maiden_name }
+      });
+    } catch (err) {
+      console.error("Code verification error:", err);
+      res.status(500).json({ error: "認証処理中にエラーが発生しました。" });
+    }
+  });
+
+  // 認証コード再送信
+  authRouter.post("/resend-code", authLimiter, async (req, res) => {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ error: "メールアドレスを入力してください。" });
+    }
+
+    try {
+      const user = db.prepare("SELECT * FROM users WHERE email = ?").get(email) as any;
+      if (!user) {
+        return res.status(404).json({ error: "対象のアカウントが見つかりません。" });
+      }
+
+      if (user.is_verified) {
+        return res.status(400).json({ error: "このアカウントは既に本登録が完了しています。" });
+      }
+
+      const code = Math.floor(100000 + Math.random() * 900000).toString();
+      const expiresAt = new Date(Date.now() + 30 * 60 * 1000).toISOString();
+
+      db.prepare(`
+        UPDATE users 
+        SET verification_code = ?, verification_code_expires = ? 
+        WHERE id = ?
+      `).run(code, expiresAt, user.id);
+
+      await sendRegistrationCodeEmail(email, code, user.nickname || user.full_name || "ユーザー");
+
+      res.json({
+        success: true,
+        debugCode: code,
+        message: "新しい認証コード（6桁）をメール宛てに再送信しました。"
+      });
+    } catch (err) {
+      console.error("Resend code error:", err);
+      res.status(500).json({ error: "認証コードの再送信に失敗しました。" });
     }
   });
 
@@ -162,8 +299,12 @@ export const authRouter = express.Router();
 
   authRouter.post("/reset-password", authLimiter, async (req, res) => {
     const { token, newPassword } = req.body;
-    if (!token || typeof token !== 'string' || !newPassword || typeof newPassword !== 'string' || newPassword.length < 6) {
-      return res.status(400).json({ error: "パスワードは6文字以上で指定してください。" });
+    if (!token || typeof token !== 'string' || !newPassword || typeof newPassword !== 'string') {
+      return res.status(400).json({ error: "トークンと新しいパスワードを入力してください。" });
+    }
+    const pwdCheck = validatePasswordAgainstPolicy(newPassword);
+    if (!pwdCheck.valid) {
+      return res.status(400).json({ error: pwdCheck.error });
     }
     try {
       const user = db.prepare("SELECT * FROM users WHERE reset_token = ? AND reset_token_expires > ?").get(token, new Date().toISOString()) as any;

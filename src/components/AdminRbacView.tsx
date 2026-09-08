@@ -321,7 +321,7 @@ export const AdminRbacView: React.FC<AdminRbacViewProps> = ({ token, currentRole
             </div>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-2xl font-extrabold text-purple-800">{superAdminCount}</span>
+            <span className="text-2xl font-extrabold font-serif text-purple-800">{superAdminCount}</span>
             <span className="text-xs text-purple-500 font-semibold">名</span>
           </div>
           <div className="mt-1 text-[11px] text-purple-600 font-medium">全機能・決済・設定統括</div>
@@ -335,7 +335,7 @@ export const AdminRbacView: React.FC<AdminRbacViewProps> = ({ token, currentRole
             </div>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-2xl font-extrabold text-emerald-700">{moderatorCount}</span>
+            <span className="text-2xl font-extrabold font-serif text-emerald-700">{moderatorCount}</span>
             <span className="text-xs text-emerald-600 font-semibold">名</span>
           </div>
           <div className="mt-1 text-[11px] text-emerald-600 font-medium">ボトル審査・通報・NG対応</div>
@@ -349,7 +349,7 @@ export const AdminRbacView: React.FC<AdminRbacViewProps> = ({ token, currentRole
             </div>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-2xl font-extrabold text-sky-700">{csSupportCount}</span>
+            <span className="text-2xl font-extrabold font-serif text-sky-700">{csSupportCount}</span>
             <span className="text-xs text-sky-600 font-semibold">名</span>
           </div>
           <div className="mt-1 text-[11px] text-sky-600 font-medium">お問い合わせ・eKYC確認</div>
@@ -363,7 +363,7 @@ export const AdminRbacView: React.FC<AdminRbacViewProps> = ({ token, currentRole
             </div>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-2xl font-extrabold text-amber-700">{auditorCount}</span>
+            <span className="text-2xl font-extrabold font-serif text-amber-700">{auditorCount}</span>
             <span className="text-xs text-amber-600 font-semibold">名</span>
           </div>
           <div className="mt-1 text-[11px] text-amber-600 font-medium">警察照会・監査台帳閲覧</div>

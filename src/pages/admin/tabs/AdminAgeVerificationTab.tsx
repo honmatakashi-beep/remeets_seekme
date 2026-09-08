@@ -44,7 +44,7 @@ export const AdminAgeVerificationTab: React.FC<AdminAgeVerificationTabProps> = (
                     </div>
                   </div>
                   <div className="mt-2 flex items-baseline gap-2">
-                    <span className="text-2xl font-extrabold text-slate-800">{ageVerificationLogs.length}</span>
+                    <span className="text-2xl font-extrabold font-serif text-slate-800">{ageVerificationLogs.length}</span>
                     <span className="text-xs text-slate-500">件</span>
                   </div>
                   <div className="mt-1 text-[11px] text-slate-600 flex items-center gap-1 font-medium">
@@ -61,7 +61,7 @@ export const AdminAgeVerificationTab: React.FC<AdminAgeVerificationTabProps> = (
                     </div>
                   </div>
                   <div className="mt-2 flex items-baseline gap-2">
-                    <span className="text-2xl font-extrabold text-emerald-700">
+                    <span className="text-2xl font-extrabold font-serif text-emerald-700">
                       {ageVerificationLogs.filter(l => {
                         if (l.is_ekyc_verified || (l.metadata_json && (l.metadata_json.includes('eKYC') || l.metadata_json.includes('primary_ekyc')))) return true;
                         return false;
@@ -84,7 +84,7 @@ export const AdminAgeVerificationTab: React.FC<AdminAgeVerificationTabProps> = (
                     </div>
                   </div>
                   <div className="mt-2 flex items-baseline gap-2">
-                    <span className="text-2xl font-extrabold text-blue-700">
+                    <span className="text-2xl font-extrabold font-serif text-blue-700">
                       {ageVerificationLogs.filter(l => {
                         const isEkyc = l.is_ekyc_verified || (l.metadata_json && (l.metadata_json.includes('eKYC') || l.metadata_json.includes('primary_ekyc')));
                         return l.is_verified && !isEkyc;
@@ -103,7 +103,7 @@ export const AdminAgeVerificationTab: React.FC<AdminAgeVerificationTabProps> = (
                     </div>
                   </div>
                   <div className="mt-2 flex items-baseline gap-2">
-                    <span className="text-2xl font-extrabold text-amber-700">
+                    <span className="text-2xl font-extrabold font-serif text-amber-700">
                       {ageVerificationLogs.filter(l => {
                         const d = new Date(l.created_at);
                         const now = new Date();

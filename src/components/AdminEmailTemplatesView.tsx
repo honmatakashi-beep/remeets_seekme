@@ -47,13 +47,51 @@ interface EmailTemplate {
 }
 
 const DEFAULT_TEMPLATES: EmailTemplate[] = [
-  // 1. 会員登録認証
+  // 1. 新規アカウント登録 認証コード通知
+  {
+    id: 'registration_code',
+    category: '認証・セキュリティ',
+    type: 'email',
+    title: '新規アカウント登録 認証コード通知メール',
+    triggerEvent: '新規アカウント登録時（メールアドレス・パスワード入力後の確認コード送信）',
+    fromName: 'ReMEETs 運営事務局',
+    fromEmail: 'no-reply@remeets.link',
+    subject: '【ReMEETs】新規アカウント登録の認証コード（有効期限30分）',
+    bodyTemplate: `{{userName}} 様
+
+ReMEETs（リミーツ）への新規アカウント登録ありがとうございます。
+
+以下の「6桁の認証コード」を登録画面に入力し、本登録を完了してください。
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+■ 認証コード（半角数字6桁）
+{{verificationCode}}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+※認証コードの有効期限は発行から【30分間】です。
+
+【重要なお知らせ・注意事項】
+※本メールにお心当たりがない場合は、第三者が誤ってあなたのメールアドレスを入力した可能性があります。その場合は何も操作を行わず、本メールを速やかに破棄・削除してください。
+※認証コードは他人に教えないでください。運営スタッフから認証コードをお尋ねすることは一切ございません。
+
+--------------------------------------------------
+ReMEETs〜再会のボトルメール〜 運営事務局
+公式サイト: https://remeets.link
+お問い合わせ: support@remeets.link
+--------------------------------------------------`,
+    sampleData: {
+      userName: '山田 太郎',
+      verificationCode: '849201'
+    },
+    tags: ['自動送信', '即時配信', '6桁コード', '重要']
+  },
+
+  // 2. 会員登録認証（URLリンク式・旧互換）
   {
     id: 'verification',
     category: '認証・セキュリティ',
     type: 'email',
-    title: '会員登録・メールアドレス確認メール',
-    triggerEvent: '新規会員登録時、またはメールアドレス変更時',
+    title: 'メールアドレス確認リンク（旧互換）',
+    triggerEvent: 'メールアドレス変更時、またはリンク型認証時',
     fromName: 'ReMEETs 運営事務局',
     fromEmail: 'no-reply@remeets.link',
     subject: '【ReMEETs】メールアドレスのご確認（認証手続き）',

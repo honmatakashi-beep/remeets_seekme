@@ -144,7 +144,7 @@ export const LoginPage = () => {
 
           <div className="space-y-1.5">
             <label className="text-[11px] font-bold text-stone-800 tracking-wider uppercase block font-sans">
-              メールアドレス または ユーザーID
+              アカウントID（メールアドレス）
             </label>
             <div className="relative">
               <input 
@@ -152,7 +152,7 @@ export const LoginPage = () => {
                 required
                 value={username}
                 onChange={e => setUsername(e.target.value)}
-                placeholder="example@email.com または UID-123456"
+                placeholder="example@email.com または 会員番号(UID-xxxxxx)"
                 className="w-full pl-10 pr-4 py-3 border border-stone-300 rounded-xl bg-white text-xs outline-none focus:border-brand-primary focus:ring-2 focus:ring-amber-500/20 text-stone-900 transition-all placeholder:text-stone-400 shadow-inner"
               />
               <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-500 pointer-events-none" />
@@ -207,7 +207,7 @@ export const LoginPage = () => {
             アカウントをお持ちではありませんか？
           </p>
           <Link to="/register" className="inline-block text-xs sm:text-sm text-brand-primary font-bold hover:underline font-sans">
-            新しく会員登録する（無料） →
+            新規アカウント登録する（無料） →
           </Link>
         </div>
 
@@ -289,7 +289,8 @@ export const TermsModal = ({ isOpen, onClose, onConfirm, mode = 'terms' }: { isO
 
 export const RegisterPage = () => {
   const { check: checkNg } = useNgFilter();
-  const [step, setStep] = useState<1 | 2>(1);
+  const { login } = useAuth();
+  const [step, setStep] = useState<1 | 2 | 3>(1);
   const [authMethod, setAuthMethod] = useState<'line' | 'google' | 'email'>('email');
   
   // Step 1 State
@@ -307,6 +308,12 @@ export const RegisterPage = () => {
   const [hasReadPrivacy, setHasReadPrivacy] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
   const [showPrivacy, setShowPrivacy] = useState(false);
+
+  // Step 3 State (6桁認証コード)
+  const [verificationCode, setVerificationCode] = useState('');
+  const [debugCode, setDebugCode] = useState<string | null>(null);
+  const [resendStatus, setResendStatus] = useState<'idle' | 'sending' | 'sent'>('idle');
+  const [resendMessage, setResendMessage] = useState('');
   
   // Feedback & Loading State
   const [loading, setLoading] = useState(false);
@@ -315,6 +322,32 @@ export const RegisterPage = () => {
   const [warning, setWarning] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  // Dynamic Password Policy State
+  const [passwordPolicy, setPasswordPolicy] = useState<{
+    minLength: number;
+    requireLetters: boolean;
+    requireNumbers: boolean;
+    requireSymbols: boolean;
+    requireMixedCase: boolean;
+  }>({
+    minLength: 8,
+    requireLetters: true,
+    requireNumbers: true,
+    requireSymbols: false,
+    requireMixedCase: false,
+  });
+
+  useEffect(() => {
+    fetch('/api/auth/password-policy')
+      .then(res => res.json())
+      .then(data => {
+        if (data && typeof data.minLength === 'number') {
+          setPasswordPolicy(data);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   // 全角英数を半角英数に変換するヘルパー
   const toHalfWidth = (str: string) => {
     return str
@@ -322,10 +355,33 @@ export const RegisterPage = () => {
       .replace(/　/g, ' ');
   };
 
+  const validatePasswordPolicy = (pw: string) => {
+    if (!pw) return 'パスワードを入力してください。';
+    if (pw.length < passwordPolicy.minLength) {
+      return `パスワードは${passwordPolicy.minLength}文字以上で入力してください。`;
+    }
+    if (passwordPolicy.requireLetters && !/[a-zA-Z]/.test(pw)) {
+      return 'パスワードに英字（a〜z, A〜Z）を1文字以上含める必要があります。';
+    }
+    if (passwordPolicy.requireNumbers && !/[0-9]/.test(pw)) {
+      return 'パスワードに数字（0〜9）を1文字以上含める必要があります。';
+    }
+    if (passwordPolicy.requireLetters && passwordPolicy.requireNumbers && (!/[a-zA-Z]/.test(pw) || !/[0-9]/.test(pw))) {
+      return 'パスワードは英字と数字の両方を含める必要があります。';
+    }
+    if (passwordPolicy.requireMixedCase && (!/[a-z]/.test(pw) || !/[A-Z]/.test(pw))) {
+      return 'パスワードに英大文字と英小文字の両方を含める必要があります。';
+    }
+    if (passwordPolicy.requireSymbols && !/[!@#$%^&*()_+\-=\[\]{}|;:,.<>?/\\~`'"]/.test(pw)) {
+      return 'パスワードに記号（!@#$%^&* など）を1文字以上含める必要があります。';
+    }
+    return null;
+  };
+
   const passwordStrength = (pw: string) => {
     if (pw.length === 0) return 0;
     let strength = 0;
-    if (pw.length >= 8) strength += 1;
+    if (pw.length >= passwordPolicy.minLength) strength += 1;
     if (/[a-zA-Z]/.test(pw)) strength += 1;
     if (/[0-9]/.test(pw)) strength += 1;
     if (/[^A-Za-z0-9]/.test(pw)) strength += 1;
@@ -333,18 +389,14 @@ export const RegisterPage = () => {
   };
 
   const strength = passwordStrength(password);
-  const isAlphanumeric = /[a-zA-Z]/.test(password) && /[0-9]/.test(password);
 
   // SNS連携ハンドラー (LINE / Google)
   const handleSnsSelect = (provider: 'line' | 'google') => {
     setAuthMethod(provider);
-    setError('');
-    
-    // SNS認証シミュレーション（実稼働時はOAuthリダイレクト）
     if (provider === 'line') {
       if (!email) setEmail('line_user@example.com');
       if (!password) setPassword('LineAuth2026!Sec');
-    } else {
+    } else if (provider === 'google') {
       if (!email) setEmail('google_user@gmail.com');
       if (!password) setPassword('GoogleAuth2026!Sec');
     }
@@ -359,8 +411,9 @@ export const RegisterPage = () => {
       setError('有効なメールアドレスを入力してください。');
       return;
     }
-    if (password.length < 8 || !isAlphanumeric) {
-      setError('パスワードは8文字以上で、英字と数字の両方を含める必要があります。');
+    const policyErr = validatePasswordPolicy(password);
+    if (policyErr) {
+      setError(policyErr);
       return;
     }
     setAuthMethod('email');
@@ -402,14 +455,90 @@ export const RegisterPage = () => {
       });
       const data = await res.json();
       if (res.ok) {
-        setSuccess(data.message || '登録が完了しました。');
+        if (data.requireVerification) {
+          // メール登録の場合：認証コード入力画面 (Step 3) へ進む
+          setStep(3);
+          if (data.debugCode) {
+            setDebugCode(data.debugCode);
+          }
+          setResendMessage('');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          // SNS認証等で即時完了の場合
+          setSuccess(data.message || '新規アカウント登録が完了しました。');
+        }
       } else {
-        setError(data.error || '登録に失敗しました。');
+        setError(data.error || '新規アカウント登録に失敗しました。');
       }
     } catch (err) {
       setError('サーバーとの通信に失敗しました。時間をおいて再度お試しください。');
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Step 3: 認証コードの照合・本登録完了
+  const handleVerifyCodeSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (verificationCode.trim().length !== 6) {
+      setError('メールに届いた6桁の半角数字を入力してください。');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const res = await fetch('/api/auth/verify-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          code: verificationCode.trim()
+        })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        if (data.token && data.user) {
+          login(data.token, data.user);
+        }
+        setSuccess(data.message || '本登録が完了しました！');
+      } else {
+        setError(data.error || '認証コードの確認に失敗しました。');
+      }
+    } catch (err) {
+      setError('サーバーとの通信に失敗しました。時間をおいて再度お試しください。');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 認証コードの再送信
+  const handleResendCode = async () => {
+    if (resendStatus === 'sending') return;
+    setResendStatus('sending');
+    setError('');
+    try {
+      const res = await fetch('/api/auth/resend-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setResendStatus('sent');
+        if (data.debugCode) {
+          setDebugCode(data.debugCode);
+        }
+        setResendMessage('認証コードを再送信しました。メールをご確認ください。');
+        setTimeout(() => setResendStatus('idle'), 10000);
+      } else {
+        setError(data.error || '再送信に失敗しました。');
+        setResendStatus('idle');
+      }
+    } catch (err) {
+      setError('通信エラーにより再送信できませんでした。');
+      setResendStatus('idle');
     }
   };
 
@@ -419,25 +548,25 @@ export const RegisterPage = () => {
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }} 
           animate={{ opacity: 1, scale: 1 }} 
-          className="glass-card p-8 sm:p-10 space-y-6 bg-white/90 backdrop-blur-xl border border-amber-200/80 rounded-3xl shadow-xl text-stone-900"
+          className="glass-card p-8 sm:p-10 space-y-6 bg-white/90 backdrop-blur-xl border border-sky-200/80 rounded-3xl shadow-xl text-stone-900"
         >
-          <div className="w-20 h-20 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto ring-8 ring-emerald-50/50">
+          <div className="w-20 h-20 bg-gradient-to-tr from-sky-400 to-indigo-600 text-white rounded-full flex items-center justify-center mx-auto ring-8 ring-sky-100 shadow-md">
             <CheckCircle2 size={40} />
           </div>
           <div className="space-y-2">
-            <span className="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold font-mono">
+            <span className="inline-block px-3 py-1 rounded-full bg-sky-100 text-sky-800 text-xs font-bold font-mono">
               REGISTRATION COMPLETE
             </span>
-            <h1 className="text-2xl font-bold font-serif text-stone-900">アカウント登録が完了しました</h1>
+            <h1 className="text-2xl font-bold font-serif text-stone-900">新規アカウント登録が完了しました</h1>
             <p className="text-xs sm:text-sm text-stone-600 font-serif leading-relaxed">
-              ご登録いただいたメールアドレス宛てに確認のご案内をお送りいたしました。<br />
+              メールアドレスの認証が正常に完了し、本登録が完了いたしました。<br />
               ログインして、あの頃の想い出を手紙に託しましょう。
             </p>
           </div>
 
-          <div className="p-4 bg-amber-50/80 rounded-2xl border border-amber-200/60 text-left text-xs space-y-1 text-stone-700">
-            <p className="font-bold text-brand-primary font-sans flex items-center gap-1.5">
-              <ShieldCheck size={15} />
+          <div className="p-4 bg-sky-50/80 rounded-2xl border border-sky-200/60 text-left text-xs space-y-1 text-stone-700">
+            <p className="font-bold text-sky-900 font-sans flex items-center gap-1.5">
+              <ShieldCheck size={15} className="text-sky-600" />
               <span>安心・安全のための登録情報</span>
             </p>
             <p className="text-stone-600">・メールアドレス: <strong className="font-mono text-stone-900">{email}</strong></p>
@@ -446,10 +575,10 @@ export const RegisterPage = () => {
           </div>
 
           <button 
-            onClick={() => navigate('/login')} 
-            className="w-full py-4 bg-brand-dark hover:bg-brand-primary text-white rounded-2xl text-xs sm:text-sm font-bold font-sans tracking-wider transition-all shadow-md cursor-pointer flex items-center justify-center gap-2"
+            onClick={() => navigate('/account')} 
+            className="w-full py-4 bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 hover:from-sky-600 hover:to-indigo-700 text-white rounded-2xl text-xs sm:text-sm font-bold font-sans tracking-wider transition-all shadow-md cursor-pointer flex items-center justify-center gap-2"
           >
-            <span>ログイン画面へ進む</span>
+            <span>マイページへ進む</span>
             <ArrowRight size={16} />
           </button>
         </motion.div>
@@ -457,40 +586,63 @@ export const RegisterPage = () => {
     );
   }
 
+  // プログレスバーの進行パーセント計算
+  const progressPercent = step === 1 ? '15%' : step === 2 ? '55%' : '100%';
+
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-12 animate-fade-in font-sans">
       <BackToHomeButton className="mb-4" />
 
-      {/* ステップ進行プログレスインジケーター */}
-      <div className="mb-8 max-w-md mx-auto">
-        <div className="flex items-center justify-between relative">
-          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-stone-200 z-0 rounded-full" />
+      {/* 鮮やかなブルーグラデーションのステッププログレスインジケーター */}
+      <div className="mb-8 max-w-lg mx-auto">
+        <div className="flex items-center justify-between relative px-4">
+          {/* 背景バー */}
+          <div className="absolute left-6 right-6 top-4 h-1.5 bg-stone-200 z-0 rounded-full" />
+          {/* ブルーグラデーション進行バー */}
           <div 
-            className="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-brand-primary z-0 rounded-full transition-all duration-500" 
-            style={{ width: step === 1 ? '50%' : '100%' }}
+            className="absolute left-6 top-4 h-1.5 bg-gradient-to-r from-sky-400 via-blue-500 to-indigo-600 z-0 rounded-full transition-all duration-700 shadow-sm" 
+            style={{ width: `calc(${progressPercent} - 24px)` }}
           />
 
           {/* Step 1 Node */}
           <div className="relative z-10 flex flex-col items-center gap-1.5">
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
-              step >= 1 ? 'bg-brand-primary text-white shadow-md' : 'bg-stone-200 text-stone-500'
+            <div className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+              step >= 1 
+                ? 'bg-gradient-to-br from-sky-400 to-blue-600 text-white shadow-md ring-4 ring-sky-100' 
+                : 'bg-stone-200 text-stone-500'
             }`}>
               1
             </div>
-            <span className={`text-[11px] font-bold ${step === 1 ? 'text-brand-primary' : 'text-stone-600'}`}>
+            <span className={`text-[11px] font-bold tracking-tight ${step === 1 ? 'text-blue-700 font-extrabold' : 'text-stone-600'}`}>
               登録方法の選択
             </span>
           </div>
 
           {/* Step 2 Node */}
           <div className="relative z-10 flex flex-col items-center gap-1.5">
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
-              step === 2 ? 'bg-brand-primary text-white shadow-md ring-4 ring-amber-100' : 'bg-stone-200 text-stone-500'
+            <div className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+              step >= 2 
+                ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-md ring-4 ring-blue-100' 
+                : 'bg-stone-200 text-stone-500'
             }`}>
               2
             </div>
-            <span className={`text-[11px] font-bold ${step === 2 ? 'text-brand-primary' : 'text-stone-600'}`}>
+            <span className={`text-[11px] font-bold tracking-tight ${step === 2 ? 'text-blue-700 font-extrabold' : 'text-stone-600'}`}>
               お名前・安心設定
+            </span>
+          </div>
+
+          {/* Step 3 Node */}
+          <div className="relative z-10 flex flex-col items-center gap-1.5">
+            <div className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+              step === 3 
+                ? 'bg-gradient-to-br from-indigo-500 to-indigo-700 text-white shadow-md ring-4 ring-indigo-100' 
+                : 'bg-stone-200 text-stone-500'
+            }`}>
+              3
+            </div>
+            <span className={`text-[11px] font-bold tracking-tight ${step === 3 ? 'text-indigo-700 font-extrabold' : 'text-stone-600'}`}>
+              認証コード確認
             </span>
           </div>
         </div>
@@ -499,21 +651,23 @@ export const RegisterPage = () => {
       <motion.div 
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        className="glass-card p-6 sm:p-10 bg-white/90 backdrop-blur-xl border border-amber-200/70 rounded-3xl shadow-xl"
+        className="glass-card p-6 sm:p-10 bg-white/90 backdrop-blur-xl border border-sky-200/70 rounded-3xl shadow-xl"
       >
         {/* ヘッダーエリア */}
         <div className="text-center mb-6 space-y-1.5">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100/80 text-brand-primary text-xs font-bold font-sans mb-1">
-            <Sparkles size={13} />
-            <span>New Account</span>
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-sky-50 to-indigo-50 border border-sky-200/80 text-blue-700 text-xs font-bold font-sans mb-1">
+            <Sparkles size={13} className="text-sky-500" />
+            <span>新規アカウント登録</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900 tracking-wide">
-            {step === 1 ? '新規会員登録' : 'お名前と基本情報の登録'}
+            {step === 1 ? '新規アカウント登録' : step === 2 ? 'お名前と基本情報の設定' : 'メール認証コードの入力'}
           </h1>
           <p className="text-xs sm:text-sm text-stone-700 font-medium font-serif leading-relaxed">
             {step === 1 
-              ? 'ご希望の登録方法を選択してください。' 
-              : '二人の思い出を安全につなぐための大切なお名前を設定します。'}
+              ? 'ご希望の登録方法（LINE・Google・メールアドレス）を選択してください。' 
+              : step === 2 
+                ? '二人の想い出を安全につなぐための大切なお名前と規約同意を設定します。'
+                : `${email} 宛てに届いた6桁の認証コードを入力してください。`}
           </p>
         </div>
 
@@ -522,6 +676,14 @@ export const RegisterPage = () => {
           <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-900 text-xs rounded-2xl flex items-center gap-3 animate-shake">
             <AlertCircle className="text-red-500 shrink-0" size={16} />
             <span className="font-medium">{error}</span>
+          </div>
+        )}
+
+        {/* 再送完了メッセージ */}
+        {resendMessage && (
+          <div className="mb-6 p-4 bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs rounded-2xl flex items-center gap-3 animate-fade-in">
+            <CheckCircle2 className="text-emerald-600 shrink-0" size={16} />
+            <span className="font-medium">{resendMessage}</span>
           </div>
         )}
 
@@ -578,18 +740,18 @@ export const RegisterPage = () => {
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                     placeholder="example@email.com"
-                    className="w-full pl-11 pr-4 py-3.5 border border-stone-300 rounded-2xl bg-white text-sm outline-none focus:border-brand-primary focus:ring-2 focus:ring-amber-500/20 text-stone-900 transition-all placeholder:text-stone-400 shadow-inner"
+                    className="w-full pl-11 pr-4 py-3.5 border border-stone-300 rounded-2xl bg-white text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-stone-900 transition-all placeholder:text-stone-400 shadow-inner"
                   />
                   <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-500 pointer-events-none" />
                 </div>
                 <p className="text-xs text-stone-700 font-medium font-serif">
-                  ※確認案内やマッチング通知が届く、安全なメールアドレスをご入力ください。
+                  ※確認コード（6桁）やマッチング通知が届く、安全なメールアドレスをご入力ください。
                 </p>
               </div>
 
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-stone-800 tracking-wider uppercase block font-sans">
-                  パスワード（8文字以上・英数字） <span className="text-rose-500">*</span>
+                  パスワード（{passwordPolicy.minLength}文字以上{passwordPolicy.requireLetters && passwordPolicy.requireNumbers ? '・英数字' : passwordPolicy.requireLetters ? '・英字' : passwordPolicy.requireNumbers ? '・数字' : ''}{passwordPolicy.requireSymbols ? '・記号' : ''}{passwordPolicy.requireMixedCase ? '・大文字小文字' : ''}） <span className="text-rose-500">*</span>
                 </label>
                 <div className="relative">
                   <input 
@@ -598,7 +760,7 @@ export const RegisterPage = () => {
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full pl-11 pr-11 py-3.5 border border-stone-300 rounded-2xl bg-white text-sm outline-none focus:border-brand-primary focus:ring-2 focus:ring-amber-500/20 text-stone-900 transition-all placeholder:text-stone-400 shadow-inner"
+                    className="w-full pl-11 pr-11 py-3.5 border border-stone-300 rounded-2xl bg-white text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-stone-900 transition-all placeholder:text-stone-400 shadow-inner"
                   />
                   <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-500 pointer-events-none" />
                   <button 
@@ -616,7 +778,7 @@ export const RegisterPage = () => {
                       {[1, 2, 3, 4].map(i => (
                         <div key={i} className={cn(
                           "h-1.5 flex-1 rounded-full transition-all",
-                          i <= strength ? (strength <= 2 ? "bg-amber-500" : "bg-emerald-600") : "bg-stone-300"
+                          i <= strength ? (strength <= 2 ? "bg-amber-500" : "bg-gradient-to-r from-sky-400 to-blue-600") : "bg-stone-300"
                         )} />
                       ))}
                     </div>
@@ -629,9 +791,9 @@ export const RegisterPage = () => {
 
               <button 
                 type="submit" 
-                className="w-full py-4 bg-brand-dark hover:bg-brand-primary text-white rounded-2xl text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition-all cursor-pointer font-sans flex items-center justify-center gap-2"
+                className="w-full py-4 bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 hover:from-sky-600 hover:to-indigo-700 text-white rounded-2xl text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition-all cursor-pointer font-sans flex items-center justify-center gap-2"
               >
-                <span>次へ進む（お名前・基本情報の設定）</span>
+                <span>次へ進む（お名前・安心設定）</span>
                 <ArrowRight size={16} />
               </button>
             </form>
@@ -644,16 +806,16 @@ export const RegisterPage = () => {
         {step === 2 && (
           <form onSubmit={handleFinalSubmit} className="space-y-6">
             {/* 上部：選択された登録メールの確認 ＆ 戻るボタン */}
-            <div className="flex items-center justify-between p-3.5 bg-amber-50/70 border border-amber-200/80 rounded-2xl text-xs">
+            <div className="flex items-center justify-between p-3.5 bg-sky-50/70 border border-sky-200/80 rounded-2xl text-xs">
               <div className="flex items-center gap-2 text-stone-700">
-                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span className="w-2 h-2 rounded-full bg-blue-500"></span>
                 <span className="font-bold">登録メール:</span>
                 <span className="font-mono text-stone-900 font-semibold">{email}</span>
               </div>
               <button
                 type="button"
                 onClick={() => setStep(1)}
-                className="text-xs text-brand-primary hover:underline font-bold font-sans cursor-pointer"
+                className="text-xs text-blue-700 hover:underline font-bold font-sans cursor-pointer"
               >
                 変更する
               </button>
@@ -663,7 +825,7 @@ export const RegisterPage = () => {
             <div className="space-y-3 p-5 bg-stone-50/80 border border-stone-200/80 rounded-2xl">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-bold text-stone-900 tracking-wider uppercase flex items-center gap-1.5 font-sans">
-                  <ShieldCheck size={16} className="text-brand-primary" />
+                  <ShieldCheck size={16} className="text-blue-600" />
                   <span>お名前（本名・公的氏名）</span> <span className="text-rose-500">*</span>
                 </label>
                 <span className="text-[10px] bg-rose-100 text-rose-800 font-bold px-2 py-0.5 rounded">
@@ -683,7 +845,7 @@ export const RegisterPage = () => {
                     required
                     type="text" 
                     placeholder="例：山田" 
-                    className="w-full px-3.5 py-3 border border-stone-200 rounded-xl bg-white text-xs outline-none focus:border-brand-primary focus:ring-2 focus:ring-amber-500/20 text-stone-900 shadow-inner"
+                    className="w-full px-3.5 py-3 border border-stone-200 rounded-xl bg-white text-xs outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-stone-900 shadow-inner"
                     value={lastName}
                     onChange={e => {
                       const val = e.target.value;
@@ -699,7 +861,7 @@ export const RegisterPage = () => {
                     required
                     type="text" 
                     placeholder="例：太郎" 
-                    className="w-full px-3.5 py-3 border border-stone-200 rounded-xl bg-white text-xs outline-none focus:border-brand-primary focus:ring-2 focus:ring-amber-500/20 text-stone-900 shadow-inner"
+                    className="w-full px-3.5 py-3 border border-stone-200 rounded-xl bg-white text-xs outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-stone-900 shadow-inner"
                     value={firstName}
                     onChange={e => {
                       const val = e.target.value;
@@ -714,7 +876,7 @@ export const RegisterPage = () => {
             </div>
 
             {/* 2. ニックネーム（公開表示名）入力欄 */}
-            <div className="space-y-2 p-5 bg-amber-50/50 border border-amber-150 rounded-2xl">
+            <div className="space-y-2 p-5 bg-sky-50/40 border border-sky-150 rounded-2xl">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-bold text-stone-900 tracking-wider block font-sans">
                   ニックネーム（表示名） <span className="text-rose-500">*</span>
@@ -723,14 +885,14 @@ export const RegisterPage = () => {
                   全体公開（変更可能）
                 </span>
               </div>
-              <p className="text-[11px] text-amber-900 leading-relaxed">
+              <p className="text-[11px] text-stone-600 leading-relaxed font-serif">
                 ※手紙（ボトルメール）を流す際やマイページで公に表示される名前です。実名が出ないためプライバシーが守られます。
               </p>
               <input 
                 required
                 type="text" 
                 placeholder="例：やまたろう、風鈴、としぼー など" 
-                className="w-full px-3.5 py-3 border border-amber-200 rounded-xl bg-white text-xs outline-none focus:border-brand-primary focus:ring-2 focus:ring-amber-500/20 text-stone-900 shadow-inner"
+                className="w-full px-3.5 py-3 border border-sky-200 rounded-xl bg-white text-xs outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-stone-900 shadow-inner"
                 value={nickname}
                 onChange={e => {
                   const val = e.target.value;
@@ -745,7 +907,7 @@ export const RegisterPage = () => {
             <div className="space-y-2 p-4 bg-stone-50 rounded-2xl border border-stone-200">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-bold text-stone-800 uppercase tracking-widest flex items-center gap-2">
-                  <Shield size={14} className="text-brand-primary" />
+                  <Shield size={14} className="text-blue-600" />
                   <span>ボット防止認証</span>
                 </label>
                 {captchaAnswer === '4' && (
@@ -765,27 +927,36 @@ export const RegisterPage = () => {
                 autoCorrect="off"
                 spellCheck="false"
                 placeholder="答えを入力（半角数字: 4）" 
-                className="w-full px-3.5 py-2.5 border border-stone-300 rounded-xl bg-white text-xs outline-none focus:border-brand-primary focus:ring-2 focus:ring-amber-500/20 text-stone-900 font-mono shadow-inner font-bold tracking-wider"
+                className="w-full px-3.5 py-2.5 border border-stone-300 rounded-xl bg-white text-xs outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-stone-900 font-mono shadow-inner font-bold tracking-wider"
                 value={captchaAnswer}
                 onChange={e => setCaptchaAnswer(toHalfWidth(e.target.value).replace(/[^0-9]/g, ''))}
               />
             </div>
 
             {/* 4. 規約・プライバシー同意 ＆ 18歳以上確認 */}
-            <div className={cn(
-              "flex items-start gap-3 p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer",
-              agreed ? "bg-amber-50/90 border-amber-300 ring-2 ring-amber-400/20" : "bg-stone-50/80 border-stone-200 hover:border-amber-200"
-            )}>
+            <div 
+              onClick={() => setAgreed(!agreed)}
+              className={cn(
+                "flex items-start gap-3.5 p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer",
+                agreed ? "bg-sky-50/90 border-sky-300 ring-2 ring-sky-400/20" : "bg-stone-50/80 border-stone-200 hover:border-sky-200"
+              )}
+            >
               <input 
                 id="terms"
                 type="checkbox" 
-                className="mt-1 w-5 h-5 rounded border-stone-300 text-brand-primary focus:ring-amber-500 transition-all cursor-pointer shrink-0"
+                className="mt-1 w-5 h-5 rounded border-stone-300 text-blue-600 focus:ring-blue-500 transition-all cursor-pointer shrink-0"
                 checked={agreed}
                 onChange={e => setAgreed(e.target.checked)}
+                onClick={e => e.stopPropagation()}
               />
-              <label htmlFor="terms" className="text-xs text-stone-800 leading-relaxed cursor-pointer font-medium font-serif select-none">
-                <strong>【18歳以上・規約同意】</strong> 私は18歳以上（高校生を除く）であり、SNSアカウント連携を含む <button type="button" onClick={(e) => { e.preventDefault(); setShowTerms(true); }} className="text-brand-primary font-bold hover:underline cursor-pointer">利用規約</button> および <button type="button" onClick={(e) => { e.preventDefault(); setShowPrivacy(true); }} className="text-brand-primary font-bold hover:underline cursor-pointer">プライバシーポリシー</button> に同意して登録します。
-              </label>
+              <div className="space-y-1.5 select-none">
+                <label htmlFor="terms" className="text-xs sm:text-sm font-bold text-stone-900 leading-snug cursor-pointer font-serif block">
+                  私は18歳以上（高校生を除く）であり、利用規約等に同意します
+                </label>
+                <p className="text-[11px] sm:text-xs text-stone-600 leading-relaxed font-sans">
+                  法令（青少年保護）に基づき18歳未満および高校生のご利用はできません。SNSアカウント連携に伴う情報の取得・保護を含む <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowTerms(true); }} className="text-blue-700 font-bold hover:underline cursor-pointer">利用規約</button> および <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowPrivacy(true); }} className="text-blue-700 font-bold hover:underline cursor-pointer">プライバシーポリシー</button> をご確認のうえ、同意してアカウントを作成してください。
+                </p>
+              </div>
             </div>
 
             {/* 送信ボタン ＆ 戻るボタン */}
@@ -800,17 +971,149 @@ export const RegisterPage = () => {
               <button 
                 type="submit" 
                 disabled={loading || !agreed}
-                className="flex-1 py-4 bg-brand-dark hover:bg-brand-primary text-white rounded-2xl text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition-all cursor-pointer font-sans flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 py-4 bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 hover:from-sky-600 hover:to-indigo-700 text-white rounded-2xl text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition-all cursor-pointer font-sans flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 ) : (
                   <>
-                    <Check size={18} />
-                    <span>規約に同意してアカウントを作成する</span>
+                    <Send size={18} />
+                    <span>{authMethod === 'email' ? '認証コードをメールで受け取る' : '規約に同意してアカウントを作成する'}</span>
                   </>
                 )}
               </button>
+            </div>
+          </form>
+        )}
+
+        {/* ========================================================= */}
+        {/* STEP 3: メール認証コードの入力 ＆ 本登録完了 */}
+        {/* ========================================================= */}
+        {step === 3 && (
+          <form onSubmit={handleVerifyCodeSubmit} className="space-y-6">
+            {/* 上部：送信先メールアドレスの確認 */}
+            <div className="p-4 bg-gradient-to-r from-sky-50 via-blue-50 to-indigo-50 border border-sky-200 rounded-2xl text-xs space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-blue-900 flex items-center gap-1.5 font-sans">
+                  <Mail size={15} className="text-blue-600" />
+                  <span>認証コード送信先</span>
+                </span>
+                <span className="text-[10px] bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded-full">
+                  有効期限 30分間
+                </span>
+              </div>
+              <p className="text-stone-700 font-mono text-sm font-semibold">{email}</p>
+              <p className="text-[11px] text-stone-500 font-serif pt-1">
+                ※上記のメールアドレス宛てに「6桁の半角数字」の認証コードをお送りしました。
+              </p>
+            </div>
+
+            {/* 6桁認証コード入力欄 */}
+            <div className="space-y-2 p-6 bg-stone-50/90 rounded-2xl border border-stone-200 text-center">
+              <label className="text-xs font-bold text-stone-800 uppercase tracking-wider block font-sans">
+                認証コード（半角数字 6桁） <span className="text-rose-500">*</span>
+              </label>
+              <div className="max-w-xs mx-auto pt-2">
+                <input 
+                  required
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  maxLength={6}
+                  autoFocus
+                  placeholder="123456"
+                  value={verificationCode}
+                  onChange={e => setVerificationCode(toHalfWidth(e.target.value).replace(/[^0-9]/g, ''))}
+                  className="w-full text-center py-4 border-2 border-sky-300 rounded-2xl bg-white text-2xl font-mono font-bold tracking-[0.4em] outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/20 text-stone-900 shadow-inner"
+                />
+              </div>
+              <p className="text-xs text-stone-600 font-medium font-serif pt-1">
+                メール本文に記載された6桁の数字をそのままご入力ください。
+              </p>
+
+              {/* 開発・テスト用アシスト機能 */}
+              {debugCode && (
+                <div className="mt-3 pt-3 border-t border-stone-200/80">
+                  <div className="inline-flex items-center gap-2 p-2 bg-sky-100/80 border border-sky-300 text-sky-950 rounded-xl text-xs font-sans">
+                    <Sparkles size={13} className="text-sky-600 shrink-0" />
+                    <span>【テスト用確認コード】</span>
+                    <strong className="font-mono text-sm font-bold text-blue-900 tracking-wider bg-white px-2 py-0.5 rounded border border-sky-300">
+                      {debugCode}
+                    </strong>
+                    <button
+                      type="button"
+                      onClick={() => setVerificationCode(debugCode)}
+                      className="px-2.5 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[11px] font-bold cursor-pointer transition-colors shadow-2xs"
+                    >
+                      自動入力する
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* 注意事項アコーディオン/コールアウト */}
+            <div className="p-5 bg-amber-50/80 border border-amber-200/90 rounded-2xl text-xs text-amber-900 space-y-3 font-serif leading-relaxed">
+              <div className="flex items-center justify-between">
+                <p className="font-bold flex items-center gap-1.5 text-amber-950 font-sans text-xs">
+                  <AlertCircle size={15} className="text-amber-600 shrink-0" />
+                  <span>確認メールが届かない場合・注意事項</span>
+                </p>
+                <button
+                  type="button"
+                  onClick={handleResendCode}
+                  disabled={resendStatus === 'sending'}
+                  className="px-3 py-1.5 bg-white hover:bg-amber-100/70 border border-amber-300 text-amber-900 rounded-xl text-[11px] font-bold font-sans flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer disabled:opacity-50"
+                >
+                  <RefreshCw size={12} className={resendStatus === 'sending' ? 'animate-spin' : ''} />
+                  <span>{resendStatus === 'sending' ? '再送信中...' : '確認コードを再送する'}</span>
+                </button>
+              </div>
+
+              <ul className="list-disc list-inside space-y-1 text-stone-700 pl-1 text-[11px]">
+                <li>「迷惑メールフォルダ」や「プロモーション」タブに自動分類されている場合がございます。</li>
+                <li>ドメイン指定受信を設定されている場合は <code className="font-mono bg-white px-1.5 py-0.5 rounded border border-amber-200 text-amber-950 font-bold">remeets.link</code> からのメール受信を許可してください。</li>
+                <li>お心当たりがない場合は、第三者が誤って入力した可能性がありますのでメールを破棄してください。</li>
+              </ul>
+            </div>
+
+            {/* 本登録完了ボタン ＆ 戻る/再送 */}
+            <div className="space-y-3 pt-2">
+              <button 
+                type="submit" 
+                disabled={loading || verificationCode.trim().length !== 6}
+                className="w-full py-4 bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 hover:from-sky-600 hover:to-indigo-700 text-white rounded-2xl text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition-all cursor-pointer font-sans flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? (
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <>
+                    <CheckCircle2 size={18} />
+                    <span>認証して本登録を完了する</span>
+                  </>
+                )}
+              </button>
+
+              <div className="flex items-center justify-between pt-1">
+                <button
+                  type="button"
+                  onClick={() => setStep(2)}
+                  className="text-xs text-stone-600 hover:text-stone-900 font-bold font-sans cursor-pointer flex items-center gap-1"
+                >
+                  <ArrowLeft size={14} />
+                  <span>お名前・安心設定へ戻る</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleResendCode}
+                  disabled={resendStatus === 'sending'}
+                  className="text-xs text-blue-700 hover:underline font-bold font-sans cursor-pointer flex items-center gap-1 disabled:opacity-50"
+                >
+                  <RefreshCw size={13} className={resendStatus === 'sending' ? 'animate-spin' : ''} />
+                  <span>{resendStatus === 'sending' ? '再送信中...' : '認証コードを再送信する'}</span>
+                </button>
+              </div>
             </div>
           </form>
         )}
@@ -820,7 +1123,7 @@ export const RegisterPage = () => {
           <p className="text-xs sm:text-sm text-stone-700 font-medium font-serif">
             既にアカウントをお持ちの方は
           </p>
-          <Link to="/login" className="inline-block text-xs sm:text-sm text-brand-primary font-bold hover:underline font-sans">
+          <Link to="/login" className="inline-block text-xs sm:text-sm text-blue-700 font-bold hover:underline font-sans">
             ログイン画面へ進む →
           </Link>
         </div>
@@ -1131,12 +1434,60 @@ export const ResetPasswordPage = () => {
   const [newPassword, setNewPassword] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
+  const [policy, setPolicy] = useState<{
+    minLength: number;
+    requireLetters: boolean;
+    requireNumbers: boolean;
+    requireSymbols: boolean;
+    requireMixedCase: boolean;
+  }>({
+    minLength: 8,
+    requireLetters: true,
+    requireNumbers: true,
+    requireSymbols: false,
+    requireMixedCase: false,
+  });
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetch('/api/auth/password-policy')
+      .then(res => res.json())
+      .then(data => {
+        if (data && typeof data.minLength === 'number') {
+          setPolicy(data);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const validateResetPassword = (pw: string) => {
+    if (!pw) return 'パスワードを入力してください。';
+    if (pw.length < policy.minLength) {
+      return `パスワードは${policy.minLength}文字以上で入力してください。`;
+    }
+    if (policy.requireLetters && !/[a-zA-Z]/.test(pw)) {
+      return 'パスワードに英字（a〜z, A〜Z）を1文字以上含める必要があります。';
+    }
+    if (policy.requireNumbers && !/[0-9]/.test(pw)) {
+      return 'パスワードに数字（0〜9）を1文字以上含める必要があります。';
+    }
+    if (policy.requireLetters && policy.requireNumbers && (!/[a-zA-Z]/.test(pw) || !/[0-9]/.test(pw))) {
+      return 'パスワードは英字と数字の両方を含める必要があります。';
+    }
+    if (policy.requireMixedCase && (!/[a-z]/.test(pw) || !/[A-Z]/.test(pw))) {
+      return 'パスワードに英大文字と英小文字の両方を含める必要があります。';
+    }
+    if (policy.requireSymbols && !/[!@#$%^&*()_+\-=\[\]{}|;:,.<>?/\\~`'"]/.test(pw)) {
+      return 'パスワードに記号（!@#$%^&* など）を1文字以上含める必要があります。';
+    }
+    return null;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (newPassword.length < 8) {
-      setMessage('パスワードは8文字以上である必要があります。');
+    const policyErr = validateResetPassword(newPassword);
+    if (policyErr) {
+      setMessage(policyErr);
       setStatus('error');
       return;
     }
@@ -1183,10 +1534,13 @@ export const ResetPasswordPage = () => {
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <label className="text-[11px] font-bold text-black/70 uppercase tracking-wider ml-1">新しいパスワード</label>
+              <label className="text-[11px] font-bold text-black/70 uppercase tracking-wider ml-1">
+                新しいパスワード（{policy.minLength}文字以上{policy.requireLetters && policy.requireNumbers ? '・英数字' : policy.requireLetters ? '・英字' : policy.requireNumbers ? '・数字' : ''}{policy.requireSymbols ? '・記号' : ''}{policy.requireMixedCase ? '・大文字小文字' : ''}）
+              </label>
               <input 
                 required
                 type="password" 
+                placeholder="新しいパスワードを入力"
                 className="input-field"
                 value={newPassword}
                 onChange={e => setNewPassword(e.target.value)}
