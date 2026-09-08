@@ -12,6 +12,7 @@
     "test": "node tests/e2e-check.mjs && node tests/master-audit.mjs && node tests/ai-input-moderation-130-check.mjs && node tests/admin-safety-check.mjs",
     "test:ai": "node tests/ai-input-moderation-130-check.mjs",
     "test:admin": "node tests/admin-safety-check.mjs",
+    "backup": "node scripts/backup.mjs",
     "start": "node dist/server.cjs"
   },
   "dependencies": {
