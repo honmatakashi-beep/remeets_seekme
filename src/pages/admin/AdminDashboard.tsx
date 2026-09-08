@@ -1033,109 +1033,59 @@ export const AdminDashboard = () => {
     }
     setLoading(true);
     try {
-      const [usersRes, postsRes, actionLogsRes, accessLogsRes, reportsRes, deletionRes, statsRes, ngWordsRes, contactsRes, successStoriesRes, securityRes, broadcastsRes, ageLogsRes, settingsRes] = await Promise.all([
+      // 🚀 PHASE 1: 最優先・主要データの高速一括取得（即座に画面を描画）
+      const [usersRes, postsRes, statsRes, reportsRes, settingsRes] = await Promise.all([
         fetch('/api/admin/users', { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null),
         fetch('/api/admin/posts', { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null),
-        fetch('/api/admin/action-logs', { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null),
-        fetch('/api/admin/access-logs', { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null),
-        fetch('/api/admin/reports', { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null),
-        fetch('/api/admin/deletion-requests', { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null),
         fetch('/api/admin/stats', { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null),
-        fetch('/api/admin/ng-words', { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null),
-        fetch('/api/admin/contacts', { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null),
-        fetch('/api/admin/success-stories', { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null),
-        fetch('/api/admin/security-stats', { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null),
-        fetch('/api/admin/broadcasts', { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null),
-        fetch('/api/admin/age-verification-logs', { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null),
+        fetch('/api/admin/reports', { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null),
         fetch('/api/site-settings').catch(() => null)
       ]);
 
       if (usersRes && usersRes.ok) setUsers(await usersRes.json());
       if (postsRes && postsRes.ok) setPosts(await postsRes.json());
-      if (actionLogsRes && actionLogsRes.ok) setActionLogs(await actionLogsRes.json());
-      if (accessLogsRes && accessLogsRes.ok) setAccessLogs(await accessLogsRes.json());
       if (reportsRes && reportsRes.ok) setReports(await reportsRes.json());
-      if (deletionRes && deletionRes.ok) setDeletionRequests(await deletionRes.json());
-      if (broadcastsRes && broadcastsRes.ok) setBroadcasts(await broadcastsRes.json());
-      if (ageLogsRes && ageLogsRes.ok) setAgeVerificationLogs(await ageLogsRes.json());
       if (statsRes && statsRes.ok) {
         setStats(await statsRes.json());
-      } else {
-        // Set fallback stats
-        setStats({
-          summary: { totalUsers: 0, totalReunions: 0, todayPosts: 0 },
-          recentReunions: [],
-          postsToday: [],
-          dailyStats: [],
-          eraStats: [],
-          regionStats: [],
-          pathStats: [],
-          refererStats: [],
-          searchStats: [],
-          deviceStats: []
-        });
       }
-      if (ngWordsRes && ngWordsRes.ok) setNgWords(await ngWordsRes.json());
-      if (contactsRes && contactsRes.ok) setContacts(await contactsRes.json());
-      if (successStoriesRes && successStoriesRes.ok) setSuccessStories(await successStoriesRes.json());
-      if (securityRes && securityRes.ok) setSecurityStats(await securityRes.json());
       if (settingsRes && settingsRes.ok) {
         const settings = await settingsRes.json();
         setStatsEnabled(settings.show_home_stats === 'true');
       }
 
-      const [dbHealthRes, retentionRes, pageViewRes, heatmapRes, moderationRes, auditRes, funnelRes, durationRes, deletedArchiveRes, versionsRes, quizMatchingRes] = await Promise.all([
-        fetch('/api/admin/db-health', { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null),
-        fetch('/api/admin/retention-stats', { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null),
-        fetch('/api/admin/page-view-stats', { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null),
-        fetch('/api/admin/activity-heatmap', { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null),
-        fetch('/api/admin/moderation-queue', { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null),
-        fetch('/api/admin/audit-logs', { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null),
-        fetch('/api/admin/reunion-funnel', { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null),
-        fetch('/api/admin/reunion-duration-stats', { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null),
-        fetch('/api/admin/deleted-posts-archive', { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null),
-        fetch('/api/admin/versions', { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null),
-        fetch('/api/admin/quiz-matching-analytics', { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null)
-      ]);
-      if (dbHealthRes && dbHealthRes.ok) setDbHealth(await dbHealthRes.json());
-      if (retentionRes && retentionRes.ok) setRetentionStats(await retentionRes.json());
-      if (pageViewRes && pageViewRes.ok) setPageViewStats(await pageViewRes.json());
-      if (heatmapRes && heatmapRes.ok) setHeatmapData(await heatmapRes.json());
-      if (moderationRes && moderationRes.ok) setModerationQueue(await moderationRes.json());
-      if (auditRes && auditRes.ok) setAuditLogs(await auditRes.json());
-      if (funnelRes && funnelRes.ok) setReunionFunnel(await funnelRes.json());
-      if (durationRes && durationRes.ok) setReunionDurationStats(await durationRes.json());
-      if (deletedArchiveRes && deletedArchiveRes.ok) setDeletedPostsArchive(await deletedArchiveRes.json());
-      if (versionsRes && versionsRes.ok) setDbVersions(await versionsRes.json());
-      if (quizMatchingRes && quizMatchingRes.ok) {
-        setQuizMatchingAnalytics(await quizMatchingRes.json());
-      } else if (!quizMatchingAnalytics) {
-        setQuizMatchingAnalytics({
-          summary: {
-            totalPosts: 0,
-            resolvedPosts: 0,
-            verifiedPosts: 0,
-            paidPosts: 0,
-            matchingRate: 0,
-            disclosureRate: 100,
-            totalQuizAttempts: 0,
-            successQuizAttempts: 0,
-            failedQuizAttempts: 0,
-            quizAccuracyRate: 0,
-            firstAttemptSuccessRate: 0,
-            fuzzyMatchRescueCount: 0,
-            totalLocksIssued: 0,
-            activeLockIps: 0
-          },
-          attemptDistribution: [],
-          categoryMatchingStats: [],
-          eraMatchingStats: [],
-          questionComplexityStats: [],
-          dailyQuizTrend: []
-        });
-      }
+      // 主要データの描画完了（ここでローディング解除）
+      setLoading(false);
+
+      // 🚀 PHASE 2: セキュリティ・ログ・補助データの非同期フェッチ（UIをブロックしない）
+      Promise.all([
+        fetch('/api/admin/action-logs', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setActionLogs(d)).catch(() => {}),
+        fetch('/api/admin/access-logs', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setAccessLogs(d)).catch(() => {}),
+        fetch('/api/admin/deletion-requests', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setDeletionRequests(d)).catch(() => {}),
+        fetch('/api/admin/ng-words', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setNgWords(d)).catch(() => {}),
+        fetch('/api/admin/contacts', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setContacts(d)).catch(() => {}),
+        fetch('/api/admin/success-stories', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setSuccessStories(d)).catch(() => {}),
+        fetch('/api/admin/security-stats', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setSecurityStats(d)).catch(() => {}),
+        fetch('/api/admin/broadcasts', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setBroadcasts(d)).catch(() => {}),
+        fetch('/api/admin/age-verification-logs', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setAgeVerificationLogs(d)).catch(() => {})
+      ]).catch(() => {});
+
+      // 🚀 PHASE 3: 重い分析・アーカイブ・バージョンデータの遅延取得
+      Promise.all([
+        fetch('/api/admin/db-health', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setDbHealth(d)).catch(() => {}),
+        fetch('/api/admin/retention-stats', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setRetentionStats(d)).catch(() => {}),
+        fetch('/api/admin/page-view-stats', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setPageViewStats(d)).catch(() => {}),
+        fetch('/api/admin/activity-heatmap', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setHeatmapData(d)).catch(() => {}),
+        fetch('/api/admin/moderation-queue', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setModerationQueue(d)).catch(() => {}),
+        fetch('/api/admin/audit-logs', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setAuditLogs(d)).catch(() => {}),
+        fetch('/api/admin/reunion-funnel', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setReunionFunnel(d)).catch(() => {}),
+        fetch('/api/admin/reunion-duration-stats', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setReunionDurationStats(d)).catch(() => {}),
+        fetch('/api/admin/deleted-posts-archive', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setDeletedPostsArchive(d)).catch(() => {}),
+        fetch('/api/admin/versions', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setDbVersions(d)).catch(() => {}),
+        fetch('/api/admin/quiz-matching-analytics', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setQuizMatchingAnalytics(d)).catch(() => {})
+      ]).catch(() => {});
+
     } catch (err) {
-      console.error(err);
+      console.error("Admin fetchData error:", err);
     } finally {
       setLoading(false);
     }

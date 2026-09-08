@@ -13,6 +13,7 @@
     "test:ai": "node tests/ai-input-moderation-130-check.mjs",
     "test:admin": "node tests/admin-safety-check.mjs",
     "backup": "node scripts/backup.mjs",
+    "demo": "node scripts/visual-demo.mjs",
     "start": "node dist/server.cjs"
   },
   "dependencies": {
@@ -50,6 +51,7 @@
     "@types/ws": "^8.18.1",
     "autoprefixer": "^10.4.21",
     "esbuild": "^0.28.0",
+    "puppeteer-core": "^24.43.1",
     "tailwindcss": "^4.1.14",
     "tsx": "^4.21.0",
     "typescript": "~5.8.2",
