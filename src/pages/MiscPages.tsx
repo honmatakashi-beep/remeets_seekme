@@ -488,15 +488,13 @@ export const AdminDeploymentGuideBlock = ({
 }) => {
   const [smsCount, setSmsCount] = React.useState<number>(1000);
   const [costTab, setCostTab] = React.useState<'running' | 'initial'>('running');
-  const [subTab, setSubTab] = React.useState<'memo_alert' | 'deploy_basic' | 'police_safety' | 'pr_strategy'>('memo_alert');
+  const [subTab, setSubTab] = React.useState<'memo_alert' | 'deploy_basic' | 'pr_strategy'>('memo_alert');
   const [evaluationDateTab, setEvaluationDateTab] = React.useState<'2026-09-05' | '2026-08-24' | '2026-08-15'>('2026-09-05');
 
   React.useEffect(() => {
     if (['deployment', 'cost_estimate', 'cost_list_detailed', 'permit', 'requirements', 'legal_guide'].includes(docType)) {
       setSubTab('deploy_basic');
-    } else if (['police', 'consult', 'matrix', 'scenario'].includes(docType)) {
-      setSubTab('police_safety');
-    } else if (['slides', 'evaluation', 'pr_plan'].includes(docType)) {
+    } else if (['evaluation', 'pr_plan', 'slides'].includes(docType)) {
       setSubTab('pr_strategy');
     }
   }, [docType]);
@@ -765,20 +763,22 @@ export const AdminDeploymentGuideBlock = ({
       { id: 1, category: "インフラ・DB", title: "本番用マネージドRDBMS (PostgreSQL / Cloud SQL) のプロビジョニング", description: "SQLiteからSupabaseまたはGoogle Cloud SQL (PostgreSQL) の本番用高可用性インスタンスを作成し、接続準備を整えます。", completed: false, date: "", notes: "" },
       { id: 2, category: "インフラ・DB", title: "DATABASE_URL 環境変数のサーバーシークレット設定", description: "パスワードを含むDB接続文字列をCloud Run等のサーバー環境変数に安全なシークレットとして設定します。", completed: false, date: "", notes: "" },
       { id: 3, category: "インフラ・DB", title: "データベース初期テーブルスキーマのマイグレーション実行", description: "Drizzle ORM等を使用し、本番の空DBに対してテーブル構造、インデックス、外部キー制約を一括適用します。", completed: false, date: "", notes: "" },
-      { id: 4, category: "インフラ・DB", title: "DB自動デイリーバックアップ＆世代管理の有効化", description: "万が一のデータ破損や攻撃に備え、自動デイリースナップショット（保持期間7〜14日間）を有効化します。", completed: false, date: "", notes: "" },
-      { id: 5, category: "APIキー設定", title: "Google AI Studio / Vertex AI (Gemini API) 商用本番キーの発行", description: "クレジットカードを登録し従量課金を有効化した本番専用の GEMINI_API_KEY を環境変数に設定します。", completed: false, date: "", notes: "" },
-      { id: 6, category: "APIキー設定", title: "Resend / SendGrid (メール配信API) の本番接続＆DNS設定", description: "独自ドメインのSPF/DKIM/DMARC設定を完了し、送信到達率を100%近くまで高めた配信APIキーをセットアップします。", completed: false, date: "", notes: "" },
-      { id: 7, category: "APIキー設定", title: "Stripe (決済代行インフラ) 本番キーの契約とWebhook署名設定", description: "Stripe本番加盟店審査を完了し、STRIPE_SECRET_KEY / STRIPE_WEBHOOK_SECRET を安全に設定します。", completed: false, date: "", notes: "" },
-      { id: 8, category: "データ管理", title: "開発用テストデータの完全クリーンアップ (初期化) 実行", description: "管理画面のクリーンアップ機能を使用し、開発期間中に蓄積された不要なテストデータを物理消去します。", completed: false, date: "", notes: "" },
-      { id: 9, category: "データ管理", title: "情緒豊かな本番サンプルデータの一括自動生成 (Seeding)", description: "ローンチ直後の過疎感を防ぐため、実在感のある日本の想い出ボトルメールや感謝レターを一括投入します。", completed: false, date: "", notes: "" },
-      { id: 10, category: "SNS連携", title: "LINE / Google Developers コンソールでの本番クライアント作成", description: "本番ドメインのログインリダイレクトURIやブランド名、プライバシーポリシーURLを各開発者ポータルに登録します。", completed: false, date: "", notes: "" },
-      { id: 11, category: "SNS連携", title: "LINE_CHANNEL_SECRET / GOOGLE_CLIENT_SECRET の環境変数追記", description: "安全なSNS認証（OAuth）を行うため、各クライアントIDと秘密鍵を本番サーバー環境変数に設定します。", completed: false, date: "", notes: "" },
-      { id: 12, category: "法務・規約", title: "利用規約（TOS）のSNS連携・連絡先引き渡しモデル改訂", description: "連絡先安全引き渡し（セキュア・ブリッジ）モデル、使い捨てアカウント禁止条項を明文化します。", completed: false, date: "", notes: "" },
-      { id: 13, category: "法務・規約", title: "プライバシーポリシー（PP）のOAuth取得データ明記・改訂", description: "SNSログインで取得するプロファイル情報およびeKYC身分証データの安全な管理体制を開示します。", completed: false, date: "", notes: "" },
-      { id: 14, category: "法務・規約", title: "特定商取引法に基づく表記の整備（住所・電話番号対策）", description: "バーチャルオフィス住所・050電話番号を契約し、販売価格（600円〜1,200円）や返金規定を特定商取引法ページに記載します。", completed: false, date: "", notes: "" },
-      { id: 15, category: "法務・規約", title: "全法的文書（規約・PP・ガイドライン・特商法）の【制定日・施行日】確定", description: "利用規約、PP、ガイドライン、特商法表記の制定日・施行日を正式サービス提供開始日（2026年8月15日）に一括整合します。", completed: true, date: "2026-08-15", notes: "2026年8月15日に全文書の制定日・施行日を正式反映完了済" },
-      { id: 16, category: "セキュリティ", title: "スロットリング型動的APIアクセスレート制限のポリシー設定", description: "DoS攻撃やクイズの総当たり自動回答スパムを防ぐため、秒間API制限しきい値を調整・固定します。", completed: false, date: "", notes: "" },
-      { id: 17, category: "最終テスト", title: "公的 eKYC・電子的宣誓・Stripeテスト決済の最終疎通テスト", description: "お相手との想い出照合・連絡先開示手数料決済、電子的利用宣誓同意、本人確認書類提出が連動して正常動作するか最終検証します。", completed: false, date: "", notes: "" },
+      { id: 4, category: "インフラ・DB", title: "本番独自ドメインの常時SSL/TLS証明書（HTTPS）およびHSTS設定", description: "OAuthログインやStripe決済の安全性・完全性を担保するため、ドメイン全域での常時暗号化通信を強制します。", completed: false, date: "", notes: "" },
+      { id: 5, category: "インフラ・DB", title: "DB自動デイリーバックアップ＆世代管理の有効化", description: "万が一のデータ破損や攻撃に備え、自動デイリースナップショット（保持期間7〜14日間）を有効化します。", completed: false, date: "", notes: "" },
+      { id: 6, category: "APIキー設定", title: "Google AI Studio / Vertex AI (Gemini API) 商用本番キーの発行", description: "クレジットカードを登録し従量課金を有効化した本番専用の GEMINI_API_KEY を環境変数に設定します。", completed: false, date: "", notes: "" },
+      { id: 7, category: "APIキー設定", title: "Resend / SendGrid (メール配信API) の本番接続＆DNS設定", description: "独自ドメインのSPF/DKIM/DMARC設定を完了し、送信到達率を100%近くまで高めた配信APIキーをセットアップします。", completed: false, date: "", notes: "" },
+      { id: 8, category: "APIキー設定", title: "SMS認証プロバイダー（Twilio / EZSMS等）の本番キー＆送信元設定", description: "なりすまし防止・二重登録防止のためのSMS携帯電話番号認証（従量課金）の本番APIキーと発信元番号を設定します。", completed: false, date: "", notes: "" },
+      { id: 9, category: "APIキー設定", title: "Stripe (決済代行インフラ) 本番キーの契約とWebhook署名設定", description: "Stripe本番加盟店審査を完了し、STRIPE_SECRET_KEY / STRIPE_WEBHOOK_SECRET を安全に設定します。", completed: false, date: "", notes: "" },
+      { id: 10, category: "データ管理", title: "開発用テストデータの完全クリーンアップ (初期化) 実行", description: "管理画面のクリーンアップ機能を使用し、開発期間中に蓄積された不要なテストデータを物理消去します。", completed: false, date: "", notes: "" },
+      { id: 11, category: "データ管理", title: "情緒豊かな本番サンプルデータの一括自動生成 (Seeding)", description: "ローンチ直後の過疎感を防ぐため、実在感のある日本の想い出ボトルメールや感謝レターを一括投入します。", completed: false, date: "", notes: "" },
+      { id: 12, category: "SNS連携", title: "LINE / Google Developers コンソールでの本番クライアント作成", description: "本番ドメインのログインリダイレクトURIやブランド名、プライバシーポリシーURLを各開発者ポータルに登録します。", completed: false, date: "", notes: "" },
+      { id: 13, category: "SNS連携", title: "LINE_CHANNEL_SECRET / GOOGLE_CLIENT_SECRET の環境変数追記", description: "安全なSNS認証（OAuth）を行うため、各クライアントIDと秘密鍵を本番サーバー環境変数に設定します。", completed: false, date: "", notes: "" },
+      { id: 14, category: "法務・規約", title: "利用規約（TOS）のSNS連携・連絡先引き渡しモデル改訂", description: "連絡先安全引き渡し（セキュア・ブリッジ）モデル、使い捨てアカウント禁止条項を明文化します。", completed: false, date: "", notes: "" },
+      { id: 15, category: "法務・規約", title: "プライバシーポリシー（PP）のOAuth取得データ明記・改訂", description: "SNSログインで取得するプロファイル情報およびeKYC身分証データの安全な管理体制を開示します。", completed: false, date: "", notes: "" },
+      { id: 16, category: "法務・規約", title: "特定商取引法に基づく表記の整備（住所・電話番号対策）", description: "バーチャルオフィス住所・050電話番号を契約し、販売価格（600円〜1,200円）や返金規定を特定商取引法ページに記載します。", completed: false, date: "", notes: "" },
+      { id: 17, category: "法務・規約", title: "全法的文書（規約・PP・ガイドライン・特商法）の【制定日・施行日】確定", description: "利用規約、PP、ガイドライン、特商法表記の制定日・施行日を正式サービス提供開始日（2026年8月15日）に一括整合します。", completed: true, date: "2026-08-15", notes: "2026年8月15日に全文書の制定日・施行日を正式反映完了済" },
+      { id: 18, category: "セキュリティ", title: "スロットリング型動的APIアクセスレート制限のポリシー設定", description: "DoS攻撃やクイズの総当たり自動回答スパムを防ぐため、秒間API制限しきい値を調整・固定します。", completed: false, date: "", notes: "" },
+      { id: 19, category: "最終テスト", title: "公的 eKYC・SMS認証・電子的宣誓・Stripeテスト決済の総合疎通テスト", description: "お相手との想い出照合・連絡先開示手数料決済、SMS認証、電子的利用宣誓同意、本人確認書類提出が連動して正常動作するか最終検証します。", completed: false, date: "", notes: "" },
     ];
 
     try {
@@ -819,17 +819,19 @@ export const AdminDeploymentGuideBlock = ({
       { id: 7, category: "3. 検索・秘匿性", title: "キーワード検索・年代地域フィルター＆本文マスキング検証", description: "名前や学校名で検索し、該当手紙がヒットすること、およびクイズ未正解の段階で本文・連絡先が完全に秘匿されているか検証します。", completed: false, date: "", notes: "" },
       { id: 8, category: "4. クイズ照合・本人認証", title: "想い出クイズ完全一致判定 ＆ 表記ゆれ救済テスト", description: "質問に完全正解（または登録された表記ゆれ別解）を入力した際、即座に想い出一致（照合成功）画面へ遷移するか検証します。", completed: false, date: "", notes: "" },
       { id: 9, category: "4. クイズ照合・本人認証", title: "クイズ不正解時の安全遮断 ＆ ブルートフォース制限テスト", description: "誤答時に本文が絶対に開示されないこと、および連続誤答時に一時ロックアウト（レート制限）がかかるか検証します。", completed: false, date: "", notes: "" },
-      { id: 10, category: "5. eKYC・電子的宣誓", title: "公的証明書（免許証/マイナンバー）アップロード＆eKYC審査テスト", description: "身分証画像が安全にアップロードされ、審査合否ステータスおよび公的認証バッジが正しく更新されるか検証します。", completed: false, date: "", notes: "" },
-      { id: 11, category: "5. eKYC・電子的宣誓", title: "電子的利用宣誓（法令遵守・ストーカー禁止）合意テスト", description: "連絡先開示前の誓約確認画面で、利用宣誓チェック項目への明示的同意が必須化され、合意タイムスタンプ・IPログが安全保存されるか検証します。", completed: false, date: "", notes: "" },
-      { id: 12, category: "6. 決済・連絡先開示", title: "Stripe本番決済（開通手数料600円〜1,200円）疎通テスト", description: "開通ボタン押下時にStripe決済画面が起動し、クレジットカード決済が遅延なく正常に完了するか検証します。", completed: false, date: "", notes: "" },
-      { id: 13, category: "6. 決済・連絡先開示", title: "決済完了後の即時連絡先開示（引き渡し完結）検証", description: "決済完了直後にお手紙全文と相手の優先開示連絡先（LINE ID等）が表示され、安全な連絡先引き渡しをもって完結するか検証します。", completed: false, date: "", notes: "" },
-      { id: 14, category: "6. 決済・連絡先開示", title: "eKYC審査不合格時のStripe自動返金（仮売上取消）テスト", description: "本人確認審査で不合格となった場合、Stripeで仮決済された手数料が自動的かつ即座にオーソリ取消・返金されるか検証します。", completed: false, date: "", notes: "" },
-      { id: 15, category: "7. マイページ・手紙管理", title: "優先開示連絡先の設定・投函ボトル回収（削除）テスト", description: "自身のLINE ID等の更新保存、および投函ボトルの回収（完全消去）時に検索結果から即時非表示となるか検証します。", completed: false, date: "", notes: "" },
-      { id: 16, category: "8. 管理者・警察連携", title: "管理者ダッシュボードKPI・AI通報ログ＆ユーザー緊急凍結検証", description: "統計メトリクス表示、AI検閲通報ログのリアルタイム確認、問題ユーザーのワンクリックBAN機能が正常動作するか検証します。", completed: false, date: "", notes: "" },
-      { id: 17, category: "8. 管理者・警察連携", title: "警察提出用・電子的宣誓同意ログ付き監査CSVエクスポートテスト", description: "司法捜査機関からの開示要請を想定し、電子的宣誓同意ログおよび認証イベント履歴を含んだ監査CSVが出力できるか検証します。", completed: false, date: "", notes: "" },
-      { id: 18, category: "9. レスポンシブ表示", title: "スマートフォン実機表示 (iOS Safari / Android Chrome) 検証", description: "iPhone/Androidの実機幅で横スクロールや文字欠けが発生せず、タップターゲット（44px以上）が押しやすいか検証します。", completed: false, date: "", notes: "" },
-      { id: 19, category: "10. セキュリティ・異常系", title: "未ログイン時ガード・他者ボトル不正編集遮断テスト", description: "ログイン必須ページへの未認証アクセス制限、およびURL直打ちによる他者ボトル不正操作が確実に403拒否されるか検証します。", completed: false, date: "", notes: "" },
-      { id: 20, category: "10. セキュリティ・異常系", title: "回収済みボトルアクセス遮断＆APIレート制限（DoS防御）テスト", description: "削除済みボトルの安全遮断案内表示、および短時間の大量リクエストに対する429 Too Many Requests防御を検証します。", completed: false, date: "", notes: "" }
+      { id: 10, category: "5. SMS・eKYC・宣誓", title: "SMS認証コード実機送信・6桁照合・1日3回制限テスト", description: "実機スマホへSMS認証コードが即時届き、6桁入力で認証が通ること、およびいたずら防止レート制限（1日最大3回）が作動するか検証します。", completed: false, date: "", notes: "" },
+      { id: 11, category: "5. SMS・eKYC・宣誓", title: "公的証明書（免許証/マイナンバー）アップロード＆eKYC審査テスト", description: "身分証画像が安全にアップロードされ、審査合否ステータスおよび公的認証バッジが正しく更新されるか検証します。", completed: false, date: "", notes: "" },
+      { id: 12, category: "5. SMS・eKYC・宣誓", title: "電子的利用宣誓（法令遵守・ストーカー禁止）合意テスト", description: "連絡先開示前の誓約確認画面で、利用宣誓チェック項目への明示的同意が必須化され、合意タイムスタンプ・IPログが安全保存されるか検証します。", completed: false, date: "", notes: "" },
+      { id: 13, category: "6. 決済・連絡先開示", title: "Stripe本番決済（開通手数料600円〜1,200円）疎通テスト", description: "開通ボタン押下時にStripe決済画面が起動し、クレジットカード決済が遅延なく正常に完了するか検証します。", completed: false, date: "", notes: "" },
+      { id: 14, category: "6. 決済・連絡先開示", title: "決済完了後の即時連絡先開示（双方向引き渡し完結）検証", description: "決済完了直後にお手紙全文と相手の優先開示連絡先（LINE ID等）が表示され、安全な連絡先引き渡しをもって完結するか検証します。", completed: false, date: "", notes: "" },
+      { id: 15, category: "6. 決済・連絡先開示", title: "eKYC審査不合格時のStripe自動返金（仮売上取消）テスト", description: "本人確認審査で不合格となった場合、Stripeで仮決済された手数料が自動的かつ即座にオーソリ取消・返金されるか検証します。", completed: false, date: "", notes: "" },
+      { id: 16, category: "7. マイページ・手紙管理", title: "優先開示連絡先の設定・投函ボトル回収（削除）テスト", description: "自身のLINE ID等の更新保存、および投函ボトルの回収（完全消去）時に検索結果から即時非表示となるか検証します。", completed: false, date: "", notes: "" },
+      { id: 17, category: "8. 管理者・問い合わせ・警察", title: "お問い合わせ・通報チケット送受信 ＆ Gemini AI返信ドラフト生成テスト", description: "ユーザーのお問い合わせがチケットDBに安全に記録され、管理画面でGemini AIによるコンプライアンス返信ドラフトが自動生成されるか検証します。", completed: false, date: "", notes: "" },
+      { id: 18, category: "8. 管理者・問い合わせ・警察", title: "管理者ダッシュボードKPI・AI通報ログ＆ユーザー緊急凍結検証", description: "統計メトリクス表示、AI検閲通報ログのリアルタイム確認、問題ユーザーのワンクリックBAN機能が正常動作するか検証します。", completed: false, date: "", notes: "" },
+      { id: 19, category: "8. 管理者・問い合わせ・警察", title: "警察提出用・電子的宣誓同意ログ付き監査CSVエクスポートテスト", description: "司法捜査機関からの開示要請を想定し、電子的宣誓同意ログおよび認証イベント履歴を含んだ監査CSVが出力できるか検証します。", completed: false, date: "", notes: "" },
+      { id: 20, category: "9. レスポンシブ表示", title: "スマートフォン実機表示 (iOS Safari / Android Chrome) 検証", description: "iPhone/Androidの実機幅で横スクロールや文字欠けが発生せず、タップターゲット（44px以上）が押しやすいか検証します。", completed: false, date: "", notes: "" },
+      { id: 21, category: "10. セキュリティ・異常系", title: "未ログイン時ガード・他者ボトル不正編集遮断テスト", description: "ログイン必須ページへの未認証アクセス制限、およびURL直打ちによる他者ボトル不正操作が確実に403拒否されるか検証します。", completed: false, date: "", notes: "" },
+      { id: 22, category: "10. セキュリティ・異常系", title: "回収済みボトルアクセス遮断＆APIレート制限（DoS防御）テスト", description: "削除済みボトルの安全遮断案内表示、および短時間の大量リクエストに対する429 Too Many Requests防御を検証します。", completed: false, date: "", notes: "" }
     ];
 
     try {
@@ -3379,371 +3381,71 @@ export const AdminDeploymentGuideBlock = ({
 
   return (
     <div className="space-y-6 animate-fadeIn">
-      {/* 4つのサブタブ ナビゲーションバー */}
-      <div className="flex flex-wrap items-center gap-2 bg-slate-900/90 p-2.5 rounded-2xl border-2 border-[#3B627F]/40 print-hidden shadow-lg">
-        <button
-          type="button"
-          onClick={() => setSubTab('memo_alert')}
-          className={`flex-1 min-w-[160px] sm:min-w-[200px] py-3 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
-            subTab === 'memo_alert'
-              ? 'bg-[#3B627F] text-white shadow-md ring-2 ring-[#3B627F]/30 font-extrabold'
-              : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-          }`}
-        >
-          <Shield size={16} className={subTab === 'memo_alert' ? 'text-emerald-400' : 'text-slate-400'} />
-          <span>🛡️ 安全防衛メモ ＆ 本番アラート</span>
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setSubTab('deploy_basic');
-            if (!['deployment', 'cost_estimate', 'cost_list_detailed', 'permit', 'requirements', 'legal_guide'].includes(docType)) {
-              setDocType('deployment');
-            }
-          }}
-          className={`flex-1 min-w-[160px] sm:min-w-[200px] py-3 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
-            subTab === 'deploy_basic'
-              ? 'bg-[#3B627F] text-white shadow-md ring-2 ring-[#3B627F]/30 font-extrabold'
-              : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-          }`}
-        >
-          <Rocket size={16} className={subTab === 'deploy_basic' ? 'text-cyan-400' : 'text-slate-400'} />
-          <span>🚀 本番デプロイ ＆ 開業基本</span>
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setSubTab('police_safety');
-            if (!['police', 'consult', 'matrix', 'scenario'].includes(docType)) {
-              setDocType('police');
-            }
-          }}
-          className={`flex-1 min-w-[160px] sm:min-w-[200px] py-3 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
-            subTab === 'police_safety'
-              ? 'bg-[#3B627F] text-white shadow-md ring-2 ring-[#3B627F]/30 font-extrabold'
-              : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-          }`}
-        >
-          <FileText size={16} className={subTab === 'police_safety' ? 'text-amber-400' : 'text-slate-400'} />
-          <span>🚔 警察所管 ＆ 安全協議</span>
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setSubTab('pr_strategy');
-            if (!['slides', 'evaluation', 'pr_plan'].includes(docType)) {
-              setDocType('slides');
-            }
-          }}
-          className={`flex-1 min-w-[160px] sm:min-w-[200px] py-3 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
-            subTab === 'pr_strategy'
-              ? 'bg-[#3B627F] text-white shadow-md ring-2 ring-[#3B627F]/30 font-extrabold'
-              : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-          }`}
-        >
-          <Sparkles size={16} className={subTab === 'pr_strategy' ? 'text-rose-400' : 'text-slate-400'} />
-          <span>📈 運営戦略広報 ＆ 評価</span>
-        </button>
-      </div>
-
-      {/* サブタブ1: 安全防衛メモ ＆ 本番アラート */}
-      {subTab === 'memo_alert' && (
-        <div className="space-y-6 animate-fadeIn">
-          {/* 【本番システム構成＆本番認証設計備忘録ボード】 */}
-          <div className="bg-slate-900 text-slate-100 rounded-3xl p-6 border-2 border-[#3B627F] shadow-xl space-y-6 print-hidden animate-fadeIn">
-            <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-800 pb-4 gap-4">
-              <div className="flex items-center gap-3">
-                <span className="text-3xl">🛡️</span>
-                <div>
-                  <h3 className="text-sm font-bold text-white tracking-wider flex items-center gap-2">
-                    <span>本番認証設計・セキュリティ決定事項備忘録（安全防衛メモ）</span>
-                    <span className="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-mono px-2 py-0.5 rounded-full">ACTIVE MEMO</span>
-                  </h3>
-                  <p className="text-[11px] text-slate-400 mt-0.5 font-sans">
-                    本番稼働に向けた本人確認、SNS連携仕様、セキュリティ設計の決定事項を不揮発に残すための安全な備忘録ボードです。
-                  </p>
-                </div>
-              </div>
-              <div className="text-[10px] font-mono text-slate-500 text-right shrink-0">
-                CONFIDENTIAL ARCHIVE
-              </div>
-            </div>
-
-            <div className="w-full flex flex-col">
-              <div className="bg-slate-950/60 rounded-2xl p-4 border border-slate-800/80 flex flex-col justify-between space-y-4 h-full min-h-[460px]">
-                <div className="flex flex-col flex-grow space-y-3 min-h-0">
-                  <h4 className="text-xs font-bold text-white flex items-center gap-2 shrink-0">
-                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
-                    <span>認証仕様・治安/安全対策 決定事項備忘録</span>
-                  </h4>
-                  <textarea
-                    value={authMemo}
-                    onChange={(e) => setAuthMemo(e.target.value)}
-                    data-lenis-prevent
-                    onWheel={(e) => e.stopPropagation()}
-                    onTouchMove={(e) => e.stopPropagation()}
-                    className="w-full flex-grow bg-white text-slate-900 text-xs sm:text-sm font-medium font-sans p-3.5 rounded-xl border-2 border-slate-300 focus:border-[#3B627F] focus:outline-none resize-none overflow-y-scroll auth-memo-textarea select-text touch-auto leading-relaxed h-full min-h-[320px] cursor-text shadow-sm placeholder:text-slate-400"
-                    placeholder="本番運用におけるSMSやeKYCのメモ、費用の備忘録などを自由に入力してください..."
-                    style={{ scrollbarWidth: 'thin', scrollbarColor: '#3B627F #e2e8f0' }}
-                  />
-                </div>
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-slate-800/60 shrink-0">
-                  <span className="text-[10px] text-slate-500">
-                    ※ブラウザに安全に保存され、いつでも自由に編集・コピー可能です
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={handleResetMemo}
-                      className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 active:scale-[0.98] cursor-pointer border border-slate-700"
-                      title="これまでの議論の軌跡や、LINE/Google認証時の警察捜査協力データ仕様テンプレートを再読み込みします"
-                    >
-                      {memoReset ? (
-                        <span className="text-cyan-400 animate-pulse">✔ リセット完了</span>
-                      ) : (
-                        <span>最新テンプレートに戻す</span>
-                      )}
-                    </button>
-                    <button
-                      onClick={handleSaveMemo}
-                      className="px-4 py-1.5 bg-[#3B627F] hover:bg-[#487799] text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 active:scale-[0.98] cursor-pointer"
-                    >
-                      {memoSaved ? (
-                        <span className="text-emerald-400 animate-pulse flex items-center gap-1">✔ 保存完了</span>
-                      ) : (
-                        <span>備忘録メモを安全に保存</span>
-                      )}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+      {/* 🚀 全5大公式ドキュメント 直感選択パネル（階層排除・一本化） */}
+      <div className="bg-[#487799]/5 border border-[#3B627F]/20 rounded-2xl p-5 print-hidden shadow-sm space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-brand-border/40 pb-3">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-teal-600 animate-pulse"></span>
+            <h3 className="text-sm font-bold text-slate-900 font-serif flex items-center gap-2">
+              <Rocket className="text-[#3B627F]" size={18} />
+              <span>本番デプロイ ＆ 広報PR 公式ライブラリ（全5編）</span>
+            </h3>
           </div>
-
-          {/* 🚨 【超重要：本番ローンチ当日アラート】制定日・施行日更新リマインダー */}
-          <div className="bg-rose-50 border-2 border-rose-200 rounded-3xl p-6 shadow-sm print-hidden">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-full bg-rose-100 flex items-center justify-center text-rose-600 shrink-0 text-xl font-bold">
-                🚨
-              </div>
-              <div className="flex-1">
-                <h4 className="text-base font-bold text-slate-900 font-serif flex items-center gap-2">
-                  【本番ローンチ（サービス運用開始）当日・最重要必須アクションアラート】
-                </h4>
-                <p className="text-xs text-rose-950 font-sans mt-1.5 leading-relaxed">
-                  サイトを実際に運用開始（一般公開・本番移行）した日が、法的に規約効力を規定する<strong>「初版作成日」「制定日」</strong>となります。
-                  現在、各法的文書、規約、プライバシーポリシーに記載されている日付は仮の日付（開発期間：2026年6月14日）になっています。
-                  ローンチ当日、サービスに万全なリーガル脆弱性ゼロ化（法務安全適合）を果たすため、以下の 3つのファイルを必ず手動で今日（運用開始日）の日付に書き換えてください。
-                </p>
-                
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mt-4">
-                  <div className="bg-white/80 p-3.5 rounded-2xl border border-rose-100/70 flex flex-col justify-between">
-                    <div>
-                      <div className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                        <span className="text-[10px] uppercase font-mono bg-amber-100 text-amber-800 px-1 py-0.5 rounded">FILE 1</span>
-                        利用規約 (末尾)
-                      </div>
-                      <div className="text-[11px] text-slate-500 font-sans mt-1.5 leading-relaxed">
-                        <code>制定日・施行日: 2026年8月15日</code> ➡ 正式リリース日（初日）に整合完了済。
-                      </div>
-                    </div>
-                    <div className="text-[10px] text-rose-700 font-bold mt-2 font-mono flex items-center gap-1">
-                      <span>💡</span> `src/App.tsx` 内
-                    </div>
-                  </div>
-
-                  <div className="bg-white/80 p-3.5 rounded-2xl border border-rose-100/70 flex flex-col justify-between">
-                    <div>
-                      <div className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                        <span className="text-[10px] uppercase font-mono bg-amber-100 text-amber-800 px-1 py-0.5 rounded">FILE 2</span>
-                        プライバシーポリシー (末尾)
-                      </div>
-                      <div className="text-[11px] text-slate-500 font-sans mt-1.5 leading-relaxed">
-                        <code>制定・公表日: 2026年8月15日</code> ➡ 正式リリース日（初日）に整合完了済。
-                      </div>
-                    </div>
-                    <div className="text-[10px] text-rose-700 font-bold mt-2 font-mono flex items-center gap-1">
-                      <span>💡</span> `src/App.tsx` 内
-                    </div>
-                  </div>
-
-                  <div className="bg-white/80 p-3.5 rounded-2xl border border-rose-100/70 flex flex-col justify-between">
-                    <div>
-                      <div className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                        <span className="text-[10px] uppercase font-mono bg-amber-100 text-amber-800 px-1 py-0.5 rounded">FILE 3</span>
-                        投稿ガイドライン (末尾)
-                      </div>
-                      <div className="text-[11px] text-slate-500 font-sans mt-1.5 leading-relaxed">
-                        <code>制定日・施行日: 2026年8月15日</code> ➡ 正式リリース日（初日）に整合完了済。
-                      </div>
-                    </div>
-                    <div className="text-[10px] text-rose-700 font-bold mt-2 font-mono flex items-center gap-1">
-                      <span>💡</span> `src/App.tsx` 内
-                    </div>
-                  </div>
-
-                  <div className="bg-white/80 p-3.5 rounded-2xl border border-rose-100/70 flex flex-col justify-between">
-                    <div>
-                      <div className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                        <span className="text-[10px] uppercase font-mono bg-amber-100 text-amber-800 px-1 py-0.5 rounded">FILE 4</span>
-                        特定商取引法表記 (末尾)
-                      </div>
-                      <div className="text-[11px] text-slate-500 font-sans mt-1.5 leading-relaxed">
-                        <code>制定・公表日: 2026年8月15日</code> ➡ 正式リリース日（初日）に整合完了済。
-                      </div>
-                    </div>
-                    <div className="text-[10px] text-rose-700 font-bold mt-2 font-mono flex items-center gap-1">
-                      <span>💡</span> `src/App.tsx` 内
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-4 bg-rose-100/30 border border-rose-200/50 rounded-2xl p-3 flex justify-between items-center flex-wrap gap-2">
-                  <span className="text-[11px] text-rose-950 font-bold flex items-center gap-1">
-                    <span>⚠️</span> 警察署の相談窓口でも「規約の施行日は本番稼働日の日付であるか」は法律適合の重要な基準点として確認されます。
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-bold text-rose-800 bg-rose-100 px-2 py-1 rounded-xl">本番移行重要アラート設定：常時有効</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <span className="text-[11px] text-slate-500 font-sans">
+            閲覧・出力したいドキュメントを選択してください
+          </span>
         </div>
-      )}
 
-      {/* サブタブ2, 3, 4: 各カテゴリの文書選択 ＆ エクスポート統合盤 */}
-      {subTab !== 'memo_alert' && (
-        <div className="space-y-6 animate-fadeIn">
-          {/* 文書選択パネル */}
-          <div className="bg-[#487799]/5 border border-[#3B627F]/20 rounded-2xl p-5 print-hidden shadow-sm">
-            {subTab === 'deploy_basic' && (
-              <div>
-                <div className="flex items-center justify-between mb-3 border-b border-brand-border/40 pb-2">
-                  <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2 font-serif">
-                    <Rocket className="text-cyan-600" size={18} />
-                    <span>本番デプロイ ＆ 開業基本ライブラリ</span>
-                  </h3>
-                  <span className="text-[10px] text-slate-500 font-mono bg-slate-200 px-2 py-0.5 rounded">全6編</span>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 mt-3">
-                  {(["deployment", "cost_estimate", "cost_list_detailed", "permit", "requirements", "legal_guide"] as const).map((type) => (
-                    <button
-                      key={type}
-                      onClick={() => setDocType(type)}
-                      className={`text-left px-4 py-3 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2.5 ${
-                        docType === type
-                          ? "bg-[#3B627F] text-white shadow-sm ring-2 ring-[#3B627F]/20"
-                          : "bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 shadow-sm"
-                      }`}
-                    >
-                      <span className="opacity-75 bg-slate-200 text-slate-800 rounded-lg px-2 py-0.5 text-[10px] shrink-0 font-mono">
-                        {type === "deployment" && "①"}
-                        {type === "cost_estimate" && "①-B"}
-                        {type === "cost_list_detailed" && "①-C"}
-                        {type === "permit" && "②"}
-                        {type === "requirements" && "⑧"}
-                        {type === "legal_guide" && "⑪"}
-                      </span>
-                      <span className="truncate text-[12px]">
-                        {type === "deployment" && "本番デプロイガイド＆安全設計"}
-                        {type === "cost_estimate" && "本番運用コスト＆初期費用"}
-                        {type === "cost_list_detailed" && "総合見積もりリスト（①-C）"}
-                        {type === "permit" && "開業ナレッジ・行政届出Q&A"}
-                        {type === "requirements" && "非該当性/システム要件ガイド"}
-                        {type === "legal_guide" && "主要関係法令適合ガイド"}
-                      </span>
-                    </button>
-                  ))}
-                </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5">
+          {[
+            { id: 'deployment', badge: '①', label: '本番デプロイガイド＆移行手順', cat: 'デプロイ' },
+            { id: 'cost_estimate', badge: '①-B', label: '本番運用コスト＆初期費用', cat: 'コスト設計' },
+            { id: 'cost_list_detailed', badge: '①-C', label: '総合見積もり＆責任設計書', cat: '見積・責任' },
+            { id: 'evaluation', badge: '⑨', label: 'サイト全体評価＆技術レビュー', cat: '広報・評価' },
+            { id: 'pr_plan', badge: '⑩', label: '広報・PRマーケティング戦略書', cat: 'PR戦略' },
+          ].map((item) => (
+            <button
+              key={item.id}
+              onClick={() => setDocType(item.id as any)}
+              className={`text-left p-3 rounded-xl text-xs font-bold transition-all cursor-pointer flex flex-col justify-between gap-2 border ${
+                docType === item.id
+                  ? 'bg-[#3B627F] text-white border-[#3B627F] shadow-sm ring-2 ring-[#3B627F]/20 font-extrabold'
+                  : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200 shadow-xs'
+              }`}
+            >
+              <div className="flex items-center justify-between w-full">
+                <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded font-bold ${
+                  docType === item.id ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-700'
+                }`}>
+                  {item.badge}
+                </span>
+                <span className={`text-[9px] font-sans ${docType === item.id ? 'text-teal-200' : 'text-slate-400'}`}>
+                  {item.cat}
+                </span>
               </div>
-            )}
-
-            {subTab === 'police_safety' && (
-              <div>
-                <div className="flex items-center justify-between mb-3 border-b border-brand-border/40 pb-2">
-                  <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2 font-serif">
-                    <FileText className="text-amber-600" size={18} />
-                    <span>警察所管 ＆ 安全協議ライブラリ</span>
-                  </h3>
-                  <span className="text-[10px] text-slate-500 font-mono bg-slate-200 px-2 py-0.5 rounded">全4編</span>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mt-3">
-                  {(["police", "consult", "matrix", "scenario"] as const).map((type) => (
-                    <button
-                      key={type}
-                      onClick={() => setDocType(type)}
-                      className={`text-left px-4 py-3 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2.5 ${
-                        docType === type
-                          ? "bg-[#3B627F] text-white shadow-sm ring-2 ring-[#3B627F]/20"
-                          : "bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 shadow-sm"
-                      }`}
-                    >
-                      <span className="opacity-75 bg-slate-200 text-slate-800 rounded-lg px-2 py-0.5 text-[10px] shrink-0 font-mono">
-                        {type === "police" && "③"}
-                        {type === "consult" && "④"}
-                        {type === "matrix" && "⑤"}
-                        {type === "scenario" && "⑦"}
-                      </span>
-                      <span className="truncate text-[12px]">
-                        {type === "police" && "警察協議用セキュリティ報告書"}
-                        {type === "consult" && "ReMEETs 警察署事前相談フロー"}
-                        {type === "matrix" && "セキュリティ適合監査マトリクス"}
-                        {type === "scenario" && "警察向け口頭発表シナリオ"}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {subTab === 'pr_strategy' && (
-              <div>
-                <div className="flex items-center justify-between mb-3 border-b border-brand-border/40 pb-2">
-                  <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2 font-serif">
-                    <Sparkles className="text-rose-600" size={18} />
-                    <span>運営戦略広報 ＆ 評価ライブラリ</span>
-                  </h3>
-                  <span className="text-[10px] text-slate-500 font-mono bg-slate-200 px-2 py-0.5 rounded">全3編</span>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mt-3">
-                  {(["slides", "evaluation", "pr_plan"] as const).map((type) => (
-                    <button
-                      key={type}
-                      onClick={() => setDocType(type)}
-                      className={`text-left px-4 py-3 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2.5 ${
-                        docType === type
-                          ? "bg-[#3B627F] text-white shadow-sm ring-2 ring-[#3B627F]/20"
-                          : "bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 shadow-sm"
-                      }`}
-                    >
-                      <span className="opacity-75 bg-slate-200 text-slate-800 rounded-lg px-2 py-0.5 text-[10px] shrink-0 font-mono">
-                        {type === "slides" && "⑥"}
-                        {type === "evaluation" && "⑨"}
-                        {type === "pr_plan" && "⑩"}
-                      </span>
-                      <span className="truncate text-[12px]">
-                        {type === "slides" && "警察事前相談用プレゼンスライド"}
-                        {type === "evaluation" && "サイト評価＆技術レビュー"}
-                        {type === "pr_plan" && "セキュリティ広報＆PRプラン"}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
+              <span className="leading-snug text-[11px] line-clamp-2">
+                {item.label}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
       {/* エクスポート・ダウンロード管理統合盤 (USER REQUEST COMPLIANCE) */}
-      <div className="bg-[#487799]/5 border border-[#3B627F]/20 rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 select-none print-hidden animate-fadeIn">
+      {/* 本番準備＆動作確認 2大チェックリスト起動盤 */}
+      <div className="bg-slate-900 text-white border border-slate-800 rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 select-none print-hidden animate-fadeIn shadow-md">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-[#3B627F]/10 flex items-center justify-center text-[#3B627F] shrink-0">
-            <Download size={18} />
+          <div className="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+            <CheckSquare size={18} />
           </div>
           <div>
-            <h4 className="text-xs font-bold text-slate-800 font-sans">
-              監査・公文書エクスポート操作盤
+            <h4 className="text-xs font-bold text-white font-sans flex items-center gap-2">
+              <span>本番公開・動作検証 2大マスターチェックリスト</span>
+              <span className="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-500/30 font-mono">
+                自動保存対応
+              </span>
             </h4>
-            <p className="text-[10px] text-slate-500 font-sans mt-0.5">
-              警察公安課、行政書士、相談窓口に提示するためのプロフェッショナルな出力を行います。
+            <p className="text-[10px] text-slate-400 font-sans mt-0.5">
+              本番サーバー構築・環境変数設定から、スマホ実機・OAuth・決済・eKYCの全動線テストまで一元記録できます。
             </p>
           </div>
         </div>
@@ -3754,11 +3456,11 @@ export const AdminDeploymentGuideBlock = ({
               setActiveChecklistTab('deploy');
               setShowChecklistModal(true);
             }}
-            className="px-3.5 py-1.5 bg-indigo-600 text-white hover:bg-indigo-700 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-[0.98]"
-            title="本番デプロイに向けた準備状況をチェックリスト形式で確認・記録します。"
+            className="px-4 py-2 bg-indigo-600 text-white hover:bg-indigo-700 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-[0.98]"
+            title="インフラ、DB、外部APIキー、法務整備の19大項目を確認・記録します。"
           >
-            <CheckSquare size={13} />
-            <span>📋 本番デプロイ準備 チェックリスト</span>
+            <CheckSquare size={14} />
+            <span>📋 ① 本番デプロイ 19大マスターリスト</span>
           </button>
 
           <button
@@ -3766,32 +3468,40 @@ export const AdminDeploymentGuideBlock = ({
               setActiveChecklistTab('operation');
               setShowChecklistModal(true);
             }}
-            className="px-3.5 py-1.5 bg-[#0D9488] text-white hover:bg-[#0F766E] rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-[0.98]"
-            title="本番リリース前に行う各種動作確認（OAuth連携、検閲、クイズ突破、Stripe決済、電子的宣誓、eKYC等）をチェックリスト形式で確認・記録します。"
+            className="px-4 py-2 bg-teal-600 text-white hover:bg-teal-700 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-[0.98]"
+            title="会員登録からAI検閲、クイズ突破、SMS認証、eKYC、Stripe決済、連絡先開示までの実稼働テストを確認・記録します。"
           >
-            <Search size={13} />
-            <span>🔍 本番前動作確認チェックリスト</span>
+            <Search size={14} />
+            <span>🔍 ② 本番前動作確認 22大テストリスト</span>
           </button>
+        </div>
+      </div>
 
-          <button
-            onClick={handleDownloadAuditCSV}
-            className="px-3.5 py-1.5 bg-slate-800 text-white hover:bg-slate-950 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-[0.98]"
-            title="警察や行政の監査時に提出される、ユーザーの誓約状況や暗号化通信イベントを示す実際のログデータ構造（モック）をCSVとしてエクスポートします。"
-          >
-            <Download size={13} />
-            <span>【検証用】模擬監査ログ (CSV)</span>
-          </button>
+      {/* ドキュメント出力・PDF印刷操作盤 */}
+      <div className="bg-[#487799]/5 border border-[#3B627F]/20 rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 select-none print-hidden animate-fadeIn">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-[#3B627F]/10 flex items-center justify-center text-[#3B627F] shrink-0">
+            <Download size={18} />
+          </div>
+          <div>
+            <h4 className="text-xs font-bold text-slate-800 font-sans">
+              公式ドキュメント PDF出力・印刷操作盤
+            </h4>
+            <p className="text-[10px] text-slate-500 font-sans mt-0.5">
+              現在表示中のデプロイガイド、運用コスト設計書、PR戦略書を高品位PDFとして出力・保存します。
+            </p>
+          </div>
+        </div>
 
+        <div className="flex flex-wrap gap-2 items-center">
           {docType !== 'matrix' && docType !== 'slides' && (
-            <>
-              <button
-                onClick={handlePrintDocument}
-                className="px-3.5 py-1.5 bg-[#3B627F] text-white hover:bg-[#1C2B3C] rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-sm"
-              >
-                <Printer size={13} />
-                <span>PDFでダウンロード / 印刷</span>
-              </button>
-            </>
+            <button
+              onClick={handlePrintDocument}
+              className="px-4 py-2 bg-[#3B627F] text-white hover:bg-[#1C2B3C] rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-sm"
+            >
+              <Printer size={14} />
+              <span>📄 表示中ドキュメントをPDF保存 / 印刷</span>
+            </button>
           )}
 
           {docType === 'matrix' && (
@@ -4290,13 +4000,13 @@ export const AdminDeploymentGuideBlock = ({
                 <div>
                   <h3 className="text-sm font-bold font-serif">
                     {activeChecklistTab === 'operation' 
-                      ? "【ReMEETs 本番前動作確認・オペレーション検証 16大チェックリスト】" 
-                      : "【ReMEETs 本番デプロイ・運営開始 17大マスターチェックリスト】"}
+                      ? "【ReMEETs 本番前動作確認・実稼働テスト 22大チェックリスト】" 
+                      : "【ReMEETs 本番デプロイ・運営開始 19大マスターチェックリスト】"}
                   </h3>
                   <p className="text-[10px] text-slate-300 font-sans mt-0.5">
                     {activeChecklistTab === 'operation'
-                      ? "※LINE/Google OAuth連携・クイズ突破・電子的宣誓・Stripe決済・eKYC運用等、各種動作確認作業の進行状況をブラウザに自動保存します。"
-                      : "※法的適合・全文書制定日確定・セキュリティ対策・SNS連携・決済疎通を含む17ステップ of 進行状況は、ブラウザ（localStorage）に自動保存されます。"}
+                      ? "※LINE/Google OAuth連携・クイズ突破・SMS認証・電子的宣誓・Stripe決済・双方向連絡先開示・AIチケット等、全22項目の進行状況はブラウザ（localStorage）に自動保存されます。"
+                      : "※SSL/TLS常時暗号化・DB移行・SMS/Gemini/Stripe本番キー・全文書制定日確定・セキュリティレート制限を含む全19ステップ of 進行状況は、ブラウザ（localStorage）に自動保存されます。"}
                   </p>
                 </div>
               </div>
@@ -4318,7 +4028,7 @@ export const AdminDeploymentGuideBlock = ({
                     : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-100/50'
                 }`}
               >
-                📋 ① 本番デプロイ準備 17大マスターリスト
+                📋 ① 本番デプロイ準備 19大マスターリスト
               </button>
               <button
                 onClick={() => setActiveChecklistTab('operation')}
@@ -4328,7 +4038,7 @@ export const AdminDeploymentGuideBlock = ({
                     : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-100/50'
                 }`}
               >
-                🔍 ② 本番前動作確認（実稼働テスト）リスト
+                🔍 ② 本番前動作確認 22大実稼働テストリスト
               </button>
             </div>
 
@@ -4639,8 +4349,6 @@ export const AdminDeploymentGuideBlock = ({
               </button>
             </div>
           </div>
-        </div>
-      )}
         </div>
       )}
     </div>

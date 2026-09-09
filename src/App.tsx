@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider, ConfirmContext } from './contexts/AuthContext';
 import { Navbar, Footer, ProtectedRoute } from './components/SharedComponents';
@@ -11,10 +11,15 @@ import { GuidePage } from './components/GuidePage';
 import { SupporterPage } from './components/SupporterPage';
 import { FaqPage } from './pages/FaqPage';
 import { SuccessStoriesPage, AdminDeploymentGuidePage, ManualPage } from './pages/MiscPages';
-import { AdminDashboard, AdminInfoPage, SitemapPage, ContactPage, ConfirmModal, AuroraAmbientGlow, PageViewTracker } from './pages/AdminDashboard';
+import { AdminInfoPage, SitemapPage, ContactPage, ConfirmModal, AuroraAmbientGlow, PageViewTracker } from './pages/AdminDashboard';
 import { TermsPage, PrivacyPage, GuidelinesPage, CompanyPage, PricingPage, SafetyPage, DeletionRequestPage } from './pages/StaticPages';
 import { PaymentPreviewPage } from './pages/PaymentPreviewPage';
 import { stopAllGlobalCameraStreams } from './components/DocumentCameraOverlay';
+
+const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard').then(m => ({ default: m.AdminDashboard })));
+
+
+
 
 // --- Core Auth Context & State Managers ---
 export default function App() {
@@ -81,7 +86,11 @@ export default function App() {
                 <Route path="/account" element={<ProtectedRoute><AccountPage /></ProtectedRoute>} />
                 <Route path="/post/:id" element={<PostDetailPage onOpenOnboarding={() => {}} />} />
                 <Route path="/name/:name/:location/:year/:relationship" element={<PostDetailPage onOpenOnboarding={() => {}} />} />
-                <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/admin" element={
+                  <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-slate-500 font-sans text-sm">読み込み中...</div>}>
+                    <AdminDashboard />
+                  </Suspense>
+                } />
                 <Route path="/admin/deployment-guide" element={<AdminDeploymentGuidePage />} />
                 <Route path="/admin-info" element={<AdminInfoPage />} />
                 <Route path="/guidelines" element={<GuidelinesPage />} />

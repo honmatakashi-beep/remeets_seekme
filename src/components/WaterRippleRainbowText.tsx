@@ -262,7 +262,8 @@ export const WaterRippleRainbowText: React.FC<WaterRippleRainbowTextProps> = ({
 
         renderStaticText();
 
-        // 1. 2D 波動方程式による波紋バッファ更新
+        // 1. 2D 波動方程式による波紋バッファ更新 & 波の活動度判定
+        let waveEnergy = 0;
         for (let y = 1; y < rows - 1; y++) {
           const yOffset = y * cols;
           for (let x = 1; x < cols - 1; x++) {
@@ -274,7 +275,9 @@ export const WaterRippleRainbowText: React.FC<WaterRippleRainbowTextProps> = ({
               currentBuffer[idx + cols]
             ) * 0.5 - previousBuffer[idx];
 
-            previousBuffer[idx] = wave * damping;
+            const newVal = wave * damping;
+            previousBuffer[idx] = newVal;
+            waveEnergy += Math.abs(newVal);
           }
         }
 
@@ -285,82 +288,73 @@ export const WaterRippleRainbowText: React.FC<WaterRippleRainbowTextProps> = ({
 
         // 2. ディスプレイスメント屈折レンダリング
         if (textCtx) {
-          const srcImgData = textCtx.getImageData(0, 0, textCanvas.width, textCanvas.height);
-          const srcData = srcImgData.data;
-          const destImgData = ctx.createImageData(textCanvas.width, textCanvas.height);
-          const destData = destImgData.data;
-          const canvasW = textCanvas.width;
-          const canvasH = textCanvas.height;
+          // 波の動きがほとんどない時は、ピクセル走査を行わずオフスクリーンCanvasをそのまま超高速転送 (60fps/120fps維持)
+          if (waveEnergy < 0.05) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(textCanvas, 0, 0);
+          } else {
+            const srcImgData = textCtx.getImageData(0, 0, textCanvas.width, textCanvas.height);
+            const srcData = srcImgData.data;
+            const destImgData = ctx.createImageData(textCanvas.width, textCanvas.height);
+            const destData = destImgData.data;
+            const canvasW = textCanvas.width;
+            const canvasH = textCanvas.height;
 
-          for (let y = 0; y < canvasH; y++) {
-            const gy = Math.floor(y / GRID_SIZE);
-            const gyOffset = gy * cols;
-            const yOffset = y * canvasW;
+            for (let y = 0; y < canvasH; y++) {
+              const gy = Math.floor(y / GRID_SIZE);
+              const gyOffset = gy * cols;
+              const yOffset = y * canvasW;
 
-            for (let x = 0; x < canvasW; x++) {
-              const gx = Math.floor(x / GRID_SIZE);
-              const gIdx = gyOffset + gx;
+              for (let x = 0; x < canvasW; x++) {
+                const gx = Math.floor(x / GRID_SIZE);
+                const gIdx = gyOffset + gx;
 
-              // 波の傾き（勾配）を計算して屈折オフセットを導出
-              let offsetX = 0;
-              let offsetY = 0;
+                // 波の傾き（勾配）を計算して屈折オフセットを導出
+                let offsetX = 0;
+                let offsetY = 0;
 
-              if (gx > 0 && gx < cols - 1 && gy > 0 && gy < rows - 1) {
-                offsetX = (currentBuffer[gIdx + 1] - currentBuffer[gIdx - 1]) * 0.85;
-                offsetY = (currentBuffer[gIdx + cols] - currentBuffer[gIdx - cols]) * 0.85;
-              }
+                if (gx > 0 && gx < cols - 1 && gy > 0 && gy < rows - 1) {
+                  offsetX = (currentBuffer[gIdx + 1] - currentBuffer[gIdx - 1]) * 0.85;
+                  offsetY = (currentBuffer[gIdx + cols] - currentBuffer[gIdx - cols]) * 0.85;
+                }
 
-              const destIdx = (yOffset + x) * 4;
+                const destIdx = (yOffset + x) * 4;
 
-              if (offsetX === 0 && offsetY === 0) {
-                // 変形なし
-                destData[destIdx] = srcData[destIdx];
-                destData[destIdx + 1] = srcData[destIdx + 1];
-                destData[destIdx + 2] = srcData[destIdx + 2];
-                destData[destIdx + 3] = srcData[destIdx + 3];
-              } else {
-                // 水面波紋の屈折座標
-                const sx = Math.min(Math.max(Math.round(x + offsetX), 0), canvasW - 1);
-                const sy = Math.min(Math.max(Math.round(y + offsetY), 0), canvasH - 1);
-                const sIdx = (sy * canvasW + sx) * 4;
-
-                const baseA = srcData[sIdx + 3];
-
-                if (baseA === 0) {
-                  // サンプリング元が透明なら完全に透明（黒ずみの発生を100%防止）
-                  destData[destIdx] = 0;
-                  destData[destIdx + 1] = 0;
-                  destData[destIdx + 2] = 0;
-                  destData[destIdx + 3] = 0;
+                if (offsetX === 0 && offsetY === 0) {
+                  // 変形なし
+                  destData[destIdx] = srcData[destIdx];
+                  destData[destIdx + 1] = srcData[destIdx + 1];
+                  destData[destIdx + 2] = srcData[destIdx + 2];
+                  destData[destIdx + 3] = srcData[destIdx + 3];
                 } else {
-                  // 微小な色収差サンプリング（文字内部でのみ自然に分散）
-                  const rx = Math.min(Math.max(Math.round(x + offsetX * 1.08), 0), canvasW - 1);
-                  const ry = Math.min(Math.max(Math.round(y + offsetY * 1.08), 0), canvasH - 1);
-                  const rIdx = (ry * canvasW + rx) * 4;
-                  const rA = srcData[rIdx + 3];
+                  // 水面波紋の屈折座標
+                  const sx = Math.min(Math.max(Math.round(x + offsetX), 0), canvasW - 1);
+                  const sy = Math.min(Math.max(Math.round(y + offsetY), 0), canvasH - 1);
+                  const sIdx = (sy * canvasW + sx) * 4;
 
-                  const bx = Math.min(Math.max(Math.round(x + offsetX * 0.92), 0), canvasW - 1);
-                  const by = Math.min(Math.max(Math.round(y + offsetY * 0.92), 0), canvasH - 1);
-                  const bIdx = (by * canvasW + bx) * 4;
-                  const bA = srcData[bIdx + 3];
+                  const baseA = srcData[sIdx + 3];
 
-                  // 光のコースティクス効果（水面ハイライト）
-                  const highlight = Math.max(0, (offsetX + offsetY) * 1.8);
+                  if (baseA === 0) {
+                    // サンプリング元が透明なら完全に透明（黒ずみの発生を100%防止）
+                    destData[destIdx] = 0;
+                    destData[destIdx + 1] = 0;
+                    destData[destIdx + 2] = 0;
+                    destData[destIdx + 3] = 0;
+                  } else {
+                    // 光のコースティクス効果（水面ハイライト）
+                    const highlight = Math.max(0, (offsetX + offsetY) * 1.8);
 
-                  const rVal = rA > 0 ? srcData[rIdx] : srcData[sIdx];
-                  const gVal = srcData[sIdx + 1];
-                  const bVal = bA > 0 ? srcData[bIdx + 2] : srcData[sIdx + 2];
-
-                  destData[destIdx] = Math.min(255, rVal + highlight);
-                  destData[destIdx + 1] = Math.min(255, gVal + highlight);
-                  destData[destIdx + 2] = Math.min(255, bVal + highlight * 1.1);
-                  destData[destIdx + 3] = baseA;
+                    destData[destIdx] = Math.min(255, srcData[sIdx] + highlight);
+                    destData[destIdx + 1] = Math.min(255, srcData[sIdx + 1] + highlight);
+                    destData[destIdx + 2] = Math.min(255, srcData[sIdx + 2] + highlight * 1.1);
+                    destData[destIdx + 3] = baseA;
+                  }
                 }
               }
             }
-          }
 
-          ctx.putImageData(destImgData, 0, 0);
+            ctx.putImageData(destImgData, 0, 0);
+          }
         }
       }
 

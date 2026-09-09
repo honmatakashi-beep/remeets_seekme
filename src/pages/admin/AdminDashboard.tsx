@@ -15,7 +15,7 @@ import {
   FileSpreadsheet, FileText, FileWarning, Filter, Flag, GitBranch, GitCommit, GitPullRequest, Globe, HardDrive, Heart,
   HelpCircle, Home, Image as ImageIcon, Inbox, Info, Key, Lock, LogIn,
   LogOut, Mail, MapPin, Menu, MessageCircle, MessageSquare, MoreVertical,
-  Palette, PlusCircle, Presentation, Printer, Radio, RefreshCw, RotateCcw,
+  Palette, PlusCircle, Presentation, Printer, Radio, RefreshCw, Rocket, RotateCcw,
   School, Search, Send, Server, Settings, Shield, ShieldAlert, ShieldCheck, Sparkles,
   Star, Tag, Terminal, Trash2, Unlock, Upload, User, User as UserIcon, UserCheck,
   Plus, TrendingUp, History, Users, Wifi, Wind, X, Zap, ArrowUpDown, UserX,
@@ -65,7 +65,8 @@ import {
   AdminAgeVerificationTab,
   AdminPostsTab,
   AdminUsersTab,
-  AdminAssetCleanerTab
+  AdminAssetCleanerTab,
+  AdminPoliceConsultationTab
 } from "./tabs";
 
 
@@ -137,6 +138,36 @@ export const AdminDashboard = () => {
   const [adminHomeDesign, setAdminHomeDesign] = useState<'v1' | 'v2'>(() => {
     return (localStorage.getItem('remeets_home_design') as 'v1' | 'v2') || 'v2';
   });
+
+  // 背景コントラスト・明度調整用ステート
+  const [bgGlowOpacity, setBgGlowOpacity] = useState<number>(() => {
+    const saved = localStorage.getItem('remeets_bg_glow_opacity');
+    return saved !== null ? parseFloat(saved) : 1.0;
+  });
+  const [bgDarkness, setBgDarkness] = useState<number>(() => {
+    const saved = localStorage.getItem('remeets_bg_darkness');
+    return saved !== null ? parseFloat(saved) : 0;
+  });
+
+  const handleUpdateBgDarkness = (darknessVal: number) => {
+    setBgDarkness(darknessVal);
+    localStorage.setItem('remeets_bg_darkness', darknessVal.toString());
+    window.dispatchEvent(new Event('remeets_bg_glow_changed'));
+  };
+
+  const handleUpdateBgGlowOpacity = (glowVal: number) => {
+    setBgGlowOpacity(glowVal);
+    localStorage.setItem('remeets_bg_glow_opacity', glowVal.toString());
+    window.dispatchEvent(new Event('remeets_bg_glow_changed'));
+  };
+
+  const handleResetBgContrast = () => {
+    setBgDarkness(0);
+    setBgGlowOpacity(1.0);
+    localStorage.setItem('remeets_bg_darkness', '0');
+    localStorage.setItem('remeets_bg_glow_opacity', '1.0');
+    window.dispatchEvent(new Event('remeets_bg_glow_changed'));
+  };
 
   useEffect(() => {
     const handleDesignChange = () => {
@@ -694,8 +725,7 @@ export const AdminDashboard = () => {
     URL.revokeObjectURL(url);
   };
 
-  const [activeTab, setActiveTab] = useState<'stats' | 'valuation' | 'quizAnalytics' | 'liveAlerts' | 'users' | 'posts' | 'logs' | 'reports' | 'deletion' | 'ngWords' | 'contacts' | 'emailTemplates' | 'successStories' | 'security' | 'system' | 'versions' | 'notifications' | 'moderation' | 'manual' | 'designSystem' | 'ageVerification' | 'settings' | 'deployment' | 'monetization' | 'payments' | 'rbac' | 'assetCleaner'>('stats');
-  const [quizMatchingAnalytics, setQuizMatchingAnalytics] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState<'stats' | 'valuation' | 'quizAnalytics' | 'liveAlerts' | 'users' | 'posts' | 'logs' | 'reports' | 'deletion' | 'ngWords' | 'contacts' | 'emailTemplates' | 'successStories' | 'security' | 'system' | 'versions' | 'notifications' | 'moderation' | 'manual' | 'designSystem' | 'ageVerification' | 'settings' | 'deployment' | 'masterMemo' | 'templates' | 'monetization' | 'payments' | 'rbac' | 'assetCleaner' | 'policeConsultation'>('stats');
   const [guideDocType, setGuideDocType] = useState<'deployment' | 'cost_estimate' | 'cost_list_detailed' | 'permit' | 'police' | 'consult' | 'matrix' | 'slides' | 'scenario' | 'requirements' | 'evaluation' | 'pr_plan' | 'legal_guide'>('deployment');
   const [loading, setLoading] = useState(true);
   const [selectedPost, setSelectedPost] = useState<any>(null);
@@ -937,6 +967,7 @@ export const AdminDashboard = () => {
       title: 'Trust & Safety (安全・本人確認)',
       items: [
         { id: 'ageVerification', label: '🛡️ 本人確認（eKYC）\n照合ゲージ・監査ログ', icon: UserCheck },
+        { id: 'policeConsultation', label: '🚔 警察事前相談 ＆\n法令適合サマリー', icon: ShieldCheck },
         { id: 'liveAlerts', label: '運営リアルタイム警報・スパム', icon: Radio },
         { id: 'moderation', label: 'AI検知キュー', icon: Bot, badge: posts.filter(p => p.ai_flagged === 1).length },
         { id: 'reports', label: '通報', icon: AlertTriangle, badge: reports.filter(r => r.status === 'pending').length },
@@ -968,10 +999,9 @@ export const AdminDashboard = () => {
     {
       title: 'Support & UI Specs',
       items: [
-        { id: 'assetCleaner', label: '🖼️ 画像アセット管理 ＆\n選択クリーンアップ', icon: ImageIcon },
-        { id: 'designSystem', label: 'デザインシステム\n(UI/UX Specs)', icon: Palette },
-        { id: 'deployment', label: 'マスター備忘録 ＆\n公式運営ライブラリ', icon: BookOpen, onClick: () => { setActiveTab('deployment'); setGuideDocType('deployment'); } },
-        { id: 'manual', label: '操作マニュアル', icon: BookOpen },
+        { id: 'masterMemo', label: '📝 運営方針・意思決定備忘録', icon: FileText, onClick: () => { setActiveTab('masterMemo'); } },
+        { id: 'deployment', label: '🚀 本番デプロイ・広報ライブラリ', icon: Rocket, onClick: () => { setActiveTab('deployment'); setGuideDocType('deployment'); } },
+        { id: 'manual', label: '管理画面操作マニュアル', icon: BookOpen },
       ]
     },
     {
@@ -3350,6 +3380,10 @@ export const AdminDashboard = () => {
             <AdminAssetCleanerTab />
           )}
 
+          {activeTab === 'policeConsultation' && (
+            <AdminPoliceConsultationTab />
+          )}
+
           {activeTab === 'settings' ? (
             <div className="space-y-6">
               <div className="glass-card p-8">
@@ -3470,11 +3504,75 @@ export const AdminDashboard = () => {
                       />
                     </button>
                   </div>
+
+                  {/* 背景コントラスト・明度リアルタイム調整スライダー */}
+                  <div className="p-6 bg-gradient-to-br from-slate-900 to-[#102a33] text-white rounded-2xl border border-teal-500/30 shadow-md space-y-5">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="p-1.5 bg-teal-500/20 text-teal-300 rounded-lg">
+                            <Sparkles size={16} />
+                          </span>
+                          <h3 className="text-sm font-bold font-sans text-teal-100">
+                            🎨 背景コントラスト・明度リアルタイム調整スライダー
+                          </h3>
+                        </div>
+                        <p className="text-xs text-slate-300 font-serif leading-relaxed">
+                          背景の薄い和紙・黄緑の明度を落ち着かせ、前面の白カードとのコントラスト（メリハリ）をリアルタイムで微調整できます。
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleResetBgContrast}
+                        className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs text-slate-200 font-sans border border-white/20 transition-all cursor-pointer whitespace-nowrap active:scale-95"
+                      >
+                        🔄 初期値に戻す
+                      </button>
+                    </div>
+
+                    <div className="space-y-4 pt-2">
+                      {/* 背景光彩・彩度（グラデーションの鮮やかさ・透明感） */}
+                      <div className="space-y-1.5 bg-black/25 p-4 rounded-xl border border-white/10">
+                        <div className="flex justify-between items-center text-xs font-sans">
+                          <span className="font-bold text-slate-200">
+                            🎨 背景光彩・グラデーション彩度（透明度）
+                          </span>
+                          <span className="px-2 py-0.5 rounded bg-teal-900/80 text-teal-300 font-mono font-bold">
+                            {Math.round(bgGlowOpacity * 100)}%
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-slate-400 font-serif">
+                          和紙ベース（#FDF9F0）に重なる優しいパステルグラデーションの彩度を 0%（完全無地）〜 200%（鮮やか）で調整します。
+                        </p>
+                        <input
+                          type="range"
+                          min="0"
+                          max="2.0"
+                          step="0.05"
+                          value={bgGlowOpacity}
+                          onChange={(e) => handleUpdateBgGlowOpacity(parseFloat(e.target.value))}
+                          className="w-full accent-teal-400 cursor-pointer h-2 bg-slate-700 rounded-lg"
+                        />
+                        <div className="flex justify-between text-[10px] text-slate-400 font-mono">
+                          <span>0% (無地和紙)</span>
+                          <span>50% (ほんのり淡い)</span>
+                          <span>100% (標準・上品)</span>
+                          <span>200% (鮮明な光彩)</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-3 bg-teal-950/40 rounded-xl border border-teal-500/20 text-[11px] text-teal-200/90 font-serif leading-relaxed">
+                      💡 <strong>設定の保存</strong>: スライダーを動かすと、全ページで即時反映され、次回アクセス時にも同じ彩度で表示されます。
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
+          ) : activeTab === 'masterMemo' ? (
+            <AdminMasterKnowledgeBase initialViewMode="master_memo" modeTitle="📝 運営方針・意思決定備忘録" hideViewModeSwitcher={true} guideDocType={guideDocType} setGuideDocType={setGuideDocType} />
           ) : activeTab === 'deployment' ? (
-            <AdminMasterKnowledgeBase guideDocType={guideDocType} setGuideDocType={setGuideDocType} />
+            <AdminMasterKnowledgeBase initialViewMode="legal_docs" modeTitle="🚀 本番デプロイ・広報ライブラリ" hideViewModeSwitcher={false} guideDocType={guideDocType} setGuideDocType={setGuideDocType} />
           ) : activeTab === 'payments' ? (
             <AdminPaymentManagementBlock />
           ) : activeTab === 'monetization' ? (

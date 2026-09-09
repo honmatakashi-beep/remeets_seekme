@@ -372,14 +372,42 @@ export const ConfirmModal = ({ isOpen, title, message, onConfirm, onClose }: { i
 };
 
 export const AuroraAmbientGlow = () => {
+  const [glowOpacity, setGlowOpacity] = useState<number>(() => {
+    const saved = localStorage.getItem('remeets_bg_glow_opacity');
+    return saved !== null ? parseFloat(saved) : 1.0;
+  });
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      const savedGlow = localStorage.getItem('remeets_bg_glow_opacity');
+      const glowVal = savedGlow !== null ? parseFloat(savedGlow) : 1.0;
+      setGlowOpacity(glowVal);
+      document.body.style.backgroundColor = '#FDF9F0';
+    };
+
+    handleUpdate();
+    window.addEventListener('remeets_bg_glow_changed', handleUpdate);
+    window.addEventListener('storage', handleUpdate);
+    return () => {
+      window.removeEventListener('remeets_bg_glow_changed', handleUpdate);
+      window.removeEventListener('storage', handleUpdate);
+    };
+  }, []);
+
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden select-none z-0" style={{ mixBlendMode: 'multiply' }}>
-      {/* Aurora glow blobs with subtle fluid movements */}
-      <div className="absolute top-[-5%] left-[-15%] w-[80vw] h-[80vw] md:w-[60vw] md:h-[60vw] rounded-full bg-gradient-to-br from-teal-200/40 via-emerald-100/30 to-blue-200/30 blur-[130px] aurora-animate-1 pointer-events-none" />
-      <div className="absolute top-[25%] right-[-15%] w-[90vw] h-[90vw] md:w-[70vw] md:h-[70vw] rounded-full bg-gradient-to-tr from-pink-200/35 via-violet-100/35 to-sky-200/40 blur-[150px] aurora-animate-2 pointer-events-none" />
-      <div className="absolute bottom-[20%] left-[-10%] w-[80vw] h-[80vw] md:w-[60vw] md:h-[60vw] rounded-full bg-gradient-to-br from-indigo-100/35 via-cyan-100/40 to-teal-100/30 blur-[140px] aurora-animate-3 pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[10%] w-[80vw] h-[80vw] md:w-[50vw] md:h-[50vw] rounded-full bg-gradient-to-tr from-rose-200/40 via-orange-100/30 to-amber-200/35 blur-[120px] aurora-animate-1 pointer-events-none" style={{ animationDelay: '-12s' }} />
-    </div>
+    <div 
+      className="absolute inset-0 pointer-events-none overflow-hidden select-none z-0 transition-opacity duration-300" 
+      style={{ 
+        mixBlendMode: 'multiply',
+        opacity: glowOpacity,
+        background: `
+          radial-gradient(ellipse at 15% 10%, rgba(153, 246, 228, 0.45), transparent 60%),
+          radial-gradient(ellipse at 85% 25%, rgba(251, 207, 232, 0.45), transparent 60%),
+          radial-gradient(ellipse at 20% 85%, rgba(224, 231, 255, 0.45), transparent 60%),
+          radial-gradient(ellipse at 80% 90%, rgba(254, 215, 170, 0.45), transparent 60%)
+        `
+      }}
+    />
   );
 };
 

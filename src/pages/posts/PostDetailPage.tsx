@@ -50,12 +50,14 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
   
   const { user, token } = useAuth();
   const { showConfirm } = useConfirm();
-  const [post, setPost] = useState<any>(null);
+  const [post, setPost] = useState<any>(() => {
+    return location.state?.postPreview || null;
+  });
   const [isAgeVerified, setIsAgeVerified] = useState(false);
   const [isQuestionVerified, setIsQuestionVerified] = useState(false);
   const [tempVerificationData, setTempVerificationData] = useState<any>(null);
   const [answers, setAnswers] = useState<string[]>([]);
-  const [searcherName, setSearcherName] = useState<string | null>(null);
+  const [searcherName, setSearcherName] = useState<string | null>(() => location.state?.postPreview?.searcher_name || null);
   const [searcherFullName, setSearcherFullName] = useState<string | null>(null);
   const [searcherId, setSearcherId] = useState<number | string | null>(null);
   const [verifiedByUser, setVerifiedByUser] = useState<{ id: number, username: string, full_name?: string } | null>(null);
@@ -564,7 +566,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
         return;
       }
 
-      // 4. 正確に特定された postId の手紙データを取得（※勝手な recentList フォールバックは一切行わない）
+      // 4. 正確に特定された postId の手紙データを取得（キャッシュ対応）
       try {
         const res = await fetch(`/api/posts/${postId}`, {
           headers: token ? { 'Authorization': `Bearer ${token}` } : {}
@@ -1102,38 +1104,21 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
       </AnimatePresence>
 
       {/* Welcome Banner */}
-      <motion.section 
+      <section 
         ref={welcomeBannerRef}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
         className="mb-8 p-6 sm:p-8 md:p-10 rounded-[32px] md:rounded-[36px] bg-white border border-brand-border relative overflow-hidden text-center shadow-md"
       >
-        {/* Subtle Decorative Effects */}
-        <div className="absolute inset-0 pointer-events-none z-0">
-          {[...Array(5)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute bg-brand-primary/3 rounded-full blur-[80px]"
-              animate={{
-                x: [`${Math.sin(i) * 20 + 50}%`, `${Math.cos(i) * 20 + 50}%`],
-                y: [`${Math.cos(i) * 20 + 50}%`, `${Math.sin(i) * 20 + 50}%`],
-                opacity: [0.3, 0.6, 0.3],
-              }}
-              transition={{ duration: 15 + i * 5, repeat: Infinity, ease: "easeInOut" }}
-              style={{ width: '300px', height: '300px', left: '-50px', top: '-50px' }}
-            />
-          ))}
-        </div>
-
-        {/* 背景イラスト（優しく淡いグラデーションで文字を引き立てる背景） */}
+        {/* 背景イラスト（即座に鮮明に描画される背景アート） */}
         <div className="absolute inset-0 flex justify-center items-center pointer-events-none overflow-hidden select-none z-0">
           <div 
-            className="relative w-full max-w-4xl h-full transition-opacity duration-500"
+            className="relative w-full max-w-4xl h-full"
             style={{ opacity: (isQuestionVerified || showDetails || post.status === 'resolved') ? 0.82 : 0.85 }}
           >
             <img 
               src={(isQuestionVerified || showDetails || post.status === 'resolved') ? quizMatchHearts : postSuccessSoft} 
               alt="背景イラスト" 
+              loading="eager"
+              decoding="sync"
               className="w-full h-full object-cover object-center"
             />
             {/* 上下左右の四方を白グラデーションで自然になじませる */}
@@ -1211,7 +1196,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
             </div>
           )}
         </div>
-      </motion.section>
+      </section>
 
       {/* 各種モーダルダイアログ */}
       <SuccessModal 

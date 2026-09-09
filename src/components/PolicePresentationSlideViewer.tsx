@@ -38,6 +38,11 @@ import {
   FileCheck
 } from 'lucide-react';
 
+import { 
+  POLICE_PRESENTATION_SLIDES, 
+  POLICE_PRESENTATION_SCENARIOS 
+} from '../pages/admin/data/policePresentationData';
+
 export interface SlideItem {
   id: number;
   title: string;
@@ -48,14 +53,14 @@ export interface SlideItem {
 }
 
 interface PolicePresentationSlideViewerProps {
-  slides: SlideItem[];
-  scenarios: string[];
+  slides?: SlideItem[];
+  scenarios?: string[];
   onOpenScenarioDoc?: () => void;
 }
 
 export const PolicePresentationSlideViewer: React.FC<PolicePresentationSlideViewerProps> = ({
-  slides,
-  scenarios,
+  slides = POLICE_PRESENTATION_SLIDES,
+  scenarios = POLICE_PRESENTATION_SCENARIOS,
   onOpenScenarioDoc
 }) => {
   const [activeSlideIdx, setActiveSlideIdx] = React.useState<number>(0);

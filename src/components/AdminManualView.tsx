@@ -1836,6 +1836,22 @@ export const AdminManualView: React.FC = () => {
     }
   };
 
+  const scrollToSection = (secId: string) => {
+    setSelectedSectionId(secId);
+    setMobileMenuOpen(false);
+    const element = document.getElementById(`section-${secId}`);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  const scrollToCategory = (catId: string) => {
+    const element = document.getElementById(`category-${catId}`);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
       {/* 🖨️ Inline Print Style for direct print/browser shortcut fallback */}
@@ -1862,16 +1878,16 @@ export const AdminManualView: React.FC = () => {
         <div>
           <div className="inline-flex items-center gap-1.5 px-3 py-0.5 bg-teal-50 text-teal-900 rounded-full text-xs font-bold mb-1.5 border border-teal-200">
             <BookOpen size={14} />
-            <span>ReMEETs 操作マニュアル ＆ 運用標準手順書 (SOP)</span>
+            <span>ReMEETs 管理画面操作マニュアル ＆ 運用標準手順書 (SOP)</span>
           </div>
           <h2 className="text-xl md:text-2xl font-bold font-serif text-black flex items-center gap-2">
-            <span>管理者ハンドブック ＆ 運用マニュアル</span>
+            <span>管理画面操作マニュアル（全編完全版）</span>
             <span className="text-xs font-mono font-normal px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
-              Ver 2.5 (本番運用完全版)
+              全8章・25節 一括閲覧
             </span>
           </h2>
           <p className="text-xs text-black/60 mt-0.5">
-            全8章・25節の詳細な操作手順・設定推奨値・法務判断基準・トラブルシューティングを網羅しています。
+            左側の目次アンカーをクリックすると該当箇所へスムーズにジャンプします。
           </p>
         </div>
 
@@ -1880,24 +1896,10 @@ export const AdminManualView: React.FC = () => {
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-zinc-100 text-black border border-brand-border"
+            className="md:hidden flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-zinc-100 text-black border border-brand-border cursor-pointer"
           >
             {mobileMenuOpen ? <X size={14} /> : <Menu size={14} />}
             <span>目次メニュー</span>
-          </button>
-
-          {/* View Mode Toggle Button (個別 / 一括) */}
-          <button
-            type="button"
-            onClick={() => setViewMode(viewMode === 'single' ? 'all' : 'single')}
-            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-              viewMode === 'all'
-                ? 'bg-purple-50 text-purple-900 border-purple-300'
-                : 'bg-zinc-100 text-black hover:bg-zinc-200 border-brand-border'
-            }`}
-          >
-            <Layers size={14} />
-            <span>{viewMode === 'all' ? '📄 項目別表示に戻す' : '📖 全章一括スクロール表示'}</span>
           </button>
 
           {/* Print / PDF Download Button */}
@@ -1912,9 +1914,9 @@ export const AdminManualView: React.FC = () => {
         </div>
       </div>
 
-      {/* 🧭 2-Column Documentation Layout (左メニュー ＋ 右コンテンツ) */}
+      {/* 🧭 2-Column Documentation Layout (左目次メニュー ＋ 右シングルページ全編) */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
-        {/* 📑 LEFT SIDEBAR NAVIGATION (大見出し ＆ 見出し) */}
+        {/* 📑 LEFT SIDEBAR NAVIGATION (固定目次アンカー) */}
         <div className={`md:col-span-4 lg:col-span-4 bg-white rounded-3xl p-5 border border-brand-border shadow-sm space-y-4 md:sticky md:top-6 max-h-[calc(100vh-6rem)] overflow-y-auto custom-scrollbar ${
           mobileMenuOpen ? 'block' : 'hidden md:block'
         }`}>
@@ -1925,7 +1927,7 @@ export const AdminManualView: React.FC = () => {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="見出しを検索..."
+              placeholder="目次を検索..."
               className="w-full pl-8 pr-3 py-1.5 bg-zinc-50 border border-brand-border rounded-xl text-xs focus:bg-white focus:border-teal-600 focus:outline-none transition-all"
             />
           </div>
@@ -1937,32 +1939,35 @@ export const AdminManualView: React.FC = () => {
               return (
                 <div key={cat.id} className="space-y-1">
                   {/* 大見出し (Category Header) */}
-                  <button
-                    type="button"
-                    onClick={() => toggleCategory(cat.id)}
-                    className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-bold text-black hover:bg-zinc-100 transition-colors text-left cursor-pointer group"
-                  >
-                    <div className="flex items-center gap-2 text-black/90">
+                  <div className="flex items-center justify-between px-2.5 py-1.5 rounded-xl hover:bg-zinc-50 group">
+                    <button
+                      type="button"
+                      onClick={() => scrollToCategory(cat.id)}
+                      className="flex-1 flex items-center gap-2 text-xs font-bold text-black text-left cursor-pointer hover:text-teal-700 transition-colors"
+                    >
                       <Icon size={14} className="text-teal-700 shrink-0" />
-                      <span className="font-bold">{cat.categoryTitle}</span>
-                    </div>
-                    <ChevronDown size={14} className={`text-black/40 transition-transform ${isCollapsed ? '-rotate-90' : ''}`} />
-                  </button>
+                      <span>{cat.categoryTitle}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => toggleCategory(cat.id)}
+                      className="p-1 text-black/40 hover:text-black cursor-pointer"
+                      title={isCollapsed ? "展開" : "折りたたむ"}
+                    >
+                      <ChevronDown size={14} className={`transition-transform ${isCollapsed ? '-rotate-90' : ''}`} />
+                    </button>
+                  </div>
 
                   {/* 見出し / 小見出しリスト (Sections) */}
                   {!isCollapsed && (
                     <div className="space-y-0.5 pl-3 border-l-2 border-zinc-100 ml-3.5 my-1">
                       {cat.sections.map((sec) => {
-                        const isSelected = selectedSectionId === sec.id && viewMode === 'single';
+                        const isSelected = selectedSectionId === sec.id;
                         return (
                           <button
                             key={sec.id}
                             type="button"
-                            onClick={() => {
-                              setSelectedSectionId(sec.id);
-                              setViewMode('single');
-                              setMobileMenuOpen(false);
-                            }}
+                            onClick={() => scrollToSection(sec.id)}
                             className={`w-full text-left px-3 py-2 rounded-xl text-xs transition-all cursor-pointer flex items-center justify-between group ${
                               isSelected
                                 ? 'bg-teal-50 text-teal-900 font-bold border border-teal-200/80 shadow-xs'
@@ -1988,102 +1993,64 @@ export const AdminManualView: React.FC = () => {
           </div>
         </div>
 
-        {/* 📖 RIGHT MAIN CONTENT AREA (選択された見出しの内容 or 一括表示) */}
-        <div className="md:col-span-8 lg:col-span-8 bg-white rounded-3xl p-6 md:p-8 border border-brand-border shadow-sm space-y-6">
-          {viewMode === 'single' ? (
-            <>
-              {/* Breadcrumb & Section Header */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-100 pb-4">
-                <div>
-                  <div className="flex items-center gap-1.5 text-[11px] font-mono text-black/50 mb-1">
-                    <span>マニュアル</span>
-                    <ChevronRight size={12} />
-                    <span>{currentSectionMeta.categoryTitle}</span>
-                  </div>
-                  <h3 className="text-lg md:text-xl font-bold font-serif text-black">
-                    {currentSectionMeta.title}
-                  </h3>
-                  <p className="text-xs text-black/60 mt-0.5">
-                    {currentSectionMeta.description}
-                  </p>
+        {/* 📖 RIGHT MAIN CONTENT AREA (全章・全節 一枚化スクロール ＆ アンカーターゲット) */}
+        <div className="md:col-span-8 lg:col-span-8 bg-white rounded-3xl p-6 md:p-8 border border-brand-border shadow-sm space-y-12">
+          {manualCategories.map((cat, catIdx) => (
+            <div
+              key={cat.id}
+              id={`category-${cat.id}`}
+              className="space-y-8 scroll-mt-6 border-b-2 border-zinc-100 pb-12 last:border-b-0 last:pb-0"
+            >
+              {/* 大見出しタイトル */}
+              <div className="p-4 bg-slate-900 text-white rounded-2xl flex items-center justify-between shadow-xs">
+                <div className="flex items-center gap-2.5">
+                  <cat.icon size={20} className="text-teal-400" />
+                  <h3 className="font-bold text-base font-serif tracking-wide">{cat.categoryTitle}</h3>
                 </div>
-
-                <button
-                  type="button"
-                  onClick={() => copyToClipboard(document.getElementById('current-section-content')?.innerText || '')}
-                  className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold bg-zinc-100 hover:bg-zinc-200 text-black transition-all cursor-pointer border border-brand-border/60 self-start sm:self-auto"
-                >
-                  {copied ? <Check size={13} className="text-emerald-600" /> : <Copy size={13} />}
-                  <span>{copied ? 'コピー完了！' : 'このページをコピー'}</span>
-                </button>
+                <span className="text-[10px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">
+                  第 {catIdx + 1} 章
+                </span>
               </div>
 
-              {/* Render Active Section Detail */}
-              <div id="current-section-content" className="min-h-[400px]">
-                {renderSectionDetail(selectedSectionId)}
-              </div>
-
-              {/* Bottom Previous / Next Navigation */}
-              <div className="pt-6 border-t border-zinc-100 flex items-center justify-between text-xs font-bold gap-3">
-                {prevSection ? (
-                  <button
-                    type="button"
-                    onClick={() => setSelectedSectionId(prevSection.id)}
-                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-zinc-50 hover:bg-zinc-100 text-black border border-brand-border transition-all cursor-pointer max-w-[48%]"
+              {/* 各節のコンテンツ */}
+              <div className="space-y-10 pl-1 sm:pl-2">
+                {cat.sections.map((sec) => (
+                  <div
+                    key={sec.id}
+                    id={`section-${sec.id}`}
+                    className="space-y-4 scroll-mt-10 p-4 sm:p-5 rounded-2xl bg-zinc-50/50 border border-brand-border/70"
                   >
-                    <ArrowLeft size={14} />
-                    <span className="truncate">前: {prevSection.title}</span>
-                  </button>
-                ) : <div />}
-
-                {nextSection ? (
-                  <button
-                    type="button"
-                    onClick={() => setSelectedSectionId(nextSection.id)}
-                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-teal-50 hover:bg-teal-100 text-teal-900 border border-teal-200 transition-all cursor-pointer max-w-[48%]"
-                  >
-                    <span className="truncate">次: {nextSection.title}</span>
-                    <ArrowRight size={14} />
-                  </button>
-                ) : <div />}
-              </div>
-            </>
-          ) : (
-            /* 📖 ALL SECTIONS SCROLLABLE VIEW (全章一括スクロール閲覧モード) */
-            <div className="space-y-12">
-              <div className="border-b border-zinc-200 pb-4">
-                <h3 className="text-xl font-bold font-serif text-black">
-                  📖 全章・全節一括閲覧モード
-                </h3>
-                <p className="text-xs text-black/60 mt-1">
-                  全8章・25節のすべての操作マニュアルを縦スクロールで一読できます。
-                </p>
-              </div>
-
-              {manualCategories.map((cat) => (
-                <div key={cat.id} className="space-y-8 border-b-2 border-zinc-100 pb-10">
-                  <div className="p-3 bg-slate-900 text-white rounded-2xl flex items-center gap-2">
-                    <cat.icon size={18} className="text-teal-400" />
-                    <h4 className="font-bold text-sm font-serif">{cat.categoryTitle}</h4>
-                  </div>
-
-                  <div className="space-y-8 pl-2">
-                    {cat.sections.map((sec) => (
-                      <div key={sec.id} className="space-y-4">
-                        <div className="border-b border-brand-border pb-2 flex items-center justify-between">
-                          <h5 className="font-bold text-sm text-black">{sec.title}</h5>
-                          <span className="text-[10px] text-black/40 font-mono">{sec.description}</span>
+                    {/* 節ヘッダー */}
+                    <div className="border-b border-brand-border/60 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-mono font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded border border-teal-200">
+                            § {sec.id}
+                          </span>
+                          <h4 className="font-bold text-base text-black font-serif">{sec.title}</h4>
                         </div>
-                        <div className="pl-1">
-                          {renderSectionDetail(sec.id)}
-                        </div>
+                        <p className="text-xs text-black/60 mt-1">{sec.description}</p>
                       </div>
-                    ))}
+
+                      <button
+                        type="button"
+                        onClick={() => copyToClipboard(document.getElementById(`content-${sec.id}`)?.innerText || '')}
+                        className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold bg-white hover:bg-zinc-100 text-black transition-all cursor-pointer border border-brand-border shadow-2xs self-start sm:self-auto"
+                      >
+                        {copied ? <Check size={13} className="text-emerald-600" /> : <Copy size={13} />}
+                        <span>コピー</span>
+                      </button>
+                    </div>
+
+                    {/* 節本文 */}
+                    <div id={`content-${sec.id}`} className="pt-2">
+                      {renderSectionDetail(sec.id)}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          )}
+          ))}
         </div>
       </div>
 

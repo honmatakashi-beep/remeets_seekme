@@ -37,27 +37,44 @@ import {
   AlertCircle,
   HelpCircle,
   Clock,
-  Shield,
+  Globe,
   PhoneCall
 } from 'lucide-react';
 import { AdminDeploymentGuideBlock } from '../pages/MiscPages';
+import { GoogleEvaluationMemoTab } from './GoogleEvaluationMemoTab';
 
 export interface AdminMasterKnowledgeBaseProps {
   guideDocType?: any;
   setGuideDocType?: (val: any) => void;
+  initialViewMode?: 'master_memo' | 'templates' | 'legal_docs';
+  initialSubTab?: 'zero_knowledge_vault' | 'auth_costs' | 'police_ekyc' | 'liability_contract' | 'secure_bridge_model' | 'scratchpad' | 'google_memo';
+  modeTitle?: string;
+  hideViewModeSwitcher?: boolean;
 }
 
 export const AdminMasterKnowledgeBase: React.FC<AdminMasterKnowledgeBaseProps> = ({
   guideDocType = 'deployment',
-  setGuideDocType = () => {}
+  setGuideDocType = () => {},
+  initialViewMode = 'master_memo',
+  initialSubTab = 'zero_knowledge_vault',
+  modeTitle,
+  hideViewModeSwitcher = false
 }) => {
-  // 3大メインビューモード: 備忘録・決定事項 / 実務書面ライブラリ / 行政届出ポートフォリオ
-  const [viewMode, setViewMode] = useState<'master_memo' | 'templates' | 'legal_docs'>('master_memo');
+  // 3大メインビューモード: 決定事項集 / 実務書面ライブラリ / 本番デプロイ・広報ライブラリ
+  const [viewMode, setViewMode] = useState<'master_memo' | 'templates' | 'legal_docs'>(initialViewMode);
   
   // サブタブ
   const [activeSubTab, setActiveSubTab] = useState<
-    'deployment17' | 'zero_knowledge_vault' | 'auth_costs' | 'police_ekyc' | 'liability_contract' | 'secure_bridge_model' | 'scratchpad'
-  >('deployment17');
+    'zero_knowledge_vault' | 'auth_costs' | 'police_ekyc' | 'liability_contract' | 'secure_bridge_model' | 'scratchpad' | 'google_memo'
+  >(initialSubTab);
+
+  useEffect(() => {
+    if (initialViewMode) setViewMode(initialViewMode);
+  }, [initialViewMode]);
+
+  useEffect(() => {
+    if (initialSubTab) setActiveSubTab(initialSubTab);
+  }, [initialSubTab]);
 
   const [activeTemplateId, setActiveTemplateId] = useState<string>('tpl-police');
 
@@ -197,7 +214,7 @@ export const AdminMasterKnowledgeBase: React.FC<AdminMasterKnowledgeBaseProps> =
   };
 
   // Checklist completion calculation
-  const totalChecklistCount = 17;
+  const totalChecklistCount = 19;
   const completedChecklistCount = Object.keys(checkedItems).filter(k => checkedItems[k]).length;
   const checklistPercent = Math.round((completedChecklistCount / totalChecklistCount) * 100);
 
@@ -208,51 +225,53 @@ export const AdminMasterKnowledgeBase: React.FC<AdminMasterKnowledgeBaseProps> =
       items: [
         { id: 'step_01', icon: '🗄️', title: '1. 本番用 RDBMS (PostgreSQL / Cloud SQL) のプロビジョニング', desc: 'SQLite (better-sqlite3) から安全なマネージドデータベースへ移行。Supabase (PostgreSQL) または Google Cloud SQL (PostgreSQL) の高可用性インスタンスをプロビジョニング。' },
         { id: 'step_02', icon: '🔑', title: '2. DATABASE_URL 環境変数のサーバー設定', desc: 'データベースパスワードを含む接続用URLをソースコード内に直接ハードコードせず、Cloud Run 等のインフラ環境変数 DATABASE_URL にシークレットとして安全に設定。' },
-        { id: 'step_03', icon: '🚀', title: '3. データベースの初期テーブルスキーママイグレーションの実行', desc: 'Drizzle ORM等を使用し、本番環境の空のデータベースに対してクリーンなテーブル構造、インデックス、外部キー制約を一括で適用（マイグレーション）。' }
+        { id: 'step_03', icon: '🚀', title: '3. データベースの初期テーブルスキーママイグレーションの実行', desc: 'Drizzle ORM等を使用し、本番環境の空のデータベースに対してクリーンなテーブル構造、インデックス、外部キー制約を一括で適用（マイグレーション）。' },
+        { id: 'step_04', icon: '🔒', title: '4. 本番独自ドメインの常時SSL/TLS証明書（HTTPS）およびHSTS設定', desc: 'OAuthログインやStripe決済の安全性・完全性を担保するため、ドメイン全域での常時暗号化通信を強制。' },
+        { id: 'step_05', icon: '🛡️', title: '5. データベース日次自動バックアップ & 世代管理の有効化', desc: '万が一のデータ破損や攻撃に備え、データベース（Supabase/Cloud SQL）側で自動デイリースナップショット（保存期間最低7〜14日間）をON。' }
       ]
     },
     {
-      group: '【B. 外部API・決済キー設定】',
+      group: '【B. 外部API・決済・SMSキー設定】',
       items: [
-        { id: 'step_04', icon: '🤖', title: '4. Google AI Studio / Vertex AI (Gemini API) 商用本番キーの発行', desc: 'AIによるストーカー、誹謗中傷、不当表現の自律検閲監査（モデレーション）のため、クレジットカードを登録し従量課金を有効化した本番専用の GEMINI_API_KEY を取得・設定。' },
-        { id: 'step_05', icon: '📧', title: '5. Resend / SendGrid (メール配信API) の本番接続設定', desc: 'ボトルのマッチングやお問い合わせ到達率を100%近くまで保証するため、独自ドメイン of DNS設定（SPF/DKIM/DMARC）を完了し、配信APIキー（RESEND_API_KEY 等）をセットアップ。' },
-        { id: 'step_06', icon: '💳', title: '6. Stripe (決済代行インフラ) 本番キーの契約とWebhook署名設定', desc: 'Stripe本番アカウントの加盟店審査を完了させ、本番用非公開鍵（STRIPE_SECRET_KEY / VITE_STRIPE_PUBLISHABLE_KEY）をセット。決済・自動返金成功をリアルタイム検知する安全なWebhook署名を有効化。' }
+        { id: 'step_06', icon: '🤖', title: '6. Google AI Studio / Vertex AI (Gemini API) 商用本番キーの発行', desc: 'AIによるストーカー、誹謗中傷、不当表現の自律検閲監査（モデレーション）のため、クレジットカードを登録し従量課金を有効化した本番専用の GEMINI_API_KEY を取得・設定。' },
+        { id: 'step_07', icon: '📧', title: '7. Resend / SendGrid (メール配信API) の本番接続設定', desc: 'ボトルのマッチングやお問い合わせ到達率を100%近くまで保証するため、独自ドメイン of DNS設定（SPF/DKIM/DMARC）を完了し、配信APIキー（RESEND_API_KEY 等）をセットアップ。' },
+        { id: 'step_08', icon: '📱', title: '8. SMS認証プロバイダー（Twilio / EZSMS等）の本番キー＆送信元設定', desc: 'なりすまし・二重登録防止のためのSMS携帯電話番号認証の本番APIキー（TWILIO_ACCOUNT_SID等）と発信元番号を設定。' },
+        { id: 'step_09', icon: '💳', title: '9. Stripe (決済代行インフラ) 本番キーの契約とWebhook署名設定', desc: 'Stripe本番アカウントの加盟店審査を完了させ、本番用非公開鍵（STRIPE_SECRET_KEY / VITE_STRIPE_PUBLISHABLE_KEY）をセット。決済・自動返金成功をリアルタイム検知する安全なWebhook署名を有効化。' }
       ]
     },
     {
       group: '【C. 本番データ管理】',
       items: [
-        { id: 'step_07', icon: '🧹', title: '7. 開発用テストデータの完全クリーンアップ (初期化) 実行', desc: '開発デバッグ期間中に蓄積された不要なテストユーザー、デバッグボトルメール、不完全な一時データ・監査ログを管理者ダッシュボードから物理的に一括安全消去（初期化）。' },
-        { id: 'step_08', icon: '🌱', title: '8. 情緒豊かな300件以上の本番サンプルデータの一括自動生成', desc: 'ローンチ直後の「誰もいない寂しさ」を完全排除するため、自動Seeding機能（/api/admin/production-seed）を用いて、実在感のある日本の想い出ボトルメールや感謝レターを一括流し込み。' }
+        { id: 'step_10', icon: '🧹', title: '10. 開発用テストデータの完全クリーンアップ (初期化) 実行', desc: '開発デバッグ期間中に蓄積された不要なテストユーザー、デバッグボトルメール、不完全な一時データ・監査ログを管理者ダッシュボードから物理的に一括安全消去（初期化）。' },
+        { id: 'step_11', icon: '🌱', title: '11. 情緒豊かな300件以上の本番サンプルデータの一括自動生成', desc: 'ローンチ直後の「誰もいない寂しさ」を完全排除するため、自動Seeding機能（/api/admin/production-seed）を用いて、実在感のある日本の想い出ボトルメールや感謝レターを一括流し込み。' }
       ]
     },
     {
       group: '【D. SNSアカウント連携】',
       items: [
-        { id: 'step_09', icon: '🌐', title: '9. LINE / Google Developers コンソールでの本番クライアント作成', desc: '本番用ドメインでのログインリダイレクトURI（/api/auth/sns/callback 等）やブランド名、各種プライバシーポリシーURLを各開発者ポータルに正確に登録・設定。' },
-        { id: 'step_10', icon: '🔒', title: '10. LINE_CHANNEL_SECRET 等の認証シークレットの環境変数追記', desc: '安全な外部SNSログイン認証（OAuth）を行うために、LINEおよびGoogleの本番用クライアントIDと秘密鍵（LINE_CHANNEL_ID, LINE_CHANNEL_SECRET, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET）を本番サーバー環境変数に追記。' }
+        { id: 'step_12', icon: '🌐', title: '12. LINE / Google Developers コンソールでの本番クライアント作成', desc: '本番用ドメインでのログインリダイレクトURI（/api/auth/sns/callback 等）やブランド名、各種プライバシーポリシーURLを各開発者ポータルに正確に登録・設定。' },
+        { id: 'step_13', icon: '🔒', title: '13. LINE_CHANNEL_SECRET 等の認証シークレットの環境変数追記', desc: '安全な外部SNSログイン認証（OAuth）を行うために、LINEおよびGoogleの本番用クライアントIDと秘密鍵（LINE_CHANNEL_ID, LINE_CHANNEL_SECRET, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET）を本番サーバー環境変数に追記。' }
       ]
     },
     {
       group: '【E. 法務・規約・特商法・文書制定日】',
       items: [
-        { id: 'step_11', icon: '📝', title: '11. 利用規約 (TOS) のSNSアカウント連携条項追加・改訂', desc: 'SNS使い捨てアカウントによる嫌がらせ目的の大量登録禁止条項や、連携解除・退会時における思い出データの保持・削除ポリシーを明文化。' },
-        { id: 'step_12', icon: '🔒', title: '12. プライバシーポリシー (PP) のOAuth取得データ明記・改訂', desc: 'SNSログインで取得するプロファイル画像、表示ニックネーム、メールアドレスの具体的な利用範囲と、認証プロバイダーへの安全なデータ転送フローを開示。' },
-        { id: 'step_13', icon: '💼', title: '13. 特定商取引法に基づく表記の整備 (住所・電話番号対策)', desc: 'Stripe決済（開通手数料 600円）が処理される際、個人の安全を守るため「格安バーチャルオフィス（月額約990円〜）」および「050電話番号」を契約し、特商法ページに記載。' },
-        { id: 'step_14', icon: '📅', title: '14. 全法的文書の【制定日・施行日】の運用開始初日への確定・統一', desc: '利用規約、プライバシーポリシー、投稿ガイドライン、特定商取引法に基づく表記の末尾の制定・改定・施行日を正式サービス提供開始日（2026年8月15日）に整合。' }
+        { id: 'step_14', icon: '📝', title: '14. 利用規約 (TOS) のSNSアカウント連携条項追加・改訂', desc: 'SNS使い捨てアカウントによる嫌がらせ目的の大量登録禁止条項や、連携解除・退会時における思い出データの保持・削除ポリシーを明文化。' },
+        { id: 'step_15', icon: '🔒', title: '15. プライバシーポリシー (PP) のOAuth取得データ明記・改訂', desc: 'SNSログインで取得するプロファイル画像、表示ニックネーム、メールアドレスの具体的な利用範囲と、認証プロバイダーへの安全なデータ転送フローを開示。' },
+        { id: 'step_16', icon: '💼', title: '16. 特定商取引法に基づく表記の整備 (住所・電話番号対策)', desc: 'Stripe決済（開通手数料 600円）が処理される際、個人の安全を守るため「格安バーチャルオフィス（月額約990円〜）」および「050電話番号」を契約し、特商法ページに記載。' },
+        { id: 'step_17', icon: '📅', title: '17. 全法的文書の【制定日・施行日】の運用開始初日への確定・統一', desc: '利用規約、プライバシーポリシー、投稿ガイドライン、特定商取引法に基づく表記の末尾の制定・改定・施行日を正式サービス提供開始日（2026年8月15日）に整合。' }
       ]
     },
     {
       group: '【F. 運用セキュリティ】',
       items: [
-        { id: 'step_15', icon: '🛡️', title: '15. データベース日次自動バックアップ & 世代管理の有効化', desc: '万が一のデータ破損や攻撃に備え、データベース（Supabase/Cloud SQL）側で自動デイリースナップショット（保存期間最低7〜14日間）をON。' },
-        { id: 'step_16', icon: '🚫', title: '16. スロットリング型動的APIアクセスレート制限のポリシー設定', desc: 'DoS攻撃やクイズの総当たり自動回答スパムを防ぐため、秒間API制限しきい値（Auth, Post, Search等）を直感的に固定・保護。' }
+        { id: 'step_18', icon: '🚫', title: '18. スロットリング型動的APIアクセスレート制限のポリシー設定', desc: 'DoS攻撃やクイズの総当たり自動回答スパムを防ぐため、秒間API制限しきい値（Auth, Post, Search等）を直感的に固定・保護。' }
       ]
     },
     {
       group: '【G. 最終テスト】',
       items: [
-        { id: 'step_17', icon: '✅', title: '17. 公的 eKYC・電子的宣誓・Stripeテスト決済の最終疎通テスト', desc: '思い出クイズの完全一致、eKYC書類の提出、電子的利用宣誓同意、Stripeによる600円の仮売上（審査落ち時即時自動返金）が連動して正常動作するか最終検証。' }
+        { id: 'step_19', icon: '✅', title: '19. 公的 eKYC・SMS認証・電子的宣誓・Stripeテスト決済の総合疎通テスト', desc: '思い出クイズの完全一致、SMS認証、eKYC書類提出、電子的利用宣誓同意、Stripeによる仮売上（審査落ち時即時自動返金）が連動して正常動作するか最終検証。' }
       ]
     }
   ];
@@ -392,9 +411,9 @@ ReMEETs カスタマーサポート`
     return text.toLowerCase().includes(searchQuery.toLowerCase());
   };
 
-  // 17大チェックリストのエクスポート用テキスト生成
+  // 19大チェックリストのエクスポート用テキスト生成
   const generateChecklistExportText = () => {
-    let out = `【ReMEETs 本番デプロイ完了証明書 ＆ 17大チェックリスト】
+    let out = `【ReMEETs 本番デプロイ完了証明書 ＆ 19大マスターチェックリスト】
 `;
     out += `発行日時: ${new Date().toLocaleString('ja-JP')}
 `;
@@ -422,67 +441,106 @@ ReMEETs カスタマーサポート`
   };
 
   return (
-    <div id="master-knowledge-base-block" className="bg-white rounded-3xl p-6 md:p-8 border border-brand-border shadow-sm space-y-8 font-sans">
+    <div id="master-knowledge-base-block" className="bg-white rounded-3xl p-6 md:p-8 border border-brand-border shadow-sm space-y-6 font-sans">
       {/* 🧭 Header Banner */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-zinc-100 pb-6">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-zinc-100 pb-5">
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-teal-50 text-teal-900 rounded-full text-xs font-bold mb-2 border border-teal-200">
             <BookOpen size={14} />
-            <span>ReMEETs 統合マスター備忘録 ＆ 運営ライブラリセンター</span>
+            <span>{modeTitle ? modeTitle : 'ReMEETs 統合マスター備忘録 ＆ 本番運営ライブラリセンター'}</span>
           </div>
           <h3 className="text-xl md:text-2xl font-bold font-serif text-black flex items-center gap-2">
-            <span>マスター備忘録 ＆ 運営ライブラリ</span>
+            <span>{modeTitle ? modeTitle : 'マスター備忘録 ＆ 運営ライブラリ'}</span>
             <span className="text-xs font-mono font-normal px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
               公式完全集約版
             </span>
           </h3>
           <p className="text-xs text-black/60 mt-1">
-            本番デプロイ手順、警察照会基準、責任の所在、公式書面テンプレート、緊急エスカレーション連絡網を1箇所に完全統合しました。
+            本番デプロイ手順、コスト・収益設計、責任の所在、公式書面テンプレート、広報PR戦略を1箇所に完全統合しました。
           </p>
         </div>
 
-        {/* 3-Mode View Switcher */}
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center bg-zinc-100 p-1 rounded-xl border border-brand-border/60 text-xs font-bold">
-            <button
-              type="button"
-              onClick={() => setViewMode('master_memo')}
-              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                viewMode === 'master_memo' ? 'bg-white text-black shadow-xs font-bold' : 'text-black/60 hover:text-black'
-              }`}
-            >
-              📚 決定事項集
-            </button>
+        <button
+          type="button"
+          onClick={() => copyToClipboard(scratchpadMemo, 'full_memo')}
+          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-teal-50 hover:bg-teal-100 text-teal-900 transition-all cursor-pointer border border-teal-200 shrink-0 self-start lg:self-auto"
+        >
+          {copiedSection === 'full_memo' ? <Check size={14} className="text-emerald-600" /> : <Copy size={14} />}
+          <span>{copiedSection === 'full_memo' ? 'コピー完了！' : 'サマリーコピー'}</span>
+        </button>
+      </div>
+
+      {/* 🌟 ナビゲーション切り替えバー */}
+      {!hideViewModeSwitcher ? (
+        <div className="bg-slate-900 p-2 rounded-2xl border-2 border-[#3B627F]/40 shadow-lg flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setViewMode('master_memo')}
+            className={`flex-1 min-w-[160px] py-3 px-4 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+              viewMode === 'master_memo'
+                ? 'bg-[#3B627F] text-white shadow-md ring-2 ring-[#3B627F]/30 font-extrabold'
+                : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+            }`}
+          >
+            <span className="text-base">📚</span>
+            <span className="text-sm">決定事項集</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setViewMode('templates')}
+            className={`flex-1 min-w-[160px] py-3 px-4 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+              viewMode === 'templates'
+                ? 'bg-[#3B627F] text-white shadow-md ring-2 ring-[#3B627F]/30 font-extrabold'
+                : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+            }`}
+          >
+            <span className="text-base">📄</span>
+            <span className="text-sm">実務書面ライブラリ</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setViewMode('legal_docs')}
+            className={`flex-1 min-w-[160px] py-3 px-4 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+              viewMode === 'legal_docs'
+                ? 'bg-[#3B627F] text-white shadow-md ring-2 ring-[#3B627F]/30 font-extrabold'
+                : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+            }`}
+          >
+            <span className="text-base">🚀</span>
+            <span className="text-sm">本番デプロイ・広報ライブラリ</span>
+          </button>
+        </div>
+      ) : (
+        /* 「📚 公式実務書面 ＆ 運営ライブラリ」画面内の2大サブタブ切り替え */
+        viewMode !== 'master_memo' && (
+          <div className="bg-slate-900 p-1.5 rounded-2xl border border-slate-800 flex items-center gap-2">
             <button
               type="button"
               onClick={() => setViewMode('templates')}
-              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                viewMode === 'templates' ? 'bg-white text-teal-950 shadow-xs font-bold' : 'text-black/60 hover:text-black'
+              className={`flex-1 py-2.5 px-4 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                viewMode === 'templates'
+                  ? 'bg-teal-700 text-white shadow-md font-extrabold'
+                  : 'text-slate-400 hover:bg-slate-800 hover:text-white'
               }`}
             >
-              📄 実務書面ライブラリ
+              <span className="text-sm">📄</span>
+              <span>実務用公式書面テンプレート集</span>
             </button>
             <button
               type="button"
               onClick={() => setViewMode('legal_docs')}
-              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                viewMode === 'legal_docs' ? 'bg-white text-teal-950 shadow-xs font-bold' : 'text-black/60 hover:text-black'
+              className={`flex-1 py-2.5 px-4 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                viewMode === 'legal_docs'
+                  ? 'bg-teal-700 text-white shadow-md font-extrabold'
+                  : 'text-slate-400 hover:bg-slate-800 hover:text-white'
               }`}
             >
-              🏛️ 行政届出ポートフォリオ
+              <span className="text-sm">🚀</span>
+              <span>本番デプロイ・行政広報ライブラリ</span>
             </button>
           </div>
-
-          <button
-            type="button"
-            onClick={() => copyToClipboard(scratchpadMemo, 'full_memo')}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-teal-50 hover:bg-teal-100 text-teal-900 transition-all cursor-pointer border border-teal-200"
-          >
-            {copiedSection === 'full_memo' ? <Check size={14} className="text-emerald-600" /> : <Copy size={14} />}
-            <span>{copiedSection === 'full_memo' ? 'コピー完了！' : 'サマリーコピー'}</span>
-          </button>
-        </div>
-      </div>
+        )
+      )}
 
       {/* 🔍 Universal Search Bar (全項目リアルタイム横断検索) */}
       <div className="relative">
@@ -661,30 +719,8 @@ ReMEETs カスタマーサポート`
       {viewMode === 'master_memo' && (
         <div className="space-y-6">
           {/* 🧭 7大サブタブ ナビゲーションカード */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-2">
-            {/* TAB 1: 17大デプロイチェックリスト */}
-            <button
-              type="button"
-              onClick={() => setActiveSubTab('deployment17')}
-              className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
-                activeSubTab === 'deployment17'
-                  ? 'bg-white border-teal-600 shadow-md ring-2 ring-teal-500/10'
-                  : 'bg-zinc-50/80 hover:bg-white border-brand-border/80'
-              }`}
-            >
-              <div>
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-base">🚀</span>
-                  <span className="text-[10px] font-mono font-bold text-teal-800 bg-teal-50 px-1.5 py-0.5 rounded">
-                    {checklistPercent}%
-                  </span>
-                </div>
-                <div className="font-bold text-xs text-black">17大デプロイ</div>
-                <div className="text-[10px] text-black/60 line-clamp-1">本番公開チェック</div>
-              </div>
-            </button>
-
-            {/* TAB 2: 完全分離金庫・警察連携 (NEW) */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
+            {/* TAB 1: 完全分離金庫・警察連携 (NEW) */}
             <button
               type="button"
               onClick={() => setActiveSubTab('zero_knowledge_vault')}
@@ -706,7 +742,7 @@ ReMEETs カスタマーサポート`
               </div>
             </button>
 
-            {/* TAB 3: SNS・SMSコスト仕様 */}
+            {/* TAB 2: SNS・SMSコスト仕様 */}
             <button
               type="button"
               onClick={() => setActiveSubTab('auth_costs')}
@@ -728,7 +764,7 @@ ReMEETs カスタマーサポート`
               </div>
             </button>
 
-            {/* TAB 4: 警察・eKYC連携 */}
+            {/* TAB 3: 警察・eKYC連携 */}
             <button
               type="button"
               onClick={() => setActiveSubTab('police_ekyc')}
@@ -750,7 +786,7 @@ ReMEETs カスタマーサポート`
               </div>
             </button>
 
-            {/* TAB 5: 責任の所在・契約決定 */}
+            {/* TAB 4: 責任の所在・契約決定 */}
             <button
               type="button"
               onClick={() => setActiveSubTab('liability_contract')}
@@ -772,7 +808,7 @@ ReMEETs カスタマーサポート`
               </div>
             </button>
 
-            {/* TAB 6: 連絡先開示モデル移行 */}
+            {/* TAB 5: 連絡先開示モデル移行 */}
             <button
               type="button"
               onClick={() => setActiveSubTab('secure_bridge_model')}
@@ -791,6 +827,28 @@ ReMEETs カスタマーサポート`
                 </div>
                 <div className="font-bold text-xs text-black">連絡先開示</div>
                 <div className="text-[10px] text-black/60 line-clamp-1">セキュア・ブリッジ</div>
+              </div>
+            </button>
+
+            {/* TAB 6: Google推薦・キャリア評価 (就活ポートフォリオ) */}
+            <button
+              type="button"
+              onClick={() => setActiveSubTab('google_memo')}
+              className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                activeSubTab === 'google_memo'
+                  ? 'bg-white border-indigo-600 shadow-md ring-2 ring-indigo-500/10'
+                  : 'bg-indigo-50/40 hover:bg-white border-indigo-200/80'
+              }`}
+            >
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-base">🌐</span>
+                  <span className="text-[10px] font-mono font-bold text-indigo-900 bg-indigo-100 px-1.5 py-0.5 rounded">
+                    Google推薦
+                  </span>
+                </div>
+                <div className="font-bold text-xs text-indigo-950">キャリア評価</div>
+                <div className="text-[10px] text-indigo-800/70 line-clamp-1">就職・Big Tech評価</div>
               </div>
             </button>
 
@@ -816,86 +874,6 @@ ReMEETs カスタマーサポート`
               </div>
             </button>
           </div>
-
-          {/* ======================================================== */}
-          {/* 🚀 SUBTAB 1: 17大本番デプロイマスターチェックリスト         */}
-          {/* ======================================================== */}
-          {activeSubTab === 'deployment17' && (
-            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-teal-50/60 p-4 rounded-2xl border border-teal-200">
-                <div>
-                  <h4 className="text-sm font-bold text-teal-950 flex items-center gap-2">
-                    <Rocket className="text-teal-700" size={16} />
-                    <span>本番デプロイ・運営開始 17大マスターチェックリスト進捗</span>
-                  </h4>
-                  <p className="text-xs text-teal-800 mt-0.5">
-                    チェックボックスをクリックするとブラウザに保存されます（{completedChecklistCount} / {totalChecklistCount} 項目完了）
-                  </p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-32 bg-white rounded-full h-3 border border-teal-200 overflow-hidden">
-                    <div className="bg-teal-600 h-full transition-all duration-500" style={{ width: `${checklistPercent}%` }} />
-                  </div>
-                  <span className="font-mono font-bold text-xs text-teal-900">{checklistPercent}%</span>
-                  <button
-                    type="button"
-                    onClick={() => copyToClipboard(generateChecklistExportText(), 'checklist_export')}
-                    className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold bg-white hover:bg-teal-100 text-teal-900 border border-teal-200 transition-all cursor-pointer shadow-2xs"
-                  >
-                    {copiedSection === 'checklist_export' ? <Check size={13} className="text-emerald-600" /> : <Download size={13} />}
-                    <span>証明書出力</span>
-                  </button>
-                </div>
-              </div>
-
-              <div className="space-y-6">
-                {deploymentSections.map((sec, idx) => {
-                  const filteredItems = sec.items.filter(item => 
-                    isMatchQuery(item.title) || isMatchQuery(item.desc) || isMatchQuery(sec.group)
-                  );
-                  if (filteredItems.length === 0) return null;
-
-                  return (
-                    <div key={idx} className="bg-zinc-50/60 p-5 rounded-3xl border border-brand-border space-y-3">
-                      <h5 className="text-xs font-bold text-black uppercase tracking-wider">{sec.group}</h5>
-                      <div className="space-y-2">
-                        {filteredItems.map((item) => {
-                          const isChecked = !!checkedItems[item.id];
-                          return (
-                            <div
-                              key={item.id}
-                              onClick={() => toggleCheck(item.id)}
-                              className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-start gap-3 ${
-                                isChecked
-                                  ? 'bg-emerald-50/70 border-emerald-200 text-emerald-950'
-                                  : 'bg-white hover:bg-zinc-50 border-brand-border/80 text-black'
-                              }`}
-                            >
-                              <div className="pt-0.5">
-                                <input
-                                  type="checkbox"
-                                  checked={isChecked}
-                                  onChange={() => {}} // handled by parent div
-                                  className="w-4 h-4 accent-emerald-600 rounded cursor-pointer"
-                                />
-                              </div>
-                              <div className="space-y-0.5 flex-1">
-                                <div className="font-bold text-xs flex items-center gap-1.5">
-                                  <span>{item.icon}</span>
-                                  <span className={isChecked ? 'line-through text-emerald-800' : 'text-black'}>{item.title}</span>
-                                </div>
-                                <p className="text-[11px] text-black/60 leading-relaxed font-sans">{item.desc}</p>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </motion.div>
-          )}
 
           {/* ======================================================== */}
           {/* 🔒 SUBTAB 2: 個人情報非保持・完全分離金庫モデル ＆ 警察連携 (NEW) */}
@@ -1142,6 +1120,19 @@ ReMEETs カスタマーサポート`
           {/* ======================================================== */}
           {activeSubTab === 'police_ekyc' && (
             <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+              {/* 🌟 集約統合バナー */}
+              <div className="p-5 rounded-3xl bg-blue-50 border border-blue-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs">
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">🚔</span>
+                  <div>
+                    <h5 className="font-bold text-blue-950 text-sm">警察提出用書類・スライドの完全集約について</h5>
+                    <p className="text-blue-900/80 mt-0.5">
+                      A4提出サマリー、16:9プレゼンスライド（PPTX出力）、セキュリティ報告書、想定問答集は新設の<strong>「🚔 警察事前相談 ＆ 法令適合サマリー」タブ</strong>へ一元統合されました。
+                    </p>
+                  </div>
+                </div>
+              </div>
+
               <div className="p-6 rounded-3xl bg-white border border-brand-border shadow-sm space-y-4">
                 <div className="flex items-center gap-2 border-b border-zinc-100 pb-3">
                   <span className="text-xl">🚔</span>
@@ -1325,6 +1316,15 @@ ReMEETs カスタマーサポート`
                 className="w-full p-4 rounded-2xl bg-zinc-50 border border-brand-border text-xs sm:text-sm font-mono text-black leading-relaxed focus:bg-white focus:border-teal-600 focus:outline-none transition-all resize-y shadow-inner"
                 placeholder="ここに自由な運営メモや覚書を記入してください..."
               />
+            </motion.div>
+          )}
+
+          {/* ======================================================== */}
+          {/* 🌐 SUBTAB 7: 特別備忘録: Google推薦・キャリア評価            */}
+          {/* ======================================================== */}
+          {activeSubTab === 'google_memo' && (
+            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+              <GoogleEvaluationMemoTab />
             </motion.div>
           )}
         </div>

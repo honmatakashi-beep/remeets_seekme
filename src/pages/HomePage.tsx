@@ -725,6 +725,7 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                 <Link 
                   key={post.id}
                   to={getPostUrl(post)}
+                  state={{ postPreview: post }}
                   className="p-6 block hover:-translate-y-1 hover:shadow-xl transition-all border-2 border-slate-300 hover:border-teal-600 duration-300 rounded-3xl space-y-4 bg-white group text-left shadow-md"
                 >
                   <div className="flex justify-between items-start">

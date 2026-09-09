@@ -10,3 +10,4 @@ export * from "./AdminAgeVerificationTab";
 export * from "./AdminPostsTab";
 export * from "./AdminUsersTab";
 export * from "./AdminAssetCleanerTab";
+export * from "./AdminPoliceConsultationTab";
