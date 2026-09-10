@@ -387,17 +387,17 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
               </span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-sans">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 md:gap-4 text-xs font-sans">
               
               {/* Step 1 */}
-              <div className="p-4 bg-white/95 rounded-2xl border-2 border-emerald-500/80 hover:border-emerald-600 shadow-xs hover:shadow-md transition-all duration-300 space-y-3 flex flex-col justify-between group">
-                <div className="space-y-3">
+              <div className="p-3.5 sm:p-3.5 md:p-4 bg-white/95 rounded-2xl border-2 border-emerald-500/80 hover:border-emerald-600 shadow-xs hover:shadow-md transition-all duration-300 space-y-2.5 sm:space-y-3 flex flex-col justify-between group">
+                <div className="space-y-2.5 sm:space-y-3">
                   <div className="flex items-center justify-between border-b border-emerald-100 pb-2">
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-xs font-sans font-bold tracking-[0.22em] text-emerald-700/80 uppercase">STEP</span>
-                      <span className="text-xl sm:text-2xl font-serif font-extrabold tracking-wider text-emerald-600">01</span>
+                    <div className="flex items-baseline gap-1.5 sm:gap-2">
+                      <span className="text-[10px] sm:text-xs font-sans font-bold tracking-[0.22em] text-emerald-700/80 uppercase">STEP</span>
+                      <span className="text-lg sm:text-xl md:text-2xl font-serif font-extrabold tracking-wider text-emerald-600">01</span>
                     </div>
-                    <span className="text-xs font-serif font-bold bg-emerald-50 text-emerald-700 px-2.5 py-0.5 rounded-full border border-emerald-200">【手紙を書く】</span>
+                    <span className="text-[11px] sm:text-xs font-serif font-bold bg-emerald-50 text-emerald-700 px-2 sm:px-2.5 py-0.5 rounded-full border border-emerald-200">【手紙を書く】</span>
                   </div>
                   <div className="relative overflow-hidden rounded-xl aspect-[16/10] bg-slate-100 border border-emerald-200 p-1 shadow-inner group-hover:border-emerald-400 transition-colors duration-300">
                     <img 
@@ -407,10 +407,10 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                     />
                   </div>
                   <div className="space-y-1">
-                    <h5 className="font-extrabold text-slate-900 text-sm sm:text-base font-serif flex items-center gap-1.5 leading-snug">
+                    <h5 className="font-extrabold text-slate-900 text-xs sm:text-[13px] md:text-sm font-serif flex items-center gap-1.5 leading-snug">
                       <span>ボトルに思い出を託す</span>
                     </h5>
-                    <p className="text-xs text-slate-600 leading-relaxed font-sans">
+                    <p className="text-[11px] sm:text-xs text-slate-600 leading-relaxed font-sans">
                       お相手のお名前と、お二人しか知らない「思い出の質問（クイズ）」を設定して投稿します。
                     </p>
                   </div>
@@ -418,14 +418,14 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
               </div>
 
               {/* Step 2 */}
-              <div className="p-4 bg-white/95 rounded-2xl border-2 border-sky-500/80 hover:border-sky-600 shadow-xs hover:shadow-md transition-all duration-300 space-y-3 flex flex-col justify-between group">
-                <div className="space-y-3">
+              <div className="p-3.5 sm:p-3.5 md:p-4 bg-white/95 rounded-2xl border-2 border-sky-500/80 hover:border-sky-600 shadow-xs hover:shadow-md transition-all duration-300 space-y-2.5 sm:space-y-3 flex flex-col justify-between group">
+                <div className="space-y-2.5 sm:space-y-3">
                   <div className="flex items-center justify-between border-b border-sky-100 pb-2">
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-xs font-sans font-bold tracking-[0.22em] text-sky-700/80 uppercase">STEP</span>
-                      <span className="text-xl sm:text-2xl font-serif font-extrabold tracking-wider text-sky-600">02</span>
+                    <div className="flex items-baseline gap-1.5 sm:gap-2">
+                      <span className="text-[10px] sm:text-xs font-sans font-bold tracking-[0.22em] text-sky-700/80 uppercase">STEP</span>
+                      <span className="text-lg sm:text-xl md:text-2xl font-serif font-extrabold tracking-wider text-sky-600">02</span>
                     </div>
-                    <span className="text-xs font-serif font-bold bg-sky-50 text-sky-700 px-2.5 py-0.5 rounded-full border border-sky-200">【漂う】</span>
+                    <span className="text-[11px] sm:text-xs font-serif font-bold bg-sky-50 text-sky-700 px-2 sm:px-2.5 py-0.5 rounded-full border border-sky-200">【漂う】</span>
                   </div>
                   <div className="relative overflow-hidden rounded-xl aspect-[16/10] bg-slate-100 border border-sky-200 p-1 shadow-inner group-hover:border-sky-400 transition-colors duration-300">
                     <img 
@@ -435,10 +435,10 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                     />
                   </div>
                   <div className="space-y-1">
-                    <h5 className="font-extrabold text-slate-900 text-sm sm:text-base font-serif flex items-center gap-1.5 leading-snug">
+                    <h5 className="font-extrabold text-slate-900 text-xs sm:text-[13px] md:text-sm font-serif flex items-center gap-1.5 leading-snug">
                       <span>ネットの海をめぐる</span>
                     </h5>
-                    <p className="text-xs text-slate-600 leading-relaxed font-sans">
+                    <p className="text-[11px] sm:text-xs text-slate-600 leading-relaxed font-sans">
                       誰かが探すその日まで、プライバシーを守りながら安全な海（Web）に静かに漂います。
                     </p>
                   </div>
@@ -446,14 +446,14 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
               </div>
 
               {/* Step 3 */}
-              <div className="p-4 bg-white/95 rounded-2xl border-2 border-teal-500/80 hover:border-teal-600 shadow-xs hover:shadow-md transition-all duration-300 space-y-3 flex flex-col justify-between group">
-                <div className="space-y-3">
+              <div className="p-3.5 sm:p-3.5 md:p-4 bg-white/95 rounded-2xl border-2 border-teal-500/80 hover:border-teal-600 shadow-xs hover:shadow-md transition-all duration-300 space-y-2.5 sm:space-y-3 flex flex-col justify-between group">
+                <div className="space-y-2.5 sm:space-y-3">
                   <div className="flex items-center justify-between border-b border-teal-100 pb-2">
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-xs font-sans font-bold tracking-[0.22em] text-teal-700/80 uppercase">STEP</span>
-                      <span className="text-xl sm:text-2xl font-serif font-extrabold tracking-wider text-teal-600">03</span>
+                    <div className="flex items-baseline gap-1.5 sm:gap-2">
+                      <span className="text-[10px] sm:text-xs font-sans font-bold tracking-[0.22em] text-teal-700/80 uppercase">STEP</span>
+                      <span className="text-lg sm:text-xl md:text-2xl font-serif font-extrabold tracking-wider text-teal-600">03</span>
                     </div>
-                    <span className="text-xs font-serif font-bold bg-teal-50 text-teal-700 px-2.5 py-0.5 rounded-full border border-teal-200">【届く】</span>
+                    <span className="text-[11px] sm:text-xs font-serif font-bold bg-teal-50 text-teal-700 px-2 sm:px-2.5 py-0.5 rounded-full border border-teal-200">【届く】</span>
                   </div>
                   <div className="relative overflow-hidden rounded-xl aspect-[16/10] bg-slate-100 border border-teal-200 p-1 shadow-inner group-hover:border-teal-400 transition-colors duration-300">
                     <img 
@@ -463,11 +463,11 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                     />
                   </div>
                   <div className="space-y-1">
-                    <h5 className="font-extrabold text-slate-900 text-sm sm:text-base font-serif flex items-center gap-1.5 leading-snug">
-                      <span>思い出クイズで再会・連絡先受取</span>
+                    <h5 className="font-extrabold text-slate-900 text-xs sm:text-[13px] md:text-sm font-serif flex items-center gap-1.5 leading-snug">
+                      <span>思い出クイズで再会</span>
                     </h5>
-                    <p className="text-xs text-slate-600 leading-relaxed font-sans">
-                      お相手が検索で見つけ、思い出クイズに正解すると手紙が開き、LINEや連絡先を受け取って直接つながれます。
+                    <p className="text-[11px] sm:text-xs text-slate-600 leading-relaxed font-sans">
+                      お相手が検索で見つけ、思い出クイズに正解すると手紙が開き、直接つながれます。
                     </p>
                   </div>
                 </div>
@@ -525,7 +525,7 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-4.5 md:gap-6">
           {(() => {
             const getCategoryBadge = (category: string, defaultTag?: string) => {
               switch (category) {
@@ -586,34 +586,33 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
               const category = story.category || (idx === 0 ? 'classmate' : idx === 1 ? 'mentor' : 'journey');
               const badge = getCategoryBadge(category, story.tag);
               const storyId = story.id ? (String(story.id).startsWith('db-') || String(story.id).startsWith('def-') ? story.id : `db-${story.id}`) : `def-${idx + 1}`;
-              const posLabel = idx === 0 ? 'LEFT' : idx === 1 ? 'CENTER' : 'RIGHT';
 
               return (
                 <Link
                   key={story.id || idx}
                   to={`/success-stories?id=${storyId}`}
-                  className="bg-white border border-slate-200/90 p-6 rounded-3xl space-y-4 hover:shadow-lg hover:border-teal-400/80 transition-all hover:-translate-y-0.5 flex flex-col justify-between cursor-pointer text-left block group shadow-xs"
+                  className="bg-white border border-slate-200/90 p-4 sm:p-4.5 md:p-6 rounded-3xl space-y-3 sm:space-y-4 hover:shadow-lg hover:border-teal-400/80 transition-all hover:-translate-y-0.5 flex flex-col justify-between cursor-pointer text-left block group shadow-xs"
                 >
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                      <span className={`text-[10.5px] font-bold px-2.5 py-0.5 rounded-full border ${badge.style}`}>
+                  <div className="space-y-3 sm:space-y-4">
+                    <div className="flex items-center justify-between border-b border-slate-100 pb-2.5 sm:pb-3">
+                      <span className={`text-[10px] sm:text-[10.5px] font-bold px-2 sm:px-2.5 py-0.5 rounded-full border ${badge.style}`}>
                         {badge.label}
                       </span>
-                      <span className="text-[10px] font-mono font-bold text-slate-400 tracking-wider">
+                      <span className="text-[9.5px] sm:text-[10px] font-mono font-bold text-slate-400 tracking-wider">
                         {story.era ? story.era : '想い出の再会'}
                       </span>
                     </div>
-                    <div className="space-y-2">
-                      <h4 className="text-sm sm:text-base font-serif font-bold text-slate-900 group-hover:text-teal-700 transition-colors line-clamp-2">
+                    <div className="space-y-1.5 sm:space-y-2">
+                      <h4 className="text-xs sm:text-[13px] md:text-base font-serif font-bold text-slate-900 group-hover:text-teal-700 transition-colors line-clamp-2">
                         {story.title || '奇跡が結びつけた、温かい再会の物語'}
                       </h4>
-                      <p className="text-xs text-slate-600 leading-relaxed font-sans line-clamp-5">
+                      <p className="text-[11px] sm:text-xs text-slate-600 leading-relaxed font-sans line-clamp-5">
                         {story.message}
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between pt-3 border-t border-slate-100 text-[11px] text-slate-500 font-sans">
-                    <span className="text-[10px] font-mono text-slate-400 uppercase">
+                  <div className="flex items-center justify-between pt-2.5 sm:pt-3 border-t border-slate-100 text-[10px] sm:text-[11px] text-slate-500 font-sans">
+                    <span className="text-[9px] sm:text-[10px] font-mono text-slate-400 uppercase">
                       FEATURED #{idx + 1}
                     </span>
                     <span className="text-teal-700 font-bold flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
@@ -682,18 +681,18 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
           </div>
           <div className="text-center px-1">
             <span className="text-[9px] md:text-[10.5px] font-sans font-medium text-slate-500 uppercase tracking-wider block leading-tight">
-              再会成功数
-            </span>
-            <span className="text-xs xs:text-sm sm:text-base md:text-lg font-serif font-bold text-teal-800 tracking-wider block leading-tight mt-0.5">
-              {(stats?.totalReunions ?? 0).toLocaleString()} <span className="text-[8.5px] md:text-[10px] font-sans font-normal text-slate-500">組</span>
-            </span>
-          </div>
-          <div className="text-center px-1">
-            <span className="text-[9px] md:text-[10.5px] font-sans font-medium text-slate-500 uppercase tracking-wider block leading-tight">
-              本日の投函数
+              本日流された想い
             </span>
             <span className="text-xs xs:text-sm sm:text-base md:text-lg font-serif font-bold text-slate-800 tracking-wider block leading-tight mt-0.5">
               {(stats?.todayPosts ?? 0).toLocaleString()} <span className="text-[8.5px] md:text-[10px] font-sans font-normal text-slate-500">通</span>
+            </span>
+          </div>
+          <div className="text-center px-1">
+            <span className="text-[9px] md:text-[10.5px] font-sans font-medium text-teal-800 font-bold uppercase tracking-wider block leading-tight">
+              再会・開通成功数
+            </span>
+            <span className="text-xs xs:text-sm sm:text-base md:text-lg font-serif font-bold text-teal-700 tracking-wider block leading-tight mt-0.5">
+              {(stats?.totalReunions ?? 0).toLocaleString()} <span className="text-[8.5px] md:text-[10px] font-sans font-normal text-teal-600">組</span>
             </span>
           </div>
         </div>
@@ -720,7 +719,7 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
           </div>
         ) : (
           <div className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 md:gap-6">
               {paginatedPosts.map((post: any) => (
                 <Link 
                   key={post.id}

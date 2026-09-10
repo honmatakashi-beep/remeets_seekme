@@ -45,6 +45,8 @@ export const AccountPage = () => {
   const [storyTargetPost, setStoryTargetPost] = useState<any | null>(null);
   const [storyTargetRole, setStoryTargetRole] = useState<'sender' | 'receiver' | 'general'>('general');
   const [mySubmittedStories, setMySubmittedStories] = useState<any[]>([]);
+  const [storyCurrentPage, setStoryCurrentPage] = useState(1);
+  const STORIES_PER_PAGE = 5;
 
   const fetchMyStories = async () => {
     if (!token) return;
@@ -54,7 +56,8 @@ export const AccountPage = () => {
       });
       if (res.ok) {
         const data = await res.json();
-        setMySubmittedStories(data || []);
+        const realStories = (data || []).filter((s: any) => s && s.user_id && Number(s.user_id) > 0 && !s.is_all_page);
+        setMySubmittedStories(realStories);
       }
     } catch (e) {
       console.error('Failed to fetch my success stories', e);
@@ -2313,44 +2316,102 @@ export const AccountPage = () => {
                   <span>✨ 体験談・お礼を投稿する</span>
                 </button>
               </div>
-            </div>
 
-            {/* 投稿済みストーリー一覧（投稿がある場合） */}
-            {mySubmittedStories.length > 0 && (
-              <div className="p-4 md:p-5 bg-white border border-amber-200/70 rounded-3xl space-y-3 shadow-xs">
+              {/* 📥 あなたが投稿した再会エピソード（保管スペース・ログ一覧） */}
+              <div className="pt-4 border-t border-amber-200/70 space-y-3">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-bold text-amber-950 font-serif flex items-center gap-2">
-                    <CheckCircle2 size={14} className="text-emerald-600" />
+                  <h4 className="text-xs sm:text-sm font-bold text-amber-950 font-serif flex items-center gap-2">
+                    <CheckCircle2 size={15} className="text-emerald-600" />
                     <span>あなたが投稿した再会エピソード ({mySubmittedStories.length}件)</span>
                   </h4>
-                  <span className="text-[10px] text-amber-800/60 font-sans">管理者の確認後に掲載されます</span>
+                  {mySubmittedStories.length > 0 && (
+                    <span className="text-[10px] text-amber-800/70 font-sans">
+                      ※管理者の確認後に掲載されます（5件/ページ）
+                    </span>
+                  )}
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {mySubmittedStories.map((story: any) => (
-                    <div key={story.id} className="p-3.5 bg-amber-50/40 rounded-2xl border border-amber-100/80 space-y-1.5 font-sans">
-                      <div className="flex items-center justify-between gap-2">
-                        <div className="flex items-center gap-1.5">
-                          <span className="px-2 py-0.5 bg-amber-100 text-amber-800 rounded-md font-bold text-[9px]">
-                            {story.role === 'sender' ? '📮 手紙を流した側' : story.role === 'receiver' ? '📬 手紙を見つけた側' : '💌 体験談'}
-                          </span>
-                          {story.target_name && (
-                            <span className="text-[10px] text-amber-900/70 font-semibold truncate max-w-[120px]">
-                              {story.target_name} 様
-                            </span>
-                          )}
-                        </div>
-                        <span className="text-[9px] text-slate-400 font-mono">
-                          {story.created_at ? new Date(story.created_at).toLocaleDateString('ja-JP') : ''}
-                        </span>
-                      </div>
-                      <p className="text-xs text-slate-700 line-clamp-2 leading-relaxed">
-                        {story.message}
+
+                {mySubmittedStories.length === 0 ? (
+                  /* 📭 まだ投稿がない場合の空枠（Empty State） */
+                  <div className="p-6 sm:p-7 bg-white/70 rounded-2xl border-2 border-dashed border-amber-200/90 text-center space-y-2 select-none">
+                    <div className="w-10 h-10 mx-auto rounded-full bg-amber-100/70 text-amber-700 flex items-center justify-center shadow-2xs">
+                      <Mail size={18} />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-xs sm:text-sm font-bold text-slate-700 font-serif">
+                        — まだ投稿はありません —
+                      </p>
+                      <p className="text-[11px] sm:text-xs text-slate-500 font-sans leading-relaxed max-w-md mx-auto">
+                        お相手と手紙が繋がり再会を果たされた際、投稿された温かい体験談や感謝のメッセージがこちらに大切に保存・蓄積されます。
                       </p>
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ) : (
+                  /* 📝 投稿がある場合のリスト＆ページネーション */
+                  <div className="space-y-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {mySubmittedStories.slice((storyCurrentPage - 1) * STORIES_PER_PAGE, storyCurrentPage * STORIES_PER_PAGE).map((story: any) => (
+                        <div key={story.id} className="p-3.5 bg-white rounded-2xl border border-amber-200/90 space-y-2 font-sans shadow-2xs">
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-1.5">
+                              <span className="px-2 py-0.5 bg-amber-100 text-amber-800 rounded-md font-bold text-[9px]">
+                                {story.role === 'sender' ? '📮 手紙を流した側' : story.role === 'receiver' ? '📬 手紙を見つけた側' : '💌 体験談'}
+                              </span>
+                              {story.target_name && (
+                                <span className="text-[10px] text-amber-900/80 font-semibold truncate max-w-[120px]">
+                                  {story.target_name} 様
+                                </span>
+                              )}
+                            </div>
+                            <span className="text-[9px] text-slate-400 font-mono">
+                              {story.created_at ? new Date(story.created_at).toLocaleDateString('ja-JP') : ''}
+                            </span>
+                          </div>
+                          {story.title && (
+                            <h5 className="text-xs font-bold text-slate-900 line-clamp-1 font-serif">
+                              {story.title}
+                            </h5>
+                          )}
+                          <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed">
+                            {story.message}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* 5件超過時のページネーション */}
+                    {Math.ceil(mySubmittedStories.length / STORIES_PER_PAGE) > 1 && (
+                      <div className="pt-2 flex items-center justify-between text-xs font-sans">
+                        <span className="text-[11px] text-slate-500">
+                          全 {mySubmittedStories.length} 件中 {(storyCurrentPage - 1) * STORIES_PER_PAGE + 1}〜{Math.min(storyCurrentPage * STORIES_PER_PAGE, mySubmittedStories.length)} 件を表示
+                        </span>
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => setStoryCurrentPage(p => Math.max(1, p - 1))}
+                            disabled={storyCurrentPage === 1}
+                            className="px-2.5 py-1 bg-white border border-amber-200 text-amber-950 font-bold rounded-lg disabled:opacity-40 text-[11px] cursor-pointer hover:bg-amber-50 shadow-2xs"
+                          >
+                            ← 前へ
+                          </button>
+                          <span className="px-2 text-[11px] font-bold text-amber-900 font-mono">
+                            {storyCurrentPage} / {Math.ceil(mySubmittedStories.length / STORIES_PER_PAGE)}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setStoryCurrentPage(p => Math.min(Math.ceil(mySubmittedStories.length / STORIES_PER_PAGE), p + 1))}
+                            disabled={storyCurrentPage === Math.ceil(mySubmittedStories.length / STORIES_PER_PAGE)}
+                            className="px-2.5 py-1 bg-white border border-amber-200 text-amber-950 font-bold rounded-lg disabled:opacity-40 text-[11px] cursor-pointer hover:bg-amber-50 shadow-2xs"
+                          >
+                            次へ →
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
-            )}
+            </div>
 
             {/* 🛡️ SEC-011: 退会・アカウント完全削除（プライバシー保護） */}
             <div className="bg-rose-50/40 rounded-3xl border border-rose-200/60 p-5 md:p-6 space-y-4 font-sans text-left">

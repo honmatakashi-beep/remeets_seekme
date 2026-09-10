@@ -5,9 +5,9 @@ import Markdown from 'react-markdown';
 import PptxGenJS from 'pptxgenjs';
 import {
   ArrowLeft, ArrowRight, Award, BookOpen, Calendar, Check, CheckCircle,
-  CheckCircle2, CheckSquare, ChevronRight, Clock, Download, Eye, FileText,
+  CheckCircle2, CheckSquare, ChevronRight, Clock, Compass, Download, Eye, FileText,
   Heart, HeartHandshake, Home, Key, Lock, Mail, Presentation, Printer,
-  RefreshCw, Rocket, School, Search, Shield, ShieldAlert, ShieldCheck,
+  RefreshCw, Rocket, School, Search, Send, Shield, ShieldAlert, ShieldCheck,
   Sparkles, Trash2, Unlock, UserCheck, Users, Waves, X
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -16,6 +16,7 @@ import guideScene01Soft from '../assets/images/guide_scene_01_soft_1785858280085
 import guideScene02Soft from '../assets/images/guide_scene_02_soft_1785858294880.jpg';
 import guideScene03Soft from '../assets/images/guide_scene_03_soft_1785858307849.jpg';
 import guideScene04Soft from '../assets/images/guide_scene_04_soft_1785858320993.jpg';
+import searchEmptySea from '../assets/images/search_empty_sea_1785869230086.jpg';
 import { SuccessStoryModal } from './SearchPage';
 import { PRShortsHelperCard } from '../components/PRShortsHelperCard';
 import { PolicePresentationSlideViewer } from '../components/PolicePresentationSlideViewer';
@@ -288,7 +289,7 @@ export const SuccessStoriesPage = () => {
             </h3>
           )}
 
-          {/* カード一覧 */}
+          {/* カード一覧（横2列グリッド） */}
           {filteredStories.length === 0 ? (
             <div className="bg-white rounded-3xl p-10 text-center border border-slate-100 space-y-3">
               <p className="text-sm font-bold text-slate-600">
@@ -296,48 +297,52 @@ export const SuccessStoriesPage = () => {
               </p>
               <button
                 onClick={() => setSelectedCategory('all')}
-                className="text-xs text-teal-700 font-bold hover:underline"
+                className="text-xs text-teal-700 font-bold hover:underline cursor-pointer"
               >
                 すべてのエピソードを表示する
               </button>
             </div>
           ) : (
-            filteredStories.map(story => (
-              <div 
-                key={story.id} 
-                className={`p-5 sm:p-7 md:p-8 border rounded-3xl space-y-4 ${story.bg} shadow-xs hover:shadow-md transition-all group bg-white`}
-              >
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex items-center gap-2">
-                    {(() => {
-                      const badge = getCategoryBadge(story.category, story.tag);
-                      return (
-                        <span className={`text-[10.5px] font-bold px-2.5 py-0.5 rounded-full border uppercase tracking-wider font-sans flex items-center gap-1 ${badge.style}`}>
-                          {badge.label}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+              {filteredStories.map(story => (
+                <div 
+                  key={story.id} 
+                  className={`p-5 sm:p-6 md:p-7 border rounded-3xl space-y-3.5 ${story.bg} shadow-xs hover:shadow-md transition-all group bg-white flex flex-col justify-between text-left`}
+                >
+                  <div className="space-y-3">
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2.5">
+                      <div className="flex items-center gap-2">
+                        {(() => {
+                          const badge = getCategoryBadge(story.category, story.tag);
+                          return (
+                            <span className={`text-[10px] sm:text-[10.5px] font-bold px-2.5 py-0.5 rounded-full border uppercase tracking-wider font-sans flex items-center gap-1 ${badge.style}`}>
+                              {badge.label}
+                            </span>
+                          );
+                        })()}
+                        <span className="text-[10.5px] sm:text-[11px] font-medium text-slate-500 font-sans">
+                          {story.era} / {story.relationship}
                         </span>
-                      );
-                    })()}
-                    <span className="text-[11px] font-medium text-slate-500 font-sans">
-                      年代：{story.era} / 関係：{story.relationship}
-                    </span>
-                  </div>
-                  <span className="text-xs font-mono text-slate-400">Episode #{story.id}</span>
-                </div>
+                      </div>
+                      <span className="text-[10px] sm:text-xs font-mono text-slate-400">Episode #{story.id}</span>
+                    </div>
 
-                <div className="space-y-1.5">
-                  <h2 className="text-base sm:text-lg md:text-xl font-serif font-bold text-slate-900 group-hover:text-teal-800 transition-colors leading-snug">
-                    {story.title}
-                  </h2>
-                  <p className="text-xs font-bold text-slate-700 font-sans">
-                    👤 ご紹介：{story.participants}
+                    <div className="space-y-1">
+                      <h2 className="text-base sm:text-lg font-serif font-bold text-slate-900 group-hover:text-teal-800 transition-colors leading-snug">
+                        {story.title}
+                      </h2>
+                      <p className="text-xs font-bold text-slate-700 font-sans">
+                        👤 ご紹介：{story.participants}
+                      </p>
+                    </div>
+                  </div>
+
+                  <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-sans border-t border-slate-100/80 pt-3">
+                    {story.description}
                   </p>
                 </div>
-
-                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-sans border-t border-slate-100 pt-3.5">
-                  {story.description}
-                </p>
-              </div>
-            ))
+              ))}
+            </div>
           )}
         </div>
       )}
@@ -4556,6 +4561,69 @@ export const ManualPage = () => (
         </div>
       </div>
       <ManualContent />
+    </div>
+  </div>
+);
+
+export const NotFoundPage = () => (
+  <div className="min-h-[70vh] flex items-center justify-center px-4 sm:px-6 py-12 font-sans animate-fade-in text-slate-800">
+    <div className="max-w-lg w-full bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-10 shadow-lg text-center space-y-6 relative overflow-hidden">
+      {/* 背景の静かな海イラスト（透過ブレンド） */}
+      <div className="absolute inset-0 flex justify-center items-center pointer-events-none overflow-hidden select-none">
+        <div className="relative w-full h-full opacity-40">
+          <img 
+            src={searchEmptySea} 
+            alt="静かな朝もやの海" 
+            className="w-full h-full object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-white via-white/50 to-white/90" />
+          <div className="absolute inset-0 bg-gradient-to-r from-white via-transparent to-white" />
+        </div>
+      </div>
+
+      <div className="relative z-10 space-y-5">
+        <div className="w-16 h-16 mx-auto rounded-3xl bg-slate-100/90 border border-slate-200 text-slate-600 flex items-center justify-center shadow-sm backdrop-blur-xs">
+          <Compass size={32} className="text-teal-700" />
+        </div>
+
+        <div className="space-y-2">
+          <span className="text-[11px] font-mono font-bold text-teal-800 uppercase tracking-widest bg-teal-50 px-3 py-1 rounded-full border border-teal-200/80 inline-block font-sans">
+            404 Page Not Found
+          </span>
+          <h1 className="text-xl sm:text-2xl font-serif font-bold text-slate-900 tracking-wide">
+            お探しの手紙は見つかりませんでした
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-600 font-sans leading-relaxed max-w-sm mx-auto">
+            アクセスされた波間（URL）にはボトルメールが存在しないか、すでに回収・移動された可能性があります。
+          </p>
+        </div>
+
+        <div className="pt-2 flex flex-col sm:flex-row gap-3 justify-center text-xs font-bold font-sans">
+          <Link
+            to="/"
+            className="px-5 py-3 bg-gradient-to-r from-slate-800 to-slate-900 hover:from-slate-900 hover:to-black text-white rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+          >
+            <ArrowLeft size={14} />
+            <span>ホームへ戻る</span>
+          </Link>
+
+          <Link
+            to="/search"
+            className="px-5 py-3 bg-teal-600 hover:bg-teal-700 text-white rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+          >
+            <Search size={14} />
+            <span>手紙を探す</span>
+          </Link>
+
+          <Link
+            to="/create"
+            className="px-5 py-3 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 rounded-xl shadow-2xs transition-all flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <Send size={14} />
+            <span>手紙を流す</span>
+          </Link>
+        </div>
+      </div>
     </div>
   </div>
 );

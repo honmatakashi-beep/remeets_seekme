@@ -10,7 +10,7 @@ import { AccountPage } from './pages/AccountPage';
 import { GuidePage } from './components/GuidePage';
 import { SupporterPage } from './components/SupporterPage';
 import { FaqPage } from './pages/FaqPage';
-import { SuccessStoriesPage, AdminDeploymentGuidePage, ManualPage } from './pages/MiscPages';
+import { SuccessStoriesPage, AdminDeploymentGuidePage, ManualPage, NotFoundPage } from './pages/MiscPages';
 import { AdminInfoPage, SitemapPage, ContactPage, ConfirmModal, AuroraAmbientGlow, PageViewTracker } from './pages/AdminDashboard';
 import { TermsPage, PrivacyPage, GuidelinesPage, CompanyPage, PricingPage, SafetyPage, DeletionRequestPage } from './pages/StaticPages';
 import { PaymentPreviewPage } from './pages/PaymentPreviewPage';
@@ -107,6 +107,7 @@ export default function App() {
                 <Route path="/sitemap" element={<SitemapPage />} />
                 <Route path="/payment-preview" element={<PaymentPreviewPage />} />
                 <Route path="/admin/payments-preview" element={<PaymentPreviewPage />} />
+                <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </main>
             <Footer />

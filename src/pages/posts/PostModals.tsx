@@ -108,86 +108,110 @@ export const RecipientSafetyGuide = ({
           </span>
         </div>
 
-        {/* 横長 3段積みステップカード */}
-        <div className="flex flex-col gap-3">
+        {/* 3ステップカード（スマホ: 1列 / タブレット・PC: 横並び3列） */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-3 md:gap-4">
           {/* STEP 1 */}
-          <div className="p-4 sm:p-4.5 rounded-xl bg-white/95 border border-rose-200/70 shadow-2xs flex items-center justify-between gap-3 text-left hover:border-rose-300 transition-colors">
-            <div className="flex items-start sm:items-center gap-3.5">
-              <div className="w-10 h-10 rounded-xl bg-rose-100/80 text-rose-800 flex items-center justify-center shrink-0 border border-rose-200/60">
-                <Search size={18} />
-              </div>
-              <div className="space-y-1">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[11px] font-black tracking-wider uppercase px-2.5 py-0.5 rounded-md bg-rose-600 text-white shadow-2xs">
+          <div className="p-4 sm:p-3.5 md:p-4.5 rounded-2xl bg-white/95 border border-rose-200/80 shadow-2xs hover:border-rose-400 hover:shadow-xs transition-all text-left flex flex-col justify-between space-y-3 group">
+            <div className="space-y-2.5">
+              {/* カード上部：STEPバッジ & 無料バッジ */}
+              <div className="flex items-center justify-between gap-2 border-b border-rose-100 pb-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-xl bg-rose-100/90 text-rose-700 flex items-center justify-center shrink-0 border border-rose-200/80 group-hover:scale-105 transition-transform">
+                    <Search size={16} />
+                  </div>
+                  <span className="text-[10px] sm:text-[11px] font-black tracking-wider uppercase px-2 py-0.5 rounded-md bg-rose-600 text-white shadow-2xs font-sans">
                     STEP 01
                   </span>
-                  <h5 className="font-bold text-sm sm:text-base text-slate-900">
-                    手がかり・思い出を確認
-                  </h5>
-                  <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100/70 px-2 py-0.5 rounded-md border border-emerald-300/60">
-                    無料（登録不要）
-                  </span>
                 </div>
-                <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                <span className="text-[10px] sm:text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 shrink-0 font-sans">
+                  無料
+                </span>
+              </div>
+              
+              {/* タイトル＆説明 */}
+              <div className="space-y-1">
+                <h5 className="font-extrabold text-sm sm:text-[13px] md:text-sm text-slate-900 leading-snug font-serif">
+                  手がかり・思い出を確認
+                </h5>
+                <p className="text-xs sm:text-[11px] md:text-xs text-slate-600 leading-relaxed font-sans font-medium">
                   差出人との出会いやエピソードから、心当たりがあるかお相手を思い出します。
                 </p>
               </div>
             </div>
+
+            {/* フッター補足 */}
+            <div className="pt-2 border-t border-slate-100 text-[10px] sm:text-[11px] text-rose-850 font-bold flex items-center gap-1 font-sans">
+              <span>✓ 登録不要ですぐ確認可能</span>
+            </div>
           </div>
 
           {/* STEP 2 */}
-          <div className="p-4 sm:p-4.5 rounded-xl bg-white/95 border border-rose-200/70 shadow-2xs flex items-center justify-between gap-3 text-left hover:border-rose-300 transition-colors">
-            <div className="flex items-start sm:items-center gap-3.5">
-              <div className="w-10 h-10 rounded-xl bg-rose-100/80 text-rose-800 flex items-center justify-center shrink-0 border border-rose-200/60">
-                <Key size={18} />
-              </div>
-              <div className="space-y-1">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[11px] font-black tracking-wider uppercase px-2.5 py-0.5 rounded-md bg-rose-600 text-white shadow-2xs">
+          <div className="p-4 sm:p-3.5 md:p-4.5 rounded-2xl bg-white/95 border border-rose-200/80 shadow-2xs hover:border-rose-400 hover:shadow-xs transition-all text-left flex flex-col justify-between space-y-3 group">
+            <div className="space-y-2.5">
+              {/* カード上部：STEPバッジ & 無料バッジ */}
+              <div className="flex items-center justify-between gap-2 border-b border-rose-100 pb-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-xl bg-rose-100/90 text-rose-700 flex items-center justify-center shrink-0 border border-rose-200/80 group-hover:scale-105 transition-transform">
+                    <Key size={16} />
+                  </div>
+                  <span className="text-[10px] sm:text-[11px] font-black tracking-wider uppercase px-2 py-0.5 rounded-md bg-rose-600 text-white shadow-2xs font-sans">
                     STEP 02
                   </span>
-                  <h5 className="font-bold text-sm sm:text-base text-slate-900">
-                    思い出クイズに回答
-                  </h5>
-                  <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100/70 px-2 py-0.5 rounded-md border border-emerald-300/60">
-                    無料
-                  </span>
                 </div>
-                <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                <span className="text-[10px] sm:text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 shrink-0 font-sans">
+                  無料
+                </span>
+              </div>
+              
+              {/* タイトル＆説明 */}
+              <div className="space-y-1">
+                <h5 className="font-extrabold text-sm sm:text-[13px] md:text-sm text-slate-900 leading-snug font-serif">
+                  思い出クイズに回答
+                </h5>
+                <p className="text-xs sm:text-[11px] md:text-xs text-slate-600 leading-relaxed font-sans font-medium">
                   差出人が設定した思い出の質問に正解し、ご本人であることを証明します。
                 </p>
               </div>
             </div>
+
+            {/* フッター補足 */}
+            <div className="pt-2 border-t border-slate-100 text-[10px] sm:text-[11px] text-rose-850 font-bold flex items-center gap-1 font-sans">
+              <span>✓ 秘密の共有記憶で照合</span>
+            </div>
           </div>
 
           {/* STEP 3 */}
-          <div className="p-4 sm:p-4.5 rounded-xl bg-white/95 border border-rose-200/70 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-left hover:border-rose-300 transition-colors">
-            <div className="flex items-start sm:items-center gap-3.5">
-              <div className="w-10 h-10 rounded-xl bg-rose-100/80 text-rose-800 flex items-center justify-center shrink-0 border border-rose-200/60">
-                <Mail size={18} />
-              </div>
-              <div className="space-y-1">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[11px] font-black tracking-wider uppercase px-2.5 py-0.5 rounded-md bg-rose-600 text-white shadow-2xs">
+          <div className="p-4 sm:p-3.5 md:p-4.5 rounded-2xl bg-white/95 border border-rose-200/80 shadow-2xs hover:border-rose-400 hover:shadow-xs transition-all text-left flex flex-col justify-between space-y-3 group">
+            <div className="space-y-2.5">
+              {/* カード上部：STEPバッジ & 価格バッジ */}
+              <div className="flex items-center justify-between gap-2 border-b border-rose-100 pb-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-xl bg-rose-100/90 text-rose-700 flex items-center justify-center shrink-0 border border-rose-200/80 group-hover:scale-105 transition-transform">
+                    <Mail size={16} />
+                  </div>
+                  <span className="text-[10px] sm:text-[11px] font-black tracking-wider uppercase px-2 py-0.5 rounded-md bg-rose-600 text-white shadow-2xs font-sans">
                     STEP 03
                   </span>
-                  <h5 className="font-bold text-sm sm:text-base text-slate-900">
-                    手紙開封・連絡先受取
-                  </h5>
-                  <span className="text-[11px] font-bold text-orange-800 bg-orange-100/70 px-2 py-0.5 rounded-md border border-orange-300/60">
-                    600円/1,200円
-                  </span>
                 </div>
-                <p className="text-xs text-slate-600 leading-relaxed font-medium">
-                  公的eKYC審査と手紙開封を行い、差出人のLINEや連絡先を安全に取得します。
+                <span className="text-[10px] sm:text-[11px] font-bold text-orange-900 bg-orange-50 px-2 py-0.5 rounded-full border border-orange-200 shrink-0 font-sans">
+                  600円〜
+                </span>
+              </div>
+              
+              {/* タイトル＆説明 */}
+              <div className="space-y-1">
+                <h5 className="font-extrabold text-sm sm:text-[13px] md:text-sm text-slate-900 leading-snug font-serif">
+                  手紙開封・連絡先受取
+                </h5>
+                <p className="text-xs sm:text-[11px] md:text-xs text-slate-600 leading-relaxed font-sans font-medium">
+                  手紙本文を開封し、差出人のLINEやSNS・連絡先を受け取って直接つながれます。
                 </p>
               </div>
             </div>
-            <div className="shrink-0 self-start sm:self-center">
-              <span className="text-[11px] text-emerald-800 font-bold bg-white px-3 py-1.5 rounded-xl border border-slate-200/80 flex items-center gap-1.5 shadow-2xs whitespace-nowrap">
-                <ShieldCheck size={13} className="text-emerald-600 shrink-0" />
-                <span>全額自動返金保証付</span>
-              </span>
+
+            {/* フッター補足 */}
+            <div className="pt-2 border-t border-slate-100 text-[10px] sm:text-[11px] text-rose-850 font-bold flex items-center gap-1 font-sans">
+              <span>✓ 全額自動返金保証付</span>
             </div>
           </div>
         </div>

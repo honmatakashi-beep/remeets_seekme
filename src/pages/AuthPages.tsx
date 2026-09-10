@@ -86,8 +86,49 @@ export const LoginPage = () => {
     setPassword(p);
   };
 
-  const contextMessage = (location.state as any)?.message || 
-    ((location.state as any)?.from?.pathname === '/create' ? '手紙の投函データを安全にマイアカウントに保存・管理するため、ログインまたは新規登録を行ってください。' : '');
+  const fromPath = (location.state as any)?.from?.pathname || '';
+  const customMessage = (location.state as any)?.message;
+
+  const getContextGuide = () => {
+    if (customMessage) {
+      return {
+        title: 'ご案内',
+        desc: customMessage,
+        badge: 'Notice'
+      };
+    }
+    if (fromPath === '/create') {
+      return {
+        title: '📮 ボトルメールを流す（手紙をつづる）',
+        desc: '流した手紙をお相手が見つけた際の自動通知や、内容の安全な管理・編集を行うため、無料ログインまたは新規会員登録をお願いいたします。',
+        badge: '投函前の無料認証'
+      };
+    }
+    if (fromPath === '/account') {
+      return {
+        title: '👤 マイアカウント・手紙の確認',
+        desc: 'あなたが流した手紙や届いた手紙の状況、登録情報・再会エピソードを確認・管理するにはログインが必要です。',
+        badge: 'マイページ'
+      };
+    }
+    if (fromPath.startsWith('/edit')) {
+      return {
+        title: '✏️ 手紙の編集・内容変更',
+        desc: '流した手紙の内容を変更または回収（削除）するには、投稿者ご本人様のアカウントでのログインが必要です。',
+        badge: '本人認証'
+      };
+    }
+    if (fromPath) {
+      return {
+        title: '🔐 ログインが必要です',
+        desc: 'このページをご利用いただくには、アカウントへのログインまたは無料会員登録が必要です。',
+        badge: '会員限定'
+      };
+    }
+    return null;
+  };
+
+  const contextGuide = getContextGuide();
 
   return (
     <div className="max-w-md mx-auto px-4 sm:px-6 py-6 sm:py-12 animate-fade-in font-sans">
@@ -99,14 +140,19 @@ export const LoginPage = () => {
         description="海に流されたあの人との言葉を、引き上げる。"
       />
 
-      {contextMessage && (
-        <div className="mb-4 p-3.5 bg-gradient-to-r from-teal-50/90 to-emerald-50/80 border border-teal-200/90 rounded-2xl text-[11.5px] space-y-1 text-slate-700 shadow-2xs font-sans text-left animate-fade-in">
-          <div className="flex items-center gap-1.5 font-bold text-teal-900 text-xs">
-            <Sparkles size={14} className="text-teal-700" />
-            <span>手紙の安全な保存と本人保護</span>
+      {contextGuide && (
+        <div className="mb-5 p-4 bg-gradient-to-r from-sky-50 via-teal-50/80 to-emerald-50 border border-teal-200/90 rounded-2xl space-y-1.5 text-slate-800 shadow-2xs font-sans text-left animate-fade-in">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1.5 font-bold text-teal-950 text-xs sm:text-sm font-serif">
+              <Sparkles size={15} className="text-teal-600 shrink-0" />
+              <span>{contextGuide.title}</span>
+            </div>
+            <span className="text-[9.5px] font-bold px-2 py-0.5 rounded-full bg-teal-100 text-teal-800 border border-teal-200 font-sans">
+              {contextGuide.badge}
+            </span>
           </div>
-          <p className="leading-relaxed text-slate-600">
-            {contextMessage}
+          <p className="leading-relaxed text-slate-600 text-[11px] sm:text-xs font-sans">
+            {contextGuide.desc}
           </p>
         </div>
       )}

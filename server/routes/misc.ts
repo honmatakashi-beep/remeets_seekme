@@ -12,9 +12,9 @@ export const miscRouter = express.Router();
     const { type } = req.query;
     try {
       let query = `
-        SELECT s.*, u.username 
+        SELECT s.*, COALESCE(u.username, '公式エピソード') as username 
         FROM success_stories s 
-        JOIN users u ON s.user_id = u.id 
+        LEFT JOIN users u ON s.user_id = u.id 
         WHERE s.is_public = 1
       `;
       
@@ -40,7 +40,7 @@ export const miscRouter = express.Router();
         SELECT s.*, p.target_name as post_target_name, p.searcher_name as post_searcher_name, p.era as post_era
         FROM success_stories s
         LEFT JOIN posts p ON s.post_id = p.id
-        WHERE s.user_id = ?
+        WHERE s.user_id = ? AND s.user_id > 0
         ORDER BY s.created_at DESC
       `).all(req.user.id);
       res.json(stories);
@@ -173,7 +173,7 @@ export const miscRouter = express.Router();
 
       const samples = [
         {
-          user_id: req.user.id,
+          user_id: 0,
           category: "classmate",
           title: "卒業から35年。懐かしいあだ名とお互いの記憶が繋いでくれた奇跡",
           message: "中学の卒業以来、お互いに転居が重なり連絡先が分からなくなっていました。ふとReMEETsで当時の陸上部の手紙を見つけ、懐かしい想い出のキーワードをきっかけに35年ぶりにメッセージが開通。当時のあだ名で呼び合い、まるで当時にタイムスリップしたような感動でした。今では年に一度集まる仲に戻り、一生の友人を再び取り戻せました。",
@@ -186,7 +186,7 @@ export const miscRouter = express.Router();
           display_position: "left"
         },
         {
-          user_id: req.user.id,
+          user_id: 0,
           category: "mentor",
           title: "定年退職された吹奏楽部の恩師へ。30年越しの『ありがとう』が届いた日",
           message: "山本先生が定年退職されたと風の噂で聞き、当時の部活仲間で『どうしても感謝を伝えたい』と手紙を流しました。先生のご家族がこの手紙を見つけて先生に伝えてくださり、30年ぶりに温かいお返事をいただくことができました。先日、当時の部員一同で先生を囲んで同窓会を開き、最高の恩返しができました。",
@@ -199,7 +199,7 @@ export const miscRouter = express.Router();
           display_position: "center"
         },
         {
-          user_id: req.user.id,
+          user_id: 0,
           category: "journey",
           title: "あの夏の北海道。夜通し夢を語り合った旅の友から、3年越しの返信",
           message: "学生時代、バイクで北海道を巡っていた時に富良野の宿で偶然知り合い、朝まで将来の夢について熱く語り合いました。連絡先を書いた紙を紛失してしまいずっと悔やんでいましたが、ダメ元でReMEETsの海に想いを流していました。3年後、彼から『見つけたよ！』と連絡が入った時は手の震えが止まりませんでした。お互いに白髪交じりの大人になりましたが、心の距離は当時のままでした。",
@@ -212,7 +212,7 @@ export const miscRouter = express.Router();
           display_position: "right"
         },
         {
-          user_id: req.user.id,
+          user_id: 0,
           category: "neighbor",
           title: "さよならを言えないまま離れ離れになった幼馴染。40年ぶりの笑顔",
           message: "小学校の時、親の急な転勤で手紙も渡せないまま引っ越してしまい、40年間ずっと心に引っかかっていました。ReMEETsに当時の公園の思い出を流したところ、彼女が検索して見つけてくれました。『ずっと探してたよ』と言われた瞬間、涙があふれました。今はお互いの子供のことや近況を楽しく語り合っています。",
@@ -225,7 +225,7 @@ export const miscRouter = express.Router();
           display_position: null
         },
         {
-          user_id: req.user.id,
+          user_id: 0,
           category: "colleague",
           title: "20年前、共に徹夜を乗り越えた仲間と再会。お互いの成長を喜び合う",
           message: "20代の頃、小さな雑居ビルで寝る間も惜しんでサービス開発に明け暮れた創業メンバー。会社が大きくなり別々の道を歩んでから疎遠になっていましたが、ReMEETsを通じて再び繋がることができました。20年ぶりにグラスを交わし、当時の熱い情熱とお互いのこれまでの歩みを称え合いました。",
@@ -238,7 +238,7 @@ export const miscRouter = express.Router();
           display_position: null
         },
         {
-          user_id: req.user.id,
+          user_id: 0,
           category: "rival",
           title: "高校最後の決勝で競い合った他校のエース。『あの時の握手』をもう一度",
           message: "高校サッカー選手権の決勝戦で激闘を繰り広げ、試合後に抱き合って健闘を称え合った他校のキャプテン。大人になってからもずっと心に残っていたあの時の感謝をボトルに託しました。メッセージが届き、今では社会人フットサルで時々一緒に汗を流す大切な友人になりました。",

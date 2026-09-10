@@ -977,8 +977,9 @@ export function initDatabase() {
       console.error("Failed to backfill age_verification_logs:", logBfErr);
     }
 
-    // Ensure success_stories flags (is_all_page = 1, top 3 featured) are up to date
+    // Ensure success_stories flags (is_all_page = 1, top 3 featured) are up to date and sample stories user_id = 0
     try {
+      db.prepare("UPDATE success_stories SET user_id = 0 WHERE is_all_page = 1 OR is_featured = 1").run();
       db.prepare("UPDATE success_stories SET is_all_page = 1 WHERE is_public = 1 AND (is_all_page = 0 OR is_all_page IS NULL)").run();
       const currentFeatured = (db.prepare("SELECT COUNT(*) as count FROM success_stories WHERE is_featured = 1").get() as any)?.count || 0;
       if (currentFeatured === 0) {

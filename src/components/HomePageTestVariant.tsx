@@ -456,16 +456,16 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
           </div>
 
           {/* 「奇跡が起きる3ステップ」枠線＆フォント色をブルー・グリーン系に統一したベタ塗りなしカード */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 relative z-10">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4 md:gap-5 relative z-10">
             {/* Step 1: 綴る (エメラルドグリーン) */}
-            <div className="group relative bg-white/95 backdrop-blur-xs rounded-2xl border-2 border-emerald-500/80 hover:border-emerald-600 shadow-xs hover:shadow-md transition-all text-left flex flex-col justify-between overflow-hidden hover:-translate-y-0.5 p-4 sm:p-5 space-y-3">
+            <div className="group relative bg-white/95 backdrop-blur-xs rounded-2xl border-2 border-emerald-500/80 hover:border-emerald-600 shadow-xs hover:shadow-md transition-all text-left flex flex-col justify-between overflow-hidden hover:-translate-y-0.5 p-3.5 sm:p-4 md:p-5 space-y-2.5 sm:space-y-3">
               {/* カード上部：ベタ塗りなし、枠線色と連動した洗練されたSTEPテキスト＆タグ */}
-              <div className="flex items-center justify-between border-b border-emerald-100 pb-2.5">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-xs sm:text-sm font-sans font-bold tracking-[0.22em] text-emerald-700/80 uppercase">STEP</span>
-                  <span className="text-2xl sm:text-3xl font-serif font-extrabold tracking-wider text-emerald-600">01</span>
+              <div className="flex items-center justify-between border-b border-emerald-100 pb-2">
+                <div className="flex items-baseline gap-1.5 sm:gap-2">
+                  <span className="text-[10px] sm:text-xs md:text-sm font-sans font-bold tracking-[0.22em] text-emerald-700/80 uppercase">STEP</span>
+                  <span className="text-xl sm:text-2xl md:text-3xl font-serif font-extrabold tracking-wider text-emerald-600">01</span>
                 </div>
-                <span className="text-xs font-serif font-bold bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full border border-emerald-200">
+                <span className="text-[11px] sm:text-xs font-serif font-bold bg-emerald-50 text-emerald-700 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full border border-emerald-200">
                   【綴る】
                 </span>
               </div>
@@ -480,17 +480,17 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
               </div>
 
               {/* カード本文 */}
-              <div className="space-y-3 flex-1 flex flex-col justify-between pt-1">
-                <div className="space-y-1.5">
-                  <h3 className="text-base sm:text-lg font-serif font-extrabold text-slate-900 leading-snug whitespace-nowrap tracking-tight">
+              <div className="space-y-2 sm:space-y-3 flex-1 flex flex-col justify-between pt-1">
+                <div className="space-y-1 sm:space-y-1.5">
+                  <h3 className="text-sm sm:text-base md:text-lg font-serif font-extrabold text-slate-900 leading-snug tracking-tight">
                     ボトルに思い出を託す
                   </h3>
-                  <p className="text-xs sm:text-sm text-slate-600 font-sans leading-relaxed">
+                  <p className="text-[11px] sm:text-xs md:text-sm text-slate-600 font-sans leading-relaxed">
                     お相手の名前や当時の思い出、二人しか知らない『秘密の質問』を添えて、匿名でメッセージを静かに投稿します。
                   </p>
                 </div>
 
-                <div className="pt-2.5 border-t border-emerald-100 flex items-center text-[11px] sm:text-xs text-emerald-700 font-sans font-bold">
+                <div className="pt-2 sm:pt-2.5 border-t border-emerald-100 flex items-center text-[10px] sm:text-[11px] md:text-xs text-emerald-700 font-sans font-bold">
                   <span className="flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                     匿名で流せる安全設計
@@ -500,14 +500,14 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
             </div>
 
             {/* Step 2: 漂う (オーシャンブルー) */}
-            <div className="group relative bg-white/95 backdrop-blur-xs rounded-2xl border-2 border-sky-500/80 hover:border-sky-600 shadow-xs hover:shadow-md transition-all text-left flex flex-col justify-between overflow-hidden hover:-translate-y-0.5 p-4 sm:p-5 space-y-3">
+            <div className="group relative bg-white/95 backdrop-blur-xs rounded-2xl border-2 border-sky-500/80 hover:border-sky-600 shadow-xs hover:shadow-md transition-all text-left flex flex-col justify-between overflow-hidden hover:-translate-y-0.5 p-3.5 sm:p-4 md:p-5 space-y-2.5 sm:space-y-3">
               {/* カード上部：ベタ塗りなし、枠線色と連動した洗練されたSTEPテキスト＆タグ */}
-              <div className="flex items-center justify-between border-b border-sky-100 pb-2.5">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-xs sm:text-sm font-sans font-bold tracking-[0.22em] text-sky-700/80 uppercase">STEP</span>
-                  <span className="text-2xl sm:text-3xl font-serif font-extrabold tracking-wider text-sky-600">02</span>
+              <div className="flex items-center justify-between border-b border-sky-100 pb-2">
+                <div className="flex items-baseline gap-1.5 sm:gap-2">
+                  <span className="text-[10px] sm:text-xs md:text-sm font-sans font-bold tracking-[0.22em] text-sky-700/80 uppercase">STEP</span>
+                  <span className="text-xl sm:text-2xl md:text-3xl font-serif font-extrabold tracking-wider text-sky-600">02</span>
                 </div>
-                <span className="text-xs font-serif font-bold bg-sky-50 text-sky-700 px-3 py-1 rounded-full border border-sky-200">
+                <span className="text-[11px] sm:text-xs font-serif font-bold bg-sky-50 text-sky-700 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full border border-sky-200">
                   【漂う】
                 </span>
               </div>
@@ -522,17 +522,17 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
               </div>
 
               {/* カード本文 */}
-              <div className="space-y-3 flex-1 flex flex-col justify-between pt-1">
-                <div className="space-y-1.5">
-                  <h3 className="text-base sm:text-lg font-serif font-extrabold text-slate-900 leading-snug whitespace-nowrap tracking-tight">
+              <div className="space-y-2 sm:space-y-3 flex-1 flex flex-col justify-between pt-1">
+                <div className="space-y-1 sm:space-y-1.5">
+                  <h3 className="text-sm sm:text-base md:text-lg font-serif font-extrabold text-slate-900 leading-snug tracking-tight">
                     ネットの海をめぐる
                   </h3>
-                  <p className="text-xs sm:text-sm text-slate-600 font-sans leading-relaxed">
+                  <p className="text-[11px] sm:text-xs md:text-sm text-slate-600 font-sans leading-relaxed">
                     手紙は検索エンジンを通じてWebの海へ芽吹き、記憶をたどる「あの人」の検索窓で見つけられる日を静かに待ち続けます。
                   </p>
                 </div>
 
-                <div className="pt-2.5 border-t border-sky-100 flex items-center text-[11px] sm:text-xs text-sky-700 font-sans font-bold">
+                <div className="pt-2 sm:pt-2.5 border-t border-sky-100 flex items-center text-[10px] sm:text-[11px] md:text-xs text-sky-700 font-sans font-bold">
                   <span className="flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-sky-500 animate-pulse" />
                     検索に届くWeb最適化
@@ -542,14 +542,14 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
             </div>
 
             {/* Step 3: 届く (ディープティール) */}
-            <div className="group relative bg-white/95 backdrop-blur-xs rounded-2xl border-2 border-teal-500/80 hover:border-teal-600 shadow-xs hover:shadow-md transition-all text-left flex flex-col justify-between overflow-hidden hover:-translate-y-0.5 p-4 sm:p-5 space-y-3">
+            <div className="group relative bg-white/95 backdrop-blur-xs rounded-2xl border-2 border-teal-500/80 hover:border-teal-600 shadow-xs hover:shadow-md transition-all text-left flex flex-col justify-between overflow-hidden hover:-translate-y-0.5 p-3.5 sm:p-4 md:p-5 space-y-2.5 sm:space-y-3">
               {/* カード上部：ベタ塗りなし、枠線色と連動した洗練されたSTEPテキスト＆タグ */}
-              <div className="flex items-center justify-between border-b border-teal-100 pb-2.5">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-xs sm:text-sm font-sans font-bold tracking-[0.22em] text-teal-700/80 uppercase">STEP</span>
-                  <span className="text-2xl sm:text-3xl font-serif font-extrabold tracking-wider text-teal-600">03</span>
+              <div className="flex items-center justify-between border-b border-teal-100 pb-2">
+                <div className="flex items-baseline gap-1.5 sm:gap-2">
+                  <span className="text-[10px] sm:text-xs md:text-sm font-sans font-bold tracking-[0.22em] text-teal-700/80 uppercase">STEP</span>
+                  <span className="text-xl sm:text-2xl md:text-3xl font-serif font-extrabold tracking-wider text-teal-600">03</span>
                 </div>
-                <span className="text-xs font-serif font-bold bg-teal-50 text-teal-700 px-3 py-1 rounded-full border border-teal-200">
+                <span className="text-[11px] sm:text-xs font-serif font-bold bg-teal-50 text-teal-700 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full border border-teal-200">
                   【届く】
                 </span>
               </div>
@@ -558,26 +558,26 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
               <div className="relative overflow-hidden rounded-xl aspect-[16/10] bg-slate-100 border border-teal-200 p-1 shadow-inner group-hover:border-teal-400 transition-colors duration-300">
                 <img 
                   src={stepReconnectImg} 
-                  alt="クイズで連絡先が開示" 
+                  alt="奇跡の再会を果たす" 
                   className="w-full h-full object-cover object-center rounded-lg group-hover:scale-[1.04] transition-transform duration-500 ease-out"
                 />
               </div>
 
               {/* カード本文 */}
-              <div className="space-y-3 flex-1 flex flex-col justify-between pt-1">
-                <div className="space-y-1.5">
-                  <h3 className="text-base sm:text-lg font-serif font-extrabold text-slate-900 leading-snug whitespace-nowrap tracking-tight">
-                    秘密の質問で再会・SNS開示
+              <div className="space-y-2 sm:space-y-3 flex-1 flex flex-col justify-between pt-1">
+                <div className="space-y-1 sm:space-y-1.5">
+                  <h3 className="text-sm sm:text-base md:text-lg font-serif font-extrabold text-slate-900 leading-snug tracking-tight">
+                    奇跡の再会を果たす
                   </h3>
-                  <p className="text-xs sm:text-sm text-slate-600 font-sans leading-relaxed">
-                    ふと検索したお相手が手紙を発見。『秘密の質問』に正解すると手紙が開封され、設定したLINEやSNS連絡先が開示されて直接つながれます。
+                  <p className="text-[11px] sm:text-xs md:text-sm text-slate-600 font-sans leading-relaxed">
+                    見つけたお相手が思い出クイズに正解することで、初めて手紙が開き、手紙のやり取りやLINE等で直接つながれます。
                   </p>
                 </div>
 
-                <div className="pt-2.5 border-t border-teal-100 flex items-center text-[11px] sm:text-xs text-teal-700 font-sans font-bold">
+                <div className="pt-2 sm:pt-2.5 border-t border-teal-100 flex items-center text-[10px] sm:text-[11px] md:text-xs text-teal-700 font-sans font-bold">
                   <span className="flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse" />
-                    正解者のみに届く安全開示
+                    想いが通じ合う瞬間
                   </span>
                 </div>
               </div>
@@ -808,7 +808,7 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-4.5 md:gap-6">
             {(() => {
               const safeStories = Array.isArray(successStories) ? successStories : [];
               const leftStory = safeStories.find(s => s && s.display_position === 'left') || DEFAULT_SUCCESS_STORIES[0];
@@ -823,15 +823,15 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
                   <Link
                     key={story.id || idx}
                     to={`/success-stories?id=${storyId}`}
-                    className="bg-white border border-brand-border/60 p-6 rounded-[28px] space-y-4 hover:shadow-lg hover:border-brand-primary/30 transition-all hover:-translate-y-0.5 flex flex-col justify-between cursor-pointer text-left block group"
+                    className="bg-white border border-brand-border/60 p-4 sm:p-4.5 md:p-6 rounded-[28px] space-y-3 sm:space-y-4 hover:shadow-lg hover:border-brand-primary/30 transition-all hover:-translate-y-0.5 flex flex-col justify-between cursor-pointer text-left block group"
                   >
-                    <div className="space-y-4">
+                    <div className="space-y-3 sm:space-y-4">
                       <span className="text-[10px] font-bold text-zinc-400 font-mono tracking-widest uppercase block border-b border-brand-border pb-2 group-hover:text-brand-primary/80 transition-colors">
                         STORY #{String(idx + 1).padStart(2, '0')} / {displayTag}
                       </span>
-                      <div className="space-y-2">
-                        <h4 className="text-base font-serif font-bold text-brand-dark group-hover:text-brand-primary transition-colors">「{story.title || '思い出クイズがつないだ奇跡の再会'}」</h4>
-                        <p className="text-xs text-zinc-600 leading-relaxed font-sans line-clamp-6">
+                      <div className="space-y-1.5 sm:space-y-2">
+                        <h4 className="text-xs sm:text-[13px] md:text-base font-serif font-bold text-brand-dark group-hover:text-brand-primary transition-colors line-clamp-2">「{story.title || '思い出クイズがつないだ奇跡の再会'}」</h4>
+                        <p className="text-[11px] sm:text-xs text-zinc-600 leading-relaxed font-sans line-clamp-6">
                           {story.message}
                         </p>
                       </div>
@@ -920,7 +920,7 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
 
           {/* 波間にゆらゆら揺れるボトルグリッド (通常版と全く同じカードデザイン・内容で表示) */}
           <div className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 md:gap-6">
               {recentPosts && recentPosts.length > 0 ? (
                 (paginatedList as any[]).map((post: any) => {
                   const postUrl = post.id ? getPostUrl(post) : `/search?query=${encodeURIComponent(post.target_name || '')}`;

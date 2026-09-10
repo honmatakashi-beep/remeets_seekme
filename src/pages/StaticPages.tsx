@@ -938,19 +938,19 @@ export const SafetyPage = () => (
               </div>
             </div>
 
-            {/* 6. 暗号化監査ログ保全 ＆ 警察・司法機関との即応連携体制 */}
+            {/* 6. 暗号化監査ログ保全 ＆ 警察捜査への迅速な協力体制 */}
             <div className="p-5 md:p-6 rounded-2xl border border-brand-border bg-slate-50/90 backdrop-blur-xs space-y-3 flex flex-col justify-between hover:border-slate-400 transition-all shadow-2xs">
               <div className="space-y-2.5">
                 <div className="flex items-center gap-2.5">
                   <span className="w-7 h-7 bg-slate-800 text-white rounded-xl flex items-center justify-center text-xs font-bold font-mono shadow-2xs">6</span>
-                  <h3 className="font-serif font-bold text-sm text-slate-900">暗号化ログ保全 ＆ 警察捜査即応</h3>
+                  <h3 className="font-serif font-bold text-sm text-slate-900">暗号化ログ保全 ＆ 捜査関係照会対応</h3>
                 </div>
                 <p className="text-xs text-slate-700 leading-relaxed font-sans">
-                  悪質な付きまといや嫌がらせが発生した場合に備え、接続IP・端末情報・投函監査ログを暗号化して物理保全。各都道府県警察（生活安全課・サイバー犯罪対策課）からの刑事訴訟法に基づく捜査関係事項照会に対し、迅速に証跡データを提供する体制を整えています。
+                  悪質な付きまといや嫌がらせ等の不正利用に備え、接続IP・端末識別子・電子的利用宣誓ログを高度暗号化して物理保全。各都道府県警察（生活安全課・サイバー犯罪対策課等）からの刑事訴訟法に基づく正式な捜査照会に対し、迅速かつ厳正にデータを提供する体制を整えています。
                 </p>
               </div>
               <div className="pt-2 border-t border-slate-200/80 text-[11px] text-slate-800 font-bold flex items-center gap-1">
-                <span>✓ 刑事訴訟法に基づく捜査照会ポータル完備</span>
+                <span>✓ 刑事訴訟法に基づく捜査照会即応体制</span>
               </div>
             </div>
           </div>
@@ -959,11 +959,11 @@ export const SafetyPage = () => (
         <section className="space-y-4 pt-6 bg-slate-900/95 backdrop-blur-xs text-white rounded-3xl p-8 border border-slate-800 shadow-lg">
           <div className="flex items-center gap-2">
             <ShieldAlert size={20} className="text-amber-400" />
-            <h3 className="text-base font-serif font-bold text-white">警察等司法機関との堅固な協調体制</h3>
+            <h3 className="text-base font-serif font-bold text-white">警察・法執行機関の捜査照会に対する迅速な協力体制</h3>
           </div>
           <p className="text-xs text-slate-300 leading-relaxed font-serif text-white/95">
-            万が一、利用を仮装した悪質なストーキング行為、嫌がらせ、なりすまし等が発生した場合、各都道府県警察の生活安全課、サイバー犯罪対策課などの刑事捜査事項照会に対して、私たちは最高速度で応じるポータルAPIを用意しています。
-            提出書類の受理後、瞬時に署名ログ・接続端末IP・アクセス履歴をフォレンジック抽出して提供し、徹底的な犯人検挙、犯罪撲滅に完全協力することをお約束いたします。
+            万が一、利用を仮装した悪質なストーキング行為、嫌がらせ、なりすまし等の犯罪行為が発生した場合、各都道府県警察（生活安全課、サイバー犯罪対策課等）や裁判所からの刑事訴訟法に基づく捜査関係事項照会に対し、迅速かつ厳正にデータ開示を行います。
+            正式な照会書類を受理後、電子的利用宣誓ログ・接続端末IPアドレス・アクセス履歴をフォレンジック抽出して捜査機関へ提供し、事件の早期解決および被害者保護・犯罪撲滅に全面的に協力いたします。
           </p>
         </section>
 
