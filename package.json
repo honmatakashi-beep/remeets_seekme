@@ -13,6 +13,7 @@
     "test:ai": "node tests/ai-input-moderation-130-check.mjs",
     "test:admin": "node tests/admin-safety-check.mjs",
     "backup": "node scripts/backup.mjs",
+    "restore:posts": "node scripts/restore-posts.cjs",
     "demo": "node scripts/visual-demo.mjs",
     "start": "node dist/server.cjs"
   },

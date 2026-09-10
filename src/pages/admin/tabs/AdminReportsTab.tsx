@@ -1,7 +1,7 @@
 import React from "react";
 import {
   Flag, UserX, Download, Search, Filter, ShieldAlert, CheckCircle2, Clock, AlertTriangle,
-  User, ExternalLink, Eye, Check, X, Shield, RefreshCw
+  User, ExternalLink, Eye, Check, X, Shield, RefreshCw, Sparkles, Trash2
 } from "lucide-react";
 import { cn } from "../../../lib/utils";
 
@@ -129,7 +129,61 @@ export const AdminReportsTab: React.FC<AdminReportsTabProps> = (props) => {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        try {
+                          const authToken = props.token || localStorage.getItem('token') || sessionStorage.getItem('token');
+                          const res = await fetch('/api/admin/reports/seed', {
+                            method: 'POST',
+                            headers: { 'Authorization': authToken ? `Bearer ${authToken}` : '' }
+                          });
+                          if (res.ok) {
+                            alert('検証用通報サンプル（3件）を正常に投入しました！');
+                            if (props.fetchData) props.fetchData();
+                            else window.location.reload();
+                          } else {
+                            const errData = await res.json().catch(() => ({}));
+                            alert(errData.error || '通報サンプルの生成に失敗しました');
+                          }
+                        } catch (e) {
+                          alert('通信エラーが発生しました');
+                        }
+                      }}
+                      className="px-3 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+                      title="ストーカー・嫌がらせ・スパム等の通報サンプルを3件投入します"
+                    >
+                      <Sparkles size={13} className="text-amber-400" />
+                      <span>サンプル3件を生成</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        if (!confirm('全ての通報データをクリア（全消去）しますか？')) return;
+                        try {
+                          const authToken = props.token || localStorage.getItem('token') || sessionStorage.getItem('token');
+                          const res = await fetch('/api/admin/reports/clear-all', {
+                            method: 'POST',
+                            headers: { 'Authorization': authToken ? `Bearer ${authToken}` : '' }
+                          });
+                          if (res.ok) {
+                            alert('通報データをクリアしました。');
+                            if (props.fetchData) props.fetchData();
+                            else window.location.reload();
+                          }
+                        } catch (e) {
+                          alert('通信エラーが発生しました');
+                        }
+                      }}
+                      className="px-3 py-2 bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
+                      title="通報リストのみを一括消去します"
+                    >
+                      <Trash2 size={13} />
+                      <span>通報全クリア</span>
+                    </button>
+
                     <button
                       type="button"
                       onClick={() => {
@@ -144,7 +198,7 @@ export const AdminReportsTab: React.FC<AdminReportsTabProps> = (props) => {
                           `"${(r.reporter_name || '匿名').replace(/"/g, '""')}"`,
                           `"${(r.reason || '').replace(/"/g, '""')}"`
                         ]);
-                        const csvContent = "\\uFEFF" + [headers.join(","), ...rows.map(row => row.join(","))].join("\\n");
+                        const csvContent = "\uFEFF" + [headers.join(","), ...rows.map(row => row.join(","))].join("\n");
                         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
                         const url = URL.createObjectURL(blob);
                         const link = document.createElement("a");

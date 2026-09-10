@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams, useLocation, Link, Navigate } from 'react
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Eye, EyeOff, Lock, Mail, AlertCircle, AlertTriangle, ArrowLeft, ArrowRight,
-  BookOpen, Check, CheckCircle2, ChevronLeft, ChevronRight, Coffee,
+  BookOpen, Calendar, Check, CheckCircle2, ChevronLeft, ChevronRight, Coffee,
   Copy, CreditCard, HeartHandshake, LogIn, LogOut, Menu, PlusCircle,
   RefreshCw, Search, Send, Shield, ShieldAlert, ShieldCheck, Sparkles,
   User as UserIcon, X
@@ -86,6 +86,9 @@ export const LoginPage = () => {
     setPassword(p);
   };
 
+  const contextMessage = (location.state as any)?.message || 
+    ((location.state as any)?.from?.pathname === '/create' ? '手紙の投函データを安全にマイアカウントに保存・管理するため、ログインまたは新規登録を行ってください。' : '');
+
   return (
     <div className="max-w-md mx-auto px-4 sm:px-6 py-6 sm:py-12 animate-fade-in font-sans">
       <BackToHomeButton className="mb-4" />
@@ -95,6 +98,18 @@ export const LoginPage = () => {
         title="ReMEETsへログイン"
         description="海に流されたあの人との言葉を、引き上げる。"
       />
+
+      {contextMessage && (
+        <div className="mb-4 p-3.5 bg-gradient-to-r from-teal-50/90 to-emerald-50/80 border border-teal-200/90 rounded-2xl text-[11.5px] space-y-1 text-slate-700 shadow-2xs font-sans text-left animate-fade-in">
+          <div className="flex items-center gap-1.5 font-bold text-teal-900 text-xs">
+            <Sparkles size={14} className="text-teal-700" />
+            <span>手紙の安全な保存と本人保護</span>
+          </div>
+          <p className="leading-relaxed text-slate-600">
+            {contextMessage}
+          </p>
+        </div>
+      )}
 
       <div className="glass-card p-6 sm:p-8 bg-white/90 backdrop-blur-xl border border-amber-200/70 rounded-3xl shadow-xl space-y-6">
         {/* SNSログインボタン群 */}
@@ -302,12 +317,32 @@ export const RegisterPage = () => {
   const [lastName, setLastName] = useState('');
   const [firstName, setFirstName] = useState('');
   const [nickname, setNickname] = useState('');
+  const [birthYear, setBirthYear] = useState('');
+  const [birthMonth, setBirthMonth] = useState('');
+  const [birthDay, setBirthDay] = useState('');
   const [captchaAnswer, setCaptchaAnswer] = useState('');
   const [agreed, setAgreed] = useState(false);
   const [hasReadTerms, setHasReadTerms] = useState(false);
   const [hasReadPrivacy, setHasReadPrivacy] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
   const [showPrivacy, setShowPrivacy] = useState(false);
+
+  // 生年月日から年齢を即時計算するヘルパー
+  const calculatedAge = (() => {
+    if (!birthYear || !birthMonth || !birthDay) return null;
+    const y = parseInt(birthYear, 10);
+    const m = parseInt(birthMonth, 10);
+    const d = parseInt(birthDay, 10);
+    if (isNaN(y) || isNaN(m) || isNaN(d)) return null;
+    const birth = new Date(y, m - 1, d);
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+    return age;
+  })();
 
   // Step 3 State (6桁認証コード)
   const [verificationCode, setVerificationCode] = useState('');
@@ -427,6 +462,14 @@ export const RegisterPage = () => {
       alert('不適切な入力が含まれています。修正してください。');
       return;
     }
+    if (!birthYear || !birthMonth || !birthDay) {
+      setError('生年月日（年・月・日）をすべて選択してください。');
+      return;
+    }
+    if (calculatedAge === null || calculatedAge < 18) {
+      setError('法令（青少年保護）および利用規約に基づき、18歳未満（高校生を含む）の方はご登録いただけません。');
+      return;
+    }
     if (!agreed) {
       setError('利用規約およびプライバシーポリシーへの同意（18歳以上確認）が必要です。');
       return;
@@ -439,6 +482,8 @@ export const RegisterPage = () => {
     setLoading(true);
     setError('');
 
+    const formattedBirthdate = `${birthYear}-${birthMonth.padStart(2, '0')}-${birthDay.padStart(2, '0')}`;
+
     try {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
@@ -449,6 +494,7 @@ export const RegisterPage = () => {
           lastName, 
           firstName, 
           nickname, 
+          birthdate: formattedBirthdate,
           captchaAnswer,
           snsProvider: authMethod !== 'email' ? authMethod : undefined
         })
@@ -875,7 +921,105 @@ export const RegisterPage = () => {
               <WarningMessage message={warning} />
             </div>
 
-            {/* 2. ニックネーム（公開表示名）入力欄 */}
+            {/* 2. 生年月日（年齢確認・18歳以上確認）入力欄 */}
+            <div className="space-y-3 p-5 bg-gradient-to-br from-amber-50/70 via-stone-50/80 to-amber-50/50 border border-amber-200/90 rounded-2xl">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-stone-900 tracking-wider uppercase flex items-center gap-1.5 font-sans">
+                  <Calendar size={16} className="text-amber-700" />
+                  <span>生年月日（年齢確認）</span> <span className="text-rose-500">*</span>
+                </label>
+                {calculatedAge !== null && (
+                  calculatedAge >= 18 ? (
+                    <span className="text-[11px] bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-full border border-emerald-300 flex items-center gap-1">
+                      <CheckCircle2 size={12} className="text-emerald-600" />
+                      <span>{calculatedAge} 歳（利用可能）</span>
+                    </span>
+                  ) : (
+                    <span className="text-[11px] bg-rose-100 text-rose-800 font-bold px-2.5 py-0.5 rounded-full border border-rose-300 flex items-center gap-1">
+                      <AlertCircle size={12} className="text-rose-600" />
+                      <span>{calculatedAge} 歳（18歳未満利用不可）</span>
+                    </span>
+                  )
+                )}
+              </div>
+
+              <p className="text-[11px] text-stone-600 leading-relaxed font-serif">
+                ※ 青少年保護および法令遵守のため、生年月日による年齢確認を行っております（非公開）。
+              </p>
+
+              <div className="grid grid-cols-3 gap-2.5 pt-1">
+                {/* 年 */}
+                <div className="space-y-1">
+                  <label className="text-[10.5px] font-bold text-stone-700">年（西暦）</label>
+                  <select
+                    required
+                    value={birthYear}
+                    onChange={e => setBirthYear(e.target.value)}
+                    className="w-full px-2.5 py-2.5 border border-stone-300 rounded-xl bg-white text-xs outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-stone-900 shadow-inner cursor-pointer font-sans"
+                  >
+                    <option value="">年を選択</option>
+                    {Array.from({ length: 90 }, (_, i) => {
+                      const y = new Date().getFullYear() - 18 - i; // 18歳以上（2008年以前〜1919年）
+                      let era = '';
+                      if (y >= 2019) era = `令和${y - 2018}`;
+                      else if (y >= 1989) era = `平成${y - 1988}`;
+                      else if (y >= 1926) era = `昭和${y - 1925}`;
+                      else era = `大正${y - 1911}`;
+                      return (
+                        <option key={y} value={y.toString()}>
+                          {y}年 ({era})
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+
+                {/* 月 */}
+                <div className="space-y-1">
+                  <label className="text-[10.5px] font-bold text-stone-700">月</label>
+                  <select
+                    required
+                    value={birthMonth}
+                    onChange={e => setBirthMonth(e.target.value)}
+                    className="w-full px-2.5 py-2.5 border border-stone-300 rounded-xl bg-white text-xs outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-stone-900 shadow-inner cursor-pointer font-sans"
+                  >
+                    <option value="">月を選択</option>
+                    {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
+                      <option key={m} value={m.toString()}>
+                        {m}月
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* 日 */}
+                <div className="space-y-1">
+                  <label className="text-[10.5px] font-bold text-stone-700">日</label>
+                  <select
+                    required
+                    value={birthDay}
+                    onChange={e => setBirthDay(e.target.value)}
+                    className="w-full px-2.5 py-2.5 border border-stone-300 rounded-xl bg-white text-xs outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-stone-900 shadow-inner cursor-pointer font-sans"
+                  >
+                    <option value="">日を選択</option>
+                    {Array.from({ length: 31 }, (_, i) => i + 1).map(d => (
+                      <option key={d} value={d.toString()}>
+                        {d}日
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {calculatedAge !== null && calculatedAge < 18 && (
+                <div className="p-3 bg-rose-50 border border-rose-200 text-rose-800 rounded-xl text-xs flex items-center gap-2 animate-shake">
+                  <AlertCircle size={15} className="text-rose-600 shrink-0" />
+                  <span>18歳未満（高校生を含む）の方は法令に基づきご登録いただけません。</span>
+                </div>
+              )}
+            </div>
+
+            {/* 3. ニックネーム（公開表示名）入力欄 */}
             <div className="space-y-2 p-5 bg-sky-50/40 border border-sky-150 rounded-2xl">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-bold text-stone-900 tracking-wider block font-sans">
@@ -903,7 +1047,7 @@ export const RegisterPage = () => {
               />
             </div>
 
-            {/* 3. ボット防止認証 */}
+            {/* 4. ボット防止認証 */}
             <div className="space-y-2 p-4 bg-stone-50 rounded-2xl border border-stone-200">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-bold text-stone-800 uppercase tracking-widest flex items-center gap-2">
@@ -933,7 +1077,51 @@ export const RegisterPage = () => {
               />
             </div>
 
-            {/* 4. 規約・プライバシー同意 ＆ 18歳以上確認 */}
+            {/* 🌟 【おすすめ】公的本人確認（eKYC）で再会・返信率を最大化するご案内カード */}
+            <div className="p-4 sm:p-5 bg-gradient-to-br from-indigo-50/90 via-purple-50/60 to-white border-2 border-indigo-200 rounded-2xl space-y-3 font-sans shadow-xs text-left">
+              <div className="flex items-center justify-between gap-2 border-b border-indigo-150 pb-2.5 flex-wrap">
+                <div className="flex items-center gap-2 font-extrabold text-xs sm:text-sm text-indigo-950">
+                  <div className="w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-2xs">
+                    <ShieldCheck size={16} />
+                  </div>
+                  <span>【おすすめ】公的本人確認（eKYC）のご案内</span>
+                </div>
+                <span className="text-[10px] font-bold bg-indigo-100 text-indigo-800 px-2.5 py-0.5 rounded-full border border-indigo-200">
+                  返信率大幅UP
+                </span>
+              </div>
+
+              <p className="text-[11.5px] text-slate-700 leading-relaxed font-serif">
+                ReMEETsでは、数年〜数十年ぶりの再会となるお相手に<strong>「本人の確証と安心」</strong>を届け、<strong>初回の返信率を最大化</strong>するため、公的身分証（運転免許証・マイナンバー等）によるeKYC認証を第一におすすめしております。
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-xs">
+                <div className="p-2.5 bg-white/90 rounded-xl border border-indigo-100 space-y-1">
+                  <div className="font-bold text-indigo-950 flex items-center gap-1.5 text-[11px]">
+                    <CheckCircle2 size={13} className="text-indigo-600 shrink-0" />
+                    <span>お相手の警戒心を100%解除</span>
+                  </div>
+                  <p className="text-[10.5px] text-slate-600 leading-normal">
+                    「公的証明バッジ」が付くことで、お相手が安心してLINEやメールを返信できます。
+                  </p>
+                </div>
+                <div className="p-2.5 bg-white/90 rounded-xl border border-indigo-100 space-y-1">
+                  <div className="font-bold text-indigo-950 flex items-center gap-1.5 text-[11px]">
+                    <CheckCircle2 size={13} className="text-indigo-600 shrink-0" />
+                    <span>サクラ・いたずらを完全排除</span>
+                  </div>
+                  <p className="text-[10.5px] text-slate-600 leading-normal">
+                    身元が確かな方だけがやり取りできるため、大切な思い出が安全に守られます。
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-2.5 bg-indigo-100/50 rounded-xl text-[11px] text-indigo-900 font-medium flex items-center justify-between gap-2">
+                <span>※ アカウント作成完了後、マイページ（/account）からいつでも1分で身分証撮影・認証が可能です。</span>
+              </div>
+            </div>
+
+            {/* 5. 規約・プライバシー同意 ＆ 18歳以上確認 */}
             <div 
               onClick={() => setAgreed(!agreed)}
               className={cn(

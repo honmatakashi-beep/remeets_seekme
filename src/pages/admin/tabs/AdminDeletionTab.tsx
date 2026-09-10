@@ -1,7 +1,7 @@
 import React from "react";
 import {
   Trash2, Download, ExternalLink, Eye, Search, Filter, AlertTriangle, CheckCircle2, Clock, User,
-  FileText, ShieldAlert, Check, X, RefreshCw
+  FileText, ShieldAlert, Check, X, RefreshCw, Sparkles
 } from "lucide-react";
 import { cn } from "../../../lib/utils";
 
@@ -124,7 +124,61 @@ export const AdminDeletionTab: React.FC<AdminDeletionTabProps> = (props) => {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        try {
+                          const authToken = props.token || localStorage.getItem('token') || sessionStorage.getItem('token');
+                          const res = await fetch('/api/admin/deletion-requests/seed', {
+                            method: 'POST',
+                            headers: { 'Authorization': authToken ? `Bearer ${authToken}` : '' }
+                          });
+                          if (res.ok) {
+                            alert('削除依頼のテストサンプル（3件）を正常に投入しました！');
+                            if (props.fetchData) props.fetchData();
+                            else window.location.reload();
+                          } else {
+                            const errData = await res.json().catch(() => ({}));
+                            alert(errData.error || '削除申請サンプルの生成に失敗しました');
+                          }
+                        } catch (e) {
+                          alert('通信エラーが発生しました');
+                        }
+                      }}
+                      className="px-3 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+                      title="実名露出・プライバシー等の削除申請サンプルを3件投入します"
+                    >
+                      <Sparkles size={13} className="text-amber-400" />
+                      <span>サンプル3件を生成</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        if (!confirm('全ての削除申請データをクリア（全消去）しますか？')) return;
+                        try {
+                          const authToken = props.token || localStorage.getItem('token') || sessionStorage.getItem('token');
+                          const res = await fetch('/api/admin/deletion-requests/clear-all', {
+                            method: 'POST',
+                            headers: { 'Authorization': authToken ? `Bearer ${authToken}` : '' }
+                          });
+                          if (res.ok) {
+                            alert('削除申請データをクリアしました。');
+                            if (props.fetchData) props.fetchData();
+                            else window.location.reload();
+                          }
+                        } catch (e) {
+                          alert('通信エラーが発生しました');
+                        }
+                      }}
+                      className="px-3 py-2 bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
+                      title="削除申請リストのみを一括消去します"
+                    >
+                      <Trash2 size={13} />
+                      <span>申請全クリア</span>
+                    </button>
+
                     <button
                       type="button"
                       onClick={() => {

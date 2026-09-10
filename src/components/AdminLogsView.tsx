@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Terminal, 
@@ -62,20 +62,71 @@ interface AccessLog {
 }
 
 interface AdminLogsViewProps {
-  auditLogs: AuditLog[];
-  actionLogs: ActionLog[];
-  accessLogs: AccessLog[];
+  auditLogs?: AuditLog[];
+  actionLogs?: ActionLog[];
+  accessLogs?: AccessLog[];
   onRefresh?: () => void;
   loading?: boolean;
 }
 
 export const AdminLogsView: React.FC<AdminLogsViewProps> = ({
-  auditLogs = [],
-  actionLogs = [],
-  accessLogs = [],
+  auditLogs: propAuditLogs = [],
+  actionLogs: propActionLogs = [],
+  accessLogs: propAccessLogs = [],
   onRefresh,
-  loading = false
+  loading: propLoading = false
 }) => {
+  const [internalAuditLogs, setInternalAuditLogs] = useState<AuditLog[]>(propAuditLogs);
+  const [internalActionLogs, setInternalActionLogs] = useState<ActionLog[]>(propActionLogs);
+  const [internalAccessLogs, setInternalAccessLogs] = useState<AccessLog[]>(propAccessLogs);
+  const [isFetchingLocal, setIsFetchingLocal] = useState<boolean>(false);
+
+  // Direct fetch function
+  const fetchLogsDirectly = useCallback(async () => {
+    const token = localStorage.getItem('token');
+    setIsFetchingLocal(true);
+    try {
+      const headers = { 'Authorization': `Bearer ${token || ''}` };
+      const [actionRes, accessRes, auditRes] = await Promise.all([
+        fetch('/api/admin/action-logs', { headers }).then(r => r.ok ? r.json() : []).catch(() => []),
+        fetch('/api/admin/access-logs', { headers }).then(r => r.ok ? r.json() : []).catch(() => []),
+        fetch('/api/admin/audit-logs', { headers }).then(r => r.ok ? r.json() : []).catch(() => [])
+      ]);
+      if (Array.isArray(actionRes)) setInternalActionLogs(actionRes);
+      if (Array.isArray(accessRes)) setInternalAccessLogs(accessRes);
+      if (Array.isArray(auditRes)) setInternalAuditLogs(auditRes);
+    } catch (err) {
+      console.error('Direct log fetch error:', err);
+    } finally {
+      setIsFetchingLocal(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchLogsDirectly();
+  }, [fetchLogsDirectly]);
+
+  // Sync with props if updated externally
+  useEffect(() => {
+    if (propAuditLogs && propAuditLogs.length > 0) setInternalAuditLogs(propAuditLogs);
+  }, [propAuditLogs]);
+  useEffect(() => {
+    if (propActionLogs && propActionLogs.length > 0) setInternalActionLogs(propActionLogs);
+  }, [propActionLogs]);
+  useEffect(() => {
+    if (propAccessLogs && propAccessLogs.length > 0) setInternalAccessLogs(propAccessLogs);
+  }, [propAccessLogs]);
+
+  const auditLogs = internalAuditLogs;
+  const actionLogs = internalActionLogs;
+  const accessLogs = internalAccessLogs;
+  const loading = propLoading || isFetchingLocal;
+
+  const handleRefreshClick = () => {
+    fetchLogsDirectly();
+    if (onRefresh) onRefresh();
+  };
+
   const [activeSubTab, setActiveSubTab] = useState<'all' | 'audit' | 'actions' | 'access'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [actionFilter, setActionFilter] = useState('all');
@@ -178,8 +229,16 @@ export const AdminLogsView: React.FC<AdminLogsViewProps> = ({
 
   // Date filter helper
   const isDateMatching = (dateStr: string) => {
+    if (!dateStr) return true;
     if (dateFilter === 'all') return true;
-    const logDate = new Date(dateStr).getTime();
+    
+    // SQLite format support (YYYY-MM-DD HH:mm:ss -> ISO-friendly parse)
+    const formatted = typeof dateStr === 'string' && dateStr.includes(' ') && !dateStr.includes('T')
+      ? dateStr.replace(' ', 'T')
+      : dateStr;
+    const logDate = new Date(formatted).getTime();
+    if (isNaN(logDate)) return true;
+
     const now = Date.now();
     if (dateFilter === 'today') {
       const todayStart = new Date().setHours(0, 0, 0, 0);
@@ -409,16 +468,14 @@ export const AdminLogsView: React.FC<AdminLogsViewProps> = ({
               <FileText size={14} />
               仕様書ガイド
             </button>
-            {onRefresh && (
-              <button
-                onClick={onRefresh}
-                disabled={loading}
-                className="px-3.5 py-2 rounded-xl text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 shadow-sm transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
-              >
-                <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
-                最新ログ取得
-              </button>
-            )}
+            <button
+              onClick={handleRefreshClick}
+              disabled={loading}
+              className="px-3.5 py-2 rounded-xl text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 shadow-sm transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+            >
+              <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
+              最新ログ取得
+            </button>
           </div>
         </div>
       </div>
@@ -529,8 +586,27 @@ export const AdminLogsView: React.FC<AdminLogsViewProps> = ({
             </button>
           </div>
 
-          {/* Export Actions */}
-          <div className="flex items-center gap-2">
+          {/* Export & Clear Actions */}
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={async () => {
+                if (!confirm('アクセスログ・操作ログを消去（初期化）しますか？')) return;
+                try {
+                  const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+                  await fetch('/api/admin/logs/clear-access', { method: 'POST', headers: { 'Authorization': token ? `Bearer ${token}` : '' } });
+                  await fetch('/api/admin/logs/clear-actions', { method: 'POST', headers: { 'Authorization': token ? `Bearer ${token}` : '' } });
+                  if (onRefresh) onRefresh();
+                  else window.location.reload();
+                } catch (e) {
+                  console.error(e);
+                }
+              }}
+              className="px-3 py-1.5 rounded-xl text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200/80 transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+              title="蓄積された操作ログ・アクセスログを一括消去"
+            >
+              <RefreshCw size={14} className="text-rose-600" />
+              ログ全クリア
+            </button>
             <button
               onClick={handleExportCsv}
               className="px-3 py-1.5 rounded-xl text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"

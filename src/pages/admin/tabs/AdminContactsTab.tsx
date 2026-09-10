@@ -152,6 +152,30 @@ export const AdminContactsTab: React.FC<AdminContactsTabProps> = (props) => {
                         <span className="whitespace-nowrap">{isSeedingContacts ? '投入中...' : '分類サンプル投入 (8件)'}</span>
                       </button>
                       <button
+                        onClick={async () => {
+                          if (!confirm('全てのお問い合わせ履歴をクリア（全消去）しますか？')) return;
+                          try {
+                            const authToken = props.token || localStorage.getItem('token') || sessionStorage.getItem('token');
+                            const res = await fetch('/api/admin/contacts/clear-all', {
+                              method: 'POST',
+                              headers: { 'Authorization': authToken ? `Bearer ${authToken}` : '' }
+                            });
+                            if (res.ok) {
+                              alert('お問い合わせ履歴をクリアしました。');
+                              if (fetchData) fetchData();
+                              else window.location.reload();
+                            }
+                          } catch (e) {
+                            alert('通信エラーが発生しました');
+                          }
+                        }}
+                        className="px-3.5 py-2.5 rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0"
+                        title="お問い合わせ履歴のみを一括消去します"
+                      >
+                        <Trash2 size={14} />
+                        <span className="whitespace-nowrap">履歴全クリア</span>
+                      </button>
+                      <button
                         onClick={handleExportContactsCsv}
                         className="px-3.5 py-2.5 rounded-xl bg-white border border-brand-border text-brand-dark text-xs font-bold hover:bg-brand-light/50 transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0"
                         title="全お問い合わせ履歴をCSVファイルでダウンロードします"

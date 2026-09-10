@@ -732,7 +732,35 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
   const handleAgeVerified = () => {
     setIsAgeVerified(true);
     // 年齢・安全利用誓約完了後、スムーズに600円連絡先開示手続きへ誘導（決済前に手紙開示は行わない）
+    handleProceedToReveal();
+  };
+
+  const handleProceedToReveal = () => {
+    if (!user || !token) {
+      navigate('/login', { 
+        state: { 
+          from: location, 
+          message: `【${searcherName || post?.searcher_name || '差出人'}】さんからの手紙本文と連絡先を安全にマイアカウントに永久保存するため、ログインまたは無料会員登録（18歳以上確認）をお願いいたします。` 
+        } 
+      });
+      return;
+    }
     setShowRevealModal(true);
+  };
+
+  const handleProceedToEkyc = () => {
+    if (!user || !token) {
+      navigate('/login', { 
+        state: { 
+          from: location, 
+          message: `公的身分証（eKYC）による公的証明バッジを取得して手紙を開封するため、ログインまたは無料会員登録（18歳以上確認）をお願いいたします。` 
+        } 
+      });
+      return;
+    }
+    setFinderEkycStep(1);
+    setFinderEkycProgress(0);
+    setShowFinderEkycModal(true);
   };
 
   const handleVerify = async (e: React.FormEvent) => {
@@ -2229,7 +2257,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                     </div>
                   )}
 
-                  {/* プログレスバー（開封進行中）または開封ボタン */}
+                  {/* プログレスバー（開封進行中）または開封ボタン群 */}
                   {isOpeningLetter ? (
                     <div className="p-5 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border-2 border-emerald-400 space-y-3.5 shadow-sm">
                       <div className="flex items-center justify-between text-xs font-bold text-emerald-950">
@@ -2250,19 +2278,71 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                       </p>
                     </div>
                   ) : (
-                    <div className="pt-2 space-y-2.5">
-                      <button
-                        type="button"
-                        onClick={() => setShowRevealModal(true)}
-                        className="w-full py-4 px-6 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold text-sm sm:text-base rounded-2xl shadow-md hover:shadow-lg hover:scale-[1.01] active:scale-98 transition-all flex items-center justify-center gap-2.5 cursor-pointer font-sans border border-emerald-400/30"
-                      >
-                        <Heart size={18} className="fill-current text-rose-300 animate-pulse" />
-                        <span>手紙と連絡先の開示手続きへ進む（600円 税込）</span>
-                        <ArrowRight size={16} />
-                      </button>
+                    <div className="space-y-4 pt-1 text-left">
+                      {/* 2つのコース選択 */}
+                      <div className="space-y-3">
+                        {/* コース 1: 【第一推奨】公的身分証（eKYC）認証 ＋ 手紙開封 */}
+                        <div className="relative p-4 sm:p-5 bg-gradient-to-br from-indigo-50/90 via-purple-50/40 to-white border-2 border-indigo-500/80 rounded-2xl space-y-3 shadow-md hover:border-indigo-600 transition-all">
+                          <div className="absolute -top-3 left-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-[10.5px] font-extrabold px-3 py-0.5 rounded-full shadow-md flex items-center gap-1">
+                            <Sparkles size={12} className="text-amber-300" />
+                            <span>【第一推奨】安心・返信率大幅UP</span>
+                          </div>
+
+                          <div className="flex items-center justify-between border-b border-indigo-100 pb-2 pt-0.5">
+                            <span className="text-xs sm:text-sm font-extrabold text-indigo-950 flex items-center gap-1.5">
+                              <ShieldCheck size={16} className="text-indigo-600 shrink-0" />
+                              <span>公的身分証 (eKYC) 認証 ＋ 手紙開封コース</span>
+                            </span>
+                            <span className="font-mono text-base font-extrabold text-indigo-800">
+                              1,200円<span className="text-xs font-sans text-slate-600 ml-0.5">（税込）</span>
+                            </span>
+                          </div>
+
+                          <p className="text-[11px] text-slate-600 leading-relaxed font-sans">
+                            運転免許証やマイナンバーによる「公的証明バッジ」を取得してお手紙を開封します。お相手が『本物の昔の友人だ』と確信できるため、<strong>初回の返信率が格段に向上</strong>します。
+                          </p>
+
+                          <button
+                            type="button"
+                            onClick={handleProceedToEkyc}
+                            className="w-full py-3.5 px-4 bg-gradient-to-r from-indigo-600 via-indigo-700 to-purple-700 hover:from-indigo-700 hover:to-purple-800 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md hover:scale-[1.01] active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer font-sans"
+                          >
+                            <ShieldCheck size={16} />
+                            <span>公的証明バッジを取得して開封へ進む（1,200円 税込）</span>
+                            <ArrowRight size={14} />
+                          </button>
+                        </div>
+
+                        {/* コース 2: 【シンプル】手紙開封・連絡先受取のみ */}
+                        <div className="p-4 sm:p-5 bg-white border-2 border-emerald-400/80 rounded-2xl space-y-3 shadow-sm hover:border-emerald-500 transition-all">
+                          <div className="flex items-center justify-between border-b border-emerald-100 pb-2">
+                            <span className="text-xs sm:text-sm font-extrabold text-slate-900 flex items-center gap-1.5">
+                              <Mail size={16} className="text-emerald-700 shrink-0" />
+                              <span>手紙開封・連絡先開示のみコース</span>
+                            </span>
+                            <span className="font-mono text-base font-extrabold text-emerald-800">
+                              600円<span className="text-xs font-sans text-slate-600 ml-0.5">（税込）</span>
+                            </span>
+                          </div>
+
+                          <p className="text-[11px] text-slate-600 leading-relaxed font-sans">
+                            公的身分証の提出をスキップし、手紙本文全文とお相手の連絡先（LINE・メール等）を即座に開示します（※公的証明バッジは後からマイページでも取得可能）。
+                          </p>
+
+                          <button
+                            type="button"
+                            onClick={handleProceedToReveal}
+                            className="w-full py-3.5 px-4 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md hover:scale-[1.01] active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer font-sans border border-emerald-400/30"
+                          >
+                            <Heart size={16} className="fill-current text-rose-300 animate-pulse shrink-0" />
+                            <span>手紙と連絡先の開示手続きへ進む（600円 税込）</span>
+                            <ArrowRight size={14} />
+                          </button>
+                        </div>
+                      </div>
+
                       <p className="text-[11px] text-slate-500 font-sans text-center leading-relaxed">
-                        ※ ボタンをクリックすると安全なStripe暗号化決済画面が開きます。<br className="hidden sm:inline" />
-                        勝手に決済されることはありませんのでご安心ください。
+                        ※ お手続き完了後、手紙と連絡先はマイアカウントに安全に永久保存されます。
                       </p>
                     </div>
                   )}

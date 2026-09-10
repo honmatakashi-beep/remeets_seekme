@@ -2,7 +2,7 @@ import { EkycProgressTelemetryPanel } from "../../../components/EkycProgressTele
 import React from "react";
 import {
   UserCheck, X, ShieldAlert, Eye, FileCheck, Zap, ChevronUp, ChevronDown, Download, Search, Filter, CheckCircle2, XCircle, Clock, ShieldCheck,
-  CreditCard, Phone, User, Calendar, ExternalLink, RefreshCw
+  CreditCard, Phone, User, Calendar, ExternalLink, RefreshCw, Plus
 } from "lucide-react";
 import { cn } from "../../../lib/utils";
 
@@ -174,7 +174,52 @@ export const AdminAgeVerificationTab: React.FC<AdminAgeVerificationTabProps> = (
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        try {
+                          const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+                          const res = await fetch('/api/admin/age-logs/seed', {
+                            method: 'POST',
+                            headers: { 'Authorization': token ? `Bearer ${token}` : '' }
+                          });
+                          if (res.ok) {
+                            if (props.fetchData) props.fetchData();
+                            else window.location.reload();
+                          }
+                        } catch (e) {
+                          console.error(e);
+                        }
+                      }}
+                      className="px-3 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+                    >
+                      <Plus size={14} />
+                      <span>+ サンプル30件投入</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        if (!confirm('全ての本人確認・宣誓監査ログを完全に消去（初期化）しますか？')) return;
+                        try {
+                          const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+                          const res = await fetch('/api/admin/age-logs/clear-all', {
+                            method: 'POST',
+                            headers: { 'Authorization': token ? `Bearer ${token}` : '' }
+                          });
+                          if (res.ok) {
+                            if (props.fetchData) props.fetchData();
+                            else window.location.reload();
+                          }
+                        } catch (e) {
+                          console.error(e);
+                        }
+                      }}
+                      className="px-3 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200/80 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+                    >
+                      <RefreshCw size={14} />
+                      <span>🗑️ 監査ログ全クリア</span>
+                    </button>
                     <button
                       type="button"
                       onClick={() => {

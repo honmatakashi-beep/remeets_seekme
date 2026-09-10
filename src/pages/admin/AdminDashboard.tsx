@@ -92,6 +92,7 @@ export const AdminDashboard = () => {
   const [users, setUsers] = useState<any[]>([]);
   const [broadcasts, setBroadcasts] = useState<any[]>([]);
   const [posts, setPosts] = useState<any[]>([]);
+  const [quizMatchingAnalytics, setQuizMatchingAnalytics] = useState<any>(null);
   const [actionLogs, setActionLogs] = useState<any[]>([]);
   const [accessLogs, setAccessLogs] = useState<any[]>([]);
   const [reports, setReports] = useState<any[]>([]);
@@ -215,7 +216,8 @@ export const AdminDashboard = () => {
   const [heatmapData, setHeatmapData] = useState<any[]>([]);
   const [moderationQueue, setModerationQueue] = useState<any[]>([]);
   const [deletedPostsArchive, setDeletedPostsArchive] = useState<any[]>([]);
-  const [moderationSubTab, setModerationSubTab] = useState<'queue' | 'archive'>('queue');
+  const [moderationHistory, setModerationHistory] = useState<any[]>([]);
+  const [moderationSubTab, setModerationSubTab] = useState<'queue' | 'history' | 'archive'>('queue');
   const [modSearchTerm, setModSearchTerm] = useState('');
   const [modReasonFilter, setModReasonFilter] = useState<'all' | 'stalking' | 'contact' | 'other'>('all');
   const [modPage, setModPage] = useState(1);
@@ -966,11 +968,11 @@ export const AdminDashboard = () => {
     {
       title: 'Trust & Safety (安全・本人確認)',
       items: [
-        { id: 'ageVerification', label: '🛡️ 本人確認（eKYC）\n照合ゲージ・監査ログ', icon: UserCheck },
-        { id: 'policeConsultation', label: '🚔 警察事前相談 ＆\n法令適合サマリー', icon: ShieldCheck },
-        { id: 'liveAlerts', label: '運営リアルタイム警報・スパム', icon: Radio },
+        { id: 'security', label: '総合セキュリティ ＆\n警報・スパム防衛', icon: ShieldAlert },
+        { id: 'ageVerification', label: '本人確認（eKYC）\n照合ゲージ・監査ログ', icon: UserCheck },
+        { id: 'policeConsultation', label: '警察事前相談 ＆\n法令適合サマリー', icon: ShieldCheck },
         { id: 'moderation', label: 'AI検知キュー', icon: Bot, badge: posts.filter(p => p.ai_flagged === 1).length },
-        { id: 'reports', label: '通報', icon: AlertTriangle, badge: reports.filter(r => r.status === 'pending').length },
+        { id: 'reports', label: 'ユーザー通報', icon: AlertTriangle, badge: reports.filter(r => r.status === 'pending').length },
         { id: 'deletion', label: '削除依頼', icon: Trash2, badge: deletionRequests.filter(r => r.status === 'pending').length },
         { id: 'ngWords', label: 'NGワード', icon: Shield },
       ]
@@ -984,7 +986,6 @@ export const AdminDashboard = () => {
         { id: 'notifications', label: '一括配信', icon: Bell },
         { id: 'logs', label: 'ログ', icon: Terminal },
         { id: 'versions', label: 'バージョン履歴 (Versions)', icon: History },
-        { id: 'security', label: 'セキュリティ', icon: ShieldAlert },
         { id: 'system', label: 'システム', icon: Activity },
       ]
     },
@@ -992,15 +993,15 @@ export const AdminDashboard = () => {
       title: 'Finance & eKYC',
       items: [
         { id: 'valuation', label: 'M&A譲渡・企業価値評価\nデータ室', icon: Award },
-        { id: 'payments', label: '💳 決済ショールーム ＆\n売上・eKYC管理台帳', icon: CreditCard },
+        { id: 'payments', label: '決済ショールーム ＆\n売上・eKYC管理台帳', icon: CreditCard },
         { id: 'monetization', label: '課金モデル\n収益シミュレーター', icon: DollarSign },
       ]
     },
     {
       title: 'Support & UI Specs',
       items: [
-        { id: 'masterMemo', label: '📝 運営方針・意思決定備忘録', icon: FileText, onClick: () => { setActiveTab('masterMemo'); } },
-        { id: 'deployment', label: '🚀 本番デプロイ・広報ライブラリ', icon: Rocket, onClick: () => { setActiveTab('deployment'); setGuideDocType('deployment'); } },
+        { id: 'masterMemo', label: '運営方針・意思決定備忘録', icon: FileText, onClick: () => { setActiveTab('masterMemo'); } },
+        { id: 'deployment', label: '本番デプロイ・広報ライブラリ', icon: Rocket, onClick: () => { setActiveTab('deployment'); setGuideDocType('deployment'); } },
         { id: 'manual', label: '管理画面操作マニュアル', icon: BookOpen },
       ]
     },
@@ -1064,17 +1065,23 @@ export const AdminDashboard = () => {
     setLoading(true);
     try {
       // 🚀 PHASE 1: 最優先・主要データの高速一括取得（即座に画面を描画）
-      const [usersRes, postsRes, statsRes, reportsRes, settingsRes] = await Promise.all([
+      const [usersRes, postsRes, statsRes, reportsRes, settingsRes, ageLogsRes, successStoriesRes, modQueueRes] = await Promise.all([
         fetch('/api/admin/users', { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null),
         fetch('/api/admin/posts', { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null),
         fetch('/api/admin/stats', { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null),
         fetch('/api/admin/reports', { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null),
-        fetch('/api/site-settings').catch(() => null)
+        fetch('/api/site-settings').catch(() => null),
+        fetch('/api/admin/age-verification-logs', { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null),
+        fetch('/api/admin/success-stories', { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null),
+        fetch('/api/admin/moderation-queue', { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null)
       ]);
 
       if (usersRes && usersRes.ok) setUsers(await usersRes.json());
       if (postsRes && postsRes.ok) setPosts(await postsRes.json());
       if (reportsRes && reportsRes.ok) setReports(await reportsRes.json());
+      if (ageLogsRes && ageLogsRes.ok) setAgeVerificationLogs(await ageLogsRes.json());
+      if (successStoriesRes && successStoriesRes.ok) setSuccessStories(await successStoriesRes.json());
+      if (modQueueRes && modQueueRes.ok) setModerationQueue(await modQueueRes.json());
       if (statsRes && statsRes.ok) {
         setStats(await statsRes.json());
       }
@@ -1093,10 +1100,8 @@ export const AdminDashboard = () => {
         fetch('/api/admin/deletion-requests', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setDeletionRequests(d)).catch(() => {}),
         fetch('/api/admin/ng-words', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setNgWords(d)).catch(() => {}),
         fetch('/api/admin/contacts', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setContacts(d)).catch(() => {}),
-        fetch('/api/admin/success-stories', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setSuccessStories(d)).catch(() => {}),
         fetch('/api/admin/security-stats', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setSecurityStats(d)).catch(() => {}),
-        fetch('/api/admin/broadcasts', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setBroadcasts(d)).catch(() => {}),
-        fetch('/api/admin/age-verification-logs', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setAgeVerificationLogs(d)).catch(() => {})
+        fetch('/api/admin/broadcasts', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setBroadcasts(d)).catch(() => {})
       ]).catch(() => {});
 
       // 🚀 PHASE 3: 重い分析・アーカイブ・バージョンデータの遅延取得
@@ -1105,11 +1110,11 @@ export const AdminDashboard = () => {
         fetch('/api/admin/retention-stats', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setRetentionStats(d)).catch(() => {}),
         fetch('/api/admin/page-view-stats', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setPageViewStats(d)).catch(() => {}),
         fetch('/api/admin/activity-heatmap', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setHeatmapData(d)).catch(() => {}),
-        fetch('/api/admin/moderation-queue', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setModerationQueue(d)).catch(() => {}),
         fetch('/api/admin/audit-logs', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setAuditLogs(d)).catch(() => {}),
         fetch('/api/admin/reunion-funnel', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setReunionFunnel(d)).catch(() => {}),
         fetch('/api/admin/reunion-duration-stats', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setReunionDurationStats(d)).catch(() => {}),
         fetch('/api/admin/deleted-posts-archive', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setDeletedPostsArchive(d)).catch(() => {}),
+        fetch('/api/admin/moderation/history', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setModerationHistory(d)).catch(() => {}),
         fetch('/api/admin/versions', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setDbVersions(d)).catch(() => {}),
         fetch('/api/admin/quiz-matching-analytics', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).then(d => d && setQuizMatchingAnalytics(d)).catch(() => {})
       ]).catch(() => {});
@@ -1141,6 +1146,56 @@ export const AdminDashboard = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    if (activeTab === 'moderation') {
+      fetch('/api/admin/moderation-queue', { headers: { 'Authorization': `Bearer ${token}` } })
+        .then(r => r.ok ? r.json() : null)
+        .then(d => d && setModerationQueue(d))
+        .catch(() => {});
+      fetch('/api/admin/deleted-posts-archive', { headers: { 'Authorization': `Bearer ${token}` } })
+        .then(r => r.ok ? r.json() : null)
+        .then(d => d && setDeletedPostsArchive(d))
+        .catch(() => {});
+      fetch('/api/admin/moderation/history', { headers: { 'Authorization': `Bearer ${token}` } })
+        .then(r => r.ok ? r.json() : null)
+        .then(d => d && setModerationHistory(d))
+        .catch(() => {});
+    }
+    if (activeTab === 'ageVerification') {
+      fetch('/api/admin/age-verification-logs', { headers: { 'Authorization': `Bearer ${token}` } })
+        .then(r => r.ok ? r.json() : null)
+        .then(d => d && setAgeVerificationLogs(d))
+        .catch(() => {});
+    }
+    if (activeTab === 'successStories') {
+      fetch('/api/admin/success-stories', { headers: { 'Authorization': `Bearer ${token}` } })
+        .then(r => r.ok ? r.json() : null)
+        .then(d => d && setSuccessStories(d))
+        .catch(() => {});
+    }
+    if (activeTab === 'deletion') {
+      fetch('/api/admin/deletion-requests', { headers: { 'Authorization': `Bearer ${token}` } })
+        .then(r => r.ok ? r.json() : null)
+        .then(d => d && setDeletionRequests(d))
+        .catch(() => {});
+    }
+    if (activeTab === 'reports') {
+      fetch('/api/admin/reports', { headers: { 'Authorization': `Bearer ${token}` } })
+        .then(r => r.ok ? r.json() : null)
+        .then(d => d && setReports(d))
+        .catch(() => {});
+    }
+    if (activeTab === 'ngWords') {
+      fetch('/api/admin/ng-words', { headers: { 'Authorization': `Bearer ${token}` } })
+        .then(r => r.ok ? r.json() : null)
+        .then(d => d && setNgWords(d))
+        .catch(() => {});
+    }
+    if (activeTab === 'contacts') {
+      fetch('/api/admin/contacts', { headers: { 'Authorization': `Bearer ${token}` } })
+        .then(r => r.ok ? r.json() : null)
+        .then(d => d && setContacts(d))
+        .catch(() => {});
+    }
     if (activeTab === 'quizAnalytics' && (!quizMatchingAnalytics || !quizMatchingAnalytics.summary)) {
       fetchQuizAnalyticsOnly();
     }
@@ -3036,13 +3091,8 @@ export const AdminDashboard = () => {
   }
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-12 relative overflow-visible">
-      {/* Decorative background elements for Admin */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-brand-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-brand-accent/5 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-primary/5 rounded-full blur-[150px] -z-10 pointer-events-none"></div>
-
-      <div className="flex flex-col gap-12 mb-12">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8 relative overflow-visible">
+      <div className="flex flex-col gap-6 mb-6">
         <div className="space-y-6">
           <div className="grid grid-cols-[auto_1fr_auto] items-center gap-3 md:gap-4 mb-4 md:mb-8 border-b border-brand-border pb-6">
             <div className="w-12 h-12 rounded-2xl bg-brand-primary/10 flex items-center justify-center text-brand-primary shrink-0 shadow-sm">
@@ -3119,11 +3169,11 @@ export const AdminDashboard = () => {
         {/* Sidebar Navigation */}
         <aside 
           className={cn(
-            "hidden md:block shrink-0 transition-all duration-500 ease-in-out z-20",
+            "hidden md:block shrink-0 transition-all duration-500 ease-in-out z-20 md:sticky md:top-6 self-start",
             isSidebarCollapsed ? "w-20" : "w-72"
           )}
         >
-          <div className="sticky top-24 max-h-[calc(100vh-120px)] flex flex-col gap-4">
+          <div className="flex flex-col gap-4">
             {/* Sidebar Header & Search - Fixed at top */}
             <div className="px-2 space-y-4 shrink-0">
               <div className="flex items-center justify-between">
@@ -3152,12 +3202,8 @@ export const AdminDashboard = () => {
               )}
             </div>
 
-            {/* Scrollable Categories List */}
-            <div 
-              data-lenis-prevent 
-              className="flex-1 overflow-y-auto pr-2 pb-10 space-y-6 custom-scrollbar select-none"
-              style={{ WebkitOverflowScrolling: 'touch' }}
-            >
+            {/* Categories List */}
+            <div className="space-y-6 select-none">
               {filteredCategories.map((category) => (
                 <div key={category.title} className="space-y-2 px-2">
                   {!isSidebarCollapsed && (
@@ -3285,8 +3331,10 @@ export const AdminDashboard = () => {
           )}
         </AnimatePresence>
 
-        {/* Main Content Area */}
-        <main className="flex-1 min-w-0" style={{ touchAction: 'pan-y', overscrollBehaviorY: 'auto' }}>
+        {/* Main Content Area (Expands fully down to footer) */}
+        <main 
+          className="flex-1 min-w-0 pr-2" 
+        >
           {loading ? (
             <div className="flex justify-center py-40">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-primary"></div>
@@ -3348,6 +3396,7 @@ export const AdminDashboard = () => {
               handleDeleteSuccessStory={handleDeleteSuccessStory}
               handleSeedSuccessStories={handleSeedSuccessStories}
               loading={loading}
+              loadSuccessStories={fetchData}
             />
           )}
 
@@ -3373,6 +3422,7 @@ export const AdminDashboard = () => {
               accessLogs={accessLogs}
               handleViewPost={handleViewPost}
               setActiveTab={setActiveTab}
+              token={token}
             />
           )}
 
@@ -3677,6 +3727,7 @@ export const AdminDashboard = () => {
               setSelectedAgeLogModal={setSelectedAgeLogModal}
               isTelemetryExpanded={isTelemetryExpanded}
               setIsTelemetryExpanded={setIsTelemetryExpanded}
+              fetchData={fetchData}
             />
           ) : activeTab === "deletion" ? (
             <AdminDeletionTab
@@ -3699,6 +3750,8 @@ export const AdminDashboard = () => {
               handleApproveDeletionRequest={handleApproveDeletionRequest}
               setSelectedDeletionRequest={setSelectedDeletionRequest}
               handleRejectDeletionRequest={handleRejectDeletionRequest}
+              token={token}
+              fetchData={fetchData}
             />
           ) : activeTab === "reports" ? (
             <AdminReportsTab
@@ -3725,6 +3778,8 @@ export const AdminDashboard = () => {
               setActiveTab={setActiveTab}
               setSelectedReport={setSelectedReport}
               selectedReport={selectedReport}
+              token={token}
+              fetchData={fetchData}
             />
           ) : activeTab === "ngWords" ? (
             <AdminNgWordsTab
@@ -3752,6 +3807,7 @@ export const AdminDashboard = () => {
               setIsBulkAddModalOpen={setIsBulkAddModalOpen}
               bulkNgWordsText={bulkNgWordsText}
               setBulkNgWordsText={setBulkNgWordsText}
+              fetchData={fetchData}
             />
           ) : activeTab === "contacts" ? (
             <AdminContactsTab
@@ -3791,6 +3847,7 @@ export const AdminDashboard = () => {
               isSeedingContacts={isSeedingContacts}
               handleExportContactsCsv={handleExportContactsCsv}
               fetchData={fetchData}
+              token={token}
             />
           ) : activeTab === 'emailTemplates' ? (
             <AdminEmailTemplatesView />
@@ -3809,6 +3866,8 @@ export const AdminDashboard = () => {
               setSelectedArchiveIds={setSelectedArchiveIds}
               handleBatchDeleteArchive={handleBatchDeleteArchive}
               isBatchDeletingArchive={isBatchDeletingArchive}
+              moderationHistory={moderationHistory}
+              setModerationHistory={setModerationHistory}
               archivePerPage={archivePerPage}
               setArchivePerPage={setArchivePerPage}
               setArchivePage={setArchivePage}
@@ -3839,6 +3898,8 @@ export const AdminDashboard = () => {
               archiveSearchTerm={archiveSearchTerm}
               setArchiveSearchTerm={setArchiveSearchTerm}
               handleSeedModeration={handleSeedModeration}
+              token={token}
+              fetchData={fetchData}
             />
           ) : activeTab === 'system' ? (
             <AdminSystemCenterView

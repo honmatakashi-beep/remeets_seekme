@@ -1252,9 +1252,9 @@ export const AdminEmailTemplatesView: React.FC = () => {
       </div>
 
       {/* Main Content: Two Columns (Left: Template Switcher, Right: Live Preview & Editor) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Column: Template List (4 Cols) */}
-        <div className="lg:col-span-4 space-y-2.5 max-h-[850px] overflow-y-auto custom-scrollbar pr-1">
+        <div className="lg:col-span-4 space-y-2.5 pr-1">
           {filteredTemplates.map((tmpl) => {
             const effective = getEffectiveTemplate(tmpl);
             const isSelected = tmpl.id === selectedTemplateId;

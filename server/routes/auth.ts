@@ -21,7 +21,7 @@ export const authRouter = express.Router();
   });
 
   authRouter.post("/register", registrationLimiter, async (req, res) => {
-    let { username, email, password, lastName, firstName, nickname, captchaAnswer, captchaId, snsProvider } = req.body;
+    let { username, email, password, lastName, firstName, nickname, birthdate, captchaAnswer, captchaId, snsProvider } = req.body;
     
     // Simple CAPTCHA validation (mock)
     if (captchaAnswer !== "4") { // Assuming the question was 2+2
@@ -30,6 +30,27 @@ export const authRouter = express.Router();
 
     if (!email || !password || !lastName || !firstName || !nickname) {
       return res.status(400).json({ error: "すべての必須項目（メールアドレス、パスワード、お名前、ニックネーム）を入力してください。" });
+    }
+
+    // 生年月日の厳格な検証（18歳未満の自動遮断）
+    if (!birthdate) {
+      return res.status(400).json({ error: "生年月日を入力してください。" });
+    }
+    const birth = new Date(birthdate);
+    if (isNaN(birth.getTime())) {
+      return res.status(400).json({ error: "有効な生年月日を入力してください。" });
+    }
+    const today = new Date();
+    let calculatedAge = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+      calculatedAge--;
+    }
+    if (calculatedAge < 18) {
+      return res.status(400).json({ error: "法令および青少年保護の利用規約に基づき、18歳未満（高校生を含む）の方は本サービスをご利用いただけません。" });
+    }
+    if (calculatedAge > 120) {
+      return res.status(400).json({ error: "正しい生年月日を入力してください。" });
     }
 
     // 会員番号（ユーザーID: UID-6桁数字）を自動付番（重複防止チェック付き）
@@ -79,9 +100,9 @@ export const authRouter = express.Router();
 
         db.prepare(`
           UPDATE users 
-          SET username = ?, password = ?, full_name = ?, last_name = ?, first_name = ?, nickname = ?, verification_code = ?, verification_code_expires = ?
+          SET username = ?, password = ?, full_name = ?, last_name = ?, first_name = ?, nickname = ?, birthdate = ?, verification_code = ?, verification_code_expires = ?
           WHERE id = ?
-        `).run(username, hashedPassword, fullName, lastName, firstName, nickname, code, expiresAt, existingUser.id);
+        `).run(username, hashedPassword, fullName, lastName, firstName, nickname, birthdate, code, expiresAt, existingUser.id);
 
         await sendRegistrationCodeEmail(email, code, nickname || fullName);
 
@@ -100,10 +121,10 @@ export const authRouter = express.Router();
       const fullName = `${lastName} ${firstName}`;
       
       const stmt = db.prepare(`
-        INSERT INTO users (username, email, password, full_name, last_name, first_name, nickname, role, verification_token, verification_code, verification_code_expires, is_verified) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, 'user', ?, ?, ?, 0)
+        INSERT INTO users (username, email, password, full_name, last_name, first_name, nickname, birthdate, role, verification_token, verification_code, verification_code_expires, is_verified) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'user', ?, ?, ?, 0)
       `);
-      stmt.run(username, email, hashedPassword, fullName, lastName, firstName, nickname, verificationToken, code, expiresAt);
+      stmt.run(username, email, hashedPassword, fullName, lastName, firstName, nickname, birthdate, verificationToken, code, expiresAt);
       
       await sendRegistrationCodeEmail(email, code, nickname || fullName);
 

@@ -31,7 +31,8 @@ import {
   Ban,
   Clock,
   ArrowUpDown,
-  Filter
+  Filter,
+  Trash2
 } from 'lucide-react';
 import { 
   playEmergencyAlarm, 
@@ -81,7 +82,7 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
 
   // フィルター・検索ステート
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [severityFilter, setSeverityFilter] = useState<'all' | 'CRITICAL' | 'HIGH' | 'AI' | 'LOCK'>('all');
+  const [severityFilter, setSeverityFilter] = useState<'all' | 'pending' | 'resolved' | 'CRITICAL' | 'HIGH' | 'AI' | 'LOCK'>('all');
   const [page, setPage] = useState<number>(1);
   const [perPage, setPerPage] = useState<number>(20);
 
@@ -89,6 +90,12 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
   const knownAlertIdsRef = useRef<Set<string>>(new Set());
   const isFirstLoadRef = useRef<boolean>(true);
   const [activeToast, setActiveToast] = useState<any | null>(null);
+
+  // 🚨 統合即時防衛モーダル（Report, AI, Lock, Spam）ステート
+  const [selectedAlertModal, setSelectedAlertModal] = useState<any | null>(null);
+  const [modalDetails, setModalDetails] = useState<any | null>(null);
+  const [isLoadingModalDetails, setIsLoadingModalDetails] = useState<boolean>(false);
+  const [isExecutingModalAction, setIsExecutingModalAction] = useState<boolean>(false);
 
   // 設定の永続化
   useEffect(() => {
@@ -262,7 +269,7 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
   };
 
   // テストシミュレーション実行
-  const handleSimulateAlert = async (type: 'emergency_report' | 'spam_attack' | 'ai_violation') => {
+  const handleSimulateAlert = async (type: 'emergency_report' | 'spam_attack' | 'ai_violation' | 'lock_attack') => {
     if (!token) return;
     try {
       const res = await fetch('/api/admin/live-alerts/simulate', {
@@ -284,7 +291,7 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
           if (soundEnabled) {
             if (simAlert.severity === 'CRITICAL' || simAlert.type === 'EMERGENCY_REPORT') {
               playEmergencyAlarm(volume);
-            } else if (simAlert.severity === 'HIGH' || simAlert.type === 'MASS_POSTING_SPAM' || simAlert.type === 'AI_SAFETY_VIOLATION') {
+            } else if (simAlert.severity === 'HIGH' || simAlert.type === 'MASS_POSTING_SPAM' || simAlert.type === 'AI_SAFETY_VIOLATION' || simAlert.type === 'BRUTE_FORCE_ATTACK') {
               playSpamWarningSound(volume);
             } else {
               playChimeSound(volume);
@@ -306,17 +313,231 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
           }
         }
 
-        fetchLiveAlerts(true);
+        // 最新のアラート一覧を即座に再取得してテーブルを更新
+        await fetchLiveAlerts(false);
+      } else {
+        const err = await res.json().catch(() => ({}));
+        alert(err.error || 'シミュレーションデータの生成に失敗しました。');
       }
     } catch (err) {
       console.error("Failed to run alert simulation:", err);
+      alert('通信エラーが発生しました。');
     }
+  };
+
+  // テストデータ・シミュレーション一括消去
+  const handleClearTestData = async () => {
+    if (!token) return;
+    if (!window.confirm("【確認】テスト・シミュレーションで生成されたボトルメール、緊急通報、および警報履歴を一括削除して初期化しますか？\n（※通常の本番ボトルメールや正規データは影響を受けません）")) {
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/admin/live-alerts/clear-test-data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        alert(data.message || 'テストデータを一括消去しました。');
+        knownAlertIdsRef.current.clear();
+        setActiveToast(null);
+        setLiveData({
+          summary: { 
+            totalActiveAlerts: 0, 
+            pendingReportsCount: 0, 
+            spamDetectionsCount: 0, 
+            aiFlaggedCount: 0, 
+            lockedIpsCount: 0,
+            totalAllAlerts: 0,
+            totalResolvedAlerts: 0
+          },
+          alerts: [],
+          pendingReports: [],
+          spamGroups: [],
+          aiFlaggedPosts: [],
+          lockedIps: []
+        });
+        fetchLiveAlerts(false);
+      } else {
+        const err = await res.json().catch(() => ({}));
+        alert(err.error || 'テストデータの一括消去に失敗しました。');
+      }
+    } catch (err) {
+      console.error("Failed to clear test data:", err);
+      alert('通信エラーが発生しました。');
+    }
+  };
+
+  // 🚨 統合調査 ＆ 防衛モーダルを開く（種別ごとにAPIから詳細取得）
+  const handleOpenAlertModal = async (alertItem: any) => {
+    setSelectedAlertModal(alertItem);
+    setModalDetails(null);
+    setIsLoadingModalDetails(true);
+
+    try {
+      let endpoint = '';
+      let reqBody: any = {};
+
+      if (alertItem.type === 'EMERGENCY_REPORT') {
+        endpoint = '/api/admin/live-alerts/report-details';
+        reqBody = { reportId: alertItem.rawId };
+      } else if (alertItem.type === 'AI_SAFETY_VIOLATION') {
+        endpoint = '/api/admin/live-alerts/ai-details';
+        reqBody = { postId: alertItem.rawId || alertItem.targetId };
+      } else if (alertItem.type === 'BRUTE_FORCE_ATTACK') {
+        endpoint = '/api/admin/live-alerts/lock-details';
+        reqBody = { ip: alertItem.ip || alertItem.targetId, rawId: alertItem.rawId };
+      } else if (alertItem.type === 'MASS_POSTING_SPAM') {
+        endpoint = '/api/admin/live-alerts/spam-details';
+        reqBody = {
+          postIds: alertItem.postIds,
+          ip: alertItem.ip,
+          userId: alertItem.userId
+        };
+      }
+
+      if (endpoint) {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(reqBody)
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          setModalDetails(data);
+        } else {
+          alert('詳細データの取得に失敗しました。');
+        }
+      }
+    } catch (e) {
+      console.error(e);
+      alert('通信エラーが発生しました。');
+    } finally {
+      setIsLoadingModalDetails(false);
+    }
+  };
+
+  // 🚨 防衛アクション実行（全種別対応）
+  const handleExecuteAlertAction = async (actionType: string, customParams: any = {}) => {
+    if (!selectedAlertModal) return;
+
+    let confirmMsg = '';
+    const alertType = selectedAlertModal.type;
+
+    // 通報
+    if (alertType === 'EMERGENCY_REPORT') {
+      if (actionType === 'DISMISS_REPORT') confirmMsg = 'この通報を「却下・誤報」として処理しますか？';
+      else if (actionType === 'RESOLVE_REPORT') confirmMsg = '通報を「解決済み」として処理しますか？';
+      else if (actionType === 'DELETE_POST') confirmMsg = '通報対象の手紙（ボトルメール）を即時削除・アーカイブしますか？';
+      else if (actionType === 'BLOCK_USER') confirmMsg = '被通報者のアカウントを即時凍結しますか？';
+      else if (actionType === 'RESOLVE_AND_DEFEND') confirmMsg = '【🚨 緊急一括防衛】\n・通報対象の手紙を削除\n・投稿者を凍結\n・通報を解決済みに変更\nを一括実行しますか？';
+    }
+    // AI検閲
+    else if (alertType === 'AI_SAFETY_VIOLATION') {
+      if (actionType === 'APPROVE_UNFLAG') confirmMsg = 'このボトルメールのAI隔離を解除し、一般公開（合格）へ復帰させますか？';
+      else if (actionType === 'ARCHIVE_DELETE') confirmMsg = 'AI検閲内容を確定し、このボトルメールを完全削除（隔離アーカイブ）しますか？';
+      else if (actionType === 'BLOCK_AUTHOR_AND_DELETE') confirmMsg = '【🚨 緊急一括防衛】\n・ボトルメールを削除\n・投稿者をアカウント凍結\nを一括実行しますか？';
+    }
+    // 総当たりロック
+    else if (alertType === 'BRUTE_FORCE_ATTACK') {
+      if (actionType === 'UNLOCK_IP') confirmMsg = `IP（${selectedAlertModal.ip || selectedAlertModal.targetId}）のクイズ誤答ロックを解除し、アクセス制限を解除しますか？`;
+      else if (actionType === 'EXTEND_BLOCK_30D') confirmMsg = `不正総当たり攻撃と判定し、IP（${selectedAlertModal.ip || selectedAlertModal.targetId}）を「30日間完全アクセス遮断」に延長しますか？`;
+    }
+    // 連投スパム
+    else if (alertType === 'MASS_POSTING_SPAM') {
+      if (actionType === 'DELETE_POSTS') confirmMsg = `連投された手紙（${modalDetails?.posts?.length || selectedAlertModal.postCount || ''}件）を全て削除（隔離）しますか？`;
+      else if (actionType === 'BLOCK_USER') confirmMsg = `該当ユーザーを即座にアカウント凍結（ロック）しますか？`;
+      else if (actionType === 'BLOCK_IP') confirmMsg = `接続元IP（${selectedAlertModal.ip}）からのアクセスを30日間ブロックしますか？`;
+      else if (actionType === 'RESOLVE_ALL') confirmMsg = `【🚨 緊急一括防衛】\n・連投手紙の全削除\n・ユーザーアカウント凍結\n・接続元IPブロック\nを一括で即時実行します。よろしいですか？`;
+    }
+
+    if (confirmMsg && !window.confirm(confirmMsg)) return;
+
+    setIsExecutingModalAction(true);
+    try {
+      let endpoint = '';
+      let reqBody: any = { actionType, alertId: selectedAlertModal.id, ...customParams };
+
+      if (alertType === 'EMERGENCY_REPORT') {
+        endpoint = '/api/admin/live-alerts/report-action';
+        reqBody.reportId = selectedAlertModal.rawId;
+        reqBody.postId = modalDetails?.targetPost?.id;
+        reqBody.userId = modalDetails?.targetUser?.id;
+      } else if (alertType === 'AI_SAFETY_VIOLATION') {
+        endpoint = '/api/admin/live-alerts/ai-action';
+        reqBody.postId = selectedAlertModal.rawId || selectedAlertModal.targetId;
+        reqBody.userId = modalDetails?.user?.id || modalDetails?.post?.user_id;
+      } else if (alertType === 'BRUTE_FORCE_ATTACK') {
+        endpoint = '/api/admin/live-alerts/lock-action';
+        reqBody.ip = selectedAlertModal.ip || selectedAlertModal.targetId;
+      } else if (alertType === 'MASS_POSTING_SPAM') {
+        endpoint = '/api/admin/live-alerts/spam-action';
+        reqBody.postIds = selectedAlertModal.postIds || modalDetails?.posts?.map((p: any) => p.id);
+        reqBody.userId = selectedAlertModal.userId || modalDetails?.userInfo?.id;
+        reqBody.ip = selectedAlertModal.ip;
+      }
+
+      if (endpoint) {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(reqBody)
+        });
+
+        if (res.ok) {
+          const result = await res.json();
+          alert(result.message || '防衛アクションを実行しました。');
+          setSelectedAlertModal(null);
+          setModalDetails(null);
+          fetchLiveAlerts(true);
+        } else {
+          const errData = await res.json().catch(() => ({}));
+          alert(errData.error || '防衛アクションの実行に失敗しました。');
+        }
+      }
+    } catch (e) {
+      console.error(e);
+      alert('通信エラーが発生しました。');
+    } finally {
+      setIsExecutingModalAction(false);
+    }
+  };
+
+  // 対応アクションの日本語表記ヘルパー
+  const getActionLabel = (actionType?: string) => {
+    if (!actionType) return '防衛措置完了';
+    if (actionType === 'RESOLVE_ALL') return '🚨 緊急一括防衛';
+    if (actionType === 'DELETE_POSTS' || actionType === 'DELETE_POST') return '🗑️ 手紙削除';
+    if (actionType === 'BLOCK_USER') return '🚫 アカウント凍結';
+    if (actionType === 'BLOCK_IP') return '🛡️ IP遮断';
+    if (actionType === 'RESOLVE_AND_DEFEND') return '🚨 通報一括防衛';
+    if (actionType === 'RESOLVE_REPORT') return '✅ 通報解決';
+    if (actionType === 'DISMISS_REPORT') return '❌ 通報却下';
+    if (actionType === 'APPROVE_UNFLAG') return '🟢 公開承認';
+    if (actionType === 'ARCHIVE_DELETE') return '🗑️ 隔離削除';
+    if (actionType === 'BLOCK_AUTHOR_AND_DELETE') return '🚨 投稿者凍結+削除';
+    if (actionType === 'UNLOCK_IP') return '🔓 ロック解除';
+    if (actionType === 'EXTEND_BLOCK_30D') return '🚫 30日遮断';
+    return actionType;
   };
 
   const { summary = {}, alerts = [] } = liveData;
 
   // フィルタリング処理
   const filteredAlerts = alerts.filter((a: any) => {
+    if (severityFilter === 'pending' && a.status === 'resolved') return false;
+    if (severityFilter === 'resolved' && a.status !== 'resolved') return false;
     if (severityFilter === 'CRITICAL' && a.severity !== 'CRITICAL') return false;
     if (severityFilter === 'HIGH' && a.severity !== 'HIGH') return false;
     if (severityFilter === 'AI' && a.type !== 'AI_SAFETY_VIOLATION') return false;
@@ -372,10 +593,10 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
     <div className="space-y-6 text-left font-sans">
       {/* 1. 4大警報KPIサマリーカード */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">
-        {/* カード1: アクティブ警報 */}
+        {/* カード1: 要対応アラート */}
         <div className="bg-white/90 backdrop-blur-md border border-rose-200/80 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-rose-700">🚨 アクティブ警報</span>
+            <span className="text-xs font-bold text-rose-700">🚨 要対応警報</span>
             <div className="w-8 h-8 rounded-xl bg-rose-50 flex items-center justify-center text-rose-600">
               <ShieldAlert size={16} />
             </div>
@@ -417,21 +638,21 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
           <div className="mt-1 text-[11px] text-orange-600 font-medium">短時間連投・ボット検知</div>
         </div>
 
-        {/* カード4: AI安全自動隔離 ＆ ロック */}
-        <div className="bg-white/90 backdrop-blur-md border border-blue-200/80 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
+        {/* カード4: 対応済み実績数 */}
+        <div className="bg-white/90 backdrop-blur-md border border-emerald-200/80 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-blue-700">🤖 AI隔離 ＆ IP凍結</span>
-            <div className="w-8 h-8 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
-              <Bot size={16} />
+            <span className="text-xs font-bold text-emerald-700">✅ 防衛対応済み</span>
+            <div className="w-8 h-8 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+              <CheckCircle2 size={16} />
             </div>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-2xl font-extrabold text-blue-700">
-              {(summary.aiFlaggedCount || 0) + (summary.lockedIpsCount || 0)}
+            <span className="text-2xl font-extrabold text-emerald-700">
+              {summary.totalResolvedAlerts || 0}
             </span>
-            <span className="text-xs text-blue-500">件</span>
+            <span className="text-xs text-emerald-600">件</span>
           </div>
-          <div className="mt-1 text-[11px] text-blue-600 font-medium">不適切検閲 ＆ クイズ誤答遮断</div>
+          <div className="mt-1 text-[11px] text-emerald-600 font-medium">対処完了・防衛保全済み</div>
         </div>
       </div>
 
@@ -601,18 +822,34 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
             <button
               type="button"
               onClick={() => handleSimulateAlert('emergency_report')}
-              className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg text-[11px] font-medium flex items-center gap-1 cursor-pointer transition-all"
+              className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg text-[11px] font-medium flex items-center gap-1 cursor-pointer transition-all hover:border-rose-500/50"
               title="ダミーの緊急通報データを生成して通知テスト"
             >
-              <Zap size={11} className="text-rose-400" /> 通報シミュレーション
+              <Zap size={11} className="text-rose-400" /> 通報テスト
             </button>
             <button
               type="button"
               onClick={() => handleSimulateAlert('spam_attack')}
-              className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg text-[11px] font-medium flex items-center gap-1 cursor-pointer transition-all"
+              className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg text-[11px] font-medium flex items-center gap-1 cursor-pointer transition-all hover:border-amber-500/50"
               title="3件の連続投稿データを生成してスパム検知テスト"
             >
-              <Flame size={11} className="text-amber-400" /> 連投スパムシミュレーション
+              <Flame size={11} className="text-amber-400" /> 連投スパムテスト
+            </button>
+            <button
+              type="button"
+              onClick={() => handleSimulateAlert('ai_violation')}
+              className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg text-[11px] font-medium flex items-center gap-1 cursor-pointer transition-all hover:border-blue-500/50"
+              title="AI安全防衛エンジンの検閲フラグボトルのテストデータを生成"
+            >
+              <Bot size={11} className="text-blue-400" /> AI検閲テスト
+            </button>
+            <button
+              type="button"
+              onClick={() => handleSimulateAlert('lock_attack')}
+              className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg text-[11px] font-medium flex items-center gap-1 cursor-pointer transition-all hover:border-purple-500/50"
+              title="合言葉クイズ総当たり誤答によるIP凍結ロックのテストデータを生成"
+            >
+              <Lock size={11} className="text-purple-400" /> 誤答ロックテスト
             </button>
           </div>
         </div>
@@ -637,19 +874,23 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
           </div>
 
           <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
-            {activeToast.actionUrl && (
-              <button
-                type="button"
-                onClick={() => {
-                  onNavigateTab(activeToast.actionUrl);
-                  setActiveToast(null);
-                }}
-                className="px-4 py-2 bg-white hover:bg-rose-50 text-rose-950 font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-md cursor-pointer transition-all"
-              >
-                <span>今すぐ対応する</span>
-                <ExternalLink size={13} />
-              </button>
-            )}
+            <button
+              type="button"
+              onClick={() => {
+                const toastItem = activeToast;
+                setActiveToast(null);
+                handleOpenAlertModal(toastItem);
+              }}
+              className="px-4 py-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-md cursor-pointer transition-all animate-pulse"
+            >
+              <ShieldAlert size={14} className="text-slate-950" />
+              <span>
+                {activeToast.type === 'EMERGENCY_REPORT' ? '🚨 通報を即時調査・防衛' :
+                 activeToast.type === 'MASS_POSTING_SPAM' ? '🚨 スパム緊急調査・防衛' :
+                 activeToast.type === 'AI_SAFETY_VIOLATION' ? '🤖 AI検閲を審査・防衛' :
+                 '🔒 クイズ攻撃を調査・防衛'}
+              </span>
+            </button>
             <button
               type="button"
               onClick={() => setActiveToast(null)}
@@ -686,6 +927,16 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
           <div className="flex items-center gap-2">
             <button
               type="button"
+              onClick={handleClearTestData}
+              className="px-3 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+              title="シミュレーションで追加されたテスト用ボトルメールや通報・警報履歴をすべて消去します"
+            >
+              <Trash2 size={14} className="text-rose-600" />
+              <span>テストデータ一括消去</span>
+            </button>
+
+            <button
+              type="button"
               onClick={handleExportCsv}
               className="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
             >
@@ -699,9 +950,11 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
         <div className="p-4 border-b border-slate-200/80 bg-slate-50/30 space-y-3">
           {/* Status Tabs */}
           <div className="flex items-center justify-between flex-wrap gap-2">
-            <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl border border-slate-200/80 text-xs font-bold">
+            <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl border border-slate-200/80 text-xs font-bold flex-wrap">
               {[
                 { id: 'all', label: 'すべて', count: alerts.length },
+                { id: 'pending', label: '🚨 要対応', count: alerts.filter((a: any) => a.status !== 'resolved').length },
+                { id: 'resolved', label: '✅ 対応済み', count: alerts.filter((a: any) => a.status === 'resolved').length },
                 { id: 'CRITICAL', label: '🚨 緊急通報', count: alerts.filter((a: any) => a.severity === 'CRITICAL').length },
                 { id: 'HIGH', label: '⚠️ 連投スパム', count: alerts.filter((a: any) => a.severity === 'HIGH' && a.type !== 'AI_SAFETY_VIOLATION').length },
                 { id: 'AI', label: '🤖 AI検閲隔離', count: alerts.filter((a: any) => a.type === 'AI_SAFETY_VIOLATION').length },
@@ -777,10 +1030,11 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="border-b border-slate-200/80 bg-slate-50/80 text-[11px] font-bold uppercase tracking-wider text-slate-600">
+                    <th className="px-3.5 py-2.5 whitespace-nowrap">対応状況</th>
                     <th className="px-3.5 py-2.5 whitespace-nowrap">検知日時</th>
                     <th className="px-3.5 py-2.5 whitespace-nowrap">重要度 / 種別</th>
                     <th className="px-3.5 py-2.5 whitespace-nowrap">タイトル / 対象</th>
-                    <th className="px-3.5 py-2.5 whitespace-nowrap">検知メッセージ・理由</th>
+                    <th className="px-3.5 py-2.5 whitespace-nowrap">検知メッセージ・処置</th>
                     <th className="px-3.5 py-2.5 whitespace-nowrap">接続元 IP</th>
                     <th className="px-3.5 py-2.5 text-right whitespace-nowrap">即時アクション</th>
                   </tr>
@@ -789,9 +1043,30 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
                   {paginatedAlerts.map((a: any) => {
                     const isCrit = a.severity === 'CRITICAL';
                     const isHigh = a.severity === 'HIGH';
+                    const isResolved = a.status === 'resolved';
 
                     return (
-                      <tr key={a.id} className="h-12 hover:bg-slate-50/70 transition-colors group">
+                      <tr 
+                        key={a.id} 
+                        className={`h-12 transition-colors group ${
+                          isResolved ? 'bg-slate-50/40 opacity-80 hover:opacity-100' : 'hover:bg-slate-50/70'
+                        }`}
+                      >
+                        {/* 0. Status Badge */}
+                        <td className="px-3.5 py-2 whitespace-nowrap">
+                          {isResolved ? (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-2xs">
+                              <CheckCircle2 size={12} className="text-emerald-600" />
+                              <span>対応済み</span>
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-rose-100 text-rose-800 border border-rose-300 animate-pulse">
+                              <AlertTriangle size={12} className="text-rose-600" />
+                              <span>要対応</span>
+                            </span>
+                          )}
+                        </td>
+
                         {/* 1. Timestamp */}
                         <td className="px-3.5 py-2 whitespace-nowrap text-slate-500 font-mono text-[11px]">
                           {new Date(a.timestamp).toLocaleString('ja-JP', {
@@ -840,11 +1115,18 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
                           </div>
                         </td>
 
-                        {/* 4. Message */}
+                        {/* 4. Message & Resolved Details */}
                         <td className="px-3.5 py-2 max-w-sm truncate text-slate-600">
                           <span className="truncate block" title={a.message}>
                             {a.message}
                           </span>
+                          {isResolved && a.resolvedInfo && (
+                            <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 font-bold bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 mt-0.5">
+                              <span>処置: {getActionLabel(a.resolvedInfo.actionType)}</span>
+                              <span>•</span>
+                              <span>{new Date(a.resolvedInfo.resolvedAt).toLocaleTimeString('ja-JP')}</span>
+                            </span>
+                          )}
                         </td>
 
                         {/* 5. IP */}
@@ -855,26 +1137,43 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
                         {/* 6. Action */}
                         <td className="px-3.5 py-2 text-right whitespace-nowrap">
                           <div className="flex items-center justify-end gap-1.5">
-                            {a.actionUrl && (
-                              <button
-                                type="button"
-                                onClick={() => onNavigateTab(a.actionUrl)}
-                                className="px-2.5 py-1 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer shadow-2xs"
-                                title="該当管理画面を開く"
-                              >
-                                <span>対応</span>
-                                <ExternalLink size={11} />
-                              </button>
-                            )}
+                            <button
+                              type="button"
+                              onClick={() => handleOpenAlertModal(a)}
+                              className={`px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition-all cursor-pointer shadow-xs ${
+                                isResolved
+                                  ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300' :
+                                a.type === 'EMERGENCY_REPORT' 
+                                  ? 'bg-rose-600 hover:bg-rose-700 text-white animate-pulse' :
+                                a.type === 'MASS_POSTING_SPAM' 
+                                  ? 'bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold' :
+                                a.type === 'AI_SAFETY_VIOLATION'
+                                  ? 'bg-blue-600 hover:bg-blue-700 text-white' :
+                                'bg-slate-900 hover:bg-slate-800 text-white'
+                              }`}
+                              title={isResolved ? "対応内容・詳細ログを確認" : "専用モーダルを開いて即時調査・防衛アクションを実行"}
+                            >
+                              {isResolved ? (
+                                <>
+                                  <CheckCircle2 size={12} className="text-emerald-600" />
+                                  <span>対応済み (確認)</span>
+                                </>
+                              ) : (
+                                <>
+                                  <ShieldAlert size={12} />
+                                  <span>調査・防衛</span>
+                                </>
+                              )}
+                            </button>
 
                             <button
                               type="button"
                               onClick={(e) => handleDismissAlert(a.id, e)}
                               className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer"
-                              title="アラートを既読にする"
+                              title="アラート一覧から非表示（既読）にする"
                             >
                               <Check size={12} />
-                              <span>既読</span>
+                              <span>非表示</span>
                             </button>
                           </div>
                         </td>
@@ -938,6 +1237,510 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
           )}
         </div>
       </div>
+
+      {/* 🚨 統合緊急調査 ＆ 即時防衛モーダル（専用別ウィンドウ・ダイアログ） */}
+      {selectedAlertModal && (
+        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl border-2 border-rose-500 shadow-2xl max-w-4xl w-full overflow-hidden text-left font-sans animate-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
+            
+            {/* Modal Header */}
+            <div className={`p-5 sm:p-6 text-white flex items-center justify-between border-b shrink-0 ${
+              selectedAlertModal.type === 'EMERGENCY_REPORT' ? 'bg-gradient-to-r from-rose-900 via-slate-900 to-slate-950 border-rose-800/80' :
+              selectedAlertModal.type === 'MASS_POSTING_SPAM' ? 'bg-gradient-to-r from-amber-900 via-slate-900 to-slate-950 border-amber-800/80' :
+              selectedAlertModal.type === 'AI_SAFETY_VIOLATION' ? 'bg-gradient-to-r from-blue-900 via-slate-900 to-slate-950 border-blue-800/80' :
+              'bg-gradient-to-r from-purple-900 via-slate-900 to-slate-950 border-purple-800/80'
+            }`}>
+              <div className="flex items-center gap-3.5">
+                <div className={`w-12 h-12 rounded-2xl border text-white flex items-center justify-center shadow-lg animate-pulse shrink-0 ${
+                  selectedAlertModal.type === 'EMERGENCY_REPORT' ? 'bg-rose-600 border-rose-400' :
+                  selectedAlertModal.type === 'MASS_POSTING_SPAM' ? 'bg-amber-600 border-amber-400 text-slate-950' :
+                  selectedAlertModal.type === 'AI_SAFETY_VIOLATION' ? 'bg-blue-600 border-blue-400' :
+                  'bg-purple-600 border-purple-400'
+                }`}>
+                  {selectedAlertModal.type === 'EMERGENCY_REPORT' ? <AlertTriangle size={24} /> :
+                   selectedAlertModal.type === 'MASS_POSTING_SPAM' ? <Flame size={24} /> :
+                   selectedAlertModal.type === 'AI_SAFETY_VIOLATION' ? <Bot size={24} /> :
+                   <Lock size={24} />}
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-white/20 text-white uppercase tracking-wider backdrop-blur-xs">
+                      {selectedAlertModal.type} • {selectedAlertModal.severity}
+                    </span>
+                    <span className="text-xs text-slate-300 font-mono">
+                      {selectedAlertModal.timestamp}
+                    </span>
+                  </div>
+                  <h3 className="text-lg sm:text-xl font-bold text-white mt-0.5">
+                    {selectedAlertModal.type === 'EMERGENCY_REPORT' ? '🚨 緊急通報 即時調査 ＆ 防衛指令センター' :
+                     selectedAlertModal.type === 'MASS_POSTING_SPAM' ? '⚡ 大量連続投稿スパム 緊急調査 ＆ 即時防衛センター' :
+                     selectedAlertModal.type === 'AI_SAFETY_VIOLATION' ? '🤖 AI検閲隔離 証拠確認 ＆ 審査センター' :
+                     '🔒 クイズ総当たり不正回答 攻撃元調査 ＆ 防衛センター'}
+                  </h3>
+                  <p className="text-xs text-slate-300 mt-0.5">
+                    {selectedAlertModal.type === 'EMERGENCY_REPORT' ? '通報された手紙の内容、申告理由、通報者および被通報者のアカウント情報を照合し、即座に対処します。' :
+                     selectedAlertModal.type === 'MASS_POSTING_SPAM' ? '短時間に連続投函されたボトルメールの内容と投稿者アカウント・接続元IPを即時調査し、一括対処を実行します。' :
+                     selectedAlertModal.type === 'AI_SAFETY_VIOLATION' ? 'AI安全防衛エンジンが自動隔離した手紙の危険度・判定理由を確認し、公開復帰または完全削除を実行します。' :
+                     '短時間にクイズ誤答を繰り返した接続元IPの履歴を確認し、ブロック期間の延長または誤認解除を実行します。'}
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedAlertModal(null);
+                  setModalDetails(null);
+                }}
+                className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-all cursor-pointer"
+                title="モーダルを閉じる"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 overflow-y-auto space-y-6 flex-1 bg-slate-50/50">
+              {isLoadingModalDetails ? (
+                <div className="p-16 text-center text-slate-500 space-y-3">
+                  <RefreshCw className="animate-spin mx-auto text-rose-600" size={32} />
+                  <p className="text-sm font-bold">関連データ・証拠ログを照合中...</p>
+                </div>
+              ) : (
+                <>
+                  {/* ====== 種別 1: 緊急通報 (EMERGENCY_REPORT) ====== */}
+                  {selectedAlertModal.type === 'EMERGENCY_REPORT' && modalDetails?.report && (
+                    <div className="space-y-4">
+                      {/* 通報概要カード */}
+                      <div className="bg-rose-50 border border-rose-200 rounded-2xl p-4.5 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="px-2.5 py-1 rounded-full text-xs font-extrabold bg-rose-600 text-white">
+                            通報ID #{modalDetails.report.id} ({modalDetails.report.report_type || '不適切コンテンツ'})
+                          </span>
+                          <span className="text-xs text-rose-800 font-mono">
+                            通報日時: {modalDetails.report.created_at}
+                          </span>
+                        </div>
+                        <div className="space-y-1">
+                          <span className="text-[11px] font-bold text-rose-700 block">通報者からの申告理由:</span>
+                          <p className="text-sm font-bold text-slate-900 bg-white p-3 rounded-xl border border-rose-200 leading-relaxed">
+                            {modalDetails.report.reason}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-4 text-xs text-rose-900">
+                          <span>申告者: <b>{modalDetails.report.reporter_nickname || modalDetails.report.reporter_username || '匿名'}</b></span>
+                          {modalDetails.report.reporter_email && (
+                            <span>連絡先: <b className="font-mono">{modalDetails.report.reporter_email}</b></span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* 対象手紙 (Post) */}
+                      {modalDetails.targetPost && (
+                        <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-3">
+                          <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                            <div className="flex items-center gap-2 font-bold text-slate-800 text-sm">
+                              <Flame size={16} className="text-rose-600" />
+                              <span>通報された手紙 (ボトル #{modalDetails.targetPost.id})</span>
+                            </div>
+                            <span className="text-xs text-slate-500 font-mono">{modalDetails.targetPost.created_at}</span>
+                          </div>
+                          <div className="grid grid-cols-2 gap-2 text-xs">
+                            <div className="p-2 bg-slate-50 rounded-lg">宛先: <b>{modalDetails.targetPost.target_name}</b></div>
+                            <div className="p-2 bg-slate-50 rounded-lg">差出人: <b>{modalDetails.targetPost.searcher_name || '匿名'}</b></div>
+                          </div>
+                          <p className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-800 leading-relaxed font-sans">
+                            {modalDetails.targetPost.message}
+                          </p>
+                        </div>
+                      )}
+
+                      {/* 被通報者アカウント (Target User) */}
+                      {modalDetails.targetUser && (
+                        <div className="bg-white rounded-2xl p-4 border border-slate-200 text-xs space-y-2">
+                          <div className="font-bold text-slate-800 flex items-center justify-between">
+                            <span>被通報者アカウント情報</span>
+                            <span className={modalDetails.targetUser.is_blocked ? "text-rose-600 font-bold" : "text-emerald-600 font-bold"}>
+                              {modalDetails.targetUser.is_blocked ? "🚫 凍結中" : "🟢 通常"}
+                            </span>
+                          </div>
+                          <div className="grid grid-cols-3 gap-2">
+                            <div className="p-2 bg-slate-50 rounded-lg">UID: <b className="font-mono">{modalDetails.targetUser.username}</b></div>
+                            <div className="p-2 bg-slate-50 rounded-lg">氏名/表示名: <b>{modalDetails.targetUser.nickname || modalDetails.targetUser.full_name || '-'}</b></div>
+                            <div className="p-2 bg-slate-50 rounded-lg truncate">Email: <b className="font-mono">{modalDetails.targetUser.email || '-'}</b></div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* ====== 種別 2: AI検閲隔離 (AI_SAFETY_VIOLATION) ====== */}
+                  {selectedAlertModal.type === 'AI_SAFETY_VIOLATION' && modalDetails?.post && (
+                    <div className="space-y-4">
+                      {/* AI判定結果カード */}
+                      <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4.5 space-y-2.5">
+                        <div className="flex items-center justify-between">
+                          <span className="px-2.5 py-1 rounded-full text-xs font-extrabold bg-blue-600 text-white flex items-center gap-1.5">
+                            <Bot size={13} />
+                            <span>AI安全エンジン検閲フラグ付与</span>
+                          </span>
+                          <span className="text-xs text-blue-800 font-mono">
+                            投函日時: {modalDetails.post.created_at}
+                          </span>
+                        </div>
+                        <div className="space-y-1">
+                          <span className="text-[11px] font-bold text-blue-800 block">AI検閲・隔離理由:</span>
+                          <p className="text-sm font-bold text-slate-900 bg-white p-3 rounded-xl border border-blue-200 leading-relaxed">
+                            {modalDetails.post.ai_reason || '不適切・ストーカー・連絡先露出の疑い'}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* 手紙本文 */}
+                      <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-3">
+                        <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                          <span className="font-bold text-slate-800 text-sm">手紙本文 (ボトル #{modalDetails.post.id})</span>
+                          <span className="text-xs text-slate-500">宛先: <b>{modalDetails.post.target_name}</b> | 差出人: <b>{modalDetails.post.searcher_name || '匿名'}</b></span>
+                        </div>
+                        <p className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-800 leading-relaxed font-sans">
+                          {modalDetails.post.message}
+                        </p>
+                      </div>
+
+                      {/* 投稿者アカウント */}
+                      {modalDetails.user && (
+                        <div className="bg-white rounded-2xl p-4 border border-slate-200 text-xs space-y-2">
+                          <div className="font-bold text-slate-800 flex items-center justify-between">
+                            <span>投稿者アカウント情報</span>
+                            <span className={modalDetails.user.is_blocked ? "text-rose-600 font-bold" : "text-emerald-600 font-bold"}>
+                              {modalDetails.user.is_blocked ? "🚫 凍結中" : "🟢 通常"}
+                            </span>
+                          </div>
+                          <div className="grid grid-cols-3 gap-2">
+                            <div className="p-2 bg-slate-50 rounded-lg">UID: <b className="font-mono">{modalDetails.user.username}</b></div>
+                            <div className="p-2 bg-slate-50 rounded-lg">氏名/表示名: <b>{modalDetails.user.nickname || modalDetails.user.full_name || '-'}</b></div>
+                            <div className="p-2 bg-slate-50 rounded-lg truncate">Email: <b className="font-mono">{modalDetails.user.email || '-'}</b></div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* ====== 種別 3: 総当たりロック (BRUTE_FORCE_ATTACK) ====== */}
+                  {selectedAlertModal.type === 'BRUTE_FORCE_ATTACK' && (
+                    <div className="space-y-4">
+                      <div className="bg-purple-50 border border-purple-200 rounded-2xl p-4.5 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="px-2.5 py-1 rounded-full text-xs font-extrabold bg-purple-600 text-white flex items-center gap-1.5">
+                            <Lock size={13} />
+                            <span>クイズ総当たり不正回答攻撃</span>
+                          </span>
+                          <span className="text-xs text-purple-800 font-mono">
+                            最終試行: {modalDetails?.lockRecord?.last_attempt || selectedAlertModal.timestamp}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
+                          <div className="p-3 bg-white rounded-xl border border-purple-200">
+                            <span className="text-[11px] font-bold text-purple-700 block mb-1">攻撃元 IP</span>
+                            <span className="font-mono font-bold text-slate-900 text-sm">{modalDetails?.ip || selectedAlertModal.ip || selectedAlertModal.targetId}</span>
+                          </div>
+                          <div className="p-3 bg-white rounded-xl border border-purple-200">
+                            <span className="text-[11px] font-bold text-purple-700 block mb-1">連続誤答回数</span>
+                            <span className="font-mono font-bold text-rose-600 text-sm">{modalDetails?.lockRecord?.count || 4} 回</span>
+                          </div>
+                          <div className="p-3 bg-white rounded-xl border border-purple-200">
+                            <span className="text-[11px] font-bold text-purple-700 block mb-1">現在のロック期限</span>
+                            <span className="font-mono text-slate-800 text-xs truncate block">{modalDetails?.lockRecord?.locked_until || '24時間ロック中'}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {modalDetails?.targetPost && (
+                        <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-3">
+                          <div className="font-bold text-slate-800 text-sm border-b border-slate-100 pb-2">
+                            標的となったボトルメール (#{modalDetails.targetPost.id})
+                          </div>
+                          <div className="grid grid-cols-2 gap-2 text-xs">
+                            <div className="p-2 bg-slate-50 rounded-lg">宛先: <b>{modalDetails.targetPost.target_name}</b></div>
+                            <div className="p-2 bg-slate-50 rounded-lg">差出人: <b>{modalDetails.targetPost.searcher_name || '匿名'}</b></div>
+                          </div>
+                          <p className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-800 leading-relaxed font-sans">
+                            {modalDetails.targetPost.message}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* ====== 種別 4: 連投スパム (MASS_POSTING_SPAM) ====== */}
+                  {selectedAlertModal.type === 'MASS_POSTING_SPAM' && (
+                    <>
+                      {/* 1. 投稿者・接続元 IP インサイトカード */}
+                      <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-4">
+                        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                          <div className="flex items-center gap-2 font-bold text-slate-800 text-sm">
+                            <UserX size={16} className="text-rose-600" />
+                            <span>投稿者アカウント ＆ 接続元情報</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {modalDetails?.userInfo?.is_blocked === 1 ? (
+                              <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-300">
+                                🚫 アカウント凍結中
+                              </span>
+                            ) : (
+                              <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                                🟢 通常アカウント
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                          <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">
+                            <span className="text-[11px] font-bold text-slate-500 block mb-1">ユーザーID / UID</span>
+                            <span className="font-mono font-bold text-slate-900 text-sm">
+                              {modalDetails?.userInfo?.username || (selectedAlertModal.userId ? `UID #${selectedAlertModal.userId}` : 'ゲスト / 不明')}
+                            </span>
+                          </div>
+                          <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">
+                            <span className="text-[11px] font-bold text-slate-500 block mb-1">ニックネーム / 氏名</span>
+                            <span className="font-bold text-slate-900 text-sm truncate block">
+                              {modalDetails?.userInfo?.nickname || modalDetails?.userInfo?.full_name || '未設定'}
+                            </span>
+                          </div>
+                          <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">
+                            <span className="text-[11px] font-bold text-slate-500 block mb-1">登録メールアドレス</span>
+                            <span className="font-mono text-slate-800 text-xs truncate block" title={modalDetails?.userInfo?.email}>
+                              {modalDetails?.userInfo?.email || '-'}
+                            </span>
+                          </div>
+                          <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">
+                            <span className="text-[11px] font-bold text-slate-500 block mb-1">接続元 IP アドレス</span>
+                            <span className="font-mono font-bold text-rose-700 text-sm">
+                              {selectedAlertModal.ip || modalDetails?.ip || '-'}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 2. 連投された手紙一覧 */}
+                      <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+                        <div className="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+                          <div className="flex items-center gap-2 font-bold text-slate-800 text-sm">
+                            <Flame size={16} className="text-amber-500" />
+                            <span>連続投函された手紙一覧（全 {modalDetails?.posts?.length || 0} 件）</span>
+                          </div>
+                          <span className="text-xs text-slate-500">
+                            短時間に投函されたボトルメール
+                          </span>
+                        </div>
+
+                        <div className="divide-y divide-slate-100 max-h-64 overflow-y-auto text-xs">
+                          {modalDetails?.posts && modalDetails.posts.length > 0 ? (
+                            modalDetails.posts.map((p: any, idx: number) => (
+                              <div key={p.id || idx} className="p-4 hover:bg-slate-50/80 transition-colors space-y-2">
+                                <div className="flex items-center justify-between flex-wrap gap-2">
+                                  <div className="flex items-center gap-2">
+                                    <span className="px-2 py-0.5 rounded bg-slate-900 text-white font-mono font-bold text-[10px]">
+                                      ボトル #{p.id}
+                                    </span>
+                                    <span className="font-bold text-slate-900">
+                                      宛先: {p.target_name || '未設定'}
+                                    </span>
+                                    <span className="text-slate-400">|</span>
+                                    <span className="text-slate-600">
+                                      差出人: {p.searcher_name || '匿名'}
+                                    </span>
+                                  </div>
+                                  <span className="text-[11px] text-slate-500 font-mono">
+                                    {p.created_at}
+                                  </span>
+                                </div>
+
+                                <p className="text-slate-700 bg-slate-50 p-2.5 rounded-xl border border-slate-200/60 leading-relaxed font-sans">
+                                  {p.message}
+                                </p>
+                              </div>
+                            ))
+                          ) : (
+                            <div className="p-8 text-center text-slate-400">
+                              該当する手紙データが見つかりませんでした（既に削除済みの可能性があります）。
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </>
+              )}
+            </div>
+
+            {/* Modal Footer: 緊急防衛アクションボタン群（種別ごとに切り替え） */}
+            <div className="p-5 sm:p-6 bg-white border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
+              <div className="text-xs text-slate-500 font-medium text-left">
+                ※ 防衛アクションを実行すると監査ログに記録され、アラートは自動的に解決済みに移行します。
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto justify-end">
+                {/* 1. 通報アクション */}
+                {selectedAlertModal.type === 'EMERGENCY_REPORT' && (
+                  <>
+                    <button
+                      type="button"
+                      disabled={isExecutingModalAction}
+                      onClick={() => handleExecuteAlertAction('DISMISS_REPORT')}
+                      className="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all cursor-pointer"
+                      title="誤報として却下"
+                    >
+                      通報を却下
+                    </button>
+                    {modalDetails?.targetPost && (
+                      <button
+                        type="button"
+                        disabled={isExecutingModalAction}
+                        onClick={() => handleExecuteAlertAction('DELETE_POST')}
+                        className="px-3.5 py-2 rounded-xl bg-orange-100 hover:bg-orange-200 text-orange-900 text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
+                      >
+                        <Trash2 size={13} />
+                        <span>手紙を削除</span>
+                      </button>
+                    )}
+                    {modalDetails?.targetUser && (
+                      <button
+                        type="button"
+                        disabled={isExecutingModalAction || modalDetails.targetUser.is_blocked}
+                        onClick={() => handleExecuteAlertAction('BLOCK_USER')}
+                        className="px-3.5 py-2 rounded-xl bg-rose-100 hover:bg-rose-200 text-rose-900 text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
+                      >
+                        <Ban size={13} />
+                        <span>ユーザー凍結</span>
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      disabled={isExecutingModalAction}
+                      onClick={() => handleExecuteAlertAction('RESOLVE_AND_DEFEND')}
+                      className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-extrabold shadow-md shadow-rose-600/30 transition-all cursor-pointer flex items-center gap-1.5 animate-pulse"
+                    >
+                      <Zap size={14} />
+                      <span>🚨 一括防衛 (削除＋凍結)</span>
+                    </button>
+                  </>
+                )}
+
+                {/* 2. AI検閲アクション */}
+                {selectedAlertModal.type === 'AI_SAFETY_VIOLATION' && (
+                  <>
+                    <button
+                      type="button"
+                      disabled={isExecutingModalAction}
+                      onClick={() => handleExecuteAlertAction('APPROVE_UNFLAG')}
+                      className="px-3.5 py-2 rounded-xl bg-emerald-100 hover:bg-emerald-200 text-emerald-900 text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
+                      title="誤検知として公開復帰"
+                    >
+                      <CheckCircle2 size={14} className="text-emerald-700" />
+                      <span>誤検知解除（公開承認）</span>
+                    </button>
+                    <button
+                      type="button"
+                      disabled={isExecutingModalAction}
+                      onClick={() => handleExecuteAlertAction('ARCHIVE_DELETE')}
+                      className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
+                    >
+                      <Trash2 size={13} />
+                      <span>手紙を削除アーカイブ</span>
+                    </button>
+                    <button
+                      type="button"
+                      disabled={isExecutingModalAction}
+                      onClick={() => handleExecuteAlertAction('BLOCK_AUTHOR_AND_DELETE')}
+                      className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-extrabold shadow-md shadow-rose-600/30 transition-all cursor-pointer flex items-center gap-1.5"
+                    >
+                      <Zap size={14} />
+                      <span>🚨 悪質投稿者凍結 ＋ 削除</span>
+                    </button>
+                  </>
+                )}
+
+                {/* 3. 総当たりロックアクション */}
+                {selectedAlertModal.type === 'BRUTE_FORCE_ATTACK' && (
+                  <>
+                    <button
+                      type="button"
+                      disabled={isExecutingModalAction}
+                      onClick={() => handleExecuteAlertAction('UNLOCK_IP')}
+                      className="px-3.5 py-2 rounded-xl bg-emerald-100 hover:bg-emerald-200 text-emerald-900 text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
+                    >
+                      <CheckCircle2 size={14} className="text-emerald-700" />
+                      <span>ロック即時解除 (誤認救済)</span>
+                    </button>
+                    <button
+                      type="button"
+                      disabled={isExecutingModalAction}
+                      onClick={() => handleExecuteAlertAction('EXTEND_BLOCK_30D')}
+                      className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-extrabold shadow-md shadow-purple-600/30 transition-all cursor-pointer flex items-center gap-1.5"
+                    >
+                      <Ban size={14} />
+                      <span>🚫 30日間完全アクセス遮断</span>
+                    </button>
+                  </>
+                )}
+
+                {/* 4. 連投スパムアクション */}
+                {selectedAlertModal.type === 'MASS_POSTING_SPAM' && (
+                  <>
+                    <button
+                      type="button"
+                      disabled={isExecutingModalAction || !modalDetails?.posts?.length}
+                      onClick={() => handleExecuteAlertAction('DELETE_POSTS')}
+                      className="px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-all cursor-pointer disabled:opacity-40 flex items-center gap-1.5"
+                    >
+                      <Trash2 size={14} className="text-slate-600" />
+                      <span>手紙を一括削除 ({modalDetails?.posts?.length || 0}件)</span>
+                    </button>
+
+                    {modalDetails?.userInfo && (
+                      <button
+                        type="button"
+                        disabled={isExecutingModalAction || modalDetails.userInfo.is_blocked === 1}
+                        onClick={() => handleExecuteAlertAction('BLOCK_USER')}
+                        className="px-3.5 py-2.5 rounded-xl bg-orange-100 hover:bg-orange-200 text-orange-900 text-xs font-bold transition-all cursor-pointer disabled:opacity-40 flex items-center gap-1.5"
+                      >
+                        <Ban size={14} className="text-orange-700" />
+                        <span>ユーザー凍結</span>
+                      </button>
+                    )}
+
+                    {selectedAlertModal.ip && (
+                      <button
+                        type="button"
+                        disabled={isExecutingModalAction}
+                        onClick={() => handleExecuteAlertAction('BLOCK_IP')}
+                        className="px-3.5 py-2.5 rounded-xl bg-rose-100 hover:bg-rose-200 text-rose-900 text-xs font-bold transition-all cursor-pointer disabled:opacity-40 flex items-center gap-1.5"
+                      >
+                        <ShieldAlert size={14} className="text-rose-700" />
+                        <span>IP遮断</span>
+                      </button>
+                    )}
+
+                    <button
+                      type="button"
+                      disabled={isExecutingModalAction}
+                      onClick={() => handleExecuteAlertAction('RESOLVE_ALL')}
+                      className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-700 hover:to-rose-800 text-white text-xs font-extrabold shadow-md shadow-rose-600/30 transition-all cursor-pointer disabled:opacity-50 flex items-center gap-2 animate-pulse"
+                    >
+                      <Zap size={15} />
+                      <span>🚨 緊急一括防衛（手紙全削除 ＋ 凍結）</span>
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

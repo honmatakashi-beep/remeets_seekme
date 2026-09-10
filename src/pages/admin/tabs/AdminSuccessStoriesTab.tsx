@@ -128,7 +128,8 @@ export const AdminSuccessStoriesTab: React.FC<AdminSuccessStoriesTabProps> = (pr
             const paginatedStories = filteredStories.slice((safeStoryPage - 1) * storyPerPage, safeStoryPage * storyPerPage);
 
             const featuredCount = successStories.filter(s => s.is_featured === 1).length;
-            const publicCount = successStories.filter(s => s.is_all_page === 1 && s.is_public === 1).length;
+            const publicCount = successStories.filter(s => s.is_public === 1 && (s.is_all_page === 1 || s.is_all_page === undefined || s.is_all_page === null || s.is_all_page === 0 ? true : true)).length;
+            const allPublicCount = successStories.filter(s => s.is_public === 1).length;
 
             return (
               <div className="space-y-8 animate-fade-in font-sans">
@@ -169,7 +170,30 @@ export const AdminSuccessStoriesTab: React.FC<AdminSuccessStoriesTabProps> = (pr
                       className="px-4 py-2.5 bg-rose-50 text-rose-700 text-xs font-bold rounded-xl border border-rose-200/80 hover:bg-rose-100 transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
                     >
                       <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
-                      <span>サンプル6件を一括生成</span>
+                      <span>+ サンプル6件生成</span>
+                    </button>
+                    <button 
+                      type="button"
+                      onClick={async () => {
+                        if (!confirm('全ての再会体験談（ストーリー）を完全に消去（初期化）しますか？')) return;
+                        try {
+                          const authToken = token || localStorage.getItem('token') || sessionStorage.getItem('token');
+                          const res = await fetch('/api/admin/success-stories/clear-all', {
+                            method: 'POST',
+                            headers: { 'Authorization': authToken ? `Bearer ${authToken}` : '' }
+                          });
+                          if (res.ok) {
+                            if (loadSuccessStories) loadSuccessStories();
+                            else window.location.reload();
+                          }
+                        } catch (e) {
+                          console.error(e);
+                        }
+                      }}
+                      className="px-4 py-2.5 bg-rose-100/60 text-rose-800 text-xs font-bold rounded-xl border border-rose-300 hover:bg-rose-200 transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                    >
+                      <Trash2 size={14} />
+                      <span>🗑️ 体験談全クリア</span>
                     </button>
                     <button 
                       type="button"

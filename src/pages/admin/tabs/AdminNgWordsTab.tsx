@@ -261,7 +261,54 @@ export const AdminNgWordsTab: React.FC<AdminNgWordsTabProps> = (props) => {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        try {
+                          const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+                          const res = await fetch('/api/admin/ng-words/seed', {
+                            method: 'POST',
+                            headers: { 'Authorization': token ? `Bearer ${token}` : '' }
+                          });
+                          if (res.ok) {
+                            if (props.fetchData) props.fetchData();
+                            else window.location.reload();
+                          }
+                        } catch (e) {
+                          console.error(e);
+                        }
+                      }}
+                      className="px-3 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+                      title="主要な禁止単語・正規表現サンプルを辞書に投入します"
+                    >
+                      <Sparkles size={14} className="text-amber-400" />
+                      <span>+ サンプル辞書投入</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        if (!confirm('全てのNGワード・禁止表現辞書を完全にクリア（全消去）しますか？')) return;
+                        try {
+                          const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+                          const res = await fetch('/api/admin/ng-words/clear-all', {
+                            method: 'POST',
+                            headers: { 'Authorization': token ? `Bearer ${token}` : '' }
+                          });
+                          if (res.ok) {
+                            if (props.fetchData) props.fetchData();
+                            else window.location.reload();
+                          }
+                        } catch (e) {
+                          console.error(e);
+                        }
+                      }}
+                      className="px-3 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200/80 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+                      title="登録されたNGワードを全消去します"
+                    >
+                      <Trash2 size={14} />
+                      <span>辞書全クリア</span>
+                    </button>
                     <button
                       type="button"
                       onClick={() => {

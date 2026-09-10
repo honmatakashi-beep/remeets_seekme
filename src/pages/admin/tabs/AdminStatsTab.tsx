@@ -46,8 +46,31 @@ export const AdminStatsTab = (props: any) => {
     setActiveTab = () => {},
     reunionFunnel = [],
     reunionDurationStats = [],
-    pageViewStats = []
+    pageViewStats = [],
+    token = null
   } = props;
+
+  const [liveAlertSummary, setLiveAlertSummary] = React.useState<any>(null);
+
+  React.useEffect(() => {
+    if (!token) return;
+    const fetchLiveAlerts = async () => {
+      try {
+        const res = await fetch('/api/admin/live-alerts', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setLiveAlertSummary(data.summary);
+        }
+      } catch (e) {
+        // silent
+      }
+    };
+    fetchLiveAlerts();
+    const timer = setInterval(fetchLiveAlerts, 10000);
+    return () => clearInterval(timer);
+  }, [token]);
 
   if (!stats) return null;
   return (
@@ -91,78 +114,111 @@ export const AdminStatsTab = (props: any) => {
 
               {/* 最上部に「🚨 運営の要対応タスク（クイックアラートバー）」 */}
               {(() => {
-                const pendingReports = reports?.filter((r: any) => !r.resolved)?.length || 0;
+                const securityAlertsCount = liveAlertSummary?.totalActiveAlerts || 
+                  ((liveAlertSummary?.spamDetectionsCount || 0) + (liveAlertSummary?.aiFlaggedCount || 0) + (liveAlertSummary?.lockedIpsCount || 0));
+                const pendingReports = reports?.filter((r: any) => r.status === 'pending' || r.status === 'urgent' || (!r.status && !r.resolved))?.length || 0;
                 const unreadContacts = contacts?.filter((c: any) => c.status === 'unread' || c.status === 'pending')?.length || 0;
                 const pendingAgeLogs = ageVerificationLogs?.filter((l: any) => l.is_verified === false || l.is_verified === 0)?.length || 0;
-                const totalPending = pendingReports + unreadContacts + pendingAgeLogs;
+                const totalPending = securityAlertsCount + pendingReports + unreadContacts + pendingAgeLogs;
 
                 return (
-                  <div className="bg-gradient-to-r from-amber-500/10 via-rose-500/10 to-indigo-500/10 rounded-3xl p-6 border border-amber-200 shadow-sm space-y-4">
+                  <div className="bg-gradient-to-r from-rose-500/10 via-amber-500/10 to-indigo-500/10 rounded-3xl p-6 border border-rose-200/80 shadow-sm space-y-4">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-2xl bg-amber-500 text-white flex items-center justify-center font-bold shadow-xs shrink-0">
+                        <div className={`w-10 h-10 rounded-2xl flex items-center justify-center font-bold shadow-xs shrink-0 ${
+                          securityAlertsCount > 0 ? 'bg-rose-600 text-white animate-pulse' : 'bg-amber-500 text-white'
+                        }`}>
                           <AlertTriangle size={20} />
                         </div>
                         <div>
                           <h2 className="text-base font-bold font-serif text-slate-900 flex items-center gap-2">
-                            <span>運営の要対応タスク</span>
+                            <span>運営の要対応タスク ＆ リアルタイム警報</span>
                             {totalPending > 0 ? (
                               <span className="bg-rose-500 text-white text-[11px] font-sans font-bold px-2 py-0.5 rounded-full animate-pulse">
                                 要対応 {totalPending}件
                               </span>
                             ) : (
                               <span className="bg-emerald-100 text-emerald-800 text-[11px] font-sans font-bold px-2 py-0.5 rounded-full border border-emerald-200">
-                                全て対応済み
+                                全て対応済み・安全稼働中
                               </span>
                             )}
                           </h2>
                           <p className="text-xs text-slate-600 font-sans">
-                            未審査の通報やお問い合わせ、年齢確認ログの滞留状況です。クリックで各管理タブへ即座に移動できます。
+                            リアルタイムのスパム・サイバー攻撃警報、ユーザー通報、お問い合わせ、年齢確認ログの滞留状況です。クリックで即座に対処できます。
                           </p>
                         </div>
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
-                      {/* 未審査通報 */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-1">
+                      {/* 1. 🛡️ システム警報 ＆ スパム検知（総合セキュリティ） */}
                       <button
-                        onClick={() => setActiveTab('moderation')}
-                        className="p-4 bg-white rounded-2xl border border-slate-200/80 hover:border-rose-300 hover:shadow-md transition-all text-left flex items-center justify-between group cursor-pointer"
+                        onClick={() => setActiveTab('security')}
+                        className={`p-4 bg-white rounded-2xl border transition-all text-left flex items-center justify-between group cursor-pointer ${
+                          securityAlertsCount > 0 
+                            ? 'border-rose-300 ring-2 ring-rose-500/20 shadow-md bg-rose-50/30' 
+                            : 'border-slate-200/80 hover:border-rose-300 hover:shadow-md'
+                        }`}
                       >
                         <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
+                          <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
+                            securityAlertsCount > 0 ? 'bg-rose-600 text-white animate-pulse' : 'bg-rose-50 text-rose-600'
+                          }`}>
                             <ShieldAlert size={18} />
                           </div>
                           <div>
-                            <span className="text-[11px] font-bold text-slate-500 block">AI検知・通報審査</span>
-                            <span className="text-lg font-black font-serif text-slate-900">
-                              {pendingReports} <span className="text-xs font-normal text-slate-500">件</span>
+                            <span className="text-[11px] font-bold text-slate-500 block">システム警報・スパム</span>
+                            <span className={`text-lg font-black font-serif ${securityAlertsCount > 0 ? 'text-rose-600' : 'text-slate-900'}`}>
+                              {securityAlertsCount} <span className="text-xs font-normal text-slate-500">件</span>
                             </span>
                           </div>
                         </div>
                         <ArrowRight size={16} className="text-slate-400 group-hover:text-rose-600 group-hover:translate-x-0.5 transition-all" />
                       </button>
 
-                      {/* 未返信お問い合わせ */}
+                      {/* 2. 👤 ユーザー通報審査 */}
                       <button
-                        onClick={() => setActiveTab('contacts')}
-                        className="p-4 bg-white rounded-2xl border border-slate-200/80 hover:border-amber-300 hover:shadow-md transition-all text-left flex items-center justify-between group cursor-pointer"
+                        onClick={() => setActiveTab('reports')}
+                        className={`p-4 bg-white rounded-2xl border transition-all text-left flex items-center justify-between group cursor-pointer ${
+                          pendingReports > 0 ? 'border-amber-300 shadow-sm' : 'border-slate-200/80 hover:border-amber-300 hover:shadow-md'
+                        }`}
                       >
                         <div className="flex items-center gap-3">
                           <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
-                            <Mail size={18} />
+                            <AlertCircle size={18} />
                           </div>
                           <div>
-                            <span className="text-[11px] font-bold text-slate-500 block">未返信お問い合わせ</span>
-                            <span className="text-lg font-black font-serif text-slate-900">
-                              {unreadContacts} <span className="text-xs font-normal text-slate-500">件</span>
+                            <span className="text-[11px] font-bold text-slate-500 block">ユーザー通報審査</span>
+                            <span className={`text-lg font-black font-serif ${pendingReports > 0 ? 'text-amber-600' : 'text-slate-900'}`}>
+                              {pendingReports} <span className="text-xs font-normal text-slate-500">件</span>
                             </span>
                           </div>
                         </div>
                         <ArrowRight size={16} className="text-slate-400 group-hover:text-amber-600 group-hover:translate-x-0.5 transition-all" />
                       </button>
 
-                      {/* 本人確認・年齢ログ */}
+                      {/* 3. ✉️ 未返信お問い合わせ */}
+                      <button
+                        onClick={() => setActiveTab('contacts')}
+                        className={`p-4 bg-white rounded-2xl border transition-all text-left flex items-center justify-between group cursor-pointer ${
+                          unreadContacts > 0 ? 'border-sky-300 shadow-sm' : 'border-slate-200/80 hover:border-sky-300 hover:shadow-md'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center shrink-0">
+                            <Mail size={18} />
+                          </div>
+                          <div>
+                            <span className="text-[11px] font-bold text-slate-500 block">未返信お問い合わせ</span>
+                            <span className={`text-lg font-black font-serif ${unreadContacts > 0 ? 'text-sky-600' : 'text-slate-900'}`}>
+                              {unreadContacts} <span className="text-xs font-normal text-slate-500">件</span>
+                            </span>
+                          </div>
+                        </div>
+                        <ArrowRight size={16} className="text-slate-400 group-hover:text-sky-600 group-hover:translate-x-0.5 transition-all" />
+                      </button>
+
+                      {/* 4. 🪪 年齢・eKYCログ確認 */}
                       <button
                         onClick={() => setActiveTab('ageVerification')}
                         className="p-4 bg-white rounded-2xl border border-slate-200/80 hover:border-indigo-300 hover:shadow-md transition-all text-left flex items-center justify-between group cursor-pointer"

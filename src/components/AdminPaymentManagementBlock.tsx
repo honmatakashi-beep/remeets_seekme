@@ -489,6 +489,34 @@ export const AdminPaymentManagementBlock: React.FC = () => {
 
             <button
               type="button"
+              onClick={async () => {
+                if (!confirm('全ての決済履歴・取引台帳データを完全に消去（初期化）しますか？')) return;
+                try {
+                  const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+                  const res = await fetch('/api/admin/payment-transactions/clear-all', {
+                    method: 'POST',
+                    headers: { 'Authorization': token ? `Bearer ${token}` : '' }
+                  });
+                  if (res.ok) {
+                    setMessage({ type: 'success', text: '決済取引台帳データを全て初期化しました。' });
+                    fetchStats();
+                    fetchTransactions();
+                    fetchAnalytics();
+                    fetchEkycLogs();
+                  }
+                } catch (e) {
+                  console.error(e);
+                }
+              }}
+              className="px-4 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200/80 rounded-xl font-bold text-xs shadow-sm transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
+              title="決済台帳を初期化"
+            >
+              <RotateCcw size={14} />
+              <span>台帳全クリア</span>
+            </button>
+
+            <button
+              type="button"
               onClick={handleExportCsv}
               className="px-4 py-2.5 bg-teal-800 hover:bg-teal-900 text-white rounded-xl font-bold text-xs shadow-sm transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
             >

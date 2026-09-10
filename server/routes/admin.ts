@@ -20,9 +20,9 @@ export const adminRouter = express.Router();
 // 🌟 既存DBユーザーIDの完全UID化マイグレーション即時実行
 export function executeUidMigration() {
   try {
-    const users = db.prepare("SELECT id, username, email, full_name, nickname FROM users WHERE username != 'admin'").all() as any[];
+    if (!db) return;
+    const users = db.prepare("SELECT id, username, email, full_name, nickname FROM users WHERE username != 'admin' AND email != 'sim_spammer_bot@test.local' AND username != 'sim_spammer_bot'").all() as any[];
     const updateStmt = db.prepare("UPDATE users SET username = ? WHERE id = ?");
-    const updatePostsStmt = db.prepare("UPDATE posts SET searcher_username = ? WHERE user_id = ?");
 
     const usedUids = new Set<string>();
     users.forEach(u => {
@@ -44,9 +44,6 @@ export function executeUidMigration() {
           }
         }
         updateStmt.run(newUid, u.id);
-        try {
-          updatePostsStmt.run(newUid, u.id);
-        } catch (e) {}
         console.log(`[Instant UID Migration] User #${u.id} (${u.email || u.nickname}): "${u.username}" -> "${newUid}"`);
         updatedCount++;
       }
@@ -63,6 +60,46 @@ export function executeUidMigration() {
 try {
   executeUidMigration();
 } catch (e) {}
+
+// 📝 モデレーション処置履歴記録用共通関数
+export const recordModerationHistory = (data: {
+  postId?: number | string;
+  actionType: string;
+  actionLabel: string;
+  targetName?: string;
+  searcherName?: string;
+  authorUserId?: number;
+  authorUsername?: string;
+  message?: string;
+  aiReason?: string;
+  adminId?: number;
+  adminUsername?: string;
+  details?: string;
+}) => {
+  try {
+    db.prepare(`
+      INSERT INTO moderation_history (
+        post_id, action_type, action_label, target_name, searcher_name,
+        author_user_id, author_username, message, ai_reason, admin_id, admin_username, details, created_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+    `).run(
+      data.postId ? Number(data.postId) : null,
+      data.actionType,
+      data.actionLabel,
+      data.targetName || null,
+      data.searcherName || null,
+      data.authorUserId || null,
+      data.authorUsername || null,
+      data.message || null,
+      data.aiReason || null,
+      data.adminId || null,
+      data.adminUsername || 'Admin',
+      data.details || null
+    );
+  } catch (err) {
+    console.error("Failed to record moderation history:", err);
+  }
+};
 
   adminRouter.get("/reports", authenticateToken, isAdmin, (req, res) => {
     try {
@@ -1443,11 +1480,14 @@ try {
   // 🔔 運営リアルタイム通知・緊急監視 API (Live Alerts & Spam Monitoring)
   // メモリ上で既読・無視されたアラートIDをキャッシュ
   const dismissedAlertIds = new Set<string>();
+  // 調査・防衛アクションが実行完了したアラートの管理マップ (alertId -> complete Alert Object)
+  const resolvedAlertObjects = new Map<string, any>();
 
   adminRouter.get("/live-alerts", authenticateToken, isAdmin, (req, res) => {
     try {
       const now = new Date();
       const criticalAlerts: any[] = [];
+      const activeAlertIds = new Set<string>();
 
       // 1. 未解決の緊急通報 (Pending Reports)
       const pendingReports = db.prepare(`
@@ -1466,7 +1506,9 @@ try {
 
       pendingReports.forEach((rep: any) => {
         const alertId = `report_${rep.id}`;
+        activeAlertIds.add(alertId);
         if (!dismissedAlertIds.has(alertId)) {
+          const resolvedObj = resolvedAlertObjects.get(alertId);
           criticalAlerts.push({
             id: alertId,
             rawId: rep.id,
@@ -1478,7 +1520,9 @@ try {
             timestamp: rep.created_at,
             targetType: rep.target_type,
             targetId: rep.target_id,
-            actionUrl: 'reports'
+            actionUrl: 'reports',
+            status: resolvedObj ? 'resolved' : 'pending',
+            resolvedInfo: resolvedObj?.resolvedInfo || null
           });
         }
       });
@@ -1507,7 +1551,9 @@ try {
 
       spamGroups.forEach((sg: any, idx: number) => {
         const alertId = `spam_${sg.client_ip}_${sg.last_post_time}`;
+        activeAlertIds.add(alertId);
         if (!dismissedAlertIds.has(alertId)) {
+          const resolvedObj = resolvedAlertObjects.get(alertId);
           criticalAlerts.push({
             id: alertId,
             rawId: idx,
@@ -1518,9 +1564,13 @@ try {
             timestamp: sg.last_post_time,
             ip: sg.client_ip,
             postCount: sg.post_count,
+            userId: sg.user_id,
+            postIds: sg.post_ids,
             targetType: 'spam_group',
             targetId: sg.client_ip,
-            actionUrl: 'posts'
+            actionUrl: 'posts',
+            status: resolvedObj ? 'resolved' : 'pending',
+            resolvedInfo: resolvedObj?.resolvedInfo || null
           });
         }
       });
@@ -1537,7 +1587,9 @@ try {
 
       aiFlaggedPosts.forEach((p: any) => {
         const alertId = `aiflag_${p.id}`;
+        activeAlertIds.add(alertId);
         if (!dismissedAlertIds.has(alertId)) {
+          const resolvedObj = resolvedAlertObjects.get(alertId);
           criticalAlerts.push({
             id: alertId,
             rawId: p.id,
@@ -1548,7 +1600,9 @@ try {
             timestamp: p.created_at,
             targetType: 'post',
             targetId: p.id,
-            actionUrl: 'moderation'
+            actionUrl: 'moderation',
+            status: resolvedObj ? 'resolved' : 'pending',
+            resolvedInfo: resolvedObj?.resolvedInfo || null
           });
         }
       });
@@ -1565,7 +1619,9 @@ try {
 
       lockedIps.forEach((fa: any) => {
         const alertId = `lock_${fa.id}_${fa.last_attempt}`;
+        activeAlertIds.add(alertId);
         if (!dismissedAlertIds.has(alertId)) {
+          const resolvedObj = resolvedAlertObjects.get(alertId);
           criticalAlerts.push({
             id: alertId,
             rawId: fa.id,
@@ -1576,14 +1632,32 @@ try {
             timestamp: fa.last_attempt,
             targetType: 'security',
             targetId: fa.ip,
-            actionUrl: 'security'
+            actionUrl: 'security',
+            status: resolvedObj ? 'resolved' : 'pending',
+            resolvedInfo: resolvedObj?.resolvedInfo || null
           });
         }
       });
 
-      // 重要度順にソート (CRITICAL -> HIGH -> WARNING)
+      // 5. 過去に対応済みとなったアラート（DBクエリから消えたもの）をリストに結合
+      resolvedAlertObjects.forEach((resolvedItem, alertId) => {
+        if (!activeAlertIds.has(alertId) && !dismissedAlertIds.has(alertId)) {
+          criticalAlerts.push({
+            ...resolvedItem,
+            status: 'resolved'
+          });
+        }
+      });
+
+      // 未対応のアラートのみをカウント
+      const activePendingAlerts = criticalAlerts.filter(a => a.status !== 'resolved');
+
+      // 重要度順にソート (CRITICAL -> HIGH -> WARNING, かつ未対応優先)
       const severityWeight: any = { CRITICAL: 3, HIGH: 2, WARNING: 1 };
       criticalAlerts.sort((a, b) => {
+        if (a.status !== b.status) {
+          return a.status === 'pending' ? -1 : 1;
+        }
         if (severityWeight[b.severity] !== severityWeight[a.severity]) {
           return severityWeight[b.severity] - severityWeight[a.severity];
         }
@@ -1592,12 +1666,14 @@ try {
 
       res.json({
         summary: {
-          totalActiveAlerts: criticalAlerts.length,
+          totalActiveAlerts: activePendingAlerts.length,
+          totalAllAlerts: criticalAlerts.length,
+          totalResolvedAlerts: criticalAlerts.filter(a => a.status === 'resolved').length,
           pendingReportsCount: pendingReports.length,
           spamDetectionsCount: spamGroups.length,
           aiFlaggedCount: aiFlaggedPosts.length,
           lockedIpsCount: lockedIps.length,
-          hasCriticalAlert: criticalAlerts.some(a => a.severity === 'CRITICAL')
+          hasCriticalAlert: activePendingAlerts.some(a => a.severity === 'CRITICAL')
         },
         alerts: criticalAlerts,
         pendingReports,
@@ -1625,18 +1701,40 @@ try {
   });
 
   // 🔔 シミュレーション用: テスト緊急通報 / スパム発生 API (動作確認・音声テスト用)
+  function getOrCreateSimBotUserId(): number {
+    try {
+      let bot = db.prepare("SELECT id FROM users WHERE email = 'sim_spammer_bot@test.local' OR username = 'sim_spammer_bot'").get() as any;
+      if (bot) return bot.id;
+
+      const res = db.prepare(`
+        INSERT INTO users (username, email, password, full_name, role, is_verified, is_blocked)
+        VALUES ('sim_spammer_bot', 'sim_spammer_bot@test.local', 'dummy_hash', '【シミュレーション用ボット】', 'user', 1, 0)
+      `).run();
+      return Number(res.lastInsertRowid);
+    } catch (e) {
+      try {
+        const fallbackUser = db.prepare("SELECT id FROM users WHERE role = 'user' LIMIT 1").get() as any;
+        if (fallbackUser) return fallbackUser.id;
+        const anyUser = db.prepare("SELECT id FROM users LIMIT 1").get() as any;
+        if (anyUser) return anyUser.id;
+      } catch (err) {}
+      return 1;
+    }
+  }
+
   adminRouter.post("/live-alerts/simulate", authenticateToken, isAdmin, (req, res) => {
     try {
-      const { simulationType } = req.body; // 'emergency_report' | 'spam_attack' | 'ai_violation'
+      const { simulationType } = req.body; // 'emergency_report' | 'spam_attack' | 'ai_violation' | 'lock_attack'
+      const simBotUserId = getOrCreateSimBotUserId();
 
       if (simulationType === 'spam_attack') {
         // テスト用スパムボトルを一時注入
         const testIp = `198.51.100.${Math.floor(Math.random() * 200) + 1}`;
-        const firstUser = db.prepare("SELECT id FROM users WHERE role = 'admin' OR role = 'user' LIMIT 1").get() as any;
-        const userId = firstUser ? firstUser.id : 1;
+        const userId = simBotUserId;
 
+        const postIds: number[] = [];
         for (let i = 1; i <= 3; i++) {
-          db.prepare(`
+          const insertRes = db.prepare(`
             INSERT INTO posts (user_id, searcher_name, target_name, secret_question, secret_answer, secret_answer_plain, message, era, category, status, ip, created_at)
             VALUES (?, ?, ?, ?, ?, ?, ?, '令和', 'other', 'active', ?, datetime('now'))
           `).run(
@@ -1649,20 +1747,28 @@ try {
             `【テストスパム検知】大量連続投稿 #${i}: これはリアルタイムスパム検知通知システムのテスト用データです。`,
             testIp
           );
+          postIds.push(Number(insertRes.lastInsertRowid));
         }
+
+        // 過去のクエリと整合する日時を取得
+        const latestPost = db.prepare("SELECT created_at FROM posts WHERE id = ?").get(postIds[postIds.length - 1]) as any;
+        const alertTime = latestPost?.created_at || new Date().toISOString();
+
         logAction((req as any).user.id, "SIMULATE_SPAM", `Generated test spam submissions from ${testIp}`, req.ip);
         return res.json({ 
           success: true, 
           message: "大量投稿スパム（3件連続投函）のシミュレーションを生成しました。",
           alert: {
-            id: `spam_${testIp}_${new Date().toISOString()}`,
+            id: `spam_${testIp}_${alertTime}`,
             type: 'MASS_POSTING_SPAM',
             severity: 'HIGH',
             title: `⚠️ 大量連続投稿スパム検知 (3件/15分)`,
             message: `同一接続元 (${testIp}) から短時間に 3 件のボトルメールが連続投函されました。荒らし・ボットの可能性があります。`,
-            timestamp: new Date().toISOString(),
+            timestamp: alertTime,
             ip: testIp,
             postCount: 3,
+            userId: simBotUserId,
+            postIds: postIds.join(','),
             targetType: 'spam_group',
             targetId: testIp,
             actionUrl: 'posts'
@@ -1670,8 +1776,7 @@ try {
         });
       } else if (simulationType === 'ai_violation') {
         // AI検閲フラグボトルを注入
-        const firstUser = db.prepare("SELECT id FROM users LIMIT 1").get() as any;
-        const userId = firstUser ? firstUser.id : 1;
+        const userId = simBotUserId;
 
         const result = db.prepare(`
           INSERT INTO posts (user_id, searcher_name, target_name, secret_question, secret_answer, secret_answer_plain, message, era, category, status, ai_flagged, ai_reason, created_at)
@@ -1683,6 +1788,7 @@ try {
           message: "AI安全エンジン検閲フラグボトルのシミュレーションを生成しました。",
           alert: {
             id: `aiflag_${result.lastInsertRowid}`,
+            rawId: result.lastInsertRowid,
             type: 'AI_SAFETY_VIOLATION',
             severity: 'HIGH',
             title: `🤖 AI安全検閲フラグ: ボトル #${result.lastInsertRowid}`,
@@ -1693,12 +1799,54 @@ try {
             actionUrl: 'moderation'
           }
         });
+      } else if (simulationType === 'lock_attack') {
+        // クイズ総当たりロックシミュレーション
+        let targetPost = db.prepare("SELECT id, target_name FROM posts ORDER BY id DESC LIMIT 1").get() as any;
+        if (!targetPost) {
+          const newPost = db.prepare(`
+            INSERT INTO posts (user_id, searcher_name, target_name, message, status, created_at)
+            VALUES (?, 'サンプル差出人', 'サンプル宛先', 'サンプルボトルメール', 'active', datetime('now'))
+          `).run(simBotUserId);
+          targetPost = { id: newPost.lastInsertRowid, target_name: 'サンプル宛先' };
+        }
+        const targetId = targetPost.id;
+        const testIp = `198.51.100.${Math.floor(Math.random() * 200) + 1}`;
+
+        const result = db.prepare(`
+          INSERT INTO failed_attempts (post_id, ip, count, last_attempt, locked_until)
+          VALUES (?, ?, 5, datetime('now'), datetime('now', '+24 hours'))
+        `).run(targetId, testIp);
+
+        logAction((req as any).user.id, "SIMULATE_LOCK", `Generated test brute force lock from ${testIp}`, req.ip);
+        return res.json({
+          success: true,
+          message: "クイズ総当たり不正攻撃遮断のシミュレーションを生成しました。",
+          alert: {
+            id: `lock_${result.lastInsertRowid}_${new Date().toISOString()}`,
+            rawId: result.lastInsertRowid,
+            type: 'BRUTE_FORCE_ATTACK',
+            severity: 'HIGH',
+            title: `🔒 クイズ総当たり不正攻撃遮断 (IP: ${testIp})`,
+            message: `ボトル「${targetPost?.target_name || `#${targetId}`}」に対し連続 5 回の誤答を検知。24時間アクセスを自動凍結中。`,
+            timestamp: new Date().toISOString(),
+            targetType: 'security',
+            targetId: testIp,
+            ip: testIp,
+            actionUrl: 'security'
+          }
+        });
       } else {
         // デフォルト: 緊急通報シミュレーション
-        const targetPost = db.prepare("SELECT id FROM posts ORDER BY id DESC LIMIT 1").get() as any;
-        const targetId = targetPost?.id || 1;
-        const reporter = db.prepare("SELECT id FROM users LIMIT 1").get() as any;
-        const reporterId = reporter?.id || 1;
+        let targetPost = db.prepare("SELECT id FROM posts ORDER BY id DESC LIMIT 1").get() as any;
+        if (!targetPost) {
+          const newPost = db.prepare(`
+            INSERT INTO posts (user_id, searcher_name, target_name, message, status, created_at)
+            VALUES (?, 'サンプル差出人', 'サンプル宛先', 'サンプルボトルメール', 'active', datetime('now'))
+          `).run(simBotUserId);
+          targetPost = { id: newPost.lastInsertRowid };
+        }
+        const targetId = targetPost.id;
+        const reporterId = simBotUserId;
 
         const result = db.prepare(`
           INSERT INTO reports (reporter_id, target_type, target_id, report_type, reason, contact_info, status, created_at)
@@ -1726,6 +1874,613 @@ try {
     } catch (err) {
       console.error("Failed to simulate alert:", err);
       res.status(500).json({ error: "Failed to simulate alert" });
+    }
+  });
+
+  // 🧹 警報・スパム監視センター テストデータ完全一括消去 API（テストボトルメール・通報・AI検閲ボトル・誤答ロック・警報履歴の完全クリーンアップ）
+  adminRouter.post("/live-alerts/clear-test-data", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      let deletedPostsCount = 0;
+      let deletedReportsCount = 0;
+      let deletedLocksCount = 0;
+
+      // 1. テストスパム / AI検閲フラグ / 有害テストボトルの検索 & 完全物理削除
+      try {
+        const testPosts = db.prepare(`
+          SELECT id FROM posts 
+          WHERE ai_flagged = 1
+             OR message LIKE '%【テストスパム検知】%' 
+             OR message LIKE '%リアルタイム音声通知シミュレーション用ボトル%'
+             OR searcher_name = 'テストスパマー'
+             OR searcher_name = '匿名調査官'
+             OR searcher_name = 'サクラ'
+             OR target_name = '【テストターゲット】'
+             OR target_name = '【AI検閲対象】'
+             OR message LIKE '%LINE ID:%'
+             OR message LIKE '%お前をずっと探していたぞ%'
+             OR message LIKE '%簡単に稼げるお小遣い案件%'
+             OR ip LIKE '198.51.100.%'
+             OR id IN (SELECT target_id FROM reports WHERE target_type = 'post')
+        `).all() as any[];
+
+        for (const p of testPosts) {
+          try { db.prepare("DELETE FROM post_questions WHERE post_id = ?").run(p.id); } catch(e) {}
+          try { db.prepare("DELETE FROM notifications WHERE link LIKE ?").run(`%/post/${p.id}%`); } catch(e) {}
+          try { db.prepare("DELETE FROM reports WHERE target_type = 'post' AND target_id = ?").run(p.id); } catch(e) {}
+          try { db.prepare("DELETE FROM failed_attempts WHERE post_id = ?").run(p.id); } catch(e) {}
+          try { db.prepare("DELETE FROM deletion_requests WHERE post_id = ?").run(p.id); } catch(e) {}
+          try { db.prepare("DELETE FROM posts WHERE id = ?").run(p.id); } catch(e) {}
+          deletedPostsCount++;
+        }
+      } catch (e) {
+        console.warn("Error deleting test posts:", e);
+      }
+
+      // 2. 通報レコード（reports）の完全削除
+      try {
+        const reportResult = db.prepare("DELETE FROM reports").run();
+        deletedReportsCount = reportResult.changes;
+      } catch (e) {
+        console.warn("Error deleting reports:", e);
+      }
+
+      // 3. クイズ誤答ロック（failed_attempts）の完全消去
+      try {
+        const lockResult = db.prepare("DELETE FROM failed_attempts").run();
+        deletedLocksCount = lockResult.changes;
+      } catch (e) {}
+
+      // 4. テストIPブロック（blocked_ips）のクリーンアップ
+      try { 
+        db.prepare("DELETE FROM blocked_ips WHERE ip LIKE '198.51.100.%' OR reason LIKE '%スパム%'").run(); 
+      } catch(e) {}
+
+      // 5. メモリ上のアラートキャッシュと対応済み履歴を完全リセット
+      dismissedAlertIds.clear();
+      resolvedAlertObjects.clear();
+
+      try {
+        if (req.user && req.user.id) {
+          logAction(
+            req.user.id,
+            "CLEAR_TEST_ALERTS",
+            `Cleaned up ${deletedPostsCount} posts, ${deletedReportsCount} reports, ${deletedLocksCount} locks from live alert monitor`,
+            req.ip
+          );
+        }
+      } catch (e) {}
+
+      res.json({
+        success: true,
+        message: `テストデータの一括消去が完了しました。（削除手紙: ${deletedPostsCount}件, 削除通報: ${deletedReportsCount}件, 誤答ロック解除: ${deletedLocksCount}件, 警報履歴: 初期化済）`,
+        deletedPostsCount,
+        deletedReportsCount,
+        deletedLocksCount
+      });
+    } catch (err: any) {
+      console.error("Clear test alerts data error:", err);
+      res.status(500).json({ error: `テストデータの一括消去に失敗しました: ${err.message || err}` });
+    }
+  });
+
+  // 🚨 スパム検知グループの詳細手紙・ユーザー情報取得 API
+  adminRouter.post("/live-alerts/spam-details", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      const { postIds, ip, userId } = req.body;
+      let posts: any[] = [];
+      let userInfo: any = null;
+
+      let idList: number[] = [];
+      if (Array.isArray(postIds) && postIds.length > 0) {
+        idList = postIds.map(Number).filter(n => !isNaN(n));
+      } else if (typeof postIds === 'string' && postIds.trim()) {
+        idList = postIds.split(',').map(s => Number(s.trim())).filter(n => !isNaN(n));
+      }
+
+      if (idList.length > 0) {
+        const placeholders = idList.map(() => '?').join(',');
+        posts = db.prepare(`
+          SELECT p.id, p.user_id, p.searcher_name, p.target_name, p.message, p.era, p.category, p.status, p.ai_flagged, p.ip, p.created_at,
+                 u.username, u.nickname, u.email, u.is_blocked
+          FROM posts p
+          LEFT JOIN users u ON p.user_id = u.id
+          WHERE p.id IN (${placeholders})
+          ORDER BY p.created_at DESC
+        `).all(...idList) as any[];
+      } else if (ip) {
+        posts = db.prepare(`
+          SELECT p.id, p.user_id, p.searcher_name, p.target_name, p.message, p.era, p.category, p.status, p.ai_flagged, p.ip, p.created_at,
+                 u.username, u.nickname, u.email, u.is_blocked
+          FROM posts p
+          LEFT JOIN users u ON p.user_id = u.id
+          WHERE p.ip = ? AND p.status != 'deleted'
+          ORDER BY p.created_at DESC
+          LIMIT 20
+        `).all(ip) as any[];
+      }
+
+      const targetUserId = userId || (posts.length > 0 ? posts[0].user_id : null);
+      if (targetUserId) {
+        userInfo = db.prepare(`
+          SELECT id, username, nickname, email, full_name, role, is_blocked, is_ekyc_verified, created_at,
+                 (SELECT COUNT(*) FROM posts WHERE user_id = users.id) as total_posts_count
+          FROM users
+          WHERE id = ?
+        `).get(targetUserId);
+      }
+
+      res.json({
+        success: true,
+        posts,
+        userInfo,
+        ip: ip || (posts.length > 0 ? posts[0].ip : 'unknown')
+      });
+    } catch (err: any) {
+      console.error("Fetch spam details error:", err);
+      res.status(500).json({ error: "スパム詳細データの取得に失敗しました" });
+    }
+  });
+
+  // 🚨 スパム検知グループに対する一括防衛アクション API（手紙一括削除・ユーザー凍結・IP遮断）
+  adminRouter.post("/live-alerts/spam-action", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      const { postIds, userId, ip, actionType, alertId } = req.body;
+      // actionType: 'DELETE_POSTS' | 'BLOCK_USER' | 'BLOCK_IP' | 'RESOLVE_ALL'
+
+      let deletedCount = 0;
+      let userBlocked = false;
+      let idList: number[] = [];
+      if (Array.isArray(postIds)) {
+        idList = postIds.map(Number).filter(n => !isNaN(n));
+      } else if (typeof postIds === 'string' && postIds.trim()) {
+        idList = postIds.split(',').map(s => Number(s.trim())).filter(n => !isNaN(n));
+      }
+
+      db.transaction(() => {
+        // 1. 手紙の削除・隔離
+        if (actionType === 'DELETE_POSTS' || actionType === 'RESOLVE_ALL') {
+          if (idList.length > 0) {
+            const placeholders = idList.map(() => '?').join(',');
+            const postsToDelete = db.prepare(`SELECT * FROM posts WHERE id IN (${placeholders})`).all(...idList) as any[];
+            
+            for (const p of postsToDelete) {
+              db.prepare(`
+                INSERT INTO deleted_posts_archive (
+                  post_id, user_id, username, searcher_name, target_name, message, ai_flagged, ai_reason, reason, deleted_by_name
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+              `).run(
+                p.id,
+                p.user_id,
+                p.searcher_name || "Unknown",
+                p.searcher_name,
+                p.target_name,
+                p.message,
+                p.ai_flagged,
+                p.ai_reason,
+                "大量連続投稿スパム緊急防衛・一括削除",
+                req.user?.username || "Admin"
+              );
+
+              db.prepare("DELETE FROM post_questions WHERE post_id = ?").run(p.id);
+              db.prepare("DELETE FROM notifications WHERE link LIKE ?").run(`%/post/${p.id}%`);
+              db.prepare("DELETE FROM reports WHERE target_type = 'post' AND target_id = ?").run(p.id);
+              db.prepare("DELETE FROM failed_attempts WHERE post_id = ?").run(p.id);
+              db.prepare("DELETE FROM deletion_requests WHERE post_id = ?").run(p.id);
+              db.prepare("DELETE FROM posts WHERE id = ?").run(p.id);
+              deletedCount++;
+            }
+          } else if (ip) {
+            const postsByIp = db.prepare("SELECT * FROM posts WHERE ip = ?").all(ip) as any[];
+            for (const p of postsByIp) {
+              db.prepare(`
+                INSERT INTO deleted_posts_archive (
+                  post_id, user_id, username, searcher_name, target_name, message, ai_flagged, ai_reason, reason, deleted_by_name
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+              `).run(
+                p.id,
+                p.user_id,
+                p.searcher_name || "Unknown",
+                p.searcher_name,
+                p.target_name,
+                p.message,
+                p.ai_flagged,
+                p.ai_reason,
+                "大量連続投稿スパム緊急防衛・一括削除",
+                req.user?.username || "Admin"
+              );
+
+              db.prepare("DELETE FROM post_questions WHERE post_id = ?").run(p.id);
+              db.prepare("DELETE FROM notifications WHERE link LIKE ?").run(`%/post/${p.id}%`);
+              db.prepare("DELETE FROM reports WHERE target_type = 'post' AND target_id = ?").run(p.id);
+              db.prepare("DELETE FROM failed_attempts WHERE post_id = ?").run(p.id);
+              db.prepare("DELETE FROM deletion_requests WHERE post_id = ?").run(p.id);
+              db.prepare("DELETE FROM posts WHERE id = ?").run(p.id);
+              deletedCount++;
+            }
+          }
+        }
+
+        // 2. ユーザーの凍結（管理者アカウントは絶対に除外）
+        if ((actionType === 'BLOCK_USER' || actionType === 'RESOLVE_ALL') && userId) {
+          db.prepare("UPDATE users SET is_blocked = 1 WHERE id = ? AND role NOT IN ('admin', 'super_admin') AND username != 'admin' AND id != 1").run(userId);
+          userBlocked = true;
+        }
+
+        // 3. IPの遮断（blocked_ips に登録 & failed_attempts を更新）
+        if ((actionType === 'BLOCK_IP' || actionType === 'RESOLVE_ALL') && ip) {
+          db.prepare("INSERT OR IGNORE INTO blocked_ips (ip, reason) VALUES (?, ?)").run(ip, "大量連続投稿スパム防衛による自動遮断");
+          const existing = db.prepare("SELECT id FROM failed_attempts WHERE ip = ? ORDER BY id DESC LIMIT 1").get(ip) as any;
+          if (existing) {
+            db.prepare(`
+              UPDATE failed_attempts 
+              SET count = 10, locked_until = datetime('now', '+30 days'), last_attempt = CURRENT_TIMESTAMP 
+              WHERE id = ?
+            `).run(existing.id);
+          }
+        }
+      })();
+
+      if (alertId) {
+        resolvedAlertObjects.set(String(alertId), {
+          id: String(alertId),
+          type: 'MASS_POSTING_SPAM',
+          severity: 'HIGH',
+          title: `⚠️ 大量連続投稿スパム検知 (${deletedCount > 0 ? deletedCount : '複数'}件)`,
+          message: `同一接続元 (${ip || 'unknown'}) からの大量投稿スパムに対し防衛措置が完了しました。`,
+          timestamp: new Date().toISOString(),
+          ip: ip || 'unknown',
+          postCount: deletedCount,
+          userId: userId || null,
+          targetType: 'spam_group',
+          targetId: ip || 'unknown',
+          actionUrl: 'posts',
+          status: 'resolved',
+          resolvedInfo: {
+            actionType,
+            resolvedAt: new Date().toISOString(),
+            adminName: req.user?.username || '管理者'
+          }
+        });
+      }
+
+      logAction(
+        req.user.id,
+        "SPAM_EMERGENCY_ACTION",
+        `Action: ${actionType} (Deleted: ${deletedCount} posts, Blocked User ID: ${userId || '-'}, Blocked IP: ${ip || '-'})`,
+        req.ip
+      );
+
+      res.json({
+        success: true,
+        message: `スパム防衛アクション（${actionType}）を実行しました。（削除: ${deletedCount}件, 凍結: ${userBlocked ? '済' : '無'}）`
+      });
+    } catch (err: any) {
+      console.error("Execute spam action error:", err);
+      res.status(500).json({ error: "緊急防衛アクションの実行に失敗しました" });
+    }
+  });
+
+  // 🚨 1. 緊急通報（Reports）詳細取得 API
+  adminRouter.post("/live-alerts/report-details", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      const { reportId } = req.body;
+      const report = db.prepare(`
+        SELECT r.*, 
+               u.username as reporter_username, u.nickname as reporter_nickname, u.email as reporter_email
+        FROM reports r
+        LEFT JOIN users u ON r.reporter_id = u.id
+        WHERE r.id = ?
+      `).get(reportId) as any;
+
+      if (!report) {
+        return res.status(404).json({ error: "該当する通報が見つかりません" });
+      }
+
+      let targetPost: any = null;
+      let targetUser: any = null;
+
+      if (report.target_type === 'post') {
+        targetPost = db.prepare(`
+          SELECT p.*, u.username as author_username, u.nickname as author_nickname, u.email as author_email, u.is_blocked as author_blocked
+          FROM posts p
+          LEFT JOIN users u ON p.user_id = u.id
+          WHERE p.id = ?
+        `).get(report.target_id);
+
+        if (targetPost && targetPost.user_id) {
+          targetUser = db.prepare("SELECT id, username, nickname, email, full_name, is_blocked, created_at FROM users WHERE id = ?").get(targetPost.user_id);
+        }
+      } else if (report.target_type === 'user') {
+        targetUser = db.prepare("SELECT id, username, nickname, email, full_name, is_blocked, created_at FROM users WHERE id = ?").get(report.target_id);
+      }
+
+      res.json({
+        success: true,
+        report,
+        targetPost,
+        targetUser
+      });
+    } catch (err: any) {
+      console.error("Fetch report details error:", err);
+      res.status(500).json({ error: "通報詳細の取得に失敗しました" });
+    }
+  });
+
+  // 🚨 1. 緊急通報（Reports）即時防衛アクション API
+  adminRouter.post("/live-alerts/report-action", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      const { reportId, actionType, postId, userId, alertId } = req.body;
+      // actionType: 'RESOLVE_REPORT' | 'DISMISS_REPORT' | 'DELETE_POST' | 'BLOCK_USER' | 'RESOLVE_AND_DEFEND'
+
+      let reportRecord: any = null;
+      try {
+        reportRecord = db.prepare("SELECT * FROM reports WHERE id = ?").get(reportId) as any;
+      } catch (e) {}
+
+      const targetPostId = postId || (reportRecord && reportRecord.target_type === 'post' ? reportRecord.target_id : null);
+      let targetUserId = userId;
+      if (!targetUserId && targetPostId) {
+        const postOwner = db.prepare("SELECT user_id FROM posts WHERE id = ?").get(targetPostId) as any;
+        targetUserId = postOwner?.user_id;
+      }
+      if (!targetUserId && reportRecord && reportRecord.target_type === 'user') {
+        targetUserId = reportRecord.target_id;
+      }
+
+      db.transaction(() => {
+        if (actionType === 'DISMISS_REPORT') {
+          db.prepare("UPDATE reports SET status = 'dismissed' WHERE id = ?").run(reportId);
+        } else {
+          db.prepare("UPDATE reports SET status = 'resolved' WHERE id = ?").run(reportId);
+        }
+
+        if (actionType === 'DELETE_POST' || actionType === 'RESOLVE_AND_DEFEND') {
+          if (targetPostId) {
+            const p = db.prepare("SELECT * FROM posts WHERE id = ?").get(targetPostId) as any;
+            if (p) {
+              try {
+                db.prepare(`
+                  INSERT INTO deleted_posts_archive (
+                    post_id, user_id, username, searcher_name, target_name, message, ai_flagged, ai_reason, reason, deleted_by_name
+                  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                `).run(
+                  p.id, p.user_id, p.searcher_name || "Unknown", p.searcher_name, p.target_name, p.message, p.ai_flagged, p.ai_reason,
+                  "緊急通報即時防衛・ボトル削除", req.user?.username || "Admin"
+                );
+              } catch (e) {}
+              try { db.prepare("DELETE FROM post_questions WHERE post_id = ?").run(p.id); } catch(e) {}
+              try { db.prepare("DELETE FROM notifications WHERE link LIKE ?").run(`%/post/${p.id}%`); } catch(e) {}
+              try { db.prepare("DELETE FROM reports WHERE target_type = 'post' AND target_id = ?").run(p.id); } catch(e) {}
+              try { db.prepare("DELETE FROM failed_attempts WHERE post_id = ?").run(p.id); } catch(e) {}
+              try { db.prepare("DELETE FROM deletion_requests WHERE post_id = ?").run(p.id); } catch(e) {}
+              try { db.prepare("DELETE FROM posts WHERE id = ?").run(p.id); } catch(e) {}
+            }
+          }
+        }
+
+        if ((actionType === 'BLOCK_USER' || actionType === 'RESOLVE_AND_DEFEND') && targetUserId) {
+          db.prepare("UPDATE users SET is_blocked = 1 WHERE id = ? AND role NOT IN ('admin', 'super_admin') AND username != 'admin' AND id != 1").run(targetUserId);
+        }
+      })();
+
+      if (alertId) {
+        resolvedAlertObjects.set(String(alertId), {
+          id: String(alertId),
+          rawId: reportId,
+          type: 'EMERGENCY_REPORT',
+          severity: 'CRITICAL',
+          title: `🚨 緊急通報検知: ${reportRecord?.report_type || '不適切コンテンツ'}`,
+          message: `通報理由: 「${reportRecord?.reason || '緊急通報対処完了'}」`,
+          timestamp: reportRecord?.created_at || new Date().toISOString(),
+          targetType: reportRecord?.target_type || 'post',
+          targetId: reportRecord?.target_id || reportId,
+          actionUrl: 'reports',
+          status: 'resolved',
+          resolvedInfo: {
+            actionType,
+            resolvedAt: new Date().toISOString(),
+            adminName: req.user?.username || '管理者'
+          }
+        });
+      }
+
+      logAction(req.user.id, "REPORT_EMERGENCY_ACTION", `Action: ${actionType} on Report #${reportId}`, req.ip);
+      res.json({ success: true, message: `緊急通報への対処（${actionType}）を完了しました。` });
+    } catch (err: any) {
+      console.error("Execute report action error:", err);
+      res.status(500).json({ error: "通報対処アクションに失敗しました" });
+    }
+  });
+
+  // 🤖 2. AI検閲隔離（AI Safety）詳細取得 API
+  adminRouter.post("/live-alerts/ai-details", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      const { postId } = req.body;
+      const post = db.prepare(`
+        SELECT p.*, u.username as author_username, u.nickname as author_nickname, u.email as author_email, u.is_blocked as author_blocked
+        FROM posts p
+        LEFT JOIN users u ON p.user_id = u.id
+        WHERE p.id = ?
+      `).get(postId) as any;
+
+      if (!post) {
+        return res.status(404).json({ error: "該当ボトルが見つかりません" });
+      }
+
+      const questions = db.prepare("SELECT * FROM post_questions WHERE post_id = ?").all(postId);
+      const user = post.user_id ? db.prepare("SELECT id, username, nickname, email, full_name, is_blocked, created_at FROM users WHERE id = ?").get(post.user_id) : null;
+
+      res.json({
+        success: true,
+        post,
+        questions,
+        user
+      });
+    } catch (err: any) {
+      console.error("Fetch AI details error:", err);
+      res.status(500).json({ error: "AI検閲詳細の取得に失敗しました" });
+    }
+  });
+
+  // 🤖 2. AI検閲隔離（AI Safety）即時防衛アクション API
+  adminRouter.post("/live-alerts/ai-action", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      const { postId, actionType, userId, alertId } = req.body;
+      // actionType: 'APPROVE_UNFLAG' | 'ARCHIVE_DELETE' | 'BLOCK_AUTHOR_AND_DELETE'
+
+      let postRecord: any = null;
+      try {
+        postRecord = db.prepare("SELECT * FROM posts WHERE id = ?").get(postId) as any;
+      } catch (e) {}
+
+      db.transaction(() => {
+        if (actionType === 'APPROVE_UNFLAG') {
+          db.prepare("UPDATE posts SET ai_flagged = 0, status = 'active' WHERE id = ?").run(postId);
+        } else if (actionType === 'ARCHIVE_DELETE' || actionType === 'BLOCK_AUTHOR_AND_DELETE') {
+          const p = db.prepare("SELECT * FROM posts WHERE id = ?").get(postId) as any;
+          if (p) {
+            db.prepare(`
+              INSERT INTO deleted_posts_archive (
+                post_id, user_id, username, searcher_name, target_name, message, ai_flagged, ai_reason, reason, deleted_by_name
+              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `).run(
+              p.id, p.user_id, p.searcher_name || "Unknown", p.searcher_name, p.target_name, p.message, p.ai_flagged, p.ai_reason,
+              "AI検閲確定・有害コンテンツ隔離削除", req.user?.username || "Admin"
+            );
+            db.prepare("DELETE FROM post_questions WHERE post_id = ?").run(p.id);
+            db.prepare("DELETE FROM notifications WHERE link LIKE ?").run(`%/post/${p.id}%`);
+            db.prepare("DELETE FROM reports WHERE target_type = 'post' AND target_id = ?").run(p.id);
+            db.prepare("DELETE FROM failed_attempts WHERE post_id = ?").run(p.id);
+            db.prepare("DELETE FROM deletion_requests WHERE post_id = ?").run(p.id);
+            db.prepare("DELETE FROM posts WHERE id = ?").run(p.id);
+          }
+        }
+
+        if (actionType === 'BLOCK_AUTHOR_AND_DELETE' && userId) {
+          db.prepare("UPDATE users SET is_blocked = 1 WHERE id = ? AND role NOT IN ('admin', 'super_admin') AND username != 'admin' AND id != 1").run(userId);
+        }
+      })();
+
+      if (alertId) {
+        resolvedAlertObjects.set(String(alertId), {
+          id: String(alertId),
+          rawId: postId,
+          type: 'AI_SAFETY_VIOLATION',
+          severity: 'HIGH',
+          title: `🤖 AI安全検閲フラグ: ボトル #${postId}`,
+          message: `宛先「${postRecord?.target_name || '無題'}」のAI検閲審査および防衛処置が完了しました。`,
+          timestamp: postRecord?.created_at || new Date().toISOString(),
+          targetType: 'post',
+          targetId: postId,
+          actionUrl: 'moderation',
+          status: 'resolved',
+          resolvedInfo: {
+            actionType,
+            resolvedAt: new Date().toISOString(),
+            adminName: req.user?.username || '管理者'
+          }
+        });
+      }
+
+      // 処置履歴に記録
+      let actionLabel = '🟢 承認・公開復帰';
+      if (actionType === 'ARCHIVE_DELETE') actionLabel = '🗑️ 有害隔離削除';
+      if (actionType === 'BLOCK_AUTHOR_AND_DELETE') actionLabel = '🚨 投稿者凍結＋削除';
+
+      recordModerationHistory({
+        postId: postId,
+        actionType: actionType,
+        actionLabel: actionLabel,
+        targetName: postRecord?.target_name,
+        searcherName: postRecord?.searcher_name,
+        authorUserId: postRecord?.user_id,
+        authorUsername: postRecord?.searcher_name,
+        message: postRecord?.message,
+        aiReason: postRecord?.ai_reason,
+        adminId: req.user?.id,
+        adminUsername: req.user?.username,
+        details: `リアルタイム警報センターより即時防衛アクション（${actionLabel}）実行`
+      });
+
+      logAction(req.user.id, "AI_MODERATION_ACTION", `Action: ${actionType} on Post #${postId}`, req.ip);
+      res.json({ success: true, message: `AI検閲審査アクション（${actionType}）を実行しました。` });
+    } catch (err: any) {
+      console.error("Execute AI action error:", err);
+      res.status(500).json({ error: "AI検閲審査の実行に失敗しました" });
+    }
+  });
+
+  // 🔒 3. 総当たりロック（Brute Force Lock）詳細取得 API
+  adminRouter.post("/live-alerts/lock-details", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      const { ip, rawId } = req.body;
+      let lockRecord: any = null;
+
+      if (rawId) {
+        lockRecord = db.prepare("SELECT * FROM failed_attempts WHERE id = ?").get(rawId);
+      }
+      if (!lockRecord && ip) {
+        lockRecord = db.prepare("SELECT * FROM failed_attempts WHERE ip = ? ORDER BY last_attempt DESC LIMIT 1").get(ip);
+      }
+
+      let targetPost: any = null;
+      if (lockRecord && lockRecord.post_id) {
+        targetPost = db.prepare("SELECT id, searcher_name, target_name, message, created_at FROM posts WHERE id = ?").get(lockRecord.post_id);
+      }
+
+      res.json({
+        success: true,
+        lockRecord,
+        targetPost,
+        ip: ip || lockRecord?.ip || '-'
+      });
+    } catch (err: any) {
+      console.error("Fetch lock details error:", err);
+      res.status(500).json({ error: "ロック詳細の取得に失敗しました" });
+    }
+  });
+
+  // 🔒 3. 総当たりロック（Brute Force Lock）即時防衛アクション API
+  adminRouter.post("/live-alerts/lock-action", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      const { ip, actionType, alertId } = req.body;
+      // actionType: 'UNLOCK_IP' | 'EXTEND_BLOCK_30D'
+
+      if (actionType === 'UNLOCK_IP' && ip) {
+        db.prepare("DELETE FROM failed_attempts WHERE ip = ?").run(ip);
+      } else if (actionType === 'EXTEND_BLOCK_30D' && ip) {
+        db.prepare(`
+          UPDATE failed_attempts 
+          SET count = 10, locked_until = datetime('now', '+30 days'), last_attempt = CURRENT_TIMESTAMP 
+          WHERE id = ?
+        `).run(ip);
+      }
+
+      if (alertId) {
+        resolvedAlertObjects.set(String(alertId), {
+          id: String(alertId),
+          type: 'BRUTE_FORCE_ATTACK',
+          severity: 'HIGH',
+          title: `🔒 クイズ総当たり不正攻撃遮断 (IP: ${ip || '-'})`,
+          message: `IP: ${ip} に対するクイズ誤答ロック防衛措置が完了しました。`,
+          timestamp: new Date().toISOString(),
+          targetType: 'security',
+          targetId: ip || '-',
+          actionUrl: 'security',
+          status: 'resolved',
+          resolvedInfo: {
+            actionType,
+            resolvedAt: new Date().toISOString(),
+            adminName: req.user?.username || '管理者'
+          }
+        });
+      }
+
+      logAction(req.user.id, "BRUTE_FORCE_LOCK_ACTION", `Action: ${actionType} on IP: ${ip}`, req.ip);
+      res.json({ success: true, message: `クイズ総当たりロックへのアクション（${actionType}）を完了しました。` });
+    } catch (err: any) {
+      console.error("Execute lock action error:", err);
+      res.status(500).json({ error: "ロック対処アクションに失敗しました" });
     }
   });
 
@@ -2446,6 +3201,23 @@ try {
         }
       })();
 
+      if (post) {
+        recordModerationHistory({
+          postId: post.id,
+          actionType: 'ARCHIVE_DELETE',
+          actionLabel: '🗑️ 有害隔離削除',
+          targetName: post.target_name,
+          searcherName: post.searcher_name,
+          authorUserId: post.user_id,
+          authorUsername: post.author_username,
+          message: post.message,
+          aiReason: post.ai_reason,
+          adminId: (req as any).user?.id,
+          adminUsername: (req as any).user?.username,
+          details: reason
+        });
+      }
+
       logAction((req as any).user.id, "post_deleted", `Post ID: ${req.params.id} (Archived to audit database)`, req.ip);
       res.json({ success: true });
     } catch (err) {
@@ -2631,6 +3403,45 @@ try {
     }
   });
 
+  adminRouter.post("/ng-words/seed", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      const sampleNgList = [
+        "[0-9]{2,4}-[0-9]{2,4}-[0-9]{3,4}",
+        "0[789]0-?[0-9]{4}-?[0-9]{4}",
+        "0120-?[0-9]{3}-?[0-9]{3}",
+        "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}",
+        "https?://[\\w/:%#\\$&\\?\\(\\)\\~\\.=\\+\\-]+",
+        "LINE ID", "ラインID", "カカオトーク", "Telegram", "インスタID", "Twitter ID", "Discord",
+        "死ね", "殺す", "殺してやる", "消えろ", "特定した", "待ち伏せ", "住所教えろ", "復讐", "許さない",
+        "援助交際", "パパ活", "ママ活", "裏バイト", "闇バイト", "性風俗", "買春", "借金返済"
+      ];
+      let inserted = 0;
+      const stmt = db.prepare("INSERT OR IGNORE INTO ng_words (word) VALUES (?)");
+      db.transaction(() => {
+        for (const w of sampleNgList) {
+          const r = stmt.run(w);
+          if (r.changes > 0) inserted++;
+        }
+      })();
+      lastNgWordsFetch = 0;
+      logAction(req.user.id, "NG_WORDS_SEED", `Seeded ${inserted} sample NG words`, req.ip);
+      res.json({ success: true, count: inserted });
+    } catch (err) {
+      res.status(500).json({ error: "Failed to seed NG words" });
+    }
+  });
+
+  adminRouter.post("/ng-words/clear-all", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      db.prepare("DELETE FROM ng_words").run();
+      lastNgWordsFetch = 0;
+      logAction(req.user.id, "NG_WORDS_CLEAR", "Cleared all NG words", req.ip);
+      res.json({ success: true });
+    } catch (err) {
+      res.status(500).json({ error: "Failed to clear NG words" });
+    }
+  });
+
   adminRouter.post("/reset-data", authenticateToken, isAdmin, async (req, res) => {
     try {
       await seedData(true);
@@ -2772,6 +3583,314 @@ try {
     } catch (err) {
       console.error("Failed to seed moderation sample data:", err);
       res.status(500).json({ error: "Failed to seed moderation sample data" });
+    }
+  });
+
+  // --- 1. 🗑️ 削除依頼 (Deletion Requests) Seed & Clear ---
+  adminRouter.post("/deletion-requests/seed", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      const sampleDeletions = [
+        {
+          name: "佐藤 恵美",
+          url: "https://remeets.jp/post/sample-1",
+          content: "中学時代の同級生のボトルメール",
+          reason: "privacy",
+          explanation: "実名と当時の部活の詳細が記載されており、個人のプライバシー侵害に該当するため削除をお願いいたします。",
+          email: "sato.emi@example.com"
+        },
+        {
+          name: "弁護士 山田 太郎 (代理人)",
+          url: "https://remeets.jp/post/sample-2",
+          content: "1990年代の大学サークルに関する投稿",
+          reason: "defamation",
+          explanation: "事実無根の誹謗中傷表現が含まれており、名誉毀損に該当するため至急の削除を請求いたします。",
+          email: "yamada-law@example.com"
+        },
+        {
+          name: "田中 健一 (投稿者本人)",
+          url: "https://remeets.jp/post/sample-3",
+          content: "高校時代の友人を探すボトルメール",
+          reason: "self_cancel",
+          explanation: "無事に本人と他の手段で連絡が取れたため、投稿を取り下げていただきたく申請します。",
+          email: "tanaka.k@example.com"
+        }
+      ];
+
+      const stmt = db.prepare(`
+        INSERT INTO deletion_requests (name, url, content, reason, explanation, email, status, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, 'pending', CURRENT_TIMESTAMP)
+      `);
+      for (const d of sampleDeletions) {
+        stmt.run(d.name, d.url, d.content, d.reason, d.explanation, d.email);
+      }
+      logAction(req.user.id, "DELETION_SAMPLE_SEEDED", `Seeded ${sampleDeletions.length} sample deletion requests`, req.ip);
+      res.json({ success: true, count: sampleDeletions.length });
+    } catch (err) {
+      console.error("Seed deletion requests error:", err);
+      res.status(500).json({ error: "削除申請サンプルの生成に失敗しました" });
+    }
+  });
+
+  adminRouter.post("/deletion-requests/clear-all", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      const result = db.prepare("DELETE FROM deletion_requests").run();
+      logAction(req.user.id, "DELETION_ALL_CLEARED", `Cleared all ${result.changes} deletion requests`, req.ip);
+      res.json({ success: true, count: result.changes });
+    } catch (err) {
+      console.error("Clear deletion requests error:", err);
+      res.status(500).json({ error: "削除申請の一括クリアに失敗しました" });
+    }
+  });
+
+  // --- 2. 📬 お問い合わせ (Contacts) Seed & Clear ---
+  adminRouter.post("/contacts/seed", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      const sampleContacts = [
+        {
+          name: "鈴木 一郎",
+          email: "ichiro.suzuki@example.com",
+          subject: "【質問】思い出の合言葉がどうしても思い出せません",
+          message: "昔の同級生らしきボトルメールを見つけましたが、秘密の質問の答えの漢字表記が分かりません。ヒント等の救済措置はありますでしょうか？"
+        },
+        {
+          name: "高橋 花子",
+          email: "hanako.t@example.com",
+          subject: "【決済】クレジットカード決済後の画面遷移について",
+          message: "開通手数料600円の決済を完了しましたが、通信が切れてしまい手紙が開示されているか確認したいです。"
+        },
+        {
+          name: "中村 誠",
+          email: "makoto.n@example.com",
+          subject: "【本人確認】マイナンバーカードの撮影エラー",
+          message: "eKYCの書類アップロードで厚み撮影がうまくいきません。再提出の手順をご教示いただけますでしょうか。"
+        },
+        {
+          name: "小林 優子",
+          email: "yuko.k@example.com",
+          subject: "【要望】通知メールの受信設定について",
+          message: "手紙に返信が届いた際の通知をLINE連携でも受け取れるようにしたいです。今後のアップデート予定はありますか？"
+        },
+        {
+          name: "渡辺 大輔",
+          email: "daisuke.w@example.com",
+          subject: "【通報】不適切な宣伝メッセージの報告",
+          message: "投資話を持ちかけるような怪しいボトルメールを見かけましたので調査・対応をお願いいたします。"
+        }
+      ];
+
+      const insertContact = db.prepare("INSERT INTO contacts (name, email, subject, message, status, created_at) VALUES (?, ?, ?, ?, 'pending', CURRENT_TIMESTAMP)");
+      const insertMessage = db.prepare("INSERT INTO contact_messages (contact_id, sender_type, sender_name, message, created_at) VALUES (?, 'user', ?, ?, CURRENT_TIMESTAMP)");
+
+      for (const c of sampleContacts) {
+        const info = insertContact.run(c.name, c.email, c.subject, c.message);
+        insertMessage.run(info.lastInsertRowid, c.name, c.message);
+      }
+      logAction(req.user.id, "CONTACTS_SAMPLE_SEEDED", `Seeded ${sampleContacts.length} sample contacts`, req.ip);
+      res.json({ success: true, count: sampleContacts.length });
+    } catch (err) {
+      console.error("Seed contacts error:", err);
+      res.status(500).json({ error: "お問い合わせサンプルの生成に失敗しました" });
+    }
+  });
+
+  adminRouter.post("/contacts/clear-all", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      db.prepare("DELETE FROM contact_messages").run();
+      const result = db.prepare("DELETE FROM contacts").run();
+      logAction(req.user.id, "CONTACTS_ALL_CLEARED", `Cleared all ${result.changes} contacts`, req.ip);
+      res.json({ success: true, count: result.changes });
+    } catch (err) {
+      console.error("Clear contacts error:", err);
+      res.status(500).json({ error: "お問い合わせ履歴の一括クリアに失敗しました" });
+    }
+  });
+
+  // --- 3. 🚨 ユーザー通報 (Reports) Seed & Clear ---
+  adminRouter.post("/reports/seed", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      let usersList = db.prepare("SELECT id FROM users LIMIT 5").all() as any[];
+      if (usersList.length === 0) {
+        const dummyUser = db.prepare("INSERT INTO users (username, email, password, role) VALUES ('demo_reporter', 'demo@example.com', 'dummy_pass', 'user')").run();
+        usersList = [{ id: dummyUser.lastInsertRowid }];
+      }
+
+      let postsList = db.prepare("SELECT id FROM posts LIMIT 5").all() as any[];
+      if (postsList.length === 0) {
+        const dummyPost = db.prepare("INSERT INTO posts (user_id, searcher_name, target_name, message, status) VALUES (?, '差出人サンプル', '宛先サンプル', '通報検証用サンプルボトルメール', 'approved')").run(usersList[0].id);
+        postsList = [{ id: dummyPost.lastInsertRowid }];
+      }
+      
+      const reporterId = req.user?.id || usersList[0].id;
+      const p1 = postsList[0]?.id || 1;
+      const p2 = postsList[1]?.id || p1;
+      const p3 = postsList[2]?.id || p1;
+
+      const sampleReports = [
+        {
+          reporter_id: reporterId,
+          target_type: 'post',
+          target_id: p1,
+          report_type: 'stalking',
+          reason: '【ストーカー・付きまとい疑い】当時の職場や現在の居住地を探るような不審な記載が見受けられます。',
+          contact_info: 'reporter1@example.com',
+          status: 'pending'
+        },
+        {
+          reporter_id: reporterId,
+          target_type: 'post',
+          target_id: p2,
+          report_type: 'harassment',
+          reason: '【誹謗中傷・暴言】特定の個人を名指しして過去のトラブルを非難する攻撃的な文章が含まれています。',
+          contact_info: 'reporter2@example.com',
+          status: 'pending'
+        },
+        {
+          reporter_id: reporterId,
+          target_type: 'post',
+          target_id: p3,
+          report_type: 'spam',
+          reason: '【商用宣伝・外部誘導】手紙の末尾にSNSアカウントや外部サイトへの不審なURLが記載されています。',
+          contact_info: 'reporter3@example.com',
+          status: 'pending'
+        }
+      ];
+
+      const stmt = db.prepare("INSERT INTO reports (reporter_id, target_type, target_id, report_type, reason, contact_info, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)");
+      for (const r of sampleReports) {
+        stmt.run(r.reporter_id, r.target_type, r.target_id, r.report_type, r.reason, r.contact_info, r.status);
+      }
+      logAction(req.user?.id || reporterId, "REPORTS_SAMPLE_SEEDED", `Seeded ${sampleReports.length} sample reports`, req.ip);
+      res.json({ success: true, count: sampleReports.length });
+    } catch (err: any) {
+      console.error("Seed reports error:", err);
+      res.status(500).json({ error: `通報サンプルの生成に失敗しました: ${err.message || err}` });
+    }
+  });
+
+  adminRouter.post("/reports/clear-all", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      const result = db.prepare("DELETE FROM reports").run();
+      logAction(req.user.id, "REPORTS_ALL_CLEARED", `Cleared all ${result.changes} reports`, req.ip);
+      res.json({ success: true, count: result.changes });
+    } catch (err) {
+      console.error("Clear reports error:", err);
+      res.status(500).json({ error: "通報履歴の一括クリアに失敗しました" });
+    }
+  });
+
+  // --- 4. 🤖 AI検知保留キュー & 削除アーカイブ Clear ---
+  adminRouter.post("/moderation/clear-queue", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      const result = db.prepare("UPDATE posts SET ai_flagged = 0, status = 'active' WHERE ai_flagged = 1 OR status = 'flagged'").run();
+      logAction(req.user.id, "MODERATION_QUEUE_CLEARED", `Cleared ${result.changes} flagged posts from queue`, req.ip);
+      res.json({ success: true, count: result.changes });
+    } catch (err) {
+      console.error("Clear moderation queue error:", err);
+      res.status(500).json({ error: "AI検知キューのクリアに失敗しました" });
+    }
+  });
+
+  adminRouter.post("/moderation/clear-archive", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      const result = db.prepare("DELETE FROM deleted_posts_archive").run();
+      logAction(req.user.id, "MODERATION_ARCHIVE_CLEARED", `Cleared all ${result.changes} deleted posts archive logs`, req.ip);
+      res.json({ success: true, count: result.changes });
+    } catch (err) {
+      console.error("Clear moderation archive error:", err);
+      res.status(500).json({ error: "削除監査アーカイブのクリアに失敗しました" });
+    }
+  });
+
+  // --- 5. 🛡️ 本人確認 (eKYC) 監査ログ Seed & Clear ---
+  adminRouter.post("/age-logs/seed", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      const usersList = db.prepare("SELECT id, username, full_name, is_ekyc_verified, ekyc_document_type FROM users WHERE role = 'user' LIMIT 30").all() as any[];
+      const insertLog = db.prepare(`
+        INSERT INTO age_verification_logs (user_id, ip, is_verified, age, reason, metadata_json, created_at)
+        VALUES (?, ?, 1, ?, ?, ?, CURRENT_TIMESTAMP)
+      `);
+      let seeded = 0;
+      for (const u of usersList) {
+        const isEkyc = u.is_ekyc_verified === 1 || seeded % 3 !== 0;
+        const docType = isEkyc ? (seeded % 2 === 0 ? 'driver_license' : 'mynumber') : 'self_attestation';
+        insertLog.run(
+          u.id,
+          `192.168.1.${(u.id % 250) + 1}`,
+          28 + (seeded % 30),
+          isEkyc ? 'AI公的身分証多層照合完了 (身元確認済)' : '18歳以上利用規約・宣誓同意',
+          JSON.stringify({
+            verification_flow: isEkyc ? 'primary_ekyc' : 'self_declaration',
+            document_type: docType,
+            method: isEkyc ? 'eKYC' : 'self_attestation',
+            provider: isEkyc ? 'TRUSTDOCK_AI_OCR' : 'INTERNAL_LEGAL_PLEDGE',
+            score: isEkyc ? 98 : 100,
+            verified_name: u.full_name || u.username
+          })
+        );
+        seeded++;
+      }
+      logAction(req.user.id, "AGE_LOGS_SEEDED", `Seeded ${seeded} age verification logs`, req.ip);
+      res.json({ success: true, count: seeded });
+    } catch (err) {
+      console.error("Seed age logs error:", err);
+      res.status(500).json({ error: "eKYC監査ログの生成に失敗しました" });
+    }
+  });
+
+  adminRouter.post("/age-logs/clear-all", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      const result = db.prepare("DELETE FROM age_verification_logs").run();
+      logAction(req.user.id, "AGE_LOGS_CLEARED", `Cleared all ${result.changes} age verification logs`, req.ip);
+      res.json({ success: true, count: result.changes });
+    } catch (err) {
+      console.error("Clear age logs error:", err);
+      res.status(500).json({ error: "eKYC監査ログの一括クリアに失敗しました" });
+    }
+  });
+
+  // --- 6. ✨ 幸せな再会の物語 (Success Stories) Clear ---
+  adminRouter.post("/success-stories/clear-all", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      const result = db.prepare("DELETE FROM success_stories").run();
+      logAction(req.user.id, "SUCCESS_STORIES_CLEARED", `Cleared all ${result.changes} success stories`, req.ip);
+      res.json({ success: true, count: result.changes });
+    } catch (err) {
+      console.error("Clear success stories error:", err);
+      res.status(500).json({ error: "再会体験談の一括クリアに失敗しました" });
+    }
+  });
+
+  // --- 7. 💳 決済トランザクション (Payment Transactions) Clear ---
+  adminRouter.post("/payment-transactions/clear-all", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      const result = db.prepare("DELETE FROM payment_transactions").run();
+      logAction(req.user.id, "PAYMENTS_CLEARED", `Cleared all ${result.changes} payment transactions`, req.ip);
+      res.json({ success: true, count: result.changes });
+    } catch (err) {
+      console.error("Clear payment transactions error:", err);
+      res.status(500).json({ error: "決済履歴の一括クリアに失敗しました" });
+    }
+  });
+
+  // --- 8. 📜 アクセスログ & 操作ログ Clear ---
+  adminRouter.post("/logs/clear-access", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      const result = db.prepare("DELETE FROM access_logs").run();
+      logAction(req.user.id, "ACCESS_LOGS_CLEARED", `Cleared all ${result.changes} access logs`, req.ip);
+      res.json({ success: true, count: result.changes });
+    } catch (err) {
+      console.error("Clear access logs error:", err);
+      res.status(500).json({ error: "アクセスログの一括クリアに失敗しました" });
+    }
+  });
+
+  adminRouter.post("/logs/clear-actions", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      const result = db.prepare("DELETE FROM action_logs").run();
+      res.json({ success: true, count: result.changes });
+    } catch (err) {
+      console.error("Clear action logs error:", err);
+      res.status(500).json({ error: "操作ログの一括クリアに失敗しました" });
     }
   });
 
@@ -3189,13 +4308,95 @@ try {
     }
   });
 
+  // 📋 モデレーション全処置履歴一覧の取得 API
+  adminRouter.get("/moderation/history", authenticateToken, isAdmin, (req, res) => {
+    try {
+      // 1. moderation_history テーブルから取得
+      const historyList = db.prepare(`
+        SELECT * FROM moderation_history ORDER BY created_at DESC LIMIT 500
+      `).all() as any[];
+
+      // 2. もし moderation_history が空、または件数が少ない場合、deleted_posts_archive の過去データも統合
+      const historyPostIds = new Set(historyList.map(h => `${h.post_id}_${h.action_type}`));
+      const archiveList = db.prepare(`
+        SELECT * FROM deleted_posts_archive ORDER BY deleted_at DESC LIMIT 200
+      `).all() as any[];
+
+      for (const a of archiveList) {
+        const key = `${a.post_id}_ARCHIVE_DELETE`;
+        if (!historyPostIds.has(key)) {
+          historyList.push({
+            id: `arch_${a.id}`,
+            post_id: a.post_id,
+            action_type: 'ARCHIVE_DELETE',
+            action_label: '🗑️ 有害隔離削除',
+            target_name: a.target_name,
+            searcher_name: a.searcher_name,
+            author_user_id: a.user_id,
+            author_username: a.username,
+            message: a.message,
+            ai_reason: a.ai_reason || a.reason,
+            admin_id: null,
+            admin_username: a.deleted_by_name || 'Admin',
+            details: a.reason || 'AI検閲確定・有害コンテンツ隔離削除',
+            created_at: a.deleted_at
+          });
+        }
+      }
+
+      // 日時順にソート
+      historyList.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+      res.json(historyList);
+    } catch (err) {
+      console.error("Failed to fetch moderation history:", err);
+      res.status(500).json({ error: "モデレーション履歴の取得に失敗しました" });
+    }
+  });
+
+  // 🗑️ モデレーション全処置履歴のクリア API
+  adminRouter.post("/moderation/clear-history", authenticateToken, isAdmin, (req: any, res) => {
+    try {
+      const result = db.prepare("DELETE FROM moderation_history").run();
+      logAction(req.user.id, "MODERATION_HISTORY_CLEARED", `Cleared ${result.changes} moderation history logs`, req.ip);
+      res.json({ success: true, count: result.changes });
+    } catch (err) {
+      console.error("Failed to clear moderation history:", err);
+      res.status(500).json({ error: "モデレーション履歴のクリアに失敗しました" });
+    }
+  });
+
   // 個別ボトルのAIフラグ解除・承認公開
   adminRouter.post("/moderation/approve", authenticateToken, isAdmin, (req, res) => {
     try {
       const { postId } = req.body;
       if (!postId) return res.status(400).json({ error: "Post ID is required" });
 
+      const post = db.prepare(`
+        SELECT p.*, u.username as author_username 
+        FROM posts p 
+        LEFT JOIN users u ON p.user_id = u.id 
+        WHERE p.id = ?
+      `).get(postId) as any;
+
       db.prepare("UPDATE posts SET ai_flagged = 0, status = 'active', ai_diagnosed = 1 WHERE id = ?").run(postId);
+      
+      // 処置履歴に記録
+      recordModerationHistory({
+        postId: postId,
+        actionType: 'APPROVE_UNFLAG',
+        actionLabel: '🟢 承認・公開復帰',
+        targetName: post?.target_name,
+        searcherName: post?.searcher_name,
+        authorUserId: post?.user_id,
+        authorUsername: post?.author_username,
+        message: post?.message,
+        aiReason: post?.ai_reason,
+        adminId: (req as any).user.id,
+        adminUsername: (req as any).user.username,
+        details: '管理者の目視審査により誤検知と判定、通常公開へ復帰'
+      });
+
       logAction((req as any).user.id, "MODERATION_APPROVED", `Post #${postId} approved and published by admin`, req.ip);
       res.json({ success: true, message: `ボトル #${postId} を承認・公開しました` });
     } catch (err) {
@@ -3212,6 +4413,14 @@ try {
         return res.status(400).json({ error: "Post IDs array is required" });
       }
 
+      const placeholders = postIds.map(() => '?').join(',');
+      const posts = db.prepare(`
+        SELECT p.*, u.username as author_username 
+        FROM posts p 
+        LEFT JOIN users u ON p.user_id = u.id 
+        WHERE p.id IN (${placeholders})
+      `).all(...postIds) as any[];
+
       const stmt = db.prepare("UPDATE posts SET ai_flagged = 0, status = 'active', ai_diagnosed = 1 WHERE id = ?");
       const transaction = db.transaction((ids: number[]) => {
         for (const id of ids) {
@@ -3219,6 +4428,24 @@ try {
         }
       });
       transaction(postIds);
+
+      // 各ポストの処置履歴を一括記録
+      for (const p of posts) {
+        recordModerationHistory({
+          postId: p.id,
+          actionType: 'APPROVE_UNFLAG',
+          actionLabel: '🟢 一括承認・公開',
+          targetName: p.target_name,
+          searcherName: p.searcher_name,
+          authorUserId: p.user_id,
+          authorUsername: p.author_username,
+          message: p.message,
+          aiReason: p.ai_reason,
+          adminId: (req as any).user.id,
+          adminUsername: (req as any).user.username,
+          details: '一括審査による通常公開復帰'
+        });
+      }
 
       logAction((req as any).user.id, "MODERATION_BATCH_APPROVED", `Batch approved ${postIds.length} posts by admin`, req.ip);
       res.json({ success: true, count: postIds.length, message: `${postIds.length}件のボトルを一括承認・公開しました` });
@@ -3231,10 +4458,9 @@ try {
   adminRouter.get("/audit-logs", authenticateToken, isAdmin, (req, res) => {
     try {
       const logs = db.prepare(`
-        SELECT l.*, u.username 
+        SELECT l.*, COALESCE(u.username, 'Admin') as username 
         FROM action_logs l 
-        JOIN users u ON l.user_id = u.id 
-        WHERE u.role = 'admin'
+        LEFT JOIN users u ON l.user_id = u.id 
         ORDER BY l.created_at DESC 
         LIMIT 200
       `).all();

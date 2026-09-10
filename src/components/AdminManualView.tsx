@@ -1882,7 +1882,7 @@ export const AdminManualView: React.FC = () => {
           </div>
           <h2 className="text-xl md:text-2xl font-bold font-serif text-black flex items-center gap-2">
             <span>管理画面操作マニュアル（全編完全版）</span>
-            <span className="text-xs font-mono font-normal px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+            <span className="text-xs font-serif font-normal px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
               全8章・25節 一括閲覧
             </span>
           </h2>
@@ -1917,7 +1917,7 @@ export const AdminManualView: React.FC = () => {
       {/* 🧭 2-Column Documentation Layout (左目次メニュー ＋ 右シングルページ全編) */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
         {/* 📑 LEFT SIDEBAR NAVIGATION (固定目次アンカー) */}
-        <div className={`md:col-span-4 lg:col-span-4 bg-white rounded-3xl p-5 border border-brand-border shadow-sm space-y-4 md:sticky md:top-6 max-h-[calc(100vh-6rem)] overflow-y-auto custom-scrollbar ${
+        <div className={`md:col-span-4 lg:col-span-4 bg-white rounded-3xl p-5 border border-brand-border shadow-sm space-y-4 md:sticky md:top-2 ${
           mobileMenuOpen ? 'block' : 'hidden md:block'
         }`}>
           {/* Sidebar Search Bar */}
@@ -1976,7 +1976,7 @@ export const AdminManualView: React.FC = () => {
                           >
                             <span className="line-clamp-1">{sec.title}</span>
                             {sec.badge && (
-                              <span className={`text-[9px] px-1.5 py-0.2 rounded font-mono font-bold shrink-0 ml-1 ${
+                              <span className={`text-[9px] px-1.5 py-0.2 rounded font-serif font-bold shrink-0 ml-1 ${
                                 isSelected ? 'bg-teal-200 text-teal-950' : 'bg-zinc-200 text-black/60'
                               }`}>
                                 {sec.badge}
@@ -2007,7 +2007,7 @@ export const AdminManualView: React.FC = () => {
                   <cat.icon size={20} className="text-teal-400" />
                   <h3 className="font-bold text-base font-serif tracking-wide">{cat.categoryTitle}</h3>
                 </div>
-                <span className="text-[10px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">
+                <span className="text-[10px] font-serif text-slate-400 bg-slate-800 px-2 py-0.5 rounded">
                   第 {catIdx + 1} 章
                 </span>
               </div>
@@ -2024,7 +2024,7 @@ export const AdminManualView: React.FC = () => {
                     <div className="border-b border-brand-border/60 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="text-xs font-mono font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded border border-teal-200">
+                          <span className="text-xs font-serif font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded border border-teal-200">
                             § {sec.id}
                           </span>
                           <h4 className="font-bold text-base text-black font-serif">{sec.title}</h4>

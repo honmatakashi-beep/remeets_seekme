@@ -108,6 +108,14 @@
     @apply bg-brand-dark/45;
   }
   
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
   body {
     background-color: #FDF9F0; /* Pale yellow Washi Base */
     background-image: 

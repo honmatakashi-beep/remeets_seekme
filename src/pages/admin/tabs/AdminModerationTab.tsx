@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Bot, Trash2, FileText, X, Download, UserX, Shield, ShieldAlert, Sparkles, AlertTriangle, CheckCircle2, Play, RefreshCw,
-  Eye, HelpCircle, Activity, Zap, Info, ShieldCheck, Search
+  Eye, HelpCircle, Activity, Zap, Info, ShieldCheck, Search, History, CheckCheck
 } from "lucide-react";
 import { cn } from "../../../lib/utils";
 
@@ -10,7 +10,7 @@ export interface AdminModerationTabProps {
 }
 
 export const AdminModerationTab: React.FC<AdminModerationTabProps> = (props) => {
-      const {
+  const {
     testPostText = "",
     setTestPostText = () => {},
     censorshipResult = null,
@@ -28,6 +28,8 @@ export const AdminModerationTab: React.FC<AdminModerationTabProps> = (props) => 
     setSelectedArchiveIds = () => {},
     handleBatchDeleteArchive = () => {},
     isBatchDeletingArchive = false,
+    moderationHistory = [],
+    setModerationHistory = () => {},
     archivePerPage = 10,
     setArchivePerPage = () => {},
     setArchivePage = () => {},
@@ -60,148 +62,243 @@ export const AdminModerationTab: React.FC<AdminModerationTabProps> = (props) => 
     setArchiveSearchTerm = () => {}
   } = props;
 
+  // 処置対応履歴用ローカルState
+  const [historySearchTerm, setHistorySearchTerm] = useState("");
+  const [historyActionFilter, setHistoryActionFilter] = useState<'all' | 'approve' | 'delete' | 'block'>('all');
+  const [historyPage, setHistoryPage] = useState(1);
+  const [historyPerPage, setHistoryPerPage] = useState<number>(15);
+
   return (
-            <div className="space-y-6 text-left font-sans animate-fade-in">
-              {/* 1. 4大AI検閲KPIサマリーカード */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">
-                <div className="bg-white/90 backdrop-blur-md border border-rose-200/80 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-rose-700">🤖 AI検知保留中キュー</span>
-                    <div className="w-8 h-8 rounded-xl bg-rose-50 flex items-center justify-center text-rose-600">
-                      <Bot size={16} />
-                    </div>
-                  </div>
-                  <div className="mt-2 flex items-baseline gap-2">
-                    <span className="text-2xl font-extrabold font-serif text-rose-700">{moderationQueue.length}</span>
-                    <span className="text-xs text-rose-500">件</span>
-                  </div>
-                  <div className="mt-1 text-[11px] text-rose-600 font-medium">目視確認待ちの隔離ボトル</div>
-                </div>
+    <div className="space-y-6 text-left font-sans animate-fade-in">
+      {/* 1. 4大AI検閲KPIサマリーカード */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">
+        <div className="bg-white/90 backdrop-blur-md border border-rose-200/80 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-rose-700">🤖 AI検知保留中キュー</span>
+            <div className="w-8 h-8 rounded-xl bg-rose-50 flex items-center justify-center text-rose-600">
+              <Bot size={16} />
+            </div>
+          </div>
+          <div className="mt-2 flex items-baseline gap-2">
+            <span className="text-2xl font-extrabold font-serif text-rose-700">{moderationQueue.length}</span>
+            <span className="text-xs text-rose-500">件</span>
+          </div>
+          <div className="mt-1 text-[11px] text-rose-600 font-medium">目視確認待ちの隔離ボトル</div>
+        </div>
 
-                <div className="bg-white/90 backdrop-blur-md border border-amber-200/80 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-amber-700">🚨 ストーキング・脅迫疑い</span>
-                    <div className="w-8 h-8 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
-                      <ShieldAlert size={16} />
-                    </div>
-                  </div>
-                  <div className="mt-2 flex items-baseline gap-2">
-                    <span className="text-2xl font-extrabold font-serif text-amber-700">
-                      {moderationQueue.filter(p => {
-                        const r = (p.ai_reason || '').toLowerCase();
-                        return r.includes('ストーカー') || r.includes('脅迫') || r.includes('住所') || r.includes('個人情報');
-                      }).length}
-                    </span>
-                    <span className="text-xs text-amber-500">件</span>
-                  </div>
-                  <div className="mt-1 text-[11px] text-amber-600 font-medium">重大コンプライアンスリスク</div>
-                </div>
+        <div className="bg-white/90 backdrop-blur-md border border-amber-200/80 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-amber-700">🚨 ストーキング・脅迫疑い</span>
+            <div className="w-8 h-8 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
+              <ShieldAlert size={16} />
+            </div>
+          </div>
+          <div className="mt-2 flex items-baseline gap-2">
+            <span className="text-2xl font-extrabold font-serif text-amber-700">
+              {moderationQueue.filter(p => {
+                const r = (p.ai_reason || '').toLowerCase();
+                return r.includes('ストーカー') || r.includes('脅迫') || r.includes('住所') || r.includes('個人情報');
+              }).length}
+            </span>
+            <span className="text-xs text-amber-500">件</span>
+          </div>
+          <div className="mt-1 text-[11px] text-amber-600 font-medium">重大コンプライアンスリスク</div>
+        </div>
 
-                <div className="bg-white/90 backdrop-blur-md border border-blue-200/80 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-blue-700">📱 連絡先・NGワード</span>
-                    <div className="w-8 h-8 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
-                      <Shield size={16} />
-                    </div>
-                  </div>
-                  <div className="mt-2 flex items-baseline gap-2">
-                    <span className="text-2xl font-extrabold font-serif text-blue-700">
-                      {moderationQueue.filter(p => {
-                        const r = (p.ai_reason || '').toLowerCase();
-                        return r.includes('line') || r.includes('電話') || r.includes('メール') || r.includes('ng') || r.includes('ワード');
-                      }).length}
-                    </span>
-                    <span className="text-xs text-blue-500">件</span>
-                  </div>
-                  <div className="mt-1 text-[11px] text-blue-600 font-medium">禁止ワード・外部誘導検知</div>
-                </div>
+        <div className="bg-white/90 backdrop-blur-md border border-emerald-200/80 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-emerald-700">📋 AI処置対応履歴</span>
+            <div className="w-8 h-8 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+              <History size={16} />
+            </div>
+          </div>
+          <div className="mt-2 flex items-baseline gap-2">
+            <span className="text-2xl font-extrabold font-serif text-emerald-700">{moderationHistory.length}</span>
+            <span className="text-xs text-emerald-500">件</span>
+          </div>
+          <div className="mt-1 text-[11px] text-emerald-600 font-medium">承認・削除・凍結の全処置ログ</div>
+        </div>
 
-                <div className="bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-slate-700">📁 削除監査アーカイブ</span>
-                    <div className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600">
-                      <FileText size={16} />
-                    </div>
-                  </div>
-                  <div className="mt-2 flex items-baseline gap-2">
-                    <span className="text-2xl font-extrabold font-serif text-slate-800">{deletedPostsArchive.length}</span>
-                    <span className="text-xs text-slate-500">件</span>
-                  </div>
-                  <div className="mt-1 text-[11px] text-slate-600 font-medium">物理削除・証跡保全ログ</div>
-                </div>
-              </div>
+        <div className="bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-slate-700">📁 削除監査アーカイブ</span>
+            <div className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600">
+              <FileText size={16} />
+            </div>
+          </div>
+          <div className="mt-2 flex items-baseline gap-2">
+            <span className="text-2xl font-extrabold font-serif text-slate-800">{deletedPostsArchive.length}</span>
+            <span className="text-xs text-slate-500">件</span>
+          </div>
+          <div className="mt-1 text-[11px] text-slate-600 font-medium">物理削除・証跡保全ログ</div>
+        </div>
+      </div>
 
-              {/* 2. メインデータカード */}
-              <div className="bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden font-sans">
-                {/* Header */}
-                <div className="p-5 border-b border-slate-200/80 bg-slate-50/50 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center shadow-sm">
-                      <Bot size={18} />
-                    </div>
-                    <div>
-                      <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                        <span>規約監視・AIリスク防衛センター</span>
-                        <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-300">
-                          {moderationSubTab === 'queue' ? `保留キュー ${moderationQueue.length}件` : `削除ログ ${deletedPostsArchive.length}件`}
-                        </span>
-                      </h3>
-                      <p className="text-xs text-slate-500 mt-0.5">
-                        AI安全エンジンによる不適切・ストーキング表現の自動隔離検知 ＆ 監査ルーム
-                      </p>
-                    </div>
-                  </div>
+      {/* 2. メインデータカード */}
+      <div className="bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden font-sans">
+        {/* Header */}
+        <div className="p-5 border-b border-slate-200/80 bg-slate-50/50 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center shadow-sm">
+              <Bot size={18} />
+            </div>
+            <div>
+              <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                <span>規約監視・AIリスク防衛センター</span>
+                <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-300">
+                  {moderationSubTab === 'queue' ? `保留キュー ${moderationQueue.length}件` : moderationSubTab === 'history' ? `対応履歴 ${moderationHistory.length}件` : `削除ログ ${deletedPostsArchive.length}件`}
+                </span>
+              </h3>
+              <p className="text-xs text-slate-500 mt-0.5">
+                AI安全エンジンによる不適切・ストーキング表現の自動隔離検知 ＆ 処置監査ルーム
+              </p>
+            </div>
+          </div>
 
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={handleSeedModeration}
-                      className="px-3 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
-                    >
-                      <Sparkles size={13} className="text-amber-400" />
-                      <span>AI検知テストデータを生成</span>
-                    </button>
-                  </div>
-                </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={handleSeedModeration}
+              className="px-3 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+              title="AI検知テスト用ボトル（3件）を混入させます"
+            >
+              <Sparkles size={13} className="text-amber-400" />
+              <span>AI検知テストデータを生成</span>
+            </button>
 
-                {/* Sub Tab Navigation */}
-                <div className="px-5 pt-3 border-b border-slate-200/80 bg-slate-50/30 flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => { setModerationSubTab('queue'); setModPage(1); }}
-                    className={`pb-3 px-3 text-xs font-bold flex items-center gap-1.5 border-b-2 transition-all cursor-pointer ${
-                      moderationSubTab === 'queue'
-                        ? 'border-brand-primary text-brand-primary font-extrabold'
-                        : 'border-transparent text-slate-500 hover:text-slate-800'
-                    }`}
-                  >
-                    <AlertTriangle size={14} className={moderationQueue.length > 0 ? "text-rose-500 animate-pulse" : ""} />
-                    <span>AI検知保留キュー</span>
-                    <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
-                      moderationSubTab === 'queue' ? 'bg-brand-primary/10 text-brand-primary' : 'bg-slate-200 text-slate-600'
-                    }`}>
-                      {moderationQueue.length}
-                    </span>
-                  </button>
+            <button
+              type="button"
+              onClick={async () => {
+                if (!confirm('AI検知保留中のキューを全てクリア（解除）しますか？')) return;
+                try {
+                  const res = await fetch('/api/admin/moderation/clear-queue', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${props.token}` }
+                  });
+                  if (res.ok) {
+                    alert('AI検知キューをクリアしました。');
+                    if (props.fetchData) props.fetchData();
+                    else window.location.reload();
+                  }
+                } catch (e) {
+                  alert('通信エラーが発生しました');
+                }
+              }}
+              className="px-3 py-2 bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
+              title="AI検知保留キューのみを一括クリアします"
+            >
+              <Trash2 size={13} />
+              <span>保留キュー全クリア</span>
+            </button>
 
-                  <button
-                    type="button"
-                    onClick={() => { setModerationSubTab('archive'); setArchivePage(1); }}
-                    className={`pb-3 px-3 text-xs font-bold flex items-center gap-1.5 border-b-2 transition-all cursor-pointer ${
-                      moderationSubTab === 'archive'
-                        ? 'border-brand-primary text-brand-primary font-extrabold'
-                        : 'border-transparent text-slate-500 hover:text-slate-800'
-                    }`}
-                  >
-                    <FileText size={14} />
-                    <span>削除監査履歴ログ</span>
-                    <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
-                      moderationSubTab === 'archive' ? 'bg-brand-primary/10 text-brand-primary' : 'bg-slate-200 text-slate-600'
-                    }`}>
-                      {deletedPostsArchive.length}
-                    </span>
-                  </button>
-                </div>
+            <button
+              type="button"
+              onClick={async () => {
+                if (!confirm('AI処置対応履歴ログを全てクリア（全消去）しますか？')) return;
+                try {
+                  const res = await fetch('/api/admin/moderation/clear-history', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${props.token}` }
+                  });
+                  if (res.ok) {
+                    alert('処置対応履歴ログをクリアしました。');
+                    if (props.fetchData) props.fetchData();
+                    else window.location.reload();
+                  }
+                } catch (e) {
+                  alert('通信エラーが発生しました');
+                }
+              }}
+              className="px-3 py-2 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
+              title="処置対応履歴のみを一括消去します"
+            >
+              <Trash2 size={13} />
+              <span>対応履歴クリア</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={async () => {
+                if (!confirm('削除監査履歴ログを全てクリア（全消去）しますか？')) return;
+                try {
+                  const res = await fetch('/api/admin/moderation/clear-archive', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${props.token}` }
+                  });
+                  if (res.ok) {
+                    alert('削除監査ログをクリアしました。');
+                    if (props.fetchData) props.fetchData();
+                    else window.location.reload();
+                  }
+                } catch (e) {
+                  alert('通信エラーが発生しました');
+                }
+              }}
+              className="px-3 py-2 bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
+              title="削除監査アーカイブ履歴のみを一括消去します"
+            >
+              <Trash2 size={13} />
+              <span>削除ログ全クリア</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Sub Tab Navigation */}
+        <div className="px-5 pt-3 border-b border-slate-200/80 bg-slate-50/30 flex items-center gap-2 overflow-x-auto">
+          <button
+            type="button"
+            onClick={() => { setModerationSubTab('queue'); setModPage(1); }}
+            className={`pb-3 px-3 text-xs font-bold flex items-center gap-1.5 border-b-2 transition-all cursor-pointer shrink-0 ${
+              moderationSubTab === 'queue'
+                ? 'border-brand-primary text-brand-primary font-extrabold'
+                : 'border-transparent text-slate-500 hover:text-slate-800'
+            }`}
+          >
+            <AlertTriangle size={14} className={moderationQueue.length > 0 ? "text-rose-500 animate-pulse" : ""} />
+            <span>🤖 AI検知保留キュー (未対応)</span>
+            <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+              moderationSubTab === 'queue' ? 'bg-brand-primary/10 text-brand-primary' : 'bg-slate-200 text-slate-600'
+            }`}>
+              {moderationQueue.length}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => { setModerationSubTab('history'); setHistoryPage(1); }}
+            className={`pb-3 px-3 text-xs font-bold flex items-center gap-1.5 border-b-2 transition-all cursor-pointer shrink-0 ${
+              moderationSubTab === 'history'
+                ? 'border-brand-primary text-brand-primary font-extrabold'
+                : 'border-transparent text-slate-500 hover:text-slate-800'
+            }`}
+          >
+            <History size={14} />
+            <span>📋 AI処置対応履歴 (承認・削除・凍結)</span>
+            <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+              moderationSubTab === 'history' ? 'bg-brand-primary/10 text-brand-primary' : 'bg-slate-200 text-slate-600'
+            }`}>
+              {moderationHistory.length}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => { setModerationSubTab('archive'); setArchivePage(1); }}
+            className={`pb-3 px-3 text-xs font-bold flex items-center gap-1.5 border-b-2 transition-all cursor-pointer shrink-0 ${
+              moderationSubTab === 'archive'
+                ? 'border-brand-primary text-brand-primary font-extrabold'
+                : 'border-transparent text-slate-500 hover:text-slate-800'
+            }`}
+          >
+            <FileText size={14} />
+            <span>📁 削除監査履歴ログ (証拠保全)</span>
+            <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+              moderationSubTab === 'archive' ? 'bg-brand-primary/10 text-brand-primary' : 'bg-slate-200 text-slate-600'
+            }`}>
+              {deletedPostsArchive.length}
+            </span>
+          </button>
+        </div>
 
                 {/* SUB TAB 1: QUEUE */}
                 {moderationSubTab === 'queue' && (() => {
@@ -581,7 +678,317 @@ export const AdminModerationTab: React.FC<AdminModerationTabProps> = (props) => 
                   );
                 })()}
 
-                {/* SUB TAB 2: ARCHIVE */}
+                {/* SUB TAB 2: MODERATION HISTORY */}
+                {moderationSubTab === 'history' && (() => {
+                  const filtered = moderationHistory.filter((h: any) => {
+                    const actionType = (h.action_type || '').toUpperCase();
+                    const actionLabel = (h.action_label || '');
+                    
+                    if (historyActionFilter === 'approve') {
+                      if (!actionType.includes('APPROVE') && !actionLabel.includes('承認')) return false;
+                    } else if (historyActionFilter === 'delete') {
+                      if (!actionType.includes('DELETE') && !actionLabel.includes('削除') && !actionLabel.includes('隔離')) return false;
+                      if (actionType.includes('BLOCK') || actionLabel.includes('凍結')) return false;
+                    } else if (historyActionFilter === 'block') {
+                      if (!actionType.includes('BLOCK') && !actionLabel.includes('凍結')) return false;
+                    }
+
+                    if (historySearchTerm.trim()) {
+                      const q = historySearchTerm.toLowerCase();
+                      const matchTarget = (h.target_name || '').toLowerCase().includes(q);
+                      const matchSearcher = (h.searcher_name || '').toLowerCase().includes(q);
+                      const matchAuthor = (h.author_username || '').toLowerCase().includes(q);
+                      const matchAdmin = (h.admin_username || '').toLowerCase().includes(q);
+                      const matchMsg = (h.message || '').toLowerCase().includes(q);
+                      const matchReason = (h.ai_reason || '').toLowerCase().includes(q);
+                      const matchDetails = (h.details || '').toLowerCase().includes(q);
+                      const matchLabel = (h.action_label || '').toLowerCase().includes(q);
+                      const matchPostId = String(h.post_id || '').includes(q);
+                      if (!matchTarget && !matchSearcher && !matchAuthor && !matchAdmin && !matchMsg && !matchReason && !matchDetails && !matchLabel && !matchPostId) return false;
+                    }
+                    return true;
+                  });
+
+                  const totalPages = Math.ceil(filtered.length / historyPerPage) || 1;
+                  const currentPage = Math.min(historyPage, totalPages);
+                  const paginated = filtered.slice((currentPage - 1) * historyPerPage, currentPage * historyPerPage);
+
+                  return (
+                    <div>
+                      {/* Search & Action Filter Bar */}
+                      <div className="p-4 border-b border-slate-200/80 bg-slate-50/30 space-y-3">
+                        <div className="flex items-center justify-between flex-wrap gap-2">
+                          <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl border border-slate-200/80 text-xs font-bold">
+                            {[
+                              { id: 'all', label: 'すべて', count: moderationHistory.length },
+                              { 
+                                id: 'approve', 
+                                label: '🟢 承認・公開復帰', 
+                                count: moderationHistory.filter(h => (h.action_type || '').includes('APPROVE') || (h.action_label || '').includes('承認')).length 
+                              },
+                              { 
+                                id: 'delete', 
+                                label: '🗑️ 有害隔離削除', 
+                                count: moderationHistory.filter(h => ((h.action_type || '').includes('DELETE') || (h.action_label || '').includes('削除')) && !((h.action_type || '').includes('BLOCK') || (h.action_label || '').includes('凍結'))).length 
+                              },
+                              { 
+                                id: 'block', 
+                                label: '🚨 投稿者凍結＋削除', 
+                                count: moderationHistory.filter(h => (h.action_type || '').includes('BLOCK') || (h.action_label || '').includes('凍結')).length 
+                              },
+                            ].map(t => (
+                              <button
+                                key={t.id}
+                                type="button"
+                                onClick={() => { setHistoryActionFilter(t.id as any); setHistoryPage(1); }}
+                                className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
+                                  historyActionFilter === t.id
+                                    ? 'bg-white text-slate-900 shadow-sm font-extrabold border border-slate-200/60'
+                                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
+                                }`}
+                              >
+                                <span>{t.label}</span>
+                                <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                                  historyActionFilter === t.id ? 'bg-slate-900 text-white' : 'bg-slate-200 text-slate-700'
+                                }`}>
+                                  {t.count}
+                                </span>
+                              </button>
+                            ))}
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-slate-500 font-bold">表示件数:</span>
+                            <select
+                              value={historyPerPage}
+                              onChange={(e) => { setHistoryPerPage(Number(e.target.value)); setHistoryPage(1); }}
+                              className="bg-white border border-slate-200 text-slate-700 text-xs rounded-lg px-2 py-1 font-bold focus:outline-none focus:border-brand-primary"
+                            >
+                              <option value={15}>15件</option>
+                              <option value={30}>30件</option>
+                              <option value={50}>50件</option>
+                              <option value={9999}>全件</option>
+                            </select>
+
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const headers = ["ID", "ポストID", "処置区分", "処置ラベル", "投函者UID", "アカウント名", "差出人名", "お相手名", "本文", "AI判定理由", "対応管理者", "処置詳細メモ", "対応日時"];
+                                const rows = moderationHistory.map(h => [
+                                  h.id, h.post_id || "", `"${h.action_type || ''}"`, `"${h.action_label || ''}"`, h.author_user_id || "",
+                                  `"${h.author_username || ''}"`, `"${h.searcher_name || ''}"`, `"${h.target_name || ''}"`,
+                                  `"${(h.message || '').replace(/"/g, '""')}"`, `"${(h.ai_reason || '').replace(/"/g, '""')}"`,
+                                  `"${h.admin_username || ''}"`, `"${(h.details || '').replace(/"/g, '""')}"`, h.created_at
+                                ]);
+                                const csvContent = "\uFEFF" + [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
+                                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                                const url = URL.createObjectURL(blob);
+                                const link = document.createElement("a");
+                                link.setAttribute("href", url);
+                                link.setAttribute("download", `remeets_moderation_history_${new Date().toISOString().split('T')[0]}.csv`);
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
+                              }}
+                              className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+                            >
+                              <Download size={13} />
+                              <span>処置対応履歴 CSV</span>
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Search input */}
+                        <div className="relative">
+                          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                          <input
+                            type="text"
+                            value={historySearchTerm}
+                            onChange={(e) => { setHistorySearchTerm(e.target.value); setHistoryPage(1); }}
+                            placeholder="宛先、差出人、本文、AI理由、対応管理者、処置内容で検索..."
+                            className="w-full bg-white border border-slate-200 rounded-xl pl-9 pr-8 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-brand-primary transition-all font-medium"
+                          />
+                          {historySearchTerm && (
+                            <button
+                              type="button"
+                              onClick={() => { setHistorySearchTerm(''); setHistoryPage(1); }}
+                              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5 cursor-pointer"
+                            >
+                              <X size={14} />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* History Table */}
+                      <div className="overflow-x-auto">
+                        {filtered.length === 0 ? (
+                          <div className="p-12 text-center text-slate-400">
+                            <History size={36} className="mx-auto text-slate-300 mb-2" />
+                            <p className="text-sm font-bold text-slate-700">処置対応履歴はありません</p>
+                            <p className="text-xs text-slate-400 mt-1">AI検知保留キューから手紙を審査・対応するとここに記録されます</p>
+                          </div>
+                        ) : (
+                          <>
+                            <table className="w-full text-left border-collapse">
+                              <thead>
+                                <tr className="border-b border-slate-200/80 bg-slate-50/80 text-[11px] font-bold uppercase tracking-wider text-slate-600">
+                                  <th className="px-3 py-2.5 whitespace-nowrap">対応日時</th>
+                                  <th className="px-3 py-2.5 whitespace-nowrap">処置区分</th>
+                                  <th className="px-3 py-2.5 whitespace-nowrap">対象ボトル / 宛先</th>
+                                  <th className="px-3 py-2.5 whitespace-nowrap">投函主 (UID)</th>
+                                  <th className="px-3 py-2.5 whitespace-nowrap">AI自動判定理由</th>
+                                  <th className="px-3 py-2.5 whitespace-nowrap">手紙本文（要約）</th>
+                                  <th className="px-3 py-2.5 whitespace-nowrap">担当管理者</th>
+                                  <th className="px-3 py-2.5 whitespace-nowrap">処置詳細・理由</th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-slate-100 text-xs">
+                                {paginated.map((item: any, idx: number) => {
+                                  const isApproved = (item.action_type || '').includes('APPROVE') || (item.action_label || '').includes('承認');
+                                  const isBlocked = (item.action_type || '').includes('BLOCK') || (item.action_label || '').includes('凍結');
+                                  const isDeleted = (item.action_type || '').includes('DELETE') || (item.action_label || '').includes('削除') || (item.action_label || '').includes('隔離');
+
+                                  return (
+                                    <tr key={item.id || idx} className="h-12 hover:bg-slate-50/70 transition-colors group">
+                                      {/* 1. Date */}
+                                      <td className="px-3 py-2 whitespace-nowrap text-slate-500 font-mono text-[11px]">
+                                        {new Date(item.created_at).toLocaleString('ja-JP', {
+                                          month: '2-digit',
+                                          day: '2-digit',
+                                          hour: '2-digit',
+                                          minute: '2-digit'
+                                        })}
+                                      </td>
+
+                                      {/* 2. Action Badge */}
+                                      <td className="px-3 py-2 whitespace-nowrap">
+                                        <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold border shrink-0 ${
+                                          isApproved
+                                            ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                                            : isBlocked
+                                            ? 'bg-purple-100 text-purple-900 border-purple-300'
+                                            : 'bg-rose-50 text-rose-800 border-rose-300'
+                                        }`}>
+                                          {isApproved && <CheckCircle2 size={12} className="text-emerald-600" />}
+                                          {isBlocked && <UserX size={12} className="text-purple-600" />}
+                                          {!isApproved && !isBlocked && isDeleted && <Trash2 size={12} className="text-rose-600" />}
+                                          <span>{item.action_label || (isApproved ? '🟢 承認・公開復帰' : isBlocked ? '🚨 投稿者凍結＋削除' : '🗑️ 有害隔離削除')}</span>
+                                        </span>
+                                      </td>
+
+                                      {/* 3. Target / Post ID */}
+                                      <td className="px-3 py-2 whitespace-nowrap">
+                                        <div className="flex items-center gap-1.5">
+                                          {item.post_id && (
+                                            <span className="font-mono text-slate-400 text-[10px]">#{item.post_id}</span>
+                                          )}
+                                          <span className="font-bold text-slate-900">{item.target_name || '無題'} 様宛</span>
+                                          {item.searcher_name && (
+                                            <span className="text-slate-400 text-[10px]">({item.searcher_name})</span>
+                                          )}
+                                        </div>
+                                      </td>
+
+                                      {/* 4. Author */}
+                                      <td className="px-3 py-2 whitespace-nowrap">
+                                        <span className="font-bold text-slate-700 font-mono text-[11px]">
+                                          @{item.author_username || '不詳'}
+                                          {item.author_user_id ? ` (UID:${item.author_user_id})` : ''}
+                                        </span>
+                                      </td>
+
+                                      {/* 5. AI Reason */}
+                                      <td className="px-3 py-2 max-w-xs truncate text-slate-600">
+                                        <span className="text-slate-600 text-[11px] truncate font-medium block" title={item.ai_reason}>
+                                          {item.ai_reason || 'AI安全判定'}
+                                        </span>
+                                      </td>
+
+                                      {/* 6. Message Snippet */}
+                                      <td className="px-3 py-2 max-w-sm truncate text-slate-600">
+                                        <span className="truncate block font-serif" title={item.message}>
+                                          {item.message ? `"${item.message}"` : '-'}
+                                        </span>
+                                      </td>
+
+                                      {/* 7. Admin */}
+                                      <td className="px-3 py-2 whitespace-nowrap">
+                                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-300">
+                                          {item.admin_username || 'Admin'}
+                                        </span>
+                                      </td>
+
+                                      {/* 8. Details */}
+                                      <td className="px-3 py-2 max-w-xs truncate text-slate-500 text-[11px]">
+                                        <span className="truncate block" title={item.details}>
+                                          {item.details || '-'}
+                                        </span>
+                                      </td>
+                                    </tr>
+                                  );
+                                })}
+                              </tbody>
+                            </table>
+
+                            {/* Pagination Bar */}
+                            <div className="p-3.5 border-t border-slate-200/80 bg-slate-50/50 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                              <div className="text-slate-500 font-medium">
+                                全 <span className="font-bold text-slate-800">{filtered.length}</span> 件中{' '}
+                                <span className="font-bold text-slate-800">{(currentPage - 1) * historyPerPage + 1}</span> 〜{' '}
+                                <span className="font-bold text-slate-800">{Math.min(currentPage * historyPerPage, filtered.length)}</span> 件を表示
+                              </div>
+
+                              {totalPages > 1 && (
+                                <div className="flex items-center gap-1">
+                                  <button
+                                    type="button"
+                                    disabled={currentPage === 1}
+                                    onClick={() => setHistoryPage(1)}
+                                    className="px-2 py-1 rounded-lg border border-slate-200 bg-white text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 font-bold"
+                                  >
+                                    &laquo;
+                                  </button>
+                                  <button
+                                    type="button"
+                                    disabled={currentPage === 1}
+                                    onClick={() => setHistoryPage(prev => Math.max(prev - 1, 1))}
+                                    className="px-2.5 py-1 rounded-lg border border-slate-200 bg-white text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 font-bold"
+                                  >
+                                    &lsaquo;
+                                  </button>
+                                  
+                                  <span className="px-3 py-1 bg-slate-900 text-white rounded-lg font-bold">
+                                    {currentPage} / {totalPages}
+                                  </span>
+
+                                  <button
+                                    type="button"
+                                    disabled={currentPage === totalPages}
+                                    onClick={() => setHistoryPage(prev => Math.min(prev + 1, totalPages))}
+                                    className="px-2.5 py-1 rounded-lg border border-slate-200 bg-white text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 font-bold"
+                                  >
+                                    &rsaquo;
+                                  </button>
+                                  <button
+                                    type="button"
+                                    disabled={currentPage === totalPages}
+                                    onClick={() => setHistoryPage(totalPages)}
+                                    className="px-2 py-1 rounded-lg border border-slate-200 bg-white text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 font-bold"
+                                  >
+                                    &raquo;
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                {/* SUB TAB 3: ARCHIVE */}
                 {moderationSubTab === 'archive' && (() => {
                   const filtered = deletedPostsArchive.filter((a: any) => {
                     if (archiveSearchTerm.trim()) {

@@ -799,23 +799,29 @@ export const PricingPage = () => {
 export const SafetyPage = () => (
   <div className="max-w-4xl mx-auto px-6 py-12 md:py-24 text-black font-sans animate-in fade-in duration-300">
     <BackToHomeButton />
-    <div className="glass-card p-8 md:p-16 space-y-12 bg-white rounded-3xl border border-brand-border shadow-sm relative overflow-hidden">
-      {/* 背景イラスト（上部に灯台を配置＆左右上下フェードグラデーション - 寒色トーン） */}
+    <div className="glass-card p-6 sm:p-8 md:p-14 space-y-10 bg-white rounded-3xl border border-brand-border shadow-sm relative overflow-hidden">
+      {/* 背景イラスト（他ページに合わせた非常に繊細な8%の透明度 ＆ 白グラデーションブレンドで上品に溶け込ませる） */}
       <div className="absolute top-0 inset-x-0 flex justify-center items-start pointer-events-none overflow-hidden select-none z-0">
-        <div className="relative w-full max-w-4xl h-[500px] md:h-[650px] opacity-80">
+        <div 
+          className="relative w-full max-w-3xl h-[420px] sm:h-[480px] md:h-[520px] opacity-[0.08] mx-auto flex items-center justify-center"
+          style={{
+            maskImage: 'radial-gradient(ellipse 80% 80% at 50% 36%, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 98%)',
+            WebkitMaskImage: 'radial-gradient(ellipse 80% 80% at 50% 36%, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 98%)'
+          }}
+        >
           <img 
             src={safetyGuardianCool} 
             alt="安全を守る静寂の灯台とボトル" 
-            className="w-full h-full object-cover object-top"
+            className="w-full h-full object-contain object-top"
           />
-          {/* 左右グラデーション */}
-          <div className="absolute inset-0 bg-gradient-to-r from-white via-transparent to-white" />
-          {/* 上下グラデーション（上部は自然に、下部は白へ滑らかにフェードアウト） */}
-          <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-transparent via-30% to-white" />
+          {/* 四方の白フェードブレンド */}
+          <div className="absolute inset-0 bg-gradient-to-r from-white/60 via-transparent to-white/60" />
+          <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-transparent to-white" />
         </div>
       </div>
 
-      <div className="flex items-center gap-4 border-b border-brand-border pb-6 relative z-10">
+      {/* ページヘッダー */}
+      <div className="flex items-center gap-4 border-b border-brand-border/60 pb-6 relative z-10">
         <div className="w-12 h-12 rounded-2xl bg-emerald-50/90 border border-emerald-100 flex items-center justify-center text-emerald-600 shrink-0 shadow-sm backdrop-blur-xs">
           <ShieldCheck size={26} />
         </div>
@@ -832,56 +838,120 @@ export const SafetyPage = () => (
         </div>
       </div>
 
-      <div className="space-y-6 relative z-10">
-        <p className="text-[13px] leading-relaxed text-black/85 font-serif bg-white/70 p-4 rounded-2xl backdrop-blur-xs border border-slate-100/80">
-          私たちは、一般的なマッチングアプリやSNSなどの「面識のない異性に無差別な偶然の出会いを提供するサービス」が抱える、ストーキング、なりすまし、未成年売春、特殊詐欺といった犯罪の温床となるリスク構造を極限まで排除しています。
+      {/* コピー3行（イラストにかぶるように配置） */}
+      <div className="relative z-10 py-4 sm:py-6">
+        <p className="text-xs sm:text-sm md:text-[15px] font-serif font-bold text-slate-900 leading-relaxed md:leading-loose tracking-wide drop-shadow-[0_1px_2px_rgba(255,255,255,0.9)]">
+          私たちは、一般的なマッチングアプリやSNSなどの<span className="font-extrabold text-black border-b-2 border-emerald-500/80 pb-0.5">「面識のない異性に無差別な偶然の出会いを提供するサービス」</span>が抱える、ストーキング、なりすまし、未成年売春、特殊詐欺といった犯罪の温床となるリスク構造を極限まで排除しています。
         </p>
+      </div>
 
-        <section className="space-y-8 pt-4">
-          <h2 className="text-lg font-serif font-bold border-b border-brand-border pb-2 flex items-center gap-2 text-black">
-            <ShieldCheck size={20} className="text-emerald-600" />
-            <span>主な安全システム</span>
+      {/* 6大セキュリティ体系（イラストの下端より下に独立配置） */}
+      <section className="space-y-8 pt-6 border-t border-brand-border/80 relative z-10">
+        <div className="flex items-center justify-between border-b border-brand-border pb-3 flex-wrap gap-2">
+          <h2 className="text-lg md:text-xl font-serif font-bold flex items-center gap-2 text-black">
+            <ShieldCheck size={22} className="text-emerald-600" />
+            <span>ReMEETsの安心・安全を守る 6大セキュリティ体系</span>
           </h2>
+          <span className="text-[11px] font-bold bg-emerald-100 text-emerald-900 px-3 py-1 rounded-full border border-emerald-300">
+            多層防御システム稼働中
+          </span>
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="p-6 rounded-2xl border border-brand-border bg-slate-50/80 backdrop-blur-xs space-y-3">
-              <div className="flex items-center gap-2">
-                <span className="w-6 h-6 bg-brand-primary/10 text-brand-primary rounded-full flex items-center justify-center text-xs font-bold font-mono">1</span>
-                <span className="font-serif font-bold text-sm text-black">共有記憶クイズ（メモリキー）認証</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {/* 1. 共有記憶クイズ認証 ＆ 5回誤答ロック */}
+            <div className="p-5 md:p-6 rounded-2xl border border-brand-border bg-slate-50/90 backdrop-blur-xs space-y-3 flex flex-col justify-between hover:border-emerald-300 transition-all shadow-2xs">
+              <div className="space-y-2.5">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-7 h-7 bg-emerald-600 text-white rounded-xl flex items-center justify-center text-xs font-bold font-mono shadow-2xs">1</span>
+                  <h3 className="font-serif font-bold text-sm text-slate-900">共有記憶クイズ ＆ 5回誤答ロック</h3>
+                </div>
+                <p className="text-xs text-slate-700 leading-relaxed font-sans">
+                  当事者しか知り得ない「二人の共通の思い出」に関する質問に完全正解しない限り、手紙は一切開封されません。当てずっぽうの推測やスクリプトによる総当たり攻撃（ブルートフォース）を自動検知し、5回連続の誤答で即座にアクセスを安全ロックします。
+                </p>
               </div>
-              <p className="text-xs text-black/75 leading-relaxed font-sans">
-                手紙を開封してお返事を届けるには、お相手が設定した「共通の思い出」に関する質問（クイズ）に完全正解する必要があります。関係のない第三者がアクセスしたり、ストーカーが推測して無差別に接触することを不可能にします。
-              </p>
+              <div className="pt-2 border-t border-slate-200/80 text-[11px] text-emerald-800 font-bold flex items-center gap-1">
+                <span>✓ 第三者の無差別接触・推測を完全遮断</span>
+              </div>
             </div>
 
-            <div className="p-6 rounded-2xl border border-brand-border bg-slate-50/80 backdrop-blur-xs space-y-3">
-              <div className="flex items-center gap-2">
-                <span className="w-6 h-6 bg-brand-primary/10 text-brand-primary rounded-full flex items-center justify-center text-xs font-bold font-mono">2</span>
-                <span className="font-serif font-bold text-sm text-black">お相手のフルネーム設定 ＆ 差出人のプライバシー保護</span>
+            {/* 2. 公的本人確認（eKYC）＆ 18歳以上厳格年齢認証 */}
+            <div className="p-5 md:p-6 rounded-2xl border border-brand-border bg-slate-50/90 backdrop-blur-xs space-y-3 flex flex-col justify-between hover:border-indigo-300 transition-all shadow-2xs">
+              <div className="space-y-2.5">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-7 h-7 bg-indigo-600 text-white rounded-xl flex items-center justify-center text-xs font-bold font-mono shadow-2xs">2</span>
+                  <h3 className="font-serif font-bold text-sm text-slate-900">公的eKYC ＆ 18歳以上厳格認証</h3>
+                </div>
+                <p className="text-xs text-slate-700 leading-relaxed font-sans">
+                  運転免許証・マイナンバーカード等による「公的証明バッジ」制度を導入。また、アカウント登録時の生年月日判定により18歳未満（高校生を含む）の登録を自動排除し、青少年の保護と安心できる大人同士の真摯な再会空間を維持します。
+                </p>
               </div>
-              <p className="text-xs text-black/75 leading-relaxed font-sans">
-                探したいお相手（ターゲット）は当時の氏名（フルネーム）で正確に指定・検索することが可能です。一方で、差出人ご自身の現在の本名や個人情報が第三者に一般公開・晒されることがないよう、差出人の公開範囲制限と安全保護フィルターが機能します。
-              </p>
+              <div className="pt-2 border-t border-slate-200/80 text-[11px] text-indigo-800 font-bold flex items-center gap-1">
+                <span>✓ 青少年保護 ＆ 公的身元確認バッジ</span>
+              </div>
             </div>
 
-            <div className="p-6 rounded-2xl border border-brand-border bg-slate-50/80 backdrop-blur-xs space-y-3">
-              <div className="flex items-center gap-2">
-                <span className="w-6 h-6 bg-brand-primary/10 text-brand-primary rounded-full flex items-center justify-center text-xs font-bold font-mono">3</span>
-                <span className="font-serif font-bold text-sm text-black">公開エリアの連絡先保護 ＆ 質問正解後の安全なSNS ID開示</span>
+            {/* 3. Gemini AI ＆ リアルタイムNGフィルター二重監視 */}
+            <div className="p-5 md:p-6 rounded-2xl border border-brand-border bg-slate-50/90 backdrop-blur-xs space-y-3 flex flex-col justify-between hover:border-rose-300 transition-all shadow-2xs">
+              <div className="space-y-2.5">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-7 h-7 bg-rose-600 text-white rounded-xl flex items-center justify-center text-xs font-bold font-mono shadow-2xs">3</span>
+                  <h3 className="font-serif font-bold text-sm text-slate-900">Gemini AI ＆ NGフィルター監視</h3>
+                </div>
+                <p className="text-xs text-slate-700 leading-relaxed font-sans">
+                  270語以上の悪質単語辞書による即時検閲に加え、Google Gemini AIが文章に流れる「執拗な感情・ストーキング・脅迫・リベンジポルノ」の文脈をリアルタイム解析。高リスクと判定された投稿は自動的にステルス隔離され、被害を未然に防止します。
+                </p>
               </div>
-              <p className="text-xs text-black/75 leading-relaxed font-sans">
-                手紙本文などの全体公開エリアでは、SNS IDや電話番号などの連絡先の直接投稿を自動伏字化（マスキング）して無防備な露出を防御します。質問（共有記憶クイズ）に正解し、安全なお手続きを完了した正規のお相手にのみ、安全に差出人のSNS ID・連絡先が開示される安心のセキュリティ構造です。
-              </p>
+              <div className="pt-2 border-t border-slate-200/80 text-[11px] text-rose-800 font-bold flex items-center gap-1">
+                <span>✓ ストーキング・誹謗中傷の自律隔離</span>
+              </div>
             </div>
 
-            <div className="p-6 rounded-2xl border border-brand-border bg-slate-50/80 backdrop-blur-xs space-y-3">
-              <div className="flex items-center gap-2">
-                <span className="w-6 h-6 bg-brand-primary/10 text-brand-primary rounded-full flex items-center justify-center text-xs font-bold font-mono">4</span>
-                <span className="font-serif font-bold text-sm text-black">Gemini AI による執念・付きまとい監視</span>
+            {/* 4. クレジットカード決済による身元保証 ＆ セキュア・ブリッジ */}
+            <div className="p-5 md:p-6 rounded-2xl border border-brand-border bg-slate-50/90 backdrop-blur-xs space-y-3 flex flex-col justify-between hover:border-teal-300 transition-all shadow-2xs">
+              <div className="space-y-2.5">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-7 h-7 bg-teal-700 text-white rounded-xl flex items-center justify-center text-xs font-bold font-mono shadow-2xs">4</span>
+                  <h3 className="font-serif font-bold text-sm text-slate-900">クレカ身元保証 ＆ セキュア開示</h3>
+                </div>
+                <p className="text-xs text-slate-700 leading-relaxed font-sans">
+                  手紙開封時にStripe暗号化決済（600円）を経由することで、カード会社側の本人照合により架空人物やいたずら開封を強固に排除。アプリ内に無駄なチャットを残さず、想い出照合後に直通連絡先を安全に引き渡してプラットフォームが完結します。
+                </p>
               </div>
-              <p className="text-xs text-black/75 leading-relaxed font-sans">
-                文章に流れる「執拗な感情（リベンジポルノ・恐怖売渡を目的とするストーキングなど）」の文脈を、最先端のGemini AIが裏でリアルタイム解析。高リスクと判定されたアカウントは自動的に「ステルス隔離（シャドウ）」されます。
-              </p>
+              <div className="pt-2 border-t border-slate-200/80 text-[11px] text-teal-850 font-bold flex items-center gap-1">
+                <span>✓ 架空人物排除 ＆ トラブル無用で完結</span>
+              </div>
+            </div>
+
+            {/* 5. 個人情報の自動伏字化 ＆ 差出人のプライバシー保護 */}
+            <div className="p-5 md:p-6 rounded-2xl border border-brand-border bg-slate-50/90 backdrop-blur-xs space-y-3 flex flex-col justify-between hover:border-amber-300 transition-all shadow-2xs">
+              <div className="space-y-2.5">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-7 h-7 bg-amber-600 text-white rounded-xl flex items-center justify-center text-xs font-bold font-mono shadow-2xs">5</span>
+                  <h3 className="font-serif font-bold text-sm text-slate-900">個人情報マスキング ＆ プライバシー</h3>
+                </div>
+                <p className="text-xs text-slate-700 leading-relaxed font-sans">
+                  手紙本文などの全体公開エリアでは、電話番号やSNS ID、住所などの連絡先投稿を自動で伏字化（マスキング）。差出人ご自身の本名や個人情報は第三者に晒されず、クイズに正解した正規のお相手のみに安全に開示される非公開制御を徹底しています。
+                </p>
+              </div>
+              <div className="pt-2 border-t border-slate-200/80 text-[11px] text-amber-900 font-bold flex items-center gap-1">
+                <span>✓ ネット上の晒し・情報漏洩を100%防止</span>
+              </div>
+            </div>
+
+            {/* 6. 暗号化監査ログ保全 ＆ 警察・司法機関との即応連携体制 */}
+            <div className="p-5 md:p-6 rounded-2xl border border-brand-border bg-slate-50/90 backdrop-blur-xs space-y-3 flex flex-col justify-between hover:border-slate-400 transition-all shadow-2xs">
+              <div className="space-y-2.5">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-7 h-7 bg-slate-800 text-white rounded-xl flex items-center justify-center text-xs font-bold font-mono shadow-2xs">6</span>
+                  <h3 className="font-serif font-bold text-sm text-slate-900">暗号化ログ保全 ＆ 警察捜査即応</h3>
+                </div>
+                <p className="text-xs text-slate-700 leading-relaxed font-sans">
+                  悪質な付きまといや嫌がらせが発生した場合に備え、接続IP・端末情報・投函監査ログを暗号化して物理保全。各都道府県警察（生活安全課・サイバー犯罪対策課）からの刑事訴訟法に基づく捜査関係事項照会に対し、迅速に証跡データを提供する体制を整えています。
+                </p>
+              </div>
+              <div className="pt-2 border-t border-slate-200/80 text-[11px] text-slate-800 font-bold flex items-center gap-1">
+                <span>✓ 刑事訴訟法に基づく捜査照会ポータル完備</span>
+              </div>
             </div>
           </div>
         </section>
@@ -893,7 +963,7 @@ export const SafetyPage = () => (
           </div>
           <p className="text-xs text-slate-300 leading-relaxed font-serif text-white/95">
             万が一、利用を仮装した悪質なストーキング行為、嫌がらせ、なりすまし等が発生した場合、各都道府県警察の生活安全課、サイバー犯罪対策課などの刑事捜査事項照会に対して、私たちは最高速度で応じるポータルAPIを用意しています。
-            提出書類の受理後, 瞬時に署名ログ・接続端末IP・アクセス履歴をフォレンジック抽出して提供し、徹底的な犯人検挙、犯罪撲滅に完全協力することをお約束いたします。
+            提出書類の受理後、瞬時に署名ログ・接続端末IP・アクセス履歴をフォレンジック抽出して提供し、徹底的な犯人検挙、犯罪撲滅に完全協力することをお約束いたします。
           </p>
         </section>
 
@@ -905,7 +975,6 @@ export const SafetyPage = () => (
         </div>
       </div>
     </div>
-  </div>
 );
 
 
