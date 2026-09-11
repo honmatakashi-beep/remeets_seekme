@@ -776,10 +776,10 @@ export const AdminPaymentManagementBlock: React.FC = () => {
               )}
             </div>
             <div className="font-bold text-sm text-black flex items-center gap-1">
-              売上＆粗利アナリティクス
+              売上・収益アナリティクス
             </div>
             <p className="text-xs text-black/60 mt-1 line-clamp-2 leading-relaxed font-sans">
-              日次推移グラフ・Stripe/eKYC原価・返金率
+              ユニットエコノミクス分解・eKYC書類別原価・粗利益推移
             </p>
           </div>
           <div className="mt-3 pt-2.5 border-t border-zinc-100 flex items-center justify-between text-[11px]">

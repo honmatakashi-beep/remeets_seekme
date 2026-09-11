@@ -958,7 +958,7 @@ export const AdminDashboard = () => {
       title: 'Main Menu',
       items: [
         { id: 'stats', label: '概要', icon: Activity },
-        { id: 'quizAnalytics', label: '再会ファネル ＆ 検索需要分析', icon: Brain },
+        { id: 'quizAnalytics', label: 'クイズ＆照合分析\n(ファネル・検索需要)', icon: Brain },
         { id: 'settings', label: 'サイト設定', icon: Settings },
         { id: 'users', label: 'ユーザー', icon: Users },
         { id: 'posts', label: 'ボトルメール', icon: Mail },
@@ -968,7 +968,7 @@ export const AdminDashboard = () => {
     {
       title: 'Trust & Safety (安全・本人確認)',
       items: [
-        { id: 'security', label: '総合セキュリティ ＆\n警報・スパム防衛', icon: ShieldAlert },
+        { id: 'security', label: 'サイト治安健全度 ＆\n総合セキュリティ', icon: ShieldAlert },
         { id: 'ageVerification', label: '本人確認（eKYC）\n照合ゲージ・監査ログ', icon: UserCheck },
         { id: 'policeConsultation', label: '警察事前相談 ＆\n法令適合サマリー', icon: ShieldCheck },
         { id: 'moderation', label: 'AI検知キュー', icon: Bot, badge: posts.filter(p => p.ai_flagged === 1).length },
@@ -993,7 +993,7 @@ export const AdminDashboard = () => {
       title: 'Finance & eKYC',
       items: [
         { id: 'valuation', label: 'M&A譲渡・企業価値評価\nデータ室', icon: Award },
-        { id: 'payments', label: '決済ショールーム ＆\n売上・eKYC管理台帳', icon: CreditCard },
+        { id: 'payments', label: '売上・収益アナリティクス\n＆ 決済・eKYC台帳', icon: CreditCard },
         { id: 'monetization', label: '課金モデル\n収益シミュレーター', icon: DollarSign },
       ]
     },
