@@ -3118,6 +3118,14 @@ export const AdminDashboard = () => {
               </p>
             </div>
             <div className="flex items-center gap-2">
+              <Link
+                to="/home-designs"
+                className="px-3 py-2 md:px-4 md:py-2.5 text-xs font-bold rounded-xl border bg-indigo-50 text-indigo-800 border-indigo-200 hover:bg-indigo-100 transition-all flex items-center justify-center gap-1.5 shadow-sm whitespace-nowrap"
+              >
+                <Sparkles size={14} className="text-indigo-600" />
+                <span className="hidden sm:inline">🎨 HOMEデザイン比較</span>
+                <span className="sm:hidden">デザイン比較</span>
+              </Link>
               <button
                 onClick={() => setActiveTab('rbac')}
                 className={`px-3 py-2 md:px-4 md:py-2.5 text-xs font-bold rounded-xl border transition-all flex items-center justify-center gap-1.5 shadow-sm whitespace-nowrap ${

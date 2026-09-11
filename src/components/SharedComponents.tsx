@@ -431,6 +431,15 @@ export const Navbar = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) 
                     <span>お問い合わせ</span>
                   </Link>
 
+                  <Link
+                    to="/home-designs"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="flex items-center gap-3 px-3 py-2 text-xs text-indigo-700 bg-indigo-50/50 hover:bg-indigo-100/70 rounded-xl transition-all font-bold text-left border border-indigo-200/60"
+                  >
+                    <Sparkles size={15} className="text-indigo-600 shrink-0" />
+                    <span>🎨 HOMEデザイン比較ショールーム</span>
+                  </Link>
+
                   {Boolean(
                     user && (
                       ['admin', 'super_admin', 'moderator', 'cs_support', 'auditor'].includes(user?.role || '') ||
@@ -557,7 +566,11 @@ export const Footer = () => {
       </div>
     <div className="max-w-7xl mx-auto px-6 pt-8 mt-8 border-t border-brand-border/40 flex flex-col sm:flex-row items-center justify-between text-[10px] text-brand-dark/40 font-mono gap-2">
       <div>&copy; {new Date().getFullYear()} ReMEETs. All rights reserved.</div>
-      <div>
+      <div className="flex items-center gap-4 flex-wrap">
+        <Link to="/home-designs" className="text-indigo-600 hover:text-indigo-900 font-bold hover:underline">
+          🎨 HOMEデザイン比較ショールーム
+        </Link>
+        <span className="text-slate-300">|</span>
         <Link to="/payment-preview" className="text-indigo-600/80 hover:text-indigo-900 hover:underline">
           💳 全決済画面UIショールーム
         </Link>
