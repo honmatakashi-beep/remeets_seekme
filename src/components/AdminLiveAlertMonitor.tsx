@@ -602,7 +602,7 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
             </div>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-2xl font-extrabold text-rose-700">{summary.totalActiveAlerts || 0}</span>
+            <span className="text-2xl font-bold font-serif text-rose-700">{summary.totalActiveAlerts || 0}</span>
             <span className="text-xs text-rose-500">件</span>
           </div>
           <div className="mt-1 text-[11px] text-rose-600 font-medium">現在対応が必要な緊急事態</div>
@@ -617,7 +617,7 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
             </div>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-2xl font-extrabold text-amber-700">{summary.pendingReportsCount || 0}</span>
+            <span className="text-2xl font-bold font-serif text-amber-700">{summary.pendingReportsCount || 0}</span>
             <span className="text-xs text-amber-500">件</span>
           </div>
           <div className="mt-1 text-[11px] text-amber-600 font-medium">ユーザーからの通報待機中</div>
@@ -632,7 +632,7 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
             </div>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-2xl font-extrabold text-orange-700">{summary.spamDetectionsCount || 0}</span>
+            <span className="text-2xl font-bold font-serif text-orange-700">{summary.spamDetectionsCount || 0}</span>
             <span className="text-xs text-orange-500">グループ</span>
           </div>
           <div className="mt-1 text-[11px] text-orange-600 font-medium">短時間連投・ボット検知</div>
@@ -647,7 +647,7 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
             </div>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-2xl font-extrabold text-emerald-700">
+            <span className="text-2xl font-bold font-serif text-emerald-700">
               {summary.totalResolvedAlerts || 0}
             </span>
             <span className="text-xs text-emerald-600">件</span>
@@ -915,7 +915,7 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
               <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
                 <span>リアルタイム警報 ＆ スパム検知 履歴一覧</span>
                 <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-300">
-                  全 {alerts.length} 件
+                  全 <span className="font-serif font-bold">{alerts.length}</span> 件
                 </span>
               </h3>
               <p className="text-xs text-slate-500 mt-0.5">
@@ -1186,9 +1186,9 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
               {/* Pagination Bar */}
               <div className="p-3.5 border-t border-slate-200/80 bg-slate-50/50 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
                 <div className="text-slate-500 font-medium">
-                  全 <span className="font-bold text-slate-800">{filteredAlerts.length}</span> 件中{' '}
-                  <span className="font-bold text-slate-800">{(currentPage - 1) * perPage + 1}</span> 〜{' '}
-                  <span className="font-bold text-slate-800">{Math.min(currentPage * perPage, filteredAlerts.length)}</span> 件を表示
+                  全 <span className="font-serif font-bold text-slate-800">{filteredAlerts.length}</span> 件中{' '}
+                  <span className="font-serif font-bold text-slate-800">{(currentPage - 1) * perPage + 1}</span> 〜{' '}
+                  <span className="font-serif font-bold text-slate-800">{Math.min(currentPage * perPage, filteredAlerts.length)}</span> 件を表示
                 </div>
 
                 {totalPages > 1 && (
@@ -1210,7 +1210,7 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
                       &lsaquo;
                     </button>
                     
-                    <span className="px-3 py-1 bg-slate-900 text-white rounded-lg font-bold">
+                    <span className="px-3 py-1 bg-slate-900 text-white rounded-lg font-serif font-bold">
                       {currentPage} / {totalPages}
                     </span>
 
