@@ -15,6 +15,7 @@ import { AdminInfoPage, SitemapPage, ContactPage, ConfirmModal, AuroraAmbientGlo
 import { TermsPage, PrivacyPage, GuidelinesPage, CompanyPage, PricingPage, SafetyPage, DeletionRequestPage } from './pages/StaticPages';
 import { PaymentPreviewPage } from './pages/PaymentPreviewPage';
 import { stopAllGlobalCameraStreams } from './components/DocumentCameraOverlay';
+import { HomeDesignShowroom } from './components/HomeDesignShowroom';
 
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard').then(m => ({ default: m.AdminDashboard })));
 
@@ -107,6 +108,7 @@ export default function App() {
                 <Route path="/sitemap" element={<SitemapPage />} />
                 <Route path="/payment-preview" element={<PaymentPreviewPage />} />
                 <Route path="/admin/payments-preview" element={<PaymentPreviewPage />} />
+                <Route path="/home-designs" element={<HomeDesignShowroom />} />
                 <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </main>
