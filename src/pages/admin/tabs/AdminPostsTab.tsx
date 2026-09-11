@@ -83,9 +83,9 @@ export const AdminPostsTab: React.FC<AdminPostsTabProps> = (props) => {
                           {totalPostsCount.toLocaleString()}<span className="text-xs font-normal text-black/60 ml-1">通</span>
                         </div>
                         <div className="flex items-center gap-2 mt-1.5 text-[11px] text-black/60">
-                          <span className="inline-flex items-center text-emerald-650 font-bold">👤 本番 {realPostsCount}</span>
+                          <span className="inline-flex items-center text-emerald-650 font-bold">👤 本番 <span className="font-serif font-bold ml-1">{realPostsCount}</span></span>
                           <span>•</span>
-                          <span className="inline-flex items-center text-indigo-650 font-medium">🤖 サンプル {samplePostsCount}</span>
+                          <span className="inline-flex items-center text-indigo-650 font-medium">🤖 サンプル <span className="font-serif font-bold ml-1">{samplePostsCount}</span></span>
                         </div>
                       </div>
                     </div>
@@ -101,7 +101,7 @@ export const AdminPostsTab: React.FC<AdminPostsTabProps> = (props) => {
                       <div className="mt-3">
                         <div className="flex items-baseline gap-2">
                           <span className="text-2xl sm:text-3xl font-serif font-bold text-amber-700">{resolvedRate}%</span>
-                          <span className="text-xs font-bold text-black/60">({resolvedCount}組成立)</span>
+                          <span className="text-xs font-bold text-black/60">(<span className="font-serif font-bold">{resolvedCount}</span>組成立)</span>
                         </div>
                         <div className="w-full bg-slate-100 rounded-full h-1.5 mt-2 overflow-hidden">
                           <div className="bg-amber-500 h-1.5 rounded-full transition-all duration-500" style={{ width: `${Math.min(100, resolvedRate)}%` }}></div>
@@ -124,7 +124,7 @@ export const AdminPostsTab: React.FC<AdminPostsTabProps> = (props) => {
                         </div>
                         <div className="mt-1.5 text-[11px] font-bold text-rose-600 flex items-center gap-1">
                           {aiFlaggedCount > 0 ? (
-                            <span>⚠️ 要注意・隔離: {aiFlaggedCount} 通</span>
+                            <span>⚠️ 要注意・隔離: <span className="font-serif font-bold">{aiFlaggedCount}</span> 通</span>
                           ) : (
                             <span className="text-emerald-650 font-normal">全ボトル合格・安全</span>
                           )}
@@ -302,7 +302,7 @@ export const AdminPostsTab: React.FC<AdminPostsTabProps> = (props) => {
                       <div className="flex flex-wrap items-center justify-between gap-2.5 p-3 bg-brand-primary/10 border border-brand-primary/30 rounded-xl text-xs">
                         <div className="flex items-center gap-2 font-bold text-brand-dark">
                           <CheckCircle2 size={16} className="text-brand-primary" />
-                          <span>{selectedPostIds.length} 件のボトルメールを選択中</span>
+                          <span><span className="font-serif font-bold">{selectedPostIds.length}</span> 件のボトルメールを選択中</span>
                         </div>
                         <div className="flex items-center gap-2 flex-wrap">
                           <button
@@ -682,9 +682,9 @@ export const AdminPostsTab: React.FC<AdminPostsTabProps> = (props) => {
                     {totalFiltered > 0 && (
                       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-2 pt-2 text-xs text-black/60">
                         <div>
-                          全 <span className="font-bold text-black">{totalFiltered}</span> 件中{' '}
-                          <span className="font-bold text-black">{(currentPage - 1) * postItemsPerPage + 1}</span> -{' '}
-                          <span className="font-bold text-black">{Math.min(currentPage * postItemsPerPage, totalFiltered)}</span> 件を表示
+                          全 <span className="font-serif font-bold text-black">{totalFiltered}</span> 件中{' '}
+                          <span className="font-serif font-bold text-black">{(currentPage - 1) * postItemsPerPage + 1}</span> -{' '}
+                          <span className="font-serif font-bold text-black">{Math.min(currentPage * postItemsPerPage, totalFiltered)}</span> 件を表示
                         </div>
 
                         {totalPages > 1 && (
@@ -699,9 +699,9 @@ export const AdminPostsTab: React.FC<AdminPostsTabProps> = (props) => {
                             </button>
 
                             <div className="flex items-center gap-1 px-2">
-                              <span className="font-bold text-black">{currentPage}</span>
+                              <span className="font-serif font-bold text-black">{currentPage}</span>
                               <span>/</span>
-                              <span>{totalPages}</span>
+                              <span className="font-serif font-bold text-black">{totalPages}</span>
                             </div>
 
                             <button

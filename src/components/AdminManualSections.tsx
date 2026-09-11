@@ -305,7 +305,7 @@ export const ContractChecklistSection = () => {
         <div className="flex items-center gap-3 bg-white px-4 py-2 rounded-2xl border border-neutral-150 shadow-sm shrink-0">
           <div className="text-right">
             <span className="text-[10px] font-bold text-neutral-400 block font-sans">合意進捗率</span>
-            <span className="text-xs font-bold text-neutral-800 font-mono">{checkedCount} / {checklistItems.length} 項目</span>
+            <span className="text-xs font-bold text-neutral-800 font-serif">{checkedCount} / {checklistItems.length} <span className="font-sans font-normal text-slate-500">項目</span></span>
           </div>
           <div className="relative w-12 h-12 flex items-center justify-center">
             <svg className="w-12 h-12 transform -rotate-90">
@@ -316,7 +316,7 @@ export const ContractChecklistSection = () => {
                 className="transition-all duration-500"
               />
             </svg>
-            <span className="absolute text-[10px] font-bold font-mono text-rose-600">{progressPercent}%</span>
+            <span className="absolute text-[10px] font-bold font-serif text-rose-600">{progressPercent}%</span>
           </div>
         </div>
       </div>

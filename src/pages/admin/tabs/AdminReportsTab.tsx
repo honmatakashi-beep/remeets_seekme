@@ -101,7 +101,7 @@ export const AdminReportsTab: React.FC<AdminReportsTabProps> = (props) => {
                       {reports.filter(r => r.status === 'resolved').length}
                     </span>
                     <span className="text-xs text-emerald-600 font-semibold">
-                      ({reports.length > 0 ? Math.round((reports.filter(r => r.status === 'resolved').length / reports.length) * 100) : 0}%)
+                      (<span className="font-serif font-bold">{reports.length > 0 ? Math.round((reports.filter(r => r.status === 'resolved').length / reports.length) * 100) : 0}</span>%)
                     </span>
                   </div>
                   <div className="mt-1 text-[11px] text-emerald-600 font-medium">対処完了済み</div>
@@ -120,7 +120,7 @@ export const AdminReportsTab: React.FC<AdminReportsTabProps> = (props) => {
                       <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
                         <span>ユーザー通報 ＆ 不適切報告管理</span>
                         <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-300">
-                          全 {reports.length} 件
+                          全 <span className="font-serif font-bold">{reports.length}</span> 件
                         </span>
                       </h3>
                       <p className="text-xs text-slate-500 mt-0.5">
@@ -547,9 +547,9 @@ export const AdminReportsTab: React.FC<AdminReportsTabProps> = (props) => {
                         {/* Pagination Bar */}
                         <div className="p-3.5 border-t border-slate-200/80 bg-slate-50/50 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
                           <div className="text-slate-500 font-medium">
-                            全 <span className="font-bold text-slate-800">{filtered.length}</span> 件中{' '}
-                            <span className="font-bold text-slate-800">{(currentPage - 1) * reportPerPage + 1}</span> 〜{' '}
-                            <span className="font-bold text-slate-800">{Math.min(currentPage * reportPerPage, filtered.length)}</span> 件を表示
+                            全 <span className="font-serif font-bold text-slate-800">{filtered.length}</span> 件中{' '}
+                            <span className="font-serif font-bold text-slate-800">{(currentPage - 1) * reportPerPage + 1}</span> 〜{' '}
+                            <span className="font-serif font-bold text-slate-800">{Math.min(currentPage * reportPerPage, filtered.length)}</span> 件を表示
                           </div>
 
                           {totalPages > 1 && (
@@ -571,7 +571,7 @@ export const AdminReportsTab: React.FC<AdminReportsTabProps> = (props) => {
                                 &lsaquo;
                               </button>
                               
-                              <span className="px-3 py-1 bg-slate-900 text-white rounded-lg font-bold">
+                              <span className="px-3 py-1 bg-slate-900 text-white rounded-lg font-serif font-bold">
                                 {currentPage} / {totalPages}
                               </span>
 

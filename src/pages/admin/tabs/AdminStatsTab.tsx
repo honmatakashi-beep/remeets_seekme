@@ -135,7 +135,7 @@ export const AdminStatsTab = (props: any) => {
                             <span>運営の要対応タスク ＆ リアルタイム警報</span>
                             {totalPending > 0 ? (
                               <span className="bg-rose-500 text-white text-[11px] font-sans font-bold px-2 py-0.5 rounded-full animate-pulse">
-                                要対応 {totalPending}件
+                                要対応 <span className="font-serif font-bold text-xs">{totalPending}</span> 件
                               </span>
                             ) : (
                               <span className="bg-emerald-100 text-emerald-800 text-[11px] font-sans font-bold px-2 py-0.5 rounded-full border border-emerald-200">
@@ -395,7 +395,7 @@ export const AdminStatsTab = (props: any) => {
                           onClick={() => setActiveTab('posts')}
                           className="w-full py-2.5 text-center text-teal-700 font-bold hover:bg-teal-50 rounded-xl transition-colors flex items-center justify-center gap-1.5 text-xs cursor-pointer border border-teal-200/60"
                         >
-                          <span>ボトル管理で全件を確認 ({posts?.length || stats.summary.totalPosts || 0}件)</span>
+                          <span>ボトル管理で全件を確認 (<span className="font-serif font-bold">{posts?.length || stats.summary.totalPosts || 0}</span>件)</span>
                           <ArrowRight size={13} />
                         </button>
                       </>
@@ -652,8 +652,8 @@ export const AdminStatsTab = (props: any) => {
                         <div className="space-y-3">
                           <div className="space-y-0.5">
                             <p className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-                              <span className="w-1.5 h-1.5 rounded-full bg-teal-700" />
-                              初期マッチング（〜3ヶ月: 約40%）
+                               <span className="w-1.5 h-1.5 rounded-full bg-teal-700" />
+                              初期マッチング（〜3ヶ月: 約<span className="font-serif font-bold">40</span>%）
                             </p>
                             <p className="text-[11px] text-slate-600 leading-normal pl-3 font-sans">
                               投函直後のSNS拡散や、検索エンジンのインデックス化による流入が最も活発な黄金期です。
@@ -661,8 +661,8 @@ export const AdminStatsTab = (props: any) => {
                           </div>
                           <div className="space-y-0.5">
                             <p className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-                              <span className="w-1.5 h-1.5 rounded-full bg-teal-600" />
-                              漂流・発見期（3ヶ月〜1年: 約35%）
+                               <span className="w-1.5 h-1.5 rounded-full bg-teal-600" />
+                              漂流・発見期（3ヶ月〜1年: 約<span className="font-serif font-bold">35</span>%）
                             </p>
                             <p className="text-[11px] text-slate-600 leading-normal pl-3 font-sans">
                               ボトルがデジタル上で寝かされ、検索をふと思いついた対象者が偶然発見するサイクル層です。
@@ -670,8 +670,8 @@ export const AdminStatsTab = (props: any) => {
                           </div>
                           <div className="space-y-0.5">
                             <p className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-                              <span className="w-1.5 h-1.5 rounded-full bg-teal-400" />
-                              ロングテールマッチ（1年以上: 約25%）
+                               <span className="w-1.5 h-1.5 rounded-full bg-teal-400" />
+                              ロングテールマッチ（1年以上: 約<span className="font-serif font-bold">25</span>%）
                             </p>
                             <p className="text-[11px] text-slate-600 leading-normal pl-3 font-sans">
                               数年越しの執念検索から実を結ぶ奇跡層。長期的なデータ安全保持が不可欠です。

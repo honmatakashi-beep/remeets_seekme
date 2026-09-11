@@ -128,7 +128,7 @@ export const AdminContactsTab: React.FC<AdminContactsTabProps> = (props) => {
                         {urgentPendingCount > 0 && (
                           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-700 border border-rose-200 animate-pulse">
                             <AlertTriangle size={12} />
-                            <span>🚨 至急対応 {urgentPendingCount} 件</span>
+                            <span>🚨 至急対応 <span className="font-serif font-bold">{urgentPendingCount}</span> 件</span>
                           </span>
                         )}
                       </div>
@@ -473,7 +473,7 @@ export const AdminContactsTab: React.FC<AdminContactsTabProps> = (props) => {
                       className="p-3 bg-brand-dark text-white rounded-2xl shadow-lg flex flex-wrap items-center justify-between gap-3 border border-brand-border/20"
                     >
                       <div className="flex items-center gap-2 whitespace-nowrap shrink-0">
-                        <span className="px-2.5 py-1 rounded-lg bg-white/20 text-xs font-mono font-bold whitespace-nowrap">
+                        <span className="px-2.5 py-1 rounded-lg bg-white/20 text-xs font-serif font-bold whitespace-nowrap">
                           {selectedContactIds.length} 件選択中
                         </span>
                         <span className="text-xs text-white/70 hidden sm:inline whitespace-nowrap">
@@ -710,8 +710,8 @@ export const AdminContactsTab: React.FC<AdminContactsTabProps> = (props) => {
                     {/* Pagination Bar */}
                     {filteredContacts.length > 0 && (
                       <div className="p-3 bg-brand-light/40 border-t border-brand-border flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-brand-dark/70">
-                        <div className="font-mono text-[11px]">
-                          全 <strong className="text-brand-dark font-bold">{filteredContacts.length}</strong> 件中 {startIndex + 1} - {Math.min(startIndex + contactItemsPerPage, filteredContacts.length)} 件を表示
+                        <div className="text-[11px] font-sans">
+                          全 <strong className="text-brand-dark font-serif font-bold">{filteredContacts.length}</strong> 件中 <span className="font-serif font-bold">{startIndex + 1}</span> - <span className="font-serif font-bold">{Math.min(startIndex + contactItemsPerPage, filteredContacts.length)}</span> 件を表示
                         </div>
 
                         {totalPages > 1 && (
@@ -723,7 +723,7 @@ export const AdminContactsTab: React.FC<AdminContactsTabProps> = (props) => {
                             >
                               前へ
                             </button>
-                            <div className="flex items-center gap-1 font-mono font-bold text-[11px] px-2">
+                            <div className="flex items-center gap-1 font-serif font-bold text-[11px] px-2">
                               <span>{safeCurrentPage}</span>
                               <span className="opacity-40">/</span>
                               <span>{totalPages}</span>

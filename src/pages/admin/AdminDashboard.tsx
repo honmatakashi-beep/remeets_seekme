@@ -1027,7 +1027,7 @@ export const AdminDashboard = () => {
     if (count <= 0) return null;
     return (
       <span className={cn(
-        "ml-auto bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center",
+        "ml-auto bg-red-500 text-white text-[10px] font-serif font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center",
         isSidebarCollapsed && !isMobileMenuOpen ? "absolute -top-1 -right-1" : ""
       )}>
         {count > 99 ? '99+' : count}

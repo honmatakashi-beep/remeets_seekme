@@ -603,7 +603,7 @@ export const AdminSecurityCenterView: React.FC<AdminSecurityCenterViewProps> = (
                   style={{ width: `${securityHealth?.safetyHealthScore || 99.88}%` }}
                 />
               </div>
-              <p className="text-[10px] text-emerald-800">重大インシデント発生率: <strong>0.00%</strong></p>
+              <p className="text-[10px] text-emerald-800 font-sans">重大インシデント発生率: <strong className="font-serif font-bold text-xs">0.00%</strong></p>
             </div>
 
             <div className="bg-white/95 p-5 rounded-2xl border border-indigo-200 shadow-xs space-y-2">
@@ -615,8 +615,8 @@ export const AdminSecurityCenterView: React.FC<AdminSecurityCenterViewProps> = (
                 <span>{(securityHealth?.totalAiScans || 210).toLocaleString()}</span>
                 <span className="text-sm font-sans text-indigo-700/60 font-normal">件スキャン</span>
               </div>
-              <p className="text-[10px] text-slate-500">
-                事前隔離: <strong className="text-rose-600">{securityHealth?.aiConfirmedHarmful || 3}件</strong> ({((securityHealth?.aiConfirmedHarmful || 3) / (securityHealth?.totalAiScans || 210) * 100).toFixed(2)}%)
+              <p className="text-[10px] text-slate-500 font-sans">
+                事前隔離: <strong className="text-rose-600 font-serif font-bold text-xs">{securityHealth?.aiConfirmedHarmful || 3}</strong>件 (<strong className="font-serif font-bold text-[11px] text-slate-700">{((securityHealth?.aiConfirmedHarmful || 3) / (securityHealth?.totalAiScans || 210) * 100).toFixed(2)}%</strong>)
               </p>
             </div>
 
@@ -629,7 +629,7 @@ export const AdminSecurityCenterView: React.FC<AdminSecurityCenterViewProps> = (
                 <span>{securityHealth?.falsePositiveRate || '4.2'}</span>
                 <span className="text-sm font-sans text-blue-700/60 font-normal">%</span>
               </div>
-              <p className="text-[10px] text-blue-800">
+              <p className="text-[10px] text-blue-800 font-sans">
                 健全な想い出の手紙を誤判定せず高精度に通過
               </p>
             </div>
@@ -643,7 +643,7 @@ export const AdminSecurityCenterView: React.FC<AdminSecurityCenterViewProps> = (
                 <span>1.2</span>
                 <span className="text-sm font-sans text-amber-700/60 font-normal">秒 即時抽出</span>
               </div>
-              <p className="text-[10px] text-amber-800">刑訴法197条2項 照会書回答機能 完備</p>
+              <p className="text-[10px] text-amber-800 font-sans">刑訴法197条2項 照会書回答機能 完備</p>
             </div>
           </div>
 
@@ -658,7 +658,7 @@ export const AdminSecurityCenterView: React.FC<AdminSecurityCenterViewProps> = (
                     <ShieldAlert size={18} className="text-rose-600" />
                     AI防衛エンジンが遮断した脅威種別の内訳
                   </h3>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-slate-500 font-sans">
                     出会い系・ストーカー・実名露出など、公序良俗・法令違反アプローチの検知傾向
                   </p>
                 </div>
@@ -676,8 +676,8 @@ export const AdminSecurityCenterView: React.FC<AdminSecurityCenterViewProps> = (
                       <span className="font-bold text-xs sm:text-sm text-slate-900">
                         {threat.name}
                       </span>
-                      <span className="font-mono font-bold text-xs text-slate-700">
-                        {threat.percentage}% ({threat.count}件)
+                      <span className="font-serif font-bold text-xs text-slate-800">
+                        {threat.percentage}% <span className="text-[11px] font-normal font-sans text-slate-500">({threat.count}件)</span>
                       </span>
                     </div>
 
@@ -714,22 +714,22 @@ export const AdminSecurityCenterView: React.FC<AdminSecurityCenterViewProps> = (
                   生活安全課やサイバー犯罪対策課への定期報告・適合事前相談において、当プラットフォームの治安健全性とAI自律防衛の実績を証明する公式サマリーです。
                 </p>
 
-                <div className="p-3.5 rounded-xl bg-slate-800/80 border border-slate-700 space-y-2 text-xs font-mono">
+                <div className="p-3.5 rounded-xl bg-slate-800/80 border border-slate-700 space-y-2 text-xs font-sans">
                   <div className="flex justify-between text-slate-300">
                     <span>対象期間:</span>
-                    <span className="text-amber-400 font-bold">{securityHealth?.monthlyPoliceProof?.period || '2026年9月度'}</span>
+                    <span className="text-amber-400 font-serif font-bold">{securityHealth?.monthlyPoliceProof?.period || '2026年9月度'}</span>
                   </div>
                   <div className="flex justify-between text-slate-300">
                     <span>AI事前遮断率:</span>
-                    <span className="text-emerald-400 font-bold">0.52% (即時防衛)</span>
+                    <span className="text-emerald-400 font-serif font-bold">0.52% <span className="text-[11px] font-normal font-sans text-emerald-300/70">(即時防衛)</span></span>
                   </div>
                   <div className="flex justify-between text-slate-300">
                     <span>警察令状・照会着任:</span>
-                    <span className="text-white font-bold">0件 (重大事案ゼロ)</span>
+                    <span className="text-white font-serif font-bold">0 <span className="text-[11px] font-normal font-sans text-slate-400">件</span> <span className="text-[11px] font-normal font-sans text-slate-300">(重大事案ゼロ)</span></span>
                   </div>
                   <div className="flex justify-between text-slate-300">
                     <span>情報漏洩・不正開示:</span>
-                    <span className="text-emerald-400 font-bold">0件 (完全防衛)</span>
+                    <span className="text-emerald-400 font-serif font-bold">0 <span className="text-[11px] font-normal font-sans text-emerald-300/70">件</span> <span className="text-[11px] font-normal font-sans text-emerald-300">(完全防衛)</span></span>
                   </div>
                 </div>
               </div>
@@ -811,19 +811,19 @@ export const AdminSecurityCenterView: React.FC<AdminSecurityCenterViewProps> = (
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 bg-slate-950/60 p-4 rounded-xl border border-slate-800 print:bg-gray-100 print:border-gray-300 text-xs">
                   <div>
                     <span className="text-slate-400 print:text-gray-600 block">対象期間:</span>
-                    <strong className="text-white print:text-black text-sm">{securityHealth?.monthlyPoliceProof?.period || '2026年9月度'}</strong>
+                    <strong className="text-white print:text-black font-serif font-bold text-sm">{securityHealth?.monthlyPoliceProof?.period || '2026年9月度'}</strong>
                   </div>
                   <div>
                     <span className="text-slate-400 print:text-gray-600 block">サイト治安スコア:</span>
-                    <strong className="text-emerald-400 print:text-black text-sm">{securityHealth?.safetyHealthScore || '99.88'}% (極めて健全)</strong>
+                    <strong className="text-emerald-400 print:text-black font-serif font-bold text-sm">{securityHealth?.safetyHealthScore || '99.88'}% <span className="text-[11px] font-normal font-sans">(極めて健全)</span></strong>
                   </div>
                   <div>
                     <span className="text-slate-400 print:text-gray-600 block">AI検閲スキャン数:</span>
-                    <strong className="text-white print:text-black text-sm">{(securityHealth?.totalAiScans || 210).toLocaleString()} 件</strong>
+                    <strong className="text-white print:text-black font-serif font-bold text-sm">{(securityHealth?.totalAiScans || 210).toLocaleString()} <span className="text-xs font-normal font-sans">件</span></strong>
                   </div>
                   <div>
                     <span className="text-slate-400 print:text-gray-600 block">重大事案発生件数:</span>
-                    <strong className="text-emerald-400 print:text-black text-sm">0 件 (皆無)</strong>
+                    <strong className="text-emerald-400 print:text-black font-serif font-bold text-sm">0 <span className="text-xs font-normal font-sans">件</span> <span className="text-[11px] font-normal font-sans">(皆無)</span></strong>
                   </div>
                 </div>
 

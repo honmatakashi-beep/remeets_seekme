@@ -116,11 +116,11 @@ export const FunnelChart = ({ data }: { data: any[] }) => {
             <div className="flex justify-between items-end">
               <div className="space-y-1">
                 <span className="text-[10px] font-bold text-brand-dark/40 uppercase tracking-widest">{item.step}</span>
-                <div className="text-lg font-serif text-brand-dark">{item.count.toLocaleString()} <span className="text-xs font-serif text-brand-dark/50">件</span></div>
+                <div className="text-lg font-serif font-bold text-brand-dark">{item.count.toLocaleString()} <span className="text-xs font-serif text-brand-dark/50">件</span></div>
               </div>
               {idx > 0 && (
                 <div className="text-[10px] font-bold text-red-500 bg-red-50 px-2 py-0.5 rounded-full border border-red-100">
-                  -{dropRate}% 離脱
+                  -<span className="font-serif font-bold">{dropRate}</span>% 離脱
                 </div>
               )}
             </div>
@@ -227,7 +227,7 @@ export const HeatmapChart = ({ data }: { data: any[] }) => {
                           style={{ backgroundColor: bgColor }}
                         >
                           {count > 0 && (
-                            <span className={`text-[8px] font-bold ${intensity > 0.65 ? 'text-white' : 'text-brand-dark/65'}`}>
+                            <span className={`text-[8px] font-serif font-bold ${intensity > 0.65 ? 'text-white' : 'text-brand-dark/65'}`}>
                               {count > 99 ? '99+' : count}
                             </span>
                           )}
@@ -238,7 +238,7 @@ export const HeatmapChart = ({ data }: { data: any[] }) => {
                             </div>
                             <div className="flex items-center justify-between gap-8">
                               <span className="opacity-60">アクセス数:</span>
-                              <span className="text-brand-accent font-bold text-lg">{count.toLocaleString()} <span className="text-[11px] opacity-60 font-normal">PV</span></span>
+                              <span className="text-brand-accent font-serif font-bold text-lg">{count.toLocaleString()} <span className="text-[11px] opacity-60 font-normal font-sans">PV</span></span>
                             </div>
                           </div>
                         </div>
@@ -246,7 +246,7 @@ export const HeatmapChart = ({ data }: { data: any[] }) => {
                     );
                   })}
                   <td className="text-center align-middle pl-1">
-                    <div className="text-[12px] font-mono font-bold text-brand-dark bg-brand-light/70 h-9 flex items-center justify-center rounded-r-xl border-r border-y border-brand-border/40 shadow-sm">
+                    <div className="text-[12px] font-serif font-bold text-brand-dark bg-brand-light/70 h-9 flex items-center justify-center rounded-r-xl border-r border-y border-brand-border/40 shadow-sm">
                       {dayTotals[dIdx].toLocaleString()}
                     </div>
                   </td>
@@ -257,13 +257,13 @@ export const HeatmapChart = ({ data }: { data: any[] }) => {
                 <td className="text-[11px] text-brand-dark/40 font-bold text-right pr-4 pt-6 uppercase tracking-tighter">Hourly</td>
                 {hourTotals.map((total, hIdx) => (
                   <td key={hIdx} className="pt-6">
-                    <div className="text-[10px] font-mono font-bold text-brand-dark/40 text-center">
+                    <div className="text-[10px] font-serif font-bold text-brand-dark/40 text-center">
                       {total > 999 ? `${(total/1000).toFixed(1)}k` : total}
                     </div>
                   </td>
                 ))}
                 <td className="pt-6 text-center">
-                  <div className="text-[11px] font-mono font-bold text-brand-primary">
+                  <div className="text-[11px] font-serif font-bold text-brand-primary">
                     {grandTotal > 999 ? `${(grandTotal/1000).toFixed(1)}k` : grandTotal}
                   </div>
                 </td>

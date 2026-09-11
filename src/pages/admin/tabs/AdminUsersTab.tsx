@@ -80,9 +80,9 @@ export const AdminUsersTab: React.FC<AdminUsersTabProps> = (props) => {
                           {totalUsersCount.toLocaleString()}<span className="text-xs font-normal text-black/60 ml-1">名</span>
                         </div>
                         <div className="flex items-center gap-2 mt-1.5 text-[11px] text-black/60">
-                          <span className="inline-flex items-center text-emerald-650 font-bold">👤 本番 {realUsersCount}</span>
+                          <span className="inline-flex items-center text-emerald-650 font-bold">👤 本番 <span className="font-serif font-bold ml-1">{realUsersCount}</span></span>
                           <span>•</span>
-                          <span className="inline-flex items-center text-indigo-650 font-medium">🤖 サンプル {sampleUsersCount}</span>
+                          <span className="inline-flex items-center text-indigo-650 font-medium">🤖 サンプル <span className="font-serif font-bold ml-1">{sampleUsersCount}</span></span>
                         </div>
                       </div>
                     </div>
@@ -98,7 +98,7 @@ export const AdminUsersTab: React.FC<AdminUsersTabProps> = (props) => {
                       <div className="mt-3">
                         <div className="flex items-baseline gap-2">
                           <span className="text-2xl sm:text-3xl font-serif font-bold text-emerald-700">{ekycRate}%</span>
-                          <span className="text-xs font-bold text-black/60">({ekycCount}名完了)</span>
+                          <span className="text-xs font-bold text-black/60">(<span className="font-serif font-bold">{ekycCount}</span>名完了)</span>
                         </div>
                         <div className="w-full bg-slate-100 rounded-full h-1.5 mt-2 overflow-hidden">
                           <div className="bg-emerald-500 h-1.5 rounded-full transition-all duration-500" style={{ width: `${Math.min(100, ekycRate)}%` }}></div>
@@ -120,7 +120,7 @@ export const AdminUsersTab: React.FC<AdminUsersTabProps> = (props) => {
                         </div>
                         <div className="mt-1.5 text-[11px] font-bold text-emerald-650 flex items-center gap-1">
                           <Sparkles size={12} />
-                          <span>再会成立: {totalReunions} 組</span>
+                          <span>再会成立: <span className="font-serif font-bold">{totalReunions}</span> 組</span>
                         </div>
                       </div>
                     </div>
@@ -139,7 +139,8 @@ export const AdminUsersTab: React.FC<AdminUsersTabProps> = (props) => {
                           <span className="text-xs font-bold text-black/60">名凍結中</span>
                         </div>
                         <div className="mt-1.5 text-[11px] text-rose-600 font-medium">
-                          {reportedCount > 0 ? `⚠️ 被通報アカウント: ${reportedCount}件` : '全アカウント健全'}
+                          {reportedCount > 0 ? `⚠️ 被通報アカウント: ` : '全アカウント健全'}
+                          {reportedCount > 0 && <><span className="font-serif font-bold">{reportedCount}</span>件</>}
                         </div>
                       </div>
                     </div>
@@ -170,7 +171,7 @@ export const AdminUsersTab: React.FC<AdminUsersTabProps> = (props) => {
                       }`}
                     >
                       <span>{tab.label}</span>
-                      <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
+                      <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-serif font-bold ${
                         userStatusFilter === tab.id ? 'bg-white/20 text-white' : 'bg-black/5 text-black/60'
                       }`}>
                         {tab.count}
@@ -644,9 +645,9 @@ export const AdminUsersTab: React.FC<AdminUsersTabProps> = (props) => {
                     {totalFiltered > 0 && (
                       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-2 pt-2 text-xs text-black/60">
                         <div>
-                          全 <span className="font-bold text-black">{totalFiltered}</span> 件中{' '}
-                          <span className="font-bold text-black">{(currentPage - 1) * userItemsPerPage + 1}</span> -{' '}
-                          <span className="font-bold text-black">{Math.min(currentPage * userItemsPerPage, totalFiltered)}</span> 件を表示
+                          全 <span className="font-serif font-bold text-black">{totalFiltered}</span> 件中{' '}
+                          <span className="font-serif font-bold text-black">{(currentPage - 1) * userItemsPerPage + 1}</span> -{' '}
+                          <span className="font-serif font-bold text-black">{Math.min(currentPage * userItemsPerPage, totalFiltered)}</span> 件を表示
                         </div>
 
                         {totalPages > 1 && (
@@ -661,9 +662,9 @@ export const AdminUsersTab: React.FC<AdminUsersTabProps> = (props) => {
                             </button>
 
                             <div className="flex items-center gap-1 px-2">
-                              <span className="font-bold text-black">{currentPage}</span>
+                              <span className="font-serif font-bold text-black">{currentPage}</span>
                               <span>/</span>
-                              <span>{totalPages}</span>
+                              <span className="font-serif font-bold text-black">{totalPages}</span>
                             </div>
 
                             <button

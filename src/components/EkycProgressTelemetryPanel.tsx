@@ -299,8 +299,8 @@ export const EkycProgressTelemetryPanel: React.FC<EkycProgressTelemetryPanelProp
             <div className="flex items-center gap-3 shrink-0">
               <div className="text-right">
                 <div className="text-[10px] text-brand-dark/60 font-bold uppercase tracking-wider">総合照合精度スコア</div>
-                <div className="text-lg md:text-xl font-mono font-extrabold text-emerald-700">
-                  {overallConfidenceScore.toFixed(1)}% <span className="text-xs text-brand-dark/50 font-normal">/ 100%</span>
+                <div className="text-lg md:text-xl font-serif font-bold text-emerald-700">
+                  {overallConfidenceScore.toFixed(1)}% <span className="text-xs text-brand-dark/50 font-normal font-sans">/ 100%</span>
                 </div>
               </div>
 
@@ -330,8 +330,8 @@ export const EkycProgressTelemetryPanel: React.FC<EkycProgressTelemetryPanelProp
                 <span>eKYC Multi-layer Verification Pipeline</span>
                 {isSimulating && <span className="text-[10px] font-mono text-amber-600 animate-pulse">(リアルタイム解析中...)</span>}
               </span>
-              <span className="font-mono text-emerald-700 text-sm">
-                {currentProgress}% <span className="text-[11px] text-brand-dark/50 font-normal">進捗</span>
+              <span className="font-serif font-bold text-emerald-700 text-sm">
+                {currentProgress}% <span className="text-[11px] text-brand-dark/50 font-normal font-sans">進捗</span>
               </span>
             </div>
 
@@ -474,7 +474,7 @@ export const EkycProgressTelemetryPanel: React.FC<EkycProgressTelemetryPanelProp
 
                           {/* Score Badge */}
                           <div className="text-right shrink-0">
-                            <div className={`px-2 py-0.5 rounded-lg text-xs font-mono font-bold inline-flex items-center gap-1 ${
+                            <div className={`px-2 py-0.5 rounded-lg text-xs font-serif font-bold inline-flex items-center gap-1 ${
                               isStepCompleted
                                 ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
                                 : isStepRunning
@@ -484,7 +484,7 @@ export const EkycProgressTelemetryPanel: React.FC<EkycProgressTelemetryPanelProp
                               <span>{step.score > 0 ? `${step.score.toFixed(1)}%` : '---'}</span>
                             </div>
                             <div className="text-[9px] text-brand-dark/40 font-serif mt-0.5">
-                              基準: {step.threshold}%以上
+                              基準: <span className="font-serif font-bold">{step.threshold}</span>%以上
                             </div>
                           </div>
                         </div>

@@ -80,7 +80,7 @@ export const AdminDeletionTab: React.FC<AdminDeletionTabProps> = (props) => {
                       {deletionRequests.filter(r => r.status === 'approved' || r.status === 'resolved').length}
                     </span>
                     <span className="text-xs text-emerald-600 font-semibold">
-                      ({deletionRequests.length > 0 ? Math.round((deletionRequests.filter(r => r.status === 'approved' || r.status === 'resolved').length / deletionRequests.length) * 100) : 0}%)
+                      (<span className="font-serif font-bold">{deletionRequests.length > 0 ? Math.round((deletionRequests.filter(r => r.status === 'approved' || r.status === 'resolved').length / deletionRequests.length) * 100) : 0}</span>%)
                     </span>
                   </div>
                   <div className="mt-1 text-[11px] text-emerald-600 font-medium">安全に消去対応済み</div>
@@ -115,7 +115,7 @@ export const AdminDeletionTab: React.FC<AdminDeletionTabProps> = (props) => {
                       <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
                         <span>削除依頼 ＆ プライバシー救済管理</span>
                         <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-300">
-                          全 {deletionRequests.length} 件
+                          全 <span className="font-serif font-bold">{deletionRequests.length}</span> 件
                         </span>
                       </h3>
                       <p className="text-xs text-slate-500 mt-0.5">
@@ -298,7 +298,7 @@ export const AdminDeletionTab: React.FC<AdminDeletionTabProps> = (props) => {
                           className="rounded border-amber-300 text-amber-600 focus:ring-amber-500 cursor-pointer"
                         />
                         <span className="text-xs font-bold text-amber-900">
-                          全選択 ({selectedDeletionIds.length} / {deletionRequests.length}件 選択中)
+                          全選択 (<span className="font-serif font-bold">{selectedDeletionIds.length}</span> / <span className="font-serif font-bold">{deletionRequests.length}</span>件 選択中)
                         </span>
                       </div>
 
@@ -310,7 +310,7 @@ export const AdminDeletionTab: React.FC<AdminDeletionTabProps> = (props) => {
                           className="flex items-center gap-1 px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all disabled:opacity-40 cursor-pointer shadow-xs"
                         >
                           <CheckCircle2 size={13} />
-                          <span>選択一括承認＆削除 ({selectedDeletionIds.length})</span>
+                          <span>選択一括承認＆削除 (<span className="font-serif font-bold">{selectedDeletionIds.length}</span>)</span>
                         </button>
 
                         <button
@@ -538,9 +538,9 @@ export const AdminDeletionTab: React.FC<AdminDeletionTabProps> = (props) => {
                         {/* Pagination Bar */}
                         <div className="p-3.5 border-t border-slate-200/80 bg-slate-50/50 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
                           <div className="text-slate-500 font-medium">
-                            全 <span className="font-bold text-slate-800">{filtered.length}</span> 件中{' '}
-                            <span className="font-bold text-slate-800">{(currentPage - 1) * deletionPerPage + 1}</span> 〜{' '}
-                            <span className="font-bold text-slate-800">{Math.min(currentPage * deletionPerPage, filtered.length)}</span> 件を表示
+                            全 <span className="font-serif font-bold text-slate-800">{filtered.length}</span> 件中{' '}
+                            <span className="font-serif font-bold text-slate-800">{(currentPage - 1) * deletionPerPage + 1}</span> 〜{' '}
+                            <span className="font-serif font-bold text-slate-800">{Math.min(currentPage * deletionPerPage, filtered.length)}</span> 件を表示
                           </div>
 
                           {totalPages > 1 && (
@@ -562,7 +562,7 @@ export const AdminDeletionTab: React.FC<AdminDeletionTabProps> = (props) => {
                                 &lsaquo;
                               </button>
                               
-                              <span className="px-3 py-1 bg-slate-900 text-white rounded-lg font-bold">
+                              <span className="px-3 py-1 bg-slate-900 text-white rounded-lg font-serif font-bold">
                                 {currentPage} / {totalPages}
                               </span>
 

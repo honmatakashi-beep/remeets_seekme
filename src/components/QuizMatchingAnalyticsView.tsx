@@ -379,8 +379,8 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
                 <span className="text-sm font-sans text-black/50 font-normal">%</span>
               </div>
               <div className="text-[11px] text-emerald-700 font-medium font-sans flex items-center gap-1">
-                <span>{summary.resolvedPosts || 0} 組成立</span>
-                <span className="text-black/40">/ 全 {summary.totalPosts || 0} 通</span>
+                <span><strong className="font-serif font-bold text-sm">{summary.resolvedPosts || 0}</strong> 組成立</span>
+                <span className="text-black/40">/ 全 <strong className="font-serif font-bold text-sm">{summary.totalPosts || 0}</strong> 通</span>
               </div>
             </div>
             <div className="w-full bg-neutral-100 h-1.5 rounded-full overflow-hidden">
@@ -390,7 +390,7 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
               />
             </div>
             <p className="text-[10px] text-black/50 leading-tight">
-              連絡先開示完了率: <strong>{summary.disclosureRate || 100}%</strong>
+              連絡先開示完了率: <strong className="font-serif font-bold">{summary.disclosureRate || 100}%</strong>
             </p>
           </div>
 
@@ -406,8 +406,8 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
                 <span className="text-sm font-sans text-black/50 font-normal">%</span>
               </div>
               <div className="text-[11px] text-teal-700 font-medium font-sans flex items-center gap-1">
-                <span>正解: {summary.successQuizAttempts || 0} 回</span>
-                <span className="text-black/40">/ 総試行 {summary.totalQuizAttempts || 0} 回</span>
+                <span>正解: <strong className="font-serif font-bold text-sm">{summary.successQuizAttempts || 0}</strong> 回</span>
+                <span className="text-black/40">/ 総試行 <strong className="font-serif font-bold text-sm">{summary.totalQuizAttempts || 0}</strong> 回</span>
               </div>
             </div>
             <div className="w-full bg-neutral-100 h-1.5 rounded-full overflow-hidden">
@@ -417,7 +417,7 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
               />
             </div>
             <p className="text-[10px] text-black/50 leading-tight">
-              1回目一発正答率: <strong>{summary.firstAttemptSuccessRate || 0}%</strong>
+              1回目一発正答率: <strong className="font-serif font-bold">{summary.firstAttemptSuccessRate || 0}%</strong>
             </p>
           </div>
 
@@ -433,7 +433,7 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
                 <span className="text-sm font-sans text-black/50 font-normal">件救済</span>
               </div>
               <div className="text-[11px] text-blue-700 font-medium font-sans flex items-center gap-1">
-                <span>正解者の約 28% を自動救済</span>
+                <span>正解者の約 <strong className="font-serif font-bold text-sm">28</strong>% を自動救済</span>
               </div>
             </div>
             <div className="w-full bg-neutral-100 h-1.5 rounded-full overflow-hidden">
@@ -459,7 +459,7 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
                 <span className="text-sm font-sans text-black/50 font-normal">件遮断</span>
               </div>
               <div className="text-[11px] text-amber-800 font-medium font-sans flex items-center gap-1">
-                <span>不正突破漏洩: 0件 (完全防衛)</span>
+                <span>不正突破漏洩: <strong className="font-serif font-bold text-sm">0</strong>件 (完全防衛)</span>
               </div>
             </div>
             <div className="w-full bg-neutral-100 h-1.5 rounded-full overflow-hidden">
@@ -720,49 +720,49 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
                   <tr className="hover:bg-neutral-50/50">
                     <td className="py-2.5 px-3 font-bold text-neutral-800">1. ボトル閲覧</td>
                     <td className="py-2.5 px-3 text-neutral-600">漂流ボトルの詳細を開く</td>
-                    <td className="py-2.5 px-3 font-mono font-bold text-neutral-900">{reunionFunnel?.steps?.[0]?.count || 0} 回</td>
-                    <td className="py-2.5 px-3 font-mono text-emerald-700 font-bold">100%</td>
-                    <td className="py-2.5 px-3 font-mono text-neutral-600">100%</td>
+                    <td className="py-2.5 px-3 font-serif font-bold text-neutral-900">{reunionFunnel?.steps?.[0]?.count || 0} <span className="text-xs font-normal font-sans text-neutral-500">回</span></td>
+                    <td className="py-2.5 px-3 font-serif text-emerald-700 font-bold">100%</td>
+                    <td className="py-2.5 px-3 font-serif text-neutral-600 font-bold">100%</td>
                     <td className="py-2.5 px-3 text-neutral-500">個人名・連絡先非表示マスク</td>
                   </tr>
                   <tr className="hover:bg-neutral-50/50">
                     <td className="py-2.5 px-3 font-bold text-neutral-800">2. クイズ挑戦</td>
                     <td className="py-2.5 px-3 text-neutral-600">第1問の回答を入力開始</td>
-                    <td className="py-2.5 px-3 font-mono font-bold text-neutral-900">{reunionFunnel?.steps?.[1]?.count || 0} 回</td>
-                    <td className="py-2.5 px-3 font-mono text-emerald-700 font-bold">{reunionFunnel?.steps?.[1]?.convFromPrev || 0}%</td>
-                    <td className="py-2.5 px-3 font-mono text-neutral-600">{reunionFunnel?.steps?.[1]?.convOverall || 0}%</td>
+                    <td className="py-2.5 px-3 font-serif font-bold text-neutral-900">{reunionFunnel?.steps?.[1]?.count || 0} <span className="text-xs font-normal font-sans text-neutral-500">回</span></td>
+                    <td className="py-2.5 px-3 font-serif text-emerald-700 font-bold">{reunionFunnel?.steps?.[1]?.convFromPrev || 0}%</td>
+                    <td className="py-2.5 px-3 font-serif text-neutral-600 font-bold">{reunionFunnel?.steps?.[1]?.convOverall || 0}%</td>
                     <td className="py-2.5 px-3 text-neutral-500">5回誤答で24h自動ロック</td>
                   </tr>
                   <tr className="hover:bg-neutral-50/50">
                     <td className="py-2.5 px-3 font-bold text-neutral-800">3. クイズ正解</td>
                     <td className="py-2.5 px-3 text-neutral-600">第1問・第2問を完全突破</td>
-                    <td className="py-2.5 px-3 font-mono font-bold text-emerald-800">{reunionFunnel?.steps?.[2]?.count || 0} 組</td>
-                    <td className="py-2.5 px-3 font-mono text-emerald-700 font-bold">{reunionFunnel?.steps?.[2]?.convFromPrev || 0}%</td>
-                    <td className="py-2.5 px-3 font-mono text-neutral-600">{reunionFunnel?.steps?.[2]?.convOverall || 0}%</td>
+                    <td className="py-2.5 px-3 font-serif font-bold text-emerald-800">{reunionFunnel?.steps?.[2]?.count || 0} <span className="text-xs font-normal font-sans text-emerald-700/60">組</span></td>
+                    <td className="py-2.5 px-3 font-serif text-emerald-700 font-bold">{reunionFunnel?.steps?.[2]?.convFromPrev || 0}%</td>
+                    <td className="py-2.5 px-3 font-serif text-neutral-600 font-bold">{reunionFunnel?.steps?.[2]?.convOverall || 0}%</td>
                     <td className="py-2.5 px-3 text-neutral-500">ひらがな/カタカナ表記揺れ救済</td>
                   </tr>
                   <tr className="hover:bg-neutral-50/50">
                     <td className="py-2.5 px-3 font-bold text-neutral-800">4. eKYC本人確認</td>
                     <td className="py-2.5 px-3 text-neutral-600">公的身分証提出 ＆ 電子的宣誓</td>
-                    <td className="py-2.5 px-3 font-mono font-bold text-neutral-900">{reunionFunnel?.steps?.[3]?.count || 0} 件</td>
-                    <td className="py-2.5 px-3 font-mono text-emerald-700 font-bold">{reunionFunnel?.steps?.[3]?.convFromPrev || 0}%</td>
-                    <td className="py-2.5 px-3 font-mono text-neutral-600">{reunionFunnel?.steps?.[3]?.convOverall || 0}%</td>
+                    <td className="py-2.5 px-3 font-serif font-bold text-neutral-900">{reunionFunnel?.steps?.[3]?.count || 0} <span className="text-xs font-normal font-sans text-neutral-500">件</span></td>
+                    <td className="py-2.5 px-3 font-serif text-emerald-700 font-bold">{reunionFunnel?.steps?.[3]?.convFromPrev || 0}%</td>
+                    <td className="py-2.5 px-3 font-serif text-neutral-600 font-bold">{reunionFunnel?.steps?.[3]?.convOverall || 0}%</td>
                     <td className="py-2.5 px-3 text-neutral-500">公安・刑事訴訟法準拠ログ保全</td>
                   </tr>
                   <tr className="hover:bg-neutral-50/50">
                     <td className="py-2.5 px-3 font-bold text-neutral-800">5. 開封決済</td>
                     <td className="py-2.5 px-3 text-neutral-600">手数料決済完了 (Stripe)</td>
-                    <td className="py-2.5 px-3 font-mono font-bold text-neutral-900">{reunionFunnel?.steps?.[4]?.count || 0} 件</td>
-                    <td className="py-2.5 px-3 font-mono text-emerald-700 font-bold">{reunionFunnel?.steps?.[4]?.convFromPrev || 0}%</td>
-                    <td className="py-2.5 px-3 font-mono text-neutral-600">{reunionFunnel?.steps?.[4]?.convOverall || 0}%</td>
+                    <td className="py-2.5 px-3 font-serif font-bold text-neutral-900">{reunionFunnel?.steps?.[4]?.count || 0} <span className="text-xs font-normal font-sans text-neutral-500">件</span></td>
+                    <td className="py-2.5 px-3 font-serif text-emerald-700 font-bold">{reunionFunnel?.steps?.[4]?.convFromPrev || 0}%</td>
+                    <td className="py-2.5 px-3 font-serif text-neutral-600 font-bold">{reunionFunnel?.steps?.[4]?.convOverall || 0}%</td>
                     <td className="py-2.5 px-3 text-neutral-500">安全な即時決済 ＆ 審査落ち自動返金</td>
                   </tr>
                   <tr className="hover:bg-neutral-50/50 bg-pink-50/30">
                     <td className="py-2.5 px-3 font-bold text-pink-900">6. 連絡先開示 🏆</td>
                     <td className="py-2.5 px-3 text-pink-800">セキュア・ブリッジ完了</td>
-                    <td className="py-2.5 px-3 font-mono font-bold text-pink-900">{reunionFunnel?.steps?.[5]?.count || 0} 件</td>
-                    <td className="py-2.5 px-3 font-mono text-pink-700 font-bold">{reunionFunnel?.steps?.[5]?.convFromPrev || 0}%</td>
-                    <td className="py-2.5 px-3 font-mono text-pink-800 font-bold">{reunionFunnel?.steps?.[5]?.convOverall || 0}%</td>
+                    <td className="py-2.5 px-3 font-serif font-bold text-pink-900">{reunionFunnel?.steps?.[5]?.count || 0} <span className="text-xs font-normal font-sans text-pink-700/60">件</span></td>
+                    <td className="py-2.5 px-3 font-serif text-pink-700 font-bold">{reunionFunnel?.steps?.[5]?.convFromPrev || 0}%</td>
+                    <td className="py-2.5 px-3 font-serif text-pink-800 font-bold">{reunionFunnel?.steps?.[5]?.convOverall || 0}%</td>
                     <td className="py-2.5 px-3 text-pink-700 font-medium">双方合意連絡先（LINE等）の引き渡し</td>
                   </tr>
                 </tbody>
@@ -890,8 +890,8 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
                             }`}>
                               {item.categoryType || 'その他'}
                             </span>
-                            <span className="font-mono font-bold text-xs text-neutral-900">
-                              {item.count} 回
+                            <span className="font-serif font-bold text-sm text-neutral-900">
+                              {item.count} <span className="text-xs font-normal font-sans text-neutral-500">回</span>
                             </span>
                           </div>
                         </div>
@@ -918,7 +918,7 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
                   {(searchDemandAnalytics.eraSearchDistribution || []).map((era: any, idx: number) => (
                     <div key={idx} className="p-2.5 rounded-xl bg-neutral-50 border border-neutral-100 flex items-center justify-between text-xs">
                       <span className="text-neutral-700 font-medium">{era.era}</span>
-                      <span className="font-mono font-bold text-cyan-800">{era.count} 件</span>
+                      <span className="font-serif font-bold text-sm text-cyan-800">{era.count} <span className="text-xs font-normal font-sans text-cyan-700/60">件</span></span>
                     </div>
                   ))}
                 </div>
@@ -955,8 +955,8 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
                             <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-200 text-amber-900">
                               {demand.categoryType || '学校・部活'}
                             </span>
-                            <span className="text-[10px] text-neutral-400 font-mono">
-                              検索数: {demand.searchCount} 回
+                            <span className="text-[11px] text-neutral-600 font-sans">
+                              検索数: <strong className="font-serif font-bold text-xs text-neutral-900">{demand.searchCount}</strong> 回
                             </span>
                           </div>
                           <h4 className="font-bold text-sm text-neutral-900 mt-1">
@@ -1027,7 +1027,7 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
                 <span>{driftDurationAnalytics.avgDurationDays || '38.5'}</span>
                 <span className="text-sm font-sans text-black/50 font-normal">日</span>
               </div>
-              <p className="text-[10px] text-black/50">中央値: <strong>{driftDurationAnalytics.medianDurationDays || '26.0'}日</strong> で合意成立</p>
+              <p className="text-[10px] text-black/50">中央値: <strong className="font-serif font-bold text-xs text-neutral-900">{driftDurationAnalytics.medianDurationDays || '26.0'}</strong>日 で合意成立</p>
             </div>
 
             <div className="bg-white/90 p-5 rounded-2xl border border-emerald-100 shadow-xs space-y-2">
@@ -1051,7 +1051,7 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
                 <span>{driftDurationAnalytics.fastestMatchHours || '2.5'}</span>
                 <span className="text-sm font-sans text-blue-700/60 font-normal">時間</span>
               </div>
-              <p className="text-[10px] text-blue-800">最長記録: <strong>{driftDurationAnalytics.longestMatchDays || 420}日</strong> の執念合意</p>
+              <p className="text-[10px] text-blue-800">最長記録: <strong className="font-serif font-bold text-xs text-blue-950">{driftDurationAnalytics.longestMatchDays || 420}</strong>日 の執念合意</p>
             </div>
 
             <div className="bg-white/90 p-5 rounded-2xl border border-amber-100 shadow-xs space-y-2">
@@ -1094,8 +1094,8 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="font-mono font-bold text-xs text-indigo-900">
-                          {item.percentage}% ({item.count}組)
+                        <span className="font-serif font-bold text-sm text-indigo-900">
+                          {item.percentage}% <span className="text-xs font-normal font-sans text-indigo-700/70">({item.count}組)</span>
                         </span>
                       </div>
                     </div>
@@ -1138,7 +1138,7 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
                   <div key={idx} className="p-3.5 rounded-2xl bg-gradient-to-r from-indigo-50/50 to-blue-50/30 border border-indigo-100 space-y-1.5">
                     <div className="flex items-center justify-between">
                       <span className="font-bold text-xs text-neutral-800">{ret.day}</span>
-                      <span className="font-bold text-xs font-mono text-indigo-800">{ret.label}</span>
+                      <span className="font-bold text-sm font-serif text-indigo-800">{ret.label}</span>
                     </div>
 
                     <div className="w-full bg-neutral-100 h-2 rounded-full overflow-hidden">

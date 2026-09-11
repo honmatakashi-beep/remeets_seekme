@@ -251,7 +251,7 @@ export const AdminPaymentShowroom: React.FC = () => {
                 <Coins size={14} className="text-emerald-600" />
                 ① 通常手紙開示
               </span>
-              <span className="text-[11px] font-mono text-emerald-700 font-extrabold">600円</span>
+              <span className="text-[11px] font-serif text-emerald-700 font-bold">600円</span>
             </div>
             <p className="text-[10px] text-slate-500 line-clamp-1">手紙全文 ＋ 連絡先開示</p>
           </button>
@@ -270,7 +270,7 @@ export const AdminPaymentShowroom: React.FC = () => {
                 <ShieldCheck size={14} className="text-indigo-600" />
                 ② 開封＋eKYC同時
               </span>
-              <span className="text-[11px] font-mono text-indigo-700 font-extrabold">1,200円</span>
+              <span className="text-[11px] font-serif text-indigo-700 font-bold">1,200円</span>
             </div>
             <p className="text-[10px] text-slate-500 line-clamp-1">手紙開示 600円 ＋ eKYC 600円</p>
           </button>
@@ -289,7 +289,7 @@ export const AdminPaymentShowroom: React.FC = () => {
                 <Lock size={14} className="text-teal-600" />
                 ③ マイページeKYC
               </span>
-              <span className="text-[11px] font-mono text-teal-700 font-extrabold">600円</span>
+              <span className="text-[11px] font-serif text-teal-700 font-bold">600円</span>
             </div>
             <p className="text-[10px] text-slate-500 line-clamp-1">公的証明書・単体審査</p>
           </button>
@@ -308,7 +308,7 @@ export const AdminPaymentShowroom: React.FC = () => {
                 <Coffee size={14} className="text-amber-600" />
                 ④ サポーター支援
               </span>
-              <span className="text-[11px] font-mono text-amber-700 font-extrabold">500円〜</span>
+              <span className="text-[11px] font-serif text-amber-700 font-bold">500円〜</span>
             </div>
             <p className="text-[10px] text-slate-500 line-clamp-1">コーヒー1杯から支援</p>
           </button>
@@ -327,7 +327,7 @@ export const AdminPaymentShowroom: React.FC = () => {
                 <Heart size={14} className="text-rose-600" />
                 ⑤ 運営応援寄付
               </span>
-              <span className="text-[11px] font-mono text-rose-700 font-extrabold">1,000円〜</span>
+              <span className="text-[11px] font-serif text-rose-700 font-bold">1,000円〜</span>
             </div>
             <p className="text-[10px] text-slate-500 line-clamp-1">サーバー・AI運用寄付</p>
           </button>
@@ -551,19 +551,19 @@ export const AdminPaymentShowroom: React.FC = () => {
             <div className="space-y-2 text-slate-300">
               <div className="flex justify-between items-center border-b border-slate-800 pb-1.5">
                 <span>登録・検索・ボトル投函</span>
-                <span className="font-bold text-emerald-400">0 円（完全無料）</span>
+                <span className="font-bold text-emerald-400"><span className="font-serif font-bold">0</span> 円（完全無料）</span>
               </div>
               <div className="flex justify-between items-center border-b border-slate-800 pb-1.5">
                 <span>通常手紙開封・連絡先開示</span>
-                <span className="font-bold text-white font-mono">600 円（買い切り）</span>
+                <span className="font-bold text-white"><span className="font-serif font-bold">600</span> 円（買い切り）</span>
               </div>
               <div className="flex justify-between items-center border-b border-slate-800 pb-1.5">
                 <span>公的本人確認（eKYC）審査</span>
-                <span className="font-bold text-white font-mono">600 円（1回）</span>
+                <span className="font-bold text-white"><span className="font-serif font-bold">600</span> 円（1回）</span>
               </div>
               <div className="flex justify-between items-center pt-1">
                 <span>手紙開封＋eKYC同時決済</span>
-                <span className="font-bold text-amber-300 font-mono">1,200 円（税込）</span>
+                <span className="font-bold text-amber-300"><span className="font-serif font-bold">1,200</span> 円（税込）</span>
               </div>
             </div>
           </div>

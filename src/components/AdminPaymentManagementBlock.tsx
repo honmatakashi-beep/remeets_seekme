@@ -1036,12 +1036,12 @@ export const AdminPaymentManagementBlock: React.FC = () => {
 
                         {/* Amount & Profit */}
                         <td className="py-3.5 px-4 text-right">
-                          <div className="font-mono font-extrabold text-sm text-black">
+                          <div className="font-serif font-extrabold text-sm text-black">
                             {formatYen(tx.amount)}
                           </div>
                           {typeof tx.net_profit === 'number' && (
-                            <div className="text-[10px] font-mono text-emerald-700 font-bold">
-                              純粗利: +{formatYen(tx.net_profit)}
+                            <div className="text-[10px] font-sans text-emerald-700 font-medium">
+                              純粗利: <strong className="font-serif font-bold">+{formatYen(tx.net_profit)}</strong>
                             </div>
                           )}
                         </td>
@@ -1267,7 +1267,7 @@ export const AdminPaymentManagementBlock: React.FC = () => {
                   健全黒字化ユニットエコノミクス (1,200円開通決済時):
                 </span>
                 <p className="text-[11px] text-emerald-900/90 leading-relaxed">
-                  手紙開封(600円)＋eKYC(600円)の計1,200円から、Stripe(43円)、SMS(12円)、eKYC(200円)を控除し、<strong>1件あたり +945円 (粗利率 78.8%)</strong> の高水準黒字を完全確保。
+                  手紙開封(600円)＋eKYC(600円)の計1,200円から、Stripe(43円)、SMS(12円)、eKYC(200円)を控除し、<strong className="font-serif font-bold text-xs text-emerald-950">1件あたり +945円 (粗利率 78.8%)</strong> の高水準黒字を完全確保。
                 </p>
               </div>
             </div>
@@ -1288,19 +1288,19 @@ export const AdminPaymentManagementBlock: React.FC = () => {
                     手紙開封手数料（600円）＋ eKYC審査手数料（600円）における外部ベンダー原価と純利益
                   </p>
                 </div>
-                <span className="px-3 py-1 bg-emerald-100 text-emerald-900 border border-emerald-300 rounded-full text-xs font-bold font-mono">
+                <span className="px-3 py-1 bg-emerald-100 text-emerald-900 border border-emerald-300 rounded-full text-xs font-serif font-bold">
                   粗利率 78.8%
                 </span>
               </div>
 
               {/* ビジュアル・マージンバー */}
               <div className="space-y-3">
-                <div className="h-7 w-full rounded-2xl overflow-hidden flex text-white font-bold text-[10px] font-mono shadow-inner">
+                <div className="h-7 w-full rounded-2xl overflow-hidden flex text-white font-bold text-[10px] font-sans shadow-inner">
                   <div style={{ width: '78.8%' }} className="bg-emerald-600 flex items-center justify-center" title="純利益: 945円 (78.8%)">
-                    粗利 +945円 (78.8%)
+                    粗利 <span className="font-serif font-bold text-xs ml-1">+945</span>円 (78.8%)
                   </div>
                   <div style={{ width: '16.7%' }} className="bg-sky-600 flex items-center justify-center" title="eKYC審査実費: 200円 (16.7%)">
-                    eKYC 200円
+                    eKYC <span className="font-serif font-bold text-xs ml-1">200</span>円
                   </div>
                   <div style={{ width: '3.6%' }} className="bg-purple-600 flex items-center justify-center" title="Stripe手数料: 43円 (3.6%)">
                   </div>
@@ -1311,23 +1311,23 @@ export const AdminPaymentManagementBlock: React.FC = () => {
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs pt-2">
                   <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200">
                     <span className="text-[10px] text-emerald-800 font-bold block">🟢 プラットフォーム粗利</span>
-                    <strong className="text-base font-mono text-emerald-900">+945 円</strong>
-                    <span className="text-[10px] text-emerald-700 block">マージン 78.8%</span>
+                    <strong className="text-base font-serif font-bold text-emerald-900">+945 <span className="text-xs font-normal font-sans text-emerald-700">円</span></strong>
+                    <span className="text-[10px] text-emerald-700 block font-sans">マージン <strong className="font-serif font-bold text-[11px]">78.8%</strong></span>
                   </div>
                   <div className="p-3 bg-sky-50 rounded-xl border border-sky-200">
                     <span className="text-[10px] text-sky-800 font-bold block">🔵 eKYC審査実費</span>
-                    <strong className="text-base font-mono text-sky-900">-200 円</strong>
-                    <span className="text-[10px] text-sky-700 block">TRUSTDOCK / LIQUID</span>
+                    <strong className="text-base font-serif font-bold text-sky-900">-200 <span className="text-xs font-normal font-sans text-sky-700">円</span></strong>
+                    <span className="text-[10px] text-sky-700 block font-sans">TRUSTDOCK / LIQUID</span>
                   </div>
                   <div className="p-3 bg-purple-50 rounded-xl border border-purple-200">
                     <span className="text-[10px] text-purple-800 font-bold block">🟣 Stripe決済手数料</span>
-                    <strong className="text-base font-mono text-purple-900">-43 円</strong>
-                    <span className="text-[10px] text-purple-700 block">手数料率 3.6%</span>
+                    <strong className="text-base font-serif font-bold text-purple-900">-43 <span className="text-xs font-normal font-sans text-purple-700">円</span></strong>
+                    <span className="text-[10px] text-purple-700 block font-sans">手数料率 <strong className="font-serif font-bold text-[11px]">3.6%</strong></span>
                   </div>
                   <div className="p-3 bg-amber-50 rounded-xl border border-amber-200">
                     <span className="text-[10px] text-amber-800 font-bold block">🟡 SMS認証送信費</span>
-                    <strong className="text-base font-mono text-amber-900">-12 円</strong>
-                    <span className="text-[10px] text-amber-700 block">1ユーザー1通</span>
+                    <strong className="text-base font-serif font-bold text-amber-900">-12 <span className="text-xs font-normal font-sans text-amber-700">円</span></strong>
+                    <span className="text-[10px] text-amber-700 block font-sans">1ユーザー1通</span>
                   </div>
                 </div>
               </div>
@@ -1354,13 +1354,13 @@ export const AdminPaymentManagementBlock: React.FC = () => {
                   <div key={idx} className="p-3 bg-slate-50 rounded-2xl border border-brand-border/70 space-y-2 text-xs">
                     <div className="flex items-center justify-between">
                       <strong className="text-slate-900 font-bold">{doc.docType}</strong>
-                      <span className="font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 text-[11px]">
+                      <span className="font-serif font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 text-xs">
                         合格率 {doc.approvedRate}%
                       </span>
                     </div>
-                    <div className="flex items-center justify-between text-[11px] text-slate-500">
-                      <span>平均所要時間: {doc.avgProcessTimeMin}分</span>
-                      <span>不合格損失: <strong className="text-rose-600">{formatYen(doc.failCostLoss)}</strong></span>
+                    <div className="flex items-center justify-between text-[11px] text-slate-500 font-sans">
+                      <span>平均所要時間: <strong className="font-serif font-bold text-xs text-slate-800">{doc.avgProcessTimeMin}</strong>分</span>
+                      <span>不合格損失: <strong className="text-rose-600 font-serif font-bold text-xs">{formatYen(doc.failCostLoss)}</strong></span>
                     </div>
                   </div>
                 ))}
