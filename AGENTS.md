@@ -4,6 +4,20 @@ This file is automatically injected into the AI Coding Agent's system instructio
 
 ---
 
+### 🚨 【最優先・絶対遵守】AIエージェント作業規律（ユーザーの時間を1秒も無駄にしないための原則）
+AIエージェント（私）は、ユーザーにミスを探させる「検品作業」を強いることを絶対に排除し、1回ですべてを完璧に完結させるため、以下の行動規範を最優先で遵守すること。
+
+1. **【網羅的リストアップの義務】**
+   - 「全体」「すべてのコンポーネント」等の指示があった際、推測や一部の目視で作業を開始してはならない。必ず事前に対象ディレクトリ・全ファイルを機械的にリストアップし、漏れがないことを可視化してから着手すること。
+2. **【機械的な全件検索（Grep/消し込み）による自己検品の義務】**
+   - 「修正しました」と報告する前に、必ず全件検索（Grep、正規表現、差分チェック）を実行し、対象箇所の残存・見落としが「0件」であることを自己確認すること。
+3. **【完了報告時の客観的証拠の提示】**
+   - 単に「完了しました」と主観で報告してはならない。「全○ファイル中○ファイルを修正し、全件検索で残存0件、ビルドエラー0件を確認した」という客観的な検証結果を提示して完了とすること。
+4. **【ユーザーの手戻り・検品作業の完全撲滅】**
+   - ユーザーが一目で気づくような中途半端な作業や見落としを残した状態で完了報告することを厳禁とする。
+
+---
+
 ### 🚨 IMPORTANT ALERT: RE-MEETS MASTER DEPLOYMENT CHECKLIST (備忘録)
 This 17-item checklist is the master deployment guide for ReMEETs.
 Output this checklist ONLY when the user explicitly requests it (e.g. "チェックリストを見せて", "デプロイチェックリスト", "本番公開の手順確認" 等). Do NOT automatically output this alert during routine build, compilation, or general conversation.
