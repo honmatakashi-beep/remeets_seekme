@@ -145,8 +145,14 @@ export const AdminModerationTab: React.FC<AdminModerationTabProps> = (props) => 
             <div>
               <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
                 <span>規約監視・AIリスク防衛センター</span>
-                <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-300">
-                  {moderationSubTab === 'queue' ? `保留キュー ${moderationQueue.length}件` : moderationSubTab === 'history' ? `対応履歴 ${moderationHistory.length}件` : `削除ログ ${deletedPostsArchive.length}件`}
+                <span className="px-2 py-0.5 rounded-full text-xs bg-slate-100 text-slate-700 border border-slate-300">
+                  {moderationSubTab === 'queue' ? (
+                    <>保留キュー <span className="font-serif font-bold">{moderationQueue.length}</span>件</>
+                  ) : moderationSubTab === 'history' ? (
+                    <>対応履歴 <span className="font-serif font-bold">{moderationHistory.length}</span>件</>
+                  ) : (
+                    <>削除ログ <span className="font-serif font-bold">{deletedPostsArchive.length}</span>件</>
+                  )}
                 </span>
               </h3>
               <p className="text-xs text-slate-500 mt-0.5">
@@ -256,7 +262,7 @@ export const AdminModerationTab: React.FC<AdminModerationTabProps> = (props) => 
           >
             <AlertTriangle size={14} className={moderationQueue.length > 0 ? "text-rose-500 animate-pulse" : ""} />
             <span>🤖 AI検知保留キュー (未対応)</span>
-            <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+            <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-serif font-bold ${
               moderationSubTab === 'queue' ? 'bg-brand-primary/10 text-brand-primary' : 'bg-slate-200 text-slate-600'
             }`}>
               {moderationQueue.length}
@@ -274,7 +280,7 @@ export const AdminModerationTab: React.FC<AdminModerationTabProps> = (props) => 
           >
             <History size={14} />
             <span>📋 AI処置対応履歴 (承認・削除・凍結)</span>
-            <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+            <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-serif font-bold ${
               moderationSubTab === 'history' ? 'bg-brand-primary/10 text-brand-primary' : 'bg-slate-200 text-slate-600'
             }`}>
               {moderationHistory.length}
@@ -292,7 +298,7 @@ export const AdminModerationTab: React.FC<AdminModerationTabProps> = (props) => 
           >
             <FileText size={14} />
             <span>📁 削除監査履歴ログ (証拠保全)</span>
-            <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+            <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-serif font-bold ${
               moderationSubTab === 'archive' ? 'bg-brand-primary/10 text-brand-primary' : 'bg-slate-200 text-slate-600'
             }`}>
               {deletedPostsArchive.length}
@@ -359,7 +365,7 @@ export const AdminModerationTab: React.FC<AdminModerationTabProps> = (props) => 
                                 }`}
                               >
                                 <span>{t.label}</span>
-                                <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                                <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-serif font-bold ${
                                   modReasonFilter === t.id ? 'bg-slate-900 text-white' : 'bg-slate-200 text-slate-700'
                                 }`}>
                                   {t.count}
@@ -421,29 +427,29 @@ export const AdminModerationTab: React.FC<AdminModerationTabProps> = (props) => 
                                 className="rounded border-rose-300 text-rose-600 focus:ring-rose-500 cursor-pointer"
                               />
                               <span className="text-xs font-bold text-rose-900">
-                                全選択 ({selectedModPostIds.length} / {moderationQueue.length}件 選択中)
+                                全選択 (<span className="font-serif font-bold">{selectedModPostIds.length}</span> / <span className="font-serif font-bold">{moderationQueue.length}</span>件 選択中)
                               </span>
                             </div>
 
                             <div className="flex items-center gap-2">
                               <button
                                 type="button"
-                                onClick={handleBatchApproveModPosts}
-                                disabled={selectedModPostIds.length === 0 || isBatchApprovingModPosts}
+                                onClick={() => handleBatchAction('approve')}
+                                disabled={selectedModPostIds.length === 0}
                                 className="flex items-center gap-1 px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all disabled:opacity-40 cursor-pointer shadow-xs"
                               >
-                                <CheckCircle2 size={13} />
-                                <span>選択一括承認・公開 ({selectedModPostIds.length})</span>
+                                <CheckCircle size={13} />
+                                <span>一括承認 (解除)</span>
                               </button>
 
                               <button
                                 type="button"
-                                onClick={handleBatchDeleteModPosts}
-                                disabled={selectedModPostIds.length === 0 || isBatchDeletingModPosts}
+                                onClick={() => handleBatchAction('delete')}
+                                disabled={selectedModPostIds.length === 0}
                                 className="flex items-center gap-1 px-3 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold transition-all disabled:opacity-40 cursor-pointer shadow-xs"
                               >
                                 <Trash2 size={13} />
-                                <span>選択一括削除 ({selectedModPostIds.length})</span>
+                                <span>一括削除</span>
                               </button>
                             </div>
                           </div>
@@ -454,93 +460,95 @@ export const AdminModerationTab: React.FC<AdminModerationTabProps> = (props) => 
                       <div className="overflow-x-auto">
                         {filtered.length === 0 ? (
                           <div className="p-12 text-center text-slate-400">
-                            <CheckCircle2 size={36} className="mx-auto text-emerald-500 mb-2" />
+                            <Bot size={36} className="mx-auto text-slate-300 mb-2" />
                             <p className="text-sm font-bold text-slate-700">保留中のAI検知ボトルはありません</p>
-                            <p className="text-xs text-slate-400 mt-1">すべての手紙がクリーンまたは対応完了済みです</p>
+                            <p className="text-xs text-slate-400 mt-1">すべての不審ボトルが処理済みか、検閲基準に合致しています</p>
                           </div>
                         ) : (
                           <>
-                            <table className="w-full text-left border-collapse">
+                            <table className="w-full text-left border-collapse font-sans">
                               <thead>
                                 <tr className="border-b border-slate-200/80 bg-slate-50/80 text-[11px] font-bold uppercase tracking-wider text-slate-600">
-                                  <th className="w-8 px-3 py-2.5"></th>
-                                  <th className="px-3 py-2.5 whitespace-nowrap">投函日時</th>
-                                  <th className="px-3 py-2.5 whitespace-nowrap">宛先 / 差出人</th>
-                                  <th className="px-3 py-2.5 whitespace-nowrap">投函アカウント</th>
-                                  <th className="px-3 py-2.5 whitespace-nowrap">AI自動判定理由</th>
-                                  <th className="px-3 py-2.5 whitespace-nowrap">手紙本文（要約）</th>
-                                  <th className="px-3 py-2.5 text-right whitespace-nowrap">即時アクション</th>
+                                  <th className="px-3 py-2.5 w-8">
+                                    <input
+                                      type="checkbox"
+                                      checked={paginated.length > 0 && paginated.every(p => selectedModPostIds.includes(p.id))}
+                                      onChange={(e) => {
+                                        if (e.target.checked) {
+                                          const pageIds = paginated.map(p => p.id);
+                                          setSelectedModPostIds(prev => Array.from(new Set([...prev, ...pageIds])));
+                                        } else {
+                                          const pageIds = paginated.map(p => p.id);
+                                          setSelectedModPostIds(prev => prev.filter(id => !pageIds.includes(id)));
+                                        }
+                                      }}
+                                      className="rounded border-slate-300 text-brand-primary focus:ring-brand-primary cursor-pointer"
+                                    />
+                                  </th>
+                                  <th className="px-3 py-2.5 whitespace-nowrap">検知日時</th>
+                                  <th className="px-3 py-2.5 whitespace-nowrap">対象ボトル / 宛先</th>
+                                  <th className="px-3 py-2.5 whitespace-nowrap">差出人 (投稿者)</th>
+                                  <th className="px-3 py-2.5 whitespace-nowrap">AI検知理由 / スコア</th>
+                                  <th className="px-3 py-2.5 whitespace-nowrap">本文抜粋プレビュー</th>
+                                  <th className="px-3 py-2.5 text-right whitespace-nowrap">処置アクション</th>
                                 </tr>
                               </thead>
                               <tbody className="divide-y divide-slate-100 text-xs">
-                                {paginated.map((post: any) => {
-                                  const isChecked = selectedModPostIds.includes(post.id);
-                                  const r = (post.ai_reason || '').toLowerCase();
-                                  const isStalking = r.includes('ストーカー') || r.includes('脅迫') || r.includes('住所') || r.includes('個人情報');
-
+                                {paginated.map(post => {
+                                  const isSelected = selectedModPostIds.includes(post.id);
                                   return (
-                                    <tr key={post.id} className="h-12 hover:bg-slate-50/70 transition-colors group">
+                                    <tr key={post.id} className={`h-12 transition-colors ${isSelected ? 'bg-rose-50/40' : 'hover:bg-slate-50/70'}`}>
                                       <td className="px-3 py-2">
                                         <input
                                           type="checkbox"
-                                          checked={isChecked}
+                                          checked={isSelected}
                                           onChange={(e) => {
-                                            if (e.target.checked) {
-                                              setSelectedModPostIds(prev => [...prev, post.id]);
-                                            } else {
-                                              setSelectedModPostIds(prev => prev.filter(id => id !== post.id));
-                                            }
+                                            if (e.target.checked) setSelectedModPostIds(prev => [...prev, post.id]);
+                                            else setSelectedModPostIds(prev => prev.filter(id => id !== post.id));
                                           }}
-                                          className="rounded border-slate-300 text-brand-primary focus:ring-brand-primary cursor-pointer"
+                                          className="rounded border-slate-300 text-rose-600 focus:ring-rose-500 cursor-pointer"
                                         />
                                       </td>
-
-                                      {/* 1. Created At */}
                                       <td className="px-3 py-2 whitespace-nowrap text-slate-500 font-mono text-[11px]">
-                                        {new Date(post.created_at).toLocaleString('ja-JP', {
-                                          month: '2-digit',
-                                          day: '2-digit',
-                                          hour: '2-digit',
-                                          minute: '2-digit'
-                                        })}
+                                        {post.created_at ? (
+                                          <div className="flex flex-col">
+                                            <span>{new Date(post.created_at).toLocaleDateString('ja-JP', { month: '2-digit', day: '2-digit' })}</span>
+                                            <span className="text-[10px] text-slate-400">{new Date(post.created_at).toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })}</span>
+                                          </div>
+                                        ) : '-'}
                                       </td>
-
-                                      {/* 2. Target & Searcher */}
                                       <td className="px-3 py-2 whitespace-nowrap">
-                                        <div className="flex items-center gap-1.5">
-                                          <span className="font-mono text-slate-400 text-[10px]">#{post.id}</span>
-                                          <span className="font-bold text-slate-900">{post.target_name || '無題'} 様宛</span>
-                                          <span className="text-slate-400 text-[10px]">({post.searcher_name || '差出人不明'})</span>
-                                        </div>
-                                      </td>
+                                        <div className="flex flex-col">
+                                          <div className="flex items-center gap-1.5">
+                                            <span className="font-mono text-slate-400 text-[10px]">#{post.id}</span>
+                                            <span className="font-bold text-slate-900">{post.target_name || '無題'} 様宛</span>
+                                          </div>
+                                          <div className="flex items-center gap-1 mt-0.5">
+                                            {post.user_id ? (
+                                              <button
+                                                type="button"
+                                                onClick={() => {
+                                                  if (props.handleViewUser) props.handleViewUser({ id: post.user_id, username: post.author_username });
+                                                  if (props.setActiveTab) props.setActiveTab('users');
+                                                }}
+                                                className="font-bold text-slate-700 hover:text-brand-primary hover:underline cursor-pointer text-[10px]"
+                                              >
+                                                @{post.author_username || `User #${post.user_id}`}
+                                              </button>
+                                            ) : (
+                                              <span className="text-slate-400 italic text-[10px]">Guest (未登録)</span>
+                                            )}
 
-                                      {/* 3. Author Profile */}
-                                      <td className="px-3 py-2 whitespace-nowrap">
-                                        <div className="flex items-center gap-1.5">
-                                          {post.user_id ? (
-                                            <button
-                                              type="button"
-                                              onClick={() => {
-                                                handleViewUser({ id: post.user_id, username: post.author_username });
-                                                setActiveTab('users');
-                                              }}
-                                              className="font-bold text-slate-700 hover:text-brand-primary hover:underline cursor-pointer"
-                                            >
-                                              @{post.author_username || `User #${post.user_id}`}
-                                            </button>
-                                          ) : (
-                                            <span className="text-slate-400 italic">Guest (未登録)</span>
-                                          )}
-
-                                          {post.user_id && (
-                                            <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded border ${
-                                              post.author_is_blocked === 1
-                                                ? 'bg-rose-100 text-rose-800 border-rose-300'
-                                                : 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                                            }`}>
-                                              {post.author_is_blocked === 1 ? '🚨 凍結中' : '通常'}
-                                            </span>
-                                          )}
+                                            {post.user_id && (
+                                              <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded border ${
+                                                post.author_is_blocked === 1
+                                                  ? 'bg-rose-100 text-rose-800 border-rose-300'
+                                                  : 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                              }`}>
+                                                {post.author_is_blocked === 1 ? '🚨 凍結中' : '通常'}
+                                              </span>
+                                            )}
+                                          </div>
                                         </div>
                                       </td>
 
@@ -624,9 +632,9 @@ export const AdminModerationTab: React.FC<AdminModerationTabProps> = (props) => 
                             {/* Pagination Bar */}
                             <div className="p-3.5 border-t border-slate-200/80 bg-slate-50/50 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
                               <div className="text-slate-500 font-medium">
-                                全 <span className="font-bold text-slate-800">{filtered.length}</span> 件中{' '}
-                                <span className="font-bold text-slate-800">{(currentPage - 1) * modPerPage + 1}</span> 〜{' '}
-                                <span className="font-bold text-slate-800">{Math.min(currentPage * modPerPage, filtered.length)}</span> 件を表示
+                                全 <span className="font-serif font-bold text-slate-800">{filtered.length}</span> 件中{' '}
+                                <span className="font-serif font-bold text-slate-800">{(currentPage - 1) * modPerPage + 1}</span> 〜{' '}
+                                <span className="font-serif font-bold text-slate-800">{Math.min(currentPage * modPerPage, filtered.length)}</span> 件を表示
                               </div>
 
                               {totalPages > 1 && (
@@ -648,7 +656,7 @@ export const AdminModerationTab: React.FC<AdminModerationTabProps> = (props) => 
                                     &lsaquo;
                                   </button>
                                   
-                                  <span className="px-3 py-1 bg-slate-900 text-white rounded-lg font-bold">
+                                  <span className="px-3 py-1 bg-slate-900 text-white rounded-lg font-serif font-bold">
                                     {currentPage} / {totalPages}
                                   </span>
 
@@ -748,7 +756,7 @@ export const AdminModerationTab: React.FC<AdminModerationTabProps> = (props) => 
                                 }`}
                               >
                                 <span>{t.label}</span>
-                                <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                                <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-serif font-bold ${
                                   historyActionFilter === t.id ? 'bg-slate-900 text-white' : 'bg-slate-200 text-slate-700'
                                 }`}>
                                   {t.count}
@@ -934,9 +942,9 @@ export const AdminModerationTab: React.FC<AdminModerationTabProps> = (props) => 
                             {/* Pagination Bar */}
                             <div className="p-3.5 border-t border-slate-200/80 bg-slate-50/50 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
                               <div className="text-slate-500 font-medium">
-                                全 <span className="font-bold text-slate-800">{filtered.length}</span> 件中{' '}
-                                <span className="font-bold text-slate-800">{(currentPage - 1) * historyPerPage + 1}</span> 〜{' '}
-                                <span className="font-bold text-slate-800">{Math.min(currentPage * historyPerPage, filtered.length)}</span> 件を表示
+                                全 <span className="font-serif font-bold text-slate-800">{filtered.length}</span> 件中{' '}
+                                <span className="font-serif font-bold text-slate-800">{(currentPage - 1) * historyPerPage + 1}</span> 〜{' '}
+                                <span className="font-serif font-bold text-slate-800">{Math.min(currentPage * historyPerPage, filtered.length)}</span> 件を表示
                               </div>
 
                               {totalPages > 1 && (
@@ -958,7 +966,7 @@ export const AdminModerationTab: React.FC<AdminModerationTabProps> = (props) => 
                                     &lsaquo;
                                   </button>
                                   
-                                  <span className="px-3 py-1 bg-slate-900 text-white rounded-lg font-bold">
+                                  <span className="px-3 py-1 bg-slate-900 text-white rounded-lg font-serif font-bold">
                                     {currentPage} / {totalPages}
                                   </span>
 
@@ -1014,7 +1022,7 @@ export const AdminModerationTab: React.FC<AdminModerationTabProps> = (props) => 
                       <div className="p-4 border-b border-slate-200/80 bg-slate-50/30 space-y-3">
                         <div className="flex items-center justify-between flex-wrap gap-2">
                           <div className="text-xs font-bold text-slate-600">
-                            物理削除・保全ログアーカイブ ({deletedPostsArchive.length}件)
+                            物理削除・保全ログアーカイブ (<span className="font-serif font-bold">{deletedPostsArchive.length}</span>件)
                           </div>
 
                           <div className="flex items-center gap-2">
@@ -1208,9 +1216,9 @@ export const AdminModerationTab: React.FC<AdminModerationTabProps> = (props) => 
                             {/* Pagination Bar */}
                             <div className="p-3.5 border-t border-slate-200/80 bg-slate-50/50 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
                               <div className="text-slate-500 font-medium">
-                                全 <span className="font-bold text-slate-800">{filtered.length}</span> 件中{' '}
-                                <span className="font-bold text-slate-800">{(currentPage - 1) * archivePerPage + 1}</span> 〜{' '}
-                                <span className="font-bold text-slate-800">{Math.min(currentPage * archivePerPage, filtered.length)}</span> 件を表示
+                                全 <span className="font-serif font-bold text-slate-800">{filtered.length}</span> 件中{' '}
+                                <span className="font-serif font-bold text-slate-800">{(currentPage - 1) * archivePerPage + 1}</span> 〜{' '}
+                                <span className="font-serif font-bold text-slate-800">{Math.min(currentPage * archivePerPage, filtered.length)}</span> 件を表示
                               </div>
 
                               {totalPages > 1 && (
@@ -1232,7 +1240,7 @@ export const AdminModerationTab: React.FC<AdminModerationTabProps> = (props) => 
                                     &lsaquo;
                                   </button>
                                   
-                                  <span className="px-3 py-1 bg-slate-900 text-white rounded-lg font-bold">
+                                  <span className="px-3 py-1 bg-slate-900 text-white rounded-lg font-serif font-bold">
                                     {currentPage} / {totalPages}
                                   </span>
 

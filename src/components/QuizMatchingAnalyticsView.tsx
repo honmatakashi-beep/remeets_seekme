@@ -1222,8 +1222,8 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
                     <span className="font-medium text-neutral-800">{item.name}</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="font-mono font-bold text-neutral-900">{item.count} 回</span>
-                    <span className="px-2 py-0.5 bg-white rounded-md text-[11px] font-bold text-neutral-600 border border-neutral-200">
+                    <span className="font-serif font-bold text-neutral-900">{item.count} 回</span>
+                    <span className="px-2 py-0.5 bg-white rounded-md text-[11px] font-serif font-bold text-neutral-600 border border-neutral-200">
                       {item.percentage}%
                     </span>
                   </div>
@@ -1331,8 +1331,8 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
                 <div key={idx} className="flex items-center justify-between p-2 rounded-xl bg-neutral-50 border border-neutral-100">
                   <span className="font-medium text-neutral-800">{cat.category}</span>
                   <div className="flex items-center gap-3">
-                    <span className="text-neutral-500 text-[11px]">{cat.resolved} 組 / {cat.total} 通</span>
-                    <span className="font-mono font-bold text-emerald-700">{cat.rate}%</span>
+                    <span className="text-neutral-500 text-[11px]"><span className="font-serif font-bold">{cat.resolved}</span> 組 / <span className="font-serif font-bold">{cat.total}</span> 通</span>
+                    <span className="font-serif font-bold text-emerald-700">{cat.rate}%</span>
                   </div>
                 </div>
               ))}

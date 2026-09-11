@@ -498,8 +498,8 @@ export const AdminRbacView: React.FC<AdminRbacViewProps> = ({ token, currentRole
             <div>
               <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
                 <span>管理スタッフ ＆ 役職ロール一覧</span>
-                <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-300">
-                  全 {staffList.length} 名
+                <span className="px-2 py-0.5 rounded-full text-xs bg-slate-100 text-slate-700 border border-slate-300">
+                  全 <span className="font-serif font-bold">{staffList.length}</span> 名
                 </span>
               </h3>
               <p className="text-xs text-slate-500 mt-0.5">
@@ -600,7 +600,7 @@ export const AdminRbacView: React.FC<AdminRbacViewProps> = ({ token, currentRole
             {candidateResults.length > 0 && (
               <div className="p-3 bg-white rounded-xl border border-indigo-200 space-y-2 animate-in fade-in">
                 <div className="text-[11px] font-bold text-slate-500 flex items-center justify-between">
-                  <span>検索結果 ({candidateResults.length}件):</span>
+                  <span>検索結果 (<span className="font-serif font-bold">{candidateResults.length}</span>件):</span>
                   <button 
                     type="button"
                     onClick={() => setCandidateResults([])}
@@ -669,7 +669,7 @@ export const AdminRbacView: React.FC<AdminRbacViewProps> = ({ token, currentRole
                   }`}
                 >
                   <span>{t.label}</span>
-                  <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                  <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-serif font-bold ${
                     staffRoleFilter === t.id ? 'bg-slate-900 text-white' : 'bg-slate-200 text-slate-700'
                   }`}>
                     {t.count}
@@ -838,9 +838,9 @@ export const AdminRbacView: React.FC<AdminRbacViewProps> = ({ token, currentRole
                 {/* Pagination Bar */}
                 <div className="p-3.5 border-t border-slate-200/80 bg-slate-50/50 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
                   <div className="text-slate-500 font-medium">
-                    全 <span className="font-bold text-slate-800">{filtered.length}</span> 名中{' '}
-                    <span className="font-bold text-slate-800">{(currentPage - 1) * staffPerPage + 1}</span> 〜{' '}
-                    <span className="font-bold text-slate-800">{Math.min(currentPage * staffPerPage, filtered.length)}</span> 名を表示
+                    全 <span className="font-serif font-bold text-slate-800">{filtered.length}</span> 名中{' '}
+                    <span className="font-serif font-bold text-slate-800">{(currentPage - 1) * staffPerPage + 1}</span> 〜{' '}
+                    <span className="font-serif font-bold text-slate-800">{Math.min(currentPage * staffPerPage, filtered.length)}</span> 名を表示
                   </div>
 
                   {totalPages > 1 && (
@@ -862,7 +862,7 @@ export const AdminRbacView: React.FC<AdminRbacViewProps> = ({ token, currentRole
                         &lsaquo;
                       </button>
                       
-                      <span className="px-3 py-1 bg-slate-900 text-white rounded-lg font-bold">
+                      <span className="px-3 py-1 bg-slate-900 text-white rounded-lg font-serif font-bold">
                         {currentPage} / {totalPages}
                       </span>
 

@@ -251,8 +251,8 @@ export const AdminNgWordsTab: React.FC<AdminNgWordsTabProps> = (props) => {
                     <div>
                       <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
                         <span>NGワード ＆ 禁止表現辞書一覧</span>
-                        <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-300">
-                          全 {ngWords.length} 件
+                        <span className="px-2 py-0.5 rounded-full text-xs bg-slate-100 text-slate-700 border border-slate-300">
+                          全 <span className="font-serif font-bold">{ngWords.length}</span> 件
                         </span>
                       </h3>
                       <p className="text-xs text-slate-500 mt-0.5">
@@ -367,7 +367,7 @@ export const AdminNgWordsTab: React.FC<AdminNgWordsTabProps> = (props) => {
                               }`}
                             >
                               <span>{t.label}</span>
-                              <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                              <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-serif font-bold ${
                                 ngWordTypeFilter === t.id ? 'bg-slate-900 text-white' : 'bg-slate-200 text-slate-700'
                               }`}>
                                 {t.count}
@@ -431,7 +431,7 @@ export const AdminNgWordsTab: React.FC<AdminNgWordsTabProps> = (props) => {
                           className="rounded border-slate-300 text-brand-primary focus:ring-brand-primary cursor-pointer"
                         />
                         <span className="text-xs font-bold text-slate-800">
-                          全選択 ({selectedNgWordIds.length} / {ngWords.length}件 選択中)
+                          全選択 (<span className="font-serif font-bold">{selectedNgWordIds.length}</span> / <span className="font-serif font-bold">{ngWords.length}</span>件 選択中)
                         </span>
                       </div>
 
@@ -584,9 +584,9 @@ export const AdminNgWordsTab: React.FC<AdminNgWordsTabProps> = (props) => {
                         {/* Pagination Bar */}
                         <div className="p-3.5 border-t border-slate-200/80 bg-slate-50/50 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
                           <div className="text-slate-500 font-medium">
-                            全 <span className="font-bold text-slate-800">{filtered.length}</span> 件中{' '}
-                            <span className="font-bold text-slate-800">{(currentPage - 1) * ngWordPerPage + 1}</span> 〜{' '}
-                            <span className="font-bold text-slate-800">{Math.min(currentPage * ngWordPerPage, filtered.length)}</span> 件を表示
+                            全 <span className="font-serif font-bold text-slate-800">{filtered.length}</span> 件中{' '}
+                            <span className="font-serif font-bold text-slate-800">{(currentPage - 1) * ngWordPerPage + 1}</span> 〜{' '}
+                            <span className="font-serif font-bold text-slate-800">{Math.min(currentPage * ngWordPerPage, filtered.length)}</span> 件を表示
                           </div>
 
                           {totalPages > 1 && (
@@ -608,7 +608,7 @@ export const AdminNgWordsTab: React.FC<AdminNgWordsTabProps> = (props) => {
                                 &lsaquo;
                               </button>
                               
-                              <span className="px-3 py-1 bg-slate-900 text-white rounded-lg font-bold">
+                              <span className="px-3 py-1 bg-slate-900 text-white rounded-lg font-serif font-bold">
                                 {currentPage} / {totalPages}
                               </span>
 

@@ -4772,11 +4772,11 @@ export const AdminDashboard = () => {
                             </div>
                             <div>
                               <span className="text-emerald-700/70 block text-[10px]">生体顔照合スコア</span>
-                              <span className="font-mono font-bold text-emerald-900">99.4% (閾値85%クリア)</span>
+                              <span className="font-serif font-bold text-emerald-900">99.4% (閾値85%クリア)</span>
                             </div>
                             <div>
                               <span className="text-emerald-700/70 block text-[10px]">OCR 文字一致率</span>
-                              <span className="font-mono font-bold text-emerald-900">99.2% (完全一致)</span>
+                              <span className="font-serif font-bold text-emerald-900">99.2% (完全一致)</span>
                             </div>
                           </div>
                           <div className="pt-1.5 border-t border-emerald-200/60 text-[10px] text-emerald-800/80 font-mono flex items-center justify-between">
@@ -5365,7 +5365,7 @@ export const AdminDashboard = () => {
                             </span>
                           )}
                         </div>
-                        <span className="text-[10px] font-mono opacity-60">優先スコア: {classification.priorityScore}/3</span>
+                        <span className="text-[10px] font-serif font-bold opacity-80">優先スコア: {classification.priorityScore}/3</span>
                       </div>
 
                       <p className="text-xs leading-relaxed opacity-90 font-sans">

@@ -713,9 +713,9 @@ export const AdminLogsView: React.FC<AdminLogsViewProps> = ({
         {/* Filter summary status */}
         <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600 pt-1">
           <div>
-            該当件数: <strong className="text-slate-900">{totalItems.toLocaleString()}</strong> 件
+            該当件数: <strong className="text-slate-900 font-serif font-bold">{totalItems.toLocaleString()}</strong> 件
             {searchQuery && (
-              <span className="ml-2 px-2 py-0.5 rounded bg-amber-50 text-amber-900 border border-amber-200 font-mono">
+              <span className="ml-2 px-2 py-0.5 rounded bg-amber-50 text-amber-900 border border-amber-200 font-sans font-bold">
                 検索: "{searchQuery}"
               </span>
             )}
@@ -790,7 +790,7 @@ export const AdminLogsView: React.FC<AdminLogsViewProps> = ({
                       )}
 
                       {/* Timestamp */}
-                      <td className="px-4 py-2.5 text-slate-600 font-mono whitespace-nowrap">
+                      <td className="px-4 py-2.5 text-slate-600 font-serif font-bold whitespace-nowrap">
                         {new Date(timestamp).toLocaleString()}
                       </td>
 
@@ -818,7 +818,7 @@ export const AdminLogsView: React.FC<AdminLogsViewProps> = ({
                       </td>
 
                       {/* IP Address */}
-                      <td className="px-4 py-2.5 font-mono text-slate-700 whitespace-nowrap">
+                      <td className="px-4 py-2.5 font-serif font-bold text-slate-700 whitespace-nowrap">
                         <button
                           onClick={() => handleFilterByIp(ip)}
                           className="px-2 py-0.5 rounded bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 transition-colors cursor-pointer text-[11px]"
@@ -848,9 +848,9 @@ export const AdminLogsView: React.FC<AdminLogsViewProps> = ({
         {/* 5. Pagination Bar */}
         <div className="p-4 border-t border-slate-200 bg-slate-50 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
           <div className="text-slate-600">
-            全 <strong className="text-slate-900">{totalItems.toLocaleString()}</strong> 件中{' '}
-            <strong className="text-slate-900">{totalItems > 0 ? (safeCurrentPage - 1) * pageSize + 1 : 0}</strong> -{' '}
-            <strong className="text-slate-900">{Math.min(safeCurrentPage * pageSize, totalItems)}</strong> 件を表示
+            全 <strong className="text-slate-900 font-serif font-bold">{totalItems.toLocaleString()}</strong> 件中{' '}
+            <strong className="text-slate-900 font-serif font-bold">{totalItems > 0 ? (safeCurrentPage - 1) * pageSize + 1 : 0}</strong> -{' '}
+            <strong className="text-slate-900 font-serif font-bold">{Math.min(safeCurrentPage * pageSize, totalItems)}</strong> 件を表示
           </div>
 
           <div className="flex items-center gap-2">
@@ -862,7 +862,7 @@ export const AdminLogsView: React.FC<AdminLogsViewProps> = ({
               <ChevronLeft size={14} />
               前へ
             </button>
-            <div className="px-3 py-1 font-bold text-slate-800">
+            <div className="px-3 py-1 font-serif font-bold text-slate-800">
               {safeCurrentPage} / {totalPages}
             </div>
             <button
@@ -909,7 +909,7 @@ export const AdminLogsView: React.FC<AdminLogsViewProps> = ({
                 <div className="space-y-3 text-xs bg-slate-50 p-4 rounded-2xl border border-slate-200">
                   <div>
                     <span className="font-bold text-slate-600 block">発生日時 (JST):</span>
-                    <span className="font-mono text-slate-900 font-bold">
+                    <span className="font-serif text-slate-900 font-bold">
                       {new Date(selectedLogDetail.timestamp || selectedLogDetail.created_at).toLocaleString()}
                     </span>
                   </div>
@@ -930,14 +930,14 @@ export const AdminLogsView: React.FC<AdminLogsViewProps> = ({
 
                   <div>
                     <span className="font-bold text-slate-600 block">接続元 IPアドレス:</span>
-                    <span className="font-mono text-indigo-700 font-bold">
+                    <span className="font-serif text-indigo-700 font-bold">
                       {selectedLogDetail.ip || '127.0.0.1'}
                     </span>
                   </div>
 
                   <div>
                     <span className="font-bold text-slate-600 block mb-1">詳細内容 (Details / Path):</span>
-                    <div className="bg-white p-3 rounded-xl border border-slate-200 font-mono text-slate-800 whitespace-pre-wrap max-h-48 overflow-y-auto leading-relaxed">
+                    <div className="bg-white p-3 rounded-xl border border-slate-200 font-sans text-slate-800 whitespace-pre-wrap max-h-48 overflow-y-auto leading-relaxed">
                       {selectedLogDetail.content || selectedLogDetail.details || selectedLogDetail.path || 'なし'}
                     </div>
                   </div>

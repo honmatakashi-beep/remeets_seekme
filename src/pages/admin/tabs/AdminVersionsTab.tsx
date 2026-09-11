@@ -355,7 +355,7 @@ export const AdminVersionsTab: React.FC<AdminVersionsTabProps> = (props) => {
                           )}
                         >
                           <span className="whitespace-nowrap">すべて</span>
-                          <span className="px-1.5 py-0.2 rounded-full bg-black/10 text-[10px] font-mono">{totalCount}</span>
+                          <span className="px-1.5 py-0.2 rounded-full bg-black/10 text-[10px] font-serif font-bold">{totalCount}</span>
                         </button>
                         <button
                           onClick={() => { setVersionTypeFilter('manual'); setVersionCurrentPage(1); }}
@@ -367,7 +367,7 @@ export const AdminVersionsTab: React.FC<AdminVersionsTabProps> = (props) => {
                           )}
                         >
                           <span className="whitespace-nowrap">📸 手動スナップショット</span>
-                          <span className="px-1.5 py-0.2 rounded-full bg-black/10 text-[10px] font-mono">{manualCount}</span>
+                          <span className="px-1.5 py-0.2 rounded-full bg-black/10 text-[10px] font-serif font-bold">{manualCount}</span>
                         </button>
                         <button
                           onClick={() => { setVersionTypeFilter('pre_restore'); setVersionCurrentPage(1); }}
@@ -380,7 +380,7 @@ export const AdminVersionsTab: React.FC<AdminVersionsTabProps> = (props) => {
                         >
                           <ShieldCheck size={12} className="shrink-0" />
                           <span className="whitespace-nowrap">復元前自動退避</span>
-                          <span className="px-1.5 py-0.2 rounded-full bg-purple-200 text-purple-800 text-[10px] font-mono font-bold">{preRestoreCount}</span>
+                          <span className="px-1.5 py-0.2 rounded-full bg-purple-200 text-purple-800 text-[10px] font-serif font-bold">{preRestoreCount}</span>
                         </button>
                       </div>
 
@@ -432,7 +432,7 @@ export const AdminVersionsTab: React.FC<AdminVersionsTabProps> = (props) => {
                       className="p-3 bg-brand-dark text-white rounded-2xl shadow-lg flex flex-wrap items-center justify-between gap-3 border border-brand-border/20"
                     >
                       <div className="flex items-center gap-2 whitespace-nowrap shrink-0">
-                        <span className="px-2.5 py-1 rounded-lg bg-white/20 text-xs font-mono font-bold whitespace-nowrap">
+                        <span className="px-2.5 py-1 rounded-lg bg-white/20 text-xs font-serif font-bold whitespace-nowrap">
                           {selectedVersionIds.length} 件選択中
                         </span>
                         <span className="text-xs text-white/70 hidden sm:inline whitespace-nowrap">
@@ -624,8 +624,8 @@ export const AdminVersionsTab: React.FC<AdminVersionsTabProps> = (props) => {
                     {/* Pagination Bar */}
                     {filteredVersions.length > 0 && (
                       <div className="p-3 bg-brand-light/40 border-t border-brand-border flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-brand-dark/70">
-                        <div className="font-mono text-[11px]">
-                          全 <strong className="text-brand-dark font-bold">{filteredVersions.length}</strong> 件中 {startIndex + 1} - {Math.min(startIndex + versionItemsPerPage, filteredVersions.length)} 件を表示
+                        <div className="font-serif text-[11px]">
+                          全 <strong className="text-brand-dark font-serif font-bold">{filteredVersions.length}</strong> 件中 <span className="font-serif font-bold">{startIndex + 1}</span> - <span className="font-serif font-bold">{Math.min(startIndex + versionItemsPerPage, filteredVersions.length)}</span> 件を表示
                         </div>
 
                         {totalPages > 1 && (
@@ -637,7 +637,7 @@ export const AdminVersionsTab: React.FC<AdminVersionsTabProps> = (props) => {
                             >
                               前へ
                             </button>
-                            <div className="flex items-center gap-1 font-mono font-bold text-[11px] px-2">
+                            <div className="flex items-center gap-1 font-serif font-bold text-[11px] px-2">
                               <span>{safeCurrentPage}</span>
                               <span className="opacity-40">/</span>
                               <span>{totalPages}</span>

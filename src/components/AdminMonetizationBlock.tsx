@@ -328,7 +328,7 @@ eKYC身元認証費,${totalEkycCost},円,単価 ${ekycCost}円
           </div>
           <h3 className="text-xl md:text-2xl font-bold font-serif text-black flex items-center gap-2">
             <span>課金モデル収益シミュレーター</span>
-            <span className="text-xs font-mono font-normal px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-800 border border-teal-200">
+            <span className="text-xs font-serif font-bold px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-800 border border-teal-200">
               Ver 2.5 リアルタイム試算
             </span>
           </h3>
@@ -380,8 +380,8 @@ eKYC身元認証費,${totalEkycCost},円,単価 ${ekycCost}円
             <div className="text-xs font-bold text-black flex items-center gap-1">
               <span>🌱 ① ローンチ初期</span>
             </div>
-            <div className="text-[11px] text-black/60 mt-0.5">MAU 1万人 / 開通 100件</div>
-            <div className="text-[11px] font-mono font-bold text-teal-800 mt-1">月商 6 万円 / 純利 +2.2 万円</div>
+            <div className="text-[11px] text-black/60 mt-0.5">MAU <span className="font-serif font-bold text-black">10,000</span>人 / 開通 <span className="font-serif font-bold text-black">100</span>件</div>
+            <div className="text-[11px] font-serif font-bold text-teal-800 mt-1">月商 6 万円 / 純利 +2.2 万円</div>
           </button>
 
           <button
@@ -396,8 +396,8 @@ eKYC身元認証費,${totalEkycCost},円,単価 ${ekycCost}円
             <div className="text-xs font-bold text-black flex items-center gap-1">
               <span>🚀 ② 安定成長期</span>
             </div>
-            <div className="text-[11px] text-black/60 mt-0.5">MAU 10万人 / 開通 1,000件</div>
-            <div className="text-[11px] font-mono font-bold text-teal-800 mt-1">月商 60 万円 / 純利 +36.6 万円</div>
+            <div className="text-[11px] text-black/60 mt-0.5">MAU <span className="font-serif font-bold text-black">100,000</span>人 / 開通 <span className="font-serif font-bold text-black">1,000</span>件</div>
+            <div className="text-[11px] font-serif font-bold text-teal-800 mt-1">月商 60 万円 / 純利 +36.6 万円</div>
           </button>
 
           <button
@@ -412,8 +412,8 @@ eKYC身元認証費,${totalEkycCost},円,単価 ${ekycCost}円
             <div className="text-xs font-bold text-black flex items-center gap-1">
               <span>🔥 ③ メディアバズ期</span>
             </div>
-            <div className="text-[11px] text-black/60 mt-0.5">MAU 50万人 / 開通 5,500件</div>
-            <div className="text-[11px] font-mono font-bold text-teal-800 mt-1">月商 300 万円 / 純利 +184 万円</div>
+            <div className="text-[11px] text-black/60 mt-0.5">MAU <span className="font-serif font-bold text-black">500,000</span>人 / 開通 <span className="font-serif font-bold text-black">5,500</span>件</div>
+            <div className="text-[11px] font-serif font-bold text-teal-800 mt-1">月商 300 万円 / 純利 +184 万円</div>
           </button>
 
           <button
@@ -428,8 +428,8 @@ eKYC身元認証費,${totalEkycCost},円,単価 ${ekycCost}円
             <div className="text-xs font-bold text-black flex items-center gap-1">
               <span>🏆 ④ 全国規模期</span>
             </div>
-            <div className="text-[11px] text-black/60 mt-0.5">MAU 150万人 / 開通 1.8万件</div>
-            <div className="text-[11px] font-mono font-bold text-teal-800 mt-1">月商 900 万円 / 純利 +562 万円</div>
+            <div className="text-[11px] text-black/60 mt-0.5">MAU <span className="font-serif font-bold text-black">1,500,000</span>人 / 開通 <span className="font-serif font-bold text-black">18,000</span>件</div>
+            <div className="text-[11px] font-serif font-bold text-teal-800 mt-1">月商 900 万円 / 純利 +562 万円</div>
           </button>
         </div>
       </div>
@@ -542,7 +542,7 @@ eKYC身元認証費,${totalEkycCost},円,単価 ${ekycCost}円
           <div className="space-y-2">
             <div className="flex justify-between text-xs text-black/60">
               <span>MAU拡大に伴う「売上高」「総原価」「営業純利益」の成長カーブ（単位: 万円/月）</span>
-              <span className="font-mono text-teal-800 font-bold">現在値: MAU {mau.toLocaleString()}人 ➔ 純利 {formatYen(netMonthlyProfit)}</span>
+              <span className="font-serif text-teal-800 font-bold">現在値: MAU {mau.toLocaleString()}人 ➔ 純利 {formatYen(netMonthlyProfit)}</span>
             </div>
             <div className="h-64 w-full">
               <ResponsiveContainer width="100%" height="100%">
@@ -609,7 +609,7 @@ eKYC身元認証費,${totalEkycCost},円,単価 ${ekycCost}円
                     <span className="font-medium text-black">{item.name}</span>
                   </div>
                   <div className="text-right">
-                    <span className="font-mono font-bold text-black">{formatRawYen(item.value)}</span>
+                    <span className="font-serif font-bold text-black">{formatRawYen(item.value)}</span>
                     <span className="text-[10px] text-black/50 ml-1.5">
                       ({grossRevenue > 0 ? ((item.value / grossRevenue) * 100).toFixed(1) : 0}%)
                     </span>
@@ -703,15 +703,15 @@ eKYC身元認証費,${totalEkycCost},円,単価 ${ekycCost}円
               <div className="space-y-1 text-black/70 pl-2">
                 <div className="flex justify-between py-0.5 text-[11px]">
                   <span>├ 💳 Stripe決済手数料 (3.6%):</span>
-                  <span className="text-rose-600 font-mono">-{formatRawYen(Math.round(coreRevenue * 0.036))}</span>
+                  <span className="text-rose-600 font-serif font-bold">-{formatRawYen(Math.round(coreRevenue * 0.036))}</span>
                 </div>
                 <div className="flex justify-between py-0.5 text-[11px]">
                   <span>├ 📱 SMS電話番号認証費 ({openAttempts}人 × {smsCost}円):</span>
-                  <span className="text-rose-600 font-mono">-{formatRawYen(Math.round(openAttempts * smsCost))}</span>
+                  <span className="text-rose-600 font-serif font-bold">-{formatRawYen(Math.round(openAttempts * smsCost))}</span>
                 </div>
                 <div className="flex justify-between py-0.5 text-[11px]">
                   <span>└ 🪪 eKYC本人確認費 ({openAttempts}人 × {ekycCost}円):</span>
-                  <span className="text-rose-600 font-mono">-{formatRawYen(openEkycCostTotal)}</span>
+                  <span className="text-rose-600 font-serif font-bold">-{formatRawYen(openEkycCostTotal)}</span>
                 </div>
               </div>
 
@@ -719,7 +719,7 @@ eKYC身元認証費,${totalEkycCost},円,単価 ${ekycCost}円
                 <span className="text-emerald-950">✨ このアクションの純利益:</span>
                 <div className="text-right">
                   <span className="text-emerald-900 font-serif text-base">+{formatRawYen(openActionGrossProfit)}</span>
-                  <span className="text-[10px] text-emerald-800 block font-normal">利益率: {openActionMargin}%</span>
+                  <span className="text-[10px] text-emerald-800 block font-normal">利益率: <span className="font-serif font-bold">{openActionMargin}%</span></span>
                 </div>
               </div>
             </div>
@@ -750,7 +750,7 @@ eKYC身元認証費,${totalEkycCost},円,単価 ${ekycCost}円
               </div>
               <div className="flex justify-between">
                 <span className="text-black/60">eKYCベンダー原価単価:</span>
-                <span className="font-medium text-black/80">{ekycCost} 円 / 件</span>
+                <span className="font-bold text-black font-serif">{ekycCost} 円 / 件</span>
               </div>
             </div>
 
@@ -763,7 +763,7 @@ eKYC身元認証費,${totalEkycCost},円,単価 ${ekycCost}円
 
               <div className="flex justify-between py-1 text-black/70">
                 <span>🪪 eKYC本人認証原価 ({voluntaryEkycUsers}人 × {ekycCost}円):</span>
-                <span className="text-rose-600 font-mono">-{formatRawYen(voluntaryEkycCostTotal)}</span>
+                <span className="text-rose-600 font-serif font-bold">-{formatRawYen(voluntaryEkycCostTotal)}</span>
               </div>
 
               <div className="flex justify-between pt-2 border-t border-brand-border font-bold text-sm bg-zinc-100/70 p-2.5 rounded-xl">
@@ -788,7 +788,7 @@ eKYC身元認証費,${totalEkycCost},円,単価 ${ekycCost}円
               追加マネタイズ・アップサイド機能のON/OFFシミュレーション
             </h4>
           </div>
-          <span className="text-[11px] font-mono font-bold text-teal-800">
+          <span className="text-[11px] font-serif font-bold text-teal-800">
             追加収益合計: +{formatYen(totalUpsideRevenue)} / 月
           </span>
         </div>
@@ -811,8 +811,8 @@ eKYC身元認証費,${totalEkycCost},円,単価 ${ekycCost}円
             {optPremiumBottle && (
               <div className="space-y-1.5 pt-2 border-t border-zinc-100 text-xs">
                 <div className="flex justify-between text-[11px]">
-                  <span className="text-black/60">単価: {optPremiumBottleFee}円 / 利用率: {optPremiumBottleRate}%</span>
-                  <span className="font-mono font-bold text-teal-800">+{formatYen(premiumBottleRevenue)}</span>
+                  <span className="text-black/60">単価: <span className="font-serif font-bold text-black">{optPremiumBottleFee}</span>円 / 利用率: <span className="font-serif font-bold text-black">{optPremiumBottleRate}</span>%</span>
+                  <span className="font-serif font-bold text-teal-800">+{formatYen(premiumBottleRevenue)}</span>
                 </div>
               </div>
             )}
@@ -835,8 +835,8 @@ eKYC身元認証費,${totalEkycCost},円,単価 ${ekycCost}円
             {optArchiveSub && (
               <div className="space-y-1.5 pt-2 border-t border-zinc-100 text-xs">
                 <div className="flex justify-between text-[11px]">
-                  <span className="text-black/60">月額: {optArchiveSubFee}円 / 加入率: {optArchiveSubRate}%</span>
-                  <span className="font-mono font-bold text-teal-800">+{formatYen(archiveSubRevenue)}</span>
+                  <span className="text-black/60">月額: <span className="font-serif font-bold text-black">{optArchiveSubFee}</span>円 / 加入率: <span className="font-serif font-bold text-black">{optArchiveSubRate}</span>%</span>
+                  <span className="font-serif font-bold text-teal-800">+{formatYen(archiveSubRevenue)}</span>
                 </div>
               </div>
             )}
@@ -859,8 +859,8 @@ eKYC身元認証費,${totalEkycCost},円,単価 ${ekycCost}円
             {optGiftChip && (
               <div className="space-y-1.5 pt-2 border-t border-zinc-100 text-xs">
                 <div className="flex justify-between text-[11px]">
-                  <span className="text-black/60">平均: 1,000円 / 手数料 15%</span>
-                  <span className="font-mono font-bold text-teal-800">+{formatYen(giftRevenue)}</span>
+                  <span className="text-black/60">平均: <span className="font-serif font-bold text-black">{optGiftAvgAmount.toLocaleString()}</span>円 / 手数料 <span className="font-serif font-bold text-black">{optGiftTakeRate}</span>%</span>
+                  <span className="font-serif font-bold text-teal-800">+{formatYen(giftRevenue)}</span>
                 </div>
               </div>
             )}

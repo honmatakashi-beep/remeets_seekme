@@ -1126,10 +1126,10 @@ export const AdminEmailTemplatesView: React.FC = () => {
                 <span className="text-[10px] font-bold text-teal-800 uppercase tracking-widest bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-200">
                   Dispatch & Notification Hub
                 </span>
-                <span className="text-[10px] text-zinc-500 font-mono">全14種（メール13種 ＋ SMS1種）完全網羅</span>
+                <span className="text-[10px] text-zinc-500 font-sans">全<span className="font-serif font-bold">14</span>種（メール<span className="font-serif font-bold">13</span>種 ＋ SMS<span className="font-serif font-bold">1</span>種）完全網羅</span>
                 {Object.keys(customOverrides).length > 0 && (
                   <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md border border-emerald-300">
-                    {Object.keys(customOverrides).length}件カスタム編集適用中
+                    <span className="font-serif font-bold">{Object.keys(customOverrides).length}</span>件カスタム編集適用中
                   </span>
                 )}
               </div>

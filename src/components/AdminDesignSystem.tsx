@@ -367,7 +367,7 @@ module.exports = {
                 </span>
               ) : (
                 <span className="text-[11px] font-mono font-bold text-sky-700 bg-sky-50 px-2 py-0.5 rounded-full border border-sky-100">
-                  4テーマ
+                  <span className="font-serif font-bold">4</span>テーマ
                 </span>
               )}
             </div>
@@ -380,7 +380,7 @@ module.exports = {
           </div>
           <div className="mt-3 pt-2.5 border-t border-zinc-100 flex items-center justify-between text-[11px]">
             <span className="text-black/50">現行料金</span>
-            <span className="font-mono font-bold text-teal-800">600 円 買い切り</span>
+            <span className="font-bold text-teal-800"><span className="font-serif font-bold">600</span> 円 買い切り</span>
           </div>
         </button>
 

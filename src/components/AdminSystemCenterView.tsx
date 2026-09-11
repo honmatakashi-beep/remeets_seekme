@@ -483,7 +483,7 @@ export const AdminSystemCenterView: React.FC<AdminSystemCenterViewProps> = ({
               <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-brand-primary/10 text-brand-primary border border-brand-primary/20 flex items-center gap-1.5 uppercase tracking-wider">
                 <Server size={13} /> Infrastructure & Operations
               </span>
-              <span className="px-3 py-1 rounded-full text-[11px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1">
+              <span className="px-3 py-1 rounded-full text-[11px] font-serif font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                 API v1.2.4-RELEASE
               </span>
@@ -533,14 +533,14 @@ export const AdminSystemCenterView: React.FC<AdminSystemCenterViewProps> = ({
             </div>
             <div className="text-xs text-black/60 font-sans mt-1 flex items-center gap-1.5">
               <span>応答速度 (RTT):</span>
-              <span className={`font-mono font-bold px-1.5 py-0.5 rounded text-xs ${
+              <span className={`font-serif font-bold px-1.5 py-0.5 rounded text-xs ${
                 (latency || 0) < 50 ? 'text-emerald-700 bg-emerald-50' : 'text-amber-700 bg-amber-50'
               }`}>
                 {latency !== null ? `${latency} ms` : '---'}
               </span>
             </div>
           </div>
-          <div className="pt-2 border-t border-zinc-100 flex items-center justify-between text-[10px] text-black/50 font-mono">
+          <div className="pt-2 border-t border-zinc-100 flex items-center justify-between text-[10px] text-black/50 font-sans">
             <span>PROTOCOL: {window.location.protocol === 'https:' ? 'WSS' : 'WS'}</span>
             <button
               onClick={() => connectWebSocket()}
@@ -557,7 +557,7 @@ export const AdminSystemCenterView: React.FC<AdminSystemCenterViewProps> = ({
             <span className="text-[11px] font-bold text-black/60 uppercase tracking-widest flex items-center gap-1.5">
               <Sliders size={14} className="text-brand-primary" /> レート制限到達
             </span>
-            <span className="px-2 py-0.5 bg-zinc-100 rounded text-[10px] font-mono font-bold text-black/70">
+            <span className="px-2 py-0.5 bg-zinc-100 rounded text-[10px] font-serif font-bold text-black/70">
               Active: {metrics?.activeConnections || 1}
             </span>
           </div>
@@ -566,7 +566,7 @@ export const AdminSystemCenterView: React.FC<AdminSystemCenterViewProps> = ({
               {(metrics?.violationsCount || 0).toLocaleString()} <span className="text-xs font-sans font-bold text-black/50">回遮断</span>
             </div>
             <div className="text-xs text-black/60 font-sans mt-1">
-              総リクエスト: <span className="font-mono font-bold text-black">{(metrics?.totalRequests || 0).toLocaleString()}</span> 件
+              総リクエスト: <span className="font-serif font-bold text-black">{(metrics?.totalRequests || 0).toLocaleString()}</span> 件
             </div>
           </div>
           <div className="pt-2 border-t border-zinc-100 flex items-center justify-between text-[10px]">
@@ -597,11 +597,11 @@ export const AdminSystemCenterView: React.FC<AdminSystemCenterViewProps> = ({
               {dbHealth?.size || '---'}
             </div>
             <div className="text-xs text-black/60 font-sans mt-1">
-              管理テーブル数: <span className="font-mono font-bold text-black">{dbHealth?.tables || 11}</span> 個
+              管理テーブル数: <span className="font-serif font-bold text-black">{dbHealth?.tables || 11}</span> 個
             </div>
           </div>
           <div className="pt-2 border-t border-zinc-100 flex items-center justify-between text-[10px]">
-            <span className="text-black/50 font-mono">SQLite {dbHealth?.sqliteVersion || 'v3.x'}</span>
+            <span className="text-black/50 font-serif font-bold">SQLite {dbHealth?.sqliteVersion || 'v3.x'}</span>
             <button
               onClick={handleExecuteVacuum}
               disabled={vacuuming}
@@ -618,7 +618,7 @@ export const AdminSystemCenterView: React.FC<AdminSystemCenterViewProps> = ({
             <span className="text-[11px] font-bold text-black/60 uppercase tracking-widest flex items-center gap-1.5">
               <Cpu size={14} className="text-purple-600" /> 稼働リソース
             </span>
-            <span className="text-[10px] font-mono text-black/50">
+            <span className="text-[10px] font-sans text-black/50">
               {envStatus?.platform || process.platform}
             </span>
           </div>
@@ -627,7 +627,7 @@ export const AdminSystemCenterView: React.FC<AdminSystemCenterViewProps> = ({
               {formatUptime(metrics?.uptime || envStatus?.uptime)}
             </div>
             <div className="text-xs text-black/60 font-sans mt-1">
-              Heap: <span className="font-mono font-bold text-black">{formatBytes(metrics?.memoryUsage?.heapUsed || envStatus?.memoryUsage?.heapUsed)}</span>
+              Heap: <span className="font-serif font-bold text-black">{formatBytes(metrics?.memoryUsage?.heapUsed || envStatus?.memoryUsage?.heapUsed)}</span>
             </div>
           </div>
           <div className="pt-2 border-t border-zinc-100">
@@ -735,7 +735,7 @@ export const AdminSystemCenterView: React.FC<AdminSystemCenterViewProps> = ({
                       <span className="w-5 h-5 rounded-full bg-brand-primary/10 text-brand-primary flex items-center justify-center text-[10px]">1</span>
                       会員ログイン上限 (15分ごと)
                     </span>
-                    <span className="font-mono font-extrabold text-brand-primary text-sm px-2.5 py-0.5 bg-white rounded-lg border border-brand-border">
+                    <span className="font-serif font-extrabold text-brand-primary text-sm px-2.5 py-0.5 bg-white rounded-lg border border-brand-border">
                       {limitsForm.authMax} 回
                     </span>
                   </div>
@@ -748,7 +748,7 @@ export const AdminSystemCenterView: React.FC<AdminSystemCenterViewProps> = ({
                     onChange={(e) => setLimitsForm(p => ({ ...p, authMax: Number(e.target.value) }))}
                     className="w-full accent-brand-primary bg-slate-200 rounded-lg appearance-none h-2 cursor-pointer"
                   />
-                  <div className="flex justify-between text-[10px] text-black/40 font-mono">
+                  <div className="flex justify-between text-[10px] text-black/50 font-serif font-bold">
                     <span>厳格 (5回)</span>
                     <span>標準 (100回)</span>
                     <span>緩和 (500回)</span>
@@ -762,7 +762,7 @@ export const AdminSystemCenterView: React.FC<AdminSystemCenterViewProps> = ({
                       <span className="w-5 h-5 rounded-full bg-brand-primary/10 text-brand-primary flex items-center justify-center text-[10px]">2</span>
                       新規会員登録上限 (1時間ごと)
                     </span>
-                    <span className="font-mono font-extrabold text-brand-primary text-sm px-2.5 py-0.5 bg-white rounded-lg border border-brand-border">
+                    <span className="font-serif font-extrabold text-brand-primary text-sm px-2.5 py-0.5 bg-white rounded-lg border border-brand-border">
                       {limitsForm.registrationMax} 回
                     </span>
                   </div>
@@ -775,7 +775,7 @@ export const AdminSystemCenterView: React.FC<AdminSystemCenterViewProps> = ({
                     onChange={(e) => setLimitsForm(p => ({ ...p, registrationMax: Number(e.target.value) }))}
                     className="w-full accent-brand-primary bg-slate-200 rounded-lg appearance-none h-2 cursor-pointer"
                   />
-                  <div className="flex justify-between text-[10px] text-black/40 font-mono">
+                  <div className="flex justify-between text-[10px] text-black/50 font-serif font-bold">
                     <span>超厳格 (1回)</span>
                     <span>推奨 (5回)</span>
                     <span>緩和 (50回)</span>
@@ -789,7 +789,7 @@ export const AdminSystemCenterView: React.FC<AdminSystemCenterViewProps> = ({
                       <span className="w-5 h-5 rounded-full bg-brand-primary/10 text-brand-primary flex items-center justify-center text-[10px]">3</span>
                       思い出検索・漂流手紙取得上限 (15分ごと)
                     </span>
-                    <span className="font-mono font-extrabold text-brand-primary text-sm px-2.5 py-0.5 bg-white rounded-lg border border-brand-border">
+                    <span className="font-serif font-extrabold text-brand-primary text-sm px-2.5 py-0.5 bg-white rounded-lg border border-brand-border">
                       {limitsForm.searchMax} 回
                     </span>
                   </div>
@@ -802,7 +802,7 @@ export const AdminSystemCenterView: React.FC<AdminSystemCenterViewProps> = ({
                     onChange={(e) => setLimitsForm(p => ({ ...p, searchMax: Number(e.target.value) }))}
                     className="w-full accent-brand-primary bg-slate-200 rounded-lg appearance-none h-2 cursor-pointer"
                   />
-                  <div className="flex justify-between text-[10px] text-black/40 font-mono">
+                  <div className="flex justify-between text-[10px] text-black/50 font-serif font-bold">
                     <span>高負荷防止 (5回)</span>
                     <span>標準 (30回)</span>
                     <span>緩和 (200回)</span>
@@ -816,7 +816,7 @@ export const AdminSystemCenterView: React.FC<AdminSystemCenterViewProps> = ({
                       <span className="w-5 h-5 rounded-full bg-brand-primary/10 text-brand-primary flex items-center justify-center text-[10px]">4</span>
                       ボトル投函作成上限 (1時間ごと)
                     </span>
-                    <span className="font-mono font-extrabold text-brand-primary text-sm px-2.5 py-0.5 bg-white rounded-lg border border-brand-border">
+                    <span className="font-serif font-extrabold text-brand-primary text-sm px-2.5 py-0.5 bg-white rounded-lg border border-brand-border">
                       {limitsForm.postMax} 回
                     </span>
                   </div>
@@ -829,7 +829,7 @@ export const AdminSystemCenterView: React.FC<AdminSystemCenterViewProps> = ({
                     onChange={(e) => setLimitsForm(p => ({ ...p, postMax: Number(e.target.value) }))}
                     className="w-full accent-brand-primary bg-slate-200 rounded-lg appearance-none h-2 cursor-pointer"
                   />
-                  <div className="flex justify-between text-[10px] text-black/40 font-mono">
+                  <div className="flex justify-between text-[10px] text-black/50 font-serif font-bold">
                     <span>連投防止 (1回)</span>
                     <span>推奨 (3回)</span>
                     <span>緩和 (30回)</span>
@@ -843,7 +843,7 @@ export const AdminSystemCenterView: React.FC<AdminSystemCenterViewProps> = ({
                       <span className="w-5 h-5 rounded-full bg-brand-primary/10 text-brand-primary flex items-center justify-center text-[10px]">5</span>
                       秘密の質問回答・突破試行上限 (15分ごと)
                     </span>
-                    <span className="font-mono font-extrabold text-brand-primary text-sm px-2.5 py-0.5 bg-white rounded-lg border border-brand-border">
+                    <span className="font-serif font-extrabold text-brand-primary text-sm px-2.5 py-0.5 bg-white rounded-lg border border-brand-border">
                       {limitsForm.verifyMax} 回
                     </span>
                   </div>
@@ -856,7 +856,7 @@ export const AdminSystemCenterView: React.FC<AdminSystemCenterViewProps> = ({
                     onChange={(e) => setLimitsForm(p => ({ ...p, verifyMax: Number(e.target.value) }))}
                     className="w-full accent-brand-primary bg-slate-200 rounded-lg appearance-none h-2 cursor-pointer"
                   />
-                  <div className="flex justify-between text-[10px] text-black/40 font-mono">
+                  <div className="flex justify-between text-[10px] text-black/50 font-serif font-bold">
                     <span>総当たり対策 (2回)</span>
                     <span>標準 (10回)</span>
                     <span>テスト用 (50回)</span>
@@ -870,7 +870,7 @@ export const AdminSystemCenterView: React.FC<AdminSystemCenterViewProps> = ({
                       <span className="w-5 h-5 rounded-full bg-brand-primary/10 text-brand-primary flex items-center justify-center text-[10px]">6</span>
                       手紙内メッセージ送信上限 (15分ごと)
                     </span>
-                    <span className="font-mono font-extrabold text-brand-primary text-sm px-2.5 py-0.5 bg-white rounded-lg border border-brand-border">
+                    <span className="font-serif font-extrabold text-brand-primary text-sm px-2.5 py-0.5 bg-white rounded-lg border border-brand-border">
                       {limitsForm.messageMax} 回
                     </span>
                   </div>
@@ -883,7 +883,7 @@ export const AdminSystemCenterView: React.FC<AdminSystemCenterViewProps> = ({
                     onChange={(e) => setLimitsForm(p => ({ ...p, messageMax: Number(e.target.value) }))}
                     className="w-full accent-brand-primary bg-slate-200 rounded-lg appearance-none h-2 cursor-pointer"
                   />
-                  <div className="flex justify-between text-[10px] text-black/40 font-mono">
+                  <div className="flex justify-between text-[10px] text-black/50 font-serif font-bold">
                     <span>連投制限 (5回)</span>
                     <span>快適標準 (50回)</span>
                     <span>無制限同等 (300回)</span>
@@ -963,7 +963,7 @@ export const AdminSystemCenterView: React.FC<AdminSystemCenterViewProps> = ({
                         整合性ステータス: {dbHealth.status === 'healthy' ? '正常 (OK)' : '異常検出'}
                       </span>
                     </div>
-                    <span className="text-xs text-black/50 font-mono">
+                    <span className="text-xs text-black/60 font-serif font-bold">
                       最終診断: {dbHealth.lastCheck ? new Date(dbHealth.lastCheck).toLocaleTimeString() : '---'}
                     </span>
                   </div>
@@ -980,7 +980,7 @@ export const AdminSystemCenterView: React.FC<AdminSystemCenterViewProps> = ({
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                       {dbHealth.counts && Object.entries(dbHealth.counts).map(([table, count]) => (
                         <div key={table} className="p-3 bg-white border border-brand-border/70 rounded-xl">
-                          <span className="text-[11px] font-mono text-black/50 block truncate">{table}</span>
+                          <span className="text-[11px] font-sans text-black/50 block truncate">{table}</span>
                           <span className="text-lg font-serif font-extrabold text-black mt-0.5 block">
                             {typeof count === 'number' ? count.toLocaleString() : count}
                           </span>
@@ -1097,42 +1097,42 @@ export const AdminSystemCenterView: React.FC<AdminSystemCenterViewProps> = ({
               <div className="space-y-3">
                 <div className="flex justify-between items-center py-2.5 border-b border-zinc-100 text-xs">
                   <span className="font-bold text-black/60">稼働環境 (NODE_ENV)</span>
-                  <span className="font-mono font-bold text-black px-2.5 py-0.5 bg-zinc-100 rounded-lg">
+                  <span className="font-serif font-bold text-black px-2.5 py-0.5 bg-zinc-100 rounded-lg">
                     {envStatus?.nodeEnv || process.env.NODE_ENV || 'development'}
                   </span>
                 </div>
 
                 <div className="flex justify-between items-center py-2.5 border-b border-zinc-100 text-xs">
                   <span className="font-bold text-black/60">Node.js バージョン</span>
-                  <span className="font-mono font-bold text-black">
+                  <span className="font-serif font-bold text-black">
                     {envStatus?.nodeVersion || process.version}
                   </span>
                 </div>
 
                 <div className="flex justify-between items-center py-2.5 border-b border-zinc-100 text-xs">
                   <span className="font-bold text-black/60">OS プラットフォーム</span>
-                  <span className="font-mono font-bold text-black">
+                  <span className="font-serif font-bold text-black">
                     {envStatus?.platform || process.platform} (macOS / Cloud Run)
                   </span>
                 </div>
 
                 <div className="flex justify-between items-center py-2.5 border-b border-zinc-100 text-xs">
                   <span className="font-bold text-black/60">データベースエンジン</span>
-                  <span className="font-mono font-bold text-black">
+                  <span className="font-serif font-bold text-black">
                     {envStatus?.databaseEngine || 'SQLite (better-sqlite3 / kizuna.db)'}
                   </span>
                 </div>
 
                 <div className="flex justify-between items-center py-2.5 border-b border-zinc-100 text-xs">
                   <span className="font-bold text-black/60">API バージョン</span>
-                  <span className="font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                  <span className="font-serif font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
                     v1.2.4-RELEASE
                   </span>
                 </div>
 
                 <div className="flex justify-between items-center py-2.5 text-xs">
                   <span className="font-bold text-black/60">サーバー時刻</span>
-                  <span className="font-mono text-black/70">
+                  <span className="font-serif font-bold text-black/80">
                     {envStatus?.serverTime ? new Date(envStatus.serverTime).toLocaleString() : '---'}
                   </span>
                 </div>
@@ -1378,7 +1378,7 @@ export const AdminSystemCenterView: React.FC<AdminSystemCenterViewProps> = ({
                   ) : (
                     filteredAuditLogs.slice(0, 50).map((log, idx) => (
                       <tr key={idx} className="hover:bg-slate-50/70 transition-colors">
-                        <td className="py-3 px-4 whitespace-nowrap text-black/70 font-mono text-[11px]">
+                        <td className="py-3 px-4 whitespace-nowrap text-black/70 font-serif font-bold text-[11px]">
                           {new Date(log.created_at).toLocaleString()}
                         </td>
                         <td className="py-3 px-4 whitespace-nowrap">
@@ -1395,7 +1395,7 @@ export const AdminSystemCenterView: React.FC<AdminSystemCenterViewProps> = ({
                         <td className="py-3 px-4 text-black/80 font-sans max-w-md truncate">
                           {log.details}
                         </td>
-                        <td className="py-3 px-4 font-mono text-[11px] text-black/60">
+                        <td className="py-3 px-4 font-serif font-bold text-[11px] text-black/60">
                           {log.ip_address || '127.0.0.1'}
                         </td>
                       </tr>

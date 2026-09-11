@@ -257,7 +257,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
         <div className="relative z-10 space-y-6">
           <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-6">
             <div className="space-y-2">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-full text-xs font-mono font-bold tracking-wider uppercase">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-full text-xs font-serif font-bold tracking-wider uppercase">
                 <Sparkles size={13} className="animate-pulse" />
                 <span>CONFIDENTIAL • M&A DUE DILIGENCE DATA ROOM</span>
               </div>
@@ -309,7 +309,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
                 <span>98.5</span>
                 <span className="text-xs text-slate-400 font-sans font-normal">/100 (AAA)</span>
               </div>
-              <span className="text-[10px] text-emerald-400/80 font-mono mt-0.5 block">✓ ドキュメント完備・即日引渡可</span>
+              <span className="text-[10px] text-emerald-400/80 font-sans mt-0.5 block">✓ ドキュメント完備・即日引渡可</span>
             </div>
 
             <div className="p-4 bg-slate-900/90 rounded-2xl border border-slate-800">
@@ -318,7 +318,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
                 <span>{simulationResults.grossMarginPercent}%</span>
                 <span className="text-xs text-slate-400 font-sans font-normal">高収益体質</span>
               </div>
-              <span className="text-[10px] text-sky-400/80 font-mono mt-0.5 block">✓ 完全前払い・原価率39%のみ</span>
+              <span className="text-[10px] text-sky-400/80 font-sans mt-0.5 block">✓ 完全前払い・原価率39%のみ</span>
             </div>
 
             <div className="p-4 bg-slate-900/90 rounded-2xl border border-slate-800">
@@ -326,7 +326,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
               <div className="text-xl sm:text-2xl font-serif font-bold text-amber-400 mt-1 flex items-baseline gap-1">
                 <span>{formatManYen(simulationResults.baselineValuation)}</span>
               </div>
-              <span className="text-[10px] text-amber-400/80 font-mono mt-0.5 block">✓ 既存DB想い出資産 & IP評価</span>
+              <span className="text-[10px] text-amber-400/80 font-sans mt-0.5 block">✓ 既存DB想い出資産 & IP評価</span>
             </div>
 
             <div className="p-4 bg-slate-900/90 rounded-2xl border border-slate-800">
@@ -335,7 +335,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
                 <span>0 円</span>
                 <span className="text-xs text-slate-400 font-sans font-normal">〜 (Scale-to-Zero)</span>
               </div>
-              <span className="text-[10px] text-purple-400/80 font-mono mt-0.5 block">✓ 赤字リスク極小の超筋肉質</span>
+              <span className="text-[10px] text-purple-400/80 font-sans mt-0.5 block">✓ 赤字リスク極小の超筋肉質</span>
             </div>
           </div>
         </div>
@@ -384,7 +384,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
         {/* Dynamic Valuation Summary Banner */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6 bg-slate-900 text-white rounded-3xl border border-slate-800 shadow-xl">
           <div className="space-y-2 border-b lg:border-b-0 lg:border-r border-slate-800 pb-4 lg:pb-0 lg:pr-6">
-            <span className="text-[11px] text-emerald-400 font-bold uppercase tracking-wider flex items-center gap-1.5 font-mono">
+            <span className="text-[11px] text-emerald-400 font-bold uppercase tracking-wider flex items-center gap-1.5 font-sans">
               <Award size={14} />
               <span>{valuationMethod === 'multiple' ? '推定事業譲渡価値 (EBITDA基準)' : 'DCF法 企業価値算定額'}</span>
             </span>
@@ -401,7 +401,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
           </div>
 
           <div className="space-y-2 border-b lg:border-b-0 lg:border-r border-slate-800 pb-4 lg:pb-0 lg:pr-6">
-            <span className="text-[11px] text-sky-400 font-bold uppercase tracking-wider flex items-center gap-1.5 font-mono">
+            <span className="text-[11px] text-sky-400 font-bold uppercase tracking-wider flex items-center gap-1.5 font-sans">
               <BarChart3 size={14} />
               <span>年間予想売上 (ARR)</span>
             </span>
@@ -409,12 +409,12 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
               {formatManYen(simulationResults.annualRevenue)} <span className="text-xs font-sans font-normal text-slate-400">/ 年</span>
             </div>
             <p className="text-[11px] text-slate-400 leading-relaxed font-sans">
-              月間開通 {simulationResults.monthlyOpenings.toLocaleString()} 件 × 単価 {formatPlainYen(feePerOpening)}
+              月間開通 <span className="font-serif font-bold text-white">{simulationResults.monthlyOpenings.toLocaleString()}</span> 件 × 単価 <span className="font-serif font-bold text-white">{formatPlainYen(feePerOpening)}</span>
             </p>
           </div>
 
           <div className="space-y-2">
-            <span className="text-[11px] text-amber-400 font-bold uppercase tracking-wider flex items-center gap-1.5 font-mono">
+            <span className="text-[11px] text-amber-400 font-bold uppercase tracking-wider flex items-center gap-1.5 font-sans">
               <Coins size={14} />
               <span>年間手取り粗利益 (Gross Profit)</span>
             </span>
@@ -422,7 +422,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
               {formatManYen(simulationResults.annualGrossProfit)} <span className="text-xs font-sans font-normal text-slate-400">/ 年</span>
             </div>
             <p className="text-[11px] text-slate-400 leading-relaxed font-sans">
-              粗利率 <strong className="text-emerald-400">{simulationResults.grossMarginPercent}%</strong>（1開通あたり手取り {formatPlainYen(simulationResults.grossProfitPerOpening)}）
+              粗利率 <strong className="text-emerald-400 font-serif font-bold">{simulationResults.grossMarginPercent}%</strong>（1開通あたり手取り <span className="font-serif font-bold text-white">{formatPlainYen(simulationResults.grossProfitPerOpening)}</span>）
             </p>
           </div>
         </div>
@@ -433,7 +433,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
           <div className="p-5 bg-slate-50 rounded-2xl border border-brand-border/70 space-y-3">
             <div className="flex justify-between items-center text-xs">
               <span className="font-bold text-black">想定月間ユーザー (MAU)</span>
-              <span className="font-mono font-bold text-brand-primary bg-white px-2 py-0.5 rounded-lg border border-brand-border">
+              <span className="font-serif font-bold text-brand-primary bg-white px-2 py-0.5 rounded-lg border border-brand-border">
                 {mauEstimate.toLocaleString()} 名
               </span>
             </div>
@@ -446,9 +446,9 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
               onChange={(e) => setMauEstimate(Number(e.target.value))}
               className="w-full accent-brand-primary cursor-pointer h-2 bg-slate-200 rounded-lg"
             />
-            <div className="flex justify-between text-[10px] text-black/40 font-mono">
+            <div className="flex justify-between text-[10px] text-black/50 font-serif font-bold">
               <span>5,000 (初期)</span>
-              <span>15万</span>
+              <span>150,000</span>
               <span>300,000 (全国)</span>
             </div>
           </div>
@@ -457,7 +457,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
           <div className="p-5 bg-slate-50 rounded-2xl border border-brand-border/70 space-y-3">
             <div className="flex justify-between items-center text-xs">
               <span className="font-bold text-black">想い出照合・開通率</span>
-              <span className="font-mono font-bold text-emerald-700 bg-white px-2 py-0.5 rounded-lg border border-brand-border">
+              <span className="font-serif font-bold text-emerald-700 bg-white px-2 py-0.5 rounded-lg border border-brand-border">
                 {conversionRate.toFixed(1)} %
               </span>
             </div>
@@ -470,7 +470,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
               onChange={(e) => setConversionRate(Number(e.target.value))}
               className="w-full accent-emerald-600 cursor-pointer h-2 bg-slate-200 rounded-lg"
             />
-            <div className="flex justify-between text-[10px] text-black/40 font-mono">
+            <div className="flex justify-between text-[10px] text-black/50 font-serif font-bold">
               <span>0.5% (保守的)</span>
               <span>2.5% (標準)</span>
               <span>6.0% (バズ期)</span>
@@ -481,7 +481,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
           <div className="p-5 bg-slate-50 rounded-2xl border border-brand-border/70 space-y-3">
             <div className="flex justify-between items-center text-xs">
               <span className="font-bold text-black">照合開通手数料 (単価)</span>
-              <span className="font-mono font-bold text-sky-700 bg-white px-2 py-0.5 rounded-lg border border-brand-border">
+              <span className="font-serif font-bold text-sky-700 bg-white px-2 py-0.5 rounded-lg border border-brand-border">
                 {formatPlainYen(feePerOpening)}
               </span>
             </div>
@@ -490,7 +490,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
                 <button
                   key={price}
                   onClick={() => setFeePerOpening(price)}
-                  className={`flex-1 py-1.5 text-[11px] font-bold rounded-xl border transition-all cursor-pointer ${
+                  className={`flex-1 py-1.5 text-[11px] font-serif font-bold rounded-xl border transition-all cursor-pointer ${
                     feePerOpening === price
                       ? 'bg-sky-600 text-white border-sky-600 shadow-sm'
                       : 'bg-white text-black/70 border-brand-border hover:bg-slate-100'
@@ -500,7 +500,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
                 </button>
               ))}
             </div>
-            <span className="text-[10px] text-black/40 block">標準: 600円 (プレミアムプラン: 1,200円)</span>
+            <span className="text-[10px] text-black/50 block">標準: <span className="font-serif font-bold text-black">600</span>円 (プレミアムプラン: <span className="font-serif font-bold text-black">1,200</span>円)</span>
           </div>
 
           {/* Slider 4: Valuation Multiple / DCF WACC */}
@@ -508,7 +508,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
             <div className="p-5 bg-slate-50 rounded-2xl border border-brand-border/70 space-y-3">
               <div className="flex justify-between items-center text-xs">
                 <span className="font-bold text-black">EBITDA 評価倍率</span>
-                <span className="font-mono font-bold text-purple-700 bg-white px-2 py-0.5 rounded-lg border border-brand-border">
+                <span className="font-serif font-bold text-purple-700 bg-white px-2 py-0.5 rounded-lg border border-brand-border">
                   {ebitdaMultiple.toFixed(1)} 倍
                 </span>
               </div>
@@ -521,7 +521,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
                 onChange={(e) => setEbitdaMultiple(Number(e.target.value))}
                 className="w-full accent-purple-600 cursor-pointer h-2 bg-slate-200 rounded-lg"
               />
-              <div className="flex justify-between text-[10px] text-black/40 font-mono">
+              <div className="flex justify-between text-[10px] text-black/50 font-serif font-bold">
                 <span>3.0x (小規模)</span>
                 <span>5.0x (SaaS平均)</span>
                 <span>8.0x (高成長)</span>
@@ -531,7 +531,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
             <div className="p-5 bg-slate-50 rounded-2xl border border-brand-border/70 space-y-3">
               <div className="flex justify-between items-center text-xs">
                 <span className="font-bold text-black">DCF 割引率 (WACC)</span>
-                <span className="font-mono font-bold text-purple-700 bg-white px-2 py-0.5 rounded-lg border border-brand-border">
+                <span className="font-serif font-bold text-purple-700 bg-white px-2 py-0.5 rounded-lg border border-brand-border">
                   {dcfDiscountRate.toFixed(1)} %
                 </span>
               </div>
@@ -544,7 +544,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
                 onChange={(e) => setDcfDiscountRate(Number(e.target.value))}
                 className="w-full accent-purple-600 cursor-pointer h-2 bg-slate-200 rounded-lg"
               />
-              <div className="flex justify-between text-[10px] text-black/40 font-mono">
+              <div className="flex justify-between text-[10px] text-black/50 font-serif font-bold">
                 <span>8% (低リスク)</span>
                 <span>10% (標準)</span>
                 <span>15% (スタートアップ)</span>
@@ -602,7 +602,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
                   <span className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
                   <span className="text-black font-medium text-[11px]">{item.name}</span>
                 </div>
-                <span className="font-mono font-bold text-black">{formatPlainYen(item.value)}</span>
+                <span className="font-serif font-bold text-black">{formatPlainYen(item.value)}</span>
               </div>
             ))}
           </div>
@@ -652,7 +652,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
           <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-100 flex items-start gap-3">
             <Zap size={18} className="text-emerald-600 shrink-0 mt-0.5" />
             <div className="space-y-0.5 text-xs text-emerald-900">
-              <strong className="block font-bold">LTV / CAC 比率 &gt; 8.5x (超高効率)</strong>
+              <strong className="block font-bold">LTV / CAC 比率 &gt; <span className="font-serif font-bold">8.5x</span> (超高効率)</strong>
               <p className="text-[11px] text-emerald-800 leading-relaxed">
                 「大切な人を探したい」というユーザー心理による口コミ・SNS拡散性が極めて高いため、有料広告に依存しないオーガニック集客基盤（CAC実質0円）を実現しています。
               </p>
@@ -686,7 +686,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
             <p className="text-[11px] text-black/70 leading-relaxed font-sans">
               React 18 + Vite + TypeScript + Tailwind CSS による全65コンポーネント。完全レスポンシブ（モバイル・PC対応）。
             </p>
-            <span className="text-[10px] font-mono text-sky-700 bg-sky-50 px-2 py-0.5 rounded border border-sky-200 block">
+            <span className="text-[10px] font-serif font-bold text-sky-700 bg-sky-50 px-2 py-0.5 rounded border border-sky-200 block">
               約25,000行 / モジュール設計
             </span>
           </div>
@@ -700,7 +700,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
             <p className="text-[11px] text-black/70 leading-relaxed font-sans">
               Express REST API (60+エンドポイント)、SQLite (better-sqlite3) & PostgreSQL (Cloud SQL) デュアル対応。
             </p>
-            <span className="text-[10px] font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 block">
+            <span className="text-[10px] font-serif font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 block">
               全11テーブル / 自動マイグレーション
             </span>
           </div>
@@ -714,7 +714,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
             <p className="text-[11px] text-black/70 leading-relaxed font-sans">
               Google Gemini 2.5 API 多層検閲プロンプト、ストーカー・誹謗中傷・個人情報リアルタイム自動隔離システム。
             </p>
-            <span className="text-[10px] font-mono text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-200 block">
+            <span className="text-[10px] font-serif font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-200 block">
               50選テスト図鑑 & シミュレータ付属
             </span>
           </div>
@@ -728,7 +728,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
             <p className="text-[11px] text-black/70 leading-relaxed font-sans">
               二人の共有エピソードに基づく暗号化照合ロジック。第三者の総当たり不正突破を数学的に防御。
             </p>
-            <span className="text-[10px] font-mono text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 block">
+            <span className="text-[10px] font-serif font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 block">
               HMAC-SHA256 & レート制限
             </span>
           </div>
@@ -742,7 +742,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
             <p className="text-[11px] text-black/70 leading-relaxed font-sans">
               Stripe 600円決済、審査不合格時の即時自動返金、SMS電話番号認証、公的本人確認ログ安全暗号化パイプライン。
             </p>
-            <span className="text-[10px] font-mono text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200 block">
+            <span className="text-[10px] font-serif font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200 block">
               Webhook & 監査イベント記録完備
             </span>
           </div>
@@ -756,7 +756,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
             <p className="text-[11px] text-black/70 leading-relaxed font-sans">
               利用規約、プライバシーポリシー、特商法表記、生活安全課向け令状照会対応ガイド、全GUI管理マニュアル。
             </p>
-            <span className="text-[10px] font-mono text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200 block">
+            <span className="text-[10px] font-serif font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200 block">
               法的効力確定済 / 即日運用可能
             </span>
           </div>
@@ -791,7 +791,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
                   <span className="text-[11px] text-black/60">アーキテクチャ・保守性・スケーラビリティ</span>
                 </div>
               </div>
-              <span className="px-3 py-1 bg-emerald-100 text-emerald-800 font-mono font-bold text-xs rounded-full border border-emerald-200">
+              <span className="px-3 py-1 bg-emerald-100 text-emerald-800 font-serif font-bold text-xs rounded-full border border-emerald-200">
                 SCORE 99/100
               </span>
             </div>
@@ -823,7 +823,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
                   <span className="text-[11px] text-black/60">規制法令適合・警察照会対応・特商法</span>
                 </div>
               </div>
-              <span className="px-3 py-1 bg-emerald-100 text-emerald-800 font-mono font-bold text-xs rounded-full border border-emerald-200">
+              <span className="px-3 py-1 bg-emerald-100 text-emerald-800 font-serif font-bold text-xs rounded-full border border-emerald-200">
                 SCORE 100/100
               </span>
             </div>
@@ -855,7 +855,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
                   <span className="text-[11px] text-black/60">独自認証特許性・感情価値ネットワーク効果</span>
                 </div>
               </div>
-              <span className="px-3 py-1 bg-emerald-100 text-emerald-800 font-mono font-bold text-xs rounded-full border border-emerald-200">
+              <span className="px-3 py-1 bg-emerald-100 text-emerald-800 font-serif font-bold text-xs rounded-full border border-emerald-200">
                 SCORE 96/100
               </span>
             </div>
@@ -887,7 +887,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
                   <span className="text-[11px] text-black/60">移行工数・ドキュメンテーション・属人性排除</span>
                 </div>
               </div>
-              <span className="px-3 py-1 bg-emerald-100 text-emerald-800 font-mono font-bold text-xs rounded-full border border-emerald-200">
+              <span className="px-3 py-1 bg-emerald-100 text-emerald-800 font-serif font-bold text-xs rounded-full border border-emerald-200">
                 SCORE 99/100
               </span>
             </div>
@@ -935,9 +935,9 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
             <p className="text-xs text-black/70 leading-relaxed font-sans">
               ReMEETs上で「同窓生ボトル」が見つかったグループに対し、ワンクリックで同窓会会場予約や幹事代行パッケージ（単価30万〜100万円）を提案・送客可能。
             </p>
-            <div className="pt-2 border-t border-sky-100 flex justify-between items-center text-[11px] font-mono text-sky-800">
+            <div className="pt-2 border-t border-sky-100 flex justify-between items-center text-[11px] text-sky-800">
               <span>想定シナジー売上:</span>
-              <strong className="font-bold">+3,000 万円〜 / 年</strong>
+              <strong className="font-serif font-bold text-black">+3,000 万円〜 / 年</strong>
             </div>
           </div>
 
@@ -951,9 +951,9 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
             <p className="text-xs text-black/70 leading-relaxed font-sans">
               レッドオーシャン化した新規恋活・婚活市場とは全く異なる「幼馴染・昔の恩師・青春の旧友」という高エンゲージメント層を低CACで囲い込み。
             </p>
-            <div className="pt-2 border-t border-emerald-100 flex justify-between items-center text-[11px] font-mono text-emerald-800">
+            <div className="pt-2 border-t border-emerald-100 flex justify-between items-center text-[11px] text-emerald-800">
               <span>想定シナジー売上:</span>
-              <strong className="font-bold">+5,000 万円〜 / 年</strong>
+              <strong className="font-serif font-bold text-black">+5,000 万円〜 / 年</strong>
             </div>
           </div>
 
@@ -967,9 +967,9 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
             <p className="text-xs text-black/70 leading-relaxed font-sans">
               学校名データベースを活用した過去の卒アル復刻販売や、シニア層の「元気なうちに昔の恩人に感謝を伝えたい」ニーズを掴んだ終活レター事業展開。
             </p>
-            <div className="pt-2 border-t border-amber-100 flex justify-between items-center text-[11px] font-mono text-amber-800">
+            <div className="pt-2 border-t border-amber-100 flex justify-between items-center text-[11px] text-amber-800">
               <span>想定シナジー売上:</span>
-              <strong className="font-bold">+2,500 万円〜 / 年</strong>
+              <strong className="font-serif font-bold text-black">+2,500 万円〜 / 年</strong>
             </div>
           </div>
         </div>
@@ -1013,13 +1013,13 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
               </tr>
               <tr>
                 <td className="p-4 font-bold text-black bg-slate-50/50">引き継ぎスピード</td>
-                <td className="p-4 font-bold text-emerald-700">即時（最短3日〜1週間で全データ移管完了）</td>
-                <td className="p-4 text-black/70">登記変更・株主総会決議等で約2〜4週間</td>
+                <td className="p-4 font-bold text-emerald-700">即時（最短<span className="font-serif font-bold">3</span>日〜<span className="font-serif font-bold">1</span>週間で全データ移管完了）</td>
+                <td className="p-4 text-black/70">登記変更・株主総会決議等で約<span className="font-serif font-bold">2</span>〜<span className="font-serif font-bold">4</span>週間</td>
               </tr>
               <tr>
                 <td className="p-4 font-bold text-black bg-slate-50/50">税務上のメリット</td>
-                <td className="p-4 text-black">買い手側は取得資産を「のれん（無形固定資産）」として5年均等償却可能</td>
-                <td className="p-4 text-black/70">売り手個人株主は申告分離課税（約20.315%）</td>
+                <td className="p-4 text-black">買い手側は取得資産を「のれん（無形固定資産）」として<span className="font-serif font-bold">5</span>年均等償却可能</td>
+                <td className="p-4 text-black/70">売り手個人株主は申告分離課税（約<span className="font-serif font-bold">20.315</span>%）</td>
               </tr>
             </tbody>
           </table>
@@ -1028,7 +1028,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
         {/* 30-Day Step Roadmap */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
           <div className="p-5 bg-slate-50 rounded-2xl border border-brand-border/70 space-y-2">
-            <span className="px-2.5 py-0.5 bg-brand-primary/10 text-brand-primary font-mono font-bold text-[10px] rounded-full">
+            <span className="px-2.5 py-0.5 bg-brand-primary/10 text-brand-primary font-serif font-bold text-[10px] rounded-full">
               DAY 1 〜 3
             </span>
             <h6 className="font-serif font-bold text-black text-sm">1. 基盤・コード権限移譲</h6>
@@ -1038,7 +1038,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
           </div>
 
           <div className="p-5 bg-slate-50 rounded-2xl border border-brand-border/70 space-y-2">
-            <span className="px-2.5 py-0.5 bg-brand-primary/10 text-brand-primary font-mono font-bold text-[10px] rounded-full">
+            <span className="px-2.5 py-0.5 bg-brand-primary/10 text-brand-primary font-serif font-bold text-[10px] rounded-full">
               DAY 4 〜 10
             </span>
             <h6 className="font-serif font-bold text-black text-sm">2. 決済・API本番キー切替</h6>
@@ -1048,7 +1048,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
           </div>
 
           <div className="p-5 bg-slate-50 rounded-2xl border border-brand-border/70 space-y-2">
-            <span className="px-2.5 py-0.5 bg-brand-primary/10 text-brand-primary font-mono font-bold text-[10px] rounded-full">
+            <span className="px-2.5 py-0.5 bg-brand-primary/10 text-brand-primary font-serif font-bold text-[10px] rounded-full">
               DAY 11 〜 20
             </span>
             <h6 className="font-serif font-bold text-black text-sm">3. 管理画面・保守レクチャー</h6>
@@ -1058,7 +1058,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
           </div>
 
           <div className="p-5 bg-slate-50 rounded-2xl border border-brand-border/70 space-y-2">
-            <span className="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 font-mono font-bold text-[10px] rounded-full">
+            <span className="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 font-serif font-bold text-[10px] rounded-full">
               DAY 21 〜 30
             </span>
             <h6 className="font-serif font-bold text-black text-sm">4. 1ヶ月無償技術メンター</h6>

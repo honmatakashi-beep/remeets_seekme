@@ -907,7 +907,7 @@ export const AdminBroadcastView: React.FC = () => {
                     <div>
                       <span className="font-bold text-slate-600 block mb-1">配信対象セグメント</span>
                       <span className="font-bold text-indigo-800">{getSegmentLabel(targetSegment)}</span>
-                      <span className="text-[11px] text-indigo-600 block mt-0.5">（推定: {segmentCount?.toLocaleString() ?? 0} 名）</span>
+                      <span className="text-[11px] text-indigo-600 block mt-0.5">（推定: <span className="font-serif font-bold text-indigo-800">{segmentCount?.toLocaleString() ?? 0}</span> 名）</span>
                     </div>
                     <div>
                       <span className="font-bold text-slate-600 block mb-1">配信チャネル</span>
@@ -1074,7 +1074,7 @@ export const AdminBroadcastView: React.FC = () => {
                       <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-700">
                         {getSegmentLabel(item.target_segment)}
                       </span>
-                      <span className="text-[11px] text-slate-600 font-mono flex items-center gap-1">
+                      <span className="text-[11px] text-slate-600 font-serif font-bold flex items-center gap-1">
                         <Clock size={12} />
                         {new Date(item.created_at).toLocaleString()}
                       </span>
@@ -1124,7 +1124,7 @@ export const AdminBroadcastView: React.FC = () => {
                             style={{ width: `${readRate}%` }}
                           />
                         </div>
-                        <span className="text-[11px] font-bold text-slate-800">
+                        <span className="text-[11px] font-serif font-bold text-slate-800">
                           {item.read_count} / {item.user_count} 名 ({readRate}%)
                         </span>
                       </div>
@@ -1158,9 +1158,9 @@ export const AdminBroadcastView: React.FC = () => {
               <div className="pt-4 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-600">
                 <div className="flex items-center gap-3">
                   <span>
-                    全 <span className="font-bold text-slate-900">{filteredBroadcasts.length}</span> 件中{' '}
-                    <span className="font-bold text-slate-900">{(safeBroadcastPage - 1) * broadcastPerPage + 1}</span> -{' '}
-                    <span className="font-bold text-slate-900">{Math.min(safeBroadcastPage * broadcastPerPage, filteredBroadcasts.length)}</span> 件を表示
+                    全 <span className="font-serif font-bold text-slate-900">{filteredBroadcasts.length}</span> 件中{' '}
+                    <span className="font-serif font-bold text-slate-900">{(safeBroadcastPage - 1) * broadcastPerPage + 1}</span> -{' '}
+                    <span className="font-serif font-bold text-slate-900">{Math.min(safeBroadcastPage * broadcastPerPage, filteredBroadcasts.length)}</span> 件を表示
                   </span>
                   <div className="flex items-center gap-1 bg-slate-50 px-2 py-1 rounded-lg border border-slate-200 text-xs">
                     <span className="text-slate-500 text-[11px]">表示:</span>
@@ -1189,7 +1189,7 @@ export const AdminBroadcastView: React.FC = () => {
                       <span>前へ</span>
                     </button>
 
-                    <div className="flex items-center gap-1 px-2 font-mono font-bold text-slate-900">
+                    <div className="flex items-center gap-1 px-2 font-serif font-bold text-slate-900">
                       <span>{safeBroadcastPage}</span>
                       <span>/</span>
                       <span>{totalBroadcastPages}</span>

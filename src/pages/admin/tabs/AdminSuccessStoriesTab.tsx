@@ -210,19 +210,19 @@ export const AdminSuccessStoriesTab: React.FC<AdminSuccessStoriesTabProps> = (pr
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   <div className="bg-white p-4 rounded-2xl border border-slate-150 shadow-2xs">
                     <span className="text-[11px] font-bold text-slate-500 block">登録総数</span>
-                    <span className="text-xl font-black font-serif text-slate-900">{successStories.length} <span className="text-xs font-normal text-slate-400">件</span></span>
+                    <span className="text-xl font-bold font-serif text-slate-900"><span className="font-serif font-bold">{successStories.length}</span> <span className="text-xs font-normal text-slate-400">件</span></span>
                   </div>
                   <div className="bg-white p-4 rounded-2xl border border-slate-150 shadow-2xs">
                     <span className="text-[11px] font-bold text-rose-700 block">⭐ HOME掲載中</span>
-                    <span className="text-xl font-black font-serif text-rose-700">{featuredCount} <span className="text-xs font-normal text-slate-400">/ 3枠</span></span>
+                    <span className="text-xl font-bold font-serif text-rose-700"><span className="font-serif font-bold">{featuredCount}</span> <span className="text-xs font-normal text-slate-400">/ <span className="font-serif font-bold">3</span>枠</span></span>
                   </div>
                   <div className="bg-white p-4 rounded-2xl border border-slate-150 shadow-2xs">
                     <span className="text-[11px] font-bold text-emerald-700 block">🌐 一覧掲載中</span>
-                    <span className="text-xl font-black font-serif text-emerald-700">{publicCount} <span className="text-xs font-normal text-slate-400">件</span></span>
+                    <span className="text-xl font-bold font-serif text-emerald-700"><span className="font-serif font-bold">{publicCount}</span> <span className="text-xs font-normal text-slate-400">件</span></span>
                   </div>
                   <div className="bg-white p-4 rounded-2xl border border-slate-150 shadow-2xs">
                     <span className="text-[11px] font-bold text-slate-500 block">🔒 下書き・非公開</span>
-                    <span className="text-xl font-black font-serif text-slate-900">{successStories.length - publicCount} <span className="text-xs font-normal text-slate-400">件</span></span>
+                    <span className="text-xl font-bold font-serif text-slate-900"><span className="font-serif font-bold">{successStories.length - publicCount}</span> <span className="text-xs font-normal text-slate-400">件</span></span>
                   </div>
                 </div>
 
@@ -512,7 +512,7 @@ export const AdminSuccessStoriesTab: React.FC<AdminSuccessStoriesTabProps> = (pr
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/80 pb-3">
                     <div className="flex items-center gap-2">
                       <h2 className="text-base font-serif font-bold text-slate-900">
-                        登録済みストーリー一覧 ({filteredStories.length}件)
+                        登録済みストーリー一覧 (<span className="font-serif font-bold">{filteredStories.length}</span>件)
                       </h2>
                     </div>
                   </div>
@@ -783,9 +783,9 @@ export const AdminSuccessStoriesTab: React.FC<AdminSuccessStoriesTabProps> = (pr
                       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-2 pt-4 border-t border-slate-200/80 text-xs text-slate-600">
                         <div className="flex items-center gap-3">
                           <span>
-                            全 <span className="font-bold text-slate-900">{filteredStories.length}</span> 件中{' '}
-                            <span className="font-bold text-slate-900">{(safeStoryPage - 1) * storyPerPage + 1}</span> -{' '}
-                            <span className="font-bold text-slate-900">{Math.min(safeStoryPage * storyPerPage, filteredStories.length)}</span> 件を表示
+                            全 <span className="font-serif font-bold text-slate-900">{filteredStories.length}</span> 件中{' '}
+                            <span className="font-serif font-bold text-slate-900">{(safeStoryPage - 1) * storyPerPage + 1}</span> -{' '}
+                            <span className="font-serif font-bold text-slate-900">{Math.min(safeStoryPage * storyPerPage, filteredStories.length)}</span> 件を表示
                           </span>
                           <div className="flex items-center gap-1 bg-white px-2 py-1 rounded-lg border border-slate-200 text-xs">
                             <span className="text-slate-500 text-[11px]">表示:</span>
@@ -814,7 +814,7 @@ export const AdminSuccessStoriesTab: React.FC<AdminSuccessStoriesTabProps> = (pr
                               <span>前へ</span>
                             </button>
 
-                            <div className="flex items-center gap-1 px-2 font-mono font-bold text-slate-900">
+                            <div className="flex items-center gap-1 px-2 font-serif font-bold text-slate-900">
                               <span>{safeStoryPage}</span>
                               <span>/</span>
                               <span>{totalStoryPages}</span>

@@ -344,7 +344,7 @@ export const AdminLiveSystemMonitor = ({ token }: { token: string }) => {
             <div className="space-y-2">
               <div className="flex justify-between text-xs">
                 <span className="font-bold text-black/75">1. 会員ログイン上限 (15分ごと)</span>
-                <span className="font-mono font-extrabold text-[#5ea5ad] text-sm">{limitsForm.authMax} 回</span>
+                <span className="font-serif font-bold text-[#5ea5ad] text-sm">{limitsForm.authMax} <span className="text-xs font-sans">回</span></span>
               </div>
               <input 
                 type="range" 
@@ -366,7 +366,7 @@ export const AdminLiveSystemMonitor = ({ token }: { token: string }) => {
             <div className="space-y-2">
               <div className="flex justify-between text-xs">
                 <span className="font-bold text-black/75">2. 新規会員登録上限 (1時間ごと)</span>
-                <span className="font-mono font-extrabold text-[#5ea5ad] text-sm">{limitsForm.registrationMax} 回</span>
+                <span className="font-serif font-bold text-[#5ea5ad] text-sm">{limitsForm.registrationMax} <span className="text-xs font-sans">回</span></span>
               </div>
               <input 
                 type="range" 
@@ -388,7 +388,7 @@ export const AdminLiveSystemMonitor = ({ token }: { token: string }) => {
             <div className="space-y-2">
               <div className="flex justify-between text-xs">
                 <span className="font-bold text-black/75">3. 思い出検索・漂流手紙取得上限 (15分ごと)</span>
-                <span className="font-mono font-extrabold text-[#5ea5ad] text-sm">{limitsForm.searchMax} 回</span>
+                <span className="font-serif font-bold text-[#5ea5ad] text-sm">{limitsForm.searchMax} <span className="text-xs font-sans">回</span></span>
               </div>
               <input 
                 type="range" 
@@ -410,7 +410,7 @@ export const AdminLiveSystemMonitor = ({ token }: { token: string }) => {
             <div className="space-y-2">
               <div className="flex justify-between text-xs">
                 <span className="font-bold text-black/75">4. ボトル投函作成・投函上限 (1時間ごと)</span>
-                <span className="font-mono font-extrabold text-[#5ea5ad] text-sm">{limitsForm.postMax} 回</span>
+                <span className="font-serif font-bold text-[#5ea5ad] text-sm">{limitsForm.postMax} <span className="text-xs font-sans">回</span></span>
               </div>
               <input 
                 type="range" 
@@ -432,7 +432,7 @@ export const AdminLiveSystemMonitor = ({ token }: { token: string }) => {
             <div className="space-y-2">
               <div className="flex justify-between text-xs">
                 <span className="font-bold text-black/75">5. 秘密の質問回答・突破試行上限 (15分ごと)</span>
-                <span className="font-mono font-extrabold text-[#5ea5ad] text-sm">{limitsForm.verifyMax} 回</span>
+                <span className="font-serif font-bold text-[#5ea5ad] text-sm">{limitsForm.verifyMax} <span className="text-xs font-sans">回</span></span>
               </div>
               <input 
                 type="range" 
@@ -454,7 +454,7 @@ export const AdminLiveSystemMonitor = ({ token }: { token: string }) => {
             <div className="space-y-2">
               <div className="flex justify-between text-xs">
                 <span className="font-bold text-black/75">6. 手紙内メッセージ送信上限 (15分ごと)</span>
-                <span className="font-mono font-extrabold text-[#5ea5ad] text-sm">{limitsForm.messageMax} 回</span>
+                <span className="font-serif font-bold text-[#5ea5ad] text-sm">{limitsForm.messageMax} <span className="text-xs font-sans">回</span></span>
               </div>
               <input 
                 type="range" 
