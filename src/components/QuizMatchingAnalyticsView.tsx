@@ -152,6 +152,28 @@ const DEFAULT_ANALYTICS_DATA = {
       { era: "2010年代 (平成22〜令和元年)", count: 29 }
     ],
     totalSearches: 180
+  },
+  driftDurationAnalytics: {
+    avgDurationDays: 38.5,
+    medianDurationDays: 26.0,
+    fastestMatchHours: 2.5,
+    longestMatchDays: 420,
+    oneMonthMatchRate: 22.5,
+    longDriftBottlesCount: 14,
+    durationDistribution: [
+      { range: "1ヶ月未満 (超高速再会)", count: 15, percentage: 22.5, color: "#004d40", desc: "SNS拡散や直接連絡による即時発見" },
+      { range: "1〜3ヶ月 (自然検索流入)", count: 28, percentage: 35.0, color: "#00796b", desc: "検索エンジンのインデックス化に伴う自然接触" },
+      { range: "3〜6ヶ月 (想い出再訪)", count: 19, percentage: 23.8, color: "#009688", desc: "本人がふと思い出した際の主動検索" },
+      { range: "6ヶ月〜1年 (知人伝聞)", count: 11, percentage: 11.2, color: "#4db6ac", desc: "同窓会や関係者からのまた聞き・紹介" },
+      { range: "1年以上 (数年越しの絆)", count: 7, percentage: 7.5, color: "#80cbc4", desc: "長期間漂流したのちの奇跡の合致" }
+    ],
+    retentionCurve: [
+      { day: "投函翌日 (Day 1)", rate: 94.2, label: "94.2% 再訪", desc: "投函直後の反響確認・修正" },
+      { day: "7日後 (Day 7)", rate: 81.5, label: "81.5% 継続", desc: "週次の新着ボトル確認" },
+      { day: "30日後 (Day 30)", rate: 66.8, label: "66.8% 継続", desc: "月次の想い出検索" },
+      { day: "90日後 (Day 90)", rate: 48.3, label: "48.3% 継続", desc: "長期漂流ボトルの見守り" },
+      { day: "180日後 (Day 180)", rate: 34.0, label: "34.0% 継続", desc: "年次の同窓期・記念日の再訪" }
+    ]
   }
 };
 
@@ -160,7 +182,7 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
   onRefresh,
   isLoading = false
 }) => {
-  const [activeSubView, setActiveSubView] = useState<'funnel' | 'searchDemand' | 'overview' | 'categories' | 'questions' | 'trend' | 'rescue'>('funnel');
+  const [activeSubView, setActiveSubView] = useState<'funnel' | 'searchDemand' | 'driftDuration' | 'overview' | 'categories' | 'questions' | 'trend' | 'rescue'>('funnel');
   const [copiedDemandIndex, setCopiedDemandIndex] = useState<number | null>(null);
   const [searchKeywordFilter, setSearchKeywordFilter] = useState<string>('all');
 
@@ -184,7 +206,8 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
     twoStepQuestionStats = DEFAULT_ANALYTICS_DATA.twoStepQuestionStats,
     dailyQuizTrend = DEFAULT_ANALYTICS_DATA.dailyQuizTrend,
     reunionFunnel = DEFAULT_ANALYTICS_DATA.reunionFunnel,
-    searchDemandAnalytics = DEFAULT_ANALYTICS_DATA.searchDemandAnalytics
+    searchDemandAnalytics = DEFAULT_ANALYTICS_DATA.searchDemandAnalytics,
+    driftDurationAnalytics = DEFAULT_ANALYTICS_DATA.driftDurationAnalytics
   } = activeData;
 
   const handleCopySocialPost = (text: string, index: number) => {
@@ -476,6 +499,18 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
         >
           <Search size={14} className="text-cyan-600" />
           <span>🔍 想い出検索需要 ＆ キーワード分析</span>
+        </button>
+
+        <button
+          onClick={() => setActiveSubView('driftDuration')}
+          className={`px-4 py-2 rounded-xl text-xs font-bold font-sans transition-all flex items-center gap-1.5 cursor-pointer shrink-0 ${
+            activeSubView === 'driftDuration'
+              ? 'bg-neutral-900 text-white shadow-xs'
+              : 'bg-white/80 text-neutral-600 hover:bg-neutral-100'
+          }`}
+        >
+          <Clock size={14} className="text-indigo-600" />
+          <span>⏳ 漂流期間・再訪リテンション</span>
         </button>
 
         <button
@@ -971,6 +1006,161 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
                 </div>
                 <p className="text-[11px] text-neutral-600 leading-relaxed">
                   検索された学校や地域名をXやInstagramで「探している方がいます」と定期ポストすることで、該当地域の同窓生や友人がReMEETsを発見し、ボトル投函と奇跡の再会が次々と連鎖していきます。
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 0.7 ⏳ 漂流期間 ＆ ユーザー再訪リテンション分析 (Drift Duration & Retention Analytics) ビュー */}
+      {activeSubView === 'driftDuration' && (
+        <div className="space-y-6 text-left font-sans">
+          {/* A. 漂流期間 4大KPIカード */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="bg-white/90 p-5 rounded-2xl border border-indigo-100 shadow-xs space-y-2">
+              <div className="flex items-center justify-between text-black/60">
+                <span className="text-[11px] font-bold uppercase tracking-wider font-sans">平均漂流期間 (日数)</span>
+                <Clock size={16} className="text-indigo-600" />
+              </div>
+              <div className="text-3xl font-serif font-bold text-black flex items-baseline gap-1.5">
+                <span>{driftDurationAnalytics.avgDurationDays || '38.5'}</span>
+                <span className="text-sm font-sans text-black/50 font-normal">日</span>
+              </div>
+              <p className="text-[10px] text-black/50">中央値: <strong>{driftDurationAnalytics.medianDurationDays || '26.0'}日</strong> で合意成立</p>
+            </div>
+
+            <div className="bg-white/90 p-5 rounded-2xl border border-emerald-100 shadow-xs space-y-2">
+              <div className="flex items-center justify-between text-black/60">
+                <span className="text-[11px] font-bold uppercase tracking-wider font-sans">1ヶ月以内 マッチング率</span>
+                <Sparkles size={16} className="text-emerald-600" />
+              </div>
+              <div className="text-3xl font-serif font-bold text-emerald-900 flex items-baseline gap-1.5">
+                <span>{driftDurationAnalytics.oneMonthMatchRate || '22.5'}</span>
+                <span className="text-sm font-sans text-emerald-700/60 font-normal">%</span>
+              </div>
+              <p className="text-[10px] text-emerald-800">投函から30日以内に奇跡の再会を達成</p>
+            </div>
+
+            <div className="bg-white/90 p-5 rounded-2xl border border-blue-100 shadow-xs space-y-2">
+              <div className="flex items-center justify-between text-black/60">
+                <span className="text-[11px] font-bold uppercase tracking-wider font-sans">最短マッチング記録</span>
+                <Zap size={16} className="text-blue-600" />
+              </div>
+              <div className="text-3xl font-serif font-bold text-blue-900 flex items-baseline gap-1.5">
+                <span>{driftDurationAnalytics.fastestMatchHours || '2.5'}</span>
+                <span className="text-sm font-sans text-blue-700/60 font-normal">時間</span>
+              </div>
+              <p className="text-[10px] text-blue-800">最長記録: <strong>{driftDurationAnalytics.longestMatchDays || 420}日</strong> の執念合意</p>
+            </div>
+
+            <div className="bg-white/90 p-5 rounded-2xl border border-amber-100 shadow-xs space-y-2">
+              <div className="flex items-center justify-between text-black/60">
+                <span className="text-[11px] font-bold uppercase tracking-wider font-sans">長期漂流ボトル (90日超)</span>
+                <LifeBuoy size={16} className="text-amber-600" />
+              </div>
+              <div className="text-3xl font-serif font-bold text-amber-900 flex items-baseline gap-1.5">
+                <span>{driftDurationAnalytics.longDriftBottlesCount || 14}</span>
+                <span className="text-sm font-sans text-amber-700/60 font-normal">通</span>
+              </div>
+              <p className="text-[10px] text-amber-800">運営によるヒント補正・SNS告知推奨</p>
+            </div>
+          </div>
+
+          {/* B. メイングリッド (左: 漂流期間分布 / 右: ユーザー再訪リテンションカーブ) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            {/* 左側: 漂流日数・所要期間分布 (7カラム) */}
+            <div className="glass-card p-6 sm:p-8 lg:col-span-7 space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-brand-border pb-4">
+                <div>
+                  <h3 className="text-base sm:text-lg font-serif font-bold text-black flex items-center gap-2">
+                    <Clock size={18} className="text-indigo-700" />
+                    想い出が届くまでの所要期間分布
+                  </h3>
+                  <p className="text-xs text-black/55 font-sans">
+                    手紙を海に流してから相手に発見・照合されるまでの期間の内訳
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                {(driftDurationAnalytics.durationDistribution || []).map((item: any, idx: number) => (
+                  <div key={idx} className="p-3.5 rounded-2xl bg-neutral-50/90 border border-neutral-200/80 space-y-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-xs sm:text-sm text-neutral-900">
+                          {item.range}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono font-bold text-xs text-indigo-900">
+                          {item.percentage}% ({item.count}組)
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="w-full bg-neutral-200/60 h-2 rounded-full overflow-hidden">
+                      <div 
+                        className="bg-indigo-600 h-full rounded-full transition-all duration-500" 
+                        style={{ width: `${Math.max(5, item.percentage)}%` }}
+                      />
+                    </div>
+
+                    <p className="text-[10px] text-neutral-500 font-sans">
+                      {item.desc}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* 右側: ユーザー再訪リテンション推移 (5カラム) */}
+            <div className="glass-card p-6 sm:p-8 lg:col-span-5 space-y-6">
+              <div className="border-b border-brand-border pb-4">
+                <div className="flex items-center gap-2">
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-100 text-indigo-900">
+                    RETENTION
+                  </span>
+                  <span className="text-xs text-neutral-500">継続利用</span>
+                </div>
+                <h3 className="text-base sm:text-lg font-serif font-bold text-black mt-1 flex items-center gap-2">
+                  <TrendingUp size={18} className="text-indigo-600" />
+                  投函後の再訪・見守りリテンション
+                </h3>
+                <p className="text-xs text-black/55 font-sans mt-0.5">
+                  ボトルを流したユーザーが、相手からの反応を確認しにサイトを訪れ続ける継続率
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                {(driftDurationAnalytics.retentionCurve || []).map((ret: any, idx: number) => (
+                  <div key={idx} className="p-3.5 rounded-2xl bg-gradient-to-r from-indigo-50/50 to-blue-50/30 border border-indigo-100 space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-xs text-neutral-800">{ret.day}</span>
+                      <span className="font-bold text-xs font-mono text-indigo-800">{ret.label}</span>
+                    </div>
+
+                    <div className="w-full bg-neutral-100 h-2 rounded-full overflow-hidden">
+                      <div 
+                        className="bg-indigo-700 h-full rounded-full transition-all duration-500" 
+                        style={{ width: `${ret.rate}%` }}
+                      />
+                    </div>
+
+                    <p className="text-[10px] text-neutral-500">{ret.desc}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* 情緒的リテンション解説 */}
+              <div className="p-4 rounded-2xl bg-neutral-50 border border-neutral-200 text-xs space-y-1.5">
+                <div className="font-bold text-neutral-900 flex items-center gap-1.5">
+                  <Heart size={14} className="text-pink-600" />
+                  「待つ時間」そのものが価値になるUX
+                </div>
+                <p className="text-[11px] text-neutral-600 leading-relaxed">
+                  ReMEETsのボトルメールは即時マッチングだけでなく、数ヶ月〜数年後に届く「時間差の感動」が特徴です。180日後でも34%のユーザーが定期的にマイページへ想い出を確認しに訪れています。
                 </p>
               </div>
             </div>
