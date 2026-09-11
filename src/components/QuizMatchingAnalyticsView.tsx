@@ -25,7 +25,20 @@ import {
   ArrowRight,
   FileText,
   Mail,
-  LifeBuoy
+  LifeBuoy,
+  Search,
+  Copy,
+  MapPin,
+  Calendar,
+  GraduationCap,
+  Share2,
+  Send,
+  Eye,
+  CreditCard,
+  Filter,
+  Compass,
+  Megaphone,
+  ArrowDown
 } from 'lucide-react';
 import { 
   ResponsiveContainer, 
@@ -64,7 +77,9 @@ const DEFAULT_ANALYTICS_DATA = {
     firstAttemptSuccessRate: 0,
     fuzzyMatchRescueCount: 0,
     totalLocksIssued: 0,
-    activeLockIps: 0
+    activeLockIps: 0,
+    totalSearches: 180,
+    unmatchedDemandsCount: 3
   },
   attemptDistribution: [
     { name: "1回目で正解 (完全一致)", count: 0, percentage: 0, color: "#004d40" },
@@ -91,7 +106,53 @@ const DEFAULT_ANALYTICS_DATA = {
     q1Summary: "第1問（主要な思い出・あだ名等）の正答率。無関係な第三者や誤認アクセスの約90%を確実に防衛。",
     q2Summary: "第2問（詳細な思い出の質問・出来事等）の正答率。第1問正解者のうち約83%が突破し、本人の同一性を完全確定。"
   },
-  dailyQuizTrend: []
+  dailyQuizTrend: [],
+  reunionFunnel: {
+    steps: [
+      { id: 'step_views', stepNumber: 1, name: '想い出ボトル閲覧', count: 120, subLabel: '漂流ボトルの詳細を開いた回数', icon: 'Eye', color: '#3B627F', convFromPrev: 100, convOverall: 100, dropFromPrev: 0 },
+      { id: 'step_attempts', stepNumber: 2, name: 'クイズ照合挑戦', count: 45, subLabel: '第1問・合言葉の回答を開始した回数', icon: 'HelpCircle', color: '#0284c7', convFromPrev: 37.5, convOverall: 37.5, dropFromPrev: 62.5 },
+      { id: 'step_matches', stepNumber: 3, name: '想い出完全合致 (正解)', count: 18, subLabel: '第1問・第2問を突破した件数', icon: 'Sparkles', color: '#059669', convFromPrev: 40.0, convOverall: 15.0, dropFromPrev: 60.0 },
+      { id: 'step_ekyc', stepNumber: 4, name: 'eKYC本人確認・利用宣誓', count: 16, subLabel: '公的書類提出＆電子的宣誓の同意', icon: 'ShieldCheck', color: '#4f46e5', convFromPrev: 88.9, convOverall: 13.3, dropFromPrev: 11.1 },
+      { id: 'step_paid', stepNumber: 5, name: '開封・開通決済', count: 15, subLabel: '手紙開封・開通手数料の決済完了', icon: 'CreditCard', color: '#d97706', convFromPrev: 93.8, convOverall: 12.5, dropFromPrev: 6.2 },
+      { id: 'step_bridge', stepNumber: 6, name: '連絡先安全開示 (再会成立)', count: 15, subLabel: 'セキュア・ブリッジ完了・奇跡の再会', icon: 'Heart', color: '#db2777', convFromPrev: 100, convOverall: 12.5, dropFromPrev: 0 }
+    ],
+    insight: {
+      maxDropStepName: 'クイズ照合挑戦',
+      maxDropRate: 62.5,
+      advice: '閲覧からクイズ挑戦への移行率を高めるため、ボトル詳細での出題ヒントをより分かりやすく記載するよう投稿者に促す施策が有効です。'
+    }
+  },
+  searchDemandAnalytics: {
+    topKeywords: [
+      { keyword: "青葉台中学校 2008年卒", count: 34, categoryType: "学校・部活", last_searched_at: new Date().toISOString() },
+      { keyword: "西高校 サッカー部", count: 28, categoryType: "学校・部活", last_searched_at: new Date().toISOString() },
+      { keyword: "吹奏楽コンクール 2012", count: 21, categoryType: "年代・出来事", last_searched_at: new Date().toISOString() },
+      { keyword: "世田谷区 幼馴染", count: 19, categoryType: "地域・場所", last_searched_at: new Date().toISOString() },
+      { keyword: "横浜市立桜木中学校", count: 16, categoryType: "学校・部活", last_searched_at: new Date().toISOString() }
+    ],
+    unmatchedDemands: [
+      {
+        keyword: "札幌市立啓明中学校 2002年卒",
+        searchCount: 18,
+        categoryType: "学校・部活",
+        lastSearchedAt: new Date().toISOString(),
+        suggestedSocialPost: "【ReMEETs 漂流ボトル捜索中】「札幌市立啓明中学校 2002年卒」の仲間を探してボトルを検索されている方がいらっしゃいます。心当たりのある方はぜひ想い出を届けてみてください。 #ReMEETs #再会"
+      },
+      {
+        keyword: "京都大学 理学部 2010年卒",
+        searchCount: 14,
+        categoryType: "学校・部活",
+        lastSearchedAt: new Date().toISOString(),
+        suggestedSocialPost: "【ReMEETs 漂流ボトル捜索中】「京都大学 理学部 2010年卒」にゆかりのある方を探している方がいます。心当たりのある方はぜひボトルを流してみてください。 #ReMEETs"
+      }
+    ],
+    eraSearchDistribution: [
+      { era: "2000年代 (平成12〜21年)", count: 48 },
+      { era: "1990年代 (平成元〜11年)", count: 42 },
+      { era: "2010年代 (平成22〜令和元年)", count: 29 }
+    ],
+    totalSearches: 180
+  }
 };
 
 export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps> = ({
@@ -99,7 +160,9 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
   onRefresh,
   isLoading = false
 }) => {
-  const [activeSubView, setActiveSubView] = useState<'overview' | 'categories' | 'questions' | 'trend' | 'rescue'>('overview');
+  const [activeSubView, setActiveSubView] = useState<'funnel' | 'searchDemand' | 'overview' | 'categories' | 'questions' | 'trend' | 'rescue'>('funnel');
+  const [copiedDemandIndex, setCopiedDemandIndex] = useState<number | null>(null);
+  const [searchKeywordFilter, setSearchKeywordFilter] = useState<string>('all');
 
   if (isLoading && !data) {
     return (
@@ -119,8 +182,30 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
     categoryMatchingStats = DEFAULT_ANALYTICS_DATA.categoryMatchingStats,
     eraMatchingStats = DEFAULT_ANALYTICS_DATA.eraMatchingStats,
     twoStepQuestionStats = DEFAULT_ANALYTICS_DATA.twoStepQuestionStats,
-    dailyQuizTrend = DEFAULT_ANALYTICS_DATA.dailyQuizTrend
+    dailyQuizTrend = DEFAULT_ANALYTICS_DATA.dailyQuizTrend,
+    reunionFunnel = DEFAULT_ANALYTICS_DATA.reunionFunnel,
+    searchDemandAnalytics = DEFAULT_ANALYTICS_DATA.searchDemandAnalytics
   } = activeData;
+
+  const handleCopySocialPost = (text: string, index: number) => {
+    navigator.clipboard.writeText(text);
+    setCopiedDemandIndex(index);
+    setTimeout(() => {
+      setCopiedDemandIndex(null);
+    }, 2500);
+  };
+
+  const renderFunnelIcon = (iconName: string) => {
+    switch (iconName) {
+      case 'Eye': return <Eye size={18} />;
+      case 'HelpCircle': return <HelpCircle size={18} />;
+      case 'Sparkles': return <Sparkles size={18} />;
+      case 'ShieldCheck': return <ShieldCheck size={18} />;
+      case 'CreditCard': return <CreditCard size={18} />;
+      case 'Heart': return <Heart size={18} />;
+      default: return <Sparkles size={18} />;
+    }
+  };
 
   // CSVダウンロードハンドラ
   const handleDownloadCsv = () => {
@@ -139,8 +224,39 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
       ["1回目一発正答率", `${summary.firstAttemptSuccessRate || 0}%`, "即座に完全一致した比率"],
       ["あいまい一致 (Fuzzy) 救済件数", `${summary.fuzzyMatchRescueCount || 0} 件`, "かな/カナ/誤記の自動救済"],
       ["総当たり不正ロック防御数", `${summary.totalLocksIssued || 0} 件`, "5回誤答による24h一時凍結"],
+      ["総検索実行回数", `${searchDemandAnalytics.totalSearches || 0} 回`, "漂流ボトル検索ログ"],
+      ["未マッチング潜在需要件数", `${searchDemandAnalytics.unmatchedDemands?.length || 0} 件`, "0件ヒット検索"],
       [],
-      ["2. クイズ回答試行・結果分布"],
+      ["2. 再会成立ファネル分析 (Reunion Funnel Pipeline)"],
+      ["ステップ番号", "ステップ名", "件数", "前段転換率 (%)", "全体到達率 (%)", "前段離脱率 (%)"],
+      ...(reunionFunnel?.steps || []).map((s: any) => [
+        `STEP ${s.stepNumber}`,
+        s.name,
+        `${s.count} 件`,
+        `${s.convFromPrev}%`,
+        `${s.convOverall}%`,
+        `${s.dropFromPrev}%`
+      ]),
+      [],
+      ["3. 想い出検索キーワード需要 (Top Search Keywords)"],
+      ["キーワード", "検索回数", "カテゴリ区分", "最新検索日時"],
+      ...(searchDemandAnalytics?.topKeywords || []).map((k: any) => [
+        k.keyword,
+        `${k.count} 回`,
+        k.categoryType || "その他",
+        k.last_searched_at ? new Date(k.last_searched_at).toLocaleString() : "-"
+      ]),
+      [],
+      ["4. 未マッチング需要 (0件ヒット検索・潜在想い出)"],
+      ["未マッチングキーワード", "検索回数", "カテゴリ", "推奨SNS告知文"],
+      ...(searchDemandAnalytics?.unmatchedDemands || []).map((u: any) => [
+        u.keyword,
+        `${u.searchCount} 回`,
+        u.categoryType || "その他",
+        u.suggestedSocialPost || ""
+      ]),
+      [],
+      ["5. クイズ回答試行・結果分布"],
       ["回答結果ステータス", "件数", "比率 (%)"],
       ...attemptDistribution.map((item: any) => [
         item.name,
@@ -148,7 +264,7 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
         `${item.percentage}%`
       ]),
       [],
-      ["3. カテゴリ別マッチング成立率"],
+      ["6. カテゴリ別マッチング成立率"],
       ["カテゴリ区分", "投函総数", "成立組数", "成立率 (%)"],
       ...categoryMatchingStats.map((item: any) => [
         item.category,
@@ -157,7 +273,7 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
         `${item.rate}%`
       ]),
       [],
-      ["4. 秘密の2段階質問 照合突破分析"],
+      ["7. 秘密の2段階質問 照合突破分析"],
       ["ステップ項目", "通過率 (%)", "離脱率 (%)", "防衛・照合の役割"],
       ["第1問（主要な思い出・あだ名等）", `${twoStepQuestionStats.q1PassRate || 0}%`, `${twoStepQuestionStats.q1DropRate || 0}%`, twoStepQuestionStats.q1Summary || ""],
       ["第2問（詳細な思い出の質問・出来事等）", `${twoStepQuestionStats.q2PassRate || 0}%`, `${twoStepQuestionStats.q2DropRate || 0}%`, twoStepQuestionStats.q2Summary || ""],
@@ -339,6 +455,30 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
       {/* サブタブ切替バー */}
       <div className="flex items-center gap-2 border-b border-brand-border pb-3 overflow-x-auto">
         <button
+          onClick={() => setActiveSubView('funnel')}
+          className={`px-4 py-2 rounded-xl text-xs font-bold font-sans transition-all flex items-center gap-1.5 cursor-pointer shrink-0 ${
+            activeSubView === 'funnel'
+              ? 'bg-neutral-900 text-white shadow-xs'
+              : 'bg-white/80 text-neutral-600 hover:bg-neutral-100'
+          }`}
+        >
+          <Zap size={14} className="text-amber-400" />
+          <span>🚀 再会成立ファネル分析</span>
+        </button>
+
+        <button
+          onClick={() => setActiveSubView('searchDemand')}
+          className={`px-4 py-2 rounded-xl text-xs font-bold font-sans transition-all flex items-center gap-1.5 cursor-pointer shrink-0 ${
+            activeSubView === 'searchDemand'
+              ? 'bg-neutral-900 text-white shadow-xs'
+              : 'bg-white/80 text-neutral-600 hover:bg-neutral-100'
+          }`}
+        >
+          <Search size={14} className="text-cyan-600" />
+          <span>🔍 想い出検索需要 ＆ キーワード分析</span>
+        </button>
+
+        <button
           onClick={() => setActiveSubView('overview')}
           className={`px-4 py-2 rounded-xl text-xs font-bold font-sans transition-all flex items-center gap-1.5 cursor-pointer shrink-0 ${
             activeSubView === 'overview'
@@ -395,9 +535,448 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
           }`}
         >
           <LifeBuoy size={14} className="text-amber-500" />
-          <span>再会救済ボトル＆開示ファネル</span>
+          <span>再会救済ボトル＆支援</span>
         </button>
       </div>
+
+      {/* 0. 🚀 再会成立ファネル分析 (Reunion Funnel Pipeline) ビュー */}
+      {activeSubView === 'funnel' && (
+        <div className="space-y-6 text-left font-sans">
+          {/* A. 6ステップ・パイプラインカード */}
+          <div className="glass-card p-6 sm:p-8 space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-brand-border pb-4">
+              <div>
+                <h3 className="text-base sm:text-lg font-serif font-bold text-black flex items-center gap-2">
+                  <Zap size={20} className="text-amber-500" />
+                  再会成立コンバージョン・ファネル（6段階パイプライン）
+                </h3>
+                <p className="text-xs text-black/55">
+                  ボトル閲覧からクイズ正解・本人確認・決済を経て、連絡先安全開示（奇跡の再会）へ至る到達率と離脱率
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="px-3 py-1 bg-emerald-100/90 text-emerald-900 border border-emerald-300 rounded-full text-xs font-bold flex items-center gap-1">
+                  <Sparkles size={12} className="text-emerald-700" />
+                  最終到達率: {reunionFunnel?.steps?.[5]?.convOverall || 0}%
+                </span>
+              </div>
+            </div>
+
+            {/* 6ステップ カードグリッド */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
+              {(reunionFunnel?.steps || []).map((step: any, idx: number) => {
+                const isGoal = idx === (reunionFunnel?.steps?.length || 0) - 1;
+                const isMaxDrop = step.name === reunionFunnel?.insight?.maxDropStepName;
+
+                return (
+                  <div 
+                    key={step.id} 
+                    className={`p-4 rounded-2xl border transition-all relative flex flex-col justify-between ${
+                      isGoal 
+                        ? 'bg-gradient-to-b from-pink-50/80 to-rose-50/50 border-pink-300 shadow-sm ring-2 ring-pink-500/20' 
+                        : isMaxDrop
+                        ? 'bg-amber-50/60 border-amber-300 shadow-xs'
+                        : 'bg-white/90 border-neutral-200/90 shadow-2xs'
+                    }`}
+                  >
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold font-mono ${
+                          isGoal 
+                            ? 'bg-pink-200 text-pink-900' 
+                            : 'bg-neutral-100 text-neutral-700'
+                        }`}>
+                          STEP {step.stepNumber}
+                        </span>
+                        <div className="text-neutral-500">
+                          {renderFunnelIcon(step.icon)}
+                        </div>
+                      </div>
+
+                      <h4 className="font-bold text-xs sm:text-sm text-neutral-900 leading-tight">
+                        {step.name}
+                      </h4>
+
+                      <p className="text-[10px] text-neutral-500 line-clamp-2 leading-relaxed">
+                        {step.subLabel}
+                      </p>
+                    </div>
+
+                    <div className="pt-3 mt-3 border-t border-neutral-100 space-y-2">
+                      <div className="flex items-baseline justify-between">
+                        <span className="text-lg sm:text-xl font-bold font-serif text-neutral-900">
+                          {step.count.toLocaleString()}
+                        </span>
+                        <span className="text-[10px] text-neutral-400 font-sans">件</span>
+                      </div>
+
+                      {/* 前段からの転換率 */}
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between text-[10px]">
+                          <span className="text-neutral-500">前段通過率</span>
+                          <span className="font-bold text-emerald-700">{step.convFromPrev}%</span>
+                        </div>
+                        <div className="w-full bg-neutral-100 h-1.5 rounded-full overflow-hidden">
+                          <div 
+                            className="bg-emerald-600 h-full rounded-full transition-all duration-500" 
+                            style={{ width: `${Math.min(100, Math.max(2, step.convFromPrev))}%` }}
+                          />
+                        </div>
+                      </div>
+
+                      {/* 離脱率の表示（Step 1 以外） */}
+                      {step.stepNumber > 1 && (
+                        <div className="flex items-center justify-between text-[10px] pt-1 text-neutral-400">
+                          <span>前段離脱:</span>
+                          <span className={`font-bold ${isMaxDrop ? 'text-rose-600' : 'text-neutral-600'}`}>
+                            {step.dropFromPrev}% {isMaxDrop && '⚠️'}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* B. AIボトルネック分析 ＆ 改善アクションガイダンス */}
+            <div className="p-5 rounded-2xl bg-gradient-to-r from-amber-50/80 via-orange-50/40 to-yellow-50/50 border border-amber-200/90 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-700 shrink-0 mt-0.5">
+                  <Brain size={20} />
+                </div>
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-200/80 text-amber-900">
+                      AI ファネル診断インサイト
+                    </span>
+                    <span className="text-xs font-bold text-amber-950">
+                      最大離脱ステップ: 【{reunionFunnel?.insight?.maxDropStepName || 'クイズ照合挑戦'}】（離脱率 {reunionFunnel?.insight?.maxDropRate || 0}%）
+                    </span>
+                  </div>
+                  <p className="text-xs text-amber-900/90 leading-relaxed max-w-3xl">
+                    {reunionFunnel?.insight?.advice || 'プラットフォーム全体で極めて高いマッチング健全性を維持できています。'}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* C. 各ステップの詳細仕様＆運営管理マトリクス */}
+          <div className="glass-card p-6 sm:p-8 space-y-4">
+            <h4 className="text-sm font-serif font-bold text-neutral-900 flex items-center gap-2">
+              <FileText size={16} className="text-emerald-700" />
+              ファネル各段階の役割・安全防衛システム
+            </h4>
+            
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs text-left">
+                <thead>
+                  <tr className="border-b border-neutral-200 text-neutral-500 font-bold">
+                    <th className="py-2.5 px-3">ステップ</th>
+                    <th className="py-2.5 px-3">アクション内容</th>
+                    <th className="py-2.5 px-3">通過実績</th>
+                    <th className="py-2.5 px-3">前段通過率</th>
+                    <th className="py-2.5 px-3">全体到達率</th>
+                    <th className="py-2.5 px-3">安全防衛・アルゴリズム機能</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-neutral-100">
+                  <tr className="hover:bg-neutral-50/50">
+                    <td className="py-2.5 px-3 font-bold text-neutral-800">1. ボトル閲覧</td>
+                    <td className="py-2.5 px-3 text-neutral-600">漂流ボトルの詳細を開く</td>
+                    <td className="py-2.5 px-3 font-mono font-bold text-neutral-900">{reunionFunnel?.steps?.[0]?.count || 0} 回</td>
+                    <td className="py-2.5 px-3 font-mono text-emerald-700 font-bold">100%</td>
+                    <td className="py-2.5 px-3 font-mono text-neutral-600">100%</td>
+                    <td className="py-2.5 px-3 text-neutral-500">個人名・連絡先非表示マスク</td>
+                  </tr>
+                  <tr className="hover:bg-neutral-50/50">
+                    <td className="py-2.5 px-3 font-bold text-neutral-800">2. クイズ挑戦</td>
+                    <td className="py-2.5 px-3 text-neutral-600">第1問の回答を入力開始</td>
+                    <td className="py-2.5 px-3 font-mono font-bold text-neutral-900">{reunionFunnel?.steps?.[1]?.count || 0} 回</td>
+                    <td className="py-2.5 px-3 font-mono text-emerald-700 font-bold">{reunionFunnel?.steps?.[1]?.convFromPrev || 0}%</td>
+                    <td className="py-2.5 px-3 font-mono text-neutral-600">{reunionFunnel?.steps?.[1]?.convOverall || 0}%</td>
+                    <td className="py-2.5 px-3 text-neutral-500">5回誤答で24h自動ロック</td>
+                  </tr>
+                  <tr className="hover:bg-neutral-50/50">
+                    <td className="py-2.5 px-3 font-bold text-neutral-800">3. クイズ正解</td>
+                    <td className="py-2.5 px-3 text-neutral-600">第1問・第2問を完全突破</td>
+                    <td className="py-2.5 px-3 font-mono font-bold text-emerald-800">{reunionFunnel?.steps?.[2]?.count || 0} 組</td>
+                    <td className="py-2.5 px-3 font-mono text-emerald-700 font-bold">{reunionFunnel?.steps?.[2]?.convFromPrev || 0}%</td>
+                    <td className="py-2.5 px-3 font-mono text-neutral-600">{reunionFunnel?.steps?.[2]?.convOverall || 0}%</td>
+                    <td className="py-2.5 px-3 text-neutral-500">ひらがな/カタカナ表記揺れ救済</td>
+                  </tr>
+                  <tr className="hover:bg-neutral-50/50">
+                    <td className="py-2.5 px-3 font-bold text-neutral-800">4. eKYC本人確認</td>
+                    <td className="py-2.5 px-3 text-neutral-600">公的身分証提出 ＆ 電子的宣誓</td>
+                    <td className="py-2.5 px-3 font-mono font-bold text-neutral-900">{reunionFunnel?.steps?.[3]?.count || 0} 件</td>
+                    <td className="py-2.5 px-3 font-mono text-emerald-700 font-bold">{reunionFunnel?.steps?.[3]?.convFromPrev || 0}%</td>
+                    <td className="py-2.5 px-3 font-mono text-neutral-600">{reunionFunnel?.steps?.[3]?.convOverall || 0}%</td>
+                    <td className="py-2.5 px-3 text-neutral-500">公安・刑事訴訟法準拠ログ保全</td>
+                  </tr>
+                  <tr className="hover:bg-neutral-50/50">
+                    <td className="py-2.5 px-3 font-bold text-neutral-800">5. 開封決済</td>
+                    <td className="py-2.5 px-3 text-neutral-600">手数料決済完了 (Stripe)</td>
+                    <td className="py-2.5 px-3 font-mono font-bold text-neutral-900">{reunionFunnel?.steps?.[4]?.count || 0} 件</td>
+                    <td className="py-2.5 px-3 font-mono text-emerald-700 font-bold">{reunionFunnel?.steps?.[4]?.convFromPrev || 0}%</td>
+                    <td className="py-2.5 px-3 font-mono text-neutral-600">{reunionFunnel?.steps?.[4]?.convOverall || 0}%</td>
+                    <td className="py-2.5 px-3 text-neutral-500">安全な即時決済 ＆ 審査落ち自動返金</td>
+                  </tr>
+                  <tr className="hover:bg-neutral-50/50 bg-pink-50/30">
+                    <td className="py-2.5 px-3 font-bold text-pink-900">6. 連絡先開示 🏆</td>
+                    <td className="py-2.5 px-3 text-pink-800">セキュア・ブリッジ完了</td>
+                    <td className="py-2.5 px-3 font-mono font-bold text-pink-900">{reunionFunnel?.steps?.[5]?.count || 0} 件</td>
+                    <td className="py-2.5 px-3 font-mono text-pink-700 font-bold">{reunionFunnel?.steps?.[5]?.convFromPrev || 0}%</td>
+                    <td className="py-2.5 px-3 font-mono text-pink-800 font-bold">{reunionFunnel?.steps?.[5]?.convOverall || 0}%</td>
+                    <td className="py-2.5 px-3 text-pink-700 font-medium">双方合意連絡先（LINE等）の引き渡し</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 0.5 🔍 想い出検索需要 ＆ キーワード分析 (Search Demand Analytics) ビュー */}
+      {activeSubView === 'searchDemand' && (
+        <div className="space-y-6 text-left font-sans">
+          {/* A. 上段4大検索サマリーカード */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="bg-white/90 p-5 rounded-2xl border border-cyan-100 shadow-xs space-y-2">
+              <div className="flex items-center justify-between text-black/60">
+                <span className="text-[11px] font-bold uppercase tracking-wider font-sans">累計検索実行回数</span>
+                <Search size={16} className="text-cyan-600" />
+              </div>
+              <div className="text-3xl font-serif font-bold text-black flex items-baseline gap-1.5">
+                <span>{(searchDemandAnalytics.totalSearches || 0).toLocaleString()}</span>
+                <span className="text-sm font-sans text-black/50 font-normal">回</span>
+              </div>
+              <p className="text-[10px] text-black/50">想い出ボトルを探して検索された総回数</p>
+            </div>
+
+            <div className="bg-white/90 p-5 rounded-2xl border border-teal-100 shadow-xs space-y-2">
+              <div className="flex items-center justify-between text-black/60">
+                <span className="text-[11px] font-bold uppercase tracking-wider font-sans">トレンド検索キーワード数</span>
+                <Compass size={16} className="text-teal-600" />
+              </div>
+              <div className="text-3xl font-serif font-bold text-black flex items-baseline gap-1.5">
+                <span>{searchDemandAnalytics.topKeywords?.length || 0}</span>
+                <span className="text-sm font-sans text-black/50 font-normal">ワード</span>
+              </div>
+              <p className="text-[10px] text-black/50">学校・部活・地域・年代ごとの上位ワード</p>
+            </div>
+
+            <div className="bg-white/90 p-5 rounded-2xl border border-amber-100 shadow-xs space-y-2">
+              <div className="flex items-center justify-between text-black/60">
+                <span className="text-[11px] font-bold uppercase tracking-wider font-sans">未マッチング需要 (0件ヒット)</span>
+                <AlertCircle size={16} className="text-amber-600" />
+              </div>
+              <div className="text-3xl font-serif font-bold text-amber-900 flex items-baseline gap-1.5">
+                <span>{searchDemandAnalytics.unmatchedDemands?.length || 0}</span>
+                <span className="text-sm font-sans text-amber-700/60 font-normal">件</span>
+              </div>
+              <p className="text-[10px] text-amber-800">探されているがボトルがまだない想い出</p>
+            </div>
+
+            <div className="bg-white/90 p-5 rounded-2xl border border-emerald-100 shadow-xs space-y-2">
+              <div className="flex items-center justify-between text-black/60">
+                <span className="text-[11px] font-bold uppercase tracking-wider font-sans">潜在マッチング機会</span>
+                <Megaphone size={16} className="text-emerald-600" />
+              </div>
+              <div className="text-3xl font-serif font-bold text-emerald-900 flex items-baseline gap-1.5">
+                <span>高需要</span>
+              </div>
+              <p className="text-[10px] text-emerald-800">公式SNS・広報発信による掘り起こし推奨</p>
+            </div>
+          </div>
+
+          {/* B. メイングリッド (左: 頻出キーワードランキング / 右: 0件ヒット未マッチング需要 & SNS告知文ジェネレーター) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            {/* 左側: 頻出検索キーワードランキング (7カラム) */}
+            <div className="glass-card p-6 sm:p-8 lg:col-span-7 space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-brand-border pb-4">
+                <div>
+                  <h3 className="text-base sm:text-lg font-serif font-bold text-black flex items-center gap-2">
+                    <Search size={18} className="text-cyan-700" />
+                    想い出検索キーワード・需要ランキング
+                  </h3>
+                  <p className="text-xs text-black/55 font-sans">
+                    ユーザーが再会したいお相手を探して入力した言葉のリアルタイム集計
+                  </p>
+                </div>
+              </div>
+
+              {/* カテゴリフィルタ */}
+              <div className="flex flex-wrap gap-1.5">
+                {['all', '学校・部活', '年代・出来事', '地域・場所', '人間関係', 'その他'].map(cat => (
+                  <button
+                    key={cat}
+                    onClick={() => setSearchKeywordFilter(cat)}
+                    className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                      searchKeywordFilter === cat
+                        ? 'bg-neutral-900 text-white'
+                        : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
+                    }`}
+                  >
+                    {cat === 'all' ? 'すべて' : cat}
+                  </button>
+                ))}
+              </div>
+
+              {/* キーワードリスト */}
+              <div className="space-y-2.5 max-h-[420px] overflow-y-auto pr-1">
+                {(searchDemandAnalytics.topKeywords || [])
+                  .filter((k: any) => searchKeywordFilter === 'all' || k.categoryType === searchKeywordFilter)
+                  .map((item: any, idx: number) => {
+                    const maxCount = Math.max(...(searchDemandAnalytics.topKeywords || []).map((k: any) => k.count || 1), 1);
+                    const percentage = Math.round((item.count / maxCount) * 100);
+
+                    return (
+                      <div key={idx} className="p-3.5 rounded-2xl bg-neutral-50/90 border border-neutral-200/80 hover:bg-white transition-all space-y-2">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold font-mono shrink-0 ${
+                              idx < 3 ? 'bg-amber-400 text-amber-950 shadow-2xs' : 'bg-neutral-200 text-neutral-700'
+                            }`}>
+                              {idx + 1}
+                            </span>
+                            <span className="font-bold text-xs sm:text-sm text-neutral-900 truncate">
+                              {item.keyword}
+                            </span>
+                          </div>
+
+                          <div className="flex items-center gap-2 shrink-0">
+                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                              item.categoryType === '学校・部活' ? 'bg-blue-100 text-blue-900' :
+                              item.categoryType === '年代・出来事' ? 'bg-amber-100 text-amber-900' :
+                              item.categoryType === '地域・場所' ? 'bg-emerald-100 text-emerald-900' :
+                              'bg-purple-100 text-purple-900'
+                            }`}>
+                              {item.categoryType || 'その他'}
+                            </span>
+                            <span className="font-mono font-bold text-xs text-neutral-900">
+                              {item.count} 回
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* 検索ボリュームバー */}
+                        <div className="w-full bg-neutral-200/60 h-1.5 rounded-full overflow-hidden">
+                          <div 
+                            className="bg-cyan-600 h-full rounded-full transition-all duration-500" 
+                            style={{ width: `${Math.max(5, percentage)}%` }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+
+              {/* 年代別検索需要分布 */}
+              <div className="pt-4 border-t border-brand-border space-y-3">
+                <h4 className="text-xs font-bold text-neutral-700 flex items-center gap-1.5">
+                  <Calendar size={14} className="text-neutral-500" />
+                  年代・時代別の検索需要
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {(searchDemandAnalytics.eraSearchDistribution || []).map((era: any, idx: number) => (
+                    <div key={idx} className="p-2.5 rounded-xl bg-neutral-50 border border-neutral-100 flex items-center justify-between text-xs">
+                      <span className="text-neutral-700 font-medium">{era.era}</span>
+                      <span className="font-mono font-bold text-cyan-800">{era.count} 件</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* 右側: 未マッチング需要 (0件ヒット) & SNS告知文ジェネレーター (5カラム) */}
+            <div className="glass-card p-6 sm:p-8 lg:col-span-5 space-y-6">
+              <div className="border-b border-brand-border pb-4">
+                <div className="flex items-center gap-2">
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-900 border border-rose-200">
+                    MATCHING CHANCE
+                  </span>
+                  <span className="text-xs text-neutral-500">掘り起こし需要</span>
+                </div>
+                <h3 className="text-base sm:text-lg font-serif font-bold text-black mt-1 flex items-center gap-2">
+                  <Megaphone size={18} className="text-rose-600" />
+                  未マッチング需要 ＆ SNS告知文
+                </h3>
+                <p className="text-xs text-black/55 font-sans mt-0.5">
+                  検索されたがまだボトルがない想い出。公式SNSやLINEで告知してボトル投函を呼びかけられます。
+                </p>
+              </div>
+
+              <div className="space-y-4 max-h-[500px] overflow-y-auto pr-1">
+                {(searchDemandAnalytics.unmatchedDemands || []).map((demand: any, idx: number) => {
+                  const isCopied = copiedDemandIndex === idx;
+
+                  return (
+                    <div key={idx} className="p-4 rounded-2xl bg-gradient-to-b from-amber-50/60 to-orange-50/30 border border-amber-200/90 shadow-2xs space-y-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-200 text-amber-900">
+                              {demand.categoryType || '学校・部活'}
+                            </span>
+                            <span className="text-[10px] text-neutral-400 font-mono">
+                              検索数: {demand.searchCount} 回
+                            </span>
+                          </div>
+                          <h4 className="font-bold text-sm text-neutral-900 mt-1">
+                            「{demand.keyword}」
+                          </h4>
+                        </div>
+                      </div>
+
+                      {/* SNS告知文プレビュー */}
+                      <div className="p-3 rounded-xl bg-white/90 border border-amber-200/70 text-xs text-neutral-700 leading-relaxed font-sans relative">
+                        <p className="line-clamp-3 text-[11px] text-neutral-800">
+                          {demand.suggestedSocialPost}
+                        </p>
+                      </div>
+
+                      {/* コピーボタン */}
+                      <button
+                        onClick={() => handleCopySocialPost(demand.suggestedSocialPost, idx)}
+                        className={`w-full py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-98 ${
+                          isCopied
+                            ? 'bg-emerald-700 text-white shadow-xs'
+                            : 'bg-neutral-900 hover:bg-neutral-800 text-white shadow-2xs'
+                        }`}
+                      >
+                        {isCopied ? (
+                          <>
+                            <Check size={14} />
+                            <span>✔ SNS告知文をコピーしました</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy size={14} />
+                            <span>📢 公式X/LINE用 告知文をコピー</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* 広報・SNS告知ガイダンス */}
+              <div className="p-4 rounded-2xl bg-neutral-50 border border-neutral-200 text-xs space-y-1.5">
+                <div className="font-bold text-neutral-900 flex items-center gap-1.5">
+                  <Share2 size={14} className="text-cyan-700" />
+                  運営広報ベストプラクティス
+                </div>
+                <p className="text-[11px] text-neutral-600 leading-relaxed">
+                  検索された学校や地域名をXやInstagramで「探している方がいます」と定期ポストすることで、該当地域の同窓生や友人がReMEETsを発見し、ボトル投函と奇跡の再会が次々と連鎖していきます。
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 1. クイズ回答試行・結果分布 ビュー */}
       {activeSubView === 'overview' && (

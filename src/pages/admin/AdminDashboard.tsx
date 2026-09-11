@@ -958,7 +958,7 @@ export const AdminDashboard = () => {
       title: 'Main Menu',
       items: [
         { id: 'stats', label: '概要', icon: Activity },
-        { id: 'quizAnalytics', label: '思い出ボトル・クイズ分析', icon: Brain },
+        { id: 'quizAnalytics', label: '再会ファネル ＆ 検索需要分析', icon: Brain },
         { id: 'settings', label: 'サイト設定', icon: Settings },
         { id: 'users', label: 'ユーザー', icon: Users },
         { id: 'posts', label: 'ボトルメール', icon: Mail },
