@@ -4949,7 +4949,7 @@ export const AdminDashboard = () => {
               className="relative w-full max-w-5xl bg-slate-900 border-2 border-amber-500/50 rounded-3xl shadow-2xl overflow-hidden flex flex-col my-4 text-slate-100"
             >
               {/* モーダルヘッダー（印刷非表示アクションバー） */}
-              <div className="p-5 bg-slate-950 border-b border-slate-800 flex flex-wrap items-center justify-between gap-4 print-hidden">
+              <div className="p-5 bg-slate-950 border-b border-slate-800 flex flex-wrap items-center justify-between gap-4 print-hidden pr-16">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-bold text-xl">
                     🚔
@@ -4989,14 +4989,18 @@ export const AdminDashboard = () => {
                     <Download size={14} />
                     <span>JSON一括保存</span>
                   </button>
-                  <button 
-                    onClick={() => setPoliceReportData(null)}
-                    className="p-2 hover:bg-slate-800 text-slate-400 hover:text-white rounded-full transition-colors cursor-pointer"
-                  >
-                    <X size={20} />
-                  </button>
                 </div>
               </div>
+
+              {/* 独立した閉じるXボタン（右上配置・丸枠デザイン） */}
+              <button 
+                onClick={() => setPoliceReportData(null)}
+                className="absolute top-4 right-4 sm:top-5 sm:right-5 w-9 h-9 rounded-full bg-slate-800/90 hover:bg-slate-700 border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-white flex items-center justify-center transition-all cursor-pointer z-20 shadow-md active:scale-90 print:hidden print-hidden"
+                aria-label="閉じる"
+                title="閉じる"
+              >
+                <X size={18} />
+              </button>
 
               {/* 書面本文領域 */}
               <div className="p-6 md:p-10 space-y-8 overflow-y-auto max-h-[80vh] bg-slate-900 text-slate-200 font-sans print:p-0 print:bg-white print:text-black print:max-h-none">
