@@ -1000,6 +1000,7 @@ export const AdminDashboard = () => {
     {
       title: 'Support & UI Specs',
       items: [
+        { id: 'assetCleaner', label: '画像アセット管理 ＆\n生成画像アーカイブ', icon: ImageIcon },
         { id: 'masterMemo', label: '運営方針・意思決定備忘録', icon: FileText, onClick: () => { setActiveTab('masterMemo'); } },
         { id: 'deployment', label: '本番デプロイ・広報ライブラリ', icon: Rocket, onClick: () => { setActiveTab('deployment'); setGuideDocType('deployment'); } },
         { id: 'manual', label: '管理画面操作マニュアル', icon: BookOpen },

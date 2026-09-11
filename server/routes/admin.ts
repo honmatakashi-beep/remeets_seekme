@@ -5885,7 +5885,8 @@ ReMEETs カスタマーサポート運営事務局
     try {
       const rootDir = process.cwd();
       const targetDirs = [
-        { dir: "src/assets/images", label: "src/assets/images" },
+        { dir: "src/assets/images", label: "src/assets/images (現行)" },
+        { dir: "src/assets/images/archive", label: "src/assets/images/archive (アーカイブ)" },
         { dir: "public", label: "public" }
       ];
 

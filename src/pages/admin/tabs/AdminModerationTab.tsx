@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import {
-  Bot, Trash2, FileText, X, Download, UserX, Shield, ShieldAlert, Sparkles, AlertTriangle, CheckCircle2, Play, RefreshCw,
+  Bot, Trash2, FileText, X, Download, UserX, Shield, ShieldAlert, Sparkles, AlertTriangle, CheckCircle2, CheckCircle, Play, RefreshCw,
   Eye, HelpCircle, Activity, Zap, Info, ShieldCheck, Search, History, CheckCheck
 } from "lucide-react";
 import { cn } from "../../../lib/utils";
@@ -434,22 +434,22 @@ export const AdminModerationTab: React.FC<AdminModerationTabProps> = (props) => 
                             <div className="flex items-center gap-2">
                               <button
                                 type="button"
-                                onClick={() => handleBatchAction('approve')}
-                                disabled={selectedModPostIds.length === 0}
+                                onClick={handleBatchApproveModPosts}
+                                disabled={selectedModPostIds.length === 0 || isBatchApprovingModPosts}
                                 className="flex items-center gap-1 px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all disabled:opacity-40 cursor-pointer shadow-xs"
                               >
                                 <CheckCircle size={13} />
-                                <span>一括承認 (解除)</span>
+                                <span>{isBatchApprovingModPosts ? '承認中...' : '一括承認 (解除)'}</span>
                               </button>
 
                               <button
                                 type="button"
-                                onClick={() => handleBatchAction('delete')}
-                                disabled={selectedModPostIds.length === 0}
+                                onClick={handleBatchDeleteModPosts}
+                                disabled={selectedModPostIds.length === 0 || isBatchDeletingModPosts}
                                 className="flex items-center gap-1 px-3 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold transition-all disabled:opacity-40 cursor-pointer shadow-xs"
                               >
                                 <Trash2 size={13} />
-                                <span>一括削除</span>
+                                <span>{isBatchDeletingModPosts ? '削除中...' : '一括削除'}</span>
                               </button>
                             </div>
                           </div>
@@ -496,6 +496,13 @@ export const AdminModerationTab: React.FC<AdminModerationTabProps> = (props) => 
                               <tbody className="divide-y divide-slate-100 text-xs">
                                 {paginated.map(post => {
                                   const isSelected = selectedModPostIds.includes(post.id);
+                                  const isStalking = Boolean(post.ai_reason && (
+                                    post.ai_reason.includes('ストーカー') ||
+                                    post.ai_reason.includes('つきまとい') ||
+                                    post.ai_reason.includes('脅迫') ||
+                                    post.ai_reason.includes('実名') ||
+                                    post.ai_reason.toLowerCase().includes('stalking')
+                                  ));
                                   return (
                                     <tr key={post.id} className={`h-12 transition-colors ${isSelected ? 'bg-rose-50/40' : 'hover:bg-slate-50/70'}`}>
                                       <td className="px-3 py-2">

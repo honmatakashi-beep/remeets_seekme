@@ -3,9 +3,9 @@ import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { WaterRippleRainbowText } from './WaterRippleRainbowText';
 import heroBottleMail from '../assets/images/hero_small_bottle_mail_1785944479619.jpg';
-import stepWriteImg from '../assets/images/step_01_photo_write_1785857630366.jpg';
-import stepDriftImg from '../assets/images/step_02_photo_drift_1785857647101.jpg';
-import stepReconnectImg from '../assets/images/step_03_photo_read_v2_1785857978640.jpg';
+import stepMistWriteImg from '../assets/images/step_01_mist_ocean_close_1789154903956.jpg';
+import stepMistDriftImg from '../assets/images/step_02_beach_arrival_1789155133509.jpg';
+import stepMistReconnectImg from '../assets/images/step_03_mist_reconnect_1789154562729.jpg';
 import { ConceptStoryModal } from './ConceptStoryModal';
 import { 
   Sparkles, 
@@ -473,7 +473,7 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
               {/* ボトルメールのイラスト写真画像 */}
               <div className="relative overflow-hidden rounded-xl aspect-[16/10] bg-slate-100 border border-emerald-200 p-1 shadow-inner group-hover:border-emerald-400 transition-colors duration-300">
                 <img 
-                  src={stepWriteImg} 
+                  src={stepMistWriteImg} 
                   alt="ボトルに思い出を託す" 
                   className="w-full h-full object-cover object-center rounded-lg group-hover:scale-[1.04] transition-transform duration-500 ease-out"
                 />
@@ -515,7 +515,7 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
               {/* ボトルメールのイラスト写真画像 */}
               <div className="relative overflow-hidden rounded-xl aspect-[16/10] bg-slate-100 border border-sky-200 p-1 shadow-inner group-hover:border-sky-400 transition-colors duration-300">
                 <img 
-                  src={stepDriftImg} 
+                  src={stepMistDriftImg} 
                   alt="ネットの海をめぐる" 
                   className="w-full h-full object-cover object-center rounded-lg group-hover:scale-[1.04] transition-transform duration-500 ease-out"
                 />
@@ -557,7 +557,7 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
               {/* ボトルメールのイラスト写真画像 */}
               <div className="relative overflow-hidden rounded-xl aspect-[16/10] bg-slate-100 border border-teal-200 p-1 shadow-inner group-hover:border-teal-400 transition-colors duration-300">
                 <img 
-                  src={stepReconnectImg} 
+                  src={stepMistReconnectImg} 
                   alt="奇跡の再会を果たす" 
                   className="w-full h-full object-cover object-center rounded-lg group-hover:scale-[1.04] transition-transform duration-500 ease-out"
                 />

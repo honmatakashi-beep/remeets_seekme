@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from 'react';
 interface WaterRippleRainbowTextProps {
   className?: string;
   lines?: string[];
+  shadowStyle?: 'white-glow' | 'none' | 'subtle-dark';
 }
 
 export const WaterRippleRainbowText: React.FC<WaterRippleRainbowTextProps> = ({ 
@@ -11,7 +12,8 @@ export const WaterRippleRainbowText: React.FC<WaterRippleRainbowTextProps> = ({
     'あの日言えなかった想いを',
     'あの人へ',
     '再会のボトルメール'
-  ]
+  ],
+  shadowStyle = 'white-glow'
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -155,21 +157,33 @@ export const WaterRippleRainbowText: React.FC<WaterRippleRainbowTextProps> = ({
       }
       grad.addColorStop(1.0, rainbowColors[0]);
 
-      // テキスト描画（繊細な背面ホワイトグロー ＋ 前面虹色グラデーション）
+      // テキスト描画（shadowStyleに応じた処理）
       lines.forEach((line, index) => {
         const y = startY + index * lineHeight;
 
-        // 繊細な背面ホワイトグロー（文字の細さを保ちつつ視認性を確保）
-        textCtx.save();
-        textCtx.shadowColor = 'rgba(255, 255, 255, 0.98)';
-        textCtx.shadowBlur = 8;
-        textCtx.strokeStyle = 'rgba(255, 255, 255, 0.90)';
-        textCtx.lineWidth = 2.2;
-        textCtx.lineJoin = 'round';
-        textCtx.strokeText(line, width / 2, y);
-        textCtx.restore();
+        if (shadowStyle === 'white-glow') {
+          // 繊細な背面ホワイトグロー（白背景用）
+          textCtx.save();
+          textCtx.shadowColor = 'rgba(255, 255, 255, 0.98)';
+          textCtx.shadowBlur = 8;
+          textCtx.strokeStyle = 'rgba(255, 255, 255, 0.90)';
+          textCtx.lineWidth = 2.2;
+          textCtx.lineJoin = 'round';
+          textCtx.strokeText(line, width / 2, y);
+          textCtx.restore();
+        } else if (shadowStyle === 'subtle-dark') {
+          // 海イラスト用の微細な奥行きダークシャドウ（白ボケ一切なし）
+          textCtx.save();
+          textCtx.shadowColor = 'rgba(0, 20, 40, 0.6)';
+          textCtx.shadowBlur = 6;
+          textCtx.shadowOffsetY = 2;
+          textCtx.fillStyle = grad;
+          textCtx.fillText(line, width / 2, y);
+          textCtx.restore();
+          return;
+        }
 
-        // 虹色グラデーションの前面描画
+        // 虹色グラデーションの前面描画 (shadowStyle === 'none' の場合は白ボケ一切なしで直接描画)
         textCtx.fillStyle = grad;
         textCtx.fillText(line, width / 2, y);
       });
@@ -301,53 +315,94 @@ export const WaterRippleRainbowText: React.FC<WaterRippleRainbowTextProps> = ({
             const canvasH = textCanvas.height;
 
             for (let y = 0; y < canvasH; y++) {
-              const gy = Math.floor(y / GRID_SIZE);
+              const gFloatY = y / GRID_SIZE;
+              const gy = Math.floor(gFloatY);
+              const gFracY = gFloatY - gy;
               const gyOffset = gy * cols;
               const yOffset = y * canvasW;
 
               for (let x = 0; x < canvasW; x++) {
-                const gx = Math.floor(x / GRID_SIZE);
+                const gFloatX = x / GRID_SIZE;
+                const gx = Math.floor(gFloatX);
+                const gFracX = gFloatX - gx;
                 const gIdx = gyOffset + gx;
 
-                // 波の傾き（勾配）を計算して屈折オフセットを導出
+                // グリッド勾配をバイリニア補間して滑らかな波形を導出
                 let offsetX = 0;
                 let offsetY = 0;
 
-                if (gx > 0 && gx < cols - 1 && gy > 0 && gy < rows - 1) {
-                  offsetX = (currentBuffer[gIdx + 1] - currentBuffer[gIdx - 1]) * 0.85;
-                  offsetY = (currentBuffer[gIdx + cols] - currentBuffer[gIdx - cols]) * 0.85;
+                if (gx > 0 && gx < cols - 2 && gy > 0 && gy < rows - 2) {
+                  const gradX00 = (currentBuffer[gIdx + 1] - currentBuffer[gIdx - 1]) * 0.85;
+                  const gradX10 = (currentBuffer[gIdx + 2] - currentBuffer[gIdx]) * 0.85;
+                  const gradX01 = (currentBuffer[gIdx + cols + 1] - currentBuffer[gIdx + cols - 1]) * 0.85;
+                  const gradX11 = (currentBuffer[gIdx + cols + 2] - currentBuffer[gIdx + cols]) * 0.85;
+
+                  const gradY00 = (currentBuffer[gIdx + cols] - currentBuffer[gIdx - cols]) * 0.85;
+                  const gradY10 = (currentBuffer[gIdx + cols + 1] - currentBuffer[gIdx - cols + 1]) * 0.85;
+                  const gradY01 = (currentBuffer[gIdx + cols * 2] - currentBuffer[gIdx]) * 0.85;
+                  const gradY11 = (currentBuffer[gIdx + cols * 2 + 1] - currentBuffer[gIdx + 1]) * 0.85;
+
+                  offsetX = (gradX00 * (1 - gFracX) + gradX10 * gFracX) * (1 - gFracY) +
+                            (gradX01 * (1 - gFracX) + gradX11 * gFracX) * gFracY;
+                  offsetY = (gradY00 * (1 - gFracX) + gradY10 * gFracX) * (1 - gFracY) +
+                            (gradY01 * (1 - gFracX) + gradY11 * gFracX) * gFracY;
                 }
 
                 const destIdx = (yOffset + x) * 4;
 
-                if (offsetX === 0 && offsetY === 0) {
-                  // 変形なし
+                if (Math.abs(offsetX) < 0.05 && Math.abs(offsetY) < 0.05) {
                   destData[destIdx] = srcData[destIdx];
                   destData[destIdx + 1] = srcData[destIdx + 1];
                   destData[destIdx + 2] = srcData[destIdx + 2];
                   destData[destIdx + 3] = srcData[destIdx + 3];
                 } else {
-                  // 水面波紋の屈折座標
-                  const sx = Math.min(Math.max(Math.round(x + offsetX), 0), canvasW - 1);
-                  const sy = Math.min(Math.max(Math.round(y + offsetY), 0), canvasH - 1);
-                  const sIdx = (sy * canvasW + sx) * 4;
+                  // サブピクセルバイリニア補間（高精細アンチエイリアス）
+                  const srcX = x + offsetX;
+                  const srcY = y + offsetY;
 
-                  const baseA = srcData[sIdx + 3];
+                  const x0 = Math.floor(srcX);
+                  const y0 = Math.floor(srcY);
 
-                  if (baseA === 0) {
-                    // サンプリング元が透明なら完全に透明（黒ずみの発生を100%防止）
+                  if (x0 < 0 || x0 >= canvasW - 1 || y0 < 0 || y0 >= canvasH - 1) {
                     destData[destIdx] = 0;
                     destData[destIdx + 1] = 0;
                     destData[destIdx + 2] = 0;
                     destData[destIdx + 3] = 0;
                   } else {
-                    // 光のコースティクス効果（水面ハイライト）
-                    const highlight = Math.max(0, (offsetX + offsetY) * 1.8);
+                    const x1 = x0 + 1;
+                    const y1 = y0 + 1;
+                    const fx = srcX - x0;
+                    const fy = srcY - y0;
 
-                    destData[destIdx] = Math.min(255, srcData[sIdx] + highlight);
-                    destData[destIdx + 1] = Math.min(255, srcData[sIdx + 1] + highlight);
-                    destData[destIdx + 2] = Math.min(255, srcData[sIdx + 2] + highlight * 1.1);
-                    destData[destIdx + 3] = baseA;
+                    const i00 = (y0 * canvasW + x0) * 4;
+                    const i10 = (y0 * canvasW + x1) * 4;
+                    const i01 = (y1 * canvasW + x0) * 4;
+                    const i11 = (y1 * canvasW + x1) * 4;
+
+                    const w00 = (1 - fx) * (1 - fy);
+                    const w10 = fx * (1 - fy);
+                    const w01 = (1 - fx) * fy;
+                    const w11 = fx * fy;
+
+                    const a = srcData[i00 + 3] * w00 + srcData[i10 + 3] * w10 + srcData[i01 + 3] * w01 + srcData[i11 + 3] * w11;
+
+                    if (a <= 0.8) {
+                      destData[destIdx] = 0;
+                      destData[destIdx + 1] = 0;
+                      destData[destIdx + 2] = 0;
+                      destData[destIdx + 3] = 0;
+                    } else {
+                      const r = srcData[i00] * w00 + srcData[i10] * w10 + srcData[i01] * w01 + srcData[i11] * w11;
+                      const g = srcData[i00 + 1] * w00 + srcData[i10 + 1] * w10 + srcData[i01 + 1] * w01 + srcData[i11 + 1] * w11;
+                      const b = srcData[i00 + 2] * w00 + srcData[i10 + 2] * w10 + srcData[i01 + 2] * w01 + srcData[i11 + 2] * w11;
+
+                      const highlight = Math.max(0, (offsetX + offsetY) * 1.5);
+
+                      destData[destIdx] = Math.min(255, r + highlight);
+                      destData[destIdx + 1] = Math.min(255, g + highlight);
+                      destData[destIdx + 2] = Math.min(255, b + highlight * 1.1);
+                      destData[destIdx + 3] = Math.min(255, a);
+                    }
                   }
                 }
               }
@@ -371,7 +426,7 @@ export const WaterRippleRainbowText: React.FC<WaterRippleRainbowTextProps> = ({
       canvas.removeEventListener('pointerdown', handlePointerDown);
       canvas.removeEventListener('pointerleave', handlePointerLeave);
     };
-  }, [lines]);
+  }, [lines, shadowStyle]);
 
   return (
     <div 
@@ -381,7 +436,13 @@ export const WaterRippleRainbowText: React.FC<WaterRippleRainbowTextProps> = ({
     >
       <canvas 
         ref={canvasRef} 
-        className="block max-w-full drop-shadow-[0_4px_16px_rgba(255,255,255,0.95)]"
+        className={`block max-w-full ${
+          shadowStyle === 'white-glow'
+            ? 'drop-shadow-[0_4px_16px_rgba(255,255,255,0.95)]'
+            : shadowStyle === 'subtle-dark'
+            ? 'drop-shadow-[0_2px_10px_rgba(0,15,30,0.4)]'
+            : ''
+        }`}
       />
       {/* スクリーンリーダー用・SEO用テキスト */}
       <span className="sr-only">

@@ -11,9 +11,9 @@ import { cn, getPostUrl, formatEraLabel, getCategoryText, PREFECTURES } from '..
 import { BottleLoader } from '../components/SharedComponents';
 import { HomePageTestVariant } from '../components/HomePageTestVariant';
 import { WaterRippleRainbowText } from '../components/WaterRippleRainbowText';
-import stepWriteImg from '../assets/images/step_01_photo_write_1785857630366.jpg';
-import stepDriftImg from '../assets/images/step_02_photo_drift_1785857647101.jpg';
-import stepReconnectImg from '../assets/images/step_03_photo_read_v2_1785857978640.jpg';
+import stepMistWriteImg from '../assets/images/step_01_mist_ocean_close_1789154903956.jpg';
+import stepMistDriftImg from '../assets/images/step_02_beach_arrival_1789155133509.jpg';
+import stepMistReconnectImg from '../assets/images/step_03_mist_reconnect_1789154562729.jpg';
 import heroBottleMail from '../assets/images/hero_bottle_mail_1785941809474.jpg';
 import { CreditCardPaymentForm } from '../components/CreditCardPaymentForm';
 import { ConceptStoryModal } from '../components/ConceptStoryModal';
@@ -401,7 +401,7 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                   </div>
                   <div className="relative overflow-hidden rounded-xl aspect-[16/10] bg-slate-100 border border-emerald-200 p-1 shadow-inner group-hover:border-emerald-400 transition-colors duration-300">
                     <img 
-                      src={stepWriteImg} 
+                      src={stepMistWriteImg} 
                       alt="手紙を書く" 
                       className="w-full h-full object-cover object-center rounded-lg group-hover:scale-[1.04] transition-transform duration-500 ease-out"
                     />
@@ -429,7 +429,7 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                   </div>
                   <div className="relative overflow-hidden rounded-xl aspect-[16/10] bg-slate-100 border border-sky-200 p-1 shadow-inner group-hover:border-sky-400 transition-colors duration-300">
                     <img 
-                      src={stepDriftImg} 
+                      src={stepMistDriftImg} 
                       alt="海で大切に保管" 
                       className="w-full h-full object-cover object-center rounded-lg group-hover:scale-[1.04] transition-transform duration-500 ease-out"
                     />
@@ -457,7 +457,7 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                   </div>
                   <div className="relative overflow-hidden rounded-xl aspect-[16/10] bg-slate-100 border border-teal-200 p-1 shadow-inner group-hover:border-teal-400 transition-colors duration-300">
                     <img 
-                      src={stepReconnectImg} 
+                      src={stepMistReconnectImg} 
                       alt="正解して想いが繋がる" 
                       className="w-full h-full object-cover object-center rounded-lg group-hover:scale-[1.04] transition-transform duration-500 ease-out"
                     />

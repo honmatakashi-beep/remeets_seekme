@@ -28,7 +28,7 @@ export const AdminAssetCleanerTab: React.FC = () => {
   
   // Selection state
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [filterMode, setFilterMode] = useState<'all' | 'unused' | 'used'>('unused');
+  const [filterMode, setFilterMode] = useState<'all' | 'unused' | 'used' | 'archive'>('all');
   
   // Deleting state
   const [isDeleting, setIsDeleting] = useState(false);
@@ -97,6 +97,7 @@ export const AdminAssetCleanerTab: React.FC = () => {
   const filteredImages = images.filter(img => {
     if (filterMode === 'unused') return !img.isUsed;
     if (filterMode === 'used') return img.isUsed;
+    if (filterMode === 'archive') return img.dir.includes('archive');
     return true;
   });
 
@@ -284,6 +285,20 @@ export const AdminAssetCleanerTab: React.FC = () => {
             <span>すべて</span>
             <span className="px-1.5 py-0.2 bg-slate-200 text-slate-700 rounded-full text-[10px] font-serif font-bold">
               {stats.totalCount}
+            </span>
+          </button>
+
+          <button
+            onClick={() => setFilterMode('archive')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+              filterMode === 'archive'
+                ? "bg-white text-indigo-700 shadow-xs font-black"
+                : "text-slate-600 hover:text-slate-900"
+            }`}
+          >
+            <span>📁 アーカイブ保存分</span>
+            <span className="px-1.5 py-0.2 bg-indigo-100 text-indigo-700 rounded-full text-[10px] font-serif font-bold">
+              {images.filter(img => img.dir.includes('archive')).length}
             </span>
           </button>
         </div>
