@@ -416,7 +416,7 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
                       className="bg-sky-50/70 hover:bg-sky-100/80 border border-sky-200/60 hover:border-sky-400/80 rounded-xl p-2 flex flex-col items-center justify-center transition-all duration-200 hover:scale-[1.02] hover:shadow-xs group cursor-pointer"
                     >
                       <span className="text-[10px] text-sky-900 font-bold group-hover:text-sky-950 leading-tight">想い出照合<span className="hidden sm:inline">・</span><br className="sm:hidden" />再会時</span>
-                      <span className="text-xs sm:text-sm font-black text-sky-700 font-serif">開通時のみ</span>
+                      <span className="text-xs sm:text-sm font-black text-sky-700 font-serif">開通時のみ 600円</span>
                     </Link>
                   </div>
 

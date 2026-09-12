@@ -10,6 +10,8 @@ import { useAuth } from '../contexts/AuthContext';
 import { cn, getPostUrl, formatEraLabel, getCategoryText, PREFECTURES } from '../lib/utils';
 import { BottleLoader } from '../components/SharedComponents';
 import { HomePageTestVariant } from '../components/HomePageTestVariant';
+import { HomeVariantSub2Overlay } from '../components/HomeVariantSub2Overlay';
+import { HomeVariantSub3Minimal } from '../components/HomeVariantSub3Minimal';
 import { WaterRippleRainbowText } from '../components/WaterRippleRainbowText';
 import stepMistWriteImg from '../assets/images/step_01_mist_ocean_close_1789154903956.jpg';
 import stepMistDriftImg from '../assets/images/step_02_beach_arrival_1789155133509.jpg';
@@ -18,16 +20,18 @@ import heroBottleMail from '../assets/images/hero_bottle_mail_1785941809474.jpg'
 import { CreditCardPaymentForm } from '../components/CreditCardPaymentForm';
 import { ConceptStoryModal } from '../components/ConceptStoryModal';
 
+export type HomeDesignMode = 'sub2' | 'v2' | 'v1' | 'sub3';
+
 export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) => {
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [homeDesign, setHomeDesign] = useState<'v1' | 'v2'>(() => {
-    return (localStorage.getItem('remeets_home_design') as 'v1' | 'v2') || 'v2';
+  const [homeDesign, setHomeDesign] = useState<HomeDesignMode>(() => {
+    return (localStorage.getItem('remeets_home_design') as HomeDesignMode) || 'sub2';
   });
 
   useEffect(() => {
     const handleDesignChange = () => {
-      const current = (localStorage.getItem('remeets_home_design') as 'v1' | 'v2') || 'v2';
+      const current = (localStorage.getItem('remeets_home_design') as HomeDesignMode) || 'sub2';
       setHomeDesign(current);
     };
     window.addEventListener('home_design_changed', handleDesignChange);
@@ -35,7 +39,9 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
   }, []);
 
   const toggleHomeDesign = () => {
-    const next = homeDesign === 'v1' ? 'v2' : 'v1';
+    const sequence: HomeDesignMode[] = ['sub2', 'v2', 'v1', 'sub3'];
+    const currentIndex = sequence.indexOf(homeDesign);
+    const next = sequence[(currentIndex + 1) % sequence.length];
     setHomeDesign(next);
     localStorage.setItem('remeets_home_design', next);
     window.dispatchEvent(new Event('home_design_changed'));
@@ -171,6 +177,42 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
         />
 
         {/* Concept Story Modal (Vintage Deckle-Edged Letter) */}
+        <ConceptStoryModal 
+          isOpen={isConceptModalOpen} 
+          onClose={() => setIsConceptModalOpen(false)} 
+        />
+      </>
+    );
+  }
+
+  if (homeDesign === 'sub2') {
+    return (
+      <>
+        <HomeVariantSub2Overlay
+          onToggleDesign={toggleHomeDesign}
+          recentPosts={posts}
+          onOpenConceptModal={() => setIsConceptModalOpen(true)}
+        />
+
+        {/* Concept Story Modal */}
+        <ConceptStoryModal 
+          isOpen={isConceptModalOpen} 
+          onClose={() => setIsConceptModalOpen(false)} 
+        />
+      </>
+    );
+  }
+
+  if (homeDesign === 'sub3') {
+    return (
+      <>
+        <HomeVariantSub3Minimal
+          onToggleDesign={toggleHomeDesign}
+          recentPosts={posts}
+          onOpenConceptModal={() => setIsConceptModalOpen(true)}
+        />
+
+        {/* Concept Story Modal */}
         <ConceptStoryModal 
           isOpen={isConceptModalOpen} 
           onClose={() => setIsConceptModalOpen(false)} 
@@ -318,7 +360,7 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                     className="bg-sky-50/70 hover:bg-sky-100/80 border border-sky-200/60 hover:border-sky-400/80 rounded-xl p-2 flex flex-col items-center justify-center transition-all duration-200 hover:scale-[1.02] hover:shadow-xs group cursor-pointer"
                   >
                     <span className="text-[10px] text-sky-900 font-bold group-hover:text-sky-950 leading-tight">想い出照合<span className="hidden sm:inline">・</span><br className="sm:hidden" />再会時</span>
-                    <span className="text-xs sm:text-sm font-black text-sky-700 font-serif">開通時のみ</span>
+                    <span className="text-xs sm:text-sm font-black text-sky-700 font-serif">開通時のみ 600円</span>
                   </Link>
                 </div>
 

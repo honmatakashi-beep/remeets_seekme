@@ -431,15 +431,6 @@ export const Navbar = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) 
                     <span>お問い合わせ</span>
                   </Link>
 
-                  <Link
-                    to="/home-designs"
-                    onClick={() => setIsMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2 text-xs text-indigo-700 bg-indigo-50/50 hover:bg-indigo-100/70 rounded-xl transition-all font-bold text-left border border-indigo-200/60"
-                  >
-                    <Sparkles size={15} className="text-indigo-600 shrink-0" />
-                    <span>🎨 HOMEデザイン比較ショールーム</span>
-                  </Link>
-
                   {Boolean(
                     user && (
                       ['admin', 'super_admin', 'moderator', 'cs_support', 'auditor'].includes(user?.role || '') ||

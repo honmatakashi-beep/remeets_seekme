@@ -136,8 +136,8 @@ export const AdminDashboard = () => {
   const [ageVerificationLogs, setAgeVerificationLogs] = useState<any[]>([]);
   const [securityStats, setSecurityStats] = useState<any>(null);
   const [statsEnabled, setStatsEnabled] = useState(true);
-  const [adminHomeDesign, setAdminHomeDesign] = useState<'v1' | 'v2'>(() => {
-    return (localStorage.getItem('remeets_home_design') as 'v1' | 'v2') || 'v2';
+  const [adminHomeDesign, setAdminHomeDesign] = useState<'v2' | 'v1' | 'sub2' | 'sub3'>(() => {
+    return (localStorage.getItem('remeets_home_design') as 'v2' | 'v1' | 'sub2' | 'sub3') || 'v2';
   });
 
   // 背景コントラスト・明度調整用ステート
@@ -172,14 +172,14 @@ export const AdminDashboard = () => {
 
   useEffect(() => {
     const handleDesignChange = () => {
-      const current = (localStorage.getItem('remeets_home_design') as 'v1' | 'v2') || 'v2';
+      const current = (localStorage.getItem('remeets_home_design') as 'v2' | 'v1' | 'sub2' | 'sub3') || 'v2';
       setAdminHomeDesign(current);
     };
     window.addEventListener('home_design_changed', handleDesignChange);
     return () => window.removeEventListener('home_design_changed', handleDesignChange);
   }, []);
 
-  const handleToggleHomeDesignMode = (mode: 'v1' | 'v2') => {
+  const handleToggleHomeDesignMode = (mode: 'v2' | 'v1' | 'sub2' | 'sub3') => {
     setAdminHomeDesign(mode);
     localStorage.setItem('remeets_home_design', mode);
     window.dispatchEvent(new Event('home_design_changed'));
@@ -1000,7 +1000,8 @@ export const AdminDashboard = () => {
     {
       title: 'Support & UI Specs',
       items: [
-        { id: 'assetCleaner', label: '画像アセット管理 ＆\n生成画像アーカイブ', icon: ImageIcon },
+        { id: 'assetCleaner', label: '画像アセット管理 ＆\n選択クリーンアップ', icon: ImageIcon },
+        { id: 'designSystem', label: 'デザインシステム\n(UI/UX Specs)', icon: Palette },
         { id: 'masterMemo', label: '運営方針・意思決定備忘録', icon: FileText, onClick: () => { setActiveTab('masterMemo'); } },
         { id: 'deployment', label: '本番デプロイ・広報ライブラリ', icon: Rocket, onClick: () => { setActiveTab('deployment'); setGuideDocType('deployment'); } },
         { id: 'manual', label: '管理画面操作マニュアル', icon: BookOpen },
@@ -3466,16 +3467,22 @@ export const AdminDashboard = () => {
                         <div className="flex items-center gap-2 flex-wrap">
                           <span className="text-sm font-bold text-teal-950 font-sans leading-none flex items-center gap-1.5">
                             <Sparkles size={16} className="text-teal-600" />
-                            HOME画面デザインレイアウト設定（メイン / サブ）
+                            HOME画面デザインレイアウト設定（メイン / サブ1 / サブ2 / サブ3）
                           </span>
                           <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
-                            adminHomeDesign === 'v2' ? 'bg-teal-700 text-white shadow-2xs' : 'bg-slate-200 text-slate-700'
+                            adminHomeDesign === 'v2' ? 'bg-teal-700 text-white shadow-2xs' :
+                            adminHomeDesign === 'sub2' ? 'bg-sky-700 text-white shadow-2xs' :
+                            adminHomeDesign === 'sub3' ? 'bg-emerald-800 text-white shadow-2xs' :
+                            'bg-slate-700 text-white shadow-2xs'
                           }`}>
-                            {adminHomeDesign === 'v2' ? '✨ メインデザイン (表示中)' : '📄 サブデザイン (表示中)'}
+                            {adminHomeDesign === 'v2' ? '✨ メイン (表示中)' :
+                             adminHomeDesign === 'v1' ? '📄 サブ1 (表示中)' :
+                             adminHomeDesign === 'sub2' ? '🌊 サブ2 (表示中)' :
+                             '🌿 サブ3 (表示中)'}
                           </span>
                         </div>
                         <p className="text-xs text-teal-900/80 font-serif leading-relaxed">
-                          現在全ユーザーに表示されるホームページ（HOME）のデザインレイアウトを切り替え・記憶保管します。
+                          現在全ユーザーに表示されるホームページ（HOME）のデザインレイアウトを4つのバリエーションから切り替え・記憶保管します。
                         </p>
                       </div>
                     </div>
@@ -3493,18 +3500,18 @@ export const AdminDashboard = () => {
                       >
                         <div className="flex items-center justify-between mb-1.5">
                           <span className="text-xs font-bold font-sans text-teal-950 flex items-center gap-1">
-                            ✨ メインデザイン
+                            ✨ メイン（現行オリジナル）
                           </span>
                           {adminHomeDesign === 'v2' && (
                             <span className="text-[10px] bg-teal-100 text-teal-800 font-bold px-1.5 py-0.5 rounded">選択中</span>
                           )}
                         </div>
                         <p className="text-[11px] text-slate-600 font-serif leading-normal">
-                          情緒的な背景・手紙投稿カード・ボトルスライダー・虹色水面波紋エフェクトを配置したモダン構成。
+                          情緒的な背景・手紙投稿カード・ボトルスライダー・虹色水面波紋エフェクトを配置した洗練の黄金比デザイン。
                         </p>
                       </button>
 
-                      {/* サブデザイン (v1) */}
+                      {/* サブ1デザイン (v1) */}
                       <button
                         type="button"
                         onClick={() => handleToggleHomeDesignMode('v1')}
@@ -3516,14 +3523,60 @@ export const AdminDashboard = () => {
                       >
                         <div className="flex items-center justify-between mb-1.5">
                           <span className="text-xs font-bold font-sans text-slate-900 flex items-center gap-1">
-                            📄 サブデザイン
+                            📄 サブ1（クラシック標準）
                           </span>
                           {adminHomeDesign === 'v1' && (
                             <span className="text-[10px] bg-slate-200 text-slate-800 font-bold px-1.5 py-0.5 rounded">選択中</span>
                           )}
                         </div>
                         <p className="text-[11px] text-slate-600 font-serif leading-normal">
-                          従来のクラシックなメッセージ中心型シンプル標準レイアウト。
+                          従来のメッセージ・探すボタンを中心としたクラシック標準レイアウト。
+                        </p>
+                      </button>
+
+                      {/* サブ2デザイン (sub2) */}
+                      <button
+                        type="button"
+                        onClick={() => handleToggleHomeDesignMode('sub2')}
+                        className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer relative ${
+                          adminHomeDesign === 'sub2'
+                            ? 'bg-white border-sky-600 ring-2 ring-sky-500/30 shadow-xs'
+                            : 'bg-white/60 border-slate-200 hover:bg-white text-slate-600'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between mb-1.5">
+                          <span className="text-xs font-bold font-sans text-sky-950 flex items-center gap-1">
+                            🌊 サブ2（水紋パノラマ×虹色文字）
+                          </span>
+                          {adminHomeDesign === 'sub2' && (
+                            <span className="text-[10px] bg-sky-100 text-sky-800 font-bold px-1.5 py-0.5 rounded">選択中</span>
+                          )}
+                        </div>
+                        <p className="text-[11px] text-slate-600 font-serif leading-normal">
+                          海とボトルの水紋パノラマイラストの上に虹色の想い出文字を重ねて配置し、水面の一体感と情緒を極限まで高めたデザイン。
+                        </p>
+                      </button>
+
+                      {/* サブ3デザイン (sub3) */}
+                      <button
+                        type="button"
+                        onClick={() => handleToggleHomeDesignMode('sub3')}
+                        className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer relative ${
+                          adminHomeDesign === 'sub3'
+                            ? 'bg-white border-emerald-700 ring-2 ring-emerald-500/30 shadow-xs'
+                            : 'bg-white/60 border-slate-200 hover:bg-white text-slate-600'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between mb-1.5">
+                          <span className="text-xs font-bold font-sans text-emerald-950 flex items-center gap-1">
+                            🌿 サブ3（ミニマリスト・静謐）
+                          </span>
+                          {adminHomeDesign === 'sub3' && (
+                            <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.5 rounded">選択中</span>
+                          )}
+                        </div>
+                        <p className="text-[11px] text-slate-600 font-serif leading-normal">
+                          装飾を削ぎ落とし、全8大要素の文字と余白の美しさを際立たせ、透かしアイコンを添えた静謐デザイン。
                         </p>
                       </button>
                     </div>
@@ -3629,9 +3682,9 @@ export const AdminDashboard = () => {
               </div>
             </div>
           ) : activeTab === 'masterMemo' ? (
-            <AdminMasterKnowledgeBase initialViewMode="master_memo" modeTitle="📝 運営方針・意思決定備忘録" hideViewModeSwitcher={true} guideDocType={guideDocType} setGuideDocType={setGuideDocType} />
+            <AdminMasterKnowledgeBase initialViewMode="master_memo" modeTitle="運営方針・意思決定備忘録" hideViewModeSwitcher={true} guideDocType={guideDocType} setGuideDocType={setGuideDocType} />
           ) : activeTab === 'deployment' ? (
-            <AdminMasterKnowledgeBase initialViewMode="legal_docs" modeTitle="🚀 本番デプロイ・広報ライブラリ" hideViewModeSwitcher={false} guideDocType={guideDocType} setGuideDocType={setGuideDocType} />
+            <AdminMasterKnowledgeBase initialViewMode="legal_docs" modeTitle="本番デプロイ・広報ライブラリ" hideViewModeSwitcher={false} guideDocType={guideDocType} setGuideDocType={setGuideDocType} />
           ) : activeTab === 'payments' ? (
             <AdminPaymentManagementBlock />
           ) : activeTab === 'monetization' ? (

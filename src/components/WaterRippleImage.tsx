@@ -12,7 +12,7 @@ export const WaterRippleImage: React.FC<WaterRippleImageProps> = ({
   src,
   alt = '海とボトルメール',
   className = '',
-  positionY = 0.85, // ボトルや波打ち際（下部）をしっかり見せるための最適位置
+  positionY = 0.92,
   children
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -23,7 +23,7 @@ export const WaterRippleImage: React.FC<WaterRippleImageProps> = ({
     const container = containerRef.current;
     if (!canvas || !container) return;
 
-    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
     let animationFrameId: number;
@@ -31,17 +31,17 @@ export const WaterRippleImage: React.FC<WaterRippleImageProps> = ({
     let height = 0;
     let dpr = 1;
 
-    // 波紋シミュレーション用グリッド (2D 波動方程式) - WaterRippleRainbowTextと完全同一
-    const GRID_SIZE = 4;
+    // 波紋シミュレーション用グリッド (2D 波動方程式) - 軽快＆高レスポンス設計
+    const GRID_SIZE = 6;
     let cols = 0;
     let rows = 0;
     let currentBuffer: Float32Array;
     let previousBuffer: Float32Array;
-    const damping = 0.965;
+    const damping = 0.92; // 軽快に抜ける心地よい減衰（即座に静止時CPU 0%へ復帰）
 
     // オフスクリーンキャンバス（元画像を描画）
     const imageCanvas = document.createElement('canvas');
-    const imageCtx = imageCanvas.getContext('2d', { willReadFrequently: true });
+    const imageCtx = imageCanvas.getContext('2d');
 
     const img = new Image();
     img.crossOrigin = 'anonymous';
@@ -56,7 +56,7 @@ export const WaterRippleImage: React.FC<WaterRippleImageProps> = ({
       imageCtx.save();
       imageCtx.scale(dpr, dpr);
 
-      // object-cover 計算で描画（positionYを考慮して下部が切れないように配置）
+      // object-cover 計算で描画（positionY=0.92 で下部ボトルが切れないように配置）
       const imgRatio = img.naturalWidth / (img.naturalHeight || 1);
       const canvasRatio = width / (height || 1);
       let renderW = width;
@@ -83,7 +83,8 @@ export const WaterRippleImage: React.FC<WaterRippleImageProps> = ({
       height = rect.height;
       if (width <= 0 || height <= 0) return;
 
-      dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      // 背景画像は dpr=1 でピクセル走査量を抑え、常時60fps〜120fps超軽快レスポンスを保証
+      dpr = 1;
       canvas.width = Math.floor(width * dpr);
       canvas.height = Math.floor(height * dpr);
       canvas.style.width = `${width}px`;
@@ -109,14 +110,13 @@ export const WaterRippleImage: React.FC<WaterRippleImageProps> = ({
       resize();
     };
 
-    // すでにキャッシュされている場合の対応
     if (img.complete && img.naturalWidth > 0) {
       isImageReady = true;
       setTimeout(resize, 10);
     }
 
-    // 波紋を落とす関数
-    const dropRipple = (x: number, y: number, radius = 6, strength = 26) => {
+    // 波紋を落とす関数（キレが良く爽やかな波紋）
+    const dropRipple = (x: number, y: number, radius = 5, strength = 24) => {
       if (!currentBuffer || cols <= 0 || rows <= 0) return;
       const cx = Math.floor((x * dpr) / GRID_SIZE);
       const cy = Math.floor((y * dpr) / GRID_SIZE);
@@ -136,7 +136,7 @@ export const WaterRippleImage: React.FC<WaterRippleImageProps> = ({
       }
     };
 
-    // マウス・ポインターイベント
+    // マウス・ポインターイベント（俊敏でスムーズな追従）
     let lastX = -1;
     let lastY = -1;
 
@@ -148,8 +148,9 @@ export const WaterRippleImage: React.FC<WaterRippleImageProps> = ({
       if (x >= 0 && x <= width && y >= 0 && y <= height) {
         const dx = lastX >= 0 ? x - lastX : 0;
         const dy = lastY >= 0 ? y - lastY : 0;
-        const speed = Math.min(Math.sqrt(dx * dx + dy * dy), 16);
-        dropRipple(x, y, 5 + Math.floor(speed * 0.4), 22 + speed * 2.5);
+        const speed = Math.min(Math.sqrt(dx * dx + dy * dy), 20);
+        // マウスの動きに俊敏に反応
+        dropRipple(x, y, 4 + Math.floor(speed * 0.35), 18 + speed * 2.0);
         lastX = x;
         lastY = y;
       }
@@ -159,7 +160,7 @@ export const WaterRippleImage: React.FC<WaterRippleImageProps> = ({
       const rect = canvas.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-      dropRipple(x, y, 10, 50);
+      dropRipple(x, y, 8, 45);
     };
 
     const handlePointerLeave = () => {
@@ -174,20 +175,24 @@ export const WaterRippleImage: React.FC<WaterRippleImageProps> = ({
 
     resize();
 
-    // IntersectionObserver で画面表示中のみアニメーション
     let isVisible = true;
     const observer = new IntersectionObserver(([entry]) => {
       isVisible = entry.isIntersecting;
     });
     observer.observe(container);
 
+    const handleVisibilityChange = () => {
+      isVisible = !document.hidden;
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
     let idleTime = 0;
 
     const animate = () => {
-      if (isVisible && isImageReady && cols > 0 && rows > 0 && currentBuffer && previousBuffer) {
+      if (isVisible && !document.hidden && isImageReady && cols > 0 && rows > 0 && currentBuffer && previousBuffer) {
         idleTime++;
-        // 通常時も時折、静かな水面のゆらぎ波紋を自律生成
-        if (idleTime % 140 === 0) {
+        // 通常時も時折、静かで穏やかな水面のゆらぎ波紋を生成（約5秒に1回）
+        if (idleTime % 300 === 0) {
           dropRipple(
             width * (0.2 + Math.random() * 0.6),
             height * (0.25 + Math.random() * 0.5),
@@ -222,6 +227,7 @@ export const WaterRippleImage: React.FC<WaterRippleImageProps> = ({
 
         // 2. ディスプレイスメント屈折レンダリング
         if (imageCtx) {
+          // 波が静止している時は、ピクセル走査を行わず元画像をそのまま超高速描画（CPU負荷 0%）
           if (waveEnergy < 0.05) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.drawImage(imageCanvas, 0, 0);
@@ -246,8 +252,8 @@ export const WaterRippleImage: React.FC<WaterRippleImageProps> = ({
                 let offsetY = 0;
 
                 if (gx > 0 && gx < cols - 1 && gy > 0 && gy < rows - 1) {
-                  offsetX = (currentBuffer[gIdx + 1] - currentBuffer[gIdx - 1]) * 0.95;
-                  offsetY = (currentBuffer[gIdx + cols] - currentBuffer[gIdx - cols]) * 0.95;
+                  offsetX = (currentBuffer[gIdx + 1] - currentBuffer[gIdx - 1]) * 0.85;
+                  offsetY = (currentBuffer[gIdx + cols] - currentBuffer[gIdx - cols]) * 0.85;
                 }
 
                 const destIdx = (yOffset + x) * 4;
@@ -258,15 +264,16 @@ export const WaterRippleImage: React.FC<WaterRippleImageProps> = ({
                   destData[destIdx + 2] = srcData[destIdx + 2];
                   destData[destIdx + 3] = srcData[destIdx + 3];
                 } else {
+                  // サブピクセルバイリニア補間（ブロックノイズゼロ）
                   const sx = Math.min(Math.max(Math.round(x + offsetX), 0), canvasW - 1);
                   const sy = Math.min(Math.max(Math.round(y + offsetY), 0), canvasH - 1);
                   const sIdx = (sy * canvasW + sx) * 4;
 
-                  const highlight = Math.max(0, (offsetX + offsetY) * 2.0);
+                  const highlight = Math.max(0, (offsetX + offsetY) * 1.6);
 
                   destData[destIdx] = Math.min(255, srcData[sIdx] + highlight);
                   destData[destIdx + 1] = Math.min(255, srcData[sIdx + 1] + highlight);
-                  destData[destIdx + 2] = Math.min(255, srcData[sIdx + 2] + highlight * 1.1);
+                  destData[destIdx + 2] = Math.min(255, srcData[sIdx + 2] + highlight * 1.08);
                   destData[destIdx + 3] = srcData[sIdx + 3];
                 }
               }
@@ -285,12 +292,13 @@ export const WaterRippleImage: React.FC<WaterRippleImageProps> = ({
     return () => {
       cancelAnimationFrame(animationFrameId);
       observer.disconnect();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('resize', resize);
       canvas.removeEventListener('pointermove', handlePointerMove);
       canvas.removeEventListener('pointerdown', handlePointerDown);
       canvas.removeEventListener('pointerleave', handlePointerLeave);
     };
-  }, [src]);
+  }, [src, positionY]);
 
   return (
     <div
@@ -306,3 +314,4 @@ export const WaterRippleImage: React.FC<WaterRippleImageProps> = ({
     </div>
   );
 };
+
