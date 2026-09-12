@@ -911,8 +911,12 @@ export const HomeDesignShowroom = () => {
                       />
                     </div>
 
-                    {/* 下部余白（ボトルと波打ち際をクリアに見せるスペース） */}
-                    <div className="h-4" />
+                    {/* 下部キャプション */}
+                    <div className="pb-1">
+                      <span className="text-[11px] sm:text-xs text-white/95 font-serif tracking-widest drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]">
+                        静寂の水平線に漂う、届くべき言の葉
+                      </span>
+                    </div>
                   </div>
                 </WaterRippleImage>
               </div>
