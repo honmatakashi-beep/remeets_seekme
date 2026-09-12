@@ -892,10 +892,10 @@ export const HomeDesignShowroom = () => {
                   src={heroBottleMail} 
                   alt="海とボトルメール" 
                   positionY={0.92}
-                  className="w-full h-full absolute inset-0"
+                  className="w-full h-full absolute inset-0 brightness-[1.10] contrast-[1.03] saturate-[1.05]"
                 >
-                  {/* 水面上の重ね合わせレイヤー（白ボケなし・海とボトルが鮮明に透き通るクリアレイヤー） */}
-                  <div className="absolute inset-0 bg-gradient-to-b from-sky-950/20 via-transparent to-sky-950/50 flex flex-col justify-between p-4 sm:p-6 md:p-8 text-center pointer-events-none select-none">
+                  {/* 水面上の重ね合わせレイヤー（明るく透き通るクリアレイヤー） */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-sky-950/10 flex flex-col justify-between p-4 sm:p-6 md:p-8 text-center pointer-events-none select-none">
                     {/* 上部タイトル */}
                     <div className="space-y-0.5 pt-1">
                       <span className="text-xl sm:text-2xl md:text-3xl font-serif font-bold text-[#3B627F] tracking-wider drop-shadow-sm block">
@@ -911,12 +911,8 @@ export const HomeDesignShowroom = () => {
                       />
                     </div>
 
-                    {/* 下部キャプション */}
-                    <div className="pb-1">
-                      <span className="text-[11px] sm:text-xs text-white/95 font-serif tracking-widest drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]">
-                        静寂の水平線に漂う、届くべき言の葉
-                      </span>
-                    </div>
+                    {/* 下部余白（ボトルと波打ち際をクリアに見せるスペース） */}
+                    <div className="h-4" />
                   </div>
                 </WaterRippleImage>
               </div>
