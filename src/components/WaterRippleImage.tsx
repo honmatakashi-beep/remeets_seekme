@@ -31,13 +31,13 @@ export const WaterRippleImage: React.FC<WaterRippleImageProps> = ({
     let height = 0;
     let dpr = 1;
 
-    // 波紋シミュレーション用グリッド (2D 波動方程式) - 軽快＆高レスポンス設計
+    // 波紋シミュレーション用グリッド (2D 波動方程式) - 優雅でゆったりとした自然な水面設計
     const GRID_SIZE = 6;
     let cols = 0;
     let rows = 0;
     let currentBuffer: Float32Array;
     let previousBuffer: Float32Array;
-    const damping = 0.92; // 軽快に抜ける心地よい減衰（即座に静止時CPU 0%へ復帰）
+    const damping = 0.965; // 優雅にふわぁっと広がり、心地よい余韻を残しながら静かに消える減衰率
 
     // オフスクリーンキャンバス（元画像を描画）
     const imageCanvas = document.createElement('canvas');
@@ -115,8 +115,8 @@ export const WaterRippleImage: React.FC<WaterRippleImageProps> = ({
       setTimeout(resize, 10);
     }
 
-    // 波紋を落とす関数（キレが良く爽やかな波紋）
-    const dropRipple = (x: number, y: number, radius = 5, strength = 24) => {
+    // 波紋を落とす関数（ふんわりと優雅に広がる柔らかな波紋）
+    const dropRipple = (x: number, y: number, radius = 7, strength = 18) => {
       if (!currentBuffer || cols <= 0 || rows <= 0) return;
       const cx = Math.floor((x * dpr) / GRID_SIZE);
       const cy = Math.floor((y * dpr) / GRID_SIZE);
@@ -136,7 +136,7 @@ export const WaterRippleImage: React.FC<WaterRippleImageProps> = ({
       }
     };
 
-    // マウス・ポインターイベント（俊敏でスムーズな追従）
+    // マウス・ポインターイベント（水面を優しくなぞるような自然な追従）
     let lastX = -1;
     let lastY = -1;
 
@@ -148,9 +148,9 @@ export const WaterRippleImage: React.FC<WaterRippleImageProps> = ({
       if (x >= 0 && x <= width && y >= 0 && y <= height) {
         const dx = lastX >= 0 ? x - lastX : 0;
         const dy = lastY >= 0 ? y - lastY : 0;
-        const speed = Math.min(Math.sqrt(dx * dx + dy * dy), 20);
-        // マウスの動きに俊敏に反応
-        dropRipple(x, y, 4 + Math.floor(speed * 0.35), 18 + speed * 2.0);
+        const speed = Math.min(Math.sqrt(dx * dx + dy * dy), 16);
+        // 優しく水面をなぞるマイルドな波立ち
+        dropRipple(x, y, 6 + Math.floor(speed * 0.25), 10 + speed * 1.0);
         lastX = x;
         lastY = y;
       }
@@ -160,7 +160,7 @@ export const WaterRippleImage: React.FC<WaterRippleImageProps> = ({
       const rect = canvas.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-      dropRipple(x, y, 8, 45);
+      dropRipple(x, y, 9, 32);
     };
 
     const handlePointerLeave = () => {
@@ -191,13 +191,13 @@ export const WaterRippleImage: React.FC<WaterRippleImageProps> = ({
     const animate = () => {
       if (isVisible && !document.hidden && isImageReady && cols > 0 && rows > 0 && currentBuffer && previousBuffer) {
         idleTime++;
-        // 通常時も時折、静かで穏やかな水面のゆらぎ波紋を生成（約5秒に1回）
-        if (idleTime % 300 === 0) {
+        // 通常時も時折、静かで穏やかな水面のゆらぎ波紋を生成（約7.5秒に1回）
+        if (idleTime % 450 === 0) {
           dropRipple(
-            width * (0.2 + Math.random() * 0.6),
-            height * (0.25 + Math.random() * 0.5),
-            5,
-            16
+            width * (0.25 + Math.random() * 0.5),
+            height * (0.3 + Math.random() * 0.4),
+            6,
+            12
           );
         }
 
@@ -252,8 +252,9 @@ export const WaterRippleImage: React.FC<WaterRippleImageProps> = ({
                 let offsetY = 0;
 
                 if (gx > 0 && gx < cols - 1 && gy > 0 && gy < rows - 1) {
-                  offsetX = (currentBuffer[gIdx + 1] - currentBuffer[gIdx - 1]) * 0.85;
-                  offsetY = (currentBuffer[gIdx + cols] - currentBuffer[gIdx - cols]) * 0.85;
+                  // ゆったり穏やかな水面屈折
+                  offsetX = (currentBuffer[gIdx + 1] - currentBuffer[gIdx - 1]) * 0.55;
+                  offsetY = (currentBuffer[gIdx + cols] - currentBuffer[gIdx - cols]) * 0.55;
                 }
 
                 const destIdx = (yOffset + x) * 4;
@@ -269,11 +270,11 @@ export const WaterRippleImage: React.FC<WaterRippleImageProps> = ({
                   const sy = Math.min(Math.max(Math.round(y + offsetY), 0), canvasH - 1);
                   const sIdx = (sy * canvasW + sx) * 4;
 
-                  const highlight = Math.max(0, (offsetX + offsetY) * 1.6);
+                  const highlight = Math.max(0, (offsetX + offsetY) * 1.2);
 
                   destData[destIdx] = Math.min(255, srcData[sIdx] + highlight);
                   destData[destIdx + 1] = Math.min(255, srcData[sIdx + 1] + highlight);
-                  destData[destIdx + 2] = Math.min(255, srcData[sIdx + 2] + highlight * 1.08);
+                  destData[destIdx + 2] = Math.min(255, srcData[sIdx + 2] + highlight * 1.05);
                   destData[destIdx + 3] = srcData[sIdx + 3];
                 }
               }

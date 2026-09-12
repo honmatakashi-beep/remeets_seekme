@@ -37,7 +37,7 @@ export const WaterRippleRainbowText: React.FC<WaterRippleRainbowTextProps> = ({
     let rows = 0;
     let currentBuffer: Float32Array;
     let previousBuffer: Float32Array;
-    const damping = 0.92; // 軽快に抜ける心地よい減衰（即座に静止時CPU 0%へ復帰）
+    const damping = 0.965; // 優雅にふわぁっと広がり、心地よい余韻を残しながら静かに消える減衰率
 
     // 静的テキスト描画用オフスクリーンキャンバス
     const textCanvas = document.createElement('canvas');
@@ -87,8 +87,8 @@ export const WaterRippleRainbowText: React.FC<WaterRippleRainbowTextProps> = ({
       textCtx.textAlign = 'center';
       textCtx.textBaseline = 'alphabetic';
 
-      // なめらかに永遠に循環する虹色グラデーション（ゆったりとしたオーロラスピード）
-      flowOffset += 0.25;
+      // なめらかに永遠に循環する虹色グラデーション（静寂でゆったりとしたオーロラスピード）
+      flowOffset += 0.1;
       const period = Math.max(width * 0.85, 300);
       const offset = flowOffset % period;
       const startX = -offset - period;
@@ -175,8 +175,8 @@ export const WaterRippleRainbowText: React.FC<WaterRippleRainbowTextProps> = ({
       ctx.drawImage(textCanvas, 0, 0);
     };
 
-    // 波紋を落とす関数（キレが良く爽やかな波紋）
-    const dropRipple = (x: number, y: number, radius = 5, strength = 22) => {
+    // 波紋を落とす関数（ふんわりと優雅に広がる柔らかな波紋）
+    const dropRipple = (x: number, y: number, radius = 6, strength = 16) => {
       if (!currentBuffer || cols <= 0 || rows <= 0) return;
       const cx = Math.floor((x * dpr) / GRID_SIZE);
       const cy = Math.floor((y * dpr) / GRID_SIZE);
@@ -207,8 +207,9 @@ export const WaterRippleRainbowText: React.FC<WaterRippleRainbowTextProps> = ({
       if (x >= 0 && x <= width && y >= 0 && y <= height) {
         const dx = lastX >= 0 ? x - lastX : 0;
         const dy = lastY >= 0 ? y - lastY : 0;
-        const speed = Math.min(Math.sqrt(dx * dx + dy * dy), 20);
-        dropRipple(x, y, 4 + Math.floor(speed * 0.35), 16 + speed * 1.8);
+        const speed = Math.min(Math.sqrt(dx * dx + dy * dy), 16);
+        // 優しく水面をなぞるマイルドな波立ち
+        dropRipple(x, y, 5 + Math.floor(speed * 0.2), 8 + speed * 0.9);
         lastX = x;
         lastY = y;
       }
@@ -218,7 +219,7 @@ export const WaterRippleRainbowText: React.FC<WaterRippleRainbowTextProps> = ({
       const rect = canvas.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-      dropRipple(x, y, 7, 36);
+      dropRipple(x, y, 8, 26);
     };
 
     const handlePointerLeave = () => {
@@ -252,13 +253,13 @@ export const WaterRippleRainbowText: React.FC<WaterRippleRainbowTextProps> = ({
     const animate = () => {
       if (isVisible && !document.hidden && cols > 0 && rows > 0 && currentBuffer && previousBuffer) {
         idleTime++;
-        // 通常時も時折、静かで穏やかな水面のゆらぎ波紋を生成（約5秒に1回）
-        if (idleTime % 300 === 0) {
+        // 通常時も時折、静かで穏やかな水面のゆらぎ波紋を生成（約7.5秒に1回）
+        if (idleTime % 450 === 0) {
           dropRipple(
             width * (0.25 + Math.random() * 0.5),
             height * (0.3 + Math.random() * 0.4),
-            5,
-            14
+            6,
+            12
           );
         }
 
