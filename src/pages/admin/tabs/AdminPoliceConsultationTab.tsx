@@ -1438,7 +1438,7 @@ export const AdminPoliceConsultationTab: React.FC = () => {
                       匿名アカウントによるなりすましや犯罪利用を防げるか？
                     </td>
                     <td className="p-3 leading-relaxed">
-                      手紙開封には公的身分証（運転免許証・マイナンバーカード等）によるeKYC審査が必須。「犯罪・ストーカーに利用しない」電子的利用宣誓への法的同意を義務付け。
+                      手紙開封時は「犯罪・ストーカーに利用しない」電子的利用宣誓への法的同意を義務付け。さらに身元信頼性を高めたいユーザー向けに公的身分証（運転免許証等）による公的eKYC審査（任意オプション600円）を提供。
                     </td>
                     <td className="p-3 text-center font-bold text-blue-800 text-[10px] bg-blue-50">
                       犯収法・携帯法<br />準拠
