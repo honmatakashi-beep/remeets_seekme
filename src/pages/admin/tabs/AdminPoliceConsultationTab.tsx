@@ -60,11 +60,11 @@ ReMEETs 運営事務局
 ・登録表示ニックネーム: たかし
 ・連携SNSアカウント: LINE UID (U1234567890abcdef...) / Google Email (user@example.com)
 
-2. 本人確認 (eKYC) 及び認証情報
-・SMS認証携帯電話番号: 090-XXXX-XXXX (認証完了日時: 2026-08-20 14:22:10 JST)
-・公的本人確認ステータス: APPROVED (TRUSTDOCK 照合コード: td_tx_998124)
-・氏名（マスキング解除）: 〇〇 〇〇
-・年齢区分: 18歳以上（成年確認済み）
+2. 本人確認 (eKYC) 及び決済情報
+・基本認証: LINE Login / Google OAuth 認証済み
+・公的本人確認 (eKYC): APPROVED (TRUSTDOCK 照合コード: td_tx_998124 ※任意実施ユーザー)
+・氏名（マスキング解除）: 〇〇 〇〇（成年確認済み）
+・決済証跡: Stripe Charge ID: ch_xxx (手紙開封料 600円 決済完了)
 
 3. 通信ログ及びアクセス証跡
 ・直近ログインIPアドレス: 203.0.113.45 (ホスト名: p113045-ipngnfx01.tokyo.ocn.ne.jp)
@@ -1747,8 +1747,8 @@ export const AdminPoliceConsultationTab: React.FC = () => {
               <ul className="list-disc list-inside space-y-1 text-slate-600 pl-1">
                 <li><strong>SNSアカウント連携識別子:</strong> LINE内部UID、Google登録メールアドレス</li>
                 <li><strong>通信・認証ログ:</strong> 接続元IPアドレス、User-Agent、アクセス日時タイムスタンプ</li>
-                <li><strong>本人確認ログ:</strong> SMS認証携帯電話番号、eKYC審査結果（公的氏名・年齢ステータス）</li>
-                <li><strong>投稿証跡:</strong> 投稿メッセージ全文、AI検閲で隔離された脅迫・暴言メッセージ原本</li>
+                <li><strong>決済・本人確認ログ:</strong> Stripe決済記録、電子的利用宣誓同意レコード（※eKYC実施者の場合は公的審査結果を含む）</li>
+                <li><strong>投稿証跡:</strong> 投稿メッセージ全文、AI検閲で隔離された脅迫・暴言メッセージ原本（ai_flagged = 1）</li>
                 <li><strong>電子宣誓書:</strong> 同意した電子的利用宣誓のデジタル署名レコード</li>
               </ul>
             </div>

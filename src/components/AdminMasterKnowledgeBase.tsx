@@ -135,14 +135,14 @@ export const AdminMasterKnowledgeBase: React.FC<AdminMasterKnowledgeBaseProps> =
 - 警察（生活安全課・サイバー課）向けプレゼン資料・シナリオの一括改訂（漏洩リスクゼロ構造の提示）
 - 利用規約・プライバシーポリシー・安全ガイドラインの完全分離金庫モデル準拠改訂
 
-■ 3. 認証基本構成 ＆ 600円黒字化モデル
-- メインログイン: LINE Login / Google OAuth (完全無料)
-- 二重登録防止 & 警察照会用: 携帯SMS認証 (開通決済時のみトリガー / 12円)
-- 開通手数料: 600円 (税込) 買い切り ─ 1件あたり手元純利益 +366円 (完全黒字回収)
+■ 3. 認証基本構成 ＆ 600円安心モデル
+- メインログイン: LINE Login / Google OAuth (完全無料・0円)
+- 手紙開封・連絡先開示: 600円 (税込) 買い切り
+- 公的本人確認 (eKYC): 600円 (税込) ── 【希望者のみの任意オプション】
 
 ■ 4. 警察 (公安・サイバー課) 照会対応
 - サービス建付け: 過去の想い出照合ツールであり異性紹介事業に非該当。
-- 令状受領時の開示可能項目: SNS UID, Google Email, SMS認証番号, eKYC氏名/年齢, アクセスIP/日時, AI検閲隔離ログ。`;
+- 令状受領時の開示可能項目: LINE UID, Google Email, アクセスIP/日時, Stripe決済記録, 電子的利用宣誓同意レコード（※eKYC実施者の場合は公的審査結果も含む）, AI検閲隔離ログ。`;
 
   const [scratchpadMemo, setScratchpadMemo] = useState<string>(() => {
     try {
@@ -1076,19 +1076,20 @@ ReMEETs カスタマーサポート`
               {/* Card 2: SMS Authentication Cost & Profit Strategy */}
               <div className="p-6 rounded-3xl bg-white border border-brand-border shadow-sm space-y-4">
                 <div className="flex items-center gap-2 border-b border-zinc-100 pb-3">
-                  <span className="text-xl">📱</span>
-                  <h4 className="text-sm font-bold text-black">2. SMS認証（電話番号認証）のコストと黒字化戦略</h4>
+                  <span className="text-xl">💳</span>
+                  <h4 className="text-sm font-bold text-black">2. 透明な料金モデルと黒字化戦略</h4>
                 </div>
                 <div className="space-y-3 text-xs">
                   <p className="text-black/70 leading-relaxed">
-                    <b>なぜSMS認証が必要なのか</b>: 無料のSNS認証だけでは複アカやサクラを防げないため、<b>「1ユーザー＝1物理携帯番号」</b>を担保し、警察・公安照会時の最重要接点とします。<br />
-                    <b>従量課金対策</b>: SMS送信費（1通約12円）を無料ログイン段階で走らせると赤字になるため、<b>「お相手との手紙開封・連絡先開示（600円決済）」の内部でのみトリガー</b>します。
+                    <b>基本利用完全無料</b>: LINE/Google連携で誰でも0円で投函・検索・回答が可能。<br />
+                    <b>手紙開封（600円）</b>: クイズ正解後の手紙開封・連絡先開示は600円（税込）の完全買い切り価格。<br />
+                    <b>公的本人確認eKYC（600円）</b>: 信頼性を高めたいユーザー向けの【希望者のみの任意オプション】（開封600円＋eKYC600円の同時実施時は計1,200円）。
                   </p>
 
                   {/* Profit breakdown diagram */}
                   <div className="p-4 rounded-2xl bg-teal-50/80 border border-teal-200 space-y-2">
-                    <span className="font-bold text-teal-950 block text-xs">【600円 開通決済 1件あたりの収益・原価分解】</span>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] font-mono">
+                    <span className="font-bold text-teal-950 block text-xs">【手紙開封（600円）1件あたりの収益・原価分解】</span>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-[11px] font-mono">
                       <div className="p-2.5 rounded-xl bg-white border border-teal-200">
                         <span className="text-black/50 block text-[10px]">【売上】開通料</span>
                         <span className="text-emerald-800 font-bold">+600 円</span>
@@ -1098,16 +1099,12 @@ ReMEETs カスタマーサポート`
                         <span className="text-rose-600 font-bold">-22 円</span>
                       </div>
                       <div className="p-2.5 rounded-xl bg-white border border-teal-200">
-                        <span className="text-black/50 block text-[10px]">【控除】SMS送信費</span>
-                        <span className="text-rose-600 font-bold">-12 円</span>
-                      </div>
-                      <div className="p-2.5 rounded-xl bg-white border border-teal-200">
-                        <span className="text-black/50 block text-[10px]">【控除】eKYC身元確認</span>
-                        <span className="text-rose-600 font-bold">-200 円</span>
+                        <span className="text-black/50 block text-[10px]">【手元純利益】</span>
+                        <span className="text-emerald-700 font-bold">+578 円</span>
                       </div>
                     </div>
                     <div className="pt-2 text-right font-bold text-teal-950 text-xs">
-                      ✨ 1トランザクションあたりの手元純利益: <span className="font-mono text-emerald-800 text-sm font-extrabold">+366 円</span>（完全黒字回収）
+                      ✨ 健全な収益構造により、AI自律監視体制とサーバー維持費を完全自給自足
                     </div>
                   </div>
                 </div>

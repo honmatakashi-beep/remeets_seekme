@@ -1450,9 +1450,9 @@ export const ManualSecuritySection = () => (
                   万が一、事件・ストーキング疑惑等が起きた場合、公安より正式な「捜査関係事項照会書」を受領した際は、即座に以下のログ情報を抽出・提供する運用を行います。
                   <ul className="list-disc pl-4 text-[10px] text-neutral-500 mt-1 space-y-0.5">
                     <li>ユーザーが連携したLINE内部ID、Googleアカウントメールアドレス</li>
-                    <li>SMS認証で使用された実在する携帯電話番号</li>
-                    <li>eKYC事業者より証明・提供された公的本人情報（氏名、年齢）</li>
-                    <li>投函・クイズ回答時のIPアドレス、アクセスログ、およびAI隔離された脅迫・暴言投稿（証跡の保持）</li>
+                    <li>投函・クイズ回答時の接続元IPアドレス、アクセスログタイムスタンプ</li>
+                    <li>Stripe決済記録、電子的利用宣誓同意レコード（※eKYC実施ユーザーの場合は公的本人確認結果を含む）</li>
+                    <li>AI隔離された脅迫・暴言投稿の原本データ（証跡の保持）</li>
                   </ul>
                 </div>
               </div>
@@ -1462,7 +1462,7 @@ export const ManualSecuritySection = () => (
             <div className="p-4 bg-white rounded-2xl border border-rose-100 shadow-sm space-y-3">
               <div className="flex items-center gap-2 text-rose-700 font-bold text-xs">
                 <span>🪪</span>
-                <span>2. eKYC事業者との法人契約・開発実務</span>
+                <span>2. eKYC事業者との法人契約・開発実務（任意オプション）</span>
               </div>
               <div className="space-y-2 text-[11px] text-neutral-700 leading-relaxed">
                 <div>
@@ -1471,17 +1471,12 @@ export const ManualSecuritySection = () => (
                   初期費用約5〜10万円、月額料金約1〜3万円、1回あたりの本人認証コスト約150〜250円（身分証画像＋表情確認審査含む）を想定します。
                 </div>
                 <div>
-                  <span className="font-bold text-black block">● 決済一体型「完全黒字化」料金モデル：</span>
-                  eKYC審査とSMS認証は、連絡先開示・開通手数料（600円）がStripeで決済されたタイミングで同期トリガーされます。
-                  <div className="mt-1 p-2 bg-emerald-500/5 rounded-xl text-[10px] text-emerald-900 border border-emerald-500/10 font-mono">
-                    売上：+600円<br />
-                    経費：決済手数料 22円 + SMS送信費 12円 + eKYC費 200円 = 234円<br />
-                    <strong>➔ 純利：+366円/回</strong> の利益差額で経費を完全自給自足
-                  </div>
+                  <span className="font-bold text-black block">● 透明な安心料金モデル（任意オプション）：</span>
+                  基本機能はLINE/Google認証（0円）で手軽に利用可能。手紙開封は600円（税込）。公的本人確認（eKYC 600円）は【希望者のみの任意オプション】として提供し、十分な運用差額によりAI監視体制とサーバー維持費を自給自足します。
                 </div>
                 <div>
                   <span className="font-bold text-black block">● ユーザーの年齢ステータス連携と暗号化：</span>
-                  eKYCのAPIからWebHook受信後、DBの年齢確認フラグを安全に暗号化保存（機微情報の保護）し、安全にメッセージ・連絡先開示機能を開放します。
+                  eKYCのAPIからWebHook受信後、DBの年齢確認フラグを安全に暗号化保存（機微情報の保護）し、プロフィールに「🛡️ 公的本人確認済」バッジを付与します。
                 </div>
               </div>
             </div>
