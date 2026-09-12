@@ -16,7 +16,7 @@ export const WaterRippleHeroCanvas: React.FC<WaterRippleHeroCanvasProps> = ({
     '再会のボトルメール'
   ],
   mainTitle = 'ReMEETs',
-  caption = '',
+  caption = '静寂の水平線に漂う、届くべき言の葉',
   className = ''
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);

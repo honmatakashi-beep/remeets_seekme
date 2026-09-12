@@ -702,7 +702,11 @@ export const HomeDesignShowroom = () => {
 
               {/* 横長パノラマ写真フレーム（海とボトルに水紋エフェクトがリアルタイム波打ち） */}
               <div className="relative mx-auto max-w-2xl rounded-2xl overflow-hidden border border-sky-200 shadow-md aspect-[21/9]">
-                <WaterRippleImage src={heroBottleMail} alt="海とボトルメール" className="w-full h-full" />
+                <WaterRippleImage src={heroBottleMail} alt="海とボトルメール" className="w-full h-full">
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A2540]/60 via-transparent to-transparent flex items-end p-4 pointer-events-none">
+                    <span className="text-xs text-white/90 font-serif tracking-widest">静寂の水平線に漂う、届くべき言の葉</span>
+                  </div>
+                </WaterRippleImage>
               </div>
 
               {/* リード文 */}
@@ -891,7 +895,7 @@ export const HomeDesignShowroom = () => {
                   className="w-full h-full absolute inset-0"
                 >
                   {/* 水面上の重ね合わせレイヤー（白ボケなし・海とボトルが鮮明に透き通るクリアレイヤー） */}
-                  <div className="absolute inset-0 bg-gradient-to-b from-sky-950/20 via-transparent to-sky-950/40 flex flex-col justify-between p-4 sm:p-6 md:p-8 text-center pointer-events-none select-none">
+                  <div className="absolute inset-0 bg-gradient-to-b from-sky-950/20 via-transparent to-sky-950/50 flex flex-col justify-between p-4 sm:p-6 md:p-8 text-center pointer-events-none select-none">
                     {/* 上部タイトル */}
                     <div className="space-y-0.5 pt-1">
                       <span className="text-sm sm:text-base md:text-lg font-serif font-bold text-white tracking-[0.3em] uppercase drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)] block">
@@ -907,8 +911,12 @@ export const HomeDesignShowroom = () => {
                       />
                     </div>
 
-                    {/* 下部余白（ボトルと波打ち際をクリアに見せるスペース） */}
-                    <div className="h-4" />
+                    {/* 下部キャプション */}
+                    <div className="pb-1">
+                      <span className="text-[11px] sm:text-xs text-white/95 font-serif tracking-widest drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]">
+                        静寂の水平線に漂う、届くべき言の葉
+                      </span>
+                    </div>
                   </div>
                 </WaterRippleImage>
               </div>
@@ -1517,6 +1525,9 @@ export const HomeDesignShowroom = () => {
               {/* 横長パノラマ写真フレーム */}
               <div className="relative mx-auto max-w-2xl rounded-2xl overflow-hidden border border-sky-200 shadow-md aspect-[21/9]">
                 <img src={heroBottleMail} alt="海" className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0A2540]/60 via-transparent to-transparent flex items-end p-4">
+                  <span className="text-xs text-white/90 font-serif tracking-widest">静寂の水平線に漂う、届くべき言の葉</span>
+                </div>
               </div>
 
               <p className="text-xs sm:text-sm md:text-base text-[#334E68] font-serif leading-loose max-w-2xl mx-auto">
