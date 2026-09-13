@@ -3,7 +3,8 @@ import {
   Shield, FileText, Download, Printer, Copy, Check, Eye, HelpCircle,
   ExternalLink, ChevronRight, RefreshCw, AlertTriangle, CheckCircle2,
   Lock, Key, Users, BookOpen, Layers, ShieldCheck, Scale, Award, Sparkles,
-  Presentation, CheckSquare, Search, FileCheck, ArrowRight, Play
+  Presentation, CheckSquare, Search, FileCheck, ArrowRight, Play,
+  X, Building2, Cpu
 } from "lucide-react";
 import Markdown from "react-markdown";
 import { PolicePresentationSlideViewer } from "../../../components/PolicePresentationSlideViewer";
@@ -15,6 +16,7 @@ import { PoliceDemoGuideView } from "../policeConsultation/PoliceDemoGuideView";
 import { PoliceA4SummaryView } from "../policeConsultation/PoliceA4SummaryView";
 import { RiskMitigationMatrix } from "../../../components/deploymentGuide/RiskMitigationMatrix";
 import { handleExportPptx } from "../../../components/deploymentGuide/pptxExport";
+import { POLICE_PRESENTATION_SLIDES, POLICE_PRESENTATION_SCENARIOS } from "../data/policePresentationData";
 
 export { POLICE_DISCLOSURE_TEMPLATE_CONTENT, LEGAL_SCHEME_TEMPLATE_CONTENT };
 
@@ -501,83 +503,7 @@ export const AdminPoliceConsultationTab: React.FC = () => {
 
   // PowerPoint (.pptx) エクスポート機能
   const handleDownloadPPTX = () => {
-    const pptx = new PptxGenJS();
-    pptx.layout = 'LAYOUT_16x9';
-
-    POLICE_PRESENTATION_SLIDES.forEach((slide, index) => {
-      const pptxSlide = pptx.addSlide();
-      const scenarioText = POLICE_PRESENTATION_SCENARIOS[index];
-      if (scenarioText) {
-        pptxSlide.addNotes(scenarioText);
-      }
-
-      if (slide.layout === 'title') {
-        pptxSlide.background = { color: '0F172A' };
-        pptxSlide.addText(slide.title, {
-          x: 0.8,
-          y: 2.0,
-          w: '85%',
-          fontSize: 26,
-          bold: true,
-          color: 'F59E0B',
-          align: 'left',
-          fontFace: 'Meiryo'
-        });
-        if (slide.subtitle) {
-          pptxSlide.addText(slide.subtitle, {
-            x: 0.8,
-            y: 4.2,
-            w: '85%',
-            fontSize: 14,
-            color: 'E2E8F0',
-            align: 'left',
-            fontFace: 'Meiryo'
-          });
-        }
-      } else {
-        pptxSlide.background = { color: 'FFFFFF' };
-        // Header
-        pptxSlide.addText(slide.category, {
-          x: 0.8,
-          y: 0.4,
-          w: '85%',
-          fontSize: 11,
-          color: '64748B',
-          bold: true,
-          fontFace: 'Meiryo'
-        });
-        pptxSlide.addText(slide.title, {
-          x: 0.8,
-          y: 0.8,
-          w: '85%',
-          fontSize: 20,
-          bold: true,
-          color: '0F172A',
-          fontFace: 'Meiryo'
-        });
-
-        // Content bullet points
-        const bulletItems = slide.points.map((pt) => ({
-          text: pt,
-          options: {
-            fontSize: 13,
-            color: '334155',
-            breakLine: true,
-            paraSpaceAfter: 12
-          }
-        }));
-
-        pptxSlide.addText(bulletItems, {
-          x: 0.8,
-          y: 1.8,
-          w: '85%',
-          h: 4.8,
-          fontFace: 'Meiryo'
-        });
-      }
-    });
-
-    pptx.writeFile({ fileName: `ReMEETs_Police_Presentation_Slides_${new Date().toISOString().slice(0, 10)}.pptx` });
+    handleExportPptx();
   };
 
   const handleCopyText = (textToCopy: string) => {
@@ -978,25 +904,8 @@ export const AdminPoliceConsultationTab: React.FC = () => {
       {/* ① 警察・行政向け セキュリティ実証自動デモ */}
       {activeDoc === "demo_guide" && (
         <PoliceDemoGuideView
-          activeDemoScenario={activeDemoScenario}
-          setActiveDemoScenario={setActiveDemoScenario}
-          demoRunning={demoRunning}
-          demoStep={demoStep}
-          demoLogs={demoLogs}
-          handleRunDemoScenario={handleRunDemoScenario}
-          handleResetDemo={handleResetDemo}
-          demoTargetName={demoTargetName}
-          setDemoTargetName={setDemoTargetName}
-          demoSearcherName={demoSearcherName}
-          setDemoSearcherName={setDemoSearcherName}
-          demoQuizAnswers={demoQuizAnswers}
-          setDemoQuizAnswers={setDemoQuizAnswers}
-          demoSpeed={demoSpeed}
-          setDemoSpeed={setDemoSpeed}
-          demoAutoNext={demoAutoNext}
-          setDemoAutoNext={setDemoAutoNext}
-          demoReportResolved={demoReportResolved}
-          handleResolveDemoReport={handleResolveDemoReport}
+          setIsLegalSchemeModalOpen={setIsLegalSchemeModalOpen}
+          setIsTemplateModalOpen={setIsTemplateModalOpen}
         />
       )}
 
@@ -1004,7 +913,10 @@ export const AdminPoliceConsultationTab: React.FC = () => {
       {activeDoc === "a4_summary" && (
         <PoliceA4SummaryView
           handlePrintSummary={handlePrintSummary}
-          handleExportPdf={handleExportPdf}
+          handleExportPdf={() => window.print()}
+          policeStationName={policeStationName}
+          operatorName={operatorName}
+          contactInfo={contactInfo}
         />
       )}
 

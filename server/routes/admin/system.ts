@@ -1,4 +1,13 @@
+
 import express from "express";
+import Database from "better-sqlite3";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import crypto from "crypto";
+import fs from "fs";
+import path from "path";
+import { execSync } from "child_process";
+import { GoogleGenAI } from "@google/genai";
 import {
   db,
   setDb,
@@ -24,13 +33,47 @@ import {
   sendPasswordResetEmail,
   recordModerationHistory,
 } from "./common";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import crypto from "crypto";
-import fs from "fs";
-import path from "path";
-import { execSync } from "child_process";
-import { GoogleGenAI } from "@google/genai";
+
+function formatBytes(bytes: number, decimals: number = 2): string {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+}
+
+const scanImageUsage = (): { [relPath: string]: string } => {
+  const rootDir = process.cwd();
+  const extensions = [".ts", ".tsx", ".js", ".jsx", ".html", ".css", ".json"];
+  const scanDirs = [
+    path.join(rootDir, "src"),
+    path.join(rootDir, "server"),
+    path.join(rootDir, "public")
+  ];
+
+  const fileMap: { [relPath: string]: string } = {};
+
+  const walk = (dir: string) => {
+    if (!fs.existsSync(dir)) return;
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+    for (const entry of entries) {
+      if (entry.name.startsWith(".") || entry.name === "node_modules" || entry.name === "dist") continue;
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        walk(full);
+      } else if (extensions.includes(path.extname(entry.name).toLowerCase())) {
+        try {
+          const rel = path.relative(rootDir, full);
+          fileMap[rel] = fs.readFileSync(full, "utf-8");
+        } catch {}
+      }
+    }
+  };
+
+  scanDirs.forEach(walk);
+  return fileMap;
+};
 
 let lastNgWordsFetch = 0;
 

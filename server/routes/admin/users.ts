@@ -1,3 +1,8 @@
+
+function executeUidMigration() {
+  return { migratedCount: 0 };
+}
+
 import express from "express";
 import {
   db,

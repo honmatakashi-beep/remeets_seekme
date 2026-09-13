@@ -2,34 +2,36 @@ import React from "react";
 import { Settings, Sparkles, CheckCircle2, RefreshCw } from "lucide-react";
 
 export interface AdminSettingsTabProps {
-  adminHomeDesign: string;
-  setAdminHomeDesign: (val: string) => void;
-  showPrVideoBanner: boolean;
-  setShowPrVideoBanner: (val: boolean) => void;
-  showAdminShortcutsBanner: boolean;
-  setShowAdminShortcutsBanner: (val: boolean) => void;
-  savingSettings: boolean;
-  saveAdminSettings: () => void;
-  restoreDefaultHeroImage: () => void;
-  restoringHero: boolean;
-  refreshingAllStats: boolean;
-  handleRefreshAllStats: () => void;
+  adminHomeDesign?: string;
+  setAdminHomeDesign?: (val: string) => void;
+  statsEnabled?: boolean;
+  handleToggleHomeStats?: () => void;
+  bgGlowOpacity?: number;
+  handleUpdateBgGlowOpacity?: (val: number) => void;
+  handleResetBgContrast?: () => void;
 }
 
 export const AdminSettingsTab: React.FC<AdminSettingsTabProps> = ({
-  adminHomeDesign,
+  adminHomeDesign = 'v2',
   setAdminHomeDesign,
-  showPrVideoBanner,
-  setShowPrVideoBanner,
-  showAdminShortcutsBanner,
-  setShowAdminShortcutsBanner,
-  savingSettings,
-  saveAdminSettings,
-  restoreDefaultHeroImage,
-  restoringHero,
-  refreshingAllStats,
-  handleRefreshAllStats
+  statsEnabled = true,
+  handleToggleHomeStats = () => {},
+  bgGlowOpacity = 0.85,
+  handleUpdateBgGlowOpacity = () => {},
+  handleResetBgContrast = () => {}
 }) => {
+  const handleToggleHomeDesignMode = (mode: string) => {
+    if (setAdminHomeDesign) {
+      setAdminHomeDesign(mode);
+    }
+    try {
+      localStorage.setItem('remeets_home_design_mode', mode);
+      window.dispatchEvent(new CustomEvent('remeets_design_system_changed'));
+    } catch (e) {
+      console.warn(e);
+    }
+  };
+
   return (
             <div className="space-y-6">
               <div className="glass-card p-8">

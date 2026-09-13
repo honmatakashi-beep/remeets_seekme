@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   HeartHandshake, BookOpen, Clock, Users, School, Heart, CheckCircle2,
-  ChevronRight, ArrowRight, Lock, Eye, Sparkles, Send
+  ChevronRight, ArrowRight, Lock, Eye, Sparkles, Send, Mail, Search
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
-import { BottleLoader } from "../components/SharedComponents";
+import { BottleLoader, BackToHomeButton } from "../components/SharedComponents";
 import { SuccessStoryModal } from "./SearchPage";
 
 export const SuccessStoriesPage = () => {

@@ -1,15 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Waves, Heart, User, Calendar, MapPin, Sparkles, Clock, AlertCircle, Trash2, Edit3, PlusCircle, ShieldCheck } from "lucide-react";
+import { 
+  Waves, Heart, User, Calendar, MapPin, Sparkles, Clock, AlertCircle, 
+  Trash2, Edit3, PlusCircle, ShieldCheck, ExternalLink, Eye, Edit, Activity 
+} from "lucide-react";
 import { getPostUrl, formatEraLabel } from "../../lib/utils";
 
 export const AccountSentTab = (props: any) => {
+  const [selectedPostIds, setSelectedPostIds] = useState<number[]>([]);
+  const [isBulkDeleting, setIsBulkDeleting] = useState<boolean>(false);
+
   const {
     myPosts = [],
     loading,
     postActionLoading,
     handleTogglePostStatus,
     setDeleteConfirmModal,
+    setDeleteConfirmPost = props.setDeleteConfirmModal || (() => {}),
+    setDeleteConsent = () => {},
+    handleBulkDeletePosts = async () => {},
     setEditingPost,
     setShowEditModal,
     setStoryTargetPost,

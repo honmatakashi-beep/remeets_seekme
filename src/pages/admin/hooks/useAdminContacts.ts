@@ -324,6 +324,7 @@ export const useAdminContacts = ({ token, fetchData, setStatusMsg }: UseAdminCon
     aiDraftTone,
     setAiDraftTone,
     handleReplyContact,
+    handleGenerateAiDraft,
     handleSeedSampleContacts,
     handleToggleSelectAllContacts,
     handleToggleSelectContact,

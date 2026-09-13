@@ -1,5 +1,9 @@
 import React from "react";
-import { HelpCircle, Key, Lock, Sparkles, AlertTriangle, ShieldCheck, CheckCircle2 } from "lucide-react";
+import { 
+  HelpCircle, Key, Lock, Sparkles, AlertTriangle, ShieldCheck, CheckCircle2, 
+  BookOpen, CheckCircle, X 
+} from "lucide-react";
+import { WarningMessage } from "../../../components/SharedComponents";
 
 export const Step1Quiz = (props: any) => {
   const {
@@ -10,7 +14,12 @@ export const Step1Quiz = (props: any) => {
     isGeneratingAiQuestions,
     handleGenerateAiQuestions,
     aiQuestionSuggestions,
-    handleApplyAiQuestion
+    handleApplyAiQuestion,
+    handleAiDiagnosis,
+    isAiDiagnosing,
+    aiDiagnosisResult,
+    warnings = {},
+    toHalfWidth = (s: string) => s
   } = props;
 
   return (

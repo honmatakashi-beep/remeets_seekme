@@ -1,4 +1,5 @@
-import { SlideItem } from "../pages/admin/data/policePresentationData";
+import React from "react";
+import { SlideItem } from "../../pages/admin/data/policePresentationData";
 
 export const generatePresenterConsoleHtml = (
   slides: SlideItem[],
@@ -228,9 +229,6 @@ export const generatePresenterConsoleHtml = (
   </script>
 </body>
 </html>`;
-
-    newWin.document.open();
-    newWin.document.write(htmlContent);;
 };
 
 export const openPresenterWindow = (

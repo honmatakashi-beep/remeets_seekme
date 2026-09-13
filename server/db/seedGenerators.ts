@@ -2,6 +2,35 @@ import { db } from "./schema";
 import bcrypt from "bcryptjs";
 import { UNIQUE_MEMORY_SCENARIOS, ALL_SCENARIOS_COLLECTION } from "../memoryScenarios";
 
+export const LAST_NAMES = [
+  "佐藤", "鈴木", "高橋", "田中", "渡辺", "伊藤", "山本", "中村", "小林", "加藤",
+  "吉田", "山田", "佐々木", "山口", "松本", "井上", "木村", "林", "斎藤", "清水",
+  "山崎", "森", "池田", "橋本", "阿部", "石川", "山下", "中島", "石井", "小川",
+  "前田", "岡田", "長谷川", "藤田", "後藤", "近藤", "村上", "遠藤", "青木", "坂本",
+  "斉藤", "福田", "太田", "西村", "藤井", "岡本", "藤原", "三浦", "中野", "中川"
+];
+
+export const FEMALE_FIRST_NAMES_SHOWA = [
+  "洋子", "恵子", "幸子", "和子", "裕子", "由美子", "順子", "明美", "智子", "久美子",
+  "真由美", "陽子", "直美", "佳代子", "香織", "美穂", "由紀子", "美紀", "典子", "優子"
+];
+
+export const FEMALE_FIRST_NAMES_HEISEI = [
+  "美咲", "さくら", "結衣", "愛", "葵", "陽菜", "美羽", "結愛", "心春", "七海",
+  "萌", "菜々子", "奈央", "明日香", "千尋", "彩花", "琴音", "栞", "莉子", "紬"
+];
+
+export const MALE_FIRST_NAMES_SHOWA = [
+  "誠", "博", "隆", "浩", "修", "哲也", "和夫", "英樹", "正", "浩二",
+  "剛", "達也", "昭二", "浩司", "健一", "裕介", "健二", "茂", "芳雄", "勝"
+];
+
+export const MALE_FIRST_NAMES_HEISEI = [
+  "翔太", "拓也", "健太", "大輔", "亮太", "雄大", "拓海", "直樹", "和也", "陸",
+  "蓮", "大樹", "翔", "颯太", "樹", "悠斗", "陽斗", "朝陽", "律", "湊"
+];
+
+
 export const guessGenderFromName = (firstName: string, fullName?: string): '男性' | '女性' => {
   const name = (firstName || fullName || '').trim();
 

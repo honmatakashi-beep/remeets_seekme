@@ -1322,41 +1322,30 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
         finderEkycVerified={finderEkycVerified}
         isOwner={isOwner}
         postedWithEkycFlag={postedWithEkycFlag}
-        displayTargetFullName={displayTargetFullName}
-        displayTargetMaidenName={displayTargetMaidenName}
-        unlockedWithPasscode={unlockedWithPasscode}
-        isQuizCompleted={isQuizCompleted}
-        isUnlockedByCardPayment={isUnlockedByCardPayment}
-        isProcessingFinderCardPayment={isProcessingFinderCardPayment}
-        handleOpenFinderEkycModal={handleOpenFinderEkycModal}
-        handleInitiateCardPayment={handleInitiateCardPayment}
-        isOpeningLetter={isOpeningLetter}
-        handleOpenLetter={handleOpenLetter}
+        revealedContact={revealedContact}
+        displayContactId={displayContactId}
+        displayContactType={displayContactType}
         displayLetterMessage={displayLetterMessage}
-        contactId={contactId}
-        contactType={contactType}
-        showReportModal={showReportModal}
-        setShowReportModal={setShowReportModal}
-        showStoryModal={showStoryModal}
-        setShowStoryModal={setShowStoryModal}
-        displayCustomSchool={displayCustomSchool}
-        displayHometown={displayHometown}
-        displaySchoolOrOrg={displaySchoolOrOrg}
-        displayTargetRelation={displayTargetRelation}
-        displayContext={displayContext}
-        displayEra={displayEra}
-        displayGraduationYear={displayGraduationYear}
-        finderPayCardNumber={finderPayCardNumber}
-        setFinderPayCardNumber={setFinderPayCardNumber}
-        finderPayCardExpiry={finderPayCardExpiry}
-        setFinderPayCardExpiry={setFinderPayCardExpiry}
-        finderPayCardCvc={finderPayCardCvc}
-        setFinderPayCardCvc={setFinderPayCardCvc}
-        finderPayCardName={finderPayCardName}
-        setFinderPayCardName={setFinderPayCardName}
-        isProcessingCardPayment={isProcessingCardPayment}
-        handleStripePaymentSubmit={handleStripePaymentSubmit}
-        letterRevealed={letterRevealed}
+        otherUserFullNameToUse={otherUserFullNameToUse}
+        searcherFullName={searcherFullName}
+        setReportTarget={setReportTarget}
+        handleStartContact={handleStartContact}
+        setHasClickedStartContact={setHasClickedStartContact}
+        roadmapSectionRef={roadmapSectionRef}
+        quizSectionRef={quizSectionRef}
+        handleResolve={handleResolve}
+        answers={answers}
+        setAnswers={setAnswers}
+        verificationResults={verificationResults}
+        setVerificationResults={setVerificationResults}
+        handleVerify={handleVerify}
+        isVerifying={isVerifying}
+        remainingAttempts={remainingAttempts}
+        isAttemptsLocked={isAttemptsLocked}
+        lockedUntil={lockedUntil}
+        error={error}
+        toHalfWidth={toHalfWidth}
+        getCategoryLabel={getCategoryLabel}
       />
 
         <div className="lg:col-span-5" ref={questionsSectionRef}>
@@ -1576,7 +1565,11 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
         searcherName={searcherName}
         onEkycSuccess={() => {
           if (post?.id) {
-            handleCheckResolvedStatus(post.id);
+            fetch(`/api/posts/${post.id}`, {
+              headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+            }).then(r => r.json()).then(d => {
+              if (d && !d.error) setPost(d);
+            });
           }
         }}
       />

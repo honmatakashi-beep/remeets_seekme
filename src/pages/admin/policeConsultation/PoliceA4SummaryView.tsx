@@ -5,7 +5,13 @@ import {
 } from "lucide-react";
 
 export const PoliceA4SummaryView = (props: any) => {
-  const { handlePrintSummary, handleExportPdf } = props;
+  const { 
+    handlePrintSummary, 
+    handleExportPdf,
+    policeStationName = '管轄警察署 生活安全課 / サイバー犯罪対策課 御中',
+    operatorName = 'ReMEETs 運営事務局',
+    contactInfo = 'info@remeets.jp'
+  } = props;
 
   return (
         <div 

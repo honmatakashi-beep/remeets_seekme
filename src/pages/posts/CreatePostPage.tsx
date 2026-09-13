@@ -444,73 +444,91 @@ export const CreatePostPage = () => {
   const stepProps = {
     formData,
     setFormData,
-    selectedPrefecture,
-    setSelectedPrefecture,
-    schoolCategory,
-    setSchoolCategory,
-    schoolSearchTerm,
-    setSchoolSearchTerm,
-    filteredSchools,
-    handleSelectSchool,
-    showCustomSchoolInput,
-    setShowCustomSchoolInput,
-    isTargetMaiden,
-    setIsTargetMaiden,
-    isSearcherMaiden,
-    setIsSearcherMaiden,
-    aiSuggestions,
-    isGeneratingAi,
-    handleGenerateAiSuggestions,
     questions,
     handleQuestionChange,
-    addQuestion,
-    removeQuestion,
-    isGeneratingAiQuestions,
-    handleGenerateAiQuestions,
-    aiQuestionSuggestions,
-    handleApplyAiQuestion,
-    isGeneratingAiMessage,
-    handleGenerateAiMessage,
-    aiDrafts,
-    handleSelectAiDraft,
-    activeDraftTone,
-    setActiveDraftTone,
     agreed,
     setAgreed,
     captchaQuestion,
     captchaAnswer,
     setCaptchaAnswer,
+    refreshCaptcha,
     user,
-    searcherMaidenLastName,
-    setSearcherMaidenLastName,
-    targetMaidenLastName,
-    setTargetMaidenLastName,
-    handleAIPostImprovement,
-    isGeneratingImprovement,
-    selectedThemePrompt,
-    setSelectedThemePrompt
+    handleTargetLastNameChange,
+    handleTargetFirstNameChange,
+    handleInputChange,
+    handleSearcherNameChange,
+    warnings,
+    setWarnings,
+    checkNg,
+    calculatedSearcherAge,
+    searcherBirthYear,
+    setSearcherBirthYear,
+    searcherBirthMonth,
+    setSearcherBirthMonth,
+    searcherBirthDay,
+    setSearcherBirthDay,
+    searcherGender,
+    setSearcherGender,
+    showSearchPreview,
+    setShowSearchPreview,
+    isAiDiagnosing,
+    aiDiagnosisResult,
+    handleAiDiagnosis,
+    jumpToStep,
+    toHalfWidth,
+    nameWarning
   };
 
   const steps = [
     {
       title: "お相手の情報とあなたの手がかり",
       description: "探している大切な方の情報と、当時のあなたに関する手がかりをご入力ください。",
-      fields: <Step0BasicInfo {...stepProps} />
+      fields: <Step0BasicInfo {...stepProps} />,
+      isValid: () => 
+        formData.targetLastName.length > 0 && 
+        formData.targetFirstName.length > 0 && 
+        formData.targetHometownPref.length > 0 &&
+        formData.targetHometownArea.length > 0 &&
+        formData.era.length > 0 &&
+        formData.category.length > 0 &&
+        formData.searcherName.length > 0 &&
+        formData.searcherProfile.length > 0 &&
+        (user?.birthdate ? true : (calculatedSearcherAge !== null && calculatedSearcherAge >= 18)) &&
+        !warnings.targetLastName && 
+        !warnings.targetFirstName && 
+        !warnings.targetHometownPref && 
+        !warnings.targetHometownArea && 
+        !warnings.targetSchool &&
+        !warnings.era &&
+        !warnings.category &&
+        !warnings.searcherProfile
     },
     {
       title: "二人だけの思い出の質問",
       description: "お相手だけが答えられる「秘密の質問」を2つ設定してください。",
-      fields: <Step1Quiz {...stepProps} />
+      fields: <Step1Quiz {...stepProps} />,
+      isValid: () => 
+        questions.length >= 2 &&
+        questions[0].question.length > 0 && 
+        questions[0].answer.length > 0 && 
+        questions[1].question.length > 0 && 
+        questions[1].answer.length > 0 &&
+        !warnings.question_0_question &&
+        !warnings.question_0_answer &&
+        !warnings.question_1_question &&
+        !warnings.question_1_answer
     },
     {
       title: "手紙と開示用連絡先の設定",
       description: "クイズ正解者のみに届く想い出の手紙と、連絡を取り合うための情報を設定します。",
-      fields: <Step2Message {...stepProps} />
+      fields: <Step2Message {...stepProps} />,
+      isValid: () => formData.message.length > 0 && formData.contactId.length > 0 && !warnings.message && !warnings.contactId
     },
     {
       title: "投函前の最終確認シート",
       description: "内容に誤りや公開したくない情報が含まれていないか、最終確認を行ってください。",
-      fields: <Step3Confirm {...stepProps} />
+      fields: <Step3Confirm {...stepProps} />,
+      isValid: () => agreed && captchaAnswer === captchaQuestion.a
     }
   ];
 

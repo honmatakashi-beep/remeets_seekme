@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   BookOpen, Search, Copy, Check, Printer, FileText, ChevronRight,
   ChevronDown, ExternalLink, ShieldCheck, AlertTriangle, Users,
-  Settings, Database, Activity, Sliders, ArrowRight, Layers, Eye
+  Settings, Database, Activity, Sliders, ArrowRight, Layers, Eye,
+  Shield, Bot, Mail, CreditCard, Server, Award, Palette, X, Menu
 } from "lucide-react";
 import {
   MANUAL_CATEGORIES,
@@ -208,7 +209,7 @@ export const AdminManualView: React.FC = () => {
   };
 
   // 📑 Hierarchical Menu Categories (大見出し ＆ 見出し)
-  const manualCategories: ManualCategory[] = [
+  const manualCategories = MANUAL_CATEGORIES; const _ignored = [
     {
       id: 'cat-1',
       categoryTitle: '1. 基礎・ガバナンス・法令遵守',
@@ -532,7 +533,7 @@ export const AdminManualView: React.FC = () => {
 
                     {/* 節本文 */}
                     <div id={`content-${sec.id}`} className="pt-2">
-                      {renderSectionDetail(sec.id)}
+                      <ManualSectionDetailRenderer id={sec.id} />
                     </div>
                   </div>
                 ))}
@@ -557,7 +558,7 @@ export const AdminManualView: React.FC = () => {
                     <span className="text-[10px] text-slate-500">{sec.description}</span>
                   </div>
                   <div>
-                    {renderSectionDetail(sec.id)}
+                    <ManualSectionDetailRenderer id={sec.id} />
                   </div>
                 </div>
               ))}

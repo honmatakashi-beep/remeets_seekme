@@ -4,7 +4,8 @@ import {
   ShieldCheck, AlertTriangle, Users, Settings, Database, Activity,
   Sliders, Shield, Lock, Eye, Download, BookOpen, Key, Bell, HelpCircle,
   FileText, CheckCircle2, ArrowRight, ExternalLink, Sparkles, UserCheck,
-  Check, Clock, Mail, ShieldAlert, Award
+  Check, Clock, Mail, ShieldAlert, Award, SlidersHorizontal, CheckSquare,
+  Bot, Coins
 } from "lucide-react";
 
 export interface ManualSectionDetailRendererProps {

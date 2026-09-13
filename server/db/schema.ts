@@ -19,7 +19,7 @@ function openDbConnection() {
   } catch (dbErr) {
     console.error("Database file was corrupted or unreadable. Backing up and recreating fresh DB...", dbErr);
     if (fs.existsSync("kizuna.db")) {
-      fs.renameSync("kizuna.db", );
+      fs.renameSync("kizuna.db", `kizuna_corrupt.db.${Date.now()}`);
     }
     dbInstance = new Database("kizuna.db");
     dbInstance.pragma("journal_mode = WAL");

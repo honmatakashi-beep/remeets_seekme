@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Shield, X, Sparkles, CheckCircle2, AlertCircle, Eye, ArrowRight,
-  RefreshCw, CheckSquare, ShieldCheck, Lock
+  RefreshCw, CheckSquare, ShieldCheck, Lock, Cpu, CheckCircle
 } from "lucide-react";
 import { DocumentCameraOverlay, stopAllGlobalCameraStreams } from "../DocumentCameraOverlay";
 import { EkycProgressTelemetryPanel } from "../EkycProgressTelemetryPanel";

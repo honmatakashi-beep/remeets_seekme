@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
 import { Link, Navigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Shield, Key, Lock, Unlock, Mail, Clock, Download, RefreshCw,
   Search, Filter, Plus, Trash2, Eye, CheckCircle2, XCircle, AlertTriangle,
   FileText, ExternalLink, HelpCircle, UserCheck, Check, Sparkles,
   Award, Heart, Calendar, Building, MapPin, Tag, Briefcase, FileCode, CheckSquare,
-  Layers, Settings, ChevronLeft, ChevronRight, BarChart2, Users, FileCheck, DollarSign
+  Layers, Settings, ChevronLeft, ChevronRight, BarChart2, Users, FileCheck, DollarSign,
+  ShieldCheck, Menu, X, Radio
 } from "lucide-react";
 import { BottleLoader } from "../../components/SharedComponents";
+import { cn, getPostUrl } from "../../lib/utils";
 import { useAdminDashboardState } from "./hooks/useAdminDashboardState";
 import { AdminSettingsTab } from "./tabs/AdminSettingsTab";
 import {
@@ -41,61 +44,406 @@ import { AdminDesignSystem } from "../../components/AdminDesignSystem";
 import { MaValuationDataRoomView } from "../../components/MaValuationDataRoomView";
 import { AdminRbacView } from "../../components/AdminRbacView";
 import {
-  AdminEditPostModal,
-  AdminAddUserModal,
-  AdminEditUserModal,
-  AdminAuditLogsModal,
-  AdminDetailModal,
-  AdminInspectModal,
-  AdminDeleteConfirmModal,
-  AdminCreateStoryModal,
-  AdminEditStoryModal,
-  AdminAddNgWordModal,
-  AdminCreatePostModal
+  AdminPostDeleteModal,
+  AdminAgeLogModal,
+  AdminPostDetailModal,
+  AdminModPostPreviewModal,
+  AdminUserDetailModal,
+  AdminPoliceReportModal,
+  AdminContactReplyModal,
+  AdminDeletionRequestModal,
+  AdminReportDetailModal,
+  AdminBulkNotificationModal,
+  AdminCustomConfirmModal
 } from "./modals";
 import { AdminInfoPage, SitemapPage, ContactPage, ConfirmModal, AuroraAmbientGlow, PageViewTracker } from "./AdminSharedPages";
 import { samplePhrasesCategories } from "./AdminPhrases";
 
+const Badge = ({ count }: { count?: number }) => {
+  if (!count || count <= 0) return null;
+  return (
+    <span className="ml-auto bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+      {count}
+    </span>
+  );
+};
 
 export const AdminDashboard: React.FC = () => {
   const state = useAdminDashboardState();
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(false);
+
   const {
+    user,
+    updateUser,
+    token,
     authLoading,
     isAllowedAdminRole,
     activeTab,
     setActiveTab,
-    categoryBadges,
-    currentRoleConfig,
-    activeCategories,
-    categories,
-    selectedCategory,
-    setSelectedCategory,
     isMobileMenuOpen,
     setIsMobileMenuOpen,
-    searchQuery,
-    setSearchQuery,
-    filteredTabs,
-    adminHomeDesign,
-    setAdminHomeDesign,
-    showPrVideoBanner,
-    setShowPrVideoBanner,
-    showAdminShortcutsBanner,
-    setShowAdminShortcutsBanner,
-    savingSettings,
-    saveAdminSettings,
-    restoreDefaultHeroImage,
-    restoringHero,
-    refreshingAllStats,
-    handleRefreshAllStats,
-    ...rest
-  } = state;
+    loading,
+    statusMsg,
+    setStatusMsg,
+    guideDocType,
+    setGuideDocType,
+    fetchData,
+    handleResetData,
+    handleDownloadMaReport,
+    stats,
+    posts,
+    users,
+    contacts,
+    reports,
+    deletionRequests,
+    ngWords,
+    successStories,
+    moderationQueue,
+    moderationHistory,
+    setModerationHistory,
+    deletedPostsArchive,
+    selectedArchiveIds,
+    setSelectedArchiveIds,
+    handleBatchDeleteArchive,
+    isBatchDeletingArchive,
+    archivePerPage,
+    setArchivePerPage,
+    setArchivePage,
+    archivePage,
+    moderationSubTab,
+    setModerationSubTab,
+    modReasonFilter,
+    setModReasonFilter,
+    modSearchTerm,
+    setModSearchTerm,
+    modPerPage,
+    setModPerPage,
+    modPage,
+    setModPage,
+    selectedModPostIds,
+    setSelectedModPostIds,
+    handleBatchApproveModPosts,
+    isBatchApprovingModPosts,
+    handleBatchDeleteModPosts,
+    isBatchDeletingModPosts,
+    censorshipTestText,
+    setCensorshipTestText,
+    censorshipTestResult,
+    setCensorshipTestResult,
+    isTestingCensorship,
+    handleTestCensorship,
+    auditLogs,
+    actionLogs,
+    accessLogs,
+    securityLogs,
+    ageVerificationLogs,
+    blockedIps,
+    dbHealth,
+    realtimeTelemetry,
+    quizMatchingAnalytics,
+    userStatusFilter,
+    setUserStatusFilter,
+    userSearchTerm,
+    setUserSearchTerm,
+    userSortBy,
+    setUserSortBy,
+    selectedUserIds,
+    setSelectedUserIds,
+    userPage,
+    setUserPage,
+    userItemsPerPage,
+    setUserItemsPerPage,
+    handleBatchUpdateUserStatus,
+    isBatchUpdatingUserStatus,
+    handleBatchResetUserEkyc,
+    isBatchResettingUserEkyc,
+    handleBatchDeleteUsers,
+    isBatchDeletingUsers,
+    handleDeleteUser,
+    handleExportUsersCSV,
+    postFilterType,
+    setPostFilterType,
+    postSearchTerm,
+    setPostSearchTerm,
+    postSortBy,
+    setPostSortBy,
+    selectedPostIds,
+    setSelectedPostIds,
+    postPage,
+    setPostPage,
+    postItemsPerPage,
+    setPostItemsPerPage,
+    handleExportPostsCSV,
+    handleGenerateSamplePosts,
+    handleReseedUniquePosts,
+    isGeneratingSamplePosts,
+    handleBatchAiAnalyzePosts,
+    isBatchAiAnalyzing,
+    handleBatchUpdatePostStatus,
+    isBatchUpdatingPostStatus,
+    handleBatchDeletePosts,
+    isBatchDeletingPosts,
+    handleTogglePostStatus,
+    selectedContact,
+    setSelectedContact,
+    replyMessage,
+    setReplyMessage,
+    handleReplyContact,
+    isReplying,
+    handleGenerateAiDraft,
+    isGeneratingAiDraft,
+    aiDraftTone,
+    setAiDraftTone,
+    contactCategoryFilter,
+    setContactCategoryFilter,
+    selectedContactIds,
+    setSelectedContactIds,
+    handleBatchUpdateContactStatus,
+    isBatchProcessingContacts,
+    handleBatchDeleteContacts,
+    handleToggleSelectAllContacts,
+    handleToggleSelectContact,
+    handleUpdateSingleContactStatus,
+    handleDeleteSingleContact,
+    contactStatusFilter,
+    setContactStatusFilter,
+    contactSearchQuery,
+    setContactSearchQuery,
+    contactSortBy,
+    setContactSortBy,
+    contactCurrentPage,
+    setContactCurrentPage,
+    contactItemsPerPage,
+    setContactItemsPerPage,
+    handleSeedSampleContacts,
+    isSeedingContacts,
+    handleExportContactsCsv,
+    storyCategoryFilter,
+    setStoryCategoryFilter,
+    storyPage,
+    setStoryPage,
+    storyPerPage,
+    setStoryPerPage,
+    editStoryForm,
+    setEditStoryForm,
+    isCreatingStory,
+    setIsCreatingStory,
+    newStoryForm,
+    setNewStoryForm,
+    editingStoryId,
+    setEditingStoryId,
+    handleCreateSuccessStory,
+    handleUpdateSuccessStory,
+    handleDeleteSuccessStory,
+    handleSeedSuccessStories,
+    ageTabFilter,
+    setAgeTabFilter,
+    ageSearchTerm,
+    setAgeSearchTerm,
+    ageFilterStartDate,
+    setAgeFilterStartDate,
+    ageFilterEndDate,
+    setAgeFilterEndDate,
+    agePage,
+    setAgePage,
+    agePerPage,
+    setAgePerPage,
+    isTelemetryExpanded,
+    setIsTelemetryExpanded,
+    deletionStatusFilter,
+    setDeletionStatusFilter,
+    deletionPage,
+    setDeletionPage,
+    deletionPerPage,
+    setDeletionPerPage,
+    deletionSearchTerm,
+    setDeletionSearchTerm,
+    selectedDeletionIds,
+    setSelectedDeletionIds,
+    handleBatchApproveDeletion,
+    isBatchUpdatingDeletion,
+    handleBatchRejectDeletion,
+    selectedDeletionRequest,
+    setSelectedDeletionRequest,
+    handleApproveDeletionRequest,
+    handleRejectDeletionRequest,
+    reportStatusFilter,
+    setReportStatusFilter,
+    reportSearchTerm,
+    setReportSearchTerm,
+    reportPage,
+    setReportPage,
+    reportPerPage,
+    setReportPerPage,
+    selectedReportIds,
+    setSelectedReportIds,
+    handleBatchResolveReports,
+    isBatchUpdatingReports,
+    handleBatchDismissReports,
+    handleDismissReport,
+    handleResolveReport,
+    selectedReport,
+    setSelectedReport,
+    newNgWord,
+    setNewNgWord,
+    handleAddNgWord,
+    handleDeleteNgWord,
+    handleBatchAddNgWords,
+    simulatorInputText,
+    setSimulatorInputText,
+    ngWordTypeFilter,
+    setNgWordTypeFilter,
+    ngWordPage,
+    setNgWordPage,
+    ngWordPerPage,
+    setNgWordPerPage,
+    ngWordSearchTerm,
+    setNgWordSearchTerm,
+    selectedNgWordIds,
+    setSelectedNgWordIds,
+    handleBatchDeleteNgWords,
+    isBatchUpdatingNgWords,
+    isBulkAddModalOpen,
+    setIsBulkAddModalOpen,
+    bulkNgWordsText,
+    setBulkNgWordsText,
+    dbVersions,
+    gitInfo,
+    newVersionComment,
+    setNewVersionComment,
+    handleCreateVersion,
+    fetchGitInfo,
+    fetchDbVersions,
+    isLoadingGitInfo,
+    handleExportVersionsCsv,
+    isCreatingVersion,
+    versionTypeFilter,
+    setVersionTypeFilter,
+    versionCurrentPage,
+    setVersionCurrentPage,
+    versionItemsPerPage,
+    setVersionItemsPerPage,
+    versionSearchQuery,
+    setVersionSearchQuery,
+    selectedVersionIds,
+    setSelectedVersionIds,
+    handleBatchDeleteVersions,
+    isBatchDeletingVersions,
+    handleToggleSelectAllVersions,
+    handleToggleSelectVersion,
+    handleRestoreVersion,
+    handleDownloadVersion,
+    handleDeleteVersion,
+    handleViewUser,
+    handleUpdateUserStatus,
+    triggerDeletePost,
+    showBulkConfirm,
+    setShowBulkConfirm,
+    pendingNotification,
+    executeBulkNotification,
+    confirmModal,
+    setConfirmModal,
+    handleDownloadPoliceReportJson,
+    handleCopyPoliceReportText,
+    copiedPoliceReport,
+    handleGeneratePoliceReport,
+    isGeneratingPoliceReport,
+    handleAdminResetUserEkyc,
+    handleAdminSendPasswordReset,
+    isSendingPasswordReset,
+    loadingUserPosts,
+    userPosts,
+    handleViewPost,
+    selectedUser,
+    setSelectedUser,
+    selectedPost,
+    setSelectedPost,
+    selectedAgeLogModal,
+    setSelectedAgeLogModal,
+    isDeleteModalOpen,
+    setIsDeleteModalOpen,
+    deleteTargetId,
+    setDeleteTargetId,
+    deleteReasonText,
+    setDeleteReasonText,
+    handleDeletePost,
+    handleAiAnalyze,
+    isAiAnalyzing,
+    selectedModPostModal,
+    setSelectedModPostModal,
+    handleApproveModPost,
+    handleToggleFreezeUser,
+    archiveSearchTerm,
+    setArchiveSearchTerm,
+    handleSeedModeration,
+    policeReportData,
+    setPoliceReportData,
+    homeDesignMode,
+    handleToggleHomeDesignMode,
+    bgDarkness,
+    handleUpdateBgDarkness,
+    bgGlowOpacity,
+    handleUpdateBgGlowOpacity,
+    handleResetBgContrast,
+    tabs
+  } = state as any;
 
-  // 全ての state プロパティを展開
-  Object.assign(window as any, { __adminState: state });
+  const categories = useMemo(() => [
+    {
+      title: 'ダッシュボード・統計',
+      items: [
+        tabs.find((t: any) => t.id === 'stats'),
+        tabs.find((t: any) => t.id === 'valuation'),
+        tabs.find((t: any) => t.id === 'quizAnalytics'),
+        tabs.find((t: any) => t.id === 'policeConsultation'),
+      ].filter(Boolean)
+    },
+    {
+      title: 'コンテンツ・モデレーション',
+      items: [
+        tabs.find((t: any) => t.id === 'moderation'),
+        tabs.find((t: any) => t.id === 'reports'),
+        tabs.find((t: any) => t.id === 'deletionRequests'),
+        tabs.find((t: any) => t.id === 'contacts'),
+        tabs.find((t: any) => t.id === 'posts'),
+        tabs.find((t: any) => t.id === 'users'),
+        tabs.find((t: any) => t.id === 'ageVerification'),
+        tabs.find((t: any) => t.id === 'ngWords'),
+        tabs.find((t: any) => t.id === 'successStories'),
+      ].filter(Boolean)
+    },
+    {
+      title: '運用・システム・管理',
+      items: [
+        tabs.find((t: any) => t.id === 'broadcast'),
+        tabs.find((t: any) => t.id === 'emailTemplates'),
+        tabs.find((t: any) => t.id === 'versions'),
+        tabs.find((t: any) => t.id === 'guide'),
+        tabs.find((t: any) => t.id === 'manualSections'),
+        tabs.find((t: any) => t.id === 'masterKnowledge'),
+        tabs.find((t: any) => t.id === 'logs'),
+        tabs.find((t: any) => t.id === 'securityCenter'),
+        tabs.find((t: any) => t.id === 'systemCenter'),
+        tabs.find((t: any) => t.id === 'rbac'),
+        tabs.find((t: any) => t.id === 'designSystem'),
+        tabs.find((t: any) => t.id === 'monetization'),
+        tabs.find((t: any) => t.id === 'payments'),
+        tabs.find((t: any) => t.id === 'assetCleaner'),
+      ].filter(Boolean)
+    }
+  ], [tabs]);
 
-  const allProps = state as any;
+  const filteredCategories = useMemo(() => {
+    if (!searchTerm.trim()) return categories;
+    const lower = searchTerm.toLowerCase();
+    return categories.map(cat => ({
+      ...cat,
+      items: cat.items.filter((item: any) => item.label.toLowerCase().includes(lower) || item.id.toLowerCase().includes(lower))
+    })).filter(cat => cat.items.length > 0);
+  }, [categories, searchTerm]);
 
-if (authLoading) {
+  if (authLoading) {
     return (
       <div className="flex items-center justify-center h-screen bg-brand-light/50 backdrop-blur-sm">
         <BottleLoader />
@@ -461,18 +809,11 @@ if (authLoading) {
 
           {activeTab === "settings" ? (
             <AdminSettingsTab
-              adminHomeDesign={adminHomeDesign}
-              setAdminHomeDesign={setAdminHomeDesign}
-              showPrVideoBanner={showPrVideoBanner}
-              setShowPrVideoBanner={setShowPrVideoBanner}
-              showAdminShortcutsBanner={showAdminShortcutsBanner}
-              setShowAdminShortcutsBanner={setShowAdminShortcutsBanner}
-              savingSettings={savingSettings}
-              saveAdminSettings={saveAdminSettings}
-              restoreDefaultHeroImage={restoreDefaultHeroImage}
-              restoringHero={restoringHero}
-              refreshingAllStats={refreshingAllStats}
-              handleRefreshAllStats={handleRefreshAllStats}
+              adminHomeDesign={homeDesignMode}
+              setAdminHomeDesign={(mode: any) => handleToggleHomeDesignMode(mode)}
+              bgGlowOpacity={bgGlowOpacity}
+              handleUpdateBgGlowOpacity={handleUpdateBgGlowOpacity}
+              handleResetBgContrast={handleResetBgContrast}
             />) : activeTab === 'masterMemo' ? (
             <AdminMasterKnowledgeBase initialViewMode="master_memo" modeTitle="運営方針・意思決定備忘録" hideViewModeSwitcher={true} guideDocType={guideDocType} setGuideDocType={setGuideDocType} />
           ) : activeTab === 'deployment' ? (

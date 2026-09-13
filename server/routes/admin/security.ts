@@ -1,3 +1,7 @@
+
+export const dismissedAlertIds = new Set<string>();
+export const resolvedAlertObjects = new Map<string, any>();
+
 import express from "express";
 import {
   db,

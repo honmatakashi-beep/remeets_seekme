@@ -1,16 +1,21 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import Markdown from "react-markdown";
 import {
   Search, MapPin, School, Heart, Sparkles, Building, Calendar, Info, CheckCircle2,
-  AlertTriangle, ShieldCheck, ShieldAlert, Mail, Lock, Unlock, Key, ArrowRight,
-  HeartHandshake, CreditCard, Clock, Globe, Copy, Check, User, Phone, FileText
+  AlertTriangle, ShieldCheck, ShieldAlert, Mail, Lock, Unlock, Key, ArrowRight, ArrowLeft,
+  HeartHandshake, CreditCard, Clock, Globe, Copy, Check, User, Phone, FileText,
+  Edit, Trash2, AlertCircle, MessageCircle, BookOpen, User as UserIcon
 } from "lucide-react";
 import { ReunionEffectTitle } from "../../components/ReunionEffectTitle";
 import { CreditCardPaymentForm } from "../../components/CreditCardPaymentForm";
+import { RecipientSafetyGuide } from "./PostModals";
 
 export const PostDetailMainCard = (props: any) => {
+  const navigate = useNavigate();
+  const [copiedContact, setCopiedContact] = useState(false);
+
   const {
     currentStep,
     showDetails,
@@ -21,41 +26,30 @@ export const PostDetailMainCard = (props: any) => {
     finderEkycVerified,
     isOwner,
     postedWithEkycFlag,
-    displayTargetFullName,
-    displayTargetMaidenName,
-    unlockedWithPasscode,
-    isQuizCompleted,
-    isUnlockedByCardPayment,
-    isProcessingFinderCardPayment,
-    handleOpenFinderEkycModal,
-    handleInitiateCardPayment,
-    isOpeningLetter,
-    handleOpenLetter,
+    revealedContact,
+    displayContactId,
+    displayContactType,
     displayLetterMessage,
-    contactId,
-    contactType,
-    showReportModal,
-    setShowReportModal,
-    showStoryModal,
-    setShowStoryModal,
-    displayCustomSchool,
-    displayHometown,
-    displaySchoolOrOrg,
-    displayTargetRelation,
-    displayContext,
-    displayEra,
-    displayGraduationYear,
-    finderPayCardNumber,
-    setFinderPayCardNumber,
-    finderPayCardExpiry,
-    setFinderPayCardExpiry,
-    finderPayCardCvc,
-    setFinderPayCardCvc,
-    finderPayCardName,
-    setFinderPayCardName,
-    isProcessingCardPayment,
-    handleStripePaymentSubmit,
-    letterRevealed
+    otherUserFullNameToUse,
+    searcherFullName,
+    setReportTarget,
+    handleStartContact,
+    setHasClickedStartContact,
+    roadmapSectionRef,
+    quizSectionRef,
+    handleResolve,
+    answers,
+    setAnswers,
+    verificationResults = [],
+    setVerificationResults,
+    handleVerify,
+    isVerifying,
+    remainingAttempts,
+    isAttemptsLocked,
+    lockedUntil,
+    error,
+    toHalfWidth = (s: string) => s,
+    getCategoryLabel = (c: string) => c
   } = props;
 
   return (

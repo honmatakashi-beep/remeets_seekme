@@ -1,6 +1,10 @@
 import React from "react";
-import { Search, User, MapPin, School, Heart, Sparkles, Building, Calendar, Info, CheckCircle2, AlertTriangle } from "lucide-react";
+import { 
+  Search, User, MapPin, School, Heart, Sparkles, Building, Calendar, Info, 
+  CheckCircle2, AlertTriangle, AlertCircle, Users, BookOpen, CheckCircle, X 
+} from "lucide-react";
 import { PREFECTURES } from "../../../lib/utils";
+import { WarningMessage } from "../../../components/SharedComponents";
 
 export const Step0BasicInfo = (props: any) => {
   const {
@@ -22,7 +26,33 @@ export const Step0BasicInfo = (props: any) => {
     setIsSearcherMaiden,
     aiSuggestions,
     isGeneratingAi,
-    handleGenerateAiSuggestions
+    handleGenerateAiSuggestions,
+    handleTargetLastNameChange,
+    handleTargetFirstNameChange,
+    handleInputChange,
+    handleSearcherNameChange,
+    warnings = {},
+    setWarnings,
+    checkNg,
+    calculatedSearcherAge,
+    searcherBirthYear,
+    setSearcherBirthYear,
+    searcherBirthMonth,
+    setSearcherBirthMonth,
+    searcherBirthDay,
+    setSearcherBirthDay,
+    searcherGender,
+    setSearcherGender,
+    nameWarning,
+    targetMaidenLastName,
+    setTargetMaidenLastName,
+    searcherMaidenLastName,
+    setSearcherMaidenLastName,
+    handleAIPostImprovement,
+    isGeneratingImprovement,
+    selectedThemePrompt,
+    setSelectedThemePrompt,
+    user
   } = props;
 
   return (

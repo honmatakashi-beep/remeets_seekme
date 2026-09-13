@@ -68,12 +68,52 @@ export const PolicePresentationSlideViewer: React.FC<PolicePresentationSlideView
   const [copiedScenario, setCopiedScenario] = useState<boolean>(false);
   const [timerSeconds, setTimerSeconds] = useState<number>(0);
   const [isTimerRunning, setIsTimerRunning] = useState<boolean>(false);
+  const [categoryFilter, setCategoryFilter] = useState<string>('all');
+  const [isLaserActive, setIsLaserActive] = useState<boolean>(false);
+  const [laserPos, setLaserPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [slideFontScale, setSlideFontScale] = useState<'normal' | 'large' | 'xlarge'>('normal');
+  const [showNotesDrawer, setShowNotesDrawer] = useState<boolean>(false);
+  const [notesFontSize, setNotesFontSize] = useState<'sm' | 'base' | 'lg'>('base');
+  const [copiedScript, setCopiedScript] = useState<boolean>(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const slideContainerRef = useRef<HTMLDivElement>(null);
   const presenterWindowRef = useRef<Window | null>(null);
 
   const currentSlide = slides[activeSlideIdx] || slides[0];
   const currentScenario = scenarios[activeSlideIdx] || "";
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!slideContainerRef.current) return;
+    const rect = slideContainerRef.current.getBoundingClientRect();
+    setLaserPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  };
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      slideContainerRef.current?.requestFullscreen?.();
+      setIsFullscreen(true);
+    } else {
+      document.exitFullscreen?.();
+      setIsFullscreen(false);
+    }
+  };
+
+  const copyCurrentScenario = () => {
+    navigator.clipboard.writeText(currentScenario);
+    setCopiedScript(true);
+    setTimeout(() => setCopiedScript(false), 2000);
+  };
+
+  const formatTimer = (sec: number) => {
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  };
+
+  const renderSlideDiagram = (id: number) => {
+    return <SlideDiagramRenderer id={id} />;
+  };
 
   useEffect(() => {
     let interval: any;
@@ -343,7 +383,7 @@ export const PolicePresentationSlideViewer: React.FC<PolicePresentationSlideView
             </button>
             <button
               type="button"
-              onClick={openPresenterWindow}
+              onClick={handleOpenPresenterConsole}
               className="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-bold cursor-pointer flex items-center gap-1 shadow-sm"
               title="発表者用台本を別ウィンドウで開く"
             >
@@ -391,7 +431,7 @@ export const PolicePresentationSlideViewer: React.FC<PolicePresentationSlideView
             <div className="pt-2 border-t border-slate-800 text-[10px] text-slate-400 font-mono flex justify-between items-center">
               <button
                 type="button"
-                onClick={openPresenterWindow}
+                onClick={handleOpenPresenterConsole}
                 className="text-indigo-400 hover:underline cursor-pointer flex items-center gap-1"
               >
                 <ExternalLink size={11} />
@@ -496,7 +536,7 @@ export const PolicePresentationSlideViewer: React.FC<PolicePresentationSlideView
           {/* Open Presenter Window Button */}
           <button
             type="button"
-            onClick={openPresenterWindow}
+            onClick={handleOpenPresenterConsole}
             className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm cursor-pointer"
             title="口頭発表台本を別ウィンドウ（発表者ビュー）で開く"
           >

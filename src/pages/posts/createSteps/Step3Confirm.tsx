@@ -1,6 +1,12 @@
 import React from "react";
-import { CheckSquare, ShieldCheck, User, Search, MapPin, School, Mail, Key, Lock, AlertTriangle, ShieldAlert, Heart, FileText, Check } from "lucide-react";
+import { Link } from "react-router-dom";
+import { 
+  CheckSquare, ShieldCheck, User, Search, MapPin, School, Mail, Key, Lock, 
+  AlertTriangle, ShieldAlert, Heart, FileText, Check, BookOpen, HelpCircle, 
+  Share2, Shield, RefreshCw 
+} from "lucide-react";
 import { GoogleSearchResultPreview } from "../../../components/SharedComponents";
+import { formatEraLabel, getCategoryText } from "../../../lib/utils";
 
 export const Step3Confirm = (props: any) => {
   const {
@@ -11,10 +17,15 @@ export const Step3Confirm = (props: any) => {
     captchaQuestion,
     captchaAnswer,
     setCaptchaAnswer,
+    refreshCaptcha,
     selectedPrefecture,
     isTargetMaiden,
     isSearcherMaiden,
-    user
+    user,
+    jumpToStep = () => {},
+    showSearchPreview,
+    setShowSearchPreview,
+    toHalfWidth = (s: string) => s
   } = props;
 
   return (

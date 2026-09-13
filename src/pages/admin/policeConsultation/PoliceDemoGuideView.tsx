@@ -2,7 +2,8 @@ import React from "react";
 import {
   Sparkles, CheckCircle2, Play, RefreshCw, Eye, ShieldCheck, ShieldAlert,
   Search, Lock, Unlock, Key, Mail, Clock, Download, ArrowRight, Award,
-  AlertTriangle, FileText, CheckSquare, Layers, Copy, Check
+  AlertTriangle, FileText, CheckSquare, Layers, Copy, Check,
+  Scale, FileCheck, Presentation, Printer
 } from "lucide-react";
 
 export const PoliceDemoGuideView = (props: any) => {
@@ -20,6 +21,8 @@ export const PoliceDemoGuideView = (props: any) => {
     setDemoSearcherName,
     demoQuizAnswers,
     setDemoQuizAnswers,
+    setIsLegalSchemeModalOpen = () => {},
+    setIsTemplateModalOpen = () => {},
     ...rest
   } = props;
 

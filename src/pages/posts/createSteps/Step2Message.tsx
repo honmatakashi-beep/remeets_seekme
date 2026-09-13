@@ -1,5 +1,9 @@
 import React from "react";
-import { Mail, Shield, Sparkles, Lock, Eye, AlertCircle, FileText, CheckCircle2 } from "lucide-react";
+import { 
+  Mail, Shield, Sparkles, Lock, Eye, AlertCircle, FileText, CheckCircle2, 
+  BookOpen, AlertTriangle, CheckCircle, X, ShieldCheck, Share2 
+} from "lucide-react";
+import { WarningMessage } from "../../../components/SharedComponents";
 
 export const Step2Message = (props: any) => {
   const {
@@ -10,7 +14,10 @@ export const Step2Message = (props: any) => {
     aiDrafts,
     handleSelectAiDraft,
     activeDraftTone,
-    setActiveDraftTone
+    setActiveDraftTone,
+    handleInputChange,
+    warnings = {},
+    user
   } = props;
 
   return (

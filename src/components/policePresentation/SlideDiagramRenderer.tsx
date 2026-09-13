@@ -2,7 +2,8 @@ import React from "react";
 import {
   Sparkles, Shield, ShieldAlert, ShieldCheck, CheckCircle2, Lock, Unlock, Key,
   Trash2, FileText, Clock, UserCheck, Award, Waves, Mail, School, Home, Users,
-  ArrowRight, HelpCircle, Radio, ExternalLink, Layers, AlertTriangle, FileCheck
+  ArrowRight, HelpCircle, Radio, ExternalLink, Layers, AlertTriangle, FileCheck,
+  Download
 } from "lucide-react";
 
 export interface SlideDiagramRendererProps {

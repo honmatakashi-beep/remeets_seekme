@@ -1,15 +1,25 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { Bell, Heart, Mail, ShieldAlert, Sparkles, CheckCircle2, Clock, Trash2, CheckSquare, RefreshCw } from "lucide-react";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { 
+  Bell, Heart, Mail, ShieldAlert, Sparkles, CheckCircle2, Clock, Trash2, 
+  CheckSquare, RefreshCw, X, ShieldCheck, ArrowRight, MessageCircle, Key 
+} from "lucide-react";
 import { getPostUrl } from "../../lib/utils";
+import { useAuth } from "../../contexts/AuthContext";
+import { BottleLoader } from "../../components/SharedComponents";
 
 export const AccountNotificationsTab = (props: any) => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [notifyAlertEnabled, setNotifyAlertEnabled] = useState<boolean>(true);
+  const [isUpdatingNotifyAlert, setIsUpdatingNotifyAlert] = useState<boolean>(false);
+
   const {
     accountNotifications = [],
     actionLogs = [],
     unreadNotifsCount = 0,
-    notificationLoading,
-    markingAllAsRead,
+    notificationLoading = false,
+    markingAllAsRead = false,
     handleMarkAllNotificationsAsRead,
     handleClearAllNotifications,
     handleSingleNotificationClick,
@@ -20,8 +30,32 @@ export const AccountNotificationsTab = (props: any) => {
     searchAlerts = [],
     isAlertsLoading,
     handleToggleAlertActive,
-    handleDeleteAlert
+    handleDeleteAlert,
+    handleTabChange = (tab: string) => navigate(`/account?tab=${tab}`)
   } = props;
+
+  const notifications = accountNotifications;
+  const notificationsLoading = notificationLoading;
+  const handleMarkAllAsRead = handleMarkAllNotificationsAsRead;
+  const handleMarkAsRead = handleSingleNotificationClick || (() => {});
+
+  const handleToggleNotifyAlert = () => {
+    setIsUpdatingNotifyAlert(true);
+    setTimeout(() => {
+      setNotifyAlertEnabled(prev => !prev);
+      setIsUpdatingNotifyAlert(false);
+    }, 300);
+  };
+
+  const formatNotificationDate = (dateStr: string) => {
+    if (!dateStr) return '';
+    try {
+      const d = new Date(dateStr);
+      return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+    } catch {
+      return dateStr;
+    }
+  };
 
   return (
 <div className="space-y-10 animate-fade-in text-black font-sans">

@@ -1356,35 +1356,24 @@ export const AccountPage = () => {
               <AccountSentTab
                 myPosts={myPosts}
                 loading={loading}
-                postActionLoading={postActionLoading}
-                handleTogglePostStatus={handleTogglePostStatus}
-                setDeleteConfirmModal={setDeleteConfirmModal}
-                setEditingPost={setEditingPost}
-                setShowEditModal={setShowEditModal}
+                setDeleteConfirmModal={setDeleteConfirmPost}
+                setShowEditModal={setShowEditProfileModal}
                 setStoryTargetPost={setStoryTargetPost}
                 setStoryTargetRole={setStoryTargetRole}
                 setStoryModalOpen={setStoryModalOpen}
+                handleBulkDeletePosts={handleBulkDeletePosts}
               />
             )}
 
             {activeSubTab === "notifications" && (
               <AccountNotificationsTab
-                accountNotifications={accountNotifications}
-                actionLogs={actionLogs}
-                unreadNotifsCount={unreadNotifsCount}
-                notificationLoading={notificationLoading}
-                markingAllAsRead={markingAllAsRead}
-                handleMarkAllNotificationsAsRead={handleMarkAllNotificationsAsRead}
-                handleClearAllNotifications={handleClearAllNotifications}
-                handleSingleNotificationClick={handleSingleNotificationClick}
-                handleDeleteSingleNotification={handleDeleteSingleNotification}
+                accountNotifications={myAlerts}
                 isAlertModalOpen={isAlertModalOpen}
                 setIsAlertModalOpen={setIsAlertModalOpen}
                 setEditingAlert={setEditingAlert}
-                searchAlerts={searchAlerts}
-                isAlertsLoading={isAlertsLoading}
-                handleToggleAlertActive={handleToggleAlertActive}
-                handleDeleteAlert={handleDeleteAlert}
+                searchAlerts={myAlerts}
+                notifyAlertEnabled={notifyAlertEnabled}
+                isUpdatingNotifyAlert={isUpdatingNotifyAlert}
               />
             )}
 
@@ -1394,40 +1383,8 @@ export const AccountPage = () => {
                 token={token}
                 updateUser={updateUser}
                 setShowMypageEkycModal={setShowMypageEkycModal}
-                profileSuccess={profileSuccess}
-                profileError={profileError}
-                handleUpdateProfile={handleUpdateProfile}
-                isUpdatingProfile={isUpdatingProfile}
-                newUsername={newUsername}
-                setNewUsername={setNewUsername}
-                newFullName={newFullName}
-                setNewFullName={setNewFullName}
-                newMaidenName={newMaidenName}
-                setNewMaidenName={setNewMaidenName}
-                newPrefecture={newPrefecture}
-                setNewPrefecture={setNewPrefecture}
-                newHometown={newHometown}
-                setNewHometown={setNewHometown}
-                newGraduationYear={newGraduationYear}
-                setNewGraduationYear={setNewGraduationYear}
-                newSchoolOrOrg={newSchoolOrOrg}
-                setNewSchoolOrOrg={setNewSchoolOrOrg}
-                newTargetRelation={newTargetRelation}
-                setNewTargetRelation={setNewTargetRelation}
-                isPasswordModalOpen={isPasswordModalOpen}
-                setIsPasswordModalOpen={setIsPasswordModalOpen}
-                passwordSuccess={passwordSuccess}
-                passwordError={passwordError}
-                currentPassword={currentPassword}
-                setCurrentPassword={setCurrentPassword}
-                newPassword={newPassword}
-                setNewPassword={setNewPassword}
-                confirmPassword={confirmPassword}
-                setConfirmPassword={setConfirmPassword}
-                handleChangePassword={handleChangePassword}
-                isChangingPassword={isChangingPassword}
-                setShowDonationModal={setShowDonationModal}
                 setMypageEkycStep={setMypageEkycStep}
+                setShowDonationModal={setShowDonationModal}
               />
             )}
 

@@ -1,19 +1,80 @@
-import {
-  getDeploymentGuideMD,
-  getCostEstimateMD,
-  getPermitQAMD,
-  getPoliceSecurityDocMD,
-  getPoliceConsultFlowMD,
-  getRequirementsDefinitionMD,
-  getSiteEvaluationReportMD,
-  getPrStrategyPlanMD,
-  getLegalGuidanceMD,
-  getCostListDetailedMD,
-  renderCustomMarkdownHtml
-} from './markdownDocs';
 import { POLICE_PRESENTATION_SCENARIOS } from './deploymentGuideConstants';
+import { POLICE_PRESENTATION_SLIDES } from '../../pages/admin/data/policePresentationData';
 
-  const handlePrintDocument = () => {
+export const parseMarkdownToHtml = (md: string): string => {
+  if (!md) return '';
+  const lines = md.split('\n');
+  let inList = false;
+  let inTable = false;
+  let html = '';
+
+  lines.forEach((line) => {
+    let trimmed = line.trim();
+
+    if (trimmed.startsWith('|')) {
+      if (!inTable) {
+        inTable = true;
+        html += '<table class="doc-table"><thead>';
+      }
+      const cells = trimmed.split('|').map(c => c.trim()).filter((c, i, arr) => i > 0 && i < arr.length - 1);
+      if (cells.every(c => c.startsWith('-') || c.startsWith(':-') || c.startsWith('---'))) {
+        html = html.replace('<thead>', '').replace('</thead>', '');
+        html += '<tbody>';
+        return;
+      }
+      html += '<tr>' + cells.map(c => `<td>${c}</td>`).join('') + '</tr>';
+      return;
+    } else {
+      if (inTable) {
+        inTable = false;
+        html += '</tbody></table>';
+      }
+    }
+
+    if (trimmed.startsWith('- ') || trimmed.startsWith('* ') || trimmed.startsWith('• ')) {
+      if (!inList) {
+        inList = true;
+        html += '<ul class="doc-list">';
+      }
+      const content = trimmed.substring(2).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      html += `<li>${content}</li>`;
+      return;
+    } else {
+      if (inList) {
+        inList = false;
+        html += '</ul>';
+      }
+    }
+
+    if (trimmed.startsWith('# ')) {
+      html += `<h1 class="doc-h1">${trimmed.substring(2).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</h1>`;
+    } else if (trimmed.startsWith('## ')) {
+      html += `<h2 class="doc-h2">${trimmed.substring(3).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</h2>`;
+    } else if (trimmed.startsWith('### ')) {
+      html += `<h3 class="doc-h3">${trimmed.substring(4).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</h3>`;
+    } else if (trimmed.startsWith('> ')) {
+      html += `<blockquote class="doc-quote">${trimmed.substring(2).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</blockquote>`;
+    } else if (trimmed === '') {
+      // Empty line
+    } else {
+      const content = trimmed.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                             .replace(/`(.*?)`/g, '<code>$1</code>');
+      html += `<p class="doc-p">${content}</p>`;
+    }
+  });
+
+  if (inList) html += '</ul>';
+  if (inTable) html += '</tbody></table>';
+
+  return html;
+};
+
+export const handlePrintDocument = (
+  docType: string = 'deployment',
+  smsCount: number = 1000,
+  evaluationDateTab: string = '2026-09-05',
+  markdown: string = ''
+) => {
     let titleStr = "ReMEETs 治安行政・防衛システム文書";
     let subtitleStr = "治安行政・防衛システムセキュリティ設計書（公式監査書類）";
     if (docType === 'matrix') {
@@ -440,7 +501,7 @@ import { POLICE_PRESENTATION_SCENARIOS } from './deploymentGuideConstants';
     URL.revokeObjectURL(url);
   };
 
-  const handleDownloadPDFOutline = () => {
+  export const handleDownloadPDFOutline = (slides: any[] = POLICE_PRESENTATION_SLIDES) => {
     const fontLink = `<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@500;700&display=swap" rel="stylesheet">`;
     const styles = `
       <style>
@@ -482,61 +543,62 @@ import { POLICE_PRESENTATION_SCENARIOS } from './deploymentGuideConstants';
         .header .subtitle {
           font-size: 8.5pt;
           color: #E11D48;
-          font-weight: bold;
+          font-weight: 700;
           margin-top: 4px;
         }
         .header .date {
-          font-size: 8.5pt;
+          font-size: 8pt;
           color: #64748b;
           text-align: right;
         }
         .title-desc {
-          background: #f8fafc;
-          border: 1px solid #e2e8f0;
-          padding: 12px 16px;
-          border-radius: 8px;
           font-size: 9pt;
           color: #475569;
+          line-height: 1.6;
           margin-bottom: 25px;
+          padding: 12px 16px;
+          background: #f8fafc;
+          border-left: 3px solid #E11D48;
+          border-radius: 0 8px 8px 0;
         }
         .grid-container {
           display: flex;
           flex-direction: column;
-          gap: 15px;
+          gap: 16px;
         }
         .slide-block {
-          page-break-inside: avoid;
           border: 1px solid #e2e8f0;
-          background: #ffffff;
+          border-radius: 10px;
           padding: 14px 18px;
-          border-radius: 8px;
-          box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+          background: #ffffff;
+          page-break-inside: avoid;
         }
         .slide-meta {
-          font-size: 8pt;
-          font-weight: bold;
-          color: #E11D48;
-          margin-bottom: 6px;
           display: flex;
           justify-content: space-between;
+          align-items: center;
+          margin-bottom: 6px;
         }
         .slide-num {
+          font-size: 8pt;
+          font-weight: 700;
+          color: #E11D48;
+          background: #fff1f2;
+          padding: 2px 8px;
+          border-radius: 4px;
           font-family: monospace;
         }
         .slide-category {
-          background: #ffe4e6;
-          color: #9f1239;
-          padding: 2px 8px;
-          border-radius: 9999px;
-          font-size: 7.5pt;
+          font-size: 8pt;
+          color: #64748b;
+          font-weight: 600;
         }
         .slide-title {
           font-size: 11pt;
-          font-weight: bold;
+          font-weight: 700;
           color: #0f172a;
-          margin: 0 0 10px 0;
+          margin: 0 0 8px 0;
           font-family: 'Noto Serif JP', serif;
-          line-height: 1.4;
         }
         .slide-subtitle {
           font-size: 8.5pt;
@@ -571,7 +633,7 @@ import { POLICE_PRESENTATION_SCENARIOS } from './deploymentGuideConstants';
     const content = slides.map((s, idx) => {
       const sub = s.subtitle ? `<div class="slide-subtitle">${s.subtitle}</div>` : '';
       const pts = s.points && s.points.length > 0
-        ? `<ul class="slide-points">${s.points.map(pt => `<li>${pt}</li>`).join('')}</ul>`
+        ? `<ul class="slide-points">${s.points.map((pt: string) => `<li>${pt}</li>`).join('')}</ul>`
         : '';
       return `
         <div class="slide-block">
@@ -636,7 +698,7 @@ import { POLICE_PRESENTATION_SCENARIOS } from './deploymentGuideConstants';
     URL.revokeObjectURL(url);
   };
 
-  const handlePrintSlidePreview = () => {
+  export const handlePrintSlidePreview = () => {
     document.body.classList.add('printing-active-slide-preview');
     window.print();
     setTimeout(() => {
@@ -644,7 +706,7 @@ import { POLICE_PRESENTATION_SCENARIOS } from './deploymentGuideConstants';
     }, 1000);
   };
 
-  const handleDownloadHTMLDocument = () => {
+  export const handleDownloadHTMLDocument = (docType: string = 'deployment', markdown: string = '') => {
     let titleStr = "ReMEETs 治安行政・防衛システム文書";
     if (docType === 'deployment') titleStr = "① ReMEETs 本番デプロイガイド ＆ 運営コンプライアンス設計書";
     else if (docType === 'cost_estimate') titleStr = "①-B 本番運用コスト＆初期費用シミュレータ";
@@ -668,114 +730,71 @@ import { POLICE_PRESENTATION_SCENARIOS } from './deploymentGuideConstants';
         .replace(/^## (.*$)/gim, '<h2>$1</h2>')
         .replace(/^### (.*$)/gim, '<h3>$1</h3>')
         .replace(/^\* (.*$)/gim, '<ul><li>$1</li></ul>')
-        .replace(/<\/ul>\s*<ul>/gim, '')
         .replace(/^- (.*$)/gim, '<ul><li>$1</li></ul>')
-        .replace(/<\/ul>\s*<ul>/gim, '')
-        .replace(/^([a-zA-Z0-9_\s.\-]+.*)$/gim, '<p>$1</p>')
-        .replace(/<\/p>\s*<p>/gim, '<br>');
+        .replace(/\n\n/g, '<p></p>')
+        .replace(/\n/g, '<br/>');
     };
 
+    const fontLink = `<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@500;700&display=swap" rel="stylesheet">`;
     const htmlContent = `<!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
   <title>${titleStr}</title>
+  ${fontLink}
   <style>
     body {
-      font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+      font-family: 'Noto Sans JP', sans-serif;
+      color: #1C2B3C;
       line-height: 1.8;
-      color: #333;
-      max-width: 800px;
-      margin: 40px auto;
-      padding: 0 20px;
-      background-color: #fdfaf2;
+      background: #f8fafc;
+      padding: 40px 20px;
+      margin: 0;
     }
     .container {
-      background: #fff;
-      padding: 40px;
-      border-radius: 24px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.03);
-      border: 1px solid #e1d8c7;
+      max-width: 860px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 60px 50px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      border: 1px solid #E2E8F0;
     }
     h1 {
+      font-family: 'Noto Serif JP', serif;
       font-size: 24px;
-      border-bottom: 2px solid #3B627F;
-      padding-bottom: 15px;
-      color: #1a2735;
-      margin-top: 20px;
+      color: #1C2B3C;
+      border-bottom: 2px solid #5ea5ad;
+      padding-bottom: 12px;
+      margin-top: 0;
     }
     h2 {
-      font-size: 20px;
-      border-bottom: 1px solid #ddd;
-      padding-bottom: 8px;
-      margin-top: 35px;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 18px;
       color: #3B627F;
+      margin-top: 32px;
+      border-left: 4px solid #5ea5ad;
+      padding-left: 12px;
     }
     h3 {
-      font-size: 16px;
-      color: #444;
-      margin-top: 25px;
+      font-size: 15px;
+      color: #1C2B3C;
+      margin-top: 24px;
     }
     p, li {
-      font-size: 14px;
-      color: #444;
-    }
-    ul, ol {
-      padding-left: 20px;
-      margin-top: 10px;
-      margin-bottom: 20px;
-    }
-    li {
-      margin-bottom: 8px;
-    }
-    pre {
-      background: #1e1e1e;
-      color: #d4d4d4;
-      padding: 20px;
-      border-radius: 12px;
-      overflow-x: auto;
-      font-family: monospace;
-      font-size: 13px;
-      margin: 20px 0;
-    }
-    code {
-      background: rgba(0,0,0,0.05);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-family: monospace;
-      font-size: 13px;
-    }
-    pre code {
-      background: none;
-      padding: 0;
-    }
-    hr {
-      border: 0;
-      border-top: 1px solid #eee;
-      margin: 40px 0;
-    }
-    blockquote {
-      border-left: 4px solid #3B627F;
-      padding-left: 20px;
-      color: #666;
-      margin: 25px 0;
-      font-style: italic;
-      background: #f4f7f9;
-      padding-top: 10px;
-      padding-bottom: 10px;
-      border-radius: 0 8px 8px 0;
+      font-size: 13.5px;
+      color: #334155;
     }
     .footer {
-      font-size: 12px;
-      color: #999;
-      text-align: center;
-      margin-top: 60px;
-      border-top: 1px solid #eee;
+      margin-top: 50px;
       padding-top: 20px;
+      border-top: 1px solid #E2E8F0;
+      font-size: 11px;
+      color: #7A8E9E;
+      text-align: center;
     }
     @media print {
-      body { background: #fff; margin: 0; padding: 0; }
+      body { background: #fff; padding: 0; }
       .container { border: none; box-shadow: none; padding: 0; }
     }
   </style>
@@ -805,7 +824,7 @@ import { POLICE_PRESENTATION_SCENARIOS } from './deploymentGuideConstants';
     document.body.removeChild(link);
   };
 
-  const handleDownloadMarkdown = async () => {
+  export const handleDownloadMarkdown = async (docType: string = 'deployment', evaluationDateTab: string = '2026-09-05') => {
     let fileName = 'ReMEETs_Deployment_Guide.md';
     let titleStr = "ReMEETs 治安行政・防衛システム文書";
     if (docType === 'permit') fileName = 'ReMEETs_Permit_QA_Guide.md';
@@ -872,7 +891,7 @@ import { POLICE_PRESENTATION_SCENARIOS } from './deploymentGuideConstants';
     }
   };
 
-  const handleDownloadAuditCSV = () => {
+  export const handleDownloadAuditCSV = () => {
     const csvContent = 
       "\ufeff" + // UTF-8 BOM
       "ログ日時 (Timestamp),ログ分類 (Category),対象ホスト/IP (Client IP),ユーザー識別子 (User Hash),操作/検知イベント (Event Action),モデレーション評価 (AI Safety Check),監査適合ステータス (Status)\n" +
@@ -896,6 +915,3 @@ import { POLICE_PRESENTATION_SCENARIOS } from './deploymentGuideConstants';
     link.click();
     document.body.removeChild(link);
   };
-
-
-export { handlePrintDocument, handleDownloadAuditCSV };

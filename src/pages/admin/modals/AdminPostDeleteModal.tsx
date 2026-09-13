@@ -23,7 +23,7 @@ export const AdminPostDeleteModal: React.FC<AdminPostDeleteModalProps> = ({
   const setIsDeleteModalOpen = (val: boolean) => {
     if (!val) onClose();
   };
-  const setDeleteTargetId = () => onClose();
+  const setDeleteTargetId = (_val?: any) => onClose();
 
   return (
       <AnimatePresence>
