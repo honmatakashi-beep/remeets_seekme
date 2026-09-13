@@ -1590,7 +1590,7 @@ export const AdminDashboard = () => {
       return;
     }
 
-    const headers = ['ユーザーID', 'ユーザー名', 'ニックネーム', '本名', '旧姓', '生年月日', 'メールアドレス', '連絡先種別', '連絡先ID', '権限', 'eKYC認証', '凍結状態', '投関数', '再会数', '被通報数', '登録日時'];
+    const headers = ['ユーザーID', 'ユーザー名', 'ニックネーム', '本名', '旧姓', '生年月日', '性別', 'メールアドレス', '連絡先種別', '連絡先ID', '権限', 'eKYC認証', '凍結状態', '投関数', '再会数', '被通報数', '登録日時'];
     const rows = filtered.map(u => [
       u.id,
       `"${(u.username || '').replace(/"/g, '""')}"`,
@@ -1598,6 +1598,7 @@ export const AdminDashboard = () => {
       `"${(u.full_name || '').replace(/"/g, '""')}"`,
       `"${(u.maiden_name || '').replace(/"/g, '""')}"`,
       u.birthdate || '',
+      `"${(u.gender || '').replace(/"/g, '""')}"`,
       `"${(u.email || '').replace(/"/g, '""')}"`,
       u.contact_type || '',
       `"${(u.contact_id || '').replace(/"/g, '""')}"`,
@@ -4766,6 +4767,59 @@ export const AdminDashboard = () => {
                             <span className="text-[11px] text-amber-900 font-medium bg-amber-50 border border-amber-200 px-1.5 py-0.2 rounded inline-block mt-0.5 whitespace-nowrap">
                               旧姓: {selectedUser.maiden_name}
                             </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* 5.5 生年月日・満年齢 */}
+                      <div className="flex justify-between items-center py-2.5 border-b border-slate-200 gap-4">
+                        <span className="text-xs md:text-sm font-bold text-slate-600 whitespace-nowrap shrink-0">生年月日 (満年齢)</span>
+                        <div className="text-right">
+                          {selectedUser.birthdate ? (() => {
+                            const b = new Date(selectedUser.birthdate);
+                            let age = null;
+                            if (!isNaN(b.getTime())) {
+                              const today = new Date();
+                              age = today.getFullYear() - b.getFullYear();
+                              const m = today.getMonth() - b.getMonth();
+                              if (m < 0 || (m === 0 && today.getDate() < b.getDate())) age--;
+                            }
+                            return (
+                              <div className="flex items-center justify-end gap-1.5">
+                                <span className="text-xs md:text-sm font-bold text-slate-900 font-mono">
+                                  {selectedUser.birthdate.replace(/-/g, '/')}
+                                </span>
+                                {age !== null && (
+                                  <span className="text-xs font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 px-1.5 py-0.5 rounded">
+                                    満{age}歳
+                                  </span>
+                                )}
+                              </div>
+                            );
+                          })() : (
+                            <span className="text-xs text-slate-400">18歳以上確認済 (生年月日未登録)</span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* 5.6 性別 */}
+                      <div className="flex justify-between items-center py-2.5 border-b border-slate-200 gap-4">
+                        <span className="text-xs md:text-sm font-bold text-slate-600 whitespace-nowrap shrink-0">性別</span>
+                        <div className="text-right">
+                          {selectedUser.gender === '男性' ? (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                              👨 男性
+                            </span>
+                          ) : selectedUser.gender === '女性' ? (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-pink-50 text-pink-700 border border-pink-200">
+                              👩 女性
+                            </span>
+                          ) : selectedUser.gender ? (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                              {selectedUser.gender}
+                            </span>
+                          ) : (
+                            <span className="text-xs text-slate-400">未設定</span>
                           )}
                         </div>
                       </div>

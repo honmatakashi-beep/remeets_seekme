@@ -16,7 +16,7 @@ import { WaterRippleRainbowText } from '../components/WaterRippleRainbowText';
 import stepMistWriteImg from '../assets/images/step_01_mist_ocean_close_1789154903956.jpg';
 import stepMistDriftImg from '../assets/images/step_02_beach_arrival_1789155133509.jpg';
 import stepMistReconnectImg from '../assets/images/step_03_mist_reconnect_1789154562729.jpg';
-import heroBottleMail from '../assets/images/hero_bottle_mail_1785941809474.jpg';
+import heroBottleMail from '../assets/images/hero_small_ocean_no_bottle.jpg';
 import { CreditCardPaymentForm } from '../components/CreditCardPaymentForm';
 import { ConceptStoryModal } from '../components/ConceptStoryModal';
 
@@ -225,7 +225,7 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
     <div className="max-w-5xl mx-auto px-3.5 sm:px-6 py-4 md:py-8 space-y-8 md:space-y-12">
       {/* Hero Section (探したい人への再会のボトルメールをつづるカード max-w-4xl に合わせた幅) */}
       <div className="max-w-4xl mx-auto">
-        <div className="relative rounded-[28px] sm:rounded-[36px] bg-gradient-to-br from-white via-slate-50/60 to-sky-50/30 p-4 sm:p-10 md:p-12 shadow-sm border-2 border-zinc-900/90 overflow-hidden text-center space-y-4">
+        <div className="relative rounded-[28px] sm:rounded-[36px] bg-gradient-to-br from-white via-slate-50/60 to-sky-50/30 p-4 sm:p-10 md:p-12 shadow-sm border-2 border-zinc-900/90 overflow-hidden text-center space-y-4 cursor-bottle-mail">
           
           {/* 内側の極細二重フレームライン */}
           <div className="absolute inset-2 sm:inset-3.5 rounded-[22px] sm:rounded-[28px] border border-zinc-800/80 pointer-events-none z-10" />
@@ -287,7 +287,7 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
           </div>
 
           <div className="relative z-10 space-y-3 sm:space-y-4">
-            <span className="text-xl xs:text-2xl sm:text-3xl md:text-5xl font-serif font-bold text-[#3B627F] tracking-wider block leading-none select-none drop-shadow-sm">
+            <span className="text-xl xs:text-2xl sm:text-3xl md:text-5xl font-serif font-bold text-[#3B627F] tracking-wider block leading-none select-none [text-rendering:geometricPrecision] antialiased">
               ReMEETs
               <span className="block text-[8.5px] xs:text-[9.5px] sm:text-xs md:text-sm font-sans font-medium text-brand-primary/90 tracking-[0.2em] sm:tracking-[0.3em] mt-1 sm:mt-2 uppercase">
                 〜再会のボトルメール〜
@@ -306,7 +306,7 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
               <div className="mt-3 sm:mt-4 w-20 h-[1px] bg-gradient-to-r from-transparent via-brand-primary/20 to-transparent" />
             </div>
 
-            <p className="text-sm md:text-base text-slate-800 font-serif font-semibold max-w-2xl mx-auto leading-relaxed md:leading-loose pt-2.5 px-2 drop-shadow-[0_1px_4px_rgba(255,255,255,0.8)]">
+            <p className="text-sm md:text-base text-slate-800 font-serif font-medium max-w-2xl mx-auto leading-relaxed md:leading-loose pt-2.5 px-2 [text-rendering:geometricPrecision] antialiased">
               同窓生、昔の友人、お世話になったあの人。連絡先はわからないけれど、もう一度だけ話してみたい大切な人へ、想いを言葉にして海に流す。そして、あなたを探している誰かが流した手紙を、自分の名前やゆかりの地から見つけ出す。ここは、お互いを想い合う偶然と奇跡が交差する、静かな再会の海です。
             </p>
 
@@ -390,7 +390,7 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
               <span>メイン機能｜登録・投函・保管 0円</span>
             </span>
             <h3 className="text-xl md:text-2xl font-serif font-bold pt-1 text-center">
-              <span className="animated-rainbow-text inline-block drop-shadow-[0_1px_8px_rgba(255,255,255,0.9)] pb-0.5">
+              <span className="animated-rainbow-text inline-block pb-0.5 [text-rendering:geometricPrecision] antialiased">
                 逢いたい人へ、再会のボトルメールを流す
               </span>
             </h3>

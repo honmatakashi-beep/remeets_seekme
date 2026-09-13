@@ -85,8 +85,8 @@ async function startServer() {
     });
   }
 
-  server.listen(PORT, () => {
-    console.log(`🕊️ ReMEETs Server running on http://localhost:${PORT}`);
+  server.listen(Number(PORT), '0.0.0.0', () => {
+    console.log(`🕊️ ReMEETs Server running on http://localhost:${PORT} and http://0.0.0.0:${PORT}`);
   });
 }
 

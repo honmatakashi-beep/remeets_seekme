@@ -385,7 +385,7 @@ export const recordModerationHistory = (data: {
       executeUidMigration();
 
       const users = db.prepare(`
-        SELECT u.id, u.username, u.email, u.auth_provider, u.full_name, u.last_name, u.first_name, u.nickname, u.maiden_name, u.birthdate, u.role, u.is_blocked, u.is_ekyc_verified, u.ekyc_document_type, u.ekyc_verified_at, u.ekyc_name, u.contact_type, u.contact_id, u.created_at,
+        SELECT u.id, u.username, u.email, u.auth_provider, u.full_name, u.last_name, u.first_name, u.nickname, u.maiden_name, u.birthdate, u.gender, u.role, u.is_blocked, u.is_ekyc_verified, u.ekyc_document_type, u.ekyc_verified_at, u.ekyc_name, u.contact_type, u.contact_id, u.created_at,
                (SELECT COUNT(*) FROM posts p WHERE p.user_id = u.id) as posts_count,
                (SELECT COUNT(*) FROM posts p WHERE p.user_id = u.id AND p.status = 'resolved') as resolved_posts_count,
                (SELECT COUNT(*) FROM reports r WHERE (r.target_type = 'user' AND r.target_id = u.id) OR (r.target_type = 'post' AND r.target_id IN (SELECT p2.id FROM posts p2 WHERE p2.user_id = u.id))) as reports_received_count
@@ -402,7 +402,7 @@ export const recordModerationHistory = (data: {
   adminRouter.get("/users/:id", authenticateToken, isAdmin, (req, res) => {
     try {
       const user = db.prepare(`
-        SELECT u.id, u.username, u.email, u.auth_provider, u.full_name, u.last_name, u.first_name, u.nickname, u.maiden_name, u.birthdate, u.role, u.is_blocked, u.is_ekyc_verified, u.ekyc_document_type, u.ekyc_verified_at, u.ekyc_name, u.contact_type, u.contact_id, u.created_at,
+        SELECT u.id, u.username, u.email, u.auth_provider, u.full_name, u.last_name, u.first_name, u.nickname, u.maiden_name, u.birthdate, u.gender, u.role, u.is_blocked, u.is_ekyc_verified, u.ekyc_document_type, u.ekyc_verified_at, u.ekyc_name, u.contact_type, u.contact_id, u.created_at,
                (SELECT COUNT(*) FROM posts p WHERE p.user_id = u.id) as posts_count,
                (SELECT COUNT(*) FROM posts p WHERE p.user_id = u.id AND p.status = 'resolved') as resolved_posts_count,
                (SELECT COUNT(*) FROM reports r WHERE (r.target_type = 'user' AND r.target_id = u.id) OR (r.target_type = 'post' AND r.target_id IN (SELECT p2.id FROM posts p2 WHERE p2.user_id = u.id))) as reports_received_count
@@ -884,6 +884,138 @@ export const recordModerationHistory = (data: {
         LIMIT 10
       `).all();
 
+      // Demographic Stats (Age & Gender)
+      const allUsers = db.prepare("SELECT id, birthdate, gender FROM users").all() as any[];
+      const todayYear = new Date().getFullYear();
+      const todayMonth = new Date().getMonth() + 1;
+      const todayDay = new Date().getDate();
+
+      const calculateAge = (bdate: string | null) => {
+        if (!bdate) return null;
+        try {
+          const [y, m, d] = bdate.split('-').map(Number);
+          if (!y || !m || !d) return null;
+          let age = todayYear - y;
+          if (todayMonth < m || (todayMonth === m && todayDay < d)) {
+            age--;
+          }
+          return age >= 0 ? age : null;
+        } catch {
+          return null;
+        }
+      };
+
+      const ageGroups = {
+        under20: 0,
+        twenties: 0,
+        thirties: 0,
+        forties: 0,
+        fifties: 0,
+        sixties: 0,
+        seventiesPlus: 0,
+        unknown: 0
+      };
+
+      const genderCounts = {
+        male: 0,
+        female: 0,
+        unspecified: 0
+      };
+
+      const ageGenderCross = {
+        under20: { male: 0, female: 0, unspecified: 0 },
+        twenties: { male: 0, female: 0, unspecified: 0 },
+        thirties: { male: 0, female: 0, unspecified: 0 },
+        forties: { male: 0, female: 0, unspecified: 0 },
+        fifties: { male: 0, female: 0, unspecified: 0 },
+        sixties: { male: 0, female: 0, unspecified: 0 },
+        seventiesPlus: { male: 0, female: 0, unspecified: 0 }
+      };
+
+      let totalAges = 0;
+      let validAgeCount = 0;
+      let minAge = 999;
+      let maxAge = 0;
+
+      allUsers.forEach(u => {
+        const g = u.gender;
+        let gKey: 'male' | 'female' | 'unspecified' = 'unspecified';
+        if (g === '男性' || g === 'male') {
+          genderCounts.male++;
+          gKey = 'male';
+        } else if (g === '女性' || g === 'female') {
+          genderCounts.female++;
+          gKey = 'female';
+        } else {
+          genderCounts.unspecified++;
+          gKey = 'unspecified';
+        }
+
+        const age = calculateAge(u.birthdate);
+        if (age !== null) {
+          totalAges += age;
+          validAgeCount++;
+          if (age < minAge) minAge = age;
+          if (age > maxAge) maxAge = age;
+
+          if (age < 20) {
+            ageGroups.under20++;
+            ageGenderCross.under20[gKey]++;
+          } else if (age < 30) {
+            ageGroups.twenties++;
+            ageGenderCross.twenties[gKey]++;
+          } else if (age < 40) {
+            ageGroups.thirties++;
+            ageGenderCross.thirties[gKey]++;
+          } else if (age < 50) {
+            ageGroups.forties++;
+            ageGenderCross.forties[gKey]++;
+          } else if (age < 60) {
+            ageGroups.fifties++;
+            ageGenderCross.fifties[gKey]++;
+          } else if (age < 70) {
+            ageGroups.sixties++;
+            ageGenderCross.sixties[gKey]++;
+          } else {
+            ageGroups.seventiesPlus++;
+            ageGenderCross.seventiesPlus[gKey]++;
+          }
+        } else {
+          ageGroups.unknown++;
+        }
+      });
+
+      const avgAge = validAgeCount > 0 ? (totalAges / validAgeCount).toFixed(1) : null;
+      const totalCount = allUsers.length || 1;
+
+      const ageDistributionList = [
+        { label: "10代 (18-19歳)", range: "18-19", count: ageGroups.under20, male: ageGenderCross.under20.male, female: ageGenderCross.under20.female, unspecified: ageGenderCross.under20.unspecified, percentage: Math.round((ageGroups.under20 / totalCount) * 100) },
+        { label: "20代", range: "20-29", count: ageGroups.twenties, male: ageGenderCross.twenties.male, female: ageGenderCross.twenties.female, unspecified: ageGenderCross.twenties.unspecified, percentage: Math.round((ageGroups.twenties / totalCount) * 100) },
+        { label: "30代", range: "30-39", count: ageGroups.thirties, male: ageGenderCross.thirties.male, female: ageGenderCross.thirties.female, unspecified: ageGenderCross.thirties.unspecified, percentage: Math.round((ageGroups.thirties / totalCount) * 100) },
+        { label: "40代", range: "40-49", count: ageGroups.forties, male: ageGenderCross.forties.male, female: ageGenderCross.forties.female, unspecified: ageGenderCross.forties.unspecified, percentage: Math.round((ageGroups.forties / totalCount) * 100) },
+        { label: "50代", range: "50-59", count: ageGroups.fifties, male: ageGenderCross.fifties.male, female: ageGenderCross.fifties.female, unspecified: ageGenderCross.fifties.unspecified, percentage: Math.round((ageGroups.fifties / totalCount) * 100) },
+        { label: "60代", range: "60-69", count: ageGroups.sixties, male: ageGenderCross.sixties.male, female: ageGenderCross.sixties.female, unspecified: ageGenderCross.sixties.unspecified, percentage: Math.round((ageGroups.sixties / totalCount) * 100) },
+        { label: "70代以上", range: "70+", count: ageGroups.seventiesPlus, male: ageGenderCross.seventiesPlus.male, female: ageGenderCross.seventiesPlus.female, unspecified: ageGenderCross.seventiesPlus.unspecified, percentage: Math.round((ageGroups.seventiesPlus / totalCount) * 100) },
+      ];
+
+      const genderDistributionList = [
+        { name: "男性", value: genderCounts.male, percentage: Math.round((genderCounts.male / totalCount) * 100), color: "#3b82f6" },
+        { name: "女性", value: genderCounts.female, percentage: Math.round((genderCounts.female / totalCount) * 100), color: "#ec4899" },
+        { name: "未設定・回答なし", value: genderCounts.unspecified, percentage: Math.round((genderCounts.unspecified / totalCount) * 100), color: "#94a3b8" }
+      ];
+
+      const demographics = {
+        totalUsers: allUsers.length,
+        validAgeCount,
+        averageAge: avgAge,
+        minAge: minAge === 999 ? null : minAge,
+        maxAge: maxAge === 0 ? null : maxAge,
+        ageGroups,
+        ageDistribution: ageDistributionList,
+        genderCounts,
+        genderDistribution: genderDistributionList
+      };
+
       res.json({
         summary: {
           totalUsers: totalUsers.count,
@@ -898,7 +1030,8 @@ export const recordModerationHistory = (data: {
         pathStats,
         refererStats,
         searchStats,
-        deviceStats: Object.entries(deviceStatsMap).map(([name, value]) => ({ name, value }))
+        deviceStats: Object.entries(deviceStatsMap).map(([name, value]) => ({ name, value })),
+        demographics
       });
     } catch (err) {
       res.status(500).json({ error: "Failed to fetch stats" });

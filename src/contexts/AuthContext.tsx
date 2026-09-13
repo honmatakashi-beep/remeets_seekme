@@ -19,6 +19,9 @@ export interface User {
   email_notifications?: boolean;
   contact_type?: string;
   contact_id?: string;
+  birthdate?: string;
+  gender?: string;
+  age?: number;
 }
 
 // --- AuthContext ---

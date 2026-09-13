@@ -22,12 +22,24 @@ import quizMatchHearts from '../assets/images/quiz_match_hearts_pastel_178594052
 
 export const AccountPage = () => {
   const { user, token, logout, updateUser } = useAuth();
+  const getAgeFromBirthdate = (birthdate?: string): number | null => {
+    if (!birthdate) return null;
+    const b = new Date(birthdate);
+    if (isNaN(b.getTime())) return null;
+    const today = new Date();
+    let age = today.getFullYear() - b.getFullYear();
+    const m = today.getMonth() - b.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < b.getDate())) age--;
+    return age;
+  };
+
   const [myPosts, setMyPosts] = useState<any[]>([]);
   const [connectedPosts, setConnectedPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingNickname, setEditingNickname] = useState(user?.nickname || '');
   const [editingEmail, setEditingEmail] = useState(user?.email || '');
   const [editingMaidenName, setEditingMaidenName] = useState((user as any)?.maiden_name || '');
+  const [editingGender, setEditingGender] = useState<string>((user as any)?.gender || '');
   const [editingEmailNotifications, setEditingEmailNotifications] = useState<boolean>(true);
   const [editingContactType, setEditingContactType] = useState<string>(() => localStorage.getItem('remeets_default_contact_type') || 'LINE');
   const [editingContactId, setEditingContactId] = useState<string>(() => localStorage.getItem('remeets_default_contact_id') || (user as any)?.contact_id || '');
@@ -759,6 +771,7 @@ export const AccountPage = () => {
           }
           if (profile.contact_type) setEditingContactType(profile.contact_type);
           if (profile.contact_id) setEditingContactId(profile.contact_id);
+          if (profile.gender) setEditingGender(profile.gender);
           updateUser({ 
             fullName: profile.fullName, 
             lastName: profile.lastName, 
@@ -766,6 +779,8 @@ export const AccountPage = () => {
             nickname: profile.nickname, 
             email: profile.email,
             maiden_name: profile.maiden_name,
+            birthdate: profile.birthdate,
+            gender: profile.gender,
             email_notifications: profile.email_notifications !== undefined ? profile.email_notifications : true,
             contact_type: profile.contact_type || editingContactType,
             contact_id: profile.contact_id || editingContactId
@@ -800,6 +815,7 @@ export const AccountPage = () => {
           nickname: editingNickname,
           email: editingEmail,
           maiden_name: editingMaidenName,
+          gender: editingGender,
           email_notifications: editingEmailNotifications,
           contact_type: editingContactType,
           contact_id: editingContactId
@@ -820,6 +836,7 @@ export const AccountPage = () => {
         nickname: editingNickname, 
         email: editingEmail,
         maiden_name: editingMaidenName, 
+        gender: editingGender,
         contact_type: editingContactType, 
         contact_id: editingContactId 
       });
@@ -1006,6 +1023,7 @@ export const AccountPage = () => {
                     setEditingNickname(user?.nickname || '');
                     setEditingEmail(user?.email || '');
                     setEditingMaidenName(user?.maiden_name || '');
+                    setEditingGender((user as any)?.gender || '');
                     setEditingContactType((user as any)?.contact_type || localStorage.getItem('remeets_default_contact_type') || 'LINE');
                     setEditingContactId((user as any)?.contact_id || localStorage.getItem('remeets_default_contact_id') || '');
                     setUpdateError('');
@@ -1028,12 +1046,12 @@ export const AccountPage = () => {
               </div>
             </div>
 
-            {/* Middle Section: 各項目が独立して一目でわかりやすい個別タイル構造（コンパクトで洗練された高さ） */}
-            <div className="space-y-2.5 font-sans">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            {/* Middle Section: 各項目がゆったり美しく整列する 2列グリッド構造（2列×4行 = 計8項目） */}
+            <div className="space-y-3 font-sans">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-3.5">
                 {/* 1. ニックネーム */}
-                <div className="bg-white hover:border-indigo-400 px-4 py-2.5 rounded-xl border-2 border-slate-300/90 shadow-xs transition-all flex items-center justify-between gap-3 group">
-                  <span className="text-[11px] font-bold text-slate-500 shrink-0">
+                <div className="bg-white hover:border-indigo-400 px-4 sm:px-5 py-3 rounded-2xl border-2 border-slate-300/90 shadow-2xs transition-all flex items-center justify-between gap-3 group min-h-[58px]">
+                  <span className="text-xs font-bold text-slate-500 shrink-0">
                     【ニックネーム】
                   </span>
                   <div className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-indigo-900 transition-colors truncate text-right">
@@ -1042,74 +1060,126 @@ export const AccountPage = () => {
                 </div>
 
                 {/* 2. ユーザーID */}
-                <div className="bg-white hover:border-indigo-400 px-4 py-2.5 rounded-xl border-2 border-slate-300/90 shadow-xs transition-all flex items-center justify-between gap-3 group">
-                  <span className="text-[11px] font-bold text-slate-500 shrink-0">
+                <div className="bg-white hover:border-indigo-400 px-4 sm:px-5 py-3 rounded-2xl border-2 border-slate-300/90 shadow-2xs transition-all flex items-center justify-between gap-3 group min-h-[58px]">
+                  <span className="text-xs font-bold text-slate-500 shrink-0">
                     【ユーザーID】
                   </span>
-                  <div className="text-xs sm:text-sm font-mono font-bold text-indigo-700 truncate text-right">
-                    {user?.username || '未付番'}
+                  <div className="text-xs sm:text-sm font-mono font-bold text-indigo-700 bg-indigo-50/80 px-2.5 py-0.5 rounded-lg border border-indigo-200/70 truncate text-right">
+                    @{user?.username || '未付番'}
                   </div>
                 </div>
 
                 {/* 3. メールアドレス */}
-                <div className="bg-white hover:border-indigo-400 px-4 py-2.5 rounded-xl border-2 border-slate-300/90 shadow-xs transition-all flex items-center justify-between gap-3 group">
-                  <span className="text-[11px] font-bold text-slate-500 shrink-0">
+                <div className="bg-white hover:border-indigo-400 px-4 sm:px-5 py-3 rounded-2xl border-2 border-slate-300/90 shadow-2xs transition-all flex items-center justify-between gap-3 group min-h-[58px]">
+                  <span className="text-xs font-bold text-slate-500 shrink-0">
                     【メールアドレス】
                   </span>
-                  <div className="text-xs sm:text-sm font-medium text-slate-800 truncate text-right max-w-[200px]" title={user?.email}>
+                  <div className="text-xs sm:text-sm font-medium font-mono text-slate-800 truncate text-right max-w-[220px] sm:max-w-[280px]" title={user?.email}>
                     {user?.email || '未設定'}
                   </div>
                 </div>
 
                 {/* 4. 再会時の開示連絡先 */}
-                <div className="bg-white hover:border-teal-400 px-4 py-2.5 rounded-xl border-2 border-slate-300/90 shadow-xs transition-all flex items-center justify-between gap-3 group">
-                  <span className="text-[11px] font-bold text-slate-500 shrink-0">
-                    【再会時の開示連絡先】
+                <div className="bg-white hover:border-teal-400 px-4 sm:px-5 py-3 rounded-2xl border-2 border-slate-300/90 shadow-2xs transition-all flex items-center justify-between gap-3 group min-h-[58px]">
+                  <span className="text-xs font-bold text-slate-500 shrink-0">
+                    【開示連絡先】
                   </span>
                   {((user as any)?.contact_id || editingContactId) ? (
-                    <div className="text-xs sm:text-sm font-bold text-teal-800 flex items-center gap-1.5 truncate">
-                      <span className="bg-teal-100 text-teal-800 px-1.5 py-0.5 rounded text-[10px] font-mono font-extrabold shrink-0">
+                    <div className="text-xs sm:text-sm font-bold text-teal-800 flex items-center gap-2 truncate justify-end">
+                      <span className="bg-teal-100 text-teal-800 px-2 py-0.5 rounded-md text-[10.5px] font-mono font-extrabold shrink-0 border border-teal-200">
                         {(user as any)?.contact_type || editingContactType || 'LINE'}
                       </span>
-                      <span className="font-mono truncate">
+                      <span className="font-mono font-bold text-teal-950 truncate max-w-[180px] sm:max-w-[240px]">
                         {(user as any)?.contact_id || editingContactId}
                       </span>
                     </div>
                   ) : (
-                    <div className="text-xs sm:text-sm font-medium text-slate-400 text-right">
+                    <div className="text-xs font-medium text-slate-400 text-right">
                       未登録
                     </div>
                   )}
                 </div>
 
-                {/* 5. 本人確認（eKYC）状況 */}
-                <div className={`px-4 py-2.5 rounded-xl border-2 shadow-xs flex items-center justify-between gap-2.5 ${
+                {/* 5. 年齢 / 生年月日（変更不可） */}
+                <div className="bg-white hover:border-indigo-400 px-4 sm:px-5 py-3 rounded-2xl border-2 border-slate-300/90 shadow-2xs transition-all flex items-center justify-between gap-3 group min-h-[58px]">
+                  <span className="text-xs font-bold text-slate-500 shrink-0 flex items-center gap-1.5">
+                    <span>【年齢 / 生年月日】</span>
+                    <span title="システム固定情報（変更不可）">
+                      <Lock size={11} className="text-slate-400" />
+                    </span>
+                  </span>
+                  <div className="text-right truncate">
+                    {user?.birthdate ? (
+                      <div className="flex items-center gap-2 justify-end">
+                        <span className="text-xs sm:text-sm text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-lg border border-indigo-200/80 font-bold font-mono">
+                          満{getAgeFromBirthdate(user.birthdate)}歳
+                        </span>
+                        <span className="text-xs text-slate-500 font-mono">
+                          ({user.birthdate.replace(/-/g, '/')})
+                        </span>
+                      </div>
+                    ) : (
+                      <span className="text-emerald-700 text-xs font-bold bg-emerald-50 px-2.5 py-0.5 rounded-lg border border-emerald-200">
+                        🛡️ 18歳以上確認済
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* 6. 性別 */}
+                <div className="bg-white hover:border-indigo-400 px-4 sm:px-5 py-3 rounded-2xl border-2 border-slate-300/90 shadow-2xs transition-all flex items-center justify-between gap-3 group min-h-[58px]">
+                  <span className="text-xs font-bold text-slate-500 shrink-0">
+                    【性別】
+                  </span>
+                  <div className="text-right">
+                    {(user as any)?.gender === '男性' ? (
+                      <span className="inline-flex items-center px-3 py-1 rounded-lg text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200/80 shadow-2xs">
+                        👨 男性
+                      </span>
+                    ) : (user as any)?.gender === '女性' ? (
+                      <span className="inline-flex items-center px-3 py-1 rounded-lg text-xs font-bold bg-pink-50 text-pink-700 border border-pink-200/80 shadow-2xs">
+                        👩 女性
+                      </span>
+                    ) : (user as any)?.gender ? (
+                      <span className="inline-flex items-center px-3 py-1 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200 shadow-2xs">
+                        {(user as any).gender}
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center px-3 py-1 rounded-lg text-xs font-medium text-slate-400 bg-slate-50 border border-slate-200/60">
+                        👤 未設定 (任意)
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* 7. 本人確認状況 */}
+                <div className={`px-4 sm:px-5 py-3 rounded-2xl border-2 shadow-2xs flex items-center justify-between gap-3 min-h-[58px] ${
                   (user?.is_ekyc_verified || localStorage.getItem('ekyc_verified') === 'true')
-                    ? 'bg-emerald-50/80 border-emerald-300'
+                    ? 'bg-emerald-50/90 border-emerald-300'
                     : 'bg-amber-50/80 border-amber-300'
                 }`}>
-                  <span className="text-[11px] font-bold text-slate-500 shrink-0">【本人確認（eKYC）】</span>
+                  <span className="text-xs font-bold text-slate-500 shrink-0">【本人確認】</span>
                   {(user?.is_ekyc_verified || localStorage.getItem('ekyc_verified') === 'true') ? (
-                    <span className="text-xs font-bold text-emerald-800 bg-emerald-100 border-2 border-emerald-300 px-2.5 py-0.5 rounded-lg flex items-center gap-1 shadow-2xs">
-                      🛡️ 認証完了
+                    <span className="text-xs font-bold text-emerald-800 bg-emerald-100 border border-emerald-300 px-3 py-0.5 rounded-lg flex items-center gap-1 shadow-2xs">
+                      🛡️ 公的eKYC完了
                     </span>
                   ) : (
-                    <span className="text-xs font-bold text-amber-900 bg-white border-2 border-amber-300 px-2.5 py-0.5 rounded-lg shadow-2xs">
-                      📝 自己誓約（未認証）
+                    <span className="text-xs font-bold text-amber-900 bg-white border border-amber-300 px-3 py-0.5 rounded-lg shadow-2xs">
+                      📝 自己誓約
                     </span>
                   )}
                 </div>
 
-                {/* 6. メール通知設定 */}
-                <div className="bg-white hover:border-rose-400 px-4 py-2.5 rounded-xl border-2 border-slate-300/90 shadow-xs transition-all flex items-center justify-between gap-2 group">
+                {/* 8. メール通知設定 */}
+                <div className="bg-white hover:border-rose-400 px-4 sm:px-5 py-3 rounded-2xl border-2 border-slate-300/90 shadow-2xs transition-all flex items-center justify-between gap-3 group min-h-[58px]">
                   <div className="flex items-center gap-1.5 shrink-0">
-                    <Bell size={12} className={editingEmailNotifications ? "text-rose-500" : "text-slate-400"} />
-                    <span className="text-[11px] font-bold text-slate-500">
+                    <Bell size={13} className={editingEmailNotifications ? "text-rose-500" : "text-slate-400"} />
+                    <span className="text-xs font-bold text-slate-500">
                       【メール通知】
                     </span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className={`text-[11px] font-bold ${editingEmailNotifications ? 'text-rose-700' : 'text-slate-400'}`}>
+                  <div className="flex items-center gap-2.5">
+                    <span className={`text-xs font-bold ${editingEmailNotifications ? 'text-rose-700' : 'text-slate-400'}`}>
                       {editingEmailNotifications ? '受信中 (ON)' : '停止中 (OFF)'}
                     </span>
                     <button
@@ -1236,6 +1306,29 @@ export const AccountPage = () => {
                         </p>
                       </div>
 
+                      {/* 生年月日（満年齢・変更不可） */}
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-500 mb-1">
+                          生年月日（満年齢）
+                        </label>
+                        <div className="relative">
+                          <input
+                            type="text"
+                            value={
+                              user?.birthdate
+                                ? `${user.birthdate.replace(/-/g, '/')} (満${getAgeFromBirthdate(user.birthdate)}歳)`
+                                : '18歳以上確認済（生年月日未登録）'
+                            }
+                            disabled
+                            className="w-full px-3.5 py-2.5 bg-slate-100/90 border border-slate-200 rounded-xl text-xs font-mono font-bold text-slate-700 cursor-not-allowed select-none"
+                          />
+                          <Lock size={13} className="absolute right-3 top-3 text-slate-400" />
+                        </div>
+                        <p className="text-[10px] text-slate-400 mt-1">
+                          ※18歳以上利用規約および本人認証データのため変更不可
+                        </p>
+                      </div>
+
                       {/* アカウント権限 */}
                       <div>
                         <label className="block text-[11px] font-bold text-slate-500 mb-1">
@@ -1315,6 +1408,37 @@ export const AccountPage = () => {
                       />
                       <p className="text-[10px] text-slate-400 mt-1">
                         ※ボトルメール内や公開プロフィールで相手に表示されるお名前です。
+                      </p>
+                    </div>
+
+                    {/* 性別（任意・変更可能） */}
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+                        <span>性別</span>
+                        <span className="text-[10px] text-slate-400 font-normal">任意</span>
+                      </label>
+                      <div className="grid grid-cols-3 gap-2">
+                        {[
+                          { id: '男性', label: '👨 男性', activeClass: 'bg-blue-50 border-blue-500 text-blue-900 shadow-xs' },
+                          { id: '女性', label: '👩 女性', activeClass: 'bg-pink-50 border-pink-500 text-pink-900 shadow-xs' },
+                          { id: 'その他・回答しない', label: '👤 その他 / 未回答', activeClass: 'bg-slate-100 border-slate-500 text-slate-900 shadow-xs' },
+                        ].map((opt) => (
+                          <button
+                            key={opt.id}
+                            type="button"
+                            onClick={() => setEditingGender(opt.id)}
+                            className={`py-2 px-2 rounded-xl text-xs font-bold border-2 transition-all cursor-pointer text-center ${
+                              editingGender === opt.id
+                                ? opt.activeClass
+                                : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
+                            }`}
+                          >
+                            {opt.label}
+                          </button>
+                        ))}
+                      </div>
+                      <p className="text-[10px] text-slate-400 mt-1">
+                        ※サービス改善や統計分析のために利用されます（相手に強制開示されることはありません）。
                       </p>
                     </div>
 

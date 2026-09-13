@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { WaterRippleRainbowText } from './WaterRippleRainbowText';
 import { WaterRippleImage } from './WaterRippleImage';
-import heroBottleMail from '../assets/images/hero_small_bottle_mail_1785944479619.jpg';
+import heroBottleMail from '../assets/images/hero_small_ocean_no_bottle.jpg';
 import stepMistWriteImg from '../assets/images/step_01_mist_ocean_close_1789154903956.jpg';
 import stepMistDriftImg from '../assets/images/step_02_beach_arrival_1789155133509.jpg';
 import stepMistReconnectImg from '../assets/images/step_03_mist_reconnect_1789154562729.jpg';
@@ -137,7 +137,7 @@ export const HomeVariantSub2Overlay: React.FC<HomeVariantSub2OverlayProps> = ({
     <div className="min-h-screen bg-transparent py-4 sm:py-8 font-sans">
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-12 max-w-4xl mx-auto px-3.5 sm:px-6">
         {/* 1. HERO - まわりの枠線いっぱいに広がる水面パノラマ一体型ヒーロー */}
-        <div className="relative rounded-[36px] bg-gradient-to-b from-[#F0F7FB] via-[#E6F0F7] to-[#FFFFFF] p-3 sm:p-5 md:p-6 shadow-md border border-sky-300/70 overflow-hidden text-center space-y-6">
+        <div className="relative rounded-[36px] bg-gradient-to-b from-[#F0F7FB] via-[#E6F0F7] to-[#FFFFFF] p-3 sm:p-5 md:p-6 shadow-md border border-sky-300/70 overflow-hidden text-center space-y-6 cursor-bottle-mail">
           <div className="absolute inset-2.5 sm:inset-3.5 rounded-[28px] border border-sky-900/30 pointer-events-none z-20" />
           <div className="absolute inset-4 sm:inset-5 rounded-[24px] border border-dashed border-sky-800/20 pointer-events-none z-20" />
 
@@ -148,6 +148,7 @@ export const HomeVariantSub2Overlay: React.FC<HomeVariantSub2OverlayProps> = ({
                 src={heroBottleMail} 
                 alt="海とボトルメール" 
                 positionY={0.92}
+                enableBottleCursor={true}
                 className="w-full h-full absolute inset-0"
               >
                 {/* 水面上の重ね合わせレイヤー（白ボケなし・海とボトルが鮮明に透き通るクリアレイヤー） */}

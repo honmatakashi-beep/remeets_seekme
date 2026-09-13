@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { BOTTLE_CURSOR_SVG_DATA_URL } from '../assets/bottleCursorBase64';
 
 interface WaterRippleImageProps {
   src: string;
@@ -6,6 +7,8 @@ interface WaterRippleImageProps {
   className?: string;
   positionY?: number; // 0.0 = top, 0.5 = center, 1.0 = bottom
   children?: React.ReactNode;
+  /** ボトルメール・ポインタのON/OFF（falseにすると1秒で元の通常ポインタに戻せます） */
+  enableBottleCursor?: boolean;
 }
 
 export const WaterRippleImage: React.FC<WaterRippleImageProps> = ({
@@ -13,7 +16,8 @@ export const WaterRippleImage: React.FC<WaterRippleImageProps> = ({
   alt = '海とボトルメール',
   className = '',
   positionY = 0.92,
-  children
+  children,
+  enableBottleCursor = true
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -304,12 +308,22 @@ export const WaterRippleImage: React.FC<WaterRippleImageProps> = ({
   return (
     <div
       ref={containerRef}
-      className={`relative w-full h-full select-none cursor-pointer overflow-hidden ${className}`}
-      style={{ touchAction: 'none' }}
+      className={`relative w-full h-full select-none overflow-hidden ${enableBottleCursor ? 'cursor-bottle-mail' : 'cursor-pointer'} ${className}`}
+      style={{ 
+        touchAction: 'none',
+        cursor: enableBottleCursor 
+          ? `url('${BOTTLE_CURSOR_SVG_DATA_URL}') 22 3, pointer` 
+          : 'pointer' 
+      }}
     >
       <canvas
         ref={canvasRef}
         className="block w-full h-full object-cover"
+        style={{
+          cursor: enableBottleCursor 
+            ? `url('${BOTTLE_CURSOR_SVG_DATA_URL}') 22 3, pointer` 
+            : 'pointer'
+        }}
       />
       {children}
     </div>

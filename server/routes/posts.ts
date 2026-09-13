@@ -9,7 +9,7 @@ import { createNotification } from "../websocket";
 
 export const postsRouter = express.Router();
 
-  postsRouter.post("", postLimiter, authenticateToken, async (req: any, res) => {
+  postsRouter.post("", postLimiter, optionalAuthenticateToken, async (req: any, res) => {
     // Check for inappropriate words in any text field
     const allInputText = [
       req.body.searcherName,
@@ -45,8 +45,32 @@ export const postsRouter = express.Router();
       era,
       category,
       questions,
-      message
+      message,
+      contactType,
+      contactId,
+      contactNote,
+      birthdate,
+      gender
     } = validation as any;
+
+    const userBirthdate = req.user?.birthdate || birthdate || null;
+    const userGender = req.user?.gender || gender || null;
+
+    // 生年月日チェック（18歳未満の自動遮断）
+    if (userBirthdate) {
+      const birth = new Date(userBirthdate);
+      if (!isNaN(birth.getTime())) {
+        const today = new Date();
+        let calculatedAge = today.getFullYear() - birth.getFullYear();
+        const monthDiff = today.getMonth() - birth.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+          calculatedAge--;
+        }
+        if (calculatedAge < 18) {
+          return res.status(400).json({ error: "法令および青少年保護の利用規約に基づき、18歳未満（高校生を含む）の方は本サービスをご利用いただけません。" });
+        }
+      }
+    }
 
     const { imageUrl, captchaToken } = req.body;
 
@@ -75,13 +99,17 @@ export const postsRouter = express.Router();
       const hashedA1 = await bcrypt.hash(firstQ.answer, 10);
       const hashedA2 = await bcrypt.hash(secondQ.answer, 10);
 
+      const userId = req.user ? req.user.id : null;
+
       const stmt = db.prepare(`
         INSERT INTO posts (
-          user_id, searcher_name, searcher_full_name, searcher_profile, target_name, target_last_name, target_first_name, 
+          user_id, searcher_name, searcher_full_name, searcher_profile, searcher_birthdate, searcher_gender,
+          target_name, target_last_name, target_first_name, 
           target_name_en, target_hometown, target_school,
-          era, category, secret_question, secret_answer, secret_answer_plain, message, image_url,
+          era, category, secret_question, secret_answer, secret_answer_plain, message, 
+          contact_type, contact_id, contact_note, image_url,
           ai_flagged, ai_reason, ai_diagnosed
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `);
 
       const aiFlaggedVal = hasForbidden ? 1 : 0;
@@ -89,9 +117,11 @@ export const postsRouter = express.Router();
       const aiDiagnosedVal = hasForbidden ? 1 : 0;
 
       const result = stmt.run(
-        req.user.id, searcherName, searcherFullName, searcherProfile, targetName, targetLastName || null, targetFirstName || null,
+        userId, searcherName, searcherFullName, searcherProfile, userBirthdate, userGender,
+        targetName, targetLastName || null, targetFirstName || null,
         targetNameEn || null, targetHometown, targetSchool || null,
-        era || null, category || null, firstQ.question, hashedA1, req.body.questions[0].answer, message, safeImageUrl || null,
+        era || null, category || null, firstQ.question, hashedA1, req.body.questions[0].answer, message, 
+        contactType || null, contactId || null, contactNote || null, safeImageUrl || null,
         aiFlaggedVal, aiReasonVal, aiDiagnosedVal
       );
       const postId = result.lastInsertRowid;
@@ -99,15 +129,17 @@ export const postsRouter = express.Router();
       qStmt.run(postId, secondQ.question, hashedA2, req.body.questions[1].answer);
 
       // eKYC認証情報の確実な反映
-      if (req.body.isEkycVerified || req.user.is_ekyc_verified) {
-        db.prepare("UPDATE users SET is_ekyc_verified = 1 WHERE id = ?").run(req.user.id);
+      if (req.body.isEkycVerified || req.user?.is_ekyc_verified) {
+        if (userId) {
+          db.prepare("UPDATE users SET is_ekyc_verified = 1 WHERE id = ?").run(userId);
+        }
         db.prepare("UPDATE posts SET is_ekyc_verified = 1, author_ekyc_details = ? WHERE id = ?").run(
           JSON.stringify({ verified: true, verifiedAt: new Date().toISOString() }),
           postId
         );
       }
 
-      logAction(req.user.id, "POST_CREATED", `Post ID: ${postId}${hasForbidden ? ' (NG Word Flagged)' : ''}`, req.ip);
+      logAction(userId, "POST_CREATED", `Post ID: ${postId}${hasForbidden ? ' (NG Word Flagged)' : ''}`, req.ip);
 
       // If inappropriate words are detected, submit a safe auto-report
       if (hasForbidden) {
@@ -119,7 +151,7 @@ export const postsRouter = express.Router();
           'post',
           postId,
           'inappropriate_words',
-          `【システム安全対策・即時自動通報】\n新規投稿（ボトルメールID: #${postId}, お相手: ${targetName} 様宛）に脅迫や援助、その他禁止キーワードが検出されました。\n\n検出されたNGワード:\n- ${detectedForbidden.join(", ")}\n\n投稿されたメッセージ本文:\n"${message || ''}"\n\n投稿者ユーザーID: #${req.user.id} (@${req.user.username})\n※この投稿はシステムによって自動的に非公開（ai_flagged = 1）にマークされました。管理者は必要に応じてアカウント制限（凍結）や投稿データの完全削除などの措置を行ってください。`,
+          `【システム安全対策・即時自動通報】\n新規投稿（ボトルメールID: #${postId}, お相手: ${targetName} 様宛）に脅迫や援助、その他禁止キーワードが検出されました。\n\n検出されたNGワード:\n- ${detectedForbidden.join(", ")}\n\n投稿されたメッセージ本文:\n"${message || ''}"\n\n投稿者: ${req.user ? `ユーザーID: #${req.user.id} (@${req.user.username})` : '未登録ゲスト（非会員）'}\n※この投稿はシステムによって自動的に非公開（ai_flagged = 1）にマークされました。管理者は必要に応じてアカウント制限（凍結）や投稿データの完全削除などの措置を行ってください。`,
           null,
           'priority'
         );
@@ -135,7 +167,7 @@ export const postsRouter = express.Router();
           SELECT id, email, full_name, nickname, maiden_name 
           FROM users 
           WHERE (notify_new_post IS NULL OR notify_new_post != 0) AND id != ?
-        `).all(req.user.id) as any[];
+        `).all(req.user ? req.user.id : 0) as any[];
 
         for (const u of matchingUsers) {
           const userNames = [u.full_name, u.nickname, u.maiden_name].filter(Boolean).map(n => n.trim().toLowerCase());

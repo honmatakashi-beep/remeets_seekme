@@ -353,7 +353,7 @@ export const HomeVariantSub3Minimal: React.FC<HomeVariantSub3MinimalProps> = ({
               const rel = b.target_relationship || b.relationship || '大切なご関係';
               const location = b.target_location || b.location || 'ゆかりの地';
               const excerpt = b.message ? (b.message.length > 50 ? b.message.substring(0, 50) + '...' : b.message) : (b.excerpt || '想い出のボトルメールです');
-              const bottleUrl = b.id ? getPostUrl(b.id, b.public_uid) : '/search';
+              const bottleUrl = b.id ? getPostUrl(b) : '/search';
 
               return (
                 <div 
@@ -426,7 +426,7 @@ export const HomeVariantSub3Minimal: React.FC<HomeVariantSub3MinimalProps> = ({
                 <div className="flex gap-2 pt-2">
                   <button
                     onClick={() => {
-                      const url = selectedBottle.id ? getPostUrl(selectedBottle.id, selectedBottle.public_uid) : '/search';
+                      const url = selectedBottle.id ? getPostUrl(selectedBottle) : '/search';
                       setSelectedBottle(null);
                       navigate(url);
                     }}

@@ -1172,20 +1172,72 @@ export const SuccessModal = ({
 };
 
 export const AgeVerificationGate = ({ onVerified, onStartEkyc }: { onVerified: () => void; onStartEkyc?: () => void }) => {
+  const { user } = useAuth();
   const [method, setMethod] = useState<'pledge' | 'ekyc' | null>('ekyc');
   const [isVerifying, setIsVerifying] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success'>('idle');
 
+  // 受取人の生年月日・性別（未登録ユーザー用）
+  const [recvBirthYear, setRecvBirthYear] = useState('');
+  const [recvBirthMonth, setRecvBirthMonth] = useState('');
+  const [recvBirthDay, setRecvBirthDay] = useState('');
+  const [recvGender, setRecvGender] = useState<'男性' | '女性' | 'その他 / 回答しない' | ''>('');
+
+  const calculatedRecvAge = (() => {
+    if (user?.birthdate) {
+      const b = new Date(user.birthdate);
+      if (!isNaN(b.getTime())) {
+        const today = new Date();
+        let age = today.getFullYear() - b.getFullYear();
+        const m = today.getMonth() - b.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < b.getDate())) age--;
+        return age;
+      }
+    }
+    if (!recvBirthYear || !recvBirthMonth || !recvBirthDay) return null;
+    const y = parseInt(recvBirthYear, 10);
+    const m = parseInt(recvBirthMonth, 10);
+    const d = parseInt(recvBirthDay, 10);
+    if (isNaN(y) || isNaN(m) || isNaN(d)) return null;
+    const birth = new Date(y, m - 1, d);
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+    return age;
+  })();
+
   const verifyPledge = async () => {
+    if (!user?.birthdate) {
+      if (!recvBirthYear || !recvBirthMonth || !recvBirthDay) {
+        alert('生年月日を選択してください。');
+        return;
+      }
+      if (calculatedRecvAge === null || calculatedRecvAge < 18) {
+        alert('法令（青少年保護）に基づき、18歳未満の方は手紙を開封できません。');
+        return;
+      }
+    }
+
     setIsVerifying(true);
     try {
+      const formattedBirthdate = user?.birthdate || `${recvBirthYear}-${recvBirthMonth.padStart(2, '0')}-${recvBirthDay.padStart(2, '0')}`;
       const res = await fetch("/api/log-pledge", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Authorization": localStorage.getItem("token") ? `Bearer ${localStorage.getItem("token")}` : ""
         },
-        body: JSON.stringify({ method: 'pledge', agreement1: true, agreement2: true, agreement3: true })
+        body: JSON.stringify({ 
+          method: 'pledge', 
+          agreement1: true, 
+          agreement2: true, 
+          agreement3: true,
+          birthdate: formattedBirthdate,
+          gender: user?.gender || recvGender || undefined
+        })
       });
       if (res.ok) {
         setStatus('success');
@@ -1332,11 +1384,105 @@ export const AgeVerificationGate = ({ onVerified, onStartEkyc }: { onVerified: (
               </div>
 
               <div className="space-y-2 text-xs text-slate-700">
+                {user?.birthdate ? (
+                  <div className="p-3 bg-emerald-50/80 rounded-xl border border-emerald-200 flex items-center justify-between font-sans">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+                      <div>
+                        <span className="font-bold text-slate-900 block">【年齢・性別確認】登録データ適用済</span>
+                        <span className="text-[11px] text-slate-600">満 {calculatedRecvAge} 歳{user.gender ? `（${user.gender}）` : ''} • 18歳以上確認完了（スルー）</span>
+                      </div>
+                    </div>
+                    <span className="text-[10px] bg-emerald-600 text-white font-bold px-2 py-0.5 rounded">確認済</span>
+                  </div>
+                ) : (
+                  <div className="p-3.5 bg-amber-50/70 border border-amber-200 rounded-xl space-y-3 font-sans">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-stone-900 text-xs flex items-center gap-1.5">
+                        <Calendar size={14} className="text-amber-700" />
+                        <span>生年月日（18歳以上確認）</span> <span className="text-red-600 font-bold">*必須</span>
+                      </span>
+                      {calculatedRecvAge !== null && (
+                        calculatedRecvAge >= 18 ? (
+                          <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full border border-emerald-300">
+                            {calculatedRecvAge} 歳（OK）
+                          </span>
+                        ) : (
+                          <span className="text-[10px] bg-rose-100 text-rose-800 font-bold px-2 py-0.5 rounded-full border border-rose-300">
+                            18歳未満不可
+                          </span>
+                        )
+                      )}
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      <select
+                        value={recvBirthYear}
+                        onChange={e => setRecvBirthYear(e.target.value)}
+                        className="w-full p-2 border border-stone-300 rounded-lg bg-white text-xs text-stone-900 font-sans"
+                      >
+                        <option value="">年</option>
+                        {Array.from({ length: 90 }, (_, i) => {
+                          const y = new Date().getFullYear() - 18 - i;
+                          return <option key={y} value={y.toString()}>{y}年</option>;
+                        })}
+                      </select>
+                      <select
+                        value={recvBirthMonth}
+                        onChange={e => setRecvBirthMonth(e.target.value)}
+                        className="w-full p-2 border border-stone-300 rounded-lg bg-white text-xs text-stone-900 font-sans"
+                      >
+                        <option value="">月</option>
+                        {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
+                          <option key={m} value={m.toString()}>{m}月</option>
+                        ))}
+                      </select>
+                      <select
+                        value={recvBirthDay}
+                        onChange={e => setRecvBirthDay(e.target.value)}
+                        className="w-full p-2 border border-stone-300 rounded-lg bg-white text-xs text-stone-900 font-sans"
+                      >
+                        <option value="">日</option>
+                        {Array.from({ length: 31 }, (_, i) => i + 1).map(d => (
+                          <option key={d} value={d.toString()}>{d}日</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* 性別（統計用） */}
+                    <div className="pt-2 border-t border-amber-200/60 flex items-center justify-between gap-2">
+                      <span className="text-[11px] font-bold text-stone-700 flex items-center gap-1">
+                        <Users size={12} className="text-amber-700" />
+                        <span>性別:</span>
+                      </span>
+                      <div className="flex gap-1.5">
+                        {[
+                          { value: '男性', label: '男性' },
+                          { value: '女性', label: '女性' },
+                          { value: 'その他 / 回答しない', label: 'その他' }
+                        ].map((opt) => (
+                          <button
+                            key={opt.value}
+                            type="button"
+                            onClick={() => setRecvGender(opt.value as any)}
+                            className={`py-1 px-2.5 rounded-lg border text-[11px] font-bold transition-all ${
+                              recvGender === opt.value
+                                ? 'bg-amber-700 text-white border-amber-700 shadow-2xs'
+                                : 'bg-white text-stone-700 border-stone-300 hover:bg-amber-50/40'
+                            }`}
+                          >
+                            <span>{opt.label}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 <div className="p-3 bg-emerald-50/60 rounded-xl border border-emerald-100 flex items-start gap-2.5">
                   <CheckCircle2 size={16} className="text-emerald-600 shrink-0 mt-0.5" />
                   <div>
                     <span className="font-bold text-slate-900 block">1. 18歳以上（高校生を除く）の確認</span>
-                    <span className="text-[11px] text-slate-600">出会い系サイト規制法に基づき、18歳以上であることを登録時に誓約済みです。</span>
+                    <span className="text-[11px] text-slate-600">出会い系サイト規制法に基づき、18歳以上であることを誓約します。</span>
                   </div>
                 </div>
 

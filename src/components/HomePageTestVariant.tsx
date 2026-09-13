@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { WaterRippleRainbowText } from './WaterRippleRainbowText';
-import heroBottleMail from '../assets/images/hero_small_bottle_mail_1785944479619.jpg';
+import heroBottleMail from '../assets/images/hero_small_ocean_no_bottle.jpg';
 import stepMistWriteImg from '../assets/images/step_01_mist_ocean_close_1789154903956.jpg';
 import stepMistDriftImg from '../assets/images/step_02_beach_arrival_1789155133509.jpg';
 import stepMistReconnectImg from '../assets/images/step_03_mist_reconnect_1789154562729.jpg';
@@ -310,7 +310,7 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
                   transition={{ delay: 0.1 }}
                   className="space-y-2 sm:space-y-3"
                 >
-                  <span className="text-xl sm:text-2xl md:text-3xl font-serif font-bold text-[#3B627F] tracking-wider block leading-none select-none drop-shadow-sm mb-2 sm:mb-3">
+                  <span className="text-xl sm:text-2xl md:text-3xl font-serif font-bold text-[#3B627F] tracking-wider block leading-none select-none [text-rendering:geometricPrecision] antialiased mb-2 sm:mb-3">
                     ReMEETs
                   </span>
                   

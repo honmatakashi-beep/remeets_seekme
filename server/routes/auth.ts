@@ -21,7 +21,7 @@ export const authRouter = express.Router();
   });
 
   authRouter.post("/register", registrationLimiter, async (req, res) => {
-    let { username, email, password, lastName, firstName, nickname, birthdate, captchaAnswer, captchaId, snsProvider } = req.body;
+    let { username, email, password, lastName, firstName, nickname, birthdate, gender, captchaAnswer, captchaId, snsProvider } = req.body;
     
     // Simple CAPTCHA validation (mock)
     if (captchaAnswer !== "4") { // Assuming the question was 2+2
@@ -100,9 +100,9 @@ export const authRouter = express.Router();
 
         db.prepare(`
           UPDATE users 
-          SET username = ?, password = ?, full_name = ?, last_name = ?, first_name = ?, nickname = ?, birthdate = ?, verification_code = ?, verification_code_expires = ?
+          SET username = ?, password = ?, full_name = ?, last_name = ?, first_name = ?, nickname = ?, birthdate = ?, gender = ?, verification_code = ?, verification_code_expires = ?
           WHERE id = ?
-        `).run(username, hashedPassword, fullName, lastName, firstName, nickname, birthdate, code, expiresAt, existingUser.id);
+        `).run(username, hashedPassword, fullName, lastName, firstName, nickname, birthdate, gender || null, code, expiresAt, existingUser.id);
 
         await sendRegistrationCodeEmail(email, code, nickname || fullName);
 
@@ -121,10 +121,10 @@ export const authRouter = express.Router();
       const fullName = `${lastName} ${firstName}`;
       
       const stmt = db.prepare(`
-        INSERT INTO users (username, email, password, full_name, last_name, first_name, nickname, birthdate, role, verification_token, verification_code, verification_code_expires, is_verified) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'user', ?, ?, ?, 0)
+        INSERT INTO users (username, email, password, full_name, last_name, first_name, nickname, birthdate, gender, role, verification_token, verification_code, verification_code_expires, is_verified) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'user', ?, ?, ?, 0)
       `);
-      stmt.run(username, email, hashedPassword, fullName, lastName, firstName, nickname, birthdate, verificationToken, code, expiresAt);
+      stmt.run(username, email, hashedPassword, fullName, lastName, firstName, nickname, birthdate, gender || null, verificationToken, code, expiresAt);
       
       await sendRegistrationCodeEmail(email, code, nickname || fullName);
 
@@ -196,13 +196,15 @@ export const authRouter = express.Router();
       const firstName = user.first_name || null;
       const nickname = user.nickname || null;
       const maiden_name = user.maiden_name || null;
-      const token = jwt.sign({ id: user.id, username: user.username, role, fullName, lastName, firstName, nickname, email: user.email, maiden_name }, JWT_SECRET);
+      const birthdate = user.birthdate || null;
+      const gender = user.gender || null;
+      const token = jwt.sign({ id: user.id, username: user.username, role, fullName, lastName, firstName, nickname, email: user.email, maiden_name, birthdate, gender }, JWT_SECRET);
 
       res.json({
         success: true,
         message: "認証が完了し、本登録が完了しました！ReMEETsへようこそ。",
         token,
-        user: { id: user.id, username: user.username, role, fullName, lastName, firstName, nickname, email: user.email, maiden_name }
+        user: { id: user.id, username: user.username, role, fullName, lastName, firstName, nickname, email: user.email, maiden_name, birthdate, gender }
       });
     } catch (err) {
       console.error("Code verification error:", err);
@@ -280,9 +282,11 @@ export const authRouter = express.Router();
       const nickname = user.nickname || null;
       const email = user.email || null;
       const maiden_name = user.maiden_name || null;
-      const token = jwt.sign({ id: user.id, username: user.username, role, fullName, lastName, firstName, nickname, email, maiden_name }, JWT_SECRET);
+      const birthdate = user.birthdate || null;
+      const gender = user.gender || null;
+      const token = jwt.sign({ id: user.id, username: user.username, role, fullName, lastName, firstName, nickname, email, maiden_name, birthdate, gender }, JWT_SECRET);
       logAction(user.id, "login_success", `User ${username} logged in`, ip);
-      res.json({ token, user: { id: user.id, username: user.username, role, fullName, lastName, firstName, nickname, email, maiden_name } });
+      res.json({ token, user: { id: user.id, username: user.username, role, fullName, lastName, firstName, nickname, email, maiden_name, birthdate, gender } });
     } catch (err) {
       res.status(500).json({ error: "ログインに失敗しました。" });
     }
@@ -346,7 +350,7 @@ export const authRouter = express.Router();
 
   authRouter.get("/me", authenticateToken, (req: any, res) => {
     try {
-      const user = db.prepare("SELECT id, username, email, role, full_name, last_name, first_name, nickname, maiden_name, is_ekyc_verified, ekyc_verified_at, ekyc_document_type, ekyc_name FROM users WHERE id = ?").get(req.user.id) as any;
+      const user = db.prepare("SELECT id, username, email, role, full_name, last_name, first_name, nickname, maiden_name, birthdate, gender, is_ekyc_verified, ekyc_verified_at, ekyc_document_type, ekyc_name FROM users WHERE id = ?").get(req.user.id) as any;
       res.json({ 
         ...user, 
         fullName: user.full_name || `${user.last_name || ''} ${user.first_name || ''}`.trim(),
@@ -354,6 +358,8 @@ export const authRouter = express.Router();
         firstName: user.first_name || '',
         nickname: user.nickname || '',
         maiden_name: user.maiden_name || '',
+        birthdate: user.birthdate || '',
+        gender: user.gender || '',
         is_ekyc_verified: user.is_ekyc_verified === 1 || Boolean(user.is_ekyc_verified)
       });
     } catch (err) {
@@ -431,7 +437,7 @@ export const authRouter = express.Router();
   authRouter.post("/ekyc-reset", authenticateToken, resetEkycHandler);
 
   authRouter.patch("/me", authenticateToken, async (req: any, res) => {
-    const { nickname, email, maiden_name, full_name, last_name, first_name, birthdate } = req.body;
+    const { nickname, email, maiden_name, full_name, last_name, first_name, birthdate, gender } = req.body;
     if (nickname && filterNGWords(nickname) !== nickname) {
       return res.status(400).json({ error: "ニックネームに不適切な言葉、または個人情報が含まれています。" });
     }
@@ -439,11 +445,15 @@ export const authRouter = express.Router();
       return res.status(400).json({ error: "旧姓に不適切な言葉が含まれています。" });
     }
     try {
-      const currentUser = db.prepare("SELECT email, is_ekyc_verified FROM users WHERE id = ?").get(req.user.id) as any;
+      const currentUser = db.prepare("SELECT email, is_ekyc_verified, birthdate FROM users WHERE id = ?").get(req.user.id) as any;
       
-      // 🛡️ SEC-020: eKYC承認後の「本名・生年月日」改ざん不可ロック（なりすまし防止）
-      if (currentUser?.is_ekyc_verified && (full_name !== undefined || last_name !== undefined || first_name !== undefined || birthdate !== undefined)) {
-        return res.status(400).json({ error: "公的本人確認（eKYC）完了後は、氏名・生年月日の変更はできません。変更が必要な場合は運営サポート窓口へお問い合わせください。" });
+      // 🛡️ SEC-020: 「生年月日・年齢」は登録・認証後の改ざん不可ロック（未成年保護・なりすまし防止）
+      if (birthdate !== undefined && currentUser?.birthdate && birthdate !== currentUser.birthdate) {
+        return res.status(400).json({ error: "生年月日（年齢）は本人認証および安全管理上の固定情報のため、変更することはできません。" });
+      }
+
+      if (currentUser?.is_ekyc_verified && (full_name !== undefined || last_name !== undefined || first_name !== undefined)) {
+        return res.status(400).json({ error: "公的本人確認（eKYC）完了後は、氏名の変更はできません。変更が必要な場合は運営サポート窓口へお問い合わせください。" });
       }
 
       let emailChanged = false;
@@ -463,13 +473,29 @@ export const authRouter = express.Router();
       }
 
       if (emailChanged) {
-        db.prepare("UPDATE users SET nickname = COALESCE(?, nickname), email = ?, maiden_name = COALESCE(?, maiden_name), is_verified = 0, verification_token = ? WHERE id = ?").run(nickname ?? null, email, maiden_name ?? null, verificationToken, req.user.id);
+        db.prepare(`
+          UPDATE users 
+          SET nickname = COALESCE(?, nickname), 
+              email = ?, 
+              maiden_name = COALESCE(?, maiden_name), 
+              gender = ?, 
+              is_verified = 0, 
+              verification_token = ? 
+          WHERE id = ?
+        `).run(nickname ?? null, email, maiden_name ?? null, gender || null, verificationToken, req.user.id);
         await sendVerificationEmail(email, verificationToken);
       } else {
-        db.prepare("UPDATE users SET nickname = COALESCE(?, nickname), email = COALESCE(?, email), maiden_name = COALESCE(?, maiden_name) WHERE id = ?").run(nickname ?? null, email ?? null, maiden_name ?? null, req.user.id);
+        db.prepare(`
+          UPDATE users 
+          SET nickname = COALESCE(?, nickname), 
+              email = COALESCE(?, email), 
+              maiden_name = COALESCE(?, maiden_name),
+              gender = ?
+          WHERE id = ?
+        `).run(nickname ?? null, email ?? null, maiden_name ?? null, gender || null, req.user.id);
       }
 
-      res.json({ success: true, emailChanged });
+      res.json({ success: true, emailChanged, gender });
     } catch (err) {
       res.status(500).json({ error: "プロフィールの更新に失敗しました。" });
     }

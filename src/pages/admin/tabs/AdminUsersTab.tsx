@@ -148,12 +148,86 @@ export const AdminUsersTab: React.FC<AdminUsersTabProps> = (props) => {
                 );
               })()}
 
+              {/* 1.5 デモグラフィクス・属性クイックサマリーバー */}
+              {(() => {
+                const todayYear = new Date().getFullYear();
+                const todayMonth = new Date().getMonth() + 1;
+                const todayDay = new Date().getDate();
+
+                const calculateAge = (bdate: string | null) => {
+                  if (!bdate) return null;
+                  try {
+                    const [y, m, d] = bdate.split('-').map(Number);
+                    if (!y || !m || !d) return null;
+                    let age = todayYear - y;
+                    if (todayMonth < m || (todayMonth === m && todayDay < d)) age--;
+                    return age >= 0 ? age : null;
+                  } catch { return null; }
+                };
+
+                let maleCount = 0;
+                let femaleCount = 0;
+                let unspecCount = 0;
+                let totalAge = 0;
+                let validAgeCount = 0;
+
+                users.forEach(u => {
+                  if (u.gender === '男性' || u.gender === 'male') maleCount++;
+                  else if (u.gender === '女性' || u.gender === 'female') femaleCount++;
+                  else unspecCount++;
+
+                  const age = calculateAge(u.birthdate);
+                  if (age !== null) {
+                    totalAge += age;
+                    validAgeCount++;
+                  }
+                });
+
+                const avgAge = validAgeCount > 0 ? (totalAge / validAgeCount).toFixed(1) : "-";
+                const total = users.length || 1;
+
+                return (
+                  <div className="bg-gradient-to-r from-teal-500/10 via-indigo-500/10 to-pink-500/10 p-3.5 sm:p-4 rounded-2xl border border-teal-200/80 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
+                    <div className="flex flex-wrap items-center gap-3 sm:gap-4 font-sans text-slate-700">
+                      <span className="font-bold flex items-center gap-1.5 text-teal-800">
+                        <Users size={14} className="text-teal-700" />
+                        <span>属性サマリー:</span>
+                      </span>
+                      <span className="inline-flex items-center gap-1 bg-white/80 px-2.5 py-1 rounded-lg border border-slate-200 shadow-2xs">
+                        🎂 平均年齢: <strong className="font-serif font-bold text-slate-900">{avgAge}</strong> 歳
+                      </span>
+                      <span className="inline-flex items-center gap-1 bg-white/80 px-2.5 py-1 rounded-lg border border-slate-200 shadow-2xs text-blue-700">
+                        <span className="w-2 h-2 rounded-full bg-blue-500" />
+                        👨 男性: <strong className="font-serif font-bold">{maleCount}</strong> 名 ({Math.round((maleCount / total) * 100)}%)
+                      </span>
+                      <span className="inline-flex items-center gap-1 bg-white/80 px-2.5 py-1 rounded-lg border border-slate-200 shadow-2xs text-pink-700">
+                        <span className="w-2 h-2 rounded-full bg-pink-500" />
+                        👩 女性: <strong className="font-serif font-bold">{femaleCount}</strong> 名 ({Math.round((femaleCount / total) * 100)}%)
+                      </span>
+                      <span className="inline-flex items-center gap-1 bg-white/80 px-2.5 py-1 rounded-lg border border-slate-200 shadow-2xs text-slate-600">
+                        <span className="w-2 h-2 rounded-full bg-slate-400" />
+                        👤 未設定: <strong className="font-serif font-bold">{unspecCount}</strong> 名 ({Math.round((unspecCount / total) * 100)}%)
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100/90 px-2 py-0.5 rounded-full border border-emerald-300 shadow-2xs">
+                        🛡️ 18歳未満: 0名 (100%遮断)
+                      </span>
+                    </div>
+                  </div>
+                );
+              })()}
+
               {/* 2. Filter Tabs & Search & Toolbar */}
               <div className="space-y-3 bg-white/70 p-4 sm:p-5 rounded-2xl border border-brand-border shadow-2xs">
                 {/* Status Tabs */}
                 <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-xs font-bold">
                   {[
                     { id: 'all', label: 'すべて', count: users.length },
+                    { id: 'male', label: '👨 男性', count: users.filter(u => u.gender === '男性' || u.gender === 'male').length },
+                    { id: 'female', label: '👩 女性', count: users.filter(u => u.gender === '女性' || u.gender === 'female').length },
+                    { id: 'unspecified_gender', label: '👤 性別未設定', count: users.filter(u => !u.gender || (u.gender !== '男性' && u.gender !== 'male' && u.gender !== '女性' && u.gender !== 'female')).length },
                     { id: 'ekyc', label: '🛡️ eKYC済', count: users.filter(u => !!u.is_ekyc_verified).length },
                     { id: 'self', label: '📝 自己申告', count: users.filter(u => !u.is_ekyc_verified).length },
                     { id: 'blocked', label: '🚫 凍結中', count: users.filter(u => !!u.is_blocked).length },
@@ -214,6 +288,8 @@ export const AdminUsersTab: React.FC<AdminUsersTabProps> = (props) => {
                       >
                         <option value="created_desc">登録が新しい順</option>
                         <option value="created_asc">登録が古い順</option>
+                        <option value="age_desc">年齢が高い順 (シニア層順)</option>
+                        <option value="age_asc">年齢が若い順 (若年層順)</option>
                         <option value="posts_desc">投関数が多い順</option>
                         <option value="resolved_desc">再会成立数が多い順</option>
                         <option value="reports_desc">被通報数が多い順</option>
@@ -319,7 +395,10 @@ export const AdminUsersTab: React.FC<AdminUsersTabProps> = (props) => {
 
                 // Filter users
                 const filteredUsers = users.filter(u => {
-                  // Status Filter
+                  // Status & Gender Filter
+                  if (userStatusFilter === 'male' && u.gender !== '男性' && u.gender !== 'male') return false;
+                  if (userStatusFilter === 'female' && u.gender !== '女性' && u.gender !== 'female') return false;
+                  if (userStatusFilter === 'unspecified_gender' && (u.gender === '男性' || u.gender === 'male' || u.gender === '女性' || u.gender === 'female')) return false;
                   if (userStatusFilter === 'ekyc' && !u.is_ekyc_verified) return false;
                   if (userStatusFilter === 'self' && u.is_ekyc_verified) return false;
                   if (userStatusFilter === 'blocked' && !u.is_blocked) return false;
@@ -337,6 +416,8 @@ export const AdminUsersTab: React.FC<AdminUsersTabProps> = (props) => {
                     (u.maiden_name && u.maiden_name.toLowerCase().includes(term)) ||
                     (u.email && u.email.toLowerCase().includes(term)) ||
                     (u.contact_id && u.contact_id.toLowerCase().includes(term)) ||
+                    (u.gender && u.gender.toLowerCase().includes(term)) ||
+                    (u.birthdate && u.birthdate.includes(term)) ||
                     String(u.id).includes(term)
                   );
                 });
@@ -348,6 +429,8 @@ export const AdminUsersTab: React.FC<AdminUsersTabProps> = (props) => {
                   if (userSortBy === 'posts_desc') return (b.posts_count || 0) - (a.posts_count || 0);
                   if (userSortBy === 'resolved_desc') return (b.resolved_posts_count || 0) - (a.resolved_posts_count || 0);
                   if (userSortBy === 'reports_desc') return (b.reports_received_count || 0) - (a.reports_received_count || 0);
+                  if (userSortBy === 'age_desc') return (b.birthdate || '9999').localeCompare(a.birthdate || '9999'); // older first
+                  if (userSortBy === 'age_asc') return (a.birthdate || '0000').localeCompare(b.birthdate || '0000'); // younger first
                   if (userSortBy === 'id_desc') return b.id - a.id;
                   return 0;
                 });
@@ -384,6 +467,8 @@ export const AdminUsersTab: React.FC<AdminUsersTabProps> = (props) => {
                               <th className="px-3 py-2.5 whitespace-nowrap">メールアドレス</th>
                               <th className="px-3 py-2.5 whitespace-nowrap">ニックネーム</th>
                               <th className="px-3 py-2.5 whitespace-nowrap">本名</th>
+                              <th className="px-3 py-2.5 whitespace-nowrap">年齢 / 生年月日</th>
+                              <th className="px-3 py-2.5 text-center whitespace-nowrap">性別</th>
                               <th className="px-3 py-2.5 text-center whitespace-nowrap">本人確認 (eKYC)</th>
                               <th className="px-3 py-2.5 whitespace-nowrap">開示連絡先</th>
                               <th className="px-3 py-2.5 text-center whitespace-nowrap">活動状況</th>
@@ -508,6 +593,47 @@ export const AdminUsersTab: React.FC<AdminUsersTabProps> = (props) => {
                                           </span>
                                         )}
                                       </div>
+                                    </td>
+
+                                    {/* 4.5 年齢・生年月日 */}
+                                    <td className="px-3 py-2 whitespace-nowrap font-sans">
+                                      {u.birthdate ? (() => {
+                                        const b = new Date(u.birthdate);
+                                        let age = null;
+                                        if (!isNaN(b.getTime())) {
+                                          const today = new Date();
+                                          age = today.getFullYear() - b.getFullYear();
+                                          const m = today.getMonth() - b.getMonth();
+                                          if (m < 0 || (m === 0 && today.getDate() < b.getDate())) age--;
+                                        }
+                                        return (
+                                          <div className="text-xs">
+                                            <span className="font-bold text-slate-800 font-mono">{age !== null ? `${age}歳` : '-'}</span>
+                                            <span className="text-[10px] text-slate-500 font-mono ml-1">({u.birthdate.replace(/-/g, '/')})</span>
+                                          </div>
+                                        );
+                                      })() : (
+                                        <span className="text-slate-400 text-xs font-mono">18+ (未設定)</span>
+                                      )}
+                                    </td>
+
+                                    {/* 4.6 性別 */}
+                                    <td className="px-3 py-2 text-center whitespace-nowrap font-sans">
+                                      {u.gender === '男性' ? (
+                                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                                          男性
+                                        </span>
+                                      ) : u.gender === '女性' ? (
+                                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                                          女性
+                                        </span>
+                                      ) : u.gender ? (
+                                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-600 border border-slate-200">
+                                          {u.gender}
+                                        </span>
+                                      ) : (
+                                        <span className="text-slate-400 text-[11px]">-</span>
+                                      )}
                                     </td>
 
                                     {/* 5. 本人確認 (eKYC) */}

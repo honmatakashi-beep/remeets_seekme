@@ -203,9 +203,13 @@
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    color: transparent;
     animation: moving-prism 12s ease-in-out infinite;
     display: inline-block;
+  }
+
+  /* --- ReMEETs 水紋エリア専用 背景イラスト完全一致 水彩ボトルメール・ポインタ --- */
+  .cursor-bottle-mail {
+    cursor: url('./assets/images/hero_watercolor_bottle_cursor.svg') 22 3, url('./assets/images/hero_watercolor_bottle_32.png') 22 3, pointer !important;
   }
   /* ------------------------------------------- */
 

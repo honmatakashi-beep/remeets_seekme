@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { BOTTLE_CURSOR_SVG_DATA_URL } from '../assets/bottleCursorBase64';
 
 interface WaterRippleHeroCanvasProps {
   imageSrc: string;
@@ -7,6 +8,8 @@ interface WaterRippleHeroCanvasProps {
   caption?: string;
   className?: string;
   positionY?: number;
+  /** ボトルメール・ポインタのON/OFF（falseにすると1秒で元の通常ポインタに戻せます） */
+  enableBottleCursor?: boolean;
 }
 
 export const WaterRippleHeroCanvas: React.FC<WaterRippleHeroCanvasProps> = ({
@@ -19,7 +22,8 @@ export const WaterRippleHeroCanvas: React.FC<WaterRippleHeroCanvasProps> = ({
   mainTitle = 'ReMEETs',
   caption = '静寂の水平線に漂う、届くべき言の葉',
   className = '',
-  positionY = 0.92
+  positionY = 0.92,
+  enableBottleCursor = true
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const turbRef = useRef<SVGFETurbulenceElement | null>(null);
@@ -141,8 +145,13 @@ export const WaterRippleHeroCanvas: React.FC<WaterRippleHeroCanvasProps> = ({
   return (
     <div
       ref={containerRef}
-      className={`relative w-full rounded-2xl md:rounded-3xl overflow-hidden shadow-xl border border-sky-300/80 cursor-pointer select-none group aspect-[16/10] sm:aspect-[16/9] md:aspect-[21/9] min-h-[340px] sm:min-h-[400px] md:min-h-[440px] ${className}`}
-      style={{ touchAction: 'none' }}
+      className={`relative w-full rounded-2xl md:rounded-3xl overflow-hidden shadow-xl border border-sky-300/80 select-none group aspect-[16/10] sm:aspect-[16/9] md:aspect-[21/9] min-h-[340px] sm:min-h-[400px] md:min-h-[440px] ${enableBottleCursor ? 'cursor-bottle-mail' : 'cursor-pointer'} ${className}`}
+      style={{ 
+        touchAction: 'none',
+        cursor: enableBottleCursor 
+          ? `url('${BOTTLE_CURSOR_SVG_DATA_URL}') 22 3, pointer` 
+          : 'pointer'
+      }}
     >
       {/* 🌊 SVG ハードウェアアクセラレーション水紋フィルター（CPU負荷0%・Retina完全高解像度） */}
       <svg className="absolute w-0 h-0 pointer-events-none" aria-hidden="true">

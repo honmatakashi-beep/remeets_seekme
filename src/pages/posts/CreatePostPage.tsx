@@ -102,6 +102,59 @@ export const CreatePostPage = () => {
   const [isAiDiagnosing, setIsAiDiagnosing] = useState(false);
   const [aiDiagnosisResult, setAiDiagnosisResult] = useState<{ score: number, feedback: string } | null>(null);
 
+  // Demographics States (Birthdate & Gender)
+  const [searcherBirthYear, setSearcherBirthYear] = useState(() => {
+    if (user?.birthdate) {
+      const parts = user.birthdate.split('-');
+      if (parts.length === 3) return parts[0];
+    }
+    return '';
+  });
+  const [searcherBirthMonth, setSearcherBirthMonth] = useState(() => {
+    if (user?.birthdate) {
+      const parts = user.birthdate.split('-');
+      if (parts.length === 3) return parseInt(parts[1], 10).toString();
+    }
+    return '';
+  });
+  const [searcherBirthDay, setSearcherBirthDay] = useState(() => {
+    if (user?.birthdate) {
+      const parts = user.birthdate.split('-');
+      if (parts.length === 3) return parseInt(parts[2], 10).toString();
+    }
+    return '';
+  });
+  const [searcherGender, setSearcherGender] = useState<'男性' | '女性' | 'その他 / 回答しない' | ''>(() => {
+    return (user?.gender as any) || '';
+  });
+
+  // Calculate searcher age
+  const calculatedSearcherAge = (() => {
+    if (user?.birthdate) {
+      const b = new Date(user.birthdate);
+      if (!isNaN(b.getTime())) {
+        const today = new Date();
+        let age = today.getFullYear() - b.getFullYear();
+        const m = today.getMonth() - b.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < b.getDate())) age--;
+        return age;
+      }
+    }
+    if (!searcherBirthYear || !searcherBirthMonth || !searcherBirthDay) return null;
+    const y = parseInt(searcherBirthYear, 10);
+    const m = parseInt(searcherBirthMonth, 10);
+    const d = parseInt(searcherBirthDay, 10);
+    if (isNaN(y) || isNaN(m) || isNaN(d)) return null;
+    const birth = new Date(y, m - 1, d);
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+    return age;
+  })();
+
   // eKYC Pre-submit Confirmation Modal States
   const [showPostConfirmModal, setShowPostConfirmModal] = useState(false);
   const [ekycConfirmStep, setEkycConfirmStep] = useState<number>(1); // 1: Select Type, 2: eKYC Form, 3: Camera Capture, 4: Payment, 5: Processing
@@ -178,15 +231,28 @@ export const CreatePostPage = () => {
   const executePost = async (withEkyc: boolean) => {
     if (isSubmitting) return;
     setIsSubmitting(true);
+
+    const formattedBirthdate = user?.birthdate || (searcherBirthYear && searcherBirthMonth && searcherBirthDay 
+      ? `${searcherBirthYear}-${searcherBirthMonth.padStart(2, '0')}-${searcherBirthDay.padStart(2, '0')}` 
+      : undefined);
+
+    const finalGender = user?.gender || searcherGender || undefined;
+
     try {
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json'
+      };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
       const res = await fetch('/api/posts', {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
+        headers,
         body: JSON.stringify({
           ...formData,
+          birthdate: formattedBirthdate,
+          gender: finalGender,
           questions,
           captchaToken: 'mock-token',
           isEkycVerified: withEkyc || isEkycCompleted
@@ -227,8 +293,6 @@ export const CreatePostPage = () => {
     }
   };
 
-  if (!user) return <Navigate to="/login" />;
-
   useEffect(() => {
     if (user) {
       const uFullName = user.fullName || (user.lastName && user.firstName ? `${user.lastName} ${user.firstName}` : '');
@@ -243,6 +307,18 @@ export const CreatePostPage = () => {
         contactType: prev.contactId ? prev.contactType : (savedType || prev.contactType),
         contactId: prev.contactId || savedId || ''
       }));
+
+      if (user.birthdate) {
+        const parts = user.birthdate.split('-');
+        if (parts.length === 3) {
+          setSearcherBirthYear(parts[0]);
+          setSearcherBirthMonth(parseInt(parts[1], 10).toString());
+          setSearcherBirthDay(parseInt(parts[2], 10).toString());
+        }
+      }
+      if (user.gender) {
+        setSearcherGender(user.gender as any);
+      }
     }
   }, [user]);
 
@@ -604,6 +680,158 @@ export const CreatePostPage = () => {
                 <WarningMessage message={warnings.searcherName} />
               </div>
 
+              {/* 年齢確認・生年月日 ＆ 性別（未登録ユーザー用 または 登録済ユーザー自動スキップ表示） */}
+              {user?.birthdate ? (
+                <div className="bg-emerald-50/90 border border-emerald-200/90 rounded-2xl p-4 flex items-center justify-between text-xs shadow-2xs font-sans">
+                  <div className="flex items-center gap-2.5 text-emerald-900 font-bold">
+                    <CheckCircle2 size={18} className="text-emerald-600 shrink-0" />
+                    <div>
+                      <span className="block text-xs font-bold text-emerald-950">
+                        【年齢確認・性別】会員登録データ適用済
+                      </span>
+                      <span className="text-[11px] text-emerald-800 font-normal">
+                        満 {calculatedSearcherAge} 歳{user.gender ? `（${user.gender}）` : ''} • 18歳以上確認完了（スルー）
+                      </span>
+                    </div>
+                  </div>
+                  <span className="text-[10px] bg-emerald-600 text-white px-2.5 py-1 rounded-md font-bold shrink-0">
+                    ✓ 確認済
+                  </span>
+                </div>
+              ) : (
+                <div className="space-y-4 p-4 md:p-5 bg-gradient-to-br from-amber-50/70 via-stone-50/80 to-amber-50/50 border border-amber-200/90 rounded-2xl shadow-2xs">
+                  {/* 生年月日ヘッダー */}
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-stone-900 tracking-wider uppercase flex items-center gap-1.5 font-sans">
+                      <Calendar size={16} className="text-amber-700" />
+                      <span>あなたの生年月日（年齢確認・法令遵守）</span> <span className="text-red-600 font-bold">*必須</span>
+                    </label>
+                    {calculatedSearcherAge !== null && (
+                      calculatedSearcherAge >= 18 ? (
+                        <span className="text-[11px] bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-full border border-emerald-300 flex items-center gap-1">
+                          <CheckCircle2 size={12} className="text-emerald-600" />
+                          <span>{calculatedSearcherAge} 歳（18歳以上確認OK）</span>
+                        </span>
+                      ) : (
+                        <span className="text-[11px] bg-rose-100 text-rose-800 font-bold px-2.5 py-0.5 rounded-full border border-rose-300 flex items-center gap-1">
+                          <AlertCircle size={12} className="text-rose-600" />
+                          <span>{calculatedSearcherAge} 歳（18歳未満利用不可）</span>
+                        </span>
+                      )
+                    )}
+                  </div>
+
+                  <p className="text-[11px] text-stone-600 leading-relaxed font-serif">
+                    ※ 青少年保護法および利用規約に基づき、18歳以上であることを確認します（相手には非公開）。
+                  </p>
+
+                  <div className="grid grid-cols-3 gap-2.5">
+                    {/* 年 */}
+                    <div className="space-y-1">
+                      <label className="text-[10.5px] font-bold text-stone-700">年（西暦）</label>
+                      <select
+                        required
+                        value={searcherBirthYear}
+                        onChange={e => setSearcherBirthYear(e.target.value)}
+                        className="w-full px-2.5 py-2.5 border border-stone-300 rounded-xl bg-white text-xs outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 text-stone-900 shadow-inner cursor-pointer font-sans"
+                      >
+                        <option value="">年を選択</option>
+                        {Array.from({ length: 90 }, (_, i) => {
+                          const y = new Date().getFullYear() - 18 - i;
+                          let era = '';
+                          if (y >= 2019) era = `令和${y - 2018}`;
+                          else if (y >= 1989) era = `平成${y - 1988}`;
+                          else if (y >= 1926) era = `昭和${y - 1925}`;
+                          else era = `大正${y - 1911}`;
+                          return (
+                            <option key={y} value={y.toString()}>
+                              {y}年 ({era})
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
+
+                    {/* 月 */}
+                    <div className="space-y-1">
+                      <label className="text-[10.5px] font-bold text-stone-700">月</label>
+                      <select
+                        required
+                        value={searcherBirthMonth}
+                        onChange={e => setSearcherBirthMonth(e.target.value)}
+                        className="w-full px-2.5 py-2.5 border border-stone-300 rounded-xl bg-white text-xs outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 text-stone-900 shadow-inner cursor-pointer font-sans"
+                      >
+                        <option value="">月を選択</option>
+                        {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
+                          <option key={m} value={m.toString()}>
+                            {m}月
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* 日 */}
+                    <div className="space-y-1">
+                      <label className="text-[10.5px] font-bold text-stone-700">日</label>
+                      <select
+                        required
+                        value={searcherBirthDay}
+                        onChange={e => setSearcherBirthDay(e.target.value)}
+                        className="w-full px-2.5 py-2.5 border border-stone-300 rounded-xl bg-white text-xs outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 text-stone-900 shadow-inner cursor-pointer font-sans"
+                      >
+                        <option value="">日を選択</option>
+                        {Array.from({ length: 31 }, (_, i) => i + 1).map(d => (
+                          <option key={d} value={d.toString()}>
+                            {d}日
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  {calculatedSearcherAge !== null && calculatedSearcherAge < 18 && (
+                    <div className="p-3 bg-rose-50 border border-rose-200 text-rose-800 rounded-xl text-xs flex items-center gap-2 animate-shake font-sans">
+                      <AlertCircle size={15} className="text-rose-600 shrink-0" />
+                      <span>18歳未満（高校生を含む）の方は法令に基づきボトルメールを投稿できません。</span>
+                    </div>
+                  )}
+
+                  {/* 性別（統計用）選択欄 */}
+                  <div className="pt-2 border-t border-amber-200/60 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-bold text-stone-900 tracking-wider uppercase flex items-center gap-1.5 font-sans">
+                        <Users size={15} className="text-amber-700" />
+                        <span>性別（統計・サービス改善用 / 非公開）</span>
+                        <span className="text-[10px] text-zinc-500 font-normal ml-1">※任意</span>
+                      </label>
+                      <span className="text-[10px] bg-slate-200/90 text-slate-700 font-bold px-2 py-0.5 rounded">
+                        非公開
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      {[
+                        { value: '男性', label: '男性' },
+                        { value: '女性', label: '女性' },
+                        { value: 'その他 / 回答しない', label: 'その他 / 未回答' }
+                      ].map((opt) => (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          onClick={() => setSearcherGender(opt.value as any)}
+                          className={`py-2 px-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer font-sans text-center flex items-center justify-center ${
+                            searcherGender === opt.value
+                              ? 'bg-amber-700 text-white border-amber-700 shadow-xs scale-[1.01]'
+                              : 'bg-white text-stone-700 border-stone-300 hover:border-amber-400 hover:bg-amber-50/40'
+                          }`}
+                        >
+                          <span>{opt.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* タイトル & 警告 */}
               <div className="space-y-2">
                 <label className="text-xs sm:text-sm font-bold text-black flex items-center gap-1.5">
@@ -700,8 +928,8 @@ export const CreatePostPage = () => {
         formData.era.length > 0 &&
         formData.category.length > 0 &&
         formData.searcherName.length > 0 &&
-        formData.searcherFullName.length > 0 &&
         formData.searcherProfile.length > 0 &&
+        (user?.birthdate ? true : (calculatedSearcherAge !== null && calculatedSearcherAge >= 18)) &&
         !warnings.targetLastName && 
         !warnings.targetFirstName && 
         !warnings.targetHometownPref && 
@@ -1382,7 +1610,11 @@ export const CreatePostPage = () => {
       }
     } else {
       if (step === 0) {
-        alert('【Step 1】お相手のお名前、ゆかりの地、年代、関係性、あなたのニックネーム・フルネーム・手がかりをすべてご入力ください。');
+        if (!user?.birthdate && (calculatedSearcherAge === null || calculatedSearcherAge < 18)) {
+          alert('【Step 1】18歳以上の生年月日を正しくご入力ください（18歳未満の方はご利用いただけません）。');
+          return;
+        }
+        alert('【Step 1】お相手のお名前、ゆかりの地、年代、関係性、あなたのニックネーム・手がかりをすべてご入力ください。');
       } else if (step === 1) {
         alert('【Step 2】思い出の質問（2問）と答えをすべてご入力ください。');
       } else if (step === 2) {

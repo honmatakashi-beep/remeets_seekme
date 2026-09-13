@@ -379,8 +379,10 @@ export function initDatabase() {
     try { db.exec("ALTER TABLE users ADD COLUMN ekyc_verified_at DATETIME"); } catch (e) {}
     try { db.exec("ALTER TABLE users ADD COLUMN ekyc_document_type TEXT"); } catch (e) {}
     try { db.exec("ALTER TABLE users ADD COLUMN ekyc_name TEXT"); } catch (e) {}
-    try { db.exec("ALTER TABLE users ADD COLUMN maiden_name TEXT"); } catch (e) {}
     try { db.exec("ALTER TABLE users ADD COLUMN birthdate TEXT"); } catch (e) {}
+    try { db.exec("ALTER TABLE users ADD COLUMN gender TEXT"); } catch (e) {}
+    try { db.exec("ALTER TABLE posts ADD COLUMN searcher_birthdate TEXT"); } catch (e) {}
+    try { db.exec("ALTER TABLE posts ADD COLUMN searcher_gender TEXT"); } catch (e) {}
     try { db.exec("ALTER TABLE users ADD COLUMN notify_new_post INTEGER DEFAULT 1"); } catch (e) {}
     try { db.exec("ALTER TABLE users ADD COLUMN auth_provider TEXT DEFAULT 'email'"); } catch (e) {}
     try { db.exec("ALTER TABLE users ADD COLUMN verification_code TEXT"); } catch (e) {}
@@ -911,8 +913,10 @@ export function initDatabase() {
     try { db.prepare("ALTER TABLE users ADD COLUMN ekyc_verified_at DATETIME").run(); } catch (e) {}
     try { db.prepare("ALTER TABLE users ADD COLUMN ekyc_document_type TEXT").run(); } catch (e) {}
     try { db.prepare("ALTER TABLE users ADD COLUMN ekyc_name TEXT").run(); } catch (e) {}
-    try { db.prepare("ALTER TABLE users ADD COLUMN maiden_name TEXT").run(); } catch (e) {}
     try { db.prepare("ALTER TABLE users ADD COLUMN birthdate TEXT").run(); } catch (e) {}
+    try { db.prepare("ALTER TABLE users ADD COLUMN gender TEXT").run(); } catch (e) {}
+    try { db.prepare("ALTER TABLE posts ADD COLUMN searcher_birthdate TEXT").run(); } catch (e) {}
+    try { db.prepare("ALTER TABLE posts ADD COLUMN searcher_gender TEXT").run(); } catch (e) {}
     try { db.prepare("ALTER TABLE posts ADD COLUMN user_id INTEGER").run(); } catch (e) {}
     try { db.prepare("ALTER TABLE posts ADD COLUMN contact_type TEXT").run(); } catch (e) {}
     try { db.prepare("ALTER TABLE posts ADD COLUMN contact_id TEXT").run(); } catch (e) {}
@@ -993,6 +997,45 @@ export function initDatabase() {
       console.error("Failed to backfill success_stories flags:", storyBfErr);
     }
 
+    // 🌟 サンプルユーザー・投稿の生年月日（幅広い年齢分布）および名前から想定される性別（2割未設定）の安全バックフィル
+    try {
+      const usersWithoutBirthdate = db.prepare("SELECT id, username, first_name, full_name, birthdate, gender FROM users WHERE birthdate IS NULL OR gender IS NULL").all() as any[];
+      if (usersWithoutBirthdate.length > 0) {
+        for (const u of usersWithoutBirthdate) {
+          const { birthdate: genBdate } = generateRealisticBirthdate(undefined, u.id);
+          const guessedGen = guessGenderFromName(u.first_name || '', u.full_name || '');
+          const genGender = (u.id % 5 === 0) ? null : guessedGen;
+
+          db.prepare(`
+            UPDATE users 
+            SET birthdate = COALESCE(birthdate, ?),
+                gender = CASE WHEN gender IS NOT NULL THEN gender ELSE ? END
+            WHERE id = ?
+          `).run(genBdate, genGender, u.id);
+        }
+        console.log(`[Backfill] Successfully backfilled birthdate and gender for ${usersWithoutBirthdate.length} users.`);
+      }
+
+      const postsWithoutBirthdate = db.prepare("SELECT id, user_id, searcher_name, searcher_full_name, era, searcher_birthdate, searcher_gender FROM posts WHERE searcher_birthdate IS NULL OR searcher_gender IS NULL").all() as any[];
+      if (postsWithoutBirthdate.length > 0) {
+        for (const p of postsWithoutBirthdate) {
+          const { birthdate: genBdate } = generateRealisticBirthdate(p.era, p.id);
+          const guessedGen = guessGenderFromName(p.searcher_full_name || p.searcher_name || '');
+          const genGender = (p.id % 5 === 0) ? null : guessedGen;
+
+          db.prepare(`
+            UPDATE posts 
+            SET searcher_birthdate = COALESCE(searcher_birthdate, ?),
+                searcher_gender = CASE WHEN searcher_gender IS NOT NULL THEN searcher_gender ELSE ? END
+            WHERE id = ?
+          `).run(genBdate, genGender, p.id);
+        }
+        console.log(`[Backfill] Successfully backfilled birthdate and gender for ${postsWithoutBirthdate.length} posts.`);
+      }
+    } catch (genderBfErr) {
+      console.error("Failed to backfill birthdate and gender:", genderBfErr);
+    }
+
     console.log("Migrations completed.");
 
 
@@ -1013,37 +1056,37 @@ export const seedData = async (force: boolean = false) => {
   if (!admin) {
     console.log("Creating admin user...");
     db.prepare(`
-      INSERT INTO users (username, email, password, role, is_verified, full_name, last_name, first_name, nickname) 
-      VALUES (?, ?, ?, ?, 1, ?, ?, ?, ?)
-    `).run("admin", "admin@adomin.jp", newAdminPassword, "super_admin", "東北 太郎", "東北", "太郎", "かりん");
+      INSERT INTO users (username, email, password, role, is_verified, full_name, last_name, first_name, nickname, birthdate, gender) 
+      VALUES (?, ?, ?, ?, 1, ?, ?, ?, ?, ?, ?)
+    `).run("admin", "admin@adomin.jp", newAdminPassword, "super_admin", "東北 太郎", "東北", "太郎", "かりん", "1980-04-15", "男性");
   } else {
     console.log("Updating admin password and ensuring super_admin role...");
     db.prepare(`
       UPDATE users 
-      SET username = 'admin', password = ?, email = 'admin@adomin.jp', role = 'super_admin', is_verified = 1, full_name = ?, last_name = ?, first_name = ?, nickname = ? 
+      SET username = 'admin', password = ?, email = 'admin@adomin.jp', role = 'super_admin', is_verified = 1, full_name = ?, last_name = ?, first_name = ?, nickname = ?, birthdate = COALESCE(birthdate, '1980-04-15'), gender = COALESCE(gender, '男性') 
       WHERE id = ?
     `).run(newAdminPassword, "東北 太郎", "東北", "太郎", "かりん", admin.id);
   }
 
   // Ensure multi-role staff accounts exist
   const staffUsers = [
-    { username: 'moderator_staff', email: 'moderator@remeets.jp', role: 'moderator', full_name: '佐藤 衛', last_name: '佐藤', first_name: '衛', nickname: 'まもる' },
-    { username: 'cs_staff', email: 'cs@remeets.jp', role: 'cs_support', full_name: '鈴木 花子', last_name: '鈴木', first_name: '花子', nickname: 'ハナ' },
-    { username: 'auditor_staff', email: 'auditor@remeets.jp', role: 'auditor', full_name: '田中 律子', last_name: '田中', first_name: '律子', nickname: 'リツコ' },
+    { username: 'moderator_staff', email: 'moderator@remeets.jp', role: 'moderator', full_name: '佐藤 衛', last_name: '佐藤', first_name: '衛', nickname: 'まもる', birthdate: '1985-08-20', gender: '男性' },
+    { username: 'cs_staff', email: 'cs@remeets.jp', role: 'cs_support', full_name: '鈴木 花子', last_name: '鈴木', first_name: '花子', nickname: 'ハナ', birthdate: '1992-11-05', gender: '女性' },
+    { username: 'auditor_staff', email: 'auditor@remeets.jp', role: 'auditor', full_name: '田中 律子', last_name: '田中', first_name: '律子', nickname: 'リツコ', birthdate: '1978-03-12', gender: '女性' },
   ];
 
   for (const staff of staffUsers) {
     const existing = db.prepare("SELECT * FROM users WHERE username = ? OR email = ?").get(staff.username, staff.email) as any;
     if (!existing) {
       db.prepare(`
-        INSERT INTO users (username, email, password, role, is_verified, full_name, last_name, first_name, nickname)
-        VALUES (?, ?, ?, ?, 1, ?, ?, ?, ?)
-      `).run(staff.username, staff.email, newAdminPassword, staff.role, staff.full_name, staff.last_name, staff.first_name, staff.nickname);
+        INSERT INTO users (username, email, password, role, is_verified, full_name, last_name, first_name, nickname, birthdate, gender)
+        VALUES (?, ?, ?, ?, 1, ?, ?, ?, ?, ?, ?)
+      `).run(staff.username, staff.email, newAdminPassword, staff.role, staff.full_name, staff.last_name, staff.first_name, staff.nickname, staff.birthdate, staff.gender);
     } else {
       db.prepare(`
-        UPDATE users SET password = ?, email = ?, role = ?, is_verified = 1, full_name = ?, last_name = ?, first_name = ?, nickname = ?
+        UPDATE users SET password = ?, email = ?, role = ?, is_verified = 1, full_name = ?, last_name = ?, first_name = ?, nickname = ?, birthdate = COALESCE(birthdate, ?), gender = COALESCE(gender, ?)
         WHERE id = ?
-      `).run(newAdminPassword, staff.email, staff.role, staff.full_name, staff.last_name, staff.first_name, staff.nickname, existing.id);
+      `).run(newAdminPassword, staff.email, staff.role, staff.full_name, staff.last_name, staff.first_name, staff.nickname, staff.birthdate, staff.gender, existing.id);
     }
   }
 
@@ -1055,15 +1098,15 @@ export const seedData = async (force: boolean = false) => {
   if (!testUser) {
     console.log("Creating test user (eKYC verified)...");
     db.prepare(`
-      INSERT INTO users (username, password, email, role, is_verified, is_ekyc_verified, ekyc_document_type, ekyc_name, ekyc_verified_at, full_name, last_name, first_name, nickname) 
-      VALUES (?, ?, ?, ?, 1, 1, 'drivers_license', '本間 貴司', CURRENT_TIMESTAMP, ?, ?, ?, ?)
-    `).run("test", testHashedPassword, "test@example.com", "user", "本間 貴司", "本間", "貴司", "たかし");
+      INSERT INTO users (username, password, email, role, is_verified, is_ekyc_verified, ekyc_document_type, ekyc_name, ekyc_verified_at, full_name, last_name, first_name, nickname, birthdate, gender) 
+      VALUES (?, ?, ?, ?, 1, 1, 'drivers_license', '本間 貴司', CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?)
+    `).run("test", testHashedPassword, "test@example.com", "user", "本間 貴司", "本間", "貴司", "たかし", "1986-06-18", "男性");
     console.log("test user created successfully.");
   } else {
     console.log("Updating test user password and profile...");
     db.prepare(`
       UPDATE users 
-      SET password = ?, email = 'test@example.com', is_verified = 1, is_ekyc_verified = 1, ekyc_document_type = 'drivers_license', ekyc_name = '本間 貴司', ekyc_verified_at = COALESCE(ekyc_verified_at, CURRENT_TIMESTAMP), full_name = ?, last_name = ?, first_name = ?, nickname = ? 
+      SET password = ?, email = 'test@example.com', is_verified = 1, is_ekyc_verified = 1, ekyc_document_type = 'drivers_license', ekyc_name = '本間 貴司', ekyc_verified_at = COALESCE(ekyc_verified_at, CURRENT_TIMESTAMP), full_name = ?, last_name = ?, first_name = ?, nickname = ?, birthdate = COALESCE(birthdate, '1986-06-18'), gender = COALESCE(gender, '男性') 
       WHERE id = ?
     `).run(testHashedPassword, "本間 貴司", "本間", "貴司", "たかし", testUser.id);
     console.log("test user updated successfully.");
@@ -1078,6 +1121,8 @@ export const seedData = async (force: boolean = false) => {
       last_name: "佐藤",
       first_name: "さくら",
       nickname: "さくら🌸",
+      birthdate: "1996-03-24",
+      gender: "女性",
       is_ekyc_verified: 1,
       ekyc_document_type: "drivers_license",
       ekyc_name: "佐藤 さくら"
@@ -1089,6 +1134,8 @@ export const seedData = async (force: boolean = false) => {
       last_name: "高橋",
       first_name: "健二",
       nickname: "けんじ (公認)",
+      birthdate: "1975-09-10",
+      gender: "男性",
       is_ekyc_verified: 1,
       ekyc_document_type: "my_number_card",
       ekyc_name: "高橋 健二"
@@ -1100,6 +1147,8 @@ export const seedData = async (force: boolean = false) => {
       last_name: "山田",
       first_name: "葵",
       nickname: "あおい",
+      birthdate: "2001-07-19",
+      gender: null, // 2割枠：性別未設定
       is_ekyc_verified: 1,
       ekyc_document_type: "passport",
       ekyc_name: "山田 葵"
@@ -1110,15 +1159,15 @@ export const seedData = async (force: boolean = false) => {
     const existingVu = db.prepare("SELECT * FROM users WHERE username = ? OR email = ?").get(vu.username, vu.email) as any;
     if (!existingVu) {
       db.prepare(`
-        INSERT INTO users (username, password, email, role, is_verified, is_ekyc_verified, ekyc_document_type, ekyc_name, ekyc_verified_at, full_name, last_name, first_name, nickname)
-        VALUES (?, ?, ?, 'user', 1, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?)
-      `).run(vu.username, testHashedPassword, vu.email, vu.is_ekyc_verified, vu.ekyc_document_type, vu.ekyc_name, vu.full_name, vu.last_name, vu.first_name, vu.nickname);
+        INSERT INTO users (username, password, email, role, is_verified, is_ekyc_verified, ekyc_document_type, ekyc_name, ekyc_verified_at, full_name, last_name, first_name, nickname, birthdate, gender)
+        VALUES (?, ?, ?, 'user', 1, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?)
+      `).run(vu.username, testHashedPassword, vu.email, vu.is_ekyc_verified, vu.ekyc_document_type, vu.ekyc_name, vu.full_name, vu.last_name, vu.first_name, vu.nickname, vu.birthdate, vu.gender);
     } else {
       db.prepare(`
         UPDATE users 
-        SET is_ekyc_verified = 1, ekyc_document_type = ?, ekyc_name = ?, ekyc_verified_at = COALESCE(ekyc_verified_at, CURRENT_TIMESTAMP), full_name = ?, last_name = ?, first_name = ?, nickname = ?
+        SET is_ekyc_verified = 1, ekyc_document_type = ?, ekyc_name = ?, ekyc_verified_at = COALESCE(ekyc_verified_at, CURRENT_TIMESTAMP), full_name = ?, last_name = ?, first_name = ?, nickname = ?, birthdate = COALESCE(birthdate, ?), gender = COALESCE(gender, ?)
         WHERE id = ?
-      `).run(vu.ekyc_document_type, vu.ekyc_name, vu.full_name, vu.last_name, vu.first_name, vu.nickname, existingVu.id);
+      `).run(vu.ekyc_document_type, vu.ekyc_name, vu.full_name, vu.last_name, vu.first_name, vu.nickname, vu.birthdate, vu.gender, existingVu.id);
     }
   }
 
@@ -1127,8 +1176,8 @@ export const seedData = async (force: boolean = false) => {
   if (!guest) {
     console.log("Creating guest user...");
     db.prepare(`
-      INSERT INTO users (username, password, email, role, is_verified, full_name, last_name, first_name, nickname) 
-      VALUES (?, ?, ?, ?, 1, ?, ?, ?, ?)
+      INSERT INTO users (username, password, email, role, is_verified, full_name, last_name, first_name, nickname, birthdate, gender) 
+      VALUES (?, ?, ?, ?, 1, ?, ?, ?, ?, NULL, NULL)
     `).run("guest", hashedPassword, "guest@remeets.jp", "user", "ゲスト ユーザー", "ゲスト", "ユーザー", "ゲスト");
   } else {
     db.prepare(`
@@ -1154,20 +1203,21 @@ export const seedData = async (force: boolean = false) => {
     ];
 
     for (const mu of mainUsers) {
-      const uRecord = db.prepare("SELECT id FROM users WHERE email = ?").get(mu.email) as any;
+      const uRecord = db.prepare("SELECT id, birthdate, gender FROM users WHERE email = ?").get(mu.email) as any;
       if (uRecord) {
         const postExists = db.prepare("SELECT id FROM posts WHERE user_id = ? AND target_name = ?").get(uRecord.id, mu.target);
         if (!postExists) {
           const insertStmt = db.prepare(`
             INSERT INTO posts (
-              user_id, searcher_name, searcher_full_name, searcher_profile, target_name, 
-              target_last_name, target_first_name, target_hometown, target_school, 
+              user_id, searcher_name, searcher_full_name, searcher_profile, searcher_birthdate, searcher_gender,
+              target_name, target_last_name, target_first_name, target_hometown, target_school, 
               era, category, secret_question, secret_answer, secret_answer_plain, 
               message, image_url, status
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'published')
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'published')
           `);
           const res = insertStmt.run(
             uRecord.id, mu.nick, mu.name, `${mu.school}時代の想い出の相手を探しています。`,
+            uRecord.birthdate || null, uRecord.gender || null,
             mu.target, mu.target.split(' ')[0] || mu.target, mu.target.split(' ')[1] || '', '東京都', mu.school,
             mu.era, 'friend', mu.q1, hashedPassword, mu.a1, mu.msg, mu.img
           );
@@ -1635,28 +1685,57 @@ export const seedData = async (force: boolean = false) => {
     const isEkyc = (i % 2 === 0) ? 1 : 0;
     const docType = (i % 4 === 0) ? 'drivers_license' : (i % 4 === 2) ? 'my_number_card' : null;
     const sampleEmail = `${username.toLowerCase()}@sample.remeets.jp`;
+
+    // 🌟 年齢の幅広い分布（20代〜70代）と名前から想定される性別（2割は性別未設定）
+    const { birthdate: sampleBirthdate, age: sampleAge } = generateRealisticBirthdate(era, i);
+    const guessedGender = guessGenderFromName(searcher.first, fullName);
+    const sampleGender = (i % 5 === 0) ? null : guessedGender; // 2割は性別なし
+
     const userResult = db.prepare(`
-      INSERT INTO users (username, email, password, role, is_verified, is_ekyc_verified, ekyc_document_type, ekyc_name, ekyc_verified_at, full_name, last_name, first_name, nickname) 
-      VALUES (?, ?, ?, 'user', 1, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?)
-    `).run(username, sampleEmail, hashedPassword, isEkyc, docType, isEkyc ? fullName : null, fullName, searcher.last, searcher.first, nickname);
+      INSERT INTO users (username, email, password, role, is_verified, is_ekyc_verified, ekyc_document_type, ekyc_name, ekyc_verified_at, full_name, last_name, first_name, nickname, birthdate, gender) 
+      VALUES (?, ?, ?, 'user', 1, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?)
+    `).run(username, sampleEmail, hashedPassword, isEkyc, docType, isEkyc ? fullName : null, fullName, searcher.last, searcher.first, nickname, sampleBirthdate, sampleGender);
     const userId = userResult.lastInsertRowid as number;
     userIds.push(userId);
+
+    // 年齢確認ログ（eKYC または 自己申告）の登録
+    try {
+      db.prepare(`
+        INSERT INTO age_verification_logs (user_id, ip, is_verified, age, reason, metadata_json, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+      `).run(
+        userId,
+        `192.168.1.${(i % 250) + 1}`,
+        1,
+        sampleAge,
+        isEkyc ? 'AI公的身分証多層照合完了 (身元確認済)' : '18歳以上利用規約・宣誓同意',
+        JSON.stringify({
+          verification_flow: isEkyc ? 'primary_ekyc' : 'self_declaration',
+          document_type: isEkyc ? (docType === 'drivers_license' ? 'driver_license' : 'mynumber') : 'self_attestation',
+          method: isEkyc ? 'eKYC' : 'self_attestation',
+          gender: sampleGender,
+          birthdate: sampleBirthdate
+        })
+      );
+    } catch (logErr) {}
 
     const hashedA1 = await bcrypt.hash(content.a1.trim().toLowerCase(), 10);
     const hashedA2 = await bcrypt.hash(content.a2.trim().toLowerCase(), 10);
 
     const postResult = db.prepare(`
       INSERT INTO posts (
-        user_id, searcher_name, searcher_full_name, searcher_profile, target_name, 
-        target_last_name, target_first_name, target_hometown, target_school, 
+        user_id, searcher_name, searcher_full_name, searcher_profile, searcher_birthdate, searcher_gender,
+        target_name, target_last_name, target_first_name, target_hometown, target_school, 
         era, category, secret_question, secret_answer, secret_answer_plain, 
         message, image_url, status
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
       userId,
       nickname,
       fullName,
       profile,
+      sampleBirthdate,
+      sampleGender,
       `${target.last} ${target.first}`,
       target.last,
       target.first,
@@ -2034,6 +2113,94 @@ const FEMALE_FIRST_NAMES_HEISEI = [
   "穂乃花", "結衣", "美月", "紗良", "羽奏", "心結", "詩", "愛菜", "美結", "優月",
   "花", "鈴", "莉央", "結花", "遥", "日菜", "柚葉", "真白", "心音", "小春"
 ];
+
+/**
+ * 日本人の名前（下の名前・フルネーム）から想定される性別（男性 / 女性）を高精度に推定する関数
+ */
+export const guessGenderFromName = (firstName: string, fullName?: string): '男性' | '女性' => {
+  const name = (firstName || fullName || '').trim();
+
+  // 明確な女性名パターン
+  const femaleSuffixes = ['子', '美', '香', '恵', '奈', '菜', '代', '織', '絵', '理', '里', '江', '枝', '実', '穂', '音', '乃', '佳', '華', '愛', '葵', '咲', '花', '葉', '羽', '莉', '凛', '澪', '結', '紬', '春', '桜', '鈴', '妃', '姫', '緒', '帆', '萌', '梨', '綾', '杏', '琴', '希', '栞', '陽', '女', '乃'];
+  const femaleExact = [
+    'さくら', 'あゆみ', 'さゆり', 'みゆき', 'りさ', 'はな', 'まい', 'ゆい', 'めぐみ', 'かおり', 'ゆか', 'あい', 
+    'まゆみ', 'じゅんこ', 'あけみ', 'ともこ', 'なおみ', 'あすか', 'くみこ', 'ななみ', 'ほのか', 'りこ', 'つむぎ',
+    '美咲', '由美', '真理子', '舞', '結衣', '萌', '菜々子', '美紀', '奈央', '裕子', '恵美', '美穂', '久美', '恵子',
+    '由紀子', '明日香', '真由美', '順子', '明美', '智子', '久美子', '直美', '陽子', '佳代', '佳代子', '香織', '洋子',
+    '裕美', '雅美', '千春', '和恵', '裕加', '直子', '真澄', '恵理', '真弓', '志保', '綾子', '絵美', '麻美', '理恵',
+    '敦子', '節子', '幸子', '和代', '敏子', '洋美', '典子', '優子', '悦子', '文子', '陽葵', '凛', '結菜', '芽依',
+    '莉子', '葵', '紬', '咲良', '結月', '心春', '七海', '楓', '美桜', '彩花', '優奈', '琴音', '栞', '千尋', '心愛',
+    '希星', '海空', '愛莉', '日向', '結愛', '美羽', '花音', '朱莉', '杏', '未来', '澪', '穂乃花', '美月', '紗良',
+    '羽奏', '心結', '詩', '愛菜', '美結', '優月', '花', '鈴', '莉央', '結花', '遥', '日菜', '柚葉', '真白', '心音', '小春'
+  ];
+
+  if (femaleExact.includes(name) || femaleExact.some(f => name.endsWith(f))) {
+    return '女性';
+  }
+  for (const suf of femaleSuffixes) {
+    if (name.endsWith(suf)) return '女性';
+  }
+
+  // 明確な男性名パターン
+  const maleSuffixes = ['郎', '朗', '男', '雄', '夫', '介', '助', '輔', '太', '樹', '生', '平', '司', '史', '志', '人', '斗', '翔', '真', '哉', '也', '彦', '輝', '大', '剛', '勇', '進', '修', '勝', '誠', '徹', '清', '博', '浩', '隆', '健', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十', '亮', '仁', '悟', '潤', '聡', '守', '衛', '康', '貴', '秀', '昭', '正', '治', '弘', '裕', '智', '光', '敦', '拓', '悠', '湊', '蓮', '律', '匠', '慧'];
+  for (const ms of maleSuffixes) {
+    if (name.endsWith(ms)) return '男性';
+  }
+
+  return '男性';
+};
+
+/**
+ * 時代背景とインデックスに応じたリアルな生年月日（YYYY-MM-DD）と満年齢を生成する関数
+ * 幅広い年代（20代〜70代）に自然に分散
+ */
+export const generateRealisticBirthdate = (era?: string, seedIndex: number = 0): { birthdate: string; age: number } => {
+  let minAge = 22;
+  let maxAge = 65;
+
+  if (era === '1970') {
+    minAge = 62;
+    maxAge = 74;
+  } else if (era === '1980') {
+    minAge = 52;
+    maxAge = 62;
+  } else if (era === '1990') {
+    minAge = 42;
+    maxAge = 52;
+  } else if (era === '2000') {
+    minAge = 32;
+    maxAge = 42;
+  } else if (era === '2010') {
+    minAge = 20;
+    maxAge = 32;
+  } else {
+    // 時代指定なしの場合、20代〜70代に分散
+    const ageRanges = [
+      { min: 20, max: 29 }, // 20代
+      { min: 30, max: 39 }, // 30代
+      { min: 40, max: 49 }, // 40代
+      { min: 50, max: 59 }, // 50代
+      { min: 60, max: 73 }, // 60〜70代
+    ];
+    const range = ageRanges[seedIndex % ageRanges.length];
+    minAge = range.min;
+    maxAge = range.max;
+  }
+
+  const ageSpan = maxAge - minAge + 1;
+  const age = minAge + (seedIndex * 7 + 3) % ageSpan;
+  
+  const currentYear = 2026;
+  const birthYear = currentYear - age;
+  const month = ((seedIndex * 5 + 2) % 12) + 1;
+  const day = ((seedIndex * 11 + 7) % 28) + 1;
+
+  const mm = String(month).padStart(2, '0');
+  const dd = String(day).padStart(2, '0');
+  const birthdate = `${birthYear}-${mm}-${dd}`;
+
+  return { birthdate, age };
+};
 
 const AUTHENTIC_HUMAN_NICKNAMES = [
   // 1. 親しみある愛称・ちゃん/くん/っち/坊/ぽん/りん/きー/たん等 (200種)
@@ -2608,8 +2775,8 @@ export const generateAdditionalSamplePosts = async (count: number = 50) => {
 
   const hashedPassword = await bcrypt.hash("password123", 10);
   const insertUser = db.prepare(`
-    INSERT INTO users (username, email, password, role, is_verified, is_ekyc_verified, ekyc_document_type, ekyc_name, ekyc_verified_at, full_name, last_name, first_name, nickname) 
-    VALUES (?, ?, ?, 'user', 1, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?)
+    INSERT INTO users (username, email, password, role, is_verified, is_ekyc_verified, ekyc_document_type, ekyc_name, ekyc_verified_at, full_name, last_name, first_name, nickname, birthdate, gender) 
+    VALUES (?, ?, ?, 'user', 1, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?)
   `);
   const insertAgeLog = db.prepare(`
     INSERT INTO age_verification_logs (user_id, ip, is_verified, age, reason, metadata_json, created_at)
@@ -2617,11 +2784,11 @@ export const generateAdditionalSamplePosts = async (count: number = 50) => {
   `);
   const insertPost = db.prepare(`
     INSERT INTO posts (
-      user_id, searcher_name, searcher_full_name, searcher_profile, target_name, 
-      target_last_name, target_first_name, target_hometown, target_school, 
+      user_id, searcher_name, searcher_full_name, searcher_profile, searcher_birthdate, searcher_gender,
+      target_name, target_last_name, target_first_name, target_hometown, target_school, 
       era, category, secret_question, secret_answer, secret_answer_plain, 
       message, image_url, status
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
   const insertQ = db.prepare("INSERT INTO post_questions (post_id, question, answer, answer_plain) VALUES (?, ?, ?, ?)");
 
@@ -3009,21 +3176,26 @@ export const generateAdditionalSamplePosts = async (count: number = 50) => {
     const isEkyc = (seedIndex % 3 !== 0) ? 1 : 0;
     const docType = isEkyc ? (seedIndex % 2 === 0 ? 'drivers_license' : 'my_number_card') : null;
 
+    // 🌟 年齢の幅広い分布（20代〜70代）と名前から想定される性別（2割は性別未設定）
+    const { birthdate: sampleBirthdate, age: sampleAge } = generateRealisticBirthdate(era, seedIndex);
+    const guessedGender = isSearcherFemale ? '女性' : guessGenderFromName(searcherFirstName, searcherFullName);
+    const sampleGender = (seedIndex % 5 === 0) ? null : guessedGender; // 2割は性別なし
+
     try {
       const userResult = insertUser.run(
         username, email, hashedPassword, isEkyc, docType,
-        isEkyc ? searcherFullName : null, searcherFullName, searcherLastName, searcherFirstName, nickname
+        isEkyc ? searcherFullName : null, searcherFullName, searcherLastName, searcherFirstName, nickname,
+        sampleBirthdate, sampleGender
       );
       const userId = userResult.lastInsertRowid as number;
 
       // eKYCログ または 自己申告ログを記録
       try {
-        const estimatedAge = era === "1970" ? 58 : era === "1980" ? 48 : era === "1990" ? 38 : era === "2000" ? 28 : 22;
         insertAgeLog.run(
           userId,
           `192.168.1.${(seedIndex % 250) + 1}`,
           1,
-          estimatedAge,
+          sampleAge,
           isEkyc ? 'AI公的身分証多層照合完了 (身元確認済)' : '18歳以上利用規約・宣誓同意',
           JSON.stringify({
             verification_flow: isEkyc ? 'primary_ekyc' : 'self_declaration',
@@ -3031,6 +3203,8 @@ export const generateAdditionalSamplePosts = async (count: number = 50) => {
             method: isEkyc ? 'eKYC' : 'self_attestation',
             provider: isEkyc ? 'TRUSTDOCK_AI_OCR' : 'INTERNAL_LEGAL_PLEDGE',
             score: isEkyc ? 98 : 100,
+            gender: sampleGender,
+            birthdate: sampleBirthdate,
             verified_name: isEkyc ? searcherFullName : null
           })
         );
@@ -3046,6 +3220,8 @@ export const generateAdditionalSamplePosts = async (count: number = 50) => {
         nickname,
         searcherFullName,
         rawContext,
+        sampleBirthdate,
+        sampleGender,
         targetFullName,
         targetLastName,
         targetFirstName,

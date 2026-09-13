@@ -1,9 +1,12 @@
 import React, { useEffect, useRef } from 'react';
+import { BOTTLE_CURSOR_SVG_DATA_URL } from '../assets/bottleCursorBase64';
 
 interface WaterRippleRainbowTextProps {
   className?: string;
   lines?: string[];
   shadowStyle?: 'white-glow' | 'none' | 'subtle-dark';
+  /** ボトルメール・ポインタのON/OFF（falseにすると1秒で元の通常ポインタに戻せます） */
+  enableBottleCursor?: boolean;
 }
 
 export const WaterRippleRainbowText: React.FC<WaterRippleRainbowTextProps> = ({ 
@@ -13,7 +16,8 @@ export const WaterRippleRainbowText: React.FC<WaterRippleRainbowTextProps> = ({
     'あの人へ',
     '再会のボトルメール'
   ],
-  shadowStyle = 'none'
+  shadowStyle = 'none',
+  enableBottleCursor = true
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -83,7 +87,7 @@ export const WaterRippleRainbowText: React.FC<WaterRippleRainbowTextProps> = ({
       const totalTextHeight = lines.length * lineHeight;
       const startY = (height - totalTextHeight) / 2 + fontSize * 0.88;
 
-      textCtx.font = `600 ${fontSize}px "Shippori Mincho", "Noto Serif JP", "Kaisei Decol", "Yu Mincho", serif`;
+      textCtx.font = `700 ${fontSize}px "Shippori Mincho", "Noto Serif JP", "Kaisei Decol", "Yu Mincho", serif`;
       textCtx.textAlign = 'center';
       textCtx.textBaseline = 'alphabetic';
 
@@ -105,22 +109,23 @@ export const WaterRippleRainbowText: React.FC<WaterRippleRainbowTextProps> = ({
       }
       grad.addColorStop(1.0, rainbowColors[0]);
 
-      // 各行テキストの描画
+      // 各行テキストの描画（エッジのにじみを完全排除したシャープ描画）
       lines.forEach((line, index) => {
         const y = startY + index * lineHeight;
 
         textCtx.save();
         if (shadowStyle === 'white-glow') {
-          textCtx.shadowColor = 'rgba(255, 255, 255, 0.95)';
-          textCtx.shadowBlur = 12;
+          textCtx.shadowColor = 'rgba(255, 255, 255, 0.9)';
+          textCtx.shadowBlur = 2;
         } else if (shadowStyle === 'subtle-dark') {
-          textCtx.shadowColor = 'rgba(0, 15, 30, 0.5)';
-          textCtx.shadowBlur = 8;
-          textCtx.shadowOffsetY = 2;
+          textCtx.shadowColor = 'rgba(0, 15, 30, 0.25)';
+          textCtx.shadowBlur = 1;
+          textCtx.shadowOffsetY = 1;
         } else {
-          textCtx.shadowColor = 'rgba(0, 15, 30, 0.4)';
-          textCtx.shadowBlur = 6;
-          textCtx.shadowOffsetY = 2;
+          // デフォルト：シャドウによるエッジ滲みを排除した超シャープなクリスプ描画
+          textCtx.shadowColor = 'transparent';
+          textCtx.shadowBlur = 0;
+          textCtx.shadowOffsetY = 0;
         }
 
         textCtx.fillStyle = grad;
@@ -154,8 +159,8 @@ export const WaterRippleRainbowText: React.FC<WaterRippleRainbowTextProps> = ({
       const calculatedHeight = Math.ceil(lines.length * fontSize * 1.42 + 28);
       height = Math.max(calculatedHeight, 90);
 
-      // dpr=1 でピクセル走査量を1/4に削減し、複数ウィンドウ・複数タブでも常時軽快動作を保証
-      dpr = 1;
+      // Retina/高DPIディスプレイに対応し、文字のエッジを驚くほどシャープ＆鮮明にレンダリング
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = Math.floor(width * dpr);
       canvas.height = Math.floor(height * dpr);
       canvas.style.width = `${width}px`;
@@ -420,12 +425,22 @@ export const WaterRippleRainbowText: React.FC<WaterRippleRainbowTextProps> = ({
   return (
     <div 
       ref={containerRef} 
-      className={`relative w-full select-none cursor-pointer flex justify-center items-center ${className}`}
-      style={{ touchAction: 'none' }}
+      className={`relative w-full select-none flex justify-center items-center ${enableBottleCursor ? 'cursor-bottle-mail' : 'cursor-pointer'} ${className}`}
+      style={{ 
+        touchAction: 'none',
+        cursor: enableBottleCursor 
+          ? `url('${BOTTLE_CURSOR_SVG_DATA_URL}') 22 3, pointer` 
+          : 'pointer' 
+      }}
     >
       <canvas 
         ref={canvasRef} 
         className="block max-w-full"
+        style={{
+          cursor: enableBottleCursor 
+            ? `url('${BOTTLE_CURSOR_SVG_DATA_URL}') 22 3, pointer` 
+            : 'pointer'
+        }}
       />
       {/* スクリーンリーダー用・SEO用テキスト */}
       <span className="sr-only">

@@ -6,7 +6,7 @@ import {
   BookOpen, Calendar, Check, CheckCircle2, ChevronLeft, ChevronRight, Coffee,
   Copy, CreditCard, HeartHandshake, LogIn, LogOut, Menu, PlusCircle,
   RefreshCw, Search, Send, Shield, ShieldAlert, ShieldCheck, Sparkles,
-  User as UserIcon, X
+  User as UserIcon, Users, X
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNgFilter } from '../contexts/AuthContext';
@@ -366,6 +366,7 @@ export const RegisterPage = () => {
   const [birthYear, setBirthYear] = useState('');
   const [birthMonth, setBirthMonth] = useState('');
   const [birthDay, setBirthDay] = useState('');
+  const [gender, setGender] = useState<'男性' | '女性' | 'その他 / 回答しない' | ''>('');
   const [captchaAnswer, setCaptchaAnswer] = useState('');
   const [agreed, setAgreed] = useState(false);
   const [hasReadTerms, setHasReadTerms] = useState(false);
@@ -541,6 +542,7 @@ export const RegisterPage = () => {
           firstName, 
           nickname, 
           birthdate: formattedBirthdate,
+          gender: gender || undefined,
           captchaAnswer,
           snsProvider: authMethod !== 'email' ? authMethod : undefined
         })
@@ -1063,6 +1065,43 @@ export const RegisterPage = () => {
                   <span>18歳未満（高校生を含む）の方は法令に基づきご登録いただけません。</span>
                 </div>
               )}
+            </div>
+
+            {/* 2.5 性別（統計・分析用 / 非公開）入力欄 */}
+            <div className="space-y-3 p-5 bg-gradient-to-br from-indigo-50/50 via-slate-50/80 to-teal-50/40 border border-indigo-100 rounded-2xl">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-stone-900 tracking-wider uppercase flex items-center gap-1.5 font-sans">
+                  <Users size={16} className="text-indigo-600" />
+                  <span>性別（統計・サービス改善用）</span>
+                  <span className="text-[10px] text-zinc-500 font-normal ml-1">※任意</span>
+                </label>
+                <span className="text-[10px] bg-slate-200/90 text-slate-700 font-bold px-2 py-0.5 rounded">
+                  非公開
+                </span>
+              </div>
+              <p className="text-[11px] text-stone-600 leading-relaxed font-serif">
+                ※ 他のユーザーや手紙のお相手には一切公開されません。年齢確認および統計データ分析にのみ利用されます。
+              </p>
+              <div className="grid grid-cols-3 gap-2.5 pt-1">
+                {[
+                  { value: '男性', label: '男性' },
+                  { value: '女性', label: '女性' },
+                  { value: 'その他 / 回答しない', label: 'その他 / 未回答' }
+                ].map((opt) => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => setGender(opt.value as any)}
+                    className={`py-2.5 px-3 rounded-xl border text-xs font-bold transition-all cursor-pointer font-sans text-center flex items-center justify-center ${
+                      gender === opt.value
+                        ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs scale-[1.02]'
+                        : 'bg-white text-stone-700 border-stone-300 hover:border-indigo-400 hover:bg-indigo-50/30'
+                    }`}
+                  >
+                    <span>{opt.label}</span>
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* 3. ニックネーム（公開表示名）入力欄 */}
