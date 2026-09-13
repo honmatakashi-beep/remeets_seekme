@@ -1,7 +1,7 @@
-import db from "../db";
+import { db } from "./schema";
 import bcrypt from "bcryptjs";
 import { UNIQUE_MEMORY_SCENARIOS, ALL_SCENARIOS_COLLECTION } from "../memoryScenarios";
-import { generateAdditionalSamplePosts } from "./seedGenerators";
+import { generateAdditionalSamplePosts, generateRealisticUsername, guessGenderFromName, generateRealisticBirthdate } from "./seedGenerators";
 
 export const seedData = async (force: boolean = false) => {
   const hashedPassword = await bcrypt.hash("password123", 10);

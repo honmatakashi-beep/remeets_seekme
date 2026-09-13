@@ -1,4 +1,4 @@
-import db from "../db";
+import { db } from "./schema";
 import bcrypt from "bcryptjs";
 import { UNIQUE_MEMORY_SCENARIOS, ALL_SCENARIOS_COLLECTION } from "../memoryScenarios";
 
@@ -572,7 +572,7 @@ const NATURAL_ADDITIONAL_QA_BANK = [
   { q: "海辺の民宿で朝食に出された焼きたての香ばしい干物の魚は？", a: "アジの開き" }
 ];
 
-function generateRealisticUsername(searcherRomaji: string, era: string, index: number): string {
+export function generateRealisticUsername(searcherRomaji: string, era: string, index: number): string {
   // 会員番号（ユーザーID）は一貫して UID-6桁数字 の形式で自動付番 (UID-100100〜)
   const baseNum = 100100 + ((index * 37 + 13) % 899000);
   return `UID-${baseNum}`;

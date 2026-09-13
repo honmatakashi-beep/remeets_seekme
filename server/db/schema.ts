@@ -2,38 +2,64 @@ import Database from "better-sqlite3";
 import fs from "fs";
 import path from "path";
 import bcrypt from "bcryptjs";
-import { ALL_SCENARIOS_COLLECTION } from "./memoryScenarios";
+import { ALL_SCENARIOS_COLLECTION } from "../memoryScenarios";
+import { generateRealisticBirthdate, guessGenderFromName } from "./seedGenerators";
 
-export let db: any;
+let dbInstance: any = null;
+
+function openDbConnection() {
+  if (dbInstance) return dbInstance;
+  try {
+    dbInstance = new Database("kizuna.db");
+    dbInstance.pragma("integrity_check");
+    dbInstance.pragma("journal_mode = WAL");
+    dbInstance.pragma("synchronous = NORMAL");
+    dbInstance.pragma("cache_size = -64000");
+    dbInstance.pragma("temp_store = MEMORY");
+  } catch (dbErr) {
+    console.error("Database file was corrupted or unreadable. Backing up and recreating fresh DB...", dbErr);
+    if (fs.existsSync("kizuna.db")) {
+      fs.renameSync("kizuna.db", );
+    }
+    dbInstance = new Database("kizuna.db");
+    dbInstance.pragma("journal_mode = WAL");
+    dbInstance.pragma("synchronous = NORMAL");
+    dbInstance.pragma("cache_size = -64000");
+    dbInstance.pragma("temp_store = MEMORY");
+  }
+  return dbInstance;
+}
+
+// Ensure dbInstance is initialized immediately on load
+openDbConnection();
+
+export const db: any = new Proxy({}, {
+  get(target, prop) {
+    const conn = openDbConnection();
+    const val = conn[prop];
+    if (typeof val === 'function') {
+      return val.bind(conn);
+    }
+    return val;
+  },
+  set(target, prop, value) {
+    const conn = openDbConnection();
+    conn[prop] = value;
+    return true;
+  }
+});
 
 export function getDb() {
-  return db;
+  return openDbConnection();
 }
 
 export function setDb(newDb: any) {
-  db = newDb;
+  dbInstance = newDb;
 }
 
 export function initDatabase() {
   console.log("Initializing database...");
-  try {
-    db = new Database("kizuna.db");
-    db.pragma("integrity_check");
-    db.pragma("journal_mode = WAL");
-    db.pragma("synchronous = NORMAL");
-    db.pragma("cache_size = -64000");
-    db.pragma("temp_store = MEMORY");
-  } catch (dbErr) {
-    console.error("Database file was corrupted or unreadable. Backing up and recreating fresh DB...", dbErr);
-    if (fs.existsSync("kizuna.db")) {
-      fs.renameSync("kizuna.db", `kizuna_corrupt.db.${Date.now()}`);
-    }
-    db = new Database("kizuna.db");
-    db.pragma("journal_mode = WAL");
-    db.pragma("synchronous = NORMAL");
-    db.pragma("cache_size = -64000");
-    db.pragma("temp_store = MEMORY");
-  }
+  const db = openDbConnection();
   console.log("Database file opened with WAL mode.");
 
   try {
@@ -983,7 +1009,7 @@ export function initDatabase() {
 
     // Ensure success_stories flags (is_all_page = 1, top 3 featured) are up to date and sample stories user_id = 0
     try {
-      db.prepare("UPDATE success_stories SET user_id = 0 WHERE is_all_page = 1 OR is_featured = 1").run();
+      try { db.prepare("UPDATE success_stories SET user_id = (SELECT id FROM users WHERE username = \x27admin\x27 LIMIT 1) WHERE (is_all_page = 1 OR is_featured = 1) AND (user_id IS NULL OR user_id = 0)").run(); } catch(e) {}
       db.prepare("UPDATE success_stories SET is_all_page = 1 WHERE is_public = 1 AND (is_all_page = 0 OR is_all_page IS NULL)").run();
       const currentFeatured = (db.prepare("SELECT COUNT(*) as count FROM success_stories WHERE is_featured = 1").get() as any)?.count || 0;
       if (currentFeatured === 0) {
