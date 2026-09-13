@@ -243,6 +243,91 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
     });
   };
 
+  const handleDownloadNotebookLMMaster = () => {
+    const docContent = `# 【ReMEETs（リミーツ）〜再会のボトルメール〜】
+## 総合プレゼンテーション・マスタードキュメント
+### （NotebookLM 音声解説・事業ピッチ・提携・投資家プレゼン対応マスターソース）
+
+---
+
+## 1. エグゼクティブ・サマリー (Executive Summary)
+
+### 1-1. サービス概要・ミッション
+- サービス名称: ReMEETs（リミーツ） 〜再会のボトルメール〜
+- キャッチコピー: 「あの日言えなかった想いを、あの人へ。」
+- ミッション: 現代のSNSでは繋がれない「思い出の相手（昔の友人、恩師、初恋、同級生、恩人など）」と、プライバシーと尊厳を守りながら奇跡の再会を果たす、エモーショナルなデジタル・ボトルメールプラットフォーム。
+
+### 1-2. ReMEETsが選ばれる「3つの革新性」
+1. 【記憶の交差点】: 相手の連絡先が不明でも、「名前」や「共通の思い出の地」を手がかりに手紙を届けられる。
+2. 【2人しか解けない思い出クイズ】: 赤の他人や悪意の第三者の不正開封を物理的に100%防ぐ、心温まる独自の合意照合システム。
+3. 【双方合意・明朗低価格（600円）】: 手紙の投函・検索は完全無料。お互いが再会を望んでクイズに正解した時だけ手紙が開通する安心インフラ。
+
+---
+
+## 2. 解決する社会課題と市場背景 (Problem & Market Opportunity)
+- 連絡先の喪失: 卒業、進学、転職、結婚、転居等で大切な人との縁が途切れてしまう。
+- 既存SNSの限界: FacebookやInstagramは現在のアカウント名や実名を知らないと到達できず、SNSを使っていない人には届かない。
+- マッチングアプリの不適合: 見知らぬ異性との恋愛目的であり、昔の恩人や同級生を探す用途には使えない。
+- 探偵・人探しの高額性: 30万〜100万円の高額費用がかかり、相手にも警戒感を与えてしまう。
+- ReMEETsの解決策: 「海に流す」情緒と、「思い出クイズ」による安全照合、相手の自由意志を尊重する「双方合意」で解決。
+
+---
+
+## 3. プロダクト機能とユーザー体験フロー (Product & UX Flow)
+- STEP 1【想いを綴る】（無料）: 名前、ゆかりの地、年代、思い出クイズ（1〜3問）を設定してボトルを海へ流す。
+- STEP 2【海を漂う・探す】（無料）: 自分の名前やゆかりの地域（都道府県・年代）で検索し、冒頭メッセージを誰でも無料閲覧。
+- STEP 3【奇跡の再会】（開通手数料 600円税込）: 思い出クイズに正解し、双方合意・電子的宣誓を経て手紙本文・連絡先が開通。
+
+---
+
+## 4. ビジネスモデルと財務性 (Business Model & Economics)
+- 開封手数料売上: +600 円 / 1開通
+- Stripe決済手数料: -22 円 (3.6%)
+- SMS電話番号認証費: -12 円
+- 1件あたり粗利益: +566 円（粗利率 約 94.3%）
+- 月額固定インフラ費: 数千円〜1万円程度（サーバーレス構成のため損益分岐点が極めて低い）。
+
+---
+
+## 5. ターゲット市場と事業成長戦略 (Market & Growth Strategy)
+- TAM（日本国内潜在市場）: 20代〜70代の人口 約8,000万人
+- SAM（顕在関心層）: 同窓会出席者、昔の知人を検索した経験のある層 約1,500万人
+- 成長施策: 奇跡の再会実話のショートドラマ・SNSマーケティング、同窓会代行・卒業アルバム・自治体タイアップ、海外（英語・アジア）多言語展開。
+
+---
+
+## 6. 競合比較と競争優位性 (Competitive Advantage & Moat)
+- Facebook/Xとの違い: アカウント不明でも「記憶」でマッチング可能。
+- マッチングアプリとの違い: 異性交際斡旋ではなく「過去の人間関係の再会・感謝」に特化。健全性と情緒性が圧倒的。
+- 探偵との違い: 費用が1/1000以下、相手への強制感がなく「双方が望んだ時だけ繋がる」安全設計。
+
+---
+
+## 7. テクノロジーとセキュリティ (Technology & Security Architecture)
+- フロントエンド: React 18, TypeScript, Tailwind CSS, Framer Motion, Vite
+- バックエンド: Node.js, Express, TypeScript, WebSocket
+- AI安全基盤: Google Gemini API による誹謗中傷・ストーカー・詐欺メッセージのリアルタイム自動検閲・隔離
+- ゼロナレッジ・プライバシー: 身分証明書の生データは自社サーバーに保管せず暗号化連携
+
+---
+
+## 8. 想定Q&A集 (FAQ)
+- Q: 出会い系サイトとの違いは？ -> A: 過去の知人との再会に特化しており、異性紹介事業には非該当。警察事前相談体制も完備。
+- Q: なぜ600円という低価格？ -> A: 経済的理由で諦めさせないため。原価約34円のため600円でも粗利率94%を維持。
+- Q: ストーカー被害の心配は？ -> A: 2人しか解けないクイズ、双方合意制、AI有害監視の三重防御で完全防止。
+`;
+
+    const blob = new Blob([docContent], { type: 'text/markdown;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `ReMEETs_NotebookLM_Presentation_Master_${new Date().toISOString().slice(0,10)}.md`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   const handlePrintIM = () => {
     window.print();
   };
@@ -270,6 +355,13 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
             </div>
 
             <div className="flex flex-wrap items-center gap-3">
+              <button
+                onClick={handleDownloadNotebookLMMaster}
+                className="px-5 py-3 bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-500 hover:to-cyan-500 text-white rounded-2xl text-xs font-bold flex items-center gap-2 shadow-lg shadow-teal-900/30 transition-all hover:scale-105 cursor-pointer border border-teal-400/40"
+              >
+                <Download size={15} />
+                <span>📥 NotebookLM用 プレゼン資料 (.md) 出力</span>
+              </button>
               <button
                 onClick={handleDownloadFullIM}
                 className="px-5 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl text-xs font-bold flex items-center gap-2 shadow-lg shadow-emerald-900/30 transition-all hover:scale-105 cursor-pointer"
