@@ -1,3 +1,7 @@
+import { AccountReceivedTab } from "./account/AccountReceivedTab";
+import { AccountSentTab } from "./account/AccountSentTab";
+import { AccountNotificationsTab } from "./account/AccountNotificationsTab";
+import { AccountProfileTab } from "./account/AccountProfileTab";
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation, useSearchParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -1339,718 +1343,94 @@ export const AccountPage = () => {
           </div>
 
           <div className="py-2">
-            {activeSubTab === 'received' && (
-              <div className="space-y-6 animate-fade-in text-black">
-                {/* Section 1: Connected Bottle Messages */}
-                <div className="flex items-center justify-between border-b border-brand-border pb-3">
-                  <h2 className="text-lg font-serif font-bold text-brand-dark tracking-widest flex items-center gap-2">
-                    <span>開封されたお手紙（届いた手紙一覧）</span>
-                    {connectedPosts.length > 0 && (
-                      <span className="text-xs bg-emerald-500/10 text-emerald-700 px-2.5 py-0.5 rounded-full font-bold font-sans">
-                        {connectedPosts.length}
-                      </span>
-                    )}
-                  </h2>
-                </div>
-                
-                {connectedPosts.length === 0 ? (
-                  <div className="text-center py-10 border border-dashed border-brand-border rounded-3xl p-6 bg-white/50 space-y-2">
-                    <p className="text-xs font-serif text-brand-dark/50">あなた宛てに届き、開封したお手紙はまだありません。</p>
-                    <p className="text-[11px] text-brand-dark/40 font-sans leading-relaxed">
-                      ボトル検索から思い出のキーワードやお名前を入力し、懐かしい人からのメッセージを見つけましょう。
-                    </p>
-                    <div className="pt-2">
-                      <Link to="/search" className="text-xs font-bold text-brand-primary hover:text-brand-accent transition-colors underline">
-                        自分宛ての手紙を探しに行く →
-                      </Link>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {connectedPosts.map((post: any) => (
-                      <div key={post.id} className="p-6 border border-emerald-500/20 bg-white rounded-3xl flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 shadow-sm hover:shadow transition-all relative overflow-hidden group">
-                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500 opacity-60 group-hover:opacity-100 transition-opacity" />
-                        <div className="space-y-2 max-w-2xl pl-1 flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest bg-emerald-50 px-2.5 py-0.5 rounded-full font-sans border border-emerald-500/10">
-                              {post.era?.toString().startsWith('19') ? post.era : `19${post.era}`}年頃 • {post.owner_nickname || post.searcher_name} さんより
-                            </span>
-                            <span className="text-[10px] font-bold text-brand-dark/40 font-mono">
-                              ID: {post.id}
-                            </span>
-                          </div>
-                          <h3 className="font-serif font-bold text-brand-dark text-base leading-tight">
-                            あなた（{post.target_name} 様）宛てのお手紙
-                          </h3>
-                          <p className="text-xs text-brand-dark/60 leading-relaxed font-sans">
-                            思い出の手がかり： 「{post.searcher_profile}」
-                          </p>
-                          <div className="p-3 bg-emerald-50/70 border border-emerald-200/80 rounded-xl space-y-1 font-sans">
-                            <p className="text-xs text-emerald-950 font-semibold flex items-center gap-1.5 flex-wrap">
-                              <span>👤 出会えたお相手（差出人）:</span>
-                              <strong className="text-sm font-bold text-emerald-900 bg-white px-2 py-0.5 rounded border border-emerald-300">
-                                {post.owner_full_name || post.searcher_full_name || post.searcher_name} 様
-                              </strong>
-                              {(post.author_maiden_name || post.searcher_maiden_name || post.owner_maiden_name) && (
-                                <span className="text-[11px] text-emerald-800 font-medium">
-                                  （旧姓: {post.author_maiden_name || post.searcher_maiden_name || post.owner_maiden_name}）
-                                </span>
-                              )}
-                              <span className="text-[11px] text-slate-500 font-normal">
-                                （呼称: {post.owner_nickname || post.searcher_name}）
-                              </span>
-                            </p>
-                          </div>
-
-                          {/* 開示された連絡先（LINE ID等）の常時表示 */}
-                          {(post.contact_id || post.contact_type || post.unlock_contact_info) && (
-                            <div className="mt-2 p-3.5 bg-emerald-50/90 border border-emerald-200/90 rounded-2xl space-y-1.5 font-sans">
-                              <div className="flex items-center justify-between gap-2 flex-wrap">
-                                <div className="flex items-center gap-2">
-                                  <span className="px-2.5 py-0.5 bg-emerald-700 text-white font-extrabold text-[10px] rounded-md uppercase tracking-wider">
-                                    開示された連絡先 ({post.contact_type || 'LINE'})
-                                  </span>
-                                  <span className="font-mono text-sm font-bold text-slate-900 select-all">
-                                    {post.contact_id || post.unlock_contact_info}
-                                  </span>
-                                </div>
-                                {(post.contact_id || post.unlock_contact_info) && (
-                                  <button
-                                    onClick={() => {
-                                      const info = post.contact_id || post.unlock_contact_info;
-                                      navigator.clipboard.writeText(info);
-                                      alert(`${post.contact_type || '連絡先'} ID（${info}）をコピーしました！`);
-                                    }}
-                                    className="px-3 py-1 text-[11px] font-bold text-emerald-900 bg-white hover:bg-emerald-100 border border-emerald-300 rounded-lg transition-all cursor-pointer active:scale-95 shadow-2xs"
-                                  >
-                                    IDをコピー
-                                  </button>
-                                )}
-                              </div>
-                              {(post.contact_note || post.unlock_message) && (
-                                <p className="text-[11px] text-emerald-800 leading-snug">
-                                  メモ: {post.contact_note || post.unlock_message}
-                                </p>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex flex-wrap items-center gap-2 shrink-0 self-start lg:self-center w-full lg:w-auto justify-start lg:justify-end mt-2 lg:mt-0">
-                          <button
-                            onClick={() => {
-                              setStoryTargetPost(post);
-                              setStoryTargetRole('receiver');
-                              setStoryModalOpen(true);
-                            }}
-                            className="px-4 py-2.5 text-xs bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 hover:border-amber-400 rounded-xl transition-all font-bold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs active:scale-95 whitespace-nowrap"
-                          >
-                            <Sparkles size={13} className="text-amber-600 shrink-0" />
-                            <span>再会エピソード・お礼を投稿 💌</span>
-                          </button>
-                          <Link to={getPostUrl(post)} className="px-5 py-2.5 text-xs bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl transition-all font-bold font-sans shadow-sm hover:shadow-md flex items-center gap-1 whitespace-nowrap">
-                            <span>お手紙・連絡先を見る</span>
-                          </Link>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+            {activeSubTab === "received" && (
+              <AccountReceivedTab
+                connectedPosts={connectedPosts}
+                setStoryTargetPost={setStoryTargetPost}
+                setStoryTargetRole={setStoryTargetRole}
+                setStoryModalOpen={setStoryModalOpen}
+              />
             )}
 
-            {activeSubTab === 'sent' && (
-              <div id="sent-bottles" className="space-y-6 animate-fade-in text-black">
-                {/* Section 2: Owned Bottle Letters */}
-                <div className="space-y-6">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-brand-border pb-3 gap-3">
-                    <h2 id="sent-bottles-title" className="text-lg font-serif font-bold text-brand-dark tracking-widest flex items-center gap-2">
-                      <span>あなたが流したボトルメールの一覧</span>
-                      {myPosts.length > 0 && (
-                        <span className="text-xs bg-brand-primary/10 text-brand-primary px-2.5 py-0.5 rounded-full font-bold font-sans">
-                          {myPosts.length}
-                        </span>
-                      )}
-                    </h2>
-                    {myPosts.length > 0 && (
-                      <div className="flex items-center gap-3">
-                        <label className="flex items-center gap-2 text-xs text-brand-dark/70 font-sans cursor-pointer hover:text-brand-dark select-none">
-                          <input
-                            type="checkbox"
-                            className="w-4 h-4 rounded border-brand-border text-brand-primary focus:ring-brand-primary cursor-pointer"
-                            checked={selectedPostIds.length > 0 && selectedPostIds.length === myPosts.length}
-                            onChange={(e) => {
-                              if (e.target.checked) {
-                                setSelectedPostIds(myPosts.map((p: any) => p.id));
-                              } else {
-                                setSelectedPostIds([]);
-                              }
-                            }}
-                          />
-                          <span>すべて選択 ({selectedPostIds.length}/{myPosts.length})</span>
-                        </label>
-                        {selectedPostIds.length > 0 && (
-                          <button
-                            onClick={handleBulkDeletePosts}
-                            disabled={isBulkDeleting}
-                            className="px-3.5 py-1.5 text-xs bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white font-bold rounded-xl transition-all shadow-sm flex items-center gap-1.5 cursor-pointer active:scale-95"
-                          >
-                            <Trash2 size={13} />
-                            <span>選択した {selectedPostIds.length} 件を一括削除</span>
-                          </button>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                  
-                  {myPosts.length === 0 ? (
-                    <div className="text-center py-10 border border-dashed border-brand-border rounded-3xl p-6 bg-white/50 space-y-3">
-                      <p className="text-xs font-serif text-brand-dark/50">漂流しているボトル手紙はありません。</p>
-                      <Link to="/create" className="btn-primary inline-flex animate-none text-xs">ボトルを海に投函する</Link>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      {myPosts.map((post: any) => (
-                        <div key={post.id} className="p-6 border border-brand-border bg-white rounded-3xl flex flex-col gap-5 shadow-sm hover:shadow transition-all relative overflow-hidden group">
-                          <div className={`absolute left-0 top-0 bottom-0 w-1 ${post.status === 'resolved' ? 'bg-indigo-500' : 'bg-brand-primary/30'}`} />
-                          
-                          {/* 上段部分: お手紙概要と操作ボタン */}
-                          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 w-full pl-1">
-                            <div className="flex items-start gap-3 flex-1 min-w-0">
-                              <input
-                                type="checkbox"
-                                className="w-5 h-5 mt-1 rounded border-zinc-300 text-brand-primary focus:ring-brand-primary cursor-pointer shrink-0"
-                                checked={selectedPostIds.includes(post.id)}
-                                onChange={(e) => {
-                                  if (e.target.checked) {
-                                    setSelectedPostIds(prev => [...prev, post.id]);
-                                  } else {
-                                    setSelectedPostIds(prev => prev.filter(id => id !== post.id));
-                                  }
-                                }}
-                              />
-                              <div className="space-y-2 max-w-2xl flex-1 min-w-0">
-                                <div className="flex items-center gap-2">
-                                  <span className="text-[10px] font-bold text-brand-primary uppercase tracking-widest bg-brand-primary/5 px-2 py-0.5 rounded-full font-sans">
-                                    {post.era?.toString().startsWith('19') ? post.era : `19${post.era}`}年頃
-                                  </span>
-                                  <span className="text-[10px] font-bold text-brand-dark/40 font-mono">
-                                    ID: {post.id}
-                                  </span>
-                                  {post.status === 'resolved' ? (
-                                    <span className="text-[9px] font-extrabold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-500/10 font-sans">
-                                      手紙開封済み（出会えた人）
-                                    </span>
-                                  ) : (
-                                    <span className="text-[9px] font-bold text-zinc-500 bg-zinc-100 px-2 py-0.5 rounded font-sans">
-                                      漂流中（返信待ち）
-                                    </span>
-                                  )}
-                                </div>
-                                <Link to={getPostUrl(post)} className="block group/title">
-                                  <h3 className="font-serif font-bold text-brand-dark group-hover/title:text-brand-primary text-base leading-tight mt-1 transition-colors flex items-center gap-1.5">
-                                    <span>{post.target_name} 様宛てのお手紙</span>
-                                    <ExternalLink size={13} className="text-brand-dark/40 group-hover/title:text-brand-primary transition-colors" />
-                                  </h3>
-                                </Link>
-                                <p className="text-xs text-brand-dark/60 leading-relaxed font-sans">
-                                  思い出の手がかり： 「{post.searcher_profile}」
-                                </p>
-                              </div>
-                            </div>
-                            <div className="flex flex-wrap items-center gap-2 shrink-0 self-start lg:self-center w-full lg:w-auto justify-start lg:justify-end mt-2 lg:mt-0">
-                              {post.status === 'resolved' && (
-                                <button
-                                  onClick={() => {
-                                    setStoryTargetPost(post);
-                                    setStoryTargetRole('sender');
-                                    setStoryModalOpen(true);
-                                  }}
-                                  className="px-4 py-2.5 text-xs bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 hover:border-amber-400 rounded-xl transition-all font-bold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs active:scale-95 whitespace-nowrap"
-                                >
-                                  <Sparkles size={13} className="text-amber-600 shrink-0" />
-                                  <span>再会エピソード・お礼を投稿 💌</span>
-                                </button>
-                              )}
-                              <Link to={getPostUrl(post)} className="px-4 py-2.5 text-xs bg-brand-dark hover:bg-brand-primary text-white rounded-xl transition-all font-bold font-sans shadow-sm hover:shadow-md flex items-center gap-1.5 whitespace-nowrap">
-                                <Eye size={13} />
-                                <span>{post.status === 'resolved' ? '開示された連絡先・手紙を確認' : 'お手紙・内容を閲覧・管理する'}</span>
-                              </Link>
-                              {post.status !== 'resolved' && (
-                                <Link to={`/edit/${post.id}`} className="px-4 py-2.5 text-xs bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition-all font-bold font-sans shadow-sm hover:shadow-md flex items-center gap-1.5 whitespace-nowrap">
-                                  <Edit size={13} />
-                                  <span>編集する</span>
-                                </Link>
-                              )}
-                              <button
-                                onClick={() => { setDeleteConfirmPost(post); setDeleteConsent(false); }}
-                                className="px-4 py-2.5 text-xs bg-white hover:bg-rose-50 text-rose-600 border border-rose-200 hover:border-rose-300 rounded-xl transition-all font-bold font-sans cursor-pointer flex items-center gap-1.5 shadow-sm whitespace-nowrap"
-                              >
-                                <Trash2 size={13} />
-                                <span>削除する</span>
-                              </button>
-                            </div>
-                          </div>
-
-                          {/* 下段部分: 🌊 漂流中ボトルの静かな活動ログ */}
-                          <div className="p-4 bg-brand-primary/5 rounded-2xl border border-brand-primary/10 space-y-3 font-sans max-w-full">
-                            <div className="flex items-center gap-2 text-brand-dark font-serif font-bold text-xs">
-                              <Activity size={14} className="text-brand-accent animate-pulse" />
-                              <span>漂流中ボトルの静かな活動ログ（統計カウンター）</span>
-                            </div>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-[11px] font-sans">
-                              <div className="p-2.5 bg-white rounded-xl border border-zinc-150 flex flex-col gap-1 shadow-sm">
-                                <span className="text-[9px] text-zinc-400 font-bold block uppercase tracking-wider">🌊 漂流/公開経過</span>
-                                <strong className="text-xs text-zinc-800 block">
-                                  {Math.max(1, Math.floor((Date.now() - new Date(post.created_at).getTime()) / (1000 * 60 * 60 * 24)))} <span className="text-[9px] font-normal text-zinc-400">日目</span>
-                                </strong>
-                              </div>
-                              <div className="p-2.5 bg-white rounded-xl border border-zinc-150 flex flex-col gap-1 shadow-sm">
-                                <span className="text-[9px] text-zinc-400 font-bold block uppercase tracking-wider">🔍 緩やかな検索露出</span>
-                                <strong className="text-xs text-zinc-800 block">
-                                  {Math.max(12, (post.id * 13) % 80 + 15)} <span className="text-[9px] font-normal text-zinc-400">回のヒット</span>
-                                </strong>
-                              </div>
-                              <div className="p-2.5 bg-white rounded-xl border border-zinc-150 flex flex-col gap-1 shadow-sm">
-                                <span className="text-[9px] text-zinc-400 font-bold block uppercase tracking-wider">🤖 検索ロボット巡回</span>
-                                <strong className="text-xs text-zinc-800 block">
-                                  {Math.max(2, Math.floor(post.id % 5) + 3)} <span className="text-[9px] font-normal text-zinc-400">回の検知</span>
-                                </strong>
-                              </div>
-                              <div className="p-2.5 bg-white rounded-xl border border-zinc-150 flex flex-col gap-1 shadow-sm">
-                                <span className="text-[9px] text-zinc-400 font-bold block uppercase tracking-wider">🔐 思い出クイズアクセス</span>
-                                <strong className="text-xs text-zinc-800 block">
-                                  {Math.max(1, (post.id * 3) % 9)} <span className="text-[9px] font-normal text-zinc-400">回の解決試行</span>
-                                </strong>
-                              </div>
-                            </div>
-                            <div className="text-[9px] text-zinc-500 flex items-center gap-1 justify-end font-sans">
-                              <ShieldCheck size={11} className="text-emerald-500" />
-                              <span>ボトルの死活・インデックス連携シグナル: 正常稼働中 (常時監視完了)</span>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
+            {activeSubTab === "sent" && (
+              <AccountSentTab
+                myPosts={myPosts}
+                loading={loading}
+                postActionLoading={postActionLoading}
+                handleTogglePostStatus={handleTogglePostStatus}
+                setDeleteConfirmModal={setDeleteConfirmModal}
+                setEditingPost={setEditingPost}
+                setShowEditModal={setShowEditModal}
+                setStoryTargetPost={setStoryTargetPost}
+                setStoryTargetRole={setStoryTargetRole}
+                setStoryModalOpen={setStoryModalOpen}
+              />
             )}
-            {activeSubTab === 'notifications' && (
-              <div className="space-y-10 animate-fade-in text-black font-sans">
-                {/* 1. あなた宛て新着手紙のメール通知（プロファイル連動・ワンタップON/OFF） */}
-                <div className="bg-gradient-to-br from-teal-50/90 via-white to-emerald-50/60 p-6 md:p-8 rounded-3xl border-2 border-teal-300/80 shadow-sm space-y-6">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-teal-200/70 pb-5">
-                    <div className="space-y-1.5">
-                      <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-extrabold text-teal-800 uppercase tracking-widest bg-teal-100/90 px-2.5 py-0.5 rounded-full border border-teal-200">
-                          Auto Match Alert
-                        </span>
-                        <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${
-                          notifyAlertEnabled ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-slate-100 text-slate-500 border border-slate-200'
-                        }`}>
-                          {notifyAlertEnabled ? '✓ メール通知 有効' : '✕ メール通知 停止中'}
-                        </span>
-                      </div>
-                      <h3 className="text-lg font-serif font-bold text-slate-900 flex items-center gap-2">
-                        <Bell size={20} className={notifyAlertEnabled ? "text-teal-700 animate-pulse" : "text-slate-400"} />
-                        <span>📬 あなた宛て新着手紙の入荷メール通知</span>
-                      </h3>
-                      <p className="text-xs text-slate-600 font-sans leading-relaxed max-w-xl">
-                        あなたのお名前（本名・旧姓・愛称）宛てに新しい想い出のボトルメールが海に流された瞬間、ご登録のメールアドレスへ即座にお知らせします。
-                      </p>
-                    </div>
 
-                    {/* ワンタップON/OFFスイッチ */}
-                    <div className="flex items-center gap-3 bg-white px-4 py-3 rounded-2xl border border-teal-200/80 shadow-xs shrink-0">
-                      <div className="text-right">
-                        <span className="text-xs font-bold block text-slate-800">
-                          {notifyAlertEnabled ? '自動通知 ON' : '自動通知 OFF'}
-                        </span>
-                        <span className="text-[10px] text-slate-400 block">
-                          {notifyAlertEnabled ? '手紙をリアルタイム検知' : '通知を一時停止中'}
-                        </span>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={handleToggleNotifyAlert}
-                        disabled={isUpdatingNotifyAlert}
-                        className={`w-14 h-8 flex items-center rounded-full p-1 transition-colors duration-300 cursor-pointer shadow-inner ${
-                          notifyAlertEnabled ? 'bg-teal-600' : 'bg-slate-300'
-                        }`}
-                        title={notifyAlertEnabled ? '通知を停止する' : '通知を有効にする'}
-                      >
-                        <div
-                          className={`bg-white w-6 h-6 rounded-full shadow-md transform transition-transform duration-300 flex items-center justify-center ${
-                            notifyAlertEnabled ? 'translate-x-6' : 'translate-x-0'
-                          }`}
-                        >
-                          {notifyAlertEnabled ? (
-                            <CheckCircle2 size={13} className="text-teal-600" />
-                          ) : (
-                            <X size={13} className="text-slate-400" />
-                          )}
-                        </div>
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* 自動照合されるプロファイル連動情報 */}
-                  <div className="space-y-3">
-                    <h4 className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                      <ShieldCheck size={14} className="text-teal-700" />
-                      <span>自動照合されるあなたのアカウント情報（他人の名前による監視を100%防止）</span>
-                    </h4>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 font-sans">
-                      <div className="bg-white p-3.5 rounded-2xl border border-slate-200 space-y-1 shadow-2xs">
-                        <span className="text-[10px] text-slate-400 font-bold block">👤 登録本名（姓名）</span>
-                        <span className="text-xs font-extrabold text-slate-900 block truncate">
-                          {user?.fullName || user?.username || '未設定'}
-                        </span>
-                      </div>
-
-                      <div className="bg-white p-3.5 rounded-2xl border border-slate-200 space-y-1 shadow-2xs">
-                        <span className="text-[10px] text-slate-400 font-bold block">🌸 旧姓（同窓生照合用）</span>
-                        <span className="text-xs font-extrabold text-rose-700 block truncate">
-                          {(user as any)?.maiden_name || (user as any)?.maidenName ? `旧姓: ${(user as any)?.maiden_name || (user as any)?.maidenName}` : '未登録（任意）'}
-                        </span>
-                      </div>
-
-                      <div className="bg-white p-3.5 rounded-2xl border border-slate-200 space-y-1 shadow-2xs">
-                        <span className="text-[10px] text-slate-400 font-bold block">✨ 愛称・ニックネーム</span>
-                        <span className="text-xs font-extrabold text-indigo-700 block truncate">
-                          {user?.nickname ? `@${user.nickname}` : '未登録（任意）'}
-                        </span>
-                      </div>
-
-                      <div className="bg-white p-3.5 rounded-2xl border border-slate-200 space-y-1 shadow-2xs">
-                        <span className="text-[10px] text-slate-400 font-bold block">📧 通知先メール</span>
-                        <span className="text-xs font-bold text-teal-800 block truncate">
-                          {user?.email || '未設定'}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1">
-                      <span>※ 本名・旧姓・ニックネームは「基本情報」タブからいつでも最新の内容に変更いただけます。</span>
-                      <button
-                        type="button"
-                        onClick={() => handleTabChange('profile')}
-                        className="text-teal-700 hover:text-teal-900 font-bold cursor-pointer hover:underline flex items-center gap-1 shrink-0"
-                      >
-                        <span>基本情報を編集する</span>
-                        <ArrowRight size={11} />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 2. 事務局・システムからの受信通知ログ */}
-                <div className="space-y-4 pt-2">
-                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-brand-border pb-4">
-                    <div className="space-y-1">
-                      <h2 className="text-xl font-serif font-bold text-brand-dark tracking-widest flex items-center gap-2">
-                        <Bell size={20} className="text-rose-600" />
-                        <span>🔔 事務局・システムからの受信通知ログ</span>
-                        {notifications.filter(n => !n.is_read).length > 0 && (
-                          <span className="text-xs bg-rose-500/10 text-rose-700 px-2.5 py-0.5 rounded-full font-bold font-sans">
-                            未読 {notifications.filter(n => !n.is_read).length}件
-                          </span>
-                        )}
-                      </h2>
-                      <p className="text-xs text-brand-dark/50 font-sans">
-                        事務局公式の一括配信アナウンス、ボトルメッセージへの回答試行・クイズ正解、想い出照合・連絡先開示通知などが時系列で一元整理されています。
-                      </p>
-                    </div>
-                    {notifications.filter(n => !n.is_read).length > 0 && (
-                      <button
-                        onClick={handleMarkAllAsRead}
-                        className="text-xs px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 hover:border-rose-300 rounded-xl transition-all font-bold cursor-pointer font-sans flex items-center gap-1.5 shadow-sm active:scale-95 shrink-0"
-                      >
-                        <CheckSquare size={13} />
-                        <span>すべて既読にする</span>
-                      </button>
-                    )}
-                  </div>
-
-                {notificationsLoading ? (
-                  <div className="py-16 flex flex-col items-center justify-center space-y-3">
-                    <BottleLoader />
-                    <p className="text-xs text-brand-dark/40 font-sans animate-pulse">通知情報を同期しています...</p>
-                  </div>
-                ) : notifications.length === 0 ? (
-                  <div className="text-center py-16 border border-dashed border-brand-border rounded-3xl p-6 bg-white/50 space-y-3">
-                    <div className="w-16 h-16 bg-rose-50/50 rounded-full flex items-center justify-center mx-auto border border-rose-100">
-                      <Bell size={24} className="text-rose-400 animate-pulse" />
-                    </div>
-                    <p className="text-xs font-serif text-brand-dark/50">現在、通知されたログやメッセージ配信はありません。</p>
-                    <p className="text-[11px] text-brand-dark/40 font-sans leading-relaxed max-w-md mx-auto">
-                      大切なお便りのクイズ正解通知や、運営事務局からの重要な全体/個別連絡、想い出照合・連絡先開示通知は、ここに綺麗にタイムライン整理されます。
-                    </p>
-                  </div>
-                ) : (
-                  <div className="space-y-3 max-w-4xl">
-                    {notifications.map((n: any) => {
-                      let IconComponent = Bell;
-                      let badgeText = "お知らせ";
-                      let colorClasses = "bg-rose-50 text-rose-700 border-rose-200/50";
-                      let actionText = "詳細を見る";
-
-                      if (n.type === "reunion_reveal" || n.type === "contact_opened" || n.type === "message") {
-                        IconComponent = MessageCircle;
-                        badgeText = "想い出照合・開通";
-                        colorClasses = "bg-emerald-50 text-emerald-800 border-emerald-200/40";
-                        actionText = "お手紙・連絡先を確認";
-                      } else if (n.type === "reunion" || n.type === "reunion_success" || n.type === "match") {
-                        IconComponent = Key;
-                        badgeText = "思い出再会";
-                        colorClasses = "bg-amber-50 text-amber-800 border-amber-200/40";
-                        actionText = "手紙を確認する";
-                      } else if (n.type === "admin_broadcast" || n.type === "system" || n.type === "broadcast") {
-                        IconComponent = Sparkles;
-                        badgeText = "公式アナウンス";
-                        colorClasses = "bg-indigo-50 text-indigo-800 border-indigo-200/40";
-                        actionText = "お知らせを開く";
-                      }
-
-                      return (
-                        <div
-                          key={n.id}
-                          className={`p-4 rounded-2xl border transition-all flex flex-col md:flex-row justify-between items-start md:items-center gap-3 ${
-                            !n.is_read ? 'bg-rose-50/50 border-rose-200' : 'bg-white border-zinc-100'
-                          }`}
-                        >
-                          <div className="flex items-start gap-3 flex-1">
-                            <IconComponent size={18} className="mt-0.5 text-zinc-600 shrink-0" />
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${colorClasses}`}>
-                                  {badgeText}
-                                </span>
-                                <span className="text-[10px] text-zinc-400 font-mono">
-                                  {formatNotificationDate(n.created_at)}
-                                </span>
-                              </div>
-                              <p className="text-xs text-zinc-800 font-medium mt-1">{n.content}</p>
-                            </div>
-                          </div>
-                          {n.link && (
-                            <button
-                              onClick={async () => {
-                                if (!n.is_read) await handleMarkAsRead(n.id);
-                                navigate(n.link);
-                              }}
-                              className="px-3 py-1 bg-zinc-900 text-white text-xs font-bold rounded-lg hover:bg-zinc-800 shrink-0"
-                            >
-                              {actionText}
-                            </button>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-            {activeSubTab === 'profile' && (
-              <div className="space-y-6 animate-fade-in text-black">
-                {/* 本人確認（eKYC）ステータス・手続きカード */}
-                <div id="ekyc-status-panel" className="transition-all duration-300">
-                  {Boolean(user?.is_ekyc_verified || localStorage.getItem('ekyc_verified') === 'true') ? (
-                    /* 認証完了済みカード（手続きボタンなし・スマートな証明書スタイル） */
-                    <div className="p-6 md:p-8 bg-gradient-to-br from-emerald-50/90 via-teal-50/40 to-white rounded-3xl border-2 border-emerald-300/90 shadow-sm space-y-4 relative overflow-hidden font-sans">
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-emerald-200/80 pb-4">
-                        <div className="flex items-center gap-3.5">
-                          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-600 text-white flex items-center justify-center shadow-xs shrink-0">
-                            <ShieldCheck size={26} className="text-white" />
-                          </div>
-                          <div>
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <span className="text-[10px] font-extrabold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full uppercase tracking-widest border border-emerald-300">
-                                Identity Verified
-                              </span>
-                              <span className="text-[11px] font-bold text-emerald-900 flex items-center gap-1">
-                                🛡️ 公的本人確認（eKYC）認証完了
-                              </span>
-                            </div>
-                            <h3 className="text-xl font-serif font-bold text-slate-900 mt-0.5">
-                              ご本人様確認が完了しています
-                            </h3>
-                          </div>
-                        </div>
-                        <div className="bg-white/95 px-3.5 py-2 rounded-2xl border border-emerald-200 shadow-2xs flex items-center gap-2.5 shrink-0 self-start sm:self-auto">
-                          <div className="text-right">
-                            <span className="text-[10px] text-slate-400 font-bold block leading-none">総合照合信頼度</span>
-                            <span className="text-sm font-mono font-extrabold text-emerald-700">99.6%</span>
-                          </div>
-                          <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                        </div>
-                      </div>
-
-                      <p className="text-xs text-slate-700 leading-relaxed bg-white/80 p-4 rounded-2xl border border-emerald-100">
-                        あなたのアカウントは公的身分証明書（運転免許証/マイナンバーカード等）による本人確認が正常に完了しています。
-                        思い出クイズが正解したお相手との間で、安全・確実に連絡先を開示し合える信頼のアカウント状態です。
-                      </p>
-
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
-                        <div className="bg-white p-3 rounded-xl border border-emerald-100/80 shadow-2xs">
-                          <span className="text-slate-400 text-[10px] font-bold block">認証ステータス</span>
-                          <span className="font-bold text-emerald-800 flex items-center gap-1 mt-0.5">
-                            ✓ 承認済み（正常稼働中）
-                          </span>
-                        </div>
-                        <div className="bg-white p-3 rounded-xl border border-emerald-100/80 shadow-2xs">
-                          <span className="text-slate-400 text-[10px] font-bold block">想い出照合＆連絡先開示</span>
-                          <span className="font-bold text-teal-800 flex items-center gap-1 mt-0.5">
-                            ✓ 即時開示可能
-                          </span>
-                        </div>
-                        <div className="bg-white p-3 rounded-xl border border-emerald-100/80 shadow-2xs">
-                          <span className="text-slate-400 text-[10px] font-bold block">セキュリティ保護</span>
-                          <span className="font-bold text-slate-700 flex items-center gap-1 mt-0.5">
-                            🔒 暗号化保護中
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    /* 未認証カード（事前本人確認の3大メリット案内） */
-                    <div className="p-6 md:p-8 bg-gradient-to-br from-teal-50/90 via-sky-50/30 to-white rounded-3xl border-2 border-teal-300/90 shadow-sm space-y-5 relative overflow-hidden font-sans">
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-teal-200/80 pb-4">
-                        <div className="flex items-center gap-3.5">
-                          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-teal-600 to-indigo-700 text-white flex items-center justify-center shadow-xs shrink-0">
-                            <ShieldCheck size={26} className="text-white" />
-                          </div>
-                          <div>
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <span className="text-[10px] font-extrabold text-teal-800 bg-teal-100 px-2.5 py-0.5 rounded-full uppercase tracking-widest border border-teal-300">
-                                Identity Verification
-                              </span>
-                              <span className="text-[11px] font-bold text-teal-900 flex items-center gap-1">
-                                🛡️ 未認証（事前登録受付中）
-                              </span>
-                            </div>
-                            <h3 className="text-xl font-serif font-bold text-slate-900 mt-0.5">
-                              事前本人確認（eKYC）の3大メリット
-                            </h3>
-                          </div>
-                        </div>
-                        <div className="bg-white/95 border border-teal-200 px-3.5 py-1.5 rounded-xl text-center shrink-0 shadow-2xs">
-                          <span className="text-[10px] text-slate-400 font-bold block">利用・事前確認</span>
-                          <span className="text-xs font-bold text-teal-800 font-sans">完全無料（手紙開封時 600円〜1,200円）</span>
-                        </div>
-                      </div>
-
-                      <p className="text-xs text-slate-700 leading-relaxed bg-white/80 p-3.5 rounded-2xl border border-teal-100">
-                        事前に公的身分証明書による本人確認を済ませておくことで、あなた宛ての手紙が海に流された際、<strong>審査待ち時間ゼロで即座に手紙本文と連絡先を開封</strong>できます。
-                      </p>
-
-                      {/* 3大メリット・アイコン小箱グリッド */}
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-sans">
-                        <div className="bg-white p-4 rounded-2xl border border-teal-100/90 shadow-2xs space-y-1.5">
-                          <div className="w-8 h-8 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center font-bold">
-                            <Zap size={16} />
-                          </div>
-                          <h4 className="font-bold text-slate-900 text-xs">1. 届いたら即時開封</h4>
-                          <p className="text-[11px] text-slate-500 leading-relaxed">
-                            お相手からの手紙が見つかった際、審査待ち時間なくその場ですぐ手紙本文と連絡先を開示できます。
-                          </p>
-                        </div>
-
-                        <div className="bg-white p-4 rounded-2xl border border-teal-100/90 shadow-2xs space-y-1.5">
-                          <div className="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center font-bold">
-                            <ShieldCheck size={16} />
-                          </div>
-                          <h4 className="font-bold text-slate-900 text-xs">2. なりすまし完全防止</h4>
-                          <p className="text-[11px] text-slate-500 leading-relaxed">
-                            あなたのお名前を他人が勝手に騙って手紙を受け取る不正を100%防止し、大切な想い出を守ります。
-                          </p>
-                        </div>
-
-                        <div className="bg-white p-4 rounded-2xl border border-teal-100/90 shadow-2xs space-y-1.5">
-                          <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center font-bold">
-                            <Sparkles size={16} />
-                          </div>
-                          <h4 className="font-bold text-slate-900 text-xs">3. お相手への信頼証明</h4>
-                          <p className="text-[11px] text-slate-500 leading-relaxed">
-                            「正真正銘の本人」という公式証明が付くため、お相手も安心・安全に連絡先を届けることができます。
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flex flex-col sm:flex-row items-center gap-3 pt-1">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setMypageEkycStep(1);
-                            setShowMypageEkycModal(true);
-                          }}
-                          className="w-full sm:w-auto flex-1 py-3.5 px-6 bg-gradient-to-r from-teal-700 via-teal-800 to-indigo-800 hover:from-teal-800 hover:to-indigo-900 text-white font-bold text-xs rounded-2xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer font-sans active:scale-98"
-                        >
-                          <ShieldCheck size={16} />
-                          <span>✨ 本人確認を完了して安心バッジを取得する（スムーズな開封へ）</span>
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* 3. 💖 サービスを応援する（サポーター寄付）専用カード */}
-                <div id="supporter-donation-card" className="p-6 md:p-8 bg-gradient-to-br from-pink-50/80 via-rose-50/30 to-white rounded-3xl border-2 border-pink-300 shadow-xs space-y-5 relative overflow-hidden">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-pink-200/80 pb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-teal-600 text-white flex items-center justify-center shadow-xs shrink-0">
-                        <Coffee size={24} className="text-white" />
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="text-[10px] font-extrabold text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full font-serif uppercase tracking-widest border border-amber-300/60">
-                            Supporter Contribution
-                          </span>
-                          {(user?.is_supporter || localStorage.getItem('remeets_is_supporter') === 'true') && (
-                            <span className="text-[10px] text-pink-900 bg-pink-100 border border-pink-300 font-extrabold px-2 py-0.5 rounded-full flex items-center gap-1">
-                              ⭐ 公式サポーター認証済み
-                            </span>
-                          )}
-                        </div>
-                        <h3 className="text-xl font-serif font-bold text-slate-900 mt-1 flex items-center gap-2">
-                          ☕ ReMEETsを応援（寄付）
-                        </h3>
-                      </div>
-                    </div>
-                    <span className="text-xs font-bold text-teal-800 bg-white/90 border border-teal-200 px-3 py-1.5 rounded-xl text-center shrink-0 shadow-2xs font-serif">
-                      一口 500円 (税込)
-                    </span>
-                  </div>
-
-                  <p className="text-xs text-slate-700 leading-relaxed font-sans bg-white/80 p-4 rounded-2xl border border-pink-100">
-                    ReMEETsはユーザーの皆様の「思い出の再会」を安全かつ快適に守るため、月額会費0円で運営されています。<br className="hidden md:inline" />
-                    「サービスを継続応援したい」「プラットフォームの発展に貢献したい」と思ってくださる方のための任意応援寄付です。ご寄付いただいた方にはプロファイル等に<strong>「⭐ 公式サポーター」ゴールドバッジ</strong>が付与されます。
-                  </p>
-
-                  <div className="flex flex-col sm:flex-row items-center gap-3 pt-1">
-                    <button
-                      type="button"
-                      onClick={() => navigate('/supporter')}
-                      className="w-full sm:w-auto flex-1 py-3 px-5 bg-white hover:bg-teal-50 text-teal-800 border border-teal-300 font-bold text-xs rounded-2xl shadow-2xs hover:shadow transition-all flex items-center justify-center gap-2 cursor-pointer font-sans active:scale-98"
-                    >
-                      <BookOpen size={16} className="text-teal-600" />
-                      <span>📖 寄付の趣旨・特典を見る</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setShowDonationModal(true)}
-                      className="w-full sm:w-auto flex-1 py-3 px-5 bg-gradient-to-r from-sky-600 via-teal-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 text-white font-bold text-xs rounded-2xl shadow-sm hover:shadow transition-all flex items-center justify-center gap-2 cursor-pointer font-sans active:scale-98"
-                    >
-                      <Coffee size={16} className="text-white shrink-0" />
-                      <span>ReMEETsを応援（寄付）</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
+            {activeSubTab === "notifications" && (
+              <AccountNotificationsTab
+                accountNotifications={accountNotifications}
+                actionLogs={actionLogs}
+                unreadNotifsCount={unreadNotifsCount}
+                notificationLoading={notificationLoading}
+                markingAllAsRead={markingAllAsRead}
+                handleMarkAllNotificationsAsRead={handleMarkAllNotificationsAsRead}
+                handleClearAllNotifications={handleClearAllNotifications}
+                handleSingleNotificationClick={handleSingleNotificationClick}
+                handleDeleteSingleNotification={handleDeleteSingleNotification}
+                isAlertModalOpen={isAlertModalOpen}
+                setIsAlertModalOpen={setIsAlertModalOpen}
+                setEditingAlert={setEditingAlert}
+                searchAlerts={searchAlerts}
+                isAlertsLoading={isAlertsLoading}
+                handleToggleAlertActive={handleToggleAlertActive}
+                handleDeleteAlert={handleDeleteAlert}
+              />
             )}
+
+            {activeSubTab === "profile" && (
+              <AccountProfileTab
+                user={user}
+                token={token}
+                updateUser={updateUser}
+                setShowMypageEkycModal={setShowMypageEkycModal}
+                profileSuccess={profileSuccess}
+                profileError={profileError}
+                handleUpdateProfile={handleUpdateProfile}
+                isUpdatingProfile={isUpdatingProfile}
+                newUsername={newUsername}
+                setNewUsername={setNewUsername}
+                newFullName={newFullName}
+                setNewFullName={setNewFullName}
+                newMaidenName={newMaidenName}
+                setNewMaidenName={setNewMaidenName}
+                newPrefecture={newPrefecture}
+                setNewPrefecture={setNewPrefecture}
+                newHometown={newHometown}
+                setNewHometown={setNewHometown}
+                newGraduationYear={newGraduationYear}
+                setNewGraduationYear={setNewGraduationYear}
+                newSchoolOrOrg={newSchoolOrOrg}
+                setNewSchoolOrOrg={setNewSchoolOrOrg}
+                newTargetRelation={newTargetRelation}
+                setNewTargetRelation={setNewTargetRelation}
+                isPasswordModalOpen={isPasswordModalOpen}
+                setIsPasswordModalOpen={setIsPasswordModalOpen}
+                passwordSuccess={passwordSuccess}
+                passwordError={passwordError}
+                currentPassword={currentPassword}
+                setCurrentPassword={setCurrentPassword}
+                newPassword={newPassword}
+                setNewPassword={setNewPassword}
+                confirmPassword={confirmPassword}
+                setConfirmPassword={setConfirmPassword}
+                handleChangePassword={handleChangePassword}
+                isChangingPassword={isChangingPassword}
+                setShowDonationModal={setShowDonationModal}
+                setMypageEkycStep={setMypageEkycStep}
+              />
+            )}
+
           </div>
 
           {/* 💌 ページ最下部：奇跡の再会エピソード・感謝の声の投稿カード */}
