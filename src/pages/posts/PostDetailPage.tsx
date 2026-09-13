@@ -1208,32 +1208,12 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
           <BotanicalDivider />
         </div>
 
-        {/* 🌈 受取人ヘッダー右上の濃い虹色（リッチレインボー）公的本人確認封蝋印（小さめ 42px：eKYC認証済みの場合のみ表示） */}
-        {Boolean(post.is_ekyc_verified) && (
-          <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20">
-            <button
-              type="button"
-              onClick={() => setShowEkycExplanationModal(true)}
-              className="group flex flex-col items-center cursor-pointer focus:outline-none transition-transform hover:scale-108 active:scale-95"
-              title="差出人は公的本人確認（eKYC）完了済み。タップして詳細を確認"
-            >
-              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full seal-rainbow flex flex-col items-center justify-center text-white shadow-lg">
-                <ShieldCheck size={18} className="text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]" />
-                <span className="text-[6.5px] font-black tracking-tighter uppercase -mt-0.5 text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">eKYC済</span>
-              </div>
-              <span className="mt-1 text-[8.5px] font-extrabold text-sky-950 bg-white/95 border border-sky-300 px-1.5 py-0.2 rounded-full shadow-xs group-hover:bg-sky-50 transition-colors">
-                公的確認
-              </span>
-            </button>
-          </div>
-        )}
-
         <div className="relative z-10 max-w-xl mx-auto space-y-5 sm:space-y-6 py-2 sm:py-3">
-          {/* 1. 親展レター・ヘッダーバー（左右に水平の基準線を通し、ピラミッド感を完全解消） */}
-          <div className="flex items-center justify-between border-b border-[#D8C7B0]/70 pb-3 px-1 text-xs text-stone-700">
+          {/* 1. 親展レター・ヘッダーバー（PC: 1行横並び / スマホ: 2段組で改行崩れを完全防止） */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4 border-b border-[#D8C7B0]/70 pb-3 px-1 text-xs text-stone-700">
             <div className="inline-flex items-center gap-1.5 font-bold uppercase tracking-wider text-[11px] text-stone-800">
-              <Sparkles size={13} className="text-amber-600 animate-pulse" />
-              <span>
+              <Sparkles size={13} className="text-amber-600 animate-pulse shrink-0" />
+              <span className="whitespace-nowrap">
                 {showDetails || post.status === 'resolved' 
                   ? "✨ 奇跡の再会（開通済み）" 
                   : isQuestionVerified 
@@ -1243,9 +1223,30 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                       : "記憶の交差点（親展ボトルメール）"}
               </span>
             </div>
-            <div className="inline-flex items-center gap-1.5 text-[11px] text-stone-600 font-sans">
-              <Calendar size={12} className="text-stone-500" />
-              <span>投函: <strong className="font-mono text-stone-900 font-bold">{new Date(post.created_at).toLocaleDateString('ja-JP').replace(/\//g, '.')}</strong></span>
+
+            {/* 2段目（スマホ時下段・左右均等 / PC時右側配置）: 投函日 ＆ 公的確認マーク */}
+            <div className="inline-flex items-center justify-between sm:justify-end gap-2 sm:gap-2.5 shrink-0">
+              <div className="inline-flex items-center gap-1 text-[11px] text-stone-600 font-sans">
+                <Calendar size={12} className="text-stone-500 shrink-0" />
+                <span>投函: <strong className="font-mono text-stone-900 font-bold">{new Date(post.created_at).toLocaleDateString('ja-JP').replace(/\//g, '.')}</strong></span>
+              </div>
+
+              {Boolean(post.is_ekyc_verified) && (
+                <button
+                  type="button"
+                  onClick={() => setShowEkycExplanationModal(true)}
+                  className="group flex flex-col items-center cursor-pointer focus:outline-none transition-transform hover:scale-108 active:scale-95 shrink-0 -my-1"
+                  title="差出人は公的本人確認（eKYC）完了済み。タップして詳細を確認"
+                >
+                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full seal-rainbow flex flex-col items-center justify-center text-white shadow-md">
+                    <ShieldCheck size={14} className="text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]" />
+                    <span className="text-[5.5px] font-black tracking-tighter uppercase -mt-0.5 text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">eKYC済</span>
+                  </div>
+                  <span className="mt-0.5 text-[7.5px] sm:text-[8px] font-extrabold text-sky-950 bg-white/95 border border-sky-300 px-1 py-0 rounded-full shadow-2xs group-hover:bg-sky-50 transition-colors leading-tight">
+                    公的確認
+                  </span>
+                </button>
+              )}
             </div>
           </div>
 

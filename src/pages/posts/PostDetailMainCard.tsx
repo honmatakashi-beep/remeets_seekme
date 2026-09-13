@@ -472,11 +472,10 @@ export const PostDetailMainCard = (props: any) => {
                       {/* 鮮やかで目立つグリーンのグラデーション「質問に答えて手紙を開く」ボタン */}
                       <button
                         onClick={handleStartContact}
-                        className="w-full py-4 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold rounded-2xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2.5 text-sm sm:text-base cursor-pointer hover:scale-[1.01] active:scale-[0.99] border border-emerald-400/30 group"
+                        className="w-full py-3.5 sm:py-4 px-4 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold rounded-2xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 text-[13px] sm:text-base cursor-pointer hover:scale-[1.01] active:scale-[0.99] border border-emerald-400/30 group"
                       >
-                        <Unlock size={18} className="text-emerald-200 group-hover:rotate-12 transition-transform" />
-                        <span className="tracking-wide">思い出の質問に答えて手紙を開く</span>
-                        <ArrowRight size={16} className="text-emerald-200 group-hover:translate-x-1 transition-transform" />
+                        <span className="tracking-wide whitespace-nowrap">思い出の質問に答えて手紙を開く</span>
+                        <ArrowRight size={16} className="text-emerald-200 group-hover:translate-x-1 transition-transform shrink-0" />
                       </button>
                       <p className="text-[11px] text-slate-500 text-center font-sans">
                         ※ 会員登録不要ですぐにお答えいただけます（不正利用防止のため暗号化保護されています）。
