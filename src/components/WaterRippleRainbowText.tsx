@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { BOTTLE_CURSOR_SVG_DATA_URL } from '../assets/bottleCursorBase64';
+import bottleCursorUrl from '../assets/images/hero_watercolor_bottle_cursor.svg';
 
 interface WaterRippleRainbowTextProps {
   className?: string;
@@ -429,7 +429,7 @@ export const WaterRippleRainbowText: React.FC<WaterRippleRainbowTextProps> = ({
       style={{ 
         touchAction: 'none',
         cursor: enableBottleCursor 
-          ? `url('${BOTTLE_CURSOR_SVG_DATA_URL}') 22 3, pointer` 
+          ? `url('${bottleCursorUrl}') 22 3, pointer` 
           : 'pointer' 
       }}
     >
@@ -438,7 +438,7 @@ export const WaterRippleRainbowText: React.FC<WaterRippleRainbowTextProps> = ({
         className="block max-w-full"
         style={{
           cursor: enableBottleCursor 
-            ? `url('${BOTTLE_CURSOR_SVG_DATA_URL}') 22 3, pointer` 
+            ? `url('${bottleCursorUrl}') 22 3, pointer` 
             : 'pointer'
         }}
       />

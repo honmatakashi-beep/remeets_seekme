@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { BOTTLE_CURSOR_SVG_DATA_URL } from '../assets/bottleCursorBase64';
+import bottleCursorUrl from '../assets/images/hero_watercolor_bottle_cursor.svg';
 
 interface WaterRippleHeroCanvasProps {
   imageSrc: string;
@@ -149,7 +149,7 @@ export const WaterRippleHeroCanvas: React.FC<WaterRippleHeroCanvasProps> = ({
       style={{ 
         touchAction: 'none',
         cursor: enableBottleCursor 
-          ? `url('${BOTTLE_CURSOR_SVG_DATA_URL}') 22 3, pointer` 
+          ? `url('${bottleCursorUrl}') 22 3, pointer` 
           : 'pointer'
       }}
     >

@@ -29,6 +29,9 @@ const excludePatterns = [
   '*.zip',
   '*.tar.gz',
   '*.log',
+  '*.db-wal',
+  '*.db-shm',
+  '*/.tempmediaStorage/*',
   '*/.gemini/*'
 ];
 
