@@ -38,6 +38,19 @@ export const useAdminDashboardState = () => {
   );
 
   // Core Data States
+  const [stats, setStats] = useState<any>({
+    summary: { totalUsers: 0, totalPosts: 0, totalReunions: 0, todayPosts: 0 },
+    recentReunions: [],
+    postsToday: [],
+    dailyStats: [],
+    eraStats: [],
+    regionStats: [],
+    pathStats: [],
+    refererStats: [],
+    searchStats: [],
+    deviceStats: [],
+    demographics: { ageDistribution: [], validAgeCount: 0, totalUsers: 0 }
+  });
   const [users, setUsers] = useState<any[]>([]);
   const [broadcasts, setBroadcasts] = useState<any[]>([]);
   const [posts, setPosts] = useState<any[]>([]);
@@ -290,6 +303,7 @@ export const useAdminDashboardState = () => {
         usersRes,
         broadcastsRes,
         postsRes,
+        statsRes,
         actionLogsRes,
         accessLogsRes,
         reportsRes,
@@ -308,6 +322,7 @@ export const useAdminDashboardState = () => {
         fetch('/api/admin/users', { headers: { 'Authorization': `Bearer ${token}` } }),
         fetch('/api/admin/broadcasts', { headers: { 'Authorization': `Bearer ${token}` } }),
         fetch('/api/admin/posts', { headers: { 'Authorization': `Bearer ${token}` } }),
+        fetch('/api/admin/stats', { headers: { 'Authorization': `Bearer ${token}` } }),
         fetch('/api/admin/action-logs', { headers: { 'Authorization': `Bearer ${token}` } }),
         fetch('/api/admin/access-logs', { headers: { 'Authorization': `Bearer ${token}` } }),
         fetch('/api/admin/reports', { headers: { 'Authorization': `Bearer ${token}` } }),
@@ -327,6 +342,7 @@ export const useAdminDashboardState = () => {
       if (usersRes.ok) setUsers(await usersRes.json());
       if (broadcastsRes.ok) setBroadcasts(await broadcastsRes.json());
       if (postsRes.ok) setPosts(await postsRes.json());
+      if (statsRes && statsRes.ok) setStats(await statsRes.json());
       if (actionLogsRes.ok) setActionLogs(await actionLogsRes.json());
       if (accessLogsRes.ok) setAccessLogs(await accessLogsRes.json());
       if (reportsRes.ok) adminModeration.setReports(await reportsRes.json());
@@ -487,6 +503,8 @@ export const useAdminDashboardState = () => {
     handleToggleHomeStats,
     fetchQuizAnalyticsOnly,
     fetchData,
+    stats,
+    setStats,
     ...adminContacts,
     ...adminVersions,
     ...adminUsers,

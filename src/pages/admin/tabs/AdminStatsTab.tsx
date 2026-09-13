@@ -74,7 +74,7 @@ export const AdminStatsTab = (props: any) => {
 
   // ─── ユーザー属性・デモグラフィクス集計（フォールバック付き） ───
   const demoData = React.useMemo(() => {
-    if (stats?.demographics && stats.demographics.ageDistribution) {
+    if (stats?.demographics?.ageDistribution) {
       return stats.demographics;
     }
 
@@ -391,7 +391,7 @@ export const AdminStatsTab = (props: any) => {
                   </div>
                   <div className="flex items-baseline gap-2">
                     <span className="text-3xl font-black font-serif text-slate-900">
-                      {(stats.summary.totalUsers || users?.length || 0).toLocaleString()}
+                      {(stats?.summary?.totalUsers || users?.length || 0).toLocaleString()}
                     </span>
                     <span className="text-xs text-slate-400 font-sans">人</span>
                   </div>
@@ -411,7 +411,7 @@ export const AdminStatsTab = (props: any) => {
                   </div>
                   <div className="flex items-baseline gap-2">
                     <span className="text-3xl font-black font-serif text-slate-900">
-                      {(posts?.length || stats.summary.totalPosts || 0).toLocaleString()}
+                      {(posts?.length || stats?.summary?.totalPosts || 0).toLocaleString()}
                     </span>
                     <span className="text-xs text-slate-400 font-sans">通</span>
                   </div>
@@ -431,7 +431,7 @@ export const AdminStatsTab = (props: any) => {
                   </div>
                   <div className="flex items-baseline gap-2">
                     <span className="text-3xl font-black font-serif text-slate-900">
-                      {(stats.summary.totalReunions || successStories?.length || 0).toLocaleString()}
+                      {(stats?.summary?.totalReunions || successStories?.length || 0).toLocaleString()}
                     </span>
                     <span className="text-xs text-slate-400 font-sans">組</span>
                   </div>
@@ -451,7 +451,7 @@ export const AdminStatsTab = (props: any) => {
                   </div>
                   <div className="flex items-baseline gap-2">
                     <span className="text-3xl font-black font-serif text-slate-900">
-                      {(stats.summary.todayPosts || 0).toLocaleString()}
+                      {(stats?.summary?.todayPosts || 0).toLocaleString()}
                     </span>
                     <span className="text-xs text-slate-400 font-sans">通 / 日</span>
                   </div>
@@ -504,7 +504,7 @@ export const AdminStatsTab = (props: any) => {
                       <div className="py-8 text-center text-slate-400 font-sans text-xs">本日の投函はまだありません</div>
                     ) : (
                       <>
-                        {stats.postsToday.slice(0, 5).map((p: any) => (
+                        {(stats?.postsToday || []).slice(0, 5).map((p: any) => (
                           <button 
                             key={p.id} 
                             onClick={() => handleViewPost(p)}
@@ -533,7 +533,7 @@ export const AdminStatsTab = (props: any) => {
                           onClick={() => setActiveTab('posts')}
                           className="w-full py-2.5 text-center text-teal-700 font-bold hover:bg-teal-50 rounded-xl transition-colors flex items-center justify-center gap-1.5 text-xs cursor-pointer border border-teal-200/60"
                         >
-                          <span>ボトル管理で全件を確認 (<span className="font-serif font-bold">{posts?.length || stats.summary.totalPosts || 0}</span>件)</span>
+                          <span>ボトル管理で全件を確認 (<span className="font-serif font-bold">{posts?.length || stats?.summary?.totalPosts || 0}</span>件)</span>
                           <ArrowRight size={13} />
                         </button>
                       </>
@@ -561,7 +561,7 @@ export const AdminStatsTab = (props: any) => {
                       <div className="py-8 text-center text-slate-400 font-sans text-xs">まだ再会データはありません</div>
                     ) : (
                       <>
-                        {stats.recentReunions.slice(0, 5).map((p: any) => (
+                        {(stats?.recentReunions || []).slice(0, 5).map((p: any) => (
                           <button 
                             key={p.id} 
                             onClick={() => handleViewPost(p)}
@@ -616,7 +616,7 @@ export const AdminStatsTab = (props: any) => {
                 </div>
 
                 {/* 投函アクティビティ (直近7日間) */}
-                {stats.dailyStats && (
+                {stats?.dailyStats && (
                   <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-100 shadow-sm space-y-6">
                     <div className="flex items-center justify-between">
                       <h3 className="text-base sm:text-lg font-serif font-bold text-slate-900 flex items-center gap-2">
