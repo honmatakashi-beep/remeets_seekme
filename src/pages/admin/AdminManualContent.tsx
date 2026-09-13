@@ -889,7 +889,7 @@ export const OldAdminManualContent = () => {
                     <div>
                       <span className="text-[10px] font-bold text-black/50 block font-sans">警察捜査・監査対応のための重要機能！</span>
                       <p className="text-xs text-amber-700 font-serif leading-relaxed bg-amber-500/5 p-3 rounded-xl border border-amber-500/10">
-                        「お相手が実は児童だった、脅迫目的のストーカーだった」という万一の重大事件時、管轄警察署の要請に基づいて、この画面に収集された合誓署名、対象日時、接続IPアドレス、申請された実年齢を即時CSV出力して証拠提出・適法開示ができます。
+                        「お相手が実は児童だった、脅迫目的のストーカーだった」という万一の重大事件時、管轄警察署の要請に基づいて、この画面に収集された電子的宣誓同意ログ、対象日時、接続IPアドレス、確認された年齢区分を即時CSV出力して証拠提出・適法開示ができます。
                       </p>
                     </div>
                   </div>

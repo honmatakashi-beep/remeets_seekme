@@ -654,7 +654,7 @@ module.exports = {
                     🛡️ 公的本人確認 (eKYC) 済
                   </span>
                   <span className="text-[11px] bg-zinc-100 text-black/70 border border-zinc-200 px-3 py-1 rounded-full font-medium flex items-center gap-1">
-                    📝 自己申告・誓約署名のみ
+                    📝 自己申告・電子的利用宣誓のみ
                   </span>
                   <span className="text-[11px] bg-rose-100 text-rose-800 border border-rose-300 px-3 py-1 rounded-full font-bold flex items-center gap-1">
                     ⚠️ AI不適切検知・隔離中

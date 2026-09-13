@@ -137,7 +137,7 @@ export const GuideSampleInlineViewer: React.FC<GuideSampleInlineViewerProps> = (
                 </h3>
                 <div className="flex items-center gap-2 pt-1 text-xs text-teal-800 font-semibold">
                   <ShieldCheck size={16} className="text-teal-600 shrink-0" />
-                  <span>差出人：あおい（公的本人確認・宣誓署名完了済み）</span>
+                  <span>差出人：あおい（公的本人確認・電子的利用宣誓完了済み）</span>
                 </div>
               </div>
 

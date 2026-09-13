@@ -1749,7 +1749,7 @@ export const AdminPoliceConsultationTab: React.FC = () => {
                 <li><strong>通信・認証ログ:</strong> 接続元IPアドレス、User-Agent、アクセス日時タイムスタンプ</li>
                 <li><strong>決済・本人確認ログ:</strong> Stripe決済記録、電子的利用宣誓同意レコード（※eKYC実施者の場合は公的審査結果を含む）</li>
                 <li><strong>投稿証跡:</strong> 投稿メッセージ全文、AI検閲で隔離された脅迫・暴言メッセージ原本（ai_flagged = 1）</li>
-                <li><strong>電子宣誓書:</strong> 同意した電子的利用宣誓のデジタル署名レコード</li>
+                <li><strong>電子宣誓書:</strong> 同意した電子的利用宣誓の明示的同意タイムスタンプ＆IPログレコード</li>
               </ul>
             </div>
           </section>
