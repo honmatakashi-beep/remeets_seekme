@@ -150,8 +150,8 @@ export const FinderEkycModal: React.FC<FinderEkycModalProps> = ({
               </button>
 
               {/* ✨ 時を超えて届いた想い出のメッセージ（開封冒頭ヘッダー） */}
-              <div className="text-center space-y-2.5 pb-4 border-b border-indigo-100/90 mb-5">
-                <div className="w-14 h-14 bg-gradient-to-br from-indigo-100 via-purple-100 to-amber-100 text-indigo-700 rounded-full shadow-md flex items-center justify-center mx-auto ring-4 ring-indigo-50">
+              <div className="text-center space-y-2.5 pb-4 border-b border-sky-100/90 mb-5">
+                <div className="w-14 h-14 bg-gradient-to-br from-sky-100 via-blue-50 to-amber-50 text-sky-700 rounded-full shadow-md flex items-center justify-center mx-auto ring-4 ring-sky-50">
                   <Heart size={28} className="animate-pulse text-rose-600 fill-rose-500/20" />
                 </div>
                 <div className="space-y-1">
@@ -165,8 +165,8 @@ export const FinderEkycModal: React.FC<FinderEkycModalProps> = ({
                 <p className="text-xs text-slate-600 font-sans leading-relaxed max-w-md mx-auto">
                   あなたを探し続けていた【{revealedContact?.searcherFullName || otherUserFullNameToUse || searcherFullName || post?.searcher_full_name || post?.owner_full_name || post?.searcher_name || searcherName || 'お相手'}】さんが残した「手紙の全文」と、今すぐ直接つながる「ご連絡先（LINE・メールアドレス等）」が開示されます。止まっていた大切な時間の続きを、ここから始めましょう。
                 </p>
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 text-indigo-800 text-[11px] font-bold rounded-full border border-indigo-200">
-                  <ShieldCheck size={14} className="text-indigo-600" />
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-sky-50 text-sky-900 text-[11px] font-bold rounded-full border border-sky-200">
+                  <ShieldCheck size={14} className="text-sky-600" />
                   <span>公的証明バッジ取得 ＆ 手紙開封コース（600円 税込）</span>
                 </div>
               </div>
@@ -174,9 +174,9 @@ export const FinderEkycModal: React.FC<FinderEkycModalProps> = ({
               {/* Step 1: 身分証明書の選択と基本情報の入力 */}
               {finderEkycStep === 1 && (
                 <div className="space-y-6">
-                  <div className="flex items-center justify-between border-b border-indigo-150 pb-3 gap-2">
+                  <div className="flex items-center justify-between border-b border-sky-100 pb-3 gap-2">
                     <div>
-                      <span className="text-[10px] font-bold text-indigo-700 uppercase tracking-widest block font-sans">Step 1 / 4</span>
+                      <span className="text-[10px] font-bold text-sky-700 uppercase tracking-widest block font-sans">Step 1 / 4</span>
                       <h3 className="text-lg font-bold text-black font-serif">1. 身分証明書の選択と基本情報の入力</h3>
                       <p className="text-xs text-black/60 font-sans leading-relaxed mt-0.5">
                         ご提示いただく身分証明書を選択し、本名と生年月日をご記入ください。
@@ -189,10 +189,10 @@ export const FinderEkycModal: React.FC<FinderEkycModalProps> = ({
                         setFinderEkycBirthdate("1995-05-15");
                         setFinderEkycDocType("license");
                       }}
-                      className="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-lg text-[11px] font-bold transition-all shadow-2xs shrink-0 flex items-center gap-1 cursor-pointer"
+                      className="px-2.5 py-1 bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 rounded-lg text-[11px] font-bold transition-all shadow-2xs shrink-0 flex items-center gap-1 cursor-pointer"
                       title="検証用のテスト氏名・生年月日を自動入力"
                     >
-                      <Sparkles size={12} className="text-indigo-600" />
+                      <Sparkles size={12} className="text-sky-600" />
                       <span>⚡ テスト自動入力</span>
                     </button>
                   </div>
@@ -212,7 +212,7 @@ export const FinderEkycModal: React.FC<FinderEkycModalProps> = ({
                             onClick={() => setFinderEkycDocType(doc.id)}
                             className={`py-3 px-2 border rounded-xl text-xs font-bold transition-all text-center cursor-pointer ${
                               finderEkycDocType === doc.id
-                                ? 'border-indigo-600 bg-indigo-50 text-indigo-600 ring-2 ring-indigo-500/20'
+                                ? 'border-sky-500 bg-sky-50 text-sky-700 ring-2 ring-sky-500/20'
                                 : 'border-zinc-200 hover:bg-zinc-50 text-zinc-600'
                             }`}
                           >
@@ -230,7 +230,7 @@ export const FinderEkycModal: React.FC<FinderEkycModalProps> = ({
                           value={finderEkycName}
                           onChange={(e) => setFinderEkycName(e.target.value)}
                           placeholder="山田 太郎"
-                          className="w-full px-4 py-2.5 border border-zinc-200 rounded-xl text-sm focus:outline-none focus:border-indigo-600 font-sans"
+                          className="w-full px-4 py-2.5 border border-zinc-200 rounded-xl text-sm focus:outline-none focus:border-sky-500 font-sans"
                         />
                       </div>
                       <div>
@@ -239,7 +239,7 @@ export const FinderEkycModal: React.FC<FinderEkycModalProps> = ({
                           type="date"
                           value={finderEkycBirthdate}
                           onChange={(e) => setFinderEkycBirthdate(e.target.value)}
-                          className="w-full px-4 py-2.5 border border-zinc-200 rounded-xl text-sm focus:outline-none focus:border-indigo-600 font-sans"
+                          className="w-full px-4 py-2.5 border border-zinc-200 rounded-xl text-sm focus:outline-none focus:border-sky-500 font-sans"
                         />
                       </div>
                     </div>
@@ -256,7 +256,7 @@ export const FinderEkycModal: React.FC<FinderEkycModalProps> = ({
                     <button
                       disabled={!finderEkycName || !finderEkycBirthdate}
                       onClick={() => setFinderEkycStep(2)}
-                      className="flex-1 py-3.5 bg-gradient-to-r from-indigo-600 via-indigo-700 to-purple-700 hover:from-indigo-700 hover:to-purple-800 disabled:opacity-50 text-white rounded-xl text-sm font-bold shadow transition-all cursor-pointer disabled:cursor-not-allowed flex items-center justify-center gap-2 active:scale-98"
+                      className="flex-1 py-3.5 bg-gradient-to-r from-sky-400 via-sky-500 to-blue-500 hover:from-sky-500 hover:to-blue-600 disabled:opacity-50 text-white rounded-xl text-sm font-bold shadow transition-all cursor-pointer disabled:cursor-not-allowed flex items-center justify-center gap-2 active:scale-98"
                     >
                       <span>証明書の撮影画面へ進む（ガイド枠あり）</span>
                       <ArrowRight size={16} />
@@ -269,7 +269,7 @@ export const FinderEkycModal: React.FC<FinderEkycModalProps> = ({
               {finderEkycStep === 2 && (
                 <div className="space-y-4">
                   <div className="text-center space-y-1">
-                    <span className="text-[10px] font-bold text-indigo-700 uppercase tracking-widest block font-sans">Step 2 / 4</span>
+                    <span className="text-[10px] font-bold text-sky-700 uppercase tracking-widest block font-sans">Step 2 / 4</span>
                     <h3 className="text-lg font-bold text-black font-serif">2. 身分証明書の撮影・アップロード</h3>
                     <p className="text-xs text-zinc-500 font-sans">
                       反射や四隅の欠けを防ぐガイドライン枠線に合わせて撮影を行ってください。
@@ -293,9 +293,9 @@ export const FinderEkycModal: React.FC<FinderEkycModalProps> = ({
               {/* Step 3: Payment (Credit Card Billing) */}
               {finderEkycStep === 3 && (
                 <div className="space-y-5 py-2 text-left">
-                  <div className="flex items-center justify-between border-b border-indigo-100 pb-3 gap-2">
+                  <div className="flex items-center justify-between border-b border-sky-100 pb-3 gap-2">
                     <div>
-                      <span className="text-[10px] font-bold text-indigo-700 uppercase tracking-widest block font-sans">Step 3 / 4</span>
+                      <span className="text-[10px] font-bold text-sky-700 uppercase tracking-widest block font-sans">Step 3 / 4</span>
                       <h3 className="text-lg font-serif font-bold text-zinc-900">
                         3. 安全照合・手紙開封手数料のお支払い
                       </h3>
@@ -308,31 +308,31 @@ export const FinderEkycModal: React.FC<FinderEkycModalProps> = ({
                         setFinderPayCardCvc("123");
                         setFinderPayCardName("TAKASHI HONMA");
                       }}
-                      className="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-lg text-[11px] font-bold transition-all shadow-2xs shrink-0 flex items-center gap-1 cursor-pointer"
+                      className="px-2.5 py-1 bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 rounded-lg text-[11px] font-bold transition-all shadow-2xs shrink-0 flex items-center gap-1 cursor-pointer"
                       title="検証用のStripeテストカード情報を自動入力"
                     >
-                      <Sparkles size={12} className="text-indigo-600" />
+                      <Sparkles size={12} className="text-sky-600" />
                       <span>⚡ テストカード自動入力</span>
                     </button>
                   </div>
 
                   {/* 🤝 安心・安全な連絡先相互開示の仕組みカード（案3） */}
-                  <div className="p-3.5 bg-gradient-to-br from-indigo-50/90 via-purple-50/50 to-white rounded-2xl border border-indigo-200/90 shadow-2xs space-y-2 text-xs font-sans">
-                    <div className="flex items-center gap-1.5 font-bold text-indigo-950 font-serif">
-                      <ShieldCheck size={15} className="text-indigo-600" />
+                  <div className="p-3.5 bg-gradient-to-br from-sky-50/90 via-blue-50/50 to-white rounded-2xl border border-sky-200/90 shadow-2xs space-y-2 text-xs font-sans">
+                    <div className="flex items-center gap-1.5 font-bold text-sky-950 font-serif">
+                      <ShieldCheck size={15} className="text-sky-600" />
                       <span>🤝 安心・安全な連絡先相互開示のお約束</span>
                     </div>
                     <ul className="space-y-1.5 text-[11px] text-slate-600 pl-1 leading-relaxed">
                       <li className="flex items-start gap-1.5">
-                        <span className="text-indigo-600 font-bold">✓</span>
+                        <span className="text-sky-600 font-bold">✓</span>
                         <span>差出人の<strong>「手紙の全文」</strong>と<strong>「直通連絡先（LINE・メール等）」</strong>が即座に開示されます。</span>
                       </li>
                       <li className="flex items-start gap-1.5">
-                        <span className="text-indigo-600 font-bold">✓</span>
+                        <span className="text-sky-600 font-bold">✓</span>
                         <span>あなたのアカウント情報も公的認証マーク付きでお相手と安全に照合・共有されます。</span>
                       </li>
                       <li className="flex items-start gap-1.5">
-                        <span className="text-indigo-600 font-bold">✓</span>
+                        <span className="text-sky-600 font-bold">✓</span>
                         <span>256-bit暗号化と公的eKYCにより、第三者によるなりすまし・個人情報の漏洩を100%防御します。</span>
                       </li>
                     </ul>
@@ -344,24 +344,24 @@ export const FinderEkycModal: React.FC<FinderEkycModalProps> = ({
                       <span className="text-zinc-900 font-mono font-bold">600 円</span>
                     </div>
                     <div className="border-t border-dashed border-zinc-200 pt-2 flex justify-between items-center">
-                      <span className="text-xs text-indigo-950 font-extrabold">
+                      <span className="text-xs text-sky-950 font-extrabold">
                         一括お引き落とし合計額（買い切り）
                       </span>
-                      <span className="text-base text-indigo-900 font-sans font-bold">600 円 <span className="text-[10px] font-normal text-indigo-700">(税込)</span></span>
+                      <span className="text-base text-sky-900 font-sans font-bold">600 円 <span className="text-[10px] font-normal text-sky-700">(税込)</span></span>
                     </div>
                   </div>
 
                   {/* Document capture summary badge */}
                   {finderEkycCapturedImages.front && (
-                    <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 flex items-center justify-between text-xs">
-                      <div className="flex items-center gap-2 text-emerald-800 font-bold">
-                        <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+                    <div className="bg-sky-50 border border-sky-200 rounded-xl p-3 flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-2 text-sky-900 font-bold">
+                        <CheckCircle2 size={16} className="text-sky-600 shrink-0" />
                         <span>身分証撮影完了（全3枚・カメラ自動切断・暗号化保護）</span>
                       </div>
                       <button
                         type="button"
                         onClick={() => setFinderEkycStep(2)}
-                        className="text-[11px] text-indigo-600 hover:underline font-bold shrink-0 ml-2 cursor-pointer"
+                        className="text-[11px] text-sky-600 hover:underline font-bold shrink-0 ml-2 cursor-pointer"
                       >
                         再撮影
                       </button>
@@ -398,7 +398,7 @@ export const FinderEkycModal: React.FC<FinderEkycModalProps> = ({
                     <button
                       disabled={!finderPayCardNumber || !finderPayCardExpiry || !finderPayCardCvc || !finderPayCardName}
                       onClick={() => setFinderEkycStep(4)}
-                      className="flex-1 py-3.5 bg-gradient-to-r from-indigo-600 via-indigo-700 to-purple-700 hover:from-indigo-700 hover:to-purple-800 disabled:opacity-50 text-white rounded-xl text-sm font-bold shadow-md transition-all cursor-pointer disabled:cursor-not-allowed active:scale-98"
+                      className="flex-1 py-3.5 bg-gradient-to-r from-sky-400 via-sky-500 to-blue-500 hover:from-sky-500 hover:to-blue-600 disabled:opacity-50 text-white rounded-xl text-sm font-bold shadow-md transition-all cursor-pointer disabled:cursor-not-allowed active:scale-98"
                     >
                       600円をお支払いして公的証明・手紙開示を完了
                     </button>
@@ -412,20 +412,20 @@ export const FinderEkycModal: React.FC<FinderEkycModalProps> = ({
                   {/* 中央の二重発光スピナー & アイコン */}
                   <div className="relative inline-flex items-center justify-center my-2">
                     {/* 外周の発光オーラ */}
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-teal-500/20 via-emerald-500/30 to-amber-400/20 blur-xl animate-pulse" />
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-sky-400/20 via-blue-500/30 to-amber-400/20 blur-xl animate-pulse" />
                     
                     {/* スピナーリング（外側・反時計回り） */}
-                    <div className="w-24 h-24 rounded-full border-2 border-dashed border-indigo-300/60 animate-[spin_8s_linear_infinite]" />
+                    <div className="w-24 h-24 rounded-full border-2 border-dashed border-sky-300/60 animate-[spin_8s_linear_infinite]" />
                     
                     {/* スピナーリング（内側・時計回り） */}
-                    <div className="absolute w-20 h-20 rounded-full border-3 border-indigo-100 border-t-indigo-600 border-r-teal-500 animate-spin" />
+                    <div className="absolute w-20 h-20 rounded-full border-3 border-sky-100 border-t-sky-500 border-r-blue-500 animate-spin" />
                     
                     {/* 中央コンテンツ */}
-                    <div className="absolute inset-0 flex flex-col items-center justify-center text-indigo-900 font-serif">
-                      <span className="text-xl font-bold tracking-[0.14em] md:tracking-[0.18em] bg-gradient-to-r from-indigo-700 via-teal-600 to-emerald-600 bg-clip-text text-transparent pl-0.5">
+                    <div className="absolute inset-0 flex flex-col items-center justify-center text-sky-900 font-serif">
+                      <span className="text-xl font-bold tracking-[0.14em] md:tracking-[0.18em] bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent pl-0.5">
                         {finderEkycProgress}%
                       </span>
-                      <span className="text-[9px] font-semibold text-indigo-600/80 uppercase tracking-[0.22em] -mt-0.5">
+                      <span className="text-[9px] font-semibold text-sky-600/80 uppercase tracking-[0.22em] -mt-0.5">
                         Processing
                       </span>
                     </div>
@@ -433,8 +433,8 @@ export const FinderEkycModal: React.FC<FinderEkycModalProps> = ({
 
                   {/* ステータスタイトル */}
                   <div className="space-y-1">
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-xs font-serif font-bold tracking-[0.1em] shadow-xs">
-                      <ShieldCheck size={14} className="text-emerald-600 animate-pulse" />
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-50 border border-sky-200/80 text-sky-800 text-xs font-serif font-bold tracking-[0.1em] shadow-xs">
+                      <ShieldCheck size={14} className="text-sky-600 animate-pulse" />
                       <span>公的本人確認・撮影照合＆決済処理中</span>
                     </div>
                     <h3 className="text-base font-serif font-extrabold tracking-[0.12em] md:tracking-[0.16em] text-zinc-900 pt-1">
@@ -446,23 +446,23 @@ export const FinderEkycModal: React.FC<FinderEkycModalProps> = ({
                     </h3>
                   </div>
 
-                  {/* プログレスバー本体（綺麗な虹色グラデーションバー） */}
+                  {/* プログレスバー本体 */}
                   <div className="space-y-1.5 px-2">
                     <div className="flex items-center justify-between text-xs font-serif font-semibold text-zinc-500 px-1">
-                      <span className="flex items-center gap-1 text-[11px] text-indigo-700 font-serif tracking-[0.1em]">
+                      <span className="flex items-center gap-1 text-[11px] text-sky-700 font-serif tracking-[0.1em]">
                         <Lock size={12} /> 256bit 暗号化安全通信
                       </span>
-                      <span className="text-emerald-700 font-bold font-serif tracking-[0.12em]">{finderEkycProgress} / 100%</span>
+                      <span className="text-sky-700 font-bold font-serif tracking-[0.12em]">{finderEkycProgress} / 100%</span>
                     </div>
 
                     <div className="w-full bg-slate-100 h-3.5 rounded-full p-0.5 shadow-inner border border-slate-200/80 relative overflow-hidden">
                       <div 
-                        className="bg-gradient-to-r from-teal-500 via-emerald-500 to-amber-400 h-full rounded-full transition-all duration-300 relative shadow-xs" 
+                        className="bg-gradient-to-r from-sky-400 via-sky-500 to-blue-500 h-full rounded-full transition-all duration-300 relative shadow-xs" 
                         style={{ width: `${finderEkycProgress}%` }}
                       >
                         {/* バー先端のLED光彩ノード */}
                         {finderEkycProgress > 0 && finderEkycProgress < 100 && (
-                          <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-3 h-3 rounded-full bg-white border-2 border-emerald-600 shadow-[0_0_8px_rgba(16,185,129,0.9)] z-10" />
+                          <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-3 h-3 rounded-full bg-white border-2 border-sky-500 shadow-[0_0_8px_rgba(14,165,233,0.9)] z-10" />
                         )}
                       </div>
                     </div>
@@ -470,44 +470,44 @@ export const FinderEkycModal: React.FC<FinderEkycModalProps> = ({
 
                   {/* 4ステップ進行タイムライン */}
                   <div className="bg-slate-50/80 rounded-xl p-3 border border-slate-200/60 text-left space-y-2 text-xs font-serif">
-                    <div className={`flex items-center justify-between p-2 rounded-lg transition-all ${finderEkycProgress >= 0 && finderEkycProgress < 25 ? 'bg-white shadow-xs border border-indigo-200 font-bold text-indigo-900' : finderEkycProgress >= 25 ? 'text-zinc-400' : 'text-zinc-500'}`}>
+                    <div className={`flex items-center justify-between p-2 rounded-lg transition-all ${finderEkycProgress >= 0 && finderEkycProgress < 25 ? 'bg-white shadow-xs border border-sky-200 font-bold text-sky-900' : finderEkycProgress >= 25 ? 'text-zinc-400' : 'text-zinc-500'}`}>
                       <span className="flex items-center gap-2">
-                        <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-serif font-bold ${finderEkycProgress >= 25 ? 'bg-emerald-500 text-white' : 'bg-indigo-100 text-indigo-800'}`}>
+                        <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-serif font-bold ${finderEkycProgress >= 25 ? 'bg-sky-500 text-white' : 'bg-sky-100 text-sky-800'}`}>
                           {finderEkycProgress >= 25 ? '✓' : '1'}
                         </span>
                         <span className="tracking-[0.08em] md:tracking-[0.12em]">撮影写真の厚み・顔画像解析</span>
                       </span>
-                      {finderEkycProgress < 25 && <span className="text-[10px] text-indigo-600 animate-pulse font-serif font-semibold tracking-[0.14em]">分析中...</span>}
+                      {finderEkycProgress < 25 && <span className="text-[10px] text-sky-600 animate-pulse font-serif font-semibold tracking-[0.14em]">分析中...</span>}
                     </div>
 
-                    <div className={`flex items-center justify-between p-2 rounded-lg transition-all ${finderEkycProgress >= 25 && finderEkycProgress < 50 ? 'bg-white shadow-xs border border-indigo-200 font-bold text-indigo-900' : finderEkycProgress >= 50 ? 'text-zinc-400' : 'text-zinc-500'}`}>
+                    <div className={`flex items-center justify-between p-2 rounded-lg transition-all ${finderEkycProgress >= 25 && finderEkycProgress < 50 ? 'bg-white shadow-xs border border-sky-200 font-bold text-sky-900' : finderEkycProgress >= 50 ? 'text-zinc-400' : 'text-zinc-500'}`}>
                       <span className="flex items-center gap-2">
-                        <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-serif font-bold ${finderEkycProgress >= 50 ? 'bg-emerald-500 text-white' : 'bg-indigo-100 text-indigo-800'}`}>
+                        <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-serif font-bold ${finderEkycProgress >= 50 ? 'bg-sky-500 text-white' : 'bg-sky-100 text-sky-800'}`}>
                           {finderEkycProgress >= 50 ? '✓' : '2'}
                         </span>
                         <span className="tracking-[0.08em] md:tracking-[0.12em]">身元氏名＆生年月日の暗号照合</span>
                       </span>
-                      {finderEkycProgress >= 25 && finderEkycProgress < 50 && <span className="text-[10px] text-indigo-600 animate-pulse font-serif font-semibold tracking-[0.14em]">照合中...</span>}
+                      {finderEkycProgress >= 25 && finderEkycProgress < 50 && <span className="text-[10px] text-sky-600 animate-pulse font-serif font-semibold tracking-[0.14em]">照合中...</span>}
                     </div>
 
-                    <div className={`flex items-center justify-between p-2 rounded-lg transition-all ${finderEkycProgress >= 50 && finderEkycProgress < 75 ? 'bg-white shadow-xs border border-indigo-200 font-bold text-indigo-900' : finderEkycProgress >= 75 ? 'text-zinc-400' : 'text-zinc-500'}`}>
+                    <div className={`flex items-center justify-between p-2 rounded-lg transition-all ${finderEkycProgress >= 50 && finderEkycProgress < 75 ? 'bg-white shadow-xs border border-sky-200 font-bold text-sky-900' : finderEkycProgress >= 75 ? 'text-zinc-400' : 'text-zinc-500'}`}>
                       <span className="flex items-center gap-2">
-                        <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-serif font-bold ${finderEkycProgress >= 75 ? 'bg-emerald-500 text-white' : 'bg-indigo-100 text-indigo-800'}`}>
+                        <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-serif font-bold ${finderEkycProgress >= 75 ? 'bg-sky-500 text-white' : 'bg-sky-100 text-sky-800'}`}>
                           {finderEkycProgress >= 75 ? '✓' : '3'}
                         </span>
-                        <span className="tracking-[0.08em] md:tracking-[0.12em]">Stripe 1,200円決済処理（審査＋開封）</span>
+                        <span className="tracking-[0.08em] md:tracking-[0.12em]">Stripe 600円決済処理（安全開示手数料）</span>
                       </span>
-                      {finderEkycProgress >= 50 && finderEkycProgress < 75 && <span className="text-[10px] text-indigo-600 animate-pulse font-serif font-semibold tracking-[0.14em]">決済中...</span>}
+                      {finderEkycProgress >= 50 && finderEkycProgress < 75 && <span className="text-[10px] text-sky-600 animate-pulse font-serif font-semibold tracking-[0.14em]">決済中...</span>}
                     </div>
 
-                    <div className={`flex items-center justify-between p-2 rounded-lg transition-all ${finderEkycProgress >= 75 ? 'bg-white shadow-xs border border-indigo-200 font-bold text-indigo-900' : 'text-zinc-500'}`}>
+                    <div className={`flex items-center justify-between p-2 rounded-lg transition-all ${finderEkycProgress >= 75 ? 'bg-white shadow-xs border border-sky-200 font-bold text-sky-900' : 'text-zinc-500'}`}>
                       <span className="flex items-center gap-2">
-                        <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-serif font-bold ${finderEkycProgress === 100 ? 'bg-emerald-500 text-white' : 'bg-indigo-100 text-indigo-800'}`}>
+                        <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-serif font-bold ${finderEkycProgress === 100 ? 'bg-sky-500 text-white' : 'bg-sky-100 text-sky-800'}`}>
                           {finderEkycProgress === 100 ? '✓' : '4'}
                         </span>
                         <span className="tracking-[0.08em] md:tracking-[0.12em]">手紙本文＆連絡先開示手続き</span>
                       </span>
-                      {finderEkycProgress >= 75 && finderEkycProgress < 100 && <span className="text-[10px] text-indigo-600 animate-pulse font-serif font-semibold tracking-[0.14em]">発行中...</span>}
+                      {finderEkycProgress >= 75 && finderEkycProgress < 100 && <span className="text-[10px] text-sky-600 animate-pulse font-serif font-semibold tracking-[0.14em]">発行中...</span>}
                     </div>
                   </div>
                 </div>
@@ -516,8 +516,9 @@ export const FinderEkycModal: React.FC<FinderEkycModalProps> = ({
               {finderEkycStep === 5 && (
                 <div className="space-y-6">
                   <div className="text-center space-y-3">
-                    <div className="w-16 h-16 bg-emerald-500/10 rounded-full flex items-center justify-center text-emerald-500 mx-auto animate-bounce">
-                      <CheckCircle2 size={32} />
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full seal-rainbow text-white shadow-lg mx-auto flex-col animate-bounce">
+                      <ShieldCheck size={30} className="text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]" />
+                      <span className="text-[9px] font-black tracking-tighter uppercase -mt-0.5 text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">eKYC済</span>
                     </div>
                     <h3 className="text-xl font-bold font-serif text-black">本人確認および決済完了！🎉</h3>
                     <p className="text-xs text-black/60 font-sans leading-relaxed">
@@ -532,7 +533,7 @@ export const FinderEkycModal: React.FC<FinderEkycModalProps> = ({
                         onEkycSuccess();
                       }, 300);
                     }}
-                    className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold shadow transition-all cursor-pointer"
+                    className="w-full py-3.5 bg-gradient-to-r from-sky-400 via-sky-500 to-blue-500 hover:from-sky-500 hover:to-blue-600 text-white rounded-xl text-sm font-bold shadow transition-all cursor-pointer"
                   >
                     手紙本文と連絡先を確認する
                   </button>

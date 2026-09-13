@@ -25,7 +25,6 @@ import { cn, PageHeader, formatEraLabel, getCategoryText, getPostUrl, PREFECTURE
 import { BottleLoader, WarningMessage, ProtectedRoute, GoogleSearchResultPreview, BackToHomeButton } from '../../components/SharedComponents';
 import { DocumentCameraOverlay, stopAllGlobalCameraStreams } from '../../components/DocumentCameraOverlay';
 import { QuizMatchingAnalyticsView } from '../../components/QuizMatchingAnalyticsView';
-import { SupportModal } from '../../components/SupportModal';
 import { CreditCardPaymentForm } from '../../components/CreditCardPaymentForm';
 import { ReunionEffectTitle } from '../../components/ReunionEffectTitle';
 import { QuestionSampleModal } from '../AuthPages';

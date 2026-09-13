@@ -11,6 +11,7 @@ interface SupportModalProps {
 
 export const SupportModal: React.FC<SupportModalProps> = ({ isOpen, onClose, onSuccess }) => {
   const [quantity, setQuantity] = useState<number>(1);
+  const [customMessage, setCustomMessage] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
   
@@ -48,6 +49,14 @@ export const SupportModal: React.FC<SupportModalProps> = ({ isOpen, onClose, onS
   const unitPrice = 500;
   const totalPrice = quantity * unitPrice;
 
+  const presetOptions = [
+    { qty: 1, label: '☕ 1口', price: '¥500', desc: 'コーヒー1杯' },
+    { qty: 3, label: '🌊 3口', price: '¥1,500', desc: '海サポーター' },
+    { qty: 5, label: '🌟 5口', price: '¥2,500', desc: '人気！守り人' },
+    { qty: 10, label: '💖 10口', price: '¥5,000', desc: '特別支援' },
+    { qty: 20, label: '👑 20口', price: '¥10,000', desc: '最高峰スポンサー' }
+  ];
+
   const handleDonate = (e: React.FormEvent) => {
     e.preventDefault();
     setIsProcessing(true);
@@ -66,6 +75,7 @@ export const SupportModal: React.FC<SupportModalProps> = ({ isOpen, onClose, onS
 
   const handleReset = () => {
     setIsCompleted(false);
+    setCustomMessage('');
     onClose();
   };
 
@@ -80,8 +90,8 @@ export const SupportModal: React.FC<SupportModalProps> = ({ isOpen, onClose, onS
         onClick={(e) => e.stopPropagation()}
         className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-slate-100 my-auto max-h-[90vh] sm:max-h-[85vh] overflow-y-auto overscroll-contain"
       >
-        {/* Header decoration with refreshing ocean gradient */}
-        <div className="bg-gradient-to-r from-sky-600 via-teal-600 to-indigo-700 p-5 md:p-6 text-white text-center relative border-b border-white/10">
+        {/* Header decoration with amber, orange, and deep warm gradient */}
+        <div className="bg-gradient-to-r from-amber-500 via-orange-600 to-amber-800 p-5 md:p-6 text-white text-center relative border-b border-white/10">
           <button
             onClick={onClose}
             className="absolute top-3 right-3 sm:top-4 sm:right-4 p-2 text-white/80 hover:text-white bg-white/15 hover:bg-white/25 rounded-full transition-all cursor-pointer shadow-xs z-10"
@@ -105,40 +115,77 @@ export const SupportModal: React.FC<SupportModalProps> = ({ isOpen, onClose, onS
         {/* Modal Body */}
         <div className="p-4 sm:p-6 md:p-8 space-y-5">
           {!isCompleted ? (
-            <form onSubmit={handleDonate} className="space-y-6">
+            <form onSubmit={handleDonate} className="space-y-5">
               {/* Emotional Copy Box */}
               <div className="p-4 bg-amber-50/80 border border-amber-200/80 rounded-2xl space-y-2 text-slate-800">
                 <p className="text-xs md:text-sm font-medium leading-relaxed text-slate-800">
                   「ReMEETsは、大切な思い出を持つすべての方が無料で手紙を流せるよう、個人運営とAI安全監査費を寄付で賄っています。この海が消えてしまわないよう、1杯のコーヒー代で応援していただけませんか？」
                 </p>
                 <div className="flex items-center gap-1.5 text-[11px] text-amber-800/80 font-bold pt-1">
-                  <Coffee size={14} className="text-amber-600" />
+                  <Coffee size={14} className="text-amber-600 shrink-0" />
                   <span>温かいご支援は、サーバー維持費とAI安全モデレーション運用に大切に活用されます。</span>
                 </div>
               </div>
 
-              {/* Quantity Selection Pull-down */}
+              {/* Quick Preset Buttons (提案 4) */}
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-700 flex items-center justify-between">
-                  <span>応援口数を選択（1口 500円〜）</span>
+                  <span>応援口数を選択（ワンタップ）</span>
                   <span className="text-xs text-rose-600 font-extrabold font-serif">
-                    合計金額: {totalPrice.toLocaleString()}円 (税込)
+                    合計: ¥{totalPrice.toLocaleString()} (税込)
                   </span>
                 </label>
-                
-                <div className="relative">
+
+                <div className="grid grid-cols-5 gap-1.5">
+                  {presetOptions.map((opt) => (
+                    <button
+                      key={opt.qty}
+                      type="button"
+                      onClick={() => setQuantity(opt.qty)}
+                      className={`p-2 rounded-xl text-center border transition-all cursor-pointer flex flex-col items-center justify-center gap-0.5 ${
+                        quantity === opt.qty
+                          ? 'bg-teal-600 text-white border-teal-600 shadow-sm scale-[1.02]'
+                          : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
+                      }`}
+                    >
+                      <span className="text-xs font-bold leading-tight">{opt.label}</span>
+                      <span className={`text-[10px] font-mono leading-none ${quantity === opt.qty ? 'text-teal-100' : 'text-slate-500'}`}>
+                        {opt.price}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+
+                {/* Pulldown for custom quantity */}
+                <div className="pt-1.5">
                   <select
                     value={quantity}
                     onChange={(e) => setQuantity(Number(e.target.value))}
-                    className="w-full h-12 px-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-slate-900 font-bold text-sm focus:border-rose-500 focus:bg-white outline-none transition-all cursor-pointer font-sans"
+                    className="w-full h-10 px-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-bold text-xs focus:border-teal-600 focus:bg-white outline-none transition-all cursor-pointer font-sans"
                   >
                     {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
                       <option key={num} value={num}>
-                        {num}口 ({(num * unitPrice).toLocaleString()}円) {num === 1 ? '☕ コーヒー1杯分' : num === 2 ? '☕☕ 2口サポート' : num === 5 ? '🌟 サポーター人気口数' : num === 10 ? '💖 特別サポーター' : num === 20 ? '👑 最高峰スポンサー' : ''}
+                        {num}口 ({(num * unitPrice).toLocaleString()}円) {num === 1 ? '☕ コーヒー1杯分' : num === 3 ? '🌊 海サポーター' : num === 5 ? '🌟 サポーター人気口数' : num === 10 ? '💖 特別サポーター' : num === 20 ? '👑 最高峰スポンサー' : ''}
                       </option>
                     ))}
                   </select>
                 </div>
+              </div>
+
+              {/* Optional Cheer Message Field (提案 4) */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700 flex items-center justify-between">
+                  <span>応援メッセージ（任意）</span>
+                  <span className="text-[10.5px] text-slate-400 font-normal">{customMessage.length}/100文字</span>
+                </label>
+                <input
+                  type="text"
+                  maxLength={100}
+                  value={customMessage}
+                  onChange={(e) => setCustomMessage(e.target.value)}
+                  placeholder="例: 昔の同級生と再会できました！応援しています。"
+                  className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder:text-slate-400 focus:border-teal-600 focus:bg-white outline-none transition-all"
+                />
               </div>
 
               {/* Payment Card Form Simulation */}
@@ -166,19 +213,19 @@ export const SupportModal: React.FC<SupportModalProps> = ({ isOpen, onClose, onS
                 <button
                   type="submit"
                   disabled={isProcessing}
-                  className="w-full py-3.5 px-6 bg-gradient-to-r from-sky-600 via-teal-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 text-white font-bold rounded-2xl text-sm transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  className="w-full py-3.5 px-6 bg-gradient-to-r from-amber-500 via-orange-600 to-amber-800 hover:from-amber-600 hover:via-orange-700 hover:to-amber-900 text-white font-bold rounded-2xl text-sm transition-all shadow-md shadow-amber-950/25 hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 border border-amber-400/40 active:scale-98"
                 >
                   {isProcessing ? (
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   ) : (
                     <>
-                      <Coffee size={18} className="text-white shrink-0" />
-                      <span>{totalPrice.toLocaleString()}円で ReMEETsを応援（寄付）</span>
+                      <Coffee size={18} className="text-amber-100 shrink-0 drop-shadow-xs" />
+                      <span className="drop-shadow-xs">{totalPrice.toLocaleString()}円で ReMEETsを応援（寄付）</span>
                     </>
                   )}
                 </button>
-                <p className="text-[10px] text-slate-400 text-center mt-2 font-sans">
-                  ※ 月額の自動引き落としではありません。1回のみのご寄付となります。
+                <p className="text-[10px] text-slate-400 text-center mt-2 font-sans leading-tight">
+                  ※ 月額の自動引き落としではありません。1回限りの都度決済です（寄付金控除対象外）。
                 </p>
                 <div className="text-center pt-2">
                   <Link
@@ -187,7 +234,7 @@ export const SupportModal: React.FC<SupportModalProps> = ({ isOpen, onClose, onS
                     className="inline-flex items-center gap-1 text-xs text-teal-700 font-bold hover:underline"
                   >
                     <BookOpen size={13} />
-                    <span>寄付の詳しい趣旨・特典ページを見る</span>
+                    <span>寄付の詳しい趣旨・使途・FAQを見る</span>
                   </Link>
                 </div>
               </div>
@@ -221,7 +268,15 @@ export const SupportModal: React.FC<SupportModalProps> = ({ isOpen, onClose, onS
                   <span>応援口数</span>
                   <span>{quantity} 口 ({totalPrice.toLocaleString()}円)</span>
                 </div>
-                <div className="flex justify-between">
+                {customMessage && (
+                  <div className="pt-1 border-t border-slate-200">
+                    <span className="block font-bold text-slate-700 mb-0.5">温かいメッセージ:</span>
+                    <p className="text-slate-600 italic bg-white p-2 rounded-lg border border-slate-100">
+                      「{customMessage}」
+                    </p>
+                  </div>
+                )}
+                <div className="flex justify-between pt-1 border-t border-slate-200">
                   <span>ステータス</span>
                   <span className="text-emerald-600 font-bold">決済完了</span>
                 </div>

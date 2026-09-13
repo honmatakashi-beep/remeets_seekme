@@ -1,5 +1,6 @@
 import { PostDetailMainCard } from "./PostDetailMainCard";
 import { FinderEkycModal } from "../../components/posts/FinderEkycModal";
+import { EkycExplanationModal } from "../../components/posts/EkycExplanationModal";
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useParams, useSearchParams, useLocation, Link, Navigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -23,14 +24,53 @@ import { cn, PageHeader, formatEraLabel, getCategoryText, getPostUrl, PREFECTURE
 import { BottleLoader, WarningMessage, ProtectedRoute, GoogleSearchResultPreview, BackToHomeButton } from '../../components/SharedComponents';
 import { DocumentCameraOverlay, stopAllGlobalCameraStreams } from '../../components/DocumentCameraOverlay';
 import { QuizMatchingAnalyticsView } from '../../components/QuizMatchingAnalyticsView';
-import { SupportModal } from '../../components/SupportModal';
 import { CreditCardPaymentForm } from '../../components/CreditCardPaymentForm';
 import { ReunionEffectTitle } from '../../components/ReunionEffectTitle';
 import { QuestionSampleModal } from '../AuthPages';
 import { SuccessStoryModal } from '../SearchPage';
-import quizMatchHearts from '../../assets/images/quiz_match_hearts_pastel_1785940521320.jpg';
 import postSuccessSoft from '../../assets/images/post_success_soft_1785869214309.jpg';
 
+// 🌿 高級和紙レター用 ボタニカル・コーナーオーナメント（繊細で上品な植物装飾）
+const BotanicalCorner = ({ className = "" }: { className?: string }) => (
+  <svg
+    viewBox="0 0 72 72"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={cn("w-10 h-10 sm:w-12 sm:h-12 text-slate-400 select-none pointer-events-none", className)}
+    aria-hidden="true"
+  >
+    <path d="M 4 28 V 10 A 6 6 0 0 1 10 4 H 28" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" opacity="0.8"/>
+    <circle cx="9" cy="9" r="1.3" fill="currentColor" opacity="0.85"/>
+    <path d="M 8 8 Q 22 20 38 30 Q 48 34 60 36" stroke="currentColor" strokeWidth="1" strokeLinecap="round" opacity="0.8"/>
+    <path d="M 14 13 C 18 10 24 10 28 14 C 24 16 19 15 14 13 Z" fill="currentColor" opacity="0.7"/>
+    <path d="M 13 14 C 10 18 10 24 14 28 C 16 24 15 19 13 14 Z" fill="currentColor" opacity="0.7"/>
+    <path d="M 24 21 C 29 17 36 18 40 23 C 35 25 29 24 24 21 Z" fill="currentColor" opacity="0.65"/>
+    <path d="M 21 24 C 17 29 18 36 23 40 C 25 35 24 29 21 24 Z" fill="currentColor" opacity="0.65"/>
+    <path d="M 36 29 C 42 26 49 28 52 32 C 47 34 41 32 36 29 Z" fill="currentColor" opacity="0.6"/>
+    <path d="M 29 36 C 26 42 28 49 32 52 C 34 47 32 41 29 36 Z" fill="currentColor" opacity="0.6"/>
+    <circle cx="54" cy="22" r="1.3" fill="currentColor" opacity="0.75"/>
+    <circle cx="22" cy="54" r="1.3" fill="currentColor" opacity="0.75"/>
+  </svg>
+);
+
+// 🌿 高級和紙レター用 ボタニカル・ディバイダー（上下中央のワンポイント装飾）
+const BotanicalDivider = ({ className = "" }: { className?: string }) => (
+  <svg
+    viewBox="0 0 140 18"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={cn("w-28 sm:w-36 h-3.5 text-slate-400 select-none pointer-events-none", className)}
+    aria-hidden="true"
+  >
+    <line x1="0" y1="9" x2="52" y2="9" stroke="currentColor" strokeWidth="1" strokeLinecap="round" opacity="0.7"/>
+    <circle cx="52" cy="9" r="1.3" fill="currentColor" opacity="0.85"/>
+    <path d="M 70 9 C 65 4 56 5 55 9 C 60 10 67 10 70 9 Z" fill="currentColor" opacity="0.7"/>
+    <path d="M 70 9 C 75 4 84 5 85 9 C 80 10 73 10 70 9 Z" fill="currentColor" opacity="0.7"/>
+    <circle cx="70" cy="9" r="1.9" fill="currentColor" opacity="0.9"/>
+    <circle cx="88" cy="9" r="1.3" fill="currentColor" opacity="0.85"/>
+    <line x1="88" y1="9" x2="140" y2="9" stroke="currentColor" strokeWidth="1" strokeLinecap="round" opacity="0.7"/>
+  </svg>
+);
 
 import { ScrollToTop, ScrollToTopButton } from './PostUtils';
 import { FlowExplanation, RecipientSafetyGuide, RevealContactModal, SuccessModal, AgeVerificationGate, ComplianceBanner, ReportModal } from './PostModals';
@@ -42,6 +82,10 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const idQuery = queryParams.get('id');
+
+  // 封蝋印の配置＆色彩プレビュー切り替えタブ（初期値: 'top' ページ頭おすすめ）
+  const [ekycSealTab, setEkycSealTab] = useState<'top' | 'card' | 'gold' | 'off'>('top');
+  const [showEkycExplanationModal, setShowEkycExplanationModal] = useState(false);
 
   const justPostedFlag = Boolean(location.state?.justPosted);
   const postedWithEkycFlag = Boolean(location.state?.postedWithEkyc);
@@ -1133,95 +1177,136 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
         )}
       </AnimatePresence>
 
-      {/* Welcome Banner */}
+      {/* Welcome Banner（ページ頭のファーストビュー：情緒豊かな温かみのあるベージュ紙質 ＆ 洗練されたボタニカル飾り枠） */}
       <section 
         ref={welcomeBannerRef}
-        className="mb-8 p-6 sm:p-8 md:p-10 rounded-[32px] md:rounded-[36px] bg-white border border-brand-border relative overflow-hidden text-center shadow-md"
+        className="mb-8 p-6 sm:p-8 md:p-10 rounded-[32px] md:rounded-[36px] bg-[#FAF6ED] border border-[#E3D7C3] relative overflow-hidden text-center shadow-sm"
+        style={{
+          backgroundImage: `
+            radial-gradient(at 0% 0%, rgba(255, 255, 255, 0.7) 0%, transparent 50%),
+            radial-gradient(at 100% 100%, rgba(243, 233, 215, 0.6) 0%, transparent 60%),
+            radial-gradient(at 50% 50%, rgba(253, 248, 238, 0.9) 0%, transparent 100%),
+            url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='washiNoise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.04' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.55 0 0 0 0 0.45 0 0 0 0 0.35 0 0 0 0.045 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23washiNoise)'/%3E%3C/svg%3E")
+          `
+        }}
       >
-        {/* 背景イラスト（即座に鮮明に描画される背景アート） */}
-        <div className="absolute inset-0 flex justify-center items-center pointer-events-none overflow-hidden select-none z-0">
-          <div 
-            className="relative w-full max-w-4xl h-full"
-            style={{ opacity: (isQuestionVerified || showDetails || post.status === 'resolved') ? 0.82 : 0.85 }}
-          >
-            <img 
-              src={(isQuestionVerified || showDetails || post.status === 'resolved') ? quizMatchHearts : postSuccessSoft} 
-              alt="背景イラスト" 
-              loading="eager"
-              decoding="sync"
-              className="w-full h-full object-cover object-center"
-            />
-            {/* 上下左右の四方を白グラデーションで自然になじませる */}
-            <div className="absolute inset-0 bg-gradient-to-r from-white/30 via-transparent to-white/30" />
-            <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-white/30" />
-          </div>
+        {/* ボタニカル・インナー装飾枠（上品な二重罫線） */}
+        <div className="absolute inset-2.5 sm:inset-3.5 md:inset-4 border border-[#D8C7B0]/80 rounded-[24px] md:rounded-[28px] pointer-events-none" />
+        <div className="absolute inset-[13px] sm:inset-[18px] md:inset-[22px] border border-[#D8C7B0]/50 rounded-[20px] md:rounded-[24px] pointer-events-none" />
+
+        {/* ボタニカル・四隅のコーナーオーナメント */}
+        <BotanicalCorner className="absolute top-2.5 left-2.5 sm:top-3.5 sm:left-3.5 md:top-4 md:left-4 text-[#8C7355]/80" />
+        <BotanicalCorner className="absolute top-2.5 right-2.5 sm:top-3.5 sm:right-3.5 md:top-4 md:right-4 -scale-x-100 text-[#8C7355]/80" />
+        <BotanicalCorner className="absolute bottom-2.5 left-2.5 sm:bottom-3.5 sm:left-3.5 md:bottom-4 md:left-4 -scale-y-100 text-[#8C7355]/80" />
+        <BotanicalCorner className="absolute bottom-2.5 right-2.5 sm:bottom-3.5 sm:right-3.5 md:bottom-4 md:right-4 -scale-100 text-[#8C7355]/80" />
+
+        {/* 上部・下部の中央ディバイダー */}
+        <div className="absolute top-2.5 sm:top-3.5 md:top-4 left-1/2 -translate-x-1/2 pointer-events-none text-[#8C7355]/80">
+          <BotanicalDivider />
+        </div>
+        <div className="absolute bottom-2.5 sm:bottom-3.5 md:bottom-4 left-1/2 -translate-x-1/2 pointer-events-none text-[#8C7355]/80">
+          <BotanicalDivider />
         </div>
 
-        <div className="relative z-10 space-y-6">
-          <div className="inline-flex items-center gap-2 bg-brand-primary/5 px-4 py-2 rounded-full border border-brand-primary/15 text-brand-primary text-[10px] font-bold uppercase tracking-[0.3em]">
-            <Sparkles size={14} className="animate-pulse" />
-            <span>
-              {showDetails || post.status === 'resolved' 
-                ? "✨ 奇跡の再会が叶いました！" 
-                : isQuestionVerified 
-                  ? "✨ 思い出の鍵が解かれました！" 
-                  : isOwner 
-                    ? "あなたの大切な手紙が漂流中" 
-                    : "記憶の交差点に到着しました"}
-            </span>
+        {/* 🌈 受取人ヘッダー右上の濃い虹色（リッチレインボー）公的本人確認封蝋印（小さめ 42px：eKYC認証済みの場合のみ表示） */}
+        {Boolean(post.is_ekyc_verified) && (
+          <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20">
+            <button
+              type="button"
+              onClick={() => setShowEkycExplanationModal(true)}
+              className="group flex flex-col items-center cursor-pointer focus:outline-none transition-transform hover:scale-108 active:scale-95"
+              title="差出人は公的本人確認（eKYC）完了済み。タップして詳細を確認"
+            >
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full seal-rainbow flex flex-col items-center justify-center text-white shadow-lg">
+                <ShieldCheck size={18} className="text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]" />
+                <span className="text-[6.5px] font-black tracking-tighter uppercase -mt-0.5 text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">eKYC済</span>
+              </div>
+              <span className="mt-1 text-[8.5px] font-extrabold text-sky-950 bg-white/95 border border-sky-300 px-1.5 py-0.2 rounded-full shadow-xs group-hover:bg-sky-50 transition-colors">
+                公的確認
+              </span>
+            </button>
           </div>
-          <h1 className="text-xl xs:text-2xl sm:text-3xl md:text-5xl font-serif text-black font-[500] tracking-wider leading-relaxed flex flex-col items-center gap-2 text-center px-4 w-full">
-            <span className="block whitespace-normal md:whitespace-nowrap max-w-full font-serif font-bold text-slate-900">{post.target_name} 様、</span>
-            {(showDetails || post.status === 'resolved') ? (
-              <ReunionEffectTitle effectType="pure-rainbow-flow" />
-            ) : isQuestionVerified ? (
-              <span className="block whitespace-normal md:whitespace-nowrap max-w-full text-emerald-600 font-bold">思い出の鍵が解かれました！</span>
-            ) : (
-              <span className="block whitespace-normal leading-snug max-w-full text-teal-800 font-bold text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl">
-                「{post.searcher_name || '差出人'}さん」があなたを探しています。
-              </span>
-            )}
-          </h1>
-          <div className="max-w-xl mx-auto text-black/75 text-[10px] xs:text-xs sm:text-sm md:text-base font-serif leading-relaxed mt-4 flex flex-col items-center gap-2 text-center px-4 w-full">
-            {(showDetails || post.status === 'resolved') ? (
-              <>
-                <span className="block whitespace-normal md:whitespace-nowrap">手紙の本文と連絡先が開示されました。</span>
-                <span className="block whitespace-normal md:whitespace-nowrap text-emerald-600 font-bold">直接連絡を取り合い、止まっていた大切な時間の続きを始めましょう。</span>
-              </>
-            ) : isQuestionVerified ? (
-              <>
-                <span className="block whitespace-normal md:whitespace-nowrap">思い出の質問にすべて正解し、お互いの記憶が完全に合致しました。</span>
-                <span className="block whitespace-normal md:whitespace-nowrap text-emerald-700 font-bold">下のボタンからお手紙の本文と連絡先を開封してください。</span>
-              </>
-            ) : (
-              <>
-                <span className="block whitespace-normal md:whitespace-nowrap text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl font-medium text-black/85">ReMEETsは、名前と「二人だけの思い出」を鍵にして、</span>
-                <span className="block whitespace-normal md:whitespace-nowrap text-brand-primary font-bold text-sm xs:text-base sm:text-lg md:text-xl lg:text-2xl mt-0.5 md:mt-1">大切な人との再会を支援する場所です。</span>
-              </>
-            )}
+        )}
 
-            {/* 投函日時バッジ（情緒と存在感を際立たせた上品なデザイン） */}
-            <div className="mt-4 pt-3.5 border-t border-teal-100/80 w-full flex justify-center">
-              <span className="inline-flex items-center gap-2 text-xs sm:text-sm text-teal-950 font-sans font-bold bg-gradient-to-r from-teal-50 via-white to-emerald-50 px-4 py-1.5 rounded-full border border-teal-200/90 shadow-xs">
-                <span className="w-5 h-5 rounded-full bg-teal-700 text-white flex items-center justify-center text-[11px] shrink-0 shadow-2xs">
-                  <Calendar size={12} />
-                </span>
-                <span>
-                  このボトルメールは <strong className="font-mono text-teal-900 font-extrabold text-sm sm:text-base tracking-wide px-1 py-0.5 bg-teal-100/60 rounded">{new Date(post.created_at).toLocaleDateString('ja-JP').replace(/\//g, '.')}</strong> に投函されました
-                </span>
+        <div className="relative z-10 max-w-xl mx-auto space-y-5 sm:space-y-6 py-2 sm:py-3">
+          {/* 1. 親展レター・ヘッダーバー（左右に水平の基準線を通し、ピラミッド感を完全解消） */}
+          <div className="flex items-center justify-between border-b border-[#D8C7B0]/70 pb-3 px-1 text-xs text-stone-700">
+            <div className="inline-flex items-center gap-1.5 font-bold uppercase tracking-wider text-[11px] text-stone-800">
+              <Sparkles size={13} className="text-amber-600 animate-pulse" />
+              <span>
+                {showDetails || post.status === 'resolved' 
+                  ? "✨ 奇跡の再会（開通済み）" 
+                  : isQuestionVerified 
+                    ? "✨ 正解認証済み（親展）" 
+                    : isOwner 
+                      ? "漂流中ボトルメール" 
+                      : "記憶の交差点（親展ボトルメール）"}
               </span>
+            </div>
+            <div className="inline-flex items-center gap-1.5 text-[11px] text-stone-600 font-sans">
+              <Calendar size={12} className="text-stone-500" />
+              <span>投函: <strong className="font-mono text-stone-900 font-bold">{new Date(post.created_at).toLocaleDateString('ja-JP').replace(/\//g, '.')}</strong></span>
             </div>
           </div>
 
-          {/* ご本人様向け早めの手紙開封仕組み案内カード (正解前) */}
+          {/* 2. 手紙の宛名 ＆ 差出人からの呼びかけ（安定した美しいレターブロック） */}
+          <div className="space-y-3.5 text-center px-2">
+            {/* 宛名 */}
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-stone-900 tracking-wider flex items-baseline justify-center gap-1.5">
+              <span>{post.target_name}</span>
+              <span className="text-lg sm:text-xl md:text-2xl font-normal text-stone-600 font-serif">様</span>
+            </h1>
+
+            {/* メッセージ */}
+            {(showDetails || post.status === 'resolved') ? (
+              <div className="py-1">
+                <ReunionEffectTitle effectType="pure-rainbow-flow" />
+                <p className="text-xs sm:text-sm text-emerald-700 font-serif font-bold mt-2">
+                  手紙の本文と連絡先が開示されました。止まっていた大切な時間の続きを始めましょう。
+                </p>
+              </div>
+            ) : isQuestionVerified ? (
+              <div className="py-1 space-y-1.5">
+                <p className="text-base sm:text-lg text-emerald-700 font-serif font-bold">
+                  ✨ 思い出の鍵が解かれ、お互いの記憶が一致しました！
+                </p>
+                <p className="text-xs sm:text-sm text-stone-600 font-serif">
+                  下のボタンからお手紙の本文と連絡先を開封してください。
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <p className="text-base sm:text-lg md:text-xl font-serif text-stone-800 leading-snug">
+                  <strong className="text-teal-950 font-extrabold bg-teal-50/90 px-2.5 py-0.5 rounded-lg border border-teal-300/60 shadow-2xs mr-1.5 inline-block">
+                    ✉️ 「{post.searcher_name || '差出人'}」さん
+                  </strong>
+                  があなたを探しています。
+                </p>
+                <p className="text-xs sm:text-sm text-stone-600 font-serif leading-relaxed max-w-md mx-auto">
+                  ReMEETsは、名前と「二人だけの思い出」を鍵にして、<br className="hidden sm:inline" />
+                  大切な人との再会を支援する場所です。
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* 3. ご本人様向け早めの手紙開封仕組み案内カード (正解前) */}
           {!isQuestionVerified && !showDetails && post.status !== 'resolved' && (
-            <div className="max-w-xl mx-auto mt-6 p-4.5 bg-gradient-to-br from-teal-50/90 via-emerald-50/70 to-slate-50 border border-teal-200/90 rounded-2xl shadow-xs text-left font-sans space-y-2.5 relative overflow-hidden">
-              <div className="flex items-center gap-2 text-teal-950 font-bold text-xs sm:text-sm font-serif">
-                <span className="w-6 h-6 rounded-full bg-teal-600 text-white flex items-center justify-center text-xs shrink-0 shadow-2xs font-sans">💡</span>
+            <div className="mt-4 p-4.5 bg-white/85 border border-[#D8C7B0]/80 rounded-2xl shadow-xs text-left font-sans space-y-2.5 relative overflow-hidden">
+              <div className="flex items-center gap-2 text-stone-900 font-bold text-xs sm:text-sm font-serif">
+                <span className="w-6 h-6 rounded-full bg-teal-700 text-white flex items-center justify-center text-xs shrink-0 shadow-2xs font-sans">💡</span>
                 <span>差出人「{post.searcher_name || '差出人'}さん」に心当たりがある方へ</span>
               </div>
-              <p className="text-xs text-slate-700 font-serif leading-relaxed">
-                「思い出の質問」に正解すると、あなた宛に届いた<strong className="text-teal-900 font-bold bg-teal-100/80 px-1 py-0.5 rounded">差出人のフルネーム・手紙本文・連絡先</strong>が安全に開示されます。
+              <p className="text-xs text-stone-700 font-serif leading-relaxed">
+                {Boolean(post.is_ekyc_verified) ? (
+                  <>
+                    差出人は運転免許証・マイナンバー等による公的本人確認（eKYC）を完了しています。「思い出の質問」に正解すると、あなた宛に届いた<strong className="text-stone-900 font-bold bg-[#FAF2E1] border border-amber-300/60 px-1 py-0.5 rounded">差出人のフルネーム・手紙本文・連絡先</strong>が安全に開示されます。
+                  </>
+                ) : (
+                  <>
+                    差出人はLINE/Google等のSNS認証および電子的利用宣誓を経て、安全にお手紙を投函しています。「思い出の質問」に正解すると、あなた宛に届いた<strong className="text-stone-900 font-bold bg-[#FAF2E1] border border-amber-300/60 px-1 py-0.5 rounded">差出人のフルネーム・手紙本文・連絡先</strong>が開示されます。
+                  </>
+                )}
               </p>
             </div>
           )}
@@ -1346,6 +1431,8 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
         error={error}
         toHalfWidth={toHalfWidth}
         getCategoryLabel={getCategoryLabel}
+        ekycSealTab={ekycSealTab}
+        onOpenEkycExplanation={() => setShowEkycExplanationModal(true)}
       />
 
         <div className="lg:col-span-5" ref={questionsSectionRef}>
@@ -1584,6 +1671,14 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
           targetSummary={post?.searcher_profile}
         />
       )}
+
+      {/* eKYC公的本人確認の安心解説ポップアップモーダル */}
+      <EkycExplanationModal
+        isOpen={showEkycExplanationModal}
+        onClose={() => setShowEkycExplanationModal(false)}
+        senderName={searcherName || post?.searcher_name}
+        mode="detail"
+      />
     </div>
   );
 };

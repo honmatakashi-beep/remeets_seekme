@@ -2,7 +2,7 @@ import { GoogleGenAI } from "@google/genai";
 import express from "express";
 import crypto from "crypto";
 import { db } from "../db";
-import { reportLimiter, searchLimiter, postLimiter } from "../config";
+import { reportLimiter, searchLimiter, postLimiter, contactLimiter } from "../config";
 import { authenticateToken, optionalAuthenticateToken, isAdmin, logAction, sanitizeLogText } from "../middleware/auth";
 import { filterNGWords } from "../moderation";
 
@@ -320,6 +320,15 @@ export const miscRouter = express.Router();
     }
   });
 
+  miscRouter.delete("/notifications/:id", authenticateToken, (req: any, res) => {
+    try {
+      db.prepare("DELETE FROM notifications WHERE id = ? AND user_id = ?").run(req.params.id, req.user.id);
+      res.json({ success: true });
+    } catch (err) {
+      res.status(500).json({ error: "Failed to delete notification" });
+    }
+  });
+
   // --- User Post Match Alert Setting (Single Toggle per User) ---
   miscRouter.get("/user/notify-settings", authenticateToken, (req: any, res) => {
     try {
@@ -630,6 +639,129 @@ export const miscRouter = express.Router();
     } catch (err) {
       console.error("Stripe webhook processing error:", err);
       res.status(400).json({ error: "Webhookの処理に失敗しました。" });
+    }
+  });
+
+  // 📬 一般お問い合わせ（Contact Form）受付エンドポイント
+  miscRouter.post("/contact", contactLimiter, (req: any, res: any) => {
+    const { name, email, subject, message, reference_url } = req.body || {};
+
+    // 1. 必須バリデーション
+    if (!name?.trim() || !email?.trim() || !subject?.trim() || !message?.trim()) {
+      return res.status(400).json({ error: "お名前、メールアドレス、件名、お問い合わせ内容はすべて必須項目です。" });
+    }
+
+    // 2. メールアドレス形式チェック
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      return res.status(400).json({ error: "有効なメールアドレスの形式でご入力ください。" });
+    }
+
+    // 3. 文字数制限
+    if (message.trim().length > 2000) {
+      return res.status(400).json({ error: "お問い合わせ内容は最大2,000文字以内でご入力ください。" });
+    }
+
+    try {
+      // 4. 受付チケット番号 (Ticket Token) の自動生成 (例: TKT-20260913-7A3B)
+      const now = new Date();
+      const datePart = now.toISOString().slice(0, 10).replace(/-/g, '');
+      const randomPart = crypto.randomBytes(2).toString('hex').toUpperCase();
+      const ticketToken = `TKT-${datePart}-${randomPart}`;
+
+      // メッセージ本文に対象URLがあれば追記整形
+      let fullMessage = message.trim();
+      if (reference_url && reference_url.trim()) {
+        fullMessage += `\n\n【対象のボトルメールID / URL】\n${reference_url.trim()}`;
+      }
+
+      // 5. contacts テーブルへ保存
+      const insertResult = db.prepare(`
+        INSERT INTO contacts (name, email, subject, message, status, ticket_token, created_at)
+        VALUES (?, ?, ?, ?, 'pending', ?, CURRENT_TIMESTAMP)
+      `).run(name.trim(), email.trim(), subject.trim(), fullMessage, ticketToken);
+
+      const contactId = insertResult.lastInsertRowid;
+
+      // 6. contact_messages スレッドテーブルへ初期投稿を記録
+      try {
+        db.prepare(`
+          INSERT INTO contact_messages (contact_id, sender_type, sender_name, message, created_at)
+          VALUES (?, 'user', ?, ?, CURRENT_TIMESTAMP)
+        `).run(contactId, name.trim(), fullMessage);
+      } catch (threadErr) {
+        console.warn("contact_messages thread record failed (optional):", threadErr);
+      }
+
+      // 7. セキュリティ監査ログ記録
+      logAction(null, "CONTACT_FORM_SUBMITTED", `Ticket: ${ticketToken}, Email: ${sanitizeLogText(email.trim())}, Subject: ${sanitizeLogText(subject.trim())}`, req.ip);
+
+      res.json({
+        success: true,
+        ticket_token: ticketToken,
+        message: "お問い合わせを受け付けました。内容を確認の上、担当者よりご連絡いたします。"
+      });
+    } catch (err: any) {
+      console.error("Contact submission error:", err);
+      res.status(500).json({ error: "お問い合わせの送信に失敗しました。時間をおいて再度お試しください。" });
+    }
+  });
+
+  // 🗑️ 手紙の削除・掲載停止依頼（Deletion Request）受付エンドポイント
+  miscRouter.post("/deletion-requests", reportLimiter, optionalAuthenticateToken, (req: any, res: any) => {
+    const { name, email, post_id, reason, content, explanation, url } = req.body || {};
+
+    if (!post_id || !reason?.trim() || !content?.trim()) {
+      return res.status(400).json({ error: "対象手紙のID、申請理由、掲載内容・特徴は必須項目です。" });
+    }
+
+    const postIdNum = parseInt(post_id);
+    if (isNaN(postIdNum) || postIdNum <= 0) {
+      return res.status(400).json({ error: "有効な手紙IDを指定してください。" });
+    }
+
+    try {
+      // 1. 受付チケット番号 (Ticket Token) の自動生成 (例: DEL-20260913-7A3B)
+      const now = new Date();
+      const datePart = now.toISOString().slice(0, 10).replace(/-/g, '');
+      const randomPart = crypto.randomBytes(2).toString('hex').toUpperCase();
+      const ticketToken = `DEL-${datePart}-${randomPart}`;
+
+      const applicantName = name?.trim() || (req.user ? (req.user.nickname || req.user.username) : '匿名申請者');
+      const applicantEmail = email?.trim() || (req.user ? req.user.email : '未登録');
+      const targetUrl = url?.trim() || `https://remeets.jp/posts/${postIdNum}`;
+      const reasonDetail = explanation?.trim() ? `${reason.trim()}\n【詳細理由】\n${explanation.trim()}` : reason.trim();
+
+      // 2. deletion_requests テーブルへ保存
+      db.prepare(`
+        INSERT INTO deletion_requests (post_id, name, url, content, reason, explanation, email, status, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', CURRENT_TIMESTAMP)
+      `).run(
+        postIdNum,
+        applicantName,
+        targetUrl,
+        content.trim(),
+        reason.trim(),
+        reasonDetail,
+        applicantEmail
+      );
+
+      // 3. セキュリティ監査ログ記録
+      logAction(
+        req.user ? req.user.id : null,
+        "DELETION_REQUEST_SUBMITTED",
+        `Ticket: ${ticketToken}, Post ID: #${postIdNum}, Reason: ${sanitizeLogText(reason.trim())}`,
+        req.ip
+      );
+
+      res.json({
+        success: true,
+        ticket_token: ticketToken,
+        message: "手紙の削除・掲載停止申請を受理いたしました。運営事務局にて迅速に確認・処置いたします。"
+      });
+    } catch (err: any) {
+      console.error("Deletion request submission error:", err);
+      res.status(500).json({ error: "削除申請の送信に失敗しました。時間をおいて再度お試しください。" });
     }
   });
 

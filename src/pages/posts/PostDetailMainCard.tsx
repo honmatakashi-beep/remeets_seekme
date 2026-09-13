@@ -49,7 +49,9 @@ export const PostDetailMainCard = (props: any) => {
     lockedUntil,
     error,
     toHalfWidth = (s: string) => s,
-    getCategoryLabel = (c: string) => c
+    getCategoryLabel = (c: string) => c,
+    ekycSealTab = 'top',
+    onOpenEkycExplanation = () => {}
   } = props;
 
   return (
@@ -61,7 +63,7 @@ export const PostDetailMainCard = (props: any) => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.99, y: -15 }}
             transition={{ duration: 0.4 }}
-            className="w-full mx-auto space-y-8 font-serif"
+            className="w-full mx-auto space-y-6 font-serif"
           >
             {/* 1. 【メインカード】差出人情報 & 思い出の手がかり */}
             <div className="p-6 md:p-8 bg-white border-2 border-teal-200/90 rounded-[32px] shadow-md relative overflow-hidden font-sans space-y-6">
@@ -86,17 +88,16 @@ export const PostDetailMainCard = (props: any) => {
                           </h4>
                         </div>
                       </div>
-                      {(post.author_ekyc_details || post.is_ekyc_verified || post.user_is_verified || finderEkycVerified || (isOwner && (postedWithEkycFlag || user?.is_ekyc_verified))) ? (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-full border border-emerald-300 shadow-2xs">
-                          <ShieldCheck size={14} className="text-emerald-700" />
-                          公的証明済
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-200/80 text-slate-700 text-xs font-bold rounded-full">
-                          <FileText size={14} className="text-slate-500" />
-                          安全利用宣誓済
-                        </span>
-                      )}
+                      <button
+                        type="button"
+                        onClick={onOpenEkycExplanation}
+                        className="inline-flex items-center gap-1.5 px-3 py-1 bg-gradient-to-r from-sky-400 via-sky-500 to-blue-500 hover:from-sky-500 hover:to-blue-600 text-white text-xs font-bold rounded-full border border-sky-300/40 shadow-xs hover:shadow-sm transition-all cursor-pointer active:scale-95"
+                        title="公的本人確認（eKYC）完了済み。タップして詳細を確認"
+                      >
+                        <ShieldCheck size={14} className="text-white shrink-0 drop-shadow-xs" />
+                        <span>公的本人確認 (eKYC) 済</span>
+                        <span className="text-[9.5px] bg-white/25 px-1.5 py-0.5 rounded-full font-medium">詳細</span>
+                      </button>
                     </div>
 
                     {/* ニックネーム・ゆかりの地・当時の所属（他ページと同一のアイコン＆レイアウト） */}
@@ -322,33 +323,39 @@ export const PostDetailMainCard = (props: any) => {
               ) : (
                 /* showDetails が false の場合（未開示・手紙探索画面） */
                 <div className="space-y-6">
-                  {/* カード上部: 差出人の属性 & 信頼性（本人確認・宣誓バッジ） */}
+                  {/* カード上部: 差出人の属性情報（緑のシマーボタン付き） */}
                   <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-3 text-left">
-                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3">
-                      <div className="flex items-center gap-2">
-                        <span className="w-8 h-8 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-2xs font-serif">
-                          ✉️
-                        </span>
-                        <div>
-                          <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">差出人 (探している人)</span>
-                          <h2 className="text-base sm:text-lg font-bold text-teal-950 font-serif">
-                            「{post.searcher_name || '差出人'}」さん
-                          </h2>
+                    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-3">
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <div className="flex items-center gap-2">
+                          <span className="w-8 h-8 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-2xs font-serif">
+                            ✉️
+                          </span>
+                          <div>
+                            <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">差出人 (探している人)</span>
+                            <h2 className="text-base sm:text-lg font-bold text-teal-950 font-serif">
+                              「{post.searcher_name || '差出人'}」さん
+                            </h2>
+                          </div>
                         </div>
+
+                        {/* 差出人横の公的本人確認ボタン（透明感のある美しいスカイブルーカプセル） */}
+                        <button
+                          type="button"
+                          onClick={onOpenEkycExplanation}
+                          className="inline-flex items-center gap-1.5 px-3 py-1 bg-gradient-to-r from-sky-400 via-sky-500 to-blue-500 hover:from-sky-500 hover:to-blue-600 text-white rounded-full text-xs font-bold shadow-xs hover:shadow-sm transition-all cursor-pointer active:scale-95 shrink-0 border border-sky-300/40"
+                          title="差出人は公的本人確認（eKYC）完了済み。タップして詳細を確認"
+                        >
+                          <ShieldCheck size={14} className="text-white shrink-0 drop-shadow-xs" />
+                          <span>公的本人確認 (eKYC) 済</span>
+                          <span className="text-[9.5px] bg-white/25 px-1.5 py-0.5 rounded-full font-medium">詳細</span>
+                        </button>
                       </div>
 
-                      {/* 本人確認 / 宣誓ステータスバッジ */}
-                      {(post.author_ekyc_details || post.is_ekyc_verified || (isOwner && (postedWithEkycFlag || user?.is_ekyc_verified))) ? (
-                        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-100 text-emerald-900 border border-emerald-300/80 rounded-full text-xs font-bold shadow-2xs">
-                          <ShieldCheck size={14} className="text-emerald-600 shrink-0" />
-                          <span>🛡️ 公的本人確認 (eKYC) 完了済</span>
-                        </div>
-                      ) : (
-                        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 text-slate-700 border border-slate-200 rounded-full text-xs font-bold">
-                          <FileText size={14} className="text-slate-500 shrink-0" />
-                          <span>🌱 年齢・安全利用宣誓済</span>
-                        </div>
-                      )}
+                      {/* 手紙ID情報 */}
+                      <span className="text-[11px] font-mono font-bold text-slate-500 bg-white border border-slate-200 px-2.5 py-1 rounded-lg shadow-2xs shrink-0">
+                        お手紙ID: #{post.id}
+                      </span>
                     </div>
 
                     {/* メモリータグ（属性まとめ） */}
@@ -733,7 +740,7 @@ export const PostDetailMainCard = (props: any) => {
                 </div>
                 <p className="leading-relaxed text-[11px] text-teal-900/90">
                   答えは<strong>「短い単語（名詞・キーワード）」</strong>でお答えください。<br />
-                  ※「〜です」「〜だった」などの文章ではなく、単語のみ（例: <code>さくらや</code>、<code>お餅</code>）で入力すると正解しやすくなります。ひらがな・カタカナ・漢字・送り仮名の違いは自動で柔軟に判定されます。
+                  ※「〜です」「〜だった」などの文章ではなく、単語のみ（例: <code>ひまわり</code>、<code>お餅</code>）で入力すると正解しやすくなります。ひらがな・カタカナ・漢字・送り仮名の違いは自動で柔軟に判定されます。
                 </p>
               </div>
 
@@ -806,7 +813,7 @@ export const PostDetailMainCard = (props: any) => {
                             ? "ロック中のため入力できません" 
                             : verificationResults[idx]?.correct 
                               ? "このクイズはすでに正解されています" 
-                              : "答えを入力（例: さくらや / 単語のみでお答えください）"
+                              : "答えを入力（例: ひまわり / 単語のみでお答えください）"
                         } 
                         className={`w-full px-4 py-3.5 rounded-xl border-2 outline-none transition-all font-sans text-base text-slate-900 bg-white placeholder:text-slate-400 ${
                           isAttemptsLocked 

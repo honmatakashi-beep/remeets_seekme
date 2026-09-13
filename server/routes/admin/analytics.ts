@@ -710,15 +710,15 @@ export const analyticsRouter = express.Router();
       if (topKeywords.length < 5) {
         const sampleKw = [
           { keyword: "青葉台中学校 2008年卒", count: 34, last_searched_at: new Date().toISOString() },
-          { keyword: "西高校 サッカー部", count: 28, last_searched_at: new Date().toISOString() },
+          { keyword: "夕陽丘高校 サッカー部", count: 28, last_searched_at: new Date().toISOString() },
           { keyword: "吹奏楽コンクール 2012", count: 21, last_searched_at: new Date().toISOString() },
           { keyword: "世田谷区 幼馴染", count: 19, last_searched_at: new Date().toISOString() },
-          { keyword: "横浜市立桜木中学校", count: 16, last_searched_at: new Date().toISOString() },
+          { keyword: "緑川中学校 陸上部", count: 16, last_searched_at: new Date().toISOString() },
           { keyword: "北海道 旭川 1995年", count: 14, last_searched_at: new Date().toISOString() },
           { keyword: "駅前カフェ アルバイト仲間", count: 12, last_searched_at: new Date().toISOString() },
-          { keyword: "成城学園 初等部", count: 11, last_searched_at: new Date().toISOString() },
+          { keyword: "星見ヶ丘学園 初等部", count: 11, last_searched_at: new Date().toISOString() },
           { keyword: "天文部 夏合宿 2006", count: 9, last_searched_at: new Date().toISOString() },
-          { keyword: "金沢大学 軽音楽部", count: 8, last_searched_at: new Date().toISOString() }
+          { keyword: "青葉台大学 軽音楽部", count: 8, last_searched_at: new Date().toISOString() }
         ];
         topKeywords = [...topKeywords, ...sampleKw.slice(topKeywords.length)];
       }
@@ -775,18 +775,18 @@ export const analyticsRouter = express.Router();
       if (unmatchedDemands.length < 3) {
         unmatchedDemands.push(
           {
-            keyword: "札幌市立啓明中学校 2002年卒",
+            keyword: "札幌星雲中学校 2002年卒",
             searchCount: 18,
             categoryType: "学校・部活",
             lastSearchedAt: new Date(Date.now() - 3600000 * 5).toISOString(),
-            suggestedSocialPost: "【ReMEETs 漂流ボトル捜索中】「札幌市立啓明中学校 2002年卒」の仲間を探してボトルを検索されている方がいらっしゃいます。心当たりのある方はぜひ想い出を届けてみてください。 #ReMEETs #再会"
+            suggestedSocialPost: "【ReMEETs 漂流ボトル捜索中】「札幌星雲中学校 2002年卒」の仲間を探してボトルを検索されている方がいらっしゃいます。心当たりのある方はぜひ想い出を届けてみてください。 #ReMEETs #再会"
           },
           {
-            keyword: "京都大学 理学部 2010年卒",
+            keyword: "夕陽丘大学 理学部 2010年卒",
             searchCount: 14,
             categoryType: "学校・部活",
             lastSearchedAt: new Date(Date.now() - 3600000 * 12).toISOString(),
-            suggestedSocialPost: "【ReMEETs 漂流ボトル捜索中】「京都大学 理学部 2010年卒」にゆかりのある方を探している方がいます。心当たりのある方はぜひボトルを流してみてください。 #ReMEETs"
+            suggestedSocialPost: "【ReMEETs 漂流ボトル捜索中】「夕陽丘大学 理学部 2010年卒」にゆかりのある方を探している方がいます。心当たりのある方はぜひボトルを流してみてください。 #ReMEETs"
           },
           {
             keyword: "福岡市 天神 レコード店 2005年頃",

@@ -101,7 +101,7 @@ export const AdminDesignSystem: React.FC = () => {
   const typographyScales = [
     { level: 'Display Hero (H1)', size: '32px - 40px', weight: 'Bold 700 / Serif', sample: '想い出のボトルメールを探す', fontClass: 'font-serif text-3xl md:text-4xl font-bold', tracking: 'tracking-tight', usage: 'LPメインキャッチコピー、主要画面タイトル' },
     { level: 'Section Heading (H2)', size: '24px - 28px', weight: 'Bold 700 / Serif & Sans', sample: 'あなたを探しているボトルメール', fontClass: 'font-serif text-2xl font-bold', tracking: 'tracking-normal', usage: '各主要セクション見出し、モーダルタイトル' },
-    { level: 'Card Title (H3)', size: '18px - 20px', weight: 'Bold 700 / Sans', sample: '世田谷第一中学校（1990年代）', fontClass: 'font-sans text-lg font-bold', tracking: 'tracking-normal', usage: 'ボトルカードタイトル、設定グループ見出し' },
+    { level: 'Card Title (H3)', size: '18px - 20px', weight: 'Bold 700 / Sans', sample: '緑川中学校（1990年代）', fontClass: 'font-sans text-lg font-bold', tracking: 'tracking-normal', usage: 'ボトルカードタイトル、設定グループ見出し' },
     { level: 'Body Regular', size: '15px - 16px', weight: 'Regular 400 / Sans', sample: '部活の帰りにいつも寄っていた駄菓子屋の名前を覚えていますか？あの時渡せなかった手紙をここに残します。', fontClass: 'font-sans text-base leading-relaxed', tracking: 'tracking-normal', usage: '手紙本文、説明文、お手紙詳細・メッセージ本文（可読性最優先）' },
     { level: 'Small / Metadata', size: '12px - 13px', weight: 'Medium 500 / Sans', sample: '投函日: 2026/08/15 ・ 差出人: たかし (eKYC公的認証済)', fontClass: 'font-sans text-xs text-black/60', tracking: 'tracking-wide', usage: 'タイムスタンプ、ユーザーメタデータ、補足注記' },
     { level: 'Monospace / Code', size: '12px - 14px', weight: 'Regular 400 / Mono', sample: 'TX_ID: tx_open_1755331000_a9f2 / eKYC: PASSED', fontClass: 'font-mono text-xs bg-zinc-100 p-2 rounded-lg', tracking: 'tracking-wider', usage: '決済トランザクションID、監査ログ、APIレスポンス' },

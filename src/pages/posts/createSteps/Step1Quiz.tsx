@@ -67,7 +67,7 @@ export const Step1Quiz = (props: any) => {
                       ⭕️ 正解しやすいおすすめ例
                     </span>
                     <ul className="text-xs md:text-sm text-emerald-950/85 space-y-1.5 list-disc list-inside leading-relaxed font-sans">
-                      <li><strong>質問:</strong> 放課後によく二人で買い食いした駄菓子屋の名前は？<br />➔ <strong>答え:</strong> <code>さくらや</code></li>
+                      <li><strong>質問:</strong> 秘密基地の入り口に植えた大きな黄色い花は？<br />➔ <strong>答え:</strong> <code>ひまわり</code></li>
                       <li><strong>質問:</strong> 文化祭の劇であなたが担当した役の動物は？<br />➔ <strong>答え:</strong> <code>タヌキ</code></li>
                       <li><strong>質問:</strong> 部活の合宿で夜にこっそり集合した場所は？<br />➔ <strong>答え:</strong> <code>非常階段</code></li>
                     </ul>
@@ -79,7 +79,7 @@ export const Step1Quiz = (props: any) => {
                       ❌ やってはいけない設定（AI検閲対象 / 不一致）
                     </span>
                     <ul className="text-xs md:text-sm text-rose-950/85 space-y-1.5 list-disc list-inside leading-relaxed font-sans">
-                      <li><strong>文章や記号:</strong> <code>さくらやです！</code>、<code>〇〇でした</code>（※単語のみにする）</li>
+                      <li><strong>文章や記号:</strong> <code>ひまわりです！</code>、<code>〇〇でした</code>（※単語のみにする）</li>
                       <li><strong>個人情報:</strong> 電話番号、LINE ID、実名フルネーム、詳細な番地</li>
                       <li><strong>主観的な質問:</strong> 「あの時私がどう思ったか」（※相手が答えにくい）</li>
                       <li><strong>禁止表現:</strong> 誹謗中傷、金銭要求、トラブルに関する記述</li>
@@ -146,12 +146,12 @@ export const Step1Quiz = (props: any) => {
                         <Key size={14} className="text-black" />
                         答え（単語・名詞）<span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
                       </label>
-                      <span className="text-xs text-slate-500 font-medium">※ 単語のみ（例: さくらや）</span>
+                      <span className="text-xs text-slate-500 font-medium">※ 単語のみ（例: ひまわり）</span>
                     </div>
                     <input 
                       required
                       type="text" 
-                      placeholder="例：さくらや（※単語・キーワードのみ）" 
+                      placeholder="例：ひまわり（※単語・キーワードのみ）" 
                       className="w-full px-4 py-3 border-b-2 border-brand-primary/50 rounded-xl bg-[#faf9f6] focus:bg-white text-base outline-none focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all text-[#000000] placeholder:text-zinc-400 font-sans letter-field-input"
                       value={q.answer}
                       onChange={e => handleQuestionChange(idx, 'answer', toHalfWidth(e.target.value))}
@@ -161,7 +161,7 @@ export const Step1Quiz = (props: any) => {
                     />
                     {hasSentenceEnding && (
                       <p className="text-xs text-amber-700 bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-200 flex items-center gap-1 font-bold animate-fade-in">
-                        <span>💡 「です」「！」などの語尾や記号を省いた単語のみ（例: <code>さくらや</code>）で設定すると、相手が正解しやすくなります。</span>
+                        <span>💡 「です」「！」などの語尾や記号を省いた単語のみ（例: <code>ひまわり</code>）で設定すると、相手が正解しやすくなります。</span>
                       </p>
                     )}
                     <WarningMessage message={warnings[`question_${idx}_answer`]} />

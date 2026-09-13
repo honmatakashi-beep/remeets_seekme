@@ -19,6 +19,7 @@ import stepMistReconnectImg from '../assets/images/step_03_mist_reconnect_178915
 import heroBottleMail from '../assets/images/hero_small_ocean_no_bottle.jpg';
 import { CreditCardPaymentForm } from '../components/CreditCardPaymentForm';
 import { ConceptStoryModal } from '../components/ConceptStoryModal';
+import { EkycExplanationModal } from '../components/posts/EkycExplanationModal';
 
 export type HomeDesignMode = 'sub2' | 'v2' | 'v1' | 'sub3';
 
@@ -62,6 +63,7 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
   const [query, setQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [isConceptModalOpen, setIsConceptModalOpen] = useState(false);
+  const [showEkycExplanationModal, setShowEkycExplanationModal] = useState(false);
   const [showStats, setShowStats] = useState(true);
   const [stats, setStats] = useState({ totalUsers: 0, totalReunions: 0, todayPosts: 0 });
   const [featuredStories, setFeaturedStories] = useState<any[]>([]);
@@ -760,27 +762,63 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
             漂流しているボトルがまだありません。あなたの手で最初のボトルを流してみませんか？
           </div>
         ) : (
-          <div className="space-y-8">
+          <div className="space-y-6">
+            {/* 🌈 公的確認マーク（eKYC）の安心ガイドバー */}
+            <div className="bg-gradient-to-r from-sky-50/90 via-teal-50/80 to-indigo-50/90 border border-sky-200/80 rounded-2xl p-3 sm:p-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 sm:gap-3 text-left shadow-2xs">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-7 h-7 rounded-full seal-rainbow flex flex-col items-center justify-center text-white shrink-0 shadow-xs">
+                  <ShieldCheck size={12} className="text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.6)]" />
+                  <span className="text-[5px] font-black tracking-tighter uppercase -mt-0.5 text-white">eKYC済</span>
+                </div>
+                <div className="text-xs text-slate-700 leading-snug">
+                  <span className="font-bold text-sky-950">虹色の「公的確認」マーク</span>は、差出人が運転免許証等による本人確認を完了している<span className="font-bold text-teal-900">実在証明付きの安心なお手紙</span>です。
+                </div>
+              </div>
+              <button 
+                type="button"
+                onClick={() => setShowEkycExplanationModal(true)} 
+                className="shrink-0 text-[11px] font-bold text-sky-850 hover:text-sky-950 bg-white hover:bg-sky-50 border border-sky-300 px-3 py-1 rounded-full shadow-2xs transition-all whitespace-nowrap cursor-pointer flex items-center gap-1 self-end sm:self-center"
+              >
+                <span>マークの意味・安心の仕組み</span>
+                <ArrowRight size={11} />
+              </button>
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 md:gap-6">
               {paginatedPosts.map((post: any) => (
                 <Link 
                   key={post.id}
                   to={getPostUrl(post)}
                   state={{ postPreview: post }}
-                  className="p-6 block hover:-translate-y-1 hover:shadow-xl transition-all border-2 border-slate-300 hover:border-teal-600 duration-300 rounded-3xl space-y-4 bg-white group text-left shadow-md"
+                  className="p-6 block hover:-translate-y-1 hover:shadow-xl transition-all border-2 border-slate-300 hover:border-teal-600 duration-300 rounded-3xl space-y-4 bg-white group text-left shadow-md relative overflow-hidden"
                 >
-                  <div className="flex justify-between items-start">
-                    <div className="space-y-1">
-                      <span className="text-[10px] font-[700] text-brand-primary uppercase tracking-widest block bg-brand-primary/5 border border-brand-primary/10 px-2 py-0.5 rounded-full w-fit font-sans">
-                        {post.era?.toString().startsWith('19') ? post.era : `19${post.era}`}年代 / {post.category === 'friend' ? '友人' : post.category === 'love' ? '初恋・恋人' : post.category === 'work' ? '仕事' : 'その他'}
-                      </span>
-                      <h3 className="text-lg font-serif font-bold text-brand-dark group-hover:text-brand-primary transition-colors">
+                  <div className="flex justify-between items-start gap-3">
+                    <div className="space-y-1 flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="text-[10px] font-[700] text-brand-primary uppercase tracking-widest block bg-brand-primary/5 border border-brand-primary/10 px-2 py-0.5 rounded-full w-fit font-sans">
+                          {post.era?.toString().startsWith('19') ? post.era : `19${post.era}`}年代 / {post.category === 'friend' ? '友人' : post.category === 'love' ? '初恋・恋人' : post.category === 'work' ? '仕事' : 'その他'}
+                        </span>
+                        <span className="text-[10px] text-brand-dark/40 font-mono">
+                          {new Date(post.created_at).toLocaleDateString('ja-JP')}
+                        </span>
+                      </div>
+                      <h3 className="text-lg font-serif font-bold text-brand-dark group-hover:text-brand-primary transition-colors truncate">
                         {post.target_name} 様
                       </h3>
                     </div>
-                    <span className="text-[10px] text-brand-dark/40 font-mono">
-                      {new Date(post.created_at).toLocaleDateString('ja-JP')}
-                    </span>
+
+                    {/* 🌈 カード右上の動く虹色公的認証マーク（封蝋印：eKYC認証済みの場合のみ表示） */}
+                    {Boolean(post.is_ekyc_verified) && (
+                      <div className="flex flex-col items-center shrink-0 -mt-1 -mr-1" title="差出人は公的本人確認（eKYC）完了済み">
+                        <div className="w-7 h-7 rounded-full seal-rainbow flex flex-col items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform">
+                          <ShieldCheck size={12} className="text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]" />
+                          <span className="text-[5px] font-black tracking-tighter uppercase -mt-0.5 text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">eKYC済</span>
+                        </div>
+                        <span className="mt-0.5 text-[7px] font-extrabold text-sky-950 bg-white/95 border border-sky-300 px-1.5 py-0.2 rounded-full shadow-2xs whitespace-nowrap">
+                          公的確認
+                        </span>
+                      </div>
+                    )}
                   </div>
                   <p className="text-xs text-brand-dark/70 font-sans leading-relaxed line-clamp-2">
                     差し出し人: {post.searcher_name} <br/>
@@ -862,10 +900,10 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
               <div className="mb-4 space-y-1.5 font-sans border-b border-slate-100 pb-3">
                 <div className="flex items-center justify-between text-[11px] font-bold text-slate-500">
                   <span className="flex items-center gap-1.5">
-                    <ShieldCheck size={14} className="text-teal-600" />
+                    <ShieldCheck size={14} className="text-sky-600" />
                     <span>eKYC 本人確認手続き</span>
                   </span>
-                  <span className="font-mono text-teal-700 font-extrabold bg-teal-50 px-2 py-0.5 rounded-full text-[10px] border border-teal-200/60">
+                  <span className="font-mono text-sky-800 font-extrabold bg-sky-50 px-2 py-0.5 rounded-full text-[10px] border border-sky-200/60">
                     {ekycStep === 1 && 'STEP 1 / 4 (概要)'}
                     {ekycStep === 2 && 'STEP 2 / 4 (証明書情報)'}
                     {ekycStep === 3 && 'STEP 3 / 4 (安全決済)'}
@@ -875,7 +913,7 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                 </div>
                 <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden relative shadow-inner">
                   <div 
-                    className="bg-gradient-to-r from-teal-500 via-emerald-500 to-amber-400 h-full transition-all duration-300 rounded-full shadow-xs"
+                    className="bg-gradient-to-r from-sky-400 via-sky-500 to-blue-500 h-full transition-all duration-300 rounded-full shadow-xs"
                     style={{
                       width: ekycStep === 1 ? '25%' : ekycStep === 2 ? '50%' : ekycStep === 3 ? '75%' : ekycStep === 4 ? `${ekycProgress}%` : '100%'
                     }}
@@ -887,8 +925,9 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
               {ekycStep === 1 && (
                 <div className="space-y-5 py-2">
                   <div className="text-center space-y-2">
-                    <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-teal-50 text-teal-600 animate-pulse">
-                      <ShieldCheck size={32} />
+                    <div className="inline-flex items-center justify-center w-14 h-14 rounded-full seal-rainbow text-white shadow-lg mx-auto flex-col">
+                      <ShieldCheck size={26} className="text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]" />
+                      <span className="text-[8px] font-black tracking-tighter uppercase -mt-0.5 text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">eKYC済</span>
                     </div>
                     <h3 className="text-xl font-serif font-bold text-zinc-900">
                       オンライン本人確認 (eKYC) で安心再会
@@ -899,9 +938,9 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                   </div>
 
                   <div className="space-y-4 text-xs leading-relaxed text-zinc-700">
-                    <div className="p-3 bg-teal-50/50 border border-teal-100 rounded-xl space-y-1">
-                      <span className="font-bold text-teal-800 flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 bg-teal-500 rounded-full" />
+                    <div className="p-3 bg-sky-50/70 border border-sky-200/80 rounded-xl space-y-1">
+                      <span className="font-bold text-sky-950 flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 bg-sky-500 rounded-full" />
                         ① お相手への本気の信頼・誠意を届ける
                       </span>
                       <p className="text-zinc-600 pl-3">
@@ -944,7 +983,7 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                     <button
                       type="button"
                       onClick={() => setEkycStep(2)}
-                      className="w-full py-3 bg-brand-dark hover:bg-brand-dark/90 text-white rounded-xl text-xs font-bold font-sans tracking-widest text-center flex items-center justify-center gap-2 transition-all cursor-pointer"
+                      className="w-full py-3.5 bg-gradient-to-r from-sky-400 via-sky-500 to-blue-500 hover:from-sky-500 hover:to-blue-600 text-white rounded-xl text-xs font-bold font-sans tracking-widest text-center flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md active:scale-98"
                     >
                       <span>本人確認の手続きに進む</span>
                       <ArrowRight size={14} />
@@ -1083,7 +1122,7 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                         }
                         setEkycStep(3);
                       }}
-                      className="flex-1 py-3 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-bold font-sans text-center transition-all shadow-md cursor-pointer"
+                      className="flex-1 py-3 bg-gradient-to-r from-sky-400 via-sky-500 to-blue-500 hover:from-sky-500 hover:to-blue-600 text-white rounded-xl text-xs font-bold font-sans text-center transition-all shadow-md cursor-pointer active:scale-98"
                     >
                       お支払い手続きに進む
                     </button>
@@ -1095,7 +1134,7 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
               {ekycStep === 3 && (
                 <div className="space-y-5 py-2">
                   <div className="text-center space-y-1">
-                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-rose-50 text-rose-600 animate-bounce">
+                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-sky-50 text-sky-600 animate-bounce">
                       <CreditCard size={24} />
                     </div>
                     <h3 className="text-lg font-serif font-bold text-zinc-900">
@@ -1106,9 +1145,9 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                     </p>
                   </div>
 
-                  <div className="bg-rose-50/40 border border-rose-100 rounded-2xl p-4 text-center space-y-1 shadow-sm">
-                    <div className="text-[10px] text-rose-800 font-bold tracking-wider">ご請求金額</div>
-                    <div className="text-3xl font-sans font-extrabold text-rose-950 flex items-baseline justify-center gap-1">
+                  <div className="bg-sky-50/40 border border-sky-200 rounded-2xl p-4 text-center space-y-1 shadow-sm">
+                    <div className="text-[10px] text-sky-800 font-bold tracking-wider">ご請求金額</div>
+                    <div className="text-3xl font-sans font-extrabold text-sky-950 flex items-baseline justify-center gap-1">
                       <span>600</span>
                       <span className="text-sm font-bold">円</span>
                       <span className="text-xs text-zinc-500 font-normal">（税込）</span>
@@ -1172,7 +1211,7 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                           setEkycStep(4); // 照合プロセスへ
                         }, 1200);
                       }}
-                      className="flex-1 py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold font-sans text-center transition-all shadow-md cursor-pointer disabled:opacity-55 flex items-center justify-center gap-1.5"
+                      className="flex-1 py-3 bg-gradient-to-r from-sky-400 via-sky-500 to-blue-500 hover:from-sky-500 hover:to-blue-600 text-white rounded-xl text-xs font-bold font-sans text-center transition-all shadow-md cursor-pointer disabled:opacity-55 flex items-center justify-center gap-1.5 active:scale-98"
                     >
                       {isPaying ? (
                         <>
@@ -1195,20 +1234,20 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                   {/* 中央の二重発光スピナー & アイコン */}
                   <div className="relative inline-flex items-center justify-center my-2">
                     {/* 外周の発光オーラ */}
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-teal-500/20 via-emerald-500/30 to-amber-400/20 blur-xl animate-pulse" />
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-sky-400/20 via-blue-500/30 to-amber-400/20 blur-xl animate-pulse" />
                     
                     {/* スピナーリング（外側・反時計回り） */}
-                    <div className="w-24 h-24 rounded-full border-2 border-dashed border-teal-300/60 animate-[spin_8s_linear_infinite]" />
+                    <div className="w-24 h-24 rounded-full border-2 border-dashed border-sky-300/60 animate-[spin_8s_linear_infinite]" />
                     
                     {/* スピナーリング（内側・時計回り） */}
-                    <div className="absolute w-20 h-20 rounded-full border-3 border-teal-100 border-t-emerald-600 border-r-teal-500 animate-spin" />
+                    <div className="absolute w-20 h-20 rounded-full border-3 border-sky-100 border-t-sky-500 border-r-blue-500 animate-spin" />
                     
                     {/* 中央コンテンツ */}
-                    <div className="absolute inset-0 flex flex-col items-center justify-center text-teal-800 font-serif">
-                      <span className="text-xl font-bold tracking-[0.14em] md:tracking-[0.18em] bg-gradient-to-r from-teal-700 to-emerald-600 bg-clip-text text-transparent pl-0.5">
+                    <div className="absolute inset-0 flex flex-col items-center justify-center text-sky-900 font-serif">
+                      <span className="text-xl font-bold tracking-[0.14em] md:tracking-[0.18em] bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent pl-0.5">
                         {ekycProgress}%
                       </span>
-                      <span className="text-[9px] font-semibold text-teal-600/80 uppercase tracking-[0.22em] -mt-0.5">
+                      <span className="text-[9px] font-semibold text-sky-600/80 uppercase tracking-[0.22em] -mt-0.5">
                         Processing
                       </span>
                     </div>
@@ -1216,8 +1255,8 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
 
                   {/* ステータスタイトル */}
                   <div className="space-y-1">
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-xs font-serif font-bold tracking-[0.1em] shadow-xs">
-                      <ShieldCheck size={14} className="text-emerald-600 animate-pulse" />
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-50 border border-sky-200/80 text-sky-800 text-xs font-serif font-bold tracking-[0.1em] shadow-xs">
+                      <ShieldCheck size={14} className="text-sky-600 animate-pulse" />
                       <span>公的本人確認・安全照合中</span>
                     </div>
                     <h3 className="text-base font-serif font-extrabold tracking-[0.12em] md:tracking-[0.16em] text-zinc-900 pt-1">
@@ -1232,20 +1271,20 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                   {/* プログレスバー本体 */}
                   <div className="space-y-1.5 px-2">
                     <div className="flex items-center justify-between text-xs font-serif font-semibold text-zinc-500 px-1">
-                      <span className="flex items-center gap-1 text-[11px] text-teal-700 font-serif tracking-[0.1em]">
+                      <span className="flex items-center gap-1 text-[11px] text-sky-700 font-serif tracking-[0.1em]">
                         <Lock size={12} /> 256bit 暗号化通信
                       </span>
-                      <span className="text-emerald-700 font-bold font-serif tracking-[0.12em]">{ekycProgress} / 100%</span>
+                      <span className="text-sky-700 font-bold font-serif tracking-[0.12em]">{ekycProgress} / 100%</span>
                     </div>
 
                     <div className="w-full bg-slate-100 h-3.5 rounded-full p-0.5 shadow-inner border border-slate-200/80 relative overflow-hidden">
                       <div 
-                        className="bg-gradient-to-r from-teal-500 via-emerald-500 to-amber-400 h-full rounded-full transition-all duration-300 relative shadow-xs" 
+                        className="bg-gradient-to-r from-sky-400 via-sky-500 to-blue-500 h-full rounded-full transition-all duration-300 relative shadow-xs" 
                         style={{ width: `${ekycProgress}%` }}
                       >
                         {/* バー先端のLED光彩ノード */}
                         {ekycProgress > 0 && ekycProgress < 100 && (
-                          <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-3 h-3 rounded-full bg-white border-2 border-emerald-600 shadow-[0_0_8px_rgba(16,185,129,0.9)] z-10" />
+                          <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-3 h-3 rounded-full bg-white border-2 border-sky-500 shadow-[0_0_8px_rgba(14,165,233,0.9)] z-10" />
                         )}
                       </div>
                     </div>
@@ -1253,44 +1292,44 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
 
                   {/* 4ステップ進行タイムラインリスト */}
                   <div className="bg-slate-50/80 rounded-xl p-3 border border-slate-200/60 text-left space-y-2 text-xs font-serif">
-                    <div className={`flex items-center justify-between p-2 rounded-lg transition-all ${ekycProgress >= 0 && ekycProgress < 25 ? 'bg-white shadow-xs border border-teal-200 font-bold text-teal-900' : ekycProgress >= 25 ? 'text-zinc-400' : 'text-zinc-500'}`}>
+                    <div className={`flex items-center justify-between p-2 rounded-lg transition-all ${ekycProgress >= 0 && ekycProgress < 25 ? 'bg-white shadow-xs border border-sky-300 font-bold text-sky-950' : ekycProgress >= 25 ? 'text-zinc-400' : 'text-zinc-500'}`}>
                       <span className="flex items-center gap-2">
-                        <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-serif font-bold ${ekycProgress >= 25 ? 'bg-emerald-500 text-white' : 'bg-teal-100 text-teal-800'}`}>
+                        <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-serif font-bold ${ekycProgress >= 25 ? 'bg-sky-500 text-white' : 'bg-sky-100 text-sky-800'}`}>
                           {ekycProgress >= 25 ? '✓' : '1'}
                         </span>
                         <span className="tracking-[0.08em] md:tracking-[0.12em]">決済承認＆セキュリティトークン化</span>
                       </span>
-                      {ekycProgress < 25 && <span className="text-[10px] text-teal-600 animate-pulse font-serif font-semibold tracking-[0.14em]">処理中...</span>}
+                      {ekycProgress < 25 && <span className="text-[10px] text-sky-600 animate-pulse font-serif font-semibold tracking-[0.14em]">処理中...</span>}
                     </div>
 
-                    <div className={`flex items-center justify-between p-2 rounded-lg transition-all ${ekycProgress >= 25 && ekycProgress < 50 ? 'bg-white shadow-xs border border-teal-200 font-bold text-teal-900' : ekycProgress >= 50 ? 'text-zinc-400' : 'text-zinc-500'}`}>
+                    <div className={`flex items-center justify-between p-2 rounded-lg transition-all ${ekycProgress >= 25 && ekycProgress < 50 ? 'bg-white shadow-xs border border-sky-300 font-bold text-sky-950' : ekycProgress >= 50 ? 'text-zinc-400' : 'text-zinc-500'}`}>
                       <span className="flex items-center gap-2">
-                        <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-serif font-bold ${ekycProgress >= 50 ? 'bg-emerald-500 text-white' : 'bg-teal-100 text-teal-800'}`}>
+                        <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-serif font-bold ${ekycProgress >= 50 ? 'bg-sky-500 text-white' : 'bg-sky-100 text-sky-800'}`}>
                           {ekycProgress >= 50 ? '✓' : '2'}
                         </span>
                         <span className="tracking-[0.08em] md:tracking-[0.12em]">公的書類・文字データ暗号解析</span>
                       </span>
-                      {ekycProgress >= 25 && ekycProgress < 50 && <span className="text-[10px] text-teal-600 animate-pulse font-serif font-semibold tracking-[0.14em]">解析中...</span>}
+                      {ekycProgress >= 25 && ekycProgress < 50 && <span className="text-[10px] text-sky-600 animate-pulse font-serif font-semibold tracking-[0.14em]">解析中...</span>}
                     </div>
 
-                    <div className={`flex items-center justify-between p-2 rounded-lg transition-all ${ekycProgress >= 50 && ekycProgress < 75 ? 'bg-white shadow-xs border border-teal-200 font-bold text-teal-900' : ekycProgress >= 75 ? 'text-zinc-400' : 'text-zinc-500'}`}>
+                    <div className={`flex items-center justify-between p-2 rounded-lg transition-all ${ekycProgress >= 50 && ekycProgress < 75 ? 'bg-white shadow-xs border border-sky-300 font-bold text-sky-950' : ekycProgress >= 75 ? 'text-zinc-400' : 'text-zinc-500'}`}>
                       <span className="flex items-center gap-2">
-                        <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-serif font-bold ${ekycProgress >= 75 ? 'bg-emerald-500 text-white' : 'bg-teal-100 text-teal-800'}`}>
+                        <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-serif font-bold ${ekycProgress >= 75 ? 'bg-sky-500 text-white' : 'bg-sky-100 text-sky-800'}`}>
                           {ekycProgress >= 75 ? '✓' : '3'}
                         </span>
                         <span className="tracking-[0.08em] md:tracking-[0.12em]">実在生身人間（ライブネス）判定</span>
                       </span>
-                      {ekycProgress >= 50 && ekycProgress < 75 && <span className="text-[10px] text-teal-600 animate-pulse font-serif font-semibold tracking-[0.14em]">判定中...</span>}
+                      {ekycProgress >= 50 && ekycProgress < 75 && <span className="text-[10px] text-sky-600 animate-pulse font-serif font-semibold tracking-[0.14em]">判定中...</span>}
                     </div>
 
-                    <div className={`flex items-center justify-between p-2 rounded-lg transition-all ${ekycProgress >= 75 ? 'bg-white shadow-xs border border-teal-200 font-bold text-teal-900' : 'text-zinc-500'}`}>
+                    <div className={`flex items-center justify-between p-2 rounded-lg transition-all ${ekycProgress >= 75 ? 'bg-white shadow-xs border border-sky-300 font-bold text-sky-950' : 'text-zinc-500'}`}>
                       <span className="flex items-center gap-2">
-                        <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-serif font-bold ${ekycProgress === 100 ? 'bg-emerald-500 text-white' : 'bg-teal-100 text-teal-800'}`}>
+                        <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-serif font-bold ${ekycProgress === 100 ? 'bg-sky-500 text-white' : 'bg-sky-100 text-sky-800'}`}>
                           {ekycProgress === 100 ? '✓' : '4'}
                         </span>
                         <span className="tracking-[0.08em] md:tracking-[0.12em]">身元信頼トークン発行＆原本即時消去</span>
                       </span>
-                      {ekycProgress >= 75 && ekycProgress < 100 && <span className="text-[10px] text-teal-600 animate-pulse font-serif font-semibold tracking-[0.14em]">発行中...</span>}
+                      {ekycProgress >= 75 && ekycProgress < 100 && <span className="text-[10px] text-sky-600 animate-pulse font-serif font-semibold tracking-[0.14em]">発行中...</span>}
                     </div>
                   </div>
                 </div>
@@ -1299,8 +1338,9 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
               {/* Step 5: Success / Done */}
               {ekycStep === 5 && (
                 <div className="space-y-5 py-2 text-center">
-                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-emerald-50 text-emerald-600">
-                    <CheckCircle2 size={36} className="animate-bounce" />
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full seal-rainbow text-white shadow-lg mx-auto flex-col animate-bounce">
+                    <ShieldCheck size={30} className="text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]" />
+                    <span className="text-[9px] font-black tracking-tighter uppercase -mt-0.5 text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">eKYC済</span>
                   </div>
 
                   <div className="space-y-1.5">
@@ -1357,6 +1397,12 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
           </div>
         )}
       </AnimatePresence>
+
+      {/* 🌈 公的本人確認（eKYC）安心説明モーダル */}
+      <EkycExplanationModal 
+        isOpen={showEkycExplanationModal} 
+        onClose={() => setShowEkycExplanationModal(false)} 
+      />
     </div>
   );
 };

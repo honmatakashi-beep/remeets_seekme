@@ -1148,6 +1148,119 @@ body.modal-open {
   animation-delay: 0.45s;
 }
 
+/* eKYC Badge Shimmer & Wax Seal Styles */
+@keyframes ekyc-shimmer-sweep {
+  0% { transform: translateX(-150%) skewX(-20deg); }
+  30%, 100% { transform: translateX(250%) skewX(-20deg); }
+}
+
+.animate-ekyc-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.animate-ekyc-shimmer::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    rgba(255, 255, 255, 0) 20%,
+    rgba(255, 255, 255, 0.7) 50%,
+    rgba(255, 255, 255, 0) 80%
+  );
+  animation: ekyc-shimmer-sweep 3.5s infinite ease-in-out;
+  pointer-events: none;
+}
+
+@keyframes seal-glow {
+  0%, 100% {
+    box-shadow: 0 4px 18px rgba(217, 119, 6, 0.25), 0 0 0 1px rgba(245, 158, 11, 0.4);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 6px 24px rgba(217, 119, 6, 0.45), 0 0 10px rgba(251, 191, 36, 0.55), 0 0 0 2px rgba(245, 158, 11, 0.65);
+    transform: scale(1.02);
+  }
+}
+
+.seal-wax {
+  background: radial-gradient(circle at 35% 35%, #fef3c7 0%, #f59e0b 45%, #b45309 85%, #78350f 100%);
+  animation: seal-glow 4s infinite ease-in-out;
+}
+
+/* 🌈 虹のグラデーション（鮮やかに動く回転リッチレインボー）公的本人確認封蝋印 */
+@keyframes rainbow-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rainbow-seal-glow {
+  0%, 100% {
+    box-shadow: 0 4px 18px rgba(255, 23, 68, 0.4), 0 0 12px rgba(0, 176, 255, 0.4), 0 0 0 1.5px rgba(255, 255, 255, 0.95);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 6px 24px rgba(101, 31, 255, 0.55), 0 0 16px rgba(255, 234, 0, 0.55), 0 0 0 2px rgba(255, 255, 255, 1);
+    transform: scale(1.05);
+  }
+}
+
+.seal-rainbow {
+  position: relative;
+  overflow: hidden;
+  border-radius: 9999px;
+  animation: rainbow-seal-glow 3.5s infinite ease-in-out;
+  border: 1.5px solid rgba(255, 255, 255, 0.95);
+}
+
+.seal-rainbow::before {
+  content: '';
+  position: absolute;
+  top: -60%;
+  left: -60%;
+  width: 220%;
+  height: 220%;
+  background: conic-gradient(
+    from 0deg,
+    #ff1744 0%,
+    #ff9100 14%,
+    #ffea00 28%,
+    #00e676 42%,
+    #00b0ff 57%,
+    #651fff 71%,
+    #d500f9 85%,
+    #ff1744 100%
+  );
+  animation: rainbow-rotate 5s linear infinite;
+  z-index: 1;
+}
+
+.seal-rainbow::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.45) 0%, rgba(0, 0, 0, 0.1) 60%, rgba(0, 0, 0, 0.35) 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.seal-rainbow > * {
+  position: relative;
+  z-index: 3;
+}
+
+
+
+
 
 
 

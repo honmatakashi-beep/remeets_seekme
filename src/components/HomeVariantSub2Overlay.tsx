@@ -8,6 +8,7 @@ import stepMistWriteImg from '../assets/images/step_01_mist_ocean_close_17891549
 import stepMistDriftImg from '../assets/images/step_02_beach_arrival_1789155133509.jpg';
 import stepMistReconnectImg from '../assets/images/step_03_mist_reconnect_1789154562729.jpg';
 import { ConceptStoryModal } from './ConceptStoryModal';
+import { EkycExplanationModal } from './posts/EkycExplanationModal';
 import { 
   Sparkles, 
   ShieldCheck, 
@@ -113,6 +114,7 @@ export const HomeVariantSub2Overlay: React.FC<HomeVariantSub2OverlayProps> = ({
   const [firstName, setFirstName] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isConceptModalOpen, setIsConceptModalOpen] = useState(false);
+  const [showEkycExplanationModal, setShowEkycExplanationModal] = useState(false);
 
   const fullTargetName = `${lastName} ${firstName}`.trim();
 
@@ -337,18 +339,55 @@ export const HomeVariantSub2Overlay: React.FC<HomeVariantSub2OverlayProps> = ({
             <div><span className="text-[11px] font-bold text-teal-700 uppercase tracking-widest font-sans block">Bottle Mail Gallery</span><h2 className="text-xl font-serif font-bold text-slate-900">ネットの海に漂うみんなの想い</h2><p className="text-xs text-slate-600 font-sans">タップしてボトルを開けてみてください。自分と同じように、大切な人を探している一通が見つかります。</p></div>
             <Link to="/search" className="text-xs text-teal-800 font-bold flex items-center gap-1 hover:underline">すべて見る <ArrowRight size={12} /></Link>
           </div>
+
+          {/* 🌈 公的確認マーク（eKYC）の安心ガイドバー */}
+          <div className="bg-gradient-to-r from-sky-50/90 via-teal-50/80 to-indigo-50/90 border border-sky-200/80 rounded-2xl p-3 sm:p-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 sm:gap-3 text-left shadow-2xs">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-7 h-7 rounded-full seal-rainbow flex flex-col items-center justify-center text-white shrink-0 shadow-xs">
+                <ShieldCheck size={12} className="text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.6)]" />
+                <span className="text-[5px] font-black tracking-tighter uppercase -mt-0.5 text-white">eKYC済</span>
+              </div>
+              <div className="text-xs text-slate-700 leading-snug">
+                <span className="font-bold text-sky-950">虹色の「公的確認」マーク</span>は、差出人が運転免許証等による本人確認を完了している<span className="font-bold text-teal-900">実在証明付きの安心なお手紙</span>です。
+              </div>
+            </div>
+            <button 
+              type="button"
+              onClick={() => setShowEkycExplanationModal(true)} 
+              className="shrink-0 text-[11px] font-bold text-sky-850 hover:text-sky-950 bg-white hover:bg-sky-50 border border-sky-300 px-3 py-1 rounded-full shadow-2xs transition-all whitespace-nowrap cursor-pointer flex items-center gap-1 self-end sm:self-center"
+            >
+              <span>マークの意味・安心の仕組み</span>
+              <ArrowRight size={11} />
+            </button>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {(recentPosts && recentPosts.length > 0 ? recentPosts.slice(0, 4) : GALLERY_BOTTLES).map((b: any) => (
               <div 
                 key={b.id} 
                 onClick={() => navigate(getPostUrl(b))} 
-                className="p-5 bg-white border-2 border-slate-200 hover:border-teal-500 rounded-3xl space-y-3 cursor-pointer text-left shadow-sm hover:shadow-md transition-all"
+                className="p-5 bg-white border-2 border-slate-200 hover:border-teal-500 rounded-3xl space-y-3 cursor-pointer text-left shadow-sm hover:shadow-md transition-all relative overflow-hidden"
               >
-                <div className="flex justify-between items-start">
-                  <span className="text-[10px] font-bold text-teal-800 bg-teal-50 border border-teal-200 px-2.5 py-0.5 rounded-full">
-                    {b.era || '思い出'} / {b.relationship || '大切な人'}
-                  </span>
-                  <span className="text-[10px] text-slate-400 font-mono">{b.createdTime || '漂流中'}</span>
+                <div className="flex justify-between items-start gap-2">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="text-[10px] font-bold text-teal-800 bg-teal-50 border border-teal-200 px-2.5 py-0.5 rounded-full">
+                      {b.era ? (b.era.toString().startsWith('19') ? b.era : `19${b.era}`) : '思い出'}年代 / {b.category === 'friend' ? '友人' : b.category === 'love' ? '初恋・恋人' : b.relationship || '大切な人'}
+                    </span>
+                    <span className="text-[10px] text-slate-400 font-mono">{b.createdTime || '漂流中'}</span>
+                  </div>
+
+                  {/* 🌈 カード右上の動く虹色公的認証マーク（封蝋印：eKYC認証済みの場合のみ表示） */}
+                  {Boolean(b.is_ekyc_verified) && (
+                    <div className="flex flex-col items-center shrink-0 -mt-1 -mr-1" title="差出人は公的本人確認（eKYC）完了済み">
+                      <div className="w-7 h-7 rounded-full seal-rainbow flex flex-col items-center justify-center text-white shadow-sm">
+                        <ShieldCheck size={12} className="text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]" />
+                        <span className="text-[5px] font-black tracking-tighter uppercase -mt-0.5 text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">eKYC済</span>
+                      </div>
+                      <span className="mt-0.5 text-[7px] font-extrabold text-sky-950 bg-white/95 border border-sky-300 px-1.5 py-0.2 rounded-full shadow-2xs whitespace-nowrap">
+                        公的確認
+                      </span>
+                    </div>
+                  )}
                 </div>
                 <h3 className="text-base font-serif font-bold text-slate-900">{b.targetName || b.target_name} 様</h3>
                 <p className="text-xs text-slate-600 font-sans line-clamp-2">
@@ -367,6 +406,12 @@ export const HomeVariantSub2Overlay: React.FC<HomeVariantSub2OverlayProps> = ({
       <ConceptStoryModal 
         isOpen={isConceptModalOpen} 
         onClose={() => setIsConceptModalOpen(false)} 
+      />
+
+      {/* 🌈 公的本人確認（eKYC）安心説明モーダル */}
+      <EkycExplanationModal 
+        isOpen={showEkycExplanationModal} 
+        onClose={() => setShowEkycExplanationModal(false)} 
       />
     </div>
   );

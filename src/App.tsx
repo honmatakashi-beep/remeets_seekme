@@ -86,6 +86,7 @@ export default function App() {
                 <Route path="/edit/:id" element={<ProtectedRoute><EditPostPage /></ProtectedRoute>} />
                 <Route path="/account" element={<ProtectedRoute><AccountPage /></ProtectedRoute>} />
                 <Route path="/post/:id" element={<PostDetailPage onOpenOnboarding={() => {}} />} />
+                <Route path="/posts/:id" element={<PostDetailPage onOpenOnboarding={() => {}} />} />
                 <Route path="/name/:name/:location/:year/:relationship" element={<PostDetailPage onOpenOnboarding={() => {}} />} />
                 <Route path="/admin" element={
                   <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-slate-500 font-sans text-sm">読み込み中...</div>}>

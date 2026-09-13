@@ -214,7 +214,7 @@ export const EkycProgressTelemetryPanel: React.FC<EkycProgressTelemetryPanelProp
                 type="button"
                 id="btn-start-ekyc-mypage"
                 onClick={onStartEkyc}
-                className="px-5 py-3 bg-teal-600 hover:bg-teal-700 active:scale-95 text-white rounded-2xl font-bold font-sans text-xs shadow-md hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer"
+                className="px-5 py-3 bg-gradient-to-r from-sky-400 via-sky-500 to-blue-500 hover:from-sky-500 hover:to-blue-600 active:scale-95 text-white rounded-2xl font-bold font-sans text-xs shadow-md hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer"
               >
                 <ShieldCheck size={16} />
                 <span>本人確認手続きを進める（600円）</span>

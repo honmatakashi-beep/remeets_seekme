@@ -21,7 +21,6 @@ import { cn, PageHeader, formatEraLabel, getCategoryText, getPostUrl, PREFECTURE
 import { BottleLoader, WarningMessage, ProtectedRoute, GoogleSearchResultPreview, BackToHomeButton } from '../../components/SharedComponents';
 import { DocumentCameraOverlay, stopAllGlobalCameraStreams } from '../../components/DocumentCameraOverlay';
 import { QuizMatchingAnalyticsView } from '../../components/QuizMatchingAnalyticsView';
-import { SupportModal } from '../../components/SupportModal';
 import { CreditCardPaymentForm } from '../../components/CreditCardPaymentForm';
 import { ReunionEffectTitle } from '../../components/ReunionEffectTitle';
 import { QuestionSampleModal } from '../AuthPages';
@@ -1013,36 +1012,41 @@ export const SuccessModal = ({
                 {/* 2つのプラン並列比較カード */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-1">
                   {/* 左：【第一推奨・メイン】公的身分証（eKYC）認証 ＋ 手紙開封・連絡先受取 */}
-                  <div className="relative p-4 bg-gradient-to-br from-indigo-50/90 via-white to-purple-50/80 border-2 border-indigo-500/80 rounded-2xl space-y-3 shadow-md flex flex-col justify-between hover:border-indigo-600 transition-all">
-                    <div className="absolute -top-3 left-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-[10.5px] font-extrabold px-3 py-0.5 rounded-full shadow-md flex items-center gap-1">
+                  <div className="relative p-4 bg-gradient-to-br from-sky-50/90 via-white to-blue-50/80 border-2 border-sky-500/80 rounded-2xl space-y-3 shadow-md flex flex-col justify-between hover:border-sky-600 transition-all">
+                    <div className="absolute -top-3 left-4 bg-gradient-to-r from-sky-500 via-sky-600 to-blue-600 text-white text-[10.5px] font-extrabold px-3 py-0.5 rounded-full shadow-md flex items-center gap-1">
                       <Sparkles size={12} className="text-amber-300" />
                       <span>【第一推奨】安心・返信率大幅UP</span>
                     </div>
 
                     <div className="space-y-2.5 pt-1">
-                      <div className="flex items-center justify-between border-b border-indigo-100 pb-2">
-                        <span className="text-xs font-extrabold text-indigo-950 flex items-center gap-1.5">
-                          <ShieldCheck size={16} className="text-indigo-600" />
+                      <div className="flex items-center justify-between border-b border-sky-100 pb-2">
+                        <span className="text-xs font-extrabold text-sky-950 flex items-center gap-1.5">
+                          <span className="w-5 h-5 rounded-full seal-rainbow flex items-center justify-center text-white shrink-0 shadow-2xs">
+                            <ShieldCheck size={11} className="text-white" />
+                          </span>
                           <span>公的身分証 (eKYC) 認証コース</span>
+                        </span>
+                        <span className="text-[9.5px] font-bold text-sky-700 bg-white border border-sky-200 px-2 py-0.5 rounded-full">
+                          虹色封蝋付与
                         </span>
                       </div>
 
                       <ul className="space-y-1.5 text-xs text-slate-700 font-sans">
                         <li className="flex items-start gap-1.5">
-                          <CheckCircle2 size={14} className="text-indigo-600 shrink-0 mt-0.5" />
+                          <CheckCircle2 size={14} className="text-sky-600 shrink-0 mt-0.5" />
                           <span><strong>公的証明バッジ</strong>でお相手の警戒心を解除</span>
                         </li>
                         <li className="flex items-start gap-1.5">
-                          <CheckCircle2 size={14} className="text-indigo-600 shrink-0 mt-0.5" />
+                          <CheckCircle2 size={14} className="text-sky-600 shrink-0 mt-0.5" />
                           <span>お相手からの<strong>初回返信率が格段に向上</strong></span>
                         </li>
                         <li className="flex items-start gap-1.5">
-                          <CheckCircle2 size={14} className="text-indigo-600 shrink-0 mt-0.5" />
+                          <CheckCircle2 size={14} className="text-sky-600 shrink-0 mt-0.5" />
                           <span>手紙全文の開封 ＆ 直通連絡先の受け取り</span>
                         </li>
                       </ul>
 
-                      <div className="p-2 bg-indigo-100/60 rounded-lg space-y-1 text-[11px] text-indigo-950 font-medium">
+                      <div className="p-2 bg-sky-100/60 rounded-lg space-y-1 text-[11px] text-sky-950 font-medium">
                         <div className="flex justify-between items-center">
                           <span>① 公的身分証（eKYC）審査</span>
                           <span className="font-bold">600円（税込）</span>
@@ -1054,10 +1058,10 @@ export const SuccessModal = ({
                       </div>
                     </div>
 
-                    <div className="space-y-2.5 pt-2 border-t border-indigo-100">
+                    <div className="space-y-2.5 pt-2 border-t border-sky-100">
                       <div className="flex items-baseline justify-between">
                         <span className="text-xs text-slate-600 font-bold">合計総額（買い切り）</span>
-                        <div className="text-xl font-extrabold text-indigo-700">
+                        <div className="text-xl font-extrabold text-sky-800">
                           1,200<span className="text-xs font-bold text-slate-700 ml-0.5">円（税込）</span>
                         </div>
                       </div>
@@ -1071,7 +1075,7 @@ export const SuccessModal = ({
                             onClose();
                           }
                         }}
-                        className="w-full py-3.5 px-4 bg-gradient-to-r from-indigo-600 via-indigo-700 to-purple-700 hover:from-indigo-700 hover:to-purple-800 text-white font-extrabold text-xs md:text-sm rounded-xl shadow-md hover:scale-[1.01] active:scale-98 transition-all flex items-center justify-center gap-1.5 cursor-pointer font-sans"
+                        className="w-full py-3.5 px-4 bg-gradient-to-r from-sky-400 via-sky-500 to-blue-500 hover:from-sky-500 hover:to-blue-600 text-white font-extrabold text-xs md:text-sm rounded-xl shadow-md hover:scale-[1.01] active:scale-98 transition-all flex items-center justify-center gap-1.5 cursor-pointer font-sans"
                       >
                         <ShieldCheck size={16} />
                         <span>公的証明バッジを取得して開封（600円 税込）</span>
@@ -1287,37 +1291,37 @@ export const AgeVerificationGate = ({ onVerified, onStartEkyc }: { onVerified: (
           className={cn(
             "w-full sm:w-[68%] p-4 rounded-2xl text-left transition-all relative border-[3px] flex flex-col justify-between cursor-pointer space-y-3 shadow-sm hover:shadow-md hover:scale-[1.005] active:scale-[0.99]",
             method === 'ekyc'
-              ? "bg-indigo-50/40 border-indigo-500 shadow-md ring-4 ring-indigo-500/20"
-              : "bg-white border-slate-300 hover:border-indigo-400"
+              ? "bg-sky-50/70 border-sky-400 shadow-md ring-4 ring-sky-400/20"
+              : "bg-white border-slate-300 hover:border-sky-400"
           )}
         >
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <span className={cn(
                 "px-2.5 py-0.5 text-[10px] font-extrabold rounded-md uppercase tracking-wider",
-                method === 'ekyc' ? "bg-indigo-100 text-indigo-800" : "bg-indigo-50 text-indigo-700 border border-indigo-200"
+                method === 'ekyc' ? "bg-sky-100 text-sky-900 border border-sky-300" : "bg-sky-50 text-sky-700 border border-sky-200"
               )}>
                 方式 A（おすすめ）
               </span>
-              <span className="text-xs font-bold text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-200/60">
+              <span className="text-xs font-bold text-sky-800 bg-sky-50 px-2.5 py-0.5 rounded-full border border-sky-200/60">
                 認証: 600円（総額: 1,200円）
               </span>
             </div>
             <h4 className="font-extrabold text-sm text-slate-900 flex items-center gap-1.5">
-              <UserCheck size={18} className={method === 'ekyc' ? "text-indigo-600" : "text-indigo-500"} />
+              <UserCheck size={18} className={method === 'ekyc' ? "text-sky-600" : "text-sky-500"} />
               <span>公的身分証承認（eKYC）</span>
             </h4>
             <p className="text-xs text-slate-600 leading-relaxed font-normal">
-              免許証・マイナンバー等で厳格確認。差出人へ「本人証明」が届き、信頼性が最大化されます。<span className="text-indigo-900 font-bold block pt-0.5">※本人確認(600円)＋手紙開封(600円)＝総額1,200円</span>
+              免許証・マイナンバー等で厳格確認。差出人へ「本人証明」が届き、信頼性が最大化されます。<span className="text-sky-950 font-bold block pt-0.5">※本人確認(600円)＋手紙開封(600円)＝総額1,200円</span>
             </p>
           </div>
 
           <div className={cn(
             "pt-2 border-t text-[11px] font-bold flex items-center justify-between",
-            method === 'ekyc' ? "border-indigo-200 text-indigo-800" : "border-slate-200 text-slate-500"
+            method === 'ekyc' ? "border-sky-200 text-sky-900" : "border-slate-200 text-slate-500"
           )}>
             <span>👑 差出人からの信頼・返信率重視</span>
-            <span className="text-xs px-2.5 py-1 rounded-lg bg-indigo-100 text-indigo-800 font-bold border border-indigo-200">
+            <span className="text-xs px-2.5 py-1 rounded-lg bg-sky-100 text-sky-900 font-bold border border-sky-300">
               {method === 'ekyc' ? '選択中 ✓' : 'タップして選択'}
             </span>
           </div>
@@ -1531,37 +1535,42 @@ export const AgeVerificationGate = ({ onVerified, onStartEkyc }: { onVerified: (
       {/* 方式A: 公的身分証 eKYC コンテンツ */}
       {method === 'ekyc' && (
         <div className="space-y-4 pt-1 animate-fade-in font-sans">
-          <div className="p-4 bg-gradient-to-br from-indigo-50/90 via-blue-50/80 to-indigo-50/90 border border-indigo-200 rounded-2xl text-xs text-indigo-950 space-y-3 shadow-sm">
-            <div className="flex items-center justify-between border-b border-indigo-200/60 pb-2">
-              <p className="font-extrabold text-sm text-indigo-950 flex items-center gap-1.5">
-                <UserCheck size={18} className="text-indigo-600 shrink-0" />
+          <div className="p-4 bg-gradient-to-br from-sky-50/90 via-blue-50/80 to-sky-50/90 border border-sky-200 rounded-2xl text-xs text-sky-950 space-y-3 shadow-sm">
+            <div className="flex items-center justify-between border-b border-sky-200/60 pb-2">
+              <p className="font-extrabold text-sm text-sky-950 flex items-center gap-1.5">
+                <span className="w-5 h-5 rounded-full seal-rainbow flex items-center justify-center text-white shrink-0 shadow-2xs">
+                  <ShieldCheck size={12} className="text-white" />
+                </span>
                 <span>公的身分証（eKYC）認証を選ぶ4つの決定的なメリット</span>
               </p>
+              <span className="text-[9.5px] font-bold text-sky-700 bg-white border border-sky-200 px-2 py-0.5 rounded-full">
+                虹色封蝋付与
+              </span>
             </div>
             <ul className="space-y-2 text-slate-700">
               <li className="flex items-start gap-2">
-                <CheckCircle2 size={16} className="text-indigo-600 shrink-0 mt-0.5" />
-                <span><strong>公的認証バッジが付与</strong>され、差出人が「本物の旧友」だと即座に確信できます。</span>
+                <CheckCircle2 size={16} className="text-sky-600 shrink-0 mt-0.5" />
+                <span><strong>公的認証バッジ（動く虹色封蝋印）が付与</strong>され、差出人が「本物の旧友」だと即座に確信できます。</span>
               </li>
               <li className="flex items-start gap-2">
-                <CheckCircle2 size={16} className="text-indigo-600 shrink-0 mt-0.5" />
+                <CheckCircle2 size={16} className="text-sky-600 shrink-0 mt-0.5" />
                 <span>不信感やなりすまし懸念が解消され、<strong>初回のお返事到達率が大幅に向上</strong>します。</span>
               </li>
               <li className="flex items-start gap-2">
-                <CheckCircle2 size={16} className="text-indigo-600 shrink-0 mt-0.5" />
+                <CheckCircle2 size={16} className="text-sky-600 shrink-0 mt-0.5" />
                 <span>審査通過後は手紙本文と連絡先（LINE/メール等）が<strong>即座に完全開示</strong>されます。</span>
               </li>
               <li className="flex items-start gap-2">
-                <CheckCircle2 size={16} className="text-indigo-600 shrink-0 mt-0.5" />
+                <CheckCircle2 size={16} className="text-sky-600 shrink-0 mt-0.5" />
                 <span>万が一審査に不合格となった場合は<strong>決済代金全額が自動返金</strong>されます。</span>
               </li>
             </ul>
-            <p className="text-[11px] text-indigo-800 font-medium pt-1 border-t border-indigo-200/60">
+            <p className="text-[11px] text-sky-800 font-medium pt-1 border-t border-sky-200/60">
               ※ 対応書類: 運転免許証・マイナンバーカード・パスポート等（提出画像は暗号化通信で即時照合され安全です）
             </p>
           </div>
 
-          <div className="bg-white p-4 md:p-5 rounded-2xl border border-indigo-200/80 shadow-sm">
+          <div className="bg-white p-4 md:p-5 rounded-2xl border border-sky-200/80 shadow-sm">
             <button 
               type="button"
               onClick={() => {
@@ -1571,7 +1580,7 @@ export const AgeVerificationGate = ({ onVerified, onStartEkyc }: { onVerified: (
                   alert("eKYC手続き画面を開きます。");
                 }
               }}
-              className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-md shadow-indigo-600/20 border border-transparent transition-all flex items-center justify-center gap-2 text-xs md:text-sm cursor-pointer"
+              className="w-full py-3.5 bg-gradient-to-r from-sky-400 via-sky-500 to-blue-500 hover:from-sky-500 hover:to-blue-600 text-white font-bold rounded-xl shadow-md shadow-sky-500/20 border border-transparent transition-all flex items-center justify-center gap-2 text-xs md:text-sm cursor-pointer active:scale-98"
             >
               <UserCheck size={18} />
               <span>公的身分証（eKYC）認証手続きへ進む</span>

@@ -1,14 +1,18 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Mail, ShieldCheck, Heart, User, Calendar, MapPin, Sparkles, AlertCircle, FileText, ArrowRight } from "lucide-react";
 import { getPostUrl } from "../../lib/utils";
+import { ReunionStorySection } from "../../components/account/ReunionStorySection";
 
 export const AccountReceivedTab = (props: any) => {
   const {
     connectedPosts = [],
     setStoryTargetPost,
     setStoryTargetRole,
-    setStoryModalOpen
+    setStoryModalOpen,
+    mySubmittedStories = [],
+    storyCurrentPage = 1,
+    setStoryCurrentPage = () => {},
+    STORIES_PER_PAGE = 5
   } = props;
 
   return (
@@ -127,6 +131,22 @@ export const AccountReceivedTab = (props: any) => {
                     ))}
                   </div>
                 )}
+
+                {/* 💌 再会エピソード・感謝の声セクション */}
+                <div className="pt-4 border-t border-brand-border">
+                  <ReunionStorySection
+                    mySubmittedStories={mySubmittedStories}
+                    storyCurrentPage={storyCurrentPage}
+                    setStoryCurrentPage={setStoryCurrentPage}
+                    STORIES_PER_PAGE={STORIES_PER_PAGE}
+                    defaultRole="receiver"
+                    onOpenStoryModal={(role) => {
+                      setStoryTargetPost(null);
+                      setStoryTargetRole(role || 'receiver');
+                      setStoryModalOpen(true);
+                    }}
+                  />
+                </div>
               </div>
   );
 };

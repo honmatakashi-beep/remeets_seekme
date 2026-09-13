@@ -280,6 +280,7 @@ export const postsRouter = express.Router();
   const maskPostDataForPublic = (post: any) => {
     if (!post) return post;
     const masked = { ...post };
+    masked.is_ekyc_verified = Boolean(post.is_ekyc_verified === 1 || post.is_ekyc_verified === true);
     if (masked.target_school) {
       masked.target_school = masked.category === "work" ? "関連職場（正解後に開示）" : "関連学校（正解後に開示）";
     }
@@ -293,11 +294,13 @@ export const postsRouter = express.Router();
   postsRouter.get("/recent", (req, res) => {
     try {
       const posts = db.prepare(`
-        SELECT id, searcher_name, searcher_profile, target_name, target_last_name, target_first_name, 
-               target_hometown, target_school, era, category, status, created_at 
+        SELECT posts.id, posts.user_id, posts.searcher_name, posts.searcher_profile, posts.target_name, posts.target_last_name, posts.target_first_name, 
+               posts.target_hometown, posts.target_school, posts.era, posts.category, posts.status, posts.created_at,
+               COALESCE(posts.is_ekyc_verified, u.is_ekyc_verified, 0) as is_ekyc_verified
         FROM posts 
-        WHERE status = 'active'
-        ORDER BY created_at DESC 
+        LEFT JOIN users u ON posts.user_id = u.id
+        WHERE posts.status = 'active'
+        ORDER BY posts.created_at DESC 
         LIMIT 10
       `).all() as any[];
       const maskedPosts = posts.map((p: any) => maskPostDataForPublic(p));
@@ -311,10 +314,12 @@ export const postsRouter = express.Router();
     const { q, era, category } = req.query;
     
     let baseQuery = `
-      SELECT id, searcher_name, searcher_profile, target_name, target_last_name, target_first_name, 
-             target_hometown, target_school, era, category, status, created_at 
+      SELECT posts.id, posts.user_id, posts.searcher_name, posts.searcher_profile, posts.target_name, posts.target_last_name, posts.target_first_name, 
+             posts.target_hometown, posts.target_school, posts.era, posts.category, posts.status, posts.created_at,
+             COALESCE(posts.is_ekyc_verified, u.is_ekyc_verified, 0) as is_ekyc_verified
       FROM posts 
-      WHERE status = 'active'
+      LEFT JOIN users u ON posts.user_id = u.id
+      WHERE posts.status = 'active'
     `;
     let sqlQuery = baseQuery;
     const params: any[] = [];
@@ -330,13 +335,13 @@ export const postsRouter = express.Router();
     if (q) {
       const searchStr = `%${q}%`;
       sqlQuery += ` AND (
-        target_name LIKE ? OR 
-        target_last_name LIKE ? OR 
-        target_first_name LIKE ? OR 
-        target_hometown LIKE ? OR 
-        searcher_name LIKE ? OR 
-        searcher_profile LIKE ? OR
-        message LIKE ?
+        posts.target_name LIKE ? OR 
+        posts.target_last_name LIKE ? OR 
+        posts.target_first_name LIKE ? OR 
+        posts.target_hometown LIKE ? OR 
+        posts.searcher_name LIKE ? OR 
+        posts.searcher_profile LIKE ? OR
+        posts.message LIKE ?
       )`;
       params.push(searchStr, searchStr, searchStr, searchStr, searchStr, searchStr, searchStr);
     }
@@ -346,24 +351,24 @@ export const postsRouter = express.Router();
       if (eraStr.length === 2) {
         const fullEra19 = `19${eraStr}`;
         const fullEra20 = `20${eraStr}`;
-        sqlQuery += " AND (era = ? OR era = ? OR era = ? OR era LIKE ?)";
+        sqlQuery += " AND (posts.era = ? OR posts.era = ? OR posts.era = ? OR posts.era LIKE ?)";
         params.push(eraStr, fullEra19, fullEra20, `%${eraStr}%`);
       } else if (eraStr.length === 4) {
         const shortEra = eraStr.substring(2);
-        sqlQuery += " AND (era = ? OR era = ? OR era LIKE ?)";
+        sqlQuery += " AND (posts.era = ? OR posts.era = ? OR posts.era LIKE ?)";
         params.push(eraStr, shortEra, `%${shortEra}%`);
       } else {
-        sqlQuery += " AND (era = ? OR era LIKE ?)";
+        sqlQuery += " AND (posts.era = ? OR posts.era LIKE ?)";
         params.push(eraStr, `%${eraStr}%`);
       }
     }
 
     if (category) {
-      sqlQuery += " AND category = ?";
+      sqlQuery += " AND posts.category = ?";
       params.push(category);
     }
 
-    sqlQuery += " ORDER BY created_at DESC";
+    sqlQuery += " ORDER BY posts.created_at DESC";
 
     try {
       let posts = db.prepare(sqlQuery).all(...params) as any[];
@@ -418,7 +423,14 @@ export const postsRouter = express.Router();
   postsRouter.get("/search", searchLimiter, (req, res) => {
     const { name, era, hometown, category } = req.query;
     
-    let baseQuery = "SELECT id, searcher_name, searcher_profile, target_name, target_last_name, target_first_name, target_hometown, target_school, era, category, status, created_at FROM posts WHERE status = 'active'";
+    let baseQuery = `
+      SELECT posts.id, posts.user_id, posts.searcher_name, posts.searcher_profile, posts.target_name, posts.target_last_name, posts.target_first_name, 
+             posts.target_hometown, posts.target_school, posts.era, posts.category, posts.status, posts.created_at,
+             COALESCE(posts.is_ekyc_verified, u.is_ekyc_verified, 0) as is_ekyc_verified
+      FROM posts 
+      LEFT JOIN users u ON posts.user_id = u.id
+      WHERE posts.status = 'active'
+    `;
     let sqlQuery = baseQuery;
     const params: any[] = [];
 
@@ -433,7 +445,7 @@ export const postsRouter = express.Router();
     }
 
     if (name) {
-      sqlQuery += " AND (target_name LIKE ? OR target_last_name LIKE ? OR target_first_name LIKE ? OR target_name_en LIKE ?)";
+      sqlQuery += " AND (posts.target_name LIKE ? OR posts.target_last_name LIKE ? OR posts.target_first_name LIKE ? OR posts.target_name_en LIKE ?)";
       params.push(`%${name}%`, `%${name}%`, `%${name}%`, `%${name}%`);
     }
     if (era) {
@@ -441,27 +453,27 @@ export const postsRouter = express.Router();
       if (eraStr.length === 2) {
         const fullEra19 = `19${eraStr}`;
         const fullEra20 = `20${eraStr}`;
-        sqlQuery += " AND (era = ? OR era = ? OR era = ? OR era LIKE ?)";
+        sqlQuery += " AND (posts.era = ? OR posts.era = ? OR posts.era = ? OR posts.era LIKE ?)";
         params.push(eraStr, fullEra19, fullEra20, `%${eraStr}%`);
       } else if (eraStr.length === 4) {
         const shortEra = eraStr.substring(2);
-        sqlQuery += " AND (era = ? OR era = ? OR era LIKE ?)";
+        sqlQuery += " AND (posts.era = ? OR posts.era = ? OR posts.era LIKE ?)";
         params.push(eraStr, shortEra, `%${shortEra}%`);
       } else {
-        sqlQuery += " AND (era = ? OR era LIKE ?)";
+        sqlQuery += " AND (posts.era = ? OR posts.era LIKE ?)";
         params.push(eraStr, `%${eraStr}%`);
       }
     }
     if (hometown) {
-      sqlQuery += " AND target_hometown LIKE ?";
+      sqlQuery += " AND posts.target_hometown LIKE ?";
       params.push(`%${hometown}%`);
     }
     if (category) {
-      sqlQuery += " AND category = ?";
+      sqlQuery += " AND posts.category = ?";
       params.push(category);
     }
 
-    sqlQuery += " ORDER BY created_at DESC";
+    sqlQuery += " ORDER BY posts.created_at DESC";
 
     try {
       let posts = db.prepare(sqlQuery).all(...params) as any[];

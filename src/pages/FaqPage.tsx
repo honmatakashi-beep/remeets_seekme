@@ -174,6 +174,23 @@ export const FaqPage: React.FC = () => {
       ),
       tags: ['差出人', '受取人', '負担']
     },
+    {
+      id: 'q-pricing-6',
+      category: 'pricing',
+      categoryName: '料金・お支払い',
+      question: 'サービスの応援や寄付（サポーター寄付）はできますか？強制や自動引き落としはありますか？',
+      answer: (
+        <>
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
+            はい。想い出のボトルメールを後世まで安全に残し続けるためのサーバーインフラ維持・AI安全検閲の運用のために、<strong className="text-slate-900 font-bold">「サポーター寄付（1口 500円〜 / 任意金額）」</strong> を受け付けております。
+          </p>
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
+            寄付は完全に任意（自由意志）であり、寄付を行わなくても手紙の投函・検索・開封など全ての基本機能を通常どおりご利用いただけます。月額自動引き落としではなく完全な都度決済（買い切り）であり、寄付完了時には感謝の証としてプロフィールにサポーターバッジが付与されます。
+          </p>
+        </>
+      ),
+      tags: ['寄付', 'サポーター', '応援', '500円', '任意', 'サーバー運営']
+    },
 
     // 2. 想い出クイズ・再会の仕組み
     {
@@ -249,6 +266,23 @@ export const FaqPage: React.FC = () => {
       ),
       tags: ['未登録', 'Google検索', 'エゴサーチ', '届く仕組み']
     },
+    {
+      id: 'q-quiz-5',
+      category: 'quiz',
+      categoryName: '想い出クイズ・再会',
+      question: '一度開封した手紙や相手の連絡先は、後からもう一度確認できますか？追加料金はかかりますか？',
+      answer: (
+        <>
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
+            はい、<strong className="text-slate-900 font-bold">追加料金は一切かからず何度でもご確認いただけます。</strong>
+          </p>
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
+            一度想い出クイズに正解して開封を完了した手紙は、マイページの「開封済みボトルメール（再会達成一覧）」に大切に永久保存されます。いつでも相手のLINE ID、メールアドレス、手紙の全文を再確認できますのでご安心ください。
+          </p>
+        </>
+      ),
+      tags: ['開封履歴', '連絡先再確認', 'マイページ', '追加料金なし', '永久保存']
+    },
 
     // 3. 安全性・プライバシー・AI検閲
     {
@@ -272,6 +306,23 @@ export const FaqPage: React.FC = () => {
       id: 'q-safety-2',
       category: 'safety',
       categoryName: '安全性・プライバシー',
+      question: '手紙の本文に自分のLINE IDや電話番号を直接書いて流してもいいですか？',
+      answer: (
+        <>
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
+            いいえ、手紙本文への直接の連絡先（LINE ID、電話番号、メールアドレス、SNSアカウント、詳細な住所等）の記載は安全規約により<strong className="text-slate-900 font-bold">固く禁止</strong>されています。
+          </p>
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
+            第三者による悪用や個人情報漏洩を防ぐため、AIおよびシステムが自動検知して投稿を遮断または非公開化します。連絡先は必ず専用の「秘密の連絡先」設定欄に入力してください（想い出クイズ正解者のみに暗号化復号して安全に引き渡されます）。
+          </p>
+        </>
+      ),
+      tags: ['連絡先直書き禁止', '個人情報保護', 'LINE ID', '秘密の連絡先', '安全規約']
+    },
+    {
+      id: 'q-safety-3',
+      category: 'safety',
+      categoryName: '安全性・プライバシー',
       question: 'AIによる自動診断・検閲（安全防衛システム）とは何ですか？',
       answer: (
         <>
@@ -286,7 +337,26 @@ export const FaqPage: React.FC = () => {
       tags: ['AI検閲', 'Gemini', 'ストーカー対策', '誹謗中傷防止']
     },
     {
-      id: 'q-safety-3',
+      id: 'q-safety-4',
+      category: 'safety',
+      categoryName: '安全性・プライバシー',
+      question: '嫌がらせやストーカー行為、心当たりのない不審な手紙が届いた場合の対策はどうなっていますか？',
+      answer: (
+        <>
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
+            ReMEETsでは、悪意ある利用を徹底的に排除するため<strong className="text-slate-900 font-bold">強固な多重防衛体制</strong>を敷いています。
+          </p>
+          <ul className="list-disc pl-5 space-y-1 text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
+            <li><strong className="text-slate-900">AIによる自動検閲・隔離:</strong> 脅迫・ストーカー・嫌がらせ文面をAIが24時間リアルタイム検知し自動隔離します。</li>
+            <li><strong className="text-slate-900">通報・ブロック機能:</strong> 不審な手紙を見かけた場合、ワンタップで運営事務局へ通報・非表示ブロックが可能です。</li>
+            <li><strong className="text-slate-900">警察・捜査機関との連携:</strong> 刑事事件や公安・サイバー捜査機関からの正式な照会要請に対し、OAuth認証UID・IPアドレス・決済記録等のログ開示協力体制を完備しています。</li>
+          </ul>
+        </>
+      ),
+      tags: ['ストーカー対策', '迷惑行為', '警察連携', '通報機能', 'ブロック', 'ログ開示']
+    },
+    {
+      id: 'q-safety-5',
       category: 'safety',
       categoryName: '安全性・プライバシー',
       question: '出会い系サイトやマッチングアプリとは何が違うのですか？',
@@ -379,6 +449,23 @@ export const FaqPage: React.FC = () => {
         </p>
       ),
       tags: ['通知', 'メール', '開通通知']
+    },
+    {
+      id: 'q-account-3',
+      category: 'account',
+      categoryName: '登録・ログイン・通知',
+      question: '探している相手の手紙がまだ見つからない場合、後から流れてきたときに通知を受け取ることはできますか？',
+      answer: (
+        <>
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
+            はい、<strong className="text-slate-900 font-bold">「新着入荷通知アラート」</strong> 機能をご利用いただけます。
+          </p>
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
+            探したい相手の「お名前（あだ名）」や「ゆかりの学校名・地域」をキーワード登録（メール通知設定）しておくと、条件に合致する新しいボトルメールが海に流れた瞬間に、ご登録のメールアドレス宛てへ自動でお知らせ通知が届きます。何度も検索し直す手間なく、奇跡の再会の機会を逃しません。
+          </p>
+        </>
+      ),
+      tags: ['新着通知', '入荷アラート', 'キーワード登録', '自動メール通知', 'エゴサーチ']
     },
 
     // 6. 手紙の編集・削除・退会

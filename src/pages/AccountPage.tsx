@@ -19,7 +19,6 @@ import { BottleLoader, WarningMessage, BackToHomeButton } from '../components/Sh
 import { SuccessStoryModal } from './SearchPage';
 import { DocumentCameraOverlay, stopAllGlobalCameraStreams } from '../components/DocumentCameraOverlay';
 import { EkycProgressTelemetryPanel } from '../components/EkycProgressTelemetryPanel';
-import { SupportModal } from '../components/SupportModal';
 import { CreditCardPaymentForm } from '../components/CreditCardPaymentForm';
 import postSuccessSoft from '../assets/images/post_success_soft_1785869214309.jpg';
 import { EditProfileModal } from "../components/account/EditProfileModal";
@@ -57,8 +56,6 @@ export const AccountPage = () => {
   const [showEmailChangeSuccess, setShowEmailChangeSuccess] = useState(false);
   const [showEditProfileModal, setShowEditProfileModal] = useState(false);
   const navigate = useNavigate();
-  const [showDonationModal, setShowDonationModal] = useState(false);
-  const [showDonationInfoModal, setShowDonationInfoModal] = useState(false);
 
   // 再会ストーリー・感謝の声モーダル＆投稿管理
   const [storyModalOpen, setStoryModalOpen] = useState(false);
@@ -710,6 +707,21 @@ export const AccountPage = () => {
     }
   };
 
+  const handleDeleteNotification = async (id: number) => {
+    if (!token) return;
+    try {
+      const res = await fetch(`/api/notifications/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        setNotifications(prev => prev.filter(n => n.id !== id));
+      }
+    } catch (err) {
+      console.error('Failed to delete notification', err);
+    }
+  };
+
   const handleDeletePost = async () => {
     if (!deleteConfirmPost || !deleteConsent) return;
     setIsDeleting(true);
@@ -1024,7 +1036,7 @@ export const AccountPage = () => {
               </div>
 
               {/* 上部クイックアクションボタン */}
-              <div className="flex items-center gap-2.5 flex-wrap font-sans">
+              <div className="flex items-center gap-2.5 font-sans">
                 <button
                   type="button"
                   onClick={() => {
@@ -1042,14 +1054,6 @@ export const AccountPage = () => {
                 >
                   <Edit3 size={13} className="text-white shrink-0" />
                   <span>✏️ 登録内容を変更</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowDonationModal(true)}
-                  className="px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 rounded-xl font-bold text-xs border-2 border-slate-300 transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 shadow-2xs"
-                >
-                  <Coffee size={13} className="text-amber-600 shrink-0" />
-                  <span>☕ 応援（寄付）</span>
                 </button>
               </div>
             </div>
@@ -1349,6 +1353,10 @@ export const AccountPage = () => {
                 setStoryTargetPost={setStoryTargetPost}
                 setStoryTargetRole={setStoryTargetRole}
                 setStoryModalOpen={setStoryModalOpen}
+                mySubmittedStories={mySubmittedStories}
+                storyCurrentPage={storyCurrentPage}
+                setStoryCurrentPage={setStoryCurrentPage}
+                STORIES_PER_PAGE={STORIES_PER_PAGE}
               />
             )}
 
@@ -1362,18 +1370,27 @@ export const AccountPage = () => {
                 setStoryTargetRole={setStoryTargetRole}
                 setStoryModalOpen={setStoryModalOpen}
                 handleBulkDeletePosts={handleBulkDeletePosts}
+                mySubmittedStories={mySubmittedStories}
+                storyCurrentPage={storyCurrentPage}
+                setStoryCurrentPage={setStoryCurrentPage}
+                STORIES_PER_PAGE={STORIES_PER_PAGE}
               />
             )}
 
             {activeSubTab === "notifications" && (
               <AccountNotificationsTab
-                accountNotifications={myAlerts}
+                accountNotifications={notifications}
+                notificationLoading={notificationsLoading}
+                handleMarkAllNotificationsAsRead={handleMarkAllAsRead}
+                handleSingleNotificationClick={handleMarkAsRead}
+                handleDeleteSingleNotification={handleDeleteNotification}
                 isAlertModalOpen={isAlertModalOpen}
                 setIsAlertModalOpen={setIsAlertModalOpen}
                 setEditingAlert={setEditingAlert}
                 searchAlerts={myAlerts}
                 notifyAlertEnabled={notifyAlertEnabled}
                 isUpdatingNotifyAlert={isUpdatingNotifyAlert}
+                fetchNotifications={fetchNotifications}
               />
             )}
 
@@ -1384,188 +1401,11 @@ export const AccountPage = () => {
                 updateUser={updateUser}
                 setShowMypageEkycModal={setShowMypageEkycModal}
                 setMypageEkycStep={setMypageEkycStep}
-                setShowDonationModal={setShowDonationModal}
+                setDeleteAccountConsent={setDeleteAccountConsent}
+                setShowDeleteAccountModal={setShowDeleteAccountModal}
               />
             )}
 
-          </div>
-
-          {/* 💌 ページ最下部：奇跡の再会エピソード・感謝の声の投稿カード */}
-          <div className="pt-6 border-t-2 border-slate-200/80 mt-8 space-y-6">
-            <div className="p-6 md:p-8 bg-gradient-to-br from-amber-50/80 via-orange-50/30 to-white rounded-3xl border-2 border-amber-300 shadow-xs space-y-5 relative overflow-hidden font-sans">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-amber-200/80 pb-4">
-                <div className="flex items-center gap-3.5">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 via-orange-500 to-rose-500 text-white flex items-center justify-center shadow-xs shrink-0">
-                    <Sparkles size={24} className="text-white" />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-[10px] font-extrabold text-amber-900 bg-amber-100 px-2.5 py-0.5 rounded-full uppercase tracking-widest border border-amber-300/80">
-                        Miracle Reunion Stories
-                      </span>
-                      {mySubmittedStories.length > 0 && (
-                        <span className="text-[10px] bg-amber-200 text-amber-950 font-extrabold px-2.5 py-0.5 rounded-full border border-amber-300 flex items-center gap-1">
-                          投稿済み: {mySubmittedStories.length}件
-                        </span>
-                      )}
-                    </div>
-                    <h3 className="text-xl font-serif font-bold text-slate-900 mt-1">
-                      💌 奇跡の再会エピソード・運営へのお礼
-                    </h3>
-                  </div>
-                </div>
-                <span className="text-xs font-bold text-amber-900 bg-white border border-amber-300 px-3 py-1.5 rounded-xl text-center shrink-0 shadow-2xs font-serif">
-                  感謝・体験談の共有
-                </span>
-              </div>
-
-              <p className="text-xs text-slate-700 leading-relaxed bg-white/80 p-4 rounded-2xl border border-amber-100">
-                差出人（手紙を流した方）・受取人（手紙を見つけた方）どちらの立場からでもご投稿いただけます。<br className="hidden md:inline" />
-                お寄せいただいた温かいエピソードやお礼の言葉は、管理者が匿名化・確認の上で「奇跡の再会報告」ページ等に大切に掲載されます。
-              </p>
-
-              <div className="flex flex-col sm:flex-row items-center gap-3 pt-1">
-                <Link
-                  to="/success-stories"
-                  className="w-full sm:w-auto flex-1 py-3 px-5 bg-white hover:bg-amber-50 text-amber-900 border border-amber-300 font-bold text-xs rounded-2xl shadow-2xs hover:shadow transition-all flex items-center justify-center gap-2 cursor-pointer font-sans active:scale-98 text-center"
-                >
-                  <BookOpen size={16} className="text-amber-600" />
-                  <span>📖 みんなの再会報告を見る</span>
-                </Link>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setStoryTargetPost(null);
-                    setStoryTargetRole('general');
-                    setStoryModalOpen(true);
-                  }}
-                  className="w-full sm:w-auto flex-1 py-3 px-5 bg-gradient-to-r from-amber-600 via-orange-600 to-amber-700 hover:from-amber-700 hover:to-orange-700 text-white font-bold text-xs rounded-2xl shadow-sm hover:shadow transition-all flex items-center justify-center gap-2 cursor-pointer font-sans active:scale-98"
-                >
-                  <Heart size={16} className="fill-white/30 text-white" />
-                  <span>✨ 体験談・お礼を投稿する</span>
-                </button>
-              </div>
-
-              {/* 📥 あなたが投稿した再会エピソード（保管スペース・ログ一覧） */}
-              <div className="pt-4 border-t border-amber-200/70 space-y-3">
-                <div className="flex items-center justify-between">
-                  <h4 className="text-xs sm:text-sm font-bold text-amber-950 font-serif flex items-center gap-2">
-                    <CheckCircle2 size={15} className="text-emerald-600" />
-                    <span>あなたが投稿した再会エピソード ({mySubmittedStories.length}件)</span>
-                  </h4>
-                  {mySubmittedStories.length > 0 && (
-                    <span className="text-[10px] text-amber-800/70 font-sans">
-                      ※管理者の確認後に掲載されます（5件/ページ）
-                    </span>
-                  )}
-                </div>
-
-                {mySubmittedStories.length === 0 ? (
-                  /* 📭 まだ投稿がない場合の空枠（Empty State） */
-                  <div className="p-6 sm:p-7 bg-white/70 rounded-2xl border-2 border-dashed border-amber-200/90 text-center space-y-2 select-none">
-                    <div className="w-10 h-10 mx-auto rounded-full bg-amber-100/70 text-amber-700 flex items-center justify-center shadow-2xs">
-                      <Mail size={18} />
-                    </div>
-                    <div className="space-y-1">
-                      <p className="text-xs sm:text-sm font-bold text-slate-700 font-serif">
-                        — まだ投稿はありません —
-                      </p>
-                      <p className="text-[11px] sm:text-xs text-slate-500 font-sans leading-relaxed max-w-md mx-auto">
-                        お相手と手紙が繋がり再会を果たされた際、投稿された温かい体験談や感謝のメッセージがこちらに大切に保存・蓄積されます。
-                      </p>
-                    </div>
-                  </div>
-                ) : (
-                  /* 📝 投稿がある場合のリスト＆ページネーション */
-                  <div className="space-y-3">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {mySubmittedStories.slice((storyCurrentPage - 1) * STORIES_PER_PAGE, storyCurrentPage * STORIES_PER_PAGE).map((story: any) => (
-                        <div key={story.id} className="p-3.5 bg-white rounded-2xl border border-amber-200/90 space-y-2 font-sans shadow-2xs">
-                          <div className="flex items-center justify-between gap-2">
-                            <div className="flex items-center gap-1.5">
-                              <span className="px-2 py-0.5 bg-amber-100 text-amber-800 rounded-md font-bold text-[9px]">
-                                {story.role === 'sender' ? '📮 手紙を流した側' : story.role === 'receiver' ? '📬 手紙を見つけた側' : '💌 体験談'}
-                              </span>
-                              {story.target_name && (
-                                <span className="text-[10px] text-amber-900/80 font-semibold truncate max-w-[120px]">
-                                  {story.target_name} 様
-                                </span>
-                              )}
-                            </div>
-                            <span className="text-[9px] text-slate-400 font-mono">
-                              {story.created_at ? new Date(story.created_at).toLocaleDateString('ja-JP') : ''}
-                            </span>
-                          </div>
-                          {story.title && (
-                            <h5 className="text-xs font-bold text-slate-900 line-clamp-1 font-serif">
-                              {story.title}
-                            </h5>
-                          )}
-                          <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed">
-                            {story.message}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* 5件超過時のページネーション */}
-                    {Math.ceil(mySubmittedStories.length / STORIES_PER_PAGE) > 1 && (
-                      <div className="pt-2 flex items-center justify-between text-xs font-sans">
-                        <span className="text-[11px] text-slate-500">
-                          全 {mySubmittedStories.length} 件中 {(storyCurrentPage - 1) * STORIES_PER_PAGE + 1}〜{Math.min(storyCurrentPage * STORIES_PER_PAGE, mySubmittedStories.length)} 件を表示
-                        </span>
-                        <div className="flex items-center gap-1.5">
-                          <button
-                            type="button"
-                            onClick={() => setStoryCurrentPage(p => Math.max(1, p - 1))}
-                            disabled={storyCurrentPage === 1}
-                            className="px-2.5 py-1 bg-white border border-amber-200 text-amber-950 font-bold rounded-lg disabled:opacity-40 text-[11px] cursor-pointer hover:bg-amber-50 shadow-2xs"
-                          >
-                            ← 前へ
-                          </button>
-                          <span className="px-2 text-[11px] font-bold text-amber-900 font-mono">
-                            {storyCurrentPage} / {Math.ceil(mySubmittedStories.length / STORIES_PER_PAGE)}
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() => setStoryCurrentPage(p => Math.min(Math.ceil(mySubmittedStories.length / STORIES_PER_PAGE), p + 1))}
-                            disabled={storyCurrentPage === Math.ceil(mySubmittedStories.length / STORIES_PER_PAGE)}
-                            className="px-2.5 py-1 bg-white border border-amber-200 text-amber-950 font-bold rounded-lg disabled:opacity-40 text-[11px] cursor-pointer hover:bg-amber-50 shadow-2xs"
-                          >
-                            次へ →
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* 🛡️ SEC-011: 退会・アカウント完全削除（プライバシー保護） */}
-            <div className="bg-rose-50/40 rounded-3xl border border-rose-200/60 p-5 md:p-6 space-y-4 font-sans text-left">
-              <div className="flex items-center justify-between gap-3">
-                <div className="space-y-1">
-                  <h4 className="text-sm font-bold text-rose-950 flex items-center gap-1.5">
-                    <Trash2 size={16} className="text-rose-600" />
-                    <span>アカウントの退会・個人データの完全消去</span>
-                  </h4>
-                  <p className="text-xs text-rose-800/80 leading-relaxed">
-                    アカウントを退会すると、登録メールアドレス、通知設定、および保管データが安全に物理消去されます。
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setDeleteAccountConsent(false);
-                    setShowDeleteAccountModal(true);
-                  }}
-                  className="px-4 py-2 bg-white hover:bg-rose-100 text-rose-700 border border-rose-300 rounded-xl text-xs font-bold transition-all shadow-xs shrink-0 cursor-pointer"
-                >
-                  退会手続きへ
-                </button>
-              </div>
-            </div>
           </div>
         </div>
       )}
@@ -1586,16 +1426,6 @@ export const AccountPage = () => {
         user={user}
         token={token}
         updateUser={updateUser}
-      />
-
-      <SupportModal
-        isOpen={showDonationModal}
-        onClose={() => setShowDonationModal(false)}
-        onSuccess={() => {
-          if (updateUser) {
-            updateUser({ is_supporter: true });
-          }
-        }}
       />
 
       <SuccessStoryModal

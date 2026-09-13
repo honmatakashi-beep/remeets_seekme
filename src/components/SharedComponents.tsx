@@ -10,7 +10,6 @@ import {
 import { useAuth } from '../contexts/AuthContext';
 import { cn, formatEraLabel, getPostUrl, getCategoryText, PREFECTURES } from '../lib/utils';
 import { SupportBanner } from './SupportBanner';
-import { SupportModal } from './SupportModal';
 import { WaterRippleRainbowText } from './WaterRippleRainbowText';
 
 export const WarningMessage = ({ message }: { message: string }) => {
@@ -40,7 +39,6 @@ export const Navbar = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) 
   useEffect(() => {
     setIsMenuOpen(false);
   }, [location.pathname]);
-  const [isDonationModalOpen, setIsDonationModalOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [homeDesign, setHomeDesign] = useState<'v1' | 'v2'>(() => {
     return (localStorage.getItem('remeets_home_design') as 'v1' | 'v2') || 'v2';
@@ -242,10 +240,10 @@ export const Navbar = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) 
           {/* 運営応援寄付ボタン (デスクトップ・PC画面のみ表示、モバイルでは非表示) */}
           <Link
             to="/supporter"
-            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-sky-600 via-teal-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 text-white font-bold rounded-full text-xs shadow-xs transition-all hover:scale-[1.02] cursor-pointer shrink-0"
+            className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-gradient-to-r from-amber-500 via-orange-600 to-amber-800 hover:from-amber-600 hover:via-orange-700 hover:to-amber-900 text-white font-bold rounded-full text-xs shadow-xs shadow-amber-950/20 hover:shadow-sm transition-all hover:scale-[1.03] active:scale-98 cursor-pointer shrink-0 border border-amber-400/40"
           >
-            <Coffee size={13} className="text-white shrink-0" />
-            <span>ReMEETsを応援（寄付）</span>
+            <Coffee size={13} className="text-amber-100 shrink-0 drop-shadow-2xs" />
+            <span className="drop-shadow-2xs">ReMEETsを応援（寄付）</span>
           </Link>
 
           {/* ご利用ガイド Link */}
@@ -496,12 +494,6 @@ export const Navbar = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) 
           </div>
         )}
       </AnimatePresence>
-
-      {/* 運営応援寄付モーダル (Navbarから直接起動可能) */}
-      <SupportModal
-        isOpen={isDonationModalOpen}
-        onClose={() => setIsDonationModalOpen(false)}
-      />
     </>
   );
 };

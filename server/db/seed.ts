@@ -5,6 +5,147 @@ import { generateAdditionalSamplePosts, generateRealisticUsername, guessGenderFr
 
 export const seedData = async (force: boolean = false) => {
   const hashedPassword = await bcrypt.hash("password123", 10);
+
+  // 🛡️ [MIGRATION] DB内の実在校名・商標・実在店名・不適切な特定手がかりの一括自動サニタイズ（安全化マイグレーション）
+  try {
+    const entityReplacements: [string, string][] = [
+      // 実在校名
+      ['都立桜町高校', '桜ヶ丘高校'],
+      ['世田谷第一中学校', '緑川中学校'],
+      ['横浜青葉高校', '青葉台高校'],
+      ['横浜市立青葉高校', '青葉台高校'],
+      ['鎌倉学園高校', '星見ヶ丘学園高校'],
+      ['千葉東高校', 'あおぞら高校'],
+      ['千葉県立千葉高校', 'あおぞら高校'],
+      ['札幌旭丘高校', '札幌星雲高校'],
+      ['札幌市立旭丘高校', '札幌星雲高校'],
+      ['大阪府立北野高校', '夕陽丘学園高校'],
+      ['京都府立洛北高校', '月見野学園高校'],
+      ['京都市立堀川高校', '月見野学園高校'],
+      ['神戸市立葺合高校', '海鳴り台高校'],
+      ['兵庫県立神戸高校', '海鳴り台高校'],
+      ['愛知県立旭丘高校', '茜ヶ丘高校'],
+      ['名古屋市立向陽高校', '茜ヶ丘高校'],
+      ['仙台第一高校', '白鳥台高校'],
+      ['福岡県立修猷館高校', '常盤木高校'],
+      ['広島市立基町高校', '七夕学園高校'],
+      ['埼玉県立浦和高校', '光陽学院高校'],
+      ['県立浦和西高校', '光陽学院高校'],
+      ['早稲田大学理工学部', '緑川理工大学'],
+      ['慶應義塾大学文学部', '青葉台大学 文学部'],
+      ['立教大学経済学部', '夕陽丘大学 経済学部'],
+      ['同志社大学神学部', '光陽学院大学'],
+      ['関西学院大学法学部', '星見ヶ丘学園大学'],
+      ['明青高校', '白雲高校'],
+      // 商標・商品名・店舗名
+      ['ガリガリ君ソーダ味', 'ソーダ味のアイス'],
+      ['ガリガリ君', 'ソーダ味のアイス'],
+      ['ソーダ味パピコ', 'ソーダ味のアイス'],
+      ['パピコ', 'ソーダ味のアイス'],
+      ['チューペット', 'ソーダ味'],
+      ['ポカリスエット瓶', 'スポーツドリンク瓶'],
+      ['ポカリスエット', 'スポーツドリンク'],
+      ['アクエリアス', 'スポーツドリンク'],
+      ['ブラックサンダー', 'チョコクランチ'],
+      ['うまい棒', 'スナック棒'],
+      ['ベビースターラーメン', 'スナック菓子'],
+      ['ベビースター', 'ラーメンスナック'],
+      ['リプトンミルクティー', '紙パックのミルクティー'],
+      ['リプトンレモンティー', '紙パックのレモンティー'],
+      ['リプトン', '紙パックの紅茶'],
+      ['キットカット', '合格祈願チョコ'],
+      ['サンテFXネオ', '爽快クール目薬'],
+      ['黄色いローリングス缶', '黄色い革オイル缶'],
+      ['シーフードヌードル', '特製海鮮ラーメン'],
+      ['どん兵衛天ぷらそば', '天ぷらそばカップ麺'],
+      ['どん兵衛', '天ぷらそばカップ麺'],
+      ['からあげクンレッド', 'ピリ辛から揚げ'],
+      ['からあげクン', 'ピリ辛から揚げ'],
+      ['ファミチキ', '揚げたてコロッケ'],
+      ['ハーゲンダッツバニラ', '濃厚バニラアイス'],
+      ['ハーゲンダッツ', '濃厚バニラアイス'],
+      ['サッポロ赤星', '赤ラベルの瓶ビール'],
+      ['バンホーテンココア', '特製ホットココア'],
+      ['ダンボー', '木彫りのマスコット'],
+      ['キン肉マン消しゴム', '人気超人消しゴム'],
+      ['ドラえもん下敷き', '青いアニメ下敷き'],
+      ['スヌーピー消しゴム', '人気キャラ消しゴム'],
+      ['うちのタマ知りませんか', '三毛猫のイラスト'],
+      ['魚民', '駅前の居酒屋'],
+      ['キッチン南海', '町の洋食屋さん'],
+      ['みんみん', '駅前の中華料理店'],
+      ['さくらや', '町の駄菓子屋さん'],
+      ['末広湯', '町の銭湯'],
+      ['世田谷区の中学校テニス部', '中学時代のテニス部'],
+      ['横浜駅近くのITオフィス', '駅近くのITオフィス'],
+      ['下北沢のライブハウス', '街のライブハウス'],
+      ['少年野球チーム「リトルジャイアンツ」', '地元の少年野球チーム'],
+      ['吉祥寺のジャズ喫茶', '街のジャズ喫茶'],
+      ['神田の老舗書店', '街の老舗書店'],
+      ['渋谷の古着屋', '街の古着屋'],
+      ['サワディーハウス', 'ゲストハウス'],
+      ['プラッシー', '特製みかんジュース'],
+      ['無罪モラトリアム', '名盤アルバム'],
+      ['501XX', 'ヴィンテージデニム'],
+      ['ミズノ', 'お揃いのランニングシューズ'],
+      ['成田山', '交通安全ステッカー'],
+      ['トワイニング', 'アールグレイ紅茶'],
+      ['JBL', '大型名機スピーカー'],
+      ['アグリッパ', '石膏像'],
+      ['クワイ河マーチ', '行進曲'],
+      ['ティムタム', '輸入チョコレート'],
+      ['龍安寺', '名刹の枯山水庭園'],
+      ['筑波山', '東の山並み'],
+      ['チェリオ', '瓶入りサイダー'],
+      ['ボスレインボーマウンテン', '缶コーヒー'],
+      ['カフェドロペ', 'オープンカフェ'],
+      ['ロイヤルホスト', '駅前のファミレス'],
+      ['ロディア11番', '手のひらサイズのメモ帳'],
+      ['鳥よし', '駅前の焼き鳥屋'],
+      ['バンプ', '人気ロックバンド'],
+      ['通天閣の真下の立ち食いカウンターで揚げたての串を浸したソースは？', '旅行先の立ち食いカウンターで揚げたての串カツを浸した特製ソースは？'],
+      ['徹夜明けにビルの非常階段から見上げた東京タワーのライトアップ色は？', '徹夜明けにビルの非常階段から見上げた電波塔のライトアップ色は？'],
+      ['ランドマークライト', 'オレンジ色'],
+      ['スタンドの所長が休憩中に奢ってくれた名物缶コーヒーの銘柄は？', 'スタンドの所長が休憩中に奢ってくれた名物缶コーヒーの種類は？'],
+      ['ホコ天で私たちがいつも待ち合わせ場所にしていたカフェの名前は？', 'ホコ天で私たちがいつも待ち合わせ場所にしていたオープンカフェの名前は？']
+    ];
+
+    for (const [realName, fakeName] of entityReplacements) {
+      db.prepare("UPDATE posts SET target_school = ? WHERE target_school = ?").run(fakeName, realName);
+      db.prepare("UPDATE posts SET searcher_profile = REPLACE(searcher_profile, ?, ?) WHERE searcher_profile LIKE ?").run(realName, fakeName, `%${realName}%`);
+      db.prepare("UPDATE posts SET message = REPLACE(message, ?, ?) WHERE message LIKE ?").run(realName, fakeName, `%${realName}%`);
+      db.prepare("UPDATE posts SET secret_question = REPLACE(secret_question, ?, ?) WHERE secret_question LIKE ?").run(realName, fakeName, `%${realName}%`);
+      db.prepare("UPDATE posts SET secret_answer_plain = REPLACE(secret_answer_plain, ?, ?) WHERE secret_answer_plain LIKE ?").run(realName, fakeName, `%${realName}%`);
+      db.prepare("UPDATE post_questions SET question = REPLACE(question, ?, ?) WHERE question LIKE ?").run(realName, fakeName, `%${realName}%`);
+      db.prepare("UPDATE post_questions SET answer_plain = REPLACE(answer_plain, ?, ?) WHERE answer_plain LIKE ?").run(realName, fakeName, `%${realName}%`);
+    }
+
+    // 差出人手がかり（searcher_profile）が「〜学校時代の想い出...」となっているものを自然な部活・活動表現に正規化
+    db.prepare("UPDATE posts SET searcher_profile = '高校の文化祭実行委員で共に汗を流した大切な仲間を探しています。' WHERE searcher_profile LIKE '%桜町高校%' OR searcher_profile LIKE '%桜ヶ丘高校時代の%'").run();
+    db.prepare("UPDATE posts SET searcher_profile = '中学時代の陸上部で共に汗を流した想い出の仲間を探しています。' WHERE searcher_profile LIKE '%世田谷第一中学校%' OR searcher_profile LIKE '%緑川中学校時代の%'").run();
+    db.prepare("UPDATE posts SET searcher_profile = '高校の吹奏楽部で共にフルートを吹いた親友を探しています。' WHERE searcher_profile LIKE '%横浜青葉高校%' OR searcher_profile LIKE '%青葉台高校時代の%'").run();
+    db.prepare("UPDATE posts SET searcher_profile = '高校の野球部でバッテリーを組んだ相棒を探しています。' WHERE searcher_profile LIKE '%鎌倉学園高校%' OR searcher_profile LIKE '%星見ヶ丘学園高校時代の%'").run();
+    db.prepare("UPDATE posts SET searcher_profile = '高校の美術部で油絵を描いた同期を探しています。' WHERE searcher_profile LIKE '%千葉東高校%' OR searcher_profile LIKE '%あおぞら高校時代の%'").run();
+    db.prepare("UPDATE posts SET searcher_profile = '学生時代の天文部で満天の星空を眺めた仲間を探しています。' WHERE searcher_profile LIKE '%札幌旭丘高校%' OR searcher_profile LIKE '%札幌星雲高校時代の%'").run();
+
+    // 答えのハッシュ値を同期
+    const allPosts = db.prepare("SELECT id, secret_answer_plain FROM posts").all() as any[];
+    for (const p of allPosts) {
+      if (p.secret_answer_plain) {
+        const hash = await bcrypt.hash(p.secret_answer_plain.trim().toLowerCase(), 10);
+        db.prepare("UPDATE posts SET secret_answer = ? WHERE id = ?").run(hash, p.id);
+      }
+    }
+    const allPQs = db.prepare("SELECT id, answer_plain FROM post_questions").all() as any[];
+    for (const pq of allPQs) {
+      if (pq.answer_plain) {
+        const hash = await bcrypt.hash(pq.answer_plain.trim().toLowerCase(), 10);
+        db.prepare("UPDATE post_questions SET answer = ? WHERE id = ?").run(hash, pq.id);
+      }
+    }
+  } catch (err) {
+    console.error("Migration clean entities error:", err);
+  }
   
   // Ensure admin exists
   const admin = db.prepare("SELECT * FROM users WHERE username = 'admin' OR email = 'admin@adomin.jp'").get() as any;
@@ -147,19 +288,67 @@ export const seedData = async (force: boolean = false) => {
     `).run(guest.id);
   }
 
-  // 🌟 Ensure main verified users (test, sakura, kenji, aoi, admin) always have posts
+  // 🌟 Ensure main verified users (test, sakura, kenji, aoi, admin) always have posts with safe, fictitious schools & descriptive profiles
   try {
     const mainUsers = [
-      { email: 'test@example.com', name: '本間 貴司', nick: 'たかし', target: '小林 裕太', school: '世田谷第一中学校', msg: '中学最後の総体で共に走った陸上部の思い出。夕焼けのグラウンドが懐かしいです。', q1: '中学最後の夏の総体で二人で出場したリレー種目は？', a1: '4×100mリレー', q2: '練習帰りに駄菓子屋で食べたアイスは？', a2: 'ガリガリ君ソーダ味', era: '1990', img: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800&auto=format&fit=crop&q=80' },
-      { email: 'test@example.com', name: '本間 貴司', nick: 'たかし', target: '鈴木 恵美', school: '都立桜町高校', msg: '文化祭実行委員で共に汗を流した日々。またみんなで集まりたいですね。', q1: '文化祭の前夜祭で着たお揃いTシャツの色は？', a1: 'オレンジ色', q2: '後夜祭フィナーレの花火の名前は？', a2: 'ナイアガラの滝', era: '2000', img: 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=800&auto=format&fit=crop&q=80' },
-      { email: 'sakura.sato@example.com', name: '佐藤 さくら', nick: 'さくら🌸', target: '中村 陽子', school: '横浜青葉高校', msg: '吹奏楽部で共にフルートを吹いた親友へ。金賞を獲ったあの瞬間の涙は宝物です。', q1: '夏のコンクール予選で金賞を受賞した思い出の自由曲は？', a1: 'アルヴァマー序曲', q2: 'パート練習の合間に屋上で食べたお弁当のおかずは？', a2: '卵焼き', era: '2000', img: 'https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=800&auto=format&fit=crop&q=80' },
-      { email: 'kenji.takahashi@example.com', name: '高橋 健二', nick: 'けんじ (公認)', target: '斎藤 翔平', school: '鎌倉学園高校', msg: '野球部でバッテリーを組んだ相棒へ。泥まみれになって甲子園を目指した日々。またキャッチボールしよう。', q1: '夏の大会でサヨナラ勝ちを決めた対戦相手の高校名は？', a1: '明青高校', q2: '練習帰りに立ち寄った定食屋の大盛りメニューは？', a2: 'ジャンボチキンカツ定食', era: '1990', img: 'https://images.unsplash.com/photo-1508344928928-7165b67de128?w=800&auto=format&fit=crop&q=80' },
-      { email: 'aoi.yamada@example.com', name: '山田 葵', nick: 'あおい', target: '佐々木 美穂', school: '千葉東高校', msg: '美術部で油絵を描いた同期へ。放課後の美術室で夕暮れまでデッサンを重ねた時間が懐かしいです。', q1: '二人で県展に出品した油絵の共通テーマは？', a1: '朝焼けの海', q2: '美術室でいつも一緒に飲んでいた紙パックの紅茶は？', a2: 'リプトンミルクティー', era: '2010', img: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=800&auto=format&fit=crop&q=80' },
-      { email: 'admin@adomin.jp', name: '東北 太郎', nick: 'かりん', target: '松本 隆', school: '札幌旭丘高校', msg: '天文部で満天の星空を眺めた仲間へ。凍てつく夜空に輝く星と語り合った夢を覚えています。', q1: '天体望遠鏡を覗いて息を呑んだ夜空の惑星は？', a1: '土星の輪', q2: '夜間観測で寒さをしのぐために飲んだ飲み物は？', a2: 'ホットココア', era: '1980', img: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?w=800&auto=format&fit=crop&q=80' }
+      { 
+        email: 'test@example.com', name: '本間 貴司', nick: 'たかし', target: '小林 裕太', 
+        school: '緑川中学校', 
+        profile: '中学時代の陸上部で共に汗を流した想い出の仲間を探しています。',
+        msg: '中学最後の総体で共に走った陸上部の思い出。夕焼けのグラウンドが懐かしいです。', 
+        q1: '中学最後の夏の総体で二人で出場したリレー種目は？', a1: '4×100mリレー', 
+        q2: '練習帰りに駄菓子屋で食べたアイスは？', a2: 'ソーダ味のアイス', 
+        era: '1990', img: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800&auto=format&fit=crop&q=80' 
+      },
+      { 
+        email: 'test@example.com', name: '本間 貴司', nick: 'たかし', target: '鈴木 恵美', 
+        school: '桜ヶ丘高校', 
+        profile: '高校の文化祭実行委員で共に汗を流した大切な仲間を探しています。',
+        msg: '文化祭実行委員で共に汗を流した日々。またみんなで集まりたいですね。', 
+        q1: '文化祭の前夜祭で着たお揃いTシャツの色は？', a1: 'オレンジ色', 
+        q2: '後夜祭フィナーレの花火の名前は？', a2: 'ナイアガラの滝', 
+        era: '2000', img: 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=800&auto=format&fit=crop&q=80' 
+      },
+      { 
+        email: 'sakura.sato@example.com', name: '佐藤 さくら', nick: 'さくら🌸', target: '中村 陽子', 
+        school: '青葉台高校', 
+        profile: '高校の吹奏楽部で共にフルートを吹いた親友を探しています。',
+        msg: '吹奏楽部で共にフルートを吹いた親友へ。金賞を獲ったあの瞬間の涙は宝物です。', 
+        q1: '夏のコンクール予選で金賞を受賞した思い出の自由曲は？', a1: 'アルヴァマー序曲', 
+        q2: 'パート練習の合間に屋上で食べたお弁当のおかずは？', a2: '卵焼き', 
+        era: '2000', img: 'https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=800&auto=format&fit=crop&q=80' 
+      },
+      { 
+        email: 'kenji.takahashi@example.com', name: '高橋 健二', nick: 'けんじ (公認)', target: '斎藤 翔平', 
+        school: '星見ヶ丘学園高校', 
+        profile: '高校の野球部でバッテリーを組んだ相棒を探しています。',
+        msg: '野球部でバッテリーを組んだ相棒へ。泥まみれになって甲子園を目指した日々。またキャッチボールしよう。', 
+        q1: '夏の大会でサヨナラ勝ちを決めた対戦相手の高校名は？', a1: '白雲高校', 
+        q2: '練習帰りに立ち寄った定食屋の大盛りメニューは？', a2: 'ジャンボチキンカツ定食', 
+        era: '1990', img: 'https://images.unsplash.com/photo-1508344928928-7165b67de128?w=800&auto=format&fit=crop&q=80' 
+      },
+      { 
+        email: 'aoi.yamada@example.com', name: '山田 葵', nick: 'あおい', target: '佐々木 美穂', 
+        school: 'あおぞら高校', 
+        profile: '高校の美術部で油絵を描いた同期を探しています。',
+        msg: '美術部で油絵を描いた同期へ。放課後の美術室で夕暮れまでデッサンを重ねた時間が懐かしいです。', 
+        q1: '二人で県展に出品した油絵の共通テーマは？', a1: '朝焼けの海', 
+        q2: '美術室でいつも一緒に飲んでいた紙パックの紅茶は？', a2: '紙パックのミルクティー', 
+        era: '2010', img: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=800&auto=format&fit=crop&q=80' 
+      },
+      { 
+        email: 'admin@adomin.jp', name: '東北 太郎', nick: 'かりん', target: '松本 隆', 
+        school: '札幌星雲高校', 
+        profile: '学生時代の天文部で満天の星空を眺めた仲間を探しています。',
+        msg: '天文部で満天の星空を眺めた仲間へ。凍てつく夜空に輝く星と語り合った夢を覚えています。', 
+        q1: '天体望遠鏡を覗いて息を呑んだ夜空の惑星は？', a1: '土星の輪', 
+        q2: '夜間観測で寒さをしのぐために飲んだ飲み物は？', a2: 'ホットココア', 
+        era: '1980', img: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?w=800&auto=format&fit=crop&q=80' 
+      }
     ];
 
     for (const mu of mainUsers) {
-      const uRecord = db.prepare("SELECT id, birthdate, gender FROM users WHERE email = ?").get(mu.email) as any;
+      const uRecord = db.prepare("SELECT id, birthdate, gender, is_ekyc_verified FROM users WHERE email = ?").get(mu.email) as any;
       if (uRecord) {
         const postExists = db.prepare("SELECT id FROM posts WHERE user_id = ? AND target_name = ?").get(uRecord.id, mu.target);
         if (!postExists) {
@@ -168,14 +357,15 @@ export const seedData = async (force: boolean = false) => {
               user_id, searcher_name, searcher_full_name, searcher_profile, searcher_birthdate, searcher_gender,
               target_name, target_last_name, target_first_name, target_hometown, target_school, 
               era, category, secret_question, secret_answer, secret_answer_plain, 
-              message, image_url, status
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'published')
+              message, image_url, is_ekyc_verified, status
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'published')
           `);
           const res = insertStmt.run(
-            uRecord.id, mu.nick, mu.name, `${mu.school}時代の想い出の相手を探しています。`,
+            uRecord.id, mu.nick, mu.name, mu.profile,
             uRecord.birthdate || null, uRecord.gender || null,
             mu.target, mu.target.split(' ')[0] || mu.target, mu.target.split(' ')[1] || '', '東京都', mu.school,
-            mu.era, 'friend', mu.q1, hashedPassword, mu.a1, mu.msg, mu.img
+            mu.era, 'friend', mu.q1, hashedPassword, mu.a1, mu.msg, mu.img,
+            uRecord.is_ekyc_verified || 0
           );
           db.prepare("INSERT INTO post_questions (post_id, question, answer, answer_plain) VALUES (?, ?, ?, ?)").run(
             res.lastInsertRowid, mu.q2, hashedPassword, mu.a2
@@ -282,9 +472,9 @@ export const seedData = async (force: boolean = false) => {
 
   const hometowns = ["東京都世田谷区", "神奈川県横浜市", "大阪府大阪市", "愛知県名古屋市", "福岡県福岡市", "北海道札幌市", "千葉県千葉市", "埼玉県さいたま市", "兵庫県神戸市", "京都府京都市"];
   const schools = [
-    "世田谷第一中学校", "横浜市立青葉高校", "大阪府立北野高校", "名古屋市立向陽高校", "福岡県立修猷館高校", 
-    "札幌市立旭丘高校", "千葉県立千葉高校", "埼玉県立浦和高校", "兵庫県立神戸高校", "京都市立堀川高校",
-    "IT系スタートアップ企業", "大手広告代理店", "老舗アパレルメーカー", "地元の人気カフェ", "駅前のスポーツジム"
+    "緑川中学校", "桜ヶ丘高校", "青葉台高校", "夕陽丘学園高校", "星見ヶ丘高校", 
+    "あおぞら第一高校", "光陽学院高校", "七夕学園高校", "白鳥台高校", "春風中学校",
+    "IT系スタートアップ企業", "街のデザイン事務所", "老舗アパレルメーカー", "地元の人気カフェ", "駅前のスポーツジム"
   ];
   const eras = ["1970", "1980", "1990", "2000", "2010"];
   const categories = ["friend", "work", "love", "family", "other"];
@@ -308,25 +498,25 @@ export const seedData = async (force: boolean = false) => {
     {
       profile: "世田谷区の中学校テニス部で一緒でした。私は副部長をしていました。",
       message: "卒業式の日に、部室の裏でみんなで泣きながら話したことを今でも鮮明に覚えています。あの時あなたがくれた励ましの言葉に救われました。元気でいてくれることを願っています。",
-      q1: "部活の帰りにいつも寄っていた駄菓子屋の名前は？", a1: "さくらや",
+      q1: "部活の帰りにいつも寄っていた駄菓子屋の名前は？", a1: "町の駄菓子屋さん",
       q2: "最後の夏合宿で行った長野の避暑地はどこだった？", a2: "軽井沢"
     },
     {
       profile: "横浜駅近くのITオフィスで同じプロジェクトチームでした。深夜残業を乗り越えた仲間です。",
       message: "お久しぶりです！あの激務だった開発プロジェクト、今となっては誇らしい思い出ですね。またみんなで集まりましょう！",
       q1: "当時の開発プロジェクトチームの愛称は何だった？", a1: "チームドリーム",
-      q2: "オフィスの地下にあったお気に入りの洋食屋は？", a2: "キッチン南海"
+      q2: "オフィスの地下にあったお気に入りの洋食屋は？", a2: "町の洋食屋さん"
     },
     {
       profile: "下北沢のライブハウスで毎週末のように顔を合わせていた者です。",
       message: "あの頃、狭いライブハウスで共有した音楽と熱気は今でも私の宝物です。あなたが教えてくれたバンドの曲、今も聴いています。",
-      q1: "初めて二人でチケットを買って行ったライブのバンド名は？", a1: "バンプ",
-      q2: "深夜ライブの後にいつも寄っていた中華料理屋は？", a2: "みんみん"
+      q1: "初めて二人でチケットを買って行ったライブのバンド名は？", a1: "人気ロックバンド",
+      q2: "深夜ライブの後にいつも寄っていた中華料理屋は？", a2: "駅前の中華料理店"
     },
     {
       profile: "小学校6年間の幼馴染です。秘密基地を作って毎日遊んでいました。",
       message: "元気にしてるかな？ふと懐かしくなってボトルを流してみたよ。またあの公園で昔みたいに語り合いたいね。",
-      q1: "秘密基地を作っていた空き地の隣にあった古い建物は？", a1: "末広湯",
+      q1: "秘密基地を作っていた空き地の隣にあった古い建物は？", a1: "町の銭湯",
       q2: "小学校5年生の時の厳しい担任の先生のあだ名は？", a2: "カミナリ"
     },
     {
@@ -344,14 +534,14 @@ export const seedData = async (force: boolean = false) => {
     {
       profile: "被災地でのボランティア活動を通じて知り合いました。あなたの笑顔に救われました。",
       message: "あの過酷な現場で、あなたの前向きな姿勢がみんなの支えでした。またいつか笑顔で再会したいです。",
-      q1: "ボランティア活動の打ち上げで利用した居酒屋チェーンは？", a1: "魚民",
+      q1: "ボランティア活動の打ち上げで利用した居酒屋チェーンは？", a1: "駅前の居酒屋",
       q2: "現地で私たちが担当していた支援物資配給の班名は？", a2: "B班"
     },
     {
       profile: "高校時代の親友です。放課後はいつも図書室の窓際で受験勉強していました。",
       message: "久しぶり！元気にしてる？文化祭の準備で徹夜したのが懐かしいね。連絡待ってます。",
       q1: "高校2年の文化祭で私たちが企画した出し物は？", a1: "お化け屋敷",
-      q2: "学校帰りにいつも買い食いしていたホットスナックは？", a2: "ファミチキ"
+      q2: "学校帰りにいつも買い食いしていたホットスナックは？", a2: "揚げたてコロッケ"
     },
     {
       profile: "新入社員として配属された営業所で温かく指導してくださった先輩を探しています。",
@@ -369,7 +559,7 @@ export const seedData = async (force: boolean = false) => {
       profile: "中学の吹奏楽部で金管パートを吹いていました。コンクールで金賞を目指した仲間です。",
       message: "あの夏の県大会前の猛練習、きつかったけれど最高の青春だったね。またみんなで楽器を持ち寄って合奏したいです。",
       q1: "私たちが自由曲として演奏した吹奏楽の名曲タイトルは？", a1: "アルメニアンダンス",
-      q2: "練習の合間にパートみんなで食べたアイスクリームは？", a2: "ガリガリ君"
+      q2: "練習の合間にパートみんなで食べたアイスクリームは？", a2: "ソーダ味のアイス"
     },
     {
       profile: "大学時代に京都の町家カフェで一緒にオープニングスタッフとしてアルバイトしていました。",
@@ -386,14 +576,14 @@ export const seedData = async (force: boolean = false) => {
     {
       profile: "学生時代、バックパッカーとしてタイのゲストハウスで出会った旅仲間です。",
       message: "カオサン通りの屋台でパッタイを食べながら旅のルートを話し合いましたね。あの時の約束、覚えていますか？",
-      q1: "バンコクで私たちが泊まっていた安宿の名前は？", a1: "サワディーハウス",
+      q1: "バンコクで私たちが泊まっていた安宿の名前は？", a1: "ゲストハウス",
       q2: "夜市で二人で挑戦して食べた屋台フルーツの王様は？", a2: "ドリアン"
     },
     {
       profile: "少年野球チーム「リトルジャイアンツ」でバッテリーを組んでいたキャッチャーです。",
       message: "最終回のマウンドで君が見せてくれた気迫のピッチングは今でも目に焼き付いています。またキャッチボールしようぜ。",
       q1: "優勝決定戦でサインを出して投げさせた最後の決め球は？", a1: "インコース高め直球",
-      q2: "試合後に監督が全員に奢ってくれたジュースは？", a2: "プラッシー"
+      q2: "試合後に監督が全員に奢ってくれたジュースは？", a2: "特製みかんジュース"
     },
     {
       profile: "北海道の大学で農場実習を共にした同期です。朝早い搾乳作業を励まし合いました。",
@@ -405,7 +595,7 @@ export const seedData = async (force: boolean = false) => {
       profile: "デザイン専門学校で同じゼミだった同級生です。卒業制作で隣のデスクでした。",
       message: "提出前夜、徹夜でプリンターの前で待機しながら飲んだ缶コーヒーの味が忘れられません。今もデザイン続けてる？",
       q1: "卒業制作であなたが受賞した名誉ある賞の名称は？", a1: "学長賞",
-      q2: "課題制作中に二人でヘビロテしていたBGMのアルバムは？", a2: "無罪モラトリアム"
+      q2: "課題制作中に二人でヘビロテしていたBGMのアルバムは？", a2: "名盤アルバム"
     },
     {
       profile: "幼少期、長野の祖父母の家で夏休みだけ一緒に遊んでいた従兄弟のような友達です。",
@@ -416,20 +606,20 @@ export const seedData = async (force: boolean = false) => {
     {
       profile: "渋谷の古着屋でスタッフとして切磋琢磨していた元同僚です。",
       message: "海外買い付けの話やヴィンテージデニムの知識をたくさん教えてもらいました。あなたのセンスを尊敬していました。",
-      q1: "ショップの看板になっていた年代物のヴィンテージジーンズ型番は？", a1: "501XX",
+      q1: "ショップの看板になっていた年代物のヴィンテージジーンズ型番は？", a1: "ヴィンテージデニム",
       q2: "店長が海外出張のお土産にくれた現地のキーホルダーの形は？", a2: "ルート66看板"
     },
     {
       profile: "高校の陸上部で4×100mリレーのアンカーと第3走者としてバトンを繋いだ仲間です。",
       message: "県大会決勝のバトンパス、完璧だったね。グラウンドの土の匂いと歓声、今でも胸が熱くなります。",
-      q1: "リレーチームで揃えて履いていたスパイクシューズのメーカーは？", a1: "ミズノ",
+      q1: "リレーチームで揃えて履いていたスパイクシューズのメーカーは？", a1: "お揃いのランニングシューズ",
       q2: "朝練の後に水道の蛇口で冷やして食べた果物は？", a2: "スイカ"
     },
     {
       profile: "大学の演劇サークルで大道具と照明を担当していた裏方コンビです。",
       message: "本番前のゲネプロで照明のタイミングを何度も合わせたね。幕が下りた瞬間の拍手の音、忘れられません。",
       q1: "秋の定期公演で上演したシェイクスピアの名作戯曲は？", a1: "夏の夜の夢",
-      q2: "舞台袖の道具箱に貼ってあった安全祈願のお守りステッカーは？", a2: "成田山"
+      q2: "舞台袖の道具箱に貼ってあった安全祈願のお守りステッカーは？", a2: "交通安全ステッカー"
     },
     {
       profile: "地元の児童館で将棋を指し合っていた将棋仲間です。名勝負を何度も繰り広げました。",
@@ -441,7 +631,7 @@ export const seedData = async (force: boolean = false) => {
       profile: "昔、神田の老舗書店で一緒に働いていた書店員仲間です。本の話で盛り上がりました。",
       message: "文庫本タワーを作ってPOPを書いた情熱的な日々を思い出します。あなたが推薦してくれた小説、今も本棚にあります。",
       q1: "二人で熱狂して作った特設コーナーの作家名は？", a1: "太宰治",
-      q2: "書店の休憩室でいつも淹れていた紅茶のブランド名は？", a2: "トワイニング"
+      q2: "書店の休憩室でいつも淹れていた紅茶のブランド名は？", a2: "アールグレイ紅茶"
     },
     {
       profile: "中学時代の剣道部で汗を流した同期です。寒稽古の冷たい道場の床を思い出します。",
@@ -464,7 +654,7 @@ export const seedData = async (force: boolean = false) => {
     {
       profile: "昔、吉祥寺のジャズ喫茶でカウンターに並んで常連客だった音楽仲間です。",
       message: "マスターが淹れるネルドリップ珈琲とマイルス・デイヴィスのレコード。あの静かで濃密な時間をまた語り合いたいです。",
-      q1: "店内の巨大な真空管スピーカーの伝説的なオーディオブランドは？", a1: "JBL",
+      q1: "店内の巨大な真空管スピーカーの伝説的なオーディオブランドは？", a1: "大型名機スピーカー",
       q2: "マスターが裏メニューで出してくれたシナモントーストの味付けは？", a2: "メープルハニー"
     },
     {
@@ -501,7 +691,7 @@ export const seedData = async (force: boolean = false) => {
       profile: "高校の美術部で油絵を描いていた仲間です。アトリエのテレピン油の匂いを思い出します。",
       message: "キャンバスに向かって無言で筆を走らせた放課後。あなたの描く風景画の色彩感覚にいつも刺激を受けていました。",
       q1: "高文祭に出品するために二人で共同制作した大作のテーマは？", a1: "蒼の記憶",
-      q2: "美術室の棚に置いてあったデッサン用の石膏像の人物名は？", a2: "アグリッパ"
+      q2: "美術室の棚に置いてあったデッサン用の石膏像の人物名は？", a2: "石膏像"
     },
     {
       profile: "中学の同窓会幹事を一緒にやった仲間です。名簿集めに苦労したのが懐かしいですね。",
@@ -518,14 +708,14 @@ export const seedData = async (force: boolean = false) => {
     {
       profile: "小学校の鼓笛隊で大太鼓と小太鼓でリズムを刻んだ音楽仲間です。",
       message: "運動会のパレード行進、足並みを揃えて校庭を一周した誇らしさを覚えています。大人になっても音楽楽しんでますか？",
-      q1: "運動会行進曲の定番だった鼓笛隊の演奏曲名は？", a1: "クワイ河マーチ",
+      q1: "運動会行進曲の定番だった鼓笛隊の演奏曲名は？", a1: "行進曲",
       q2: "パレードで着用したベレー帽とスカーフのお揃いの色は？", a2: "ロイヤルブルー"
     },
     {
       profile: "大学の研究室で生化学の卒業論文実験を夜通し共にした同期です。",
       message: "遠心分離機の音を聞きながらデータの解析をした日々。あの過酷な卒論発表を乗り切れたのは君のおかげです。",
       q1: "実験室の冷凍庫に保管されていた必須サンプルの試薬名は？", a1: "BSA溶液",
-      q2: "教授が海外学会のお土産に研究室に買ってきてくれた激甘チョコは？", a2: "ティムタム"
+      q2: "教授が海外学会のお土産に研究室に買ってきてくれた激甘チョコは？", a2: "輸入チョコレート"
     },
     {
       profile: "昔、地域のお祭り青年部で神輿を一緒に担いだ地元の仲間です。",
@@ -542,14 +732,14 @@ export const seedData = async (force: boolean = false) => {
     {
       profile: "京都の古寺巡りサークルで週末ごとに御朱印を集めていた仲間です。",
       message: "苔寺の静けさや嵐山の竹林、紅葉のライトアップに息を呑んだ日々。また静かに古都の風情を味わいに行きたいですね。",
-      q1: "初めて二人で訪れて感動した枯山水庭園で有名なお寺の名前は？", a1: "龍安寺",
+      q1: "初めて二人で訪れて感動した枯山水庭園で有名なお寺の名前は？", a1: "名刹の枯山水庭園",
       q2: "参道の茶屋で食べた焼きたての名物和菓子は？", a2: "みたらし団子"
     },
     {
       profile: "新入社員時代の社員寮で隣の部屋だった同期です。壁が薄くてよく声が聞こえましたね。",
       message: "仕事の愚痴を言い合ったり、夜中にコンビニへアイスを買いに行ったり。君がいてくれたから新社会人を乗り越えられました。",
       q1: "社員寮の食堂で金曜日の夕飯に決まって出てきた大人気メニューは？", a1: "カツカレー",
-      q2: "寮の屋上に忍び込んで二人で見た初日の出の方角の山は？", a2: "筑波山"
+      q2: "寮の屋上に忍び込んで二人で見た初日の出の方角に見えた名峰は？", a2: "東の山並み"
     },
     {
       profile: "中学のバスケットボール部でガードとセンターとしてコンビプレイを磨いた仲間です。",
@@ -561,13 +751,13 @@ export const seedData = async (force: boolean = false) => {
       profile: "大学の映画サークルで自主制作映画を撮っていた監督とカメラマンのコンビです。",
       message: "8ミリフィルムを回して夕暮れの街を走り抜けた日々。あの映画祭での受賞、今でも誇りに思っています。",
       q1: "自主映画祭でグランプリを獲った短編映画のタイトルは？", a1: "雨上がりの坂道",
-      q2: "編集室にカンヅメになった時に主食にしていたカップ麺は？", a2: "シーフードヌードル"
+      q2: "編集室にカンヅメになった時に主食にしていたカップ麺は？", a2: "特製カップ麺"
     },
     {
       profile: "小学校の時に同じそろばん塾に通っていた仲間です。暗算のスピードを競い合いましたね。",
       message: "パチパチと響くそろばんの音と、段位検定に合格した時のハイタッチ。ふと思い出して温かい気持ちになりました。",
-      q1: "そろばん塾の先生がご褒美にくれた文房具のキャラクターは？", a1: "スヌーピー消しゴム",
-      q2: "塾の帰り道にあった自動販売機でいつも買っていた瓶ジュースは？", a2: "チェリオ"
+      q1: "そろばん塾の先生がご褒美にくれた文房具のキャラクターは？", a1: "人気キャラ消しゴム",
+      q2: "塾の帰り道にあった自動販売機でいつも買っていた瓶ジュースは？", a2: "瓶入りサイダー"
     },
     {
       profile: "高校の囲碁将棋部で放課後の対局を楽しんでいた同級生です。",
@@ -579,7 +769,7 @@ export const seedData = async (force: boolean = false) => {
       profile: "Webベンチャーの創業初期にデザイナーとエンジニアとして奮闘した仲間です。",
       message: "雑居ビルの小さなオフィスでピザを食べながら朝までローンチ作業をしたね。あの情熱は今の私の礎です。",
       q1: "初期リリースしたサービスのベータ版コードネームは？", a1: "プロジェクトフェニックス",
-      q2: "徹夜明けにビルの非常階段から見上げた東京タワーのライトアップ色は？", a2: "ランドマークライト"
+      q2: "徹夜明けにビルの非常階段から見上げた電波塔のライトアップ色は？", a2: "オレンジ色"
     },
     {
       profile: "地元の少年少女合唱団でヨーロッパ海外公演に一緒に行った仲間です。",
@@ -590,7 +780,7 @@ export const seedData = async (force: boolean = false) => {
     {
       profile: "高校時代に同じガソリンスタンドで洗車バイトをしていた仲間です。",
       message: "真冬の冷たい水で手をかじかませながら車をピカピカに磨いたね。バイト代で買った古着を見せ合ったのが懐かしいです。",
-      q1: "スタンドの所長が休憩中に奢ってくれた名物缶コーヒーの銘柄は？", a1: "ボスレインボーマウンテン",
+      q1: "スタンドの所長が休憩中に奢ってくれた名物缶コーヒーの種類は？", a1: "缶コーヒー",
       q2: "洗車機の点検でいつも使っていた特製シャンプーの液体の色は？", a2: "エメラルドグリーン"
     },
     {
@@ -602,7 +792,7 @@ export const seedData = async (force: boolean = false) => {
     {
       profile: "原宿のホコ天でバンド演奏やダンスを見ながら青春を過ごした仲間です。",
       message: "ラジカセを担いで日曜日の歩行者天国に集まった熱い時代。あの頃のエネルギーをもう一度思い出して語り合いたいです。",
-      q1: "ホコ天で私たちがいつも待ち合わせ場所にしていたカフェの名前は？", a1: "カフェドロペ",
+      q1: "ホコ天で私たちがいつも待ち合わせ場所にしていたオープンカフェの名前は？", a1: "オープンカフェ",
       q2: "あなたが当時革ジャンに着けていた大好きなロックバッジの柄は？", a2: "ユニオンジャック"
     }
   ];
@@ -1012,6 +1202,64 @@ export const seedData = async (force: boolean = false) => {
         'stripe_card', t.description, t.stripe_intent, t.stripe_fee, t.ekyc_cost,
         t.sms_cost, t.net_profit, t.refund_reason, t.refunded_at, t.created_at
       );
+    });
+
+    // --- 7. サンプル通知ログの投入 ---
+    const allUsers = db.prepare("SELECT id FROM users").all() as any[];
+    const insertNotifStmt = db.prepare(`
+      INSERT INTO notifications (user_id, type, content, link, is_read, created_at)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `);
+
+    const notifTemplates = [
+      {
+        type: "reunion_reveal",
+        content: "【想い出開通】昔の同窓生「佐藤 さくら」様とのボトルメール（1998年頃・青葉中学校）の想い出クイズが一致し、連絡先とお手紙が開通しました！早速内容をご確認ください。",
+        link: "/account?tab=received",
+        is_read: 0,
+        created_at: new Date(now.getTime() - 1000 * 60 * 35).toISOString().replace('T', ' ').substring(0, 19)
+      },
+      {
+        type: "reunion",
+        content: "【クイズ照合成功】あなたが海に流したボトルメール「高橋 健二 様宛てのお手紙」にお相手からの思い出回答が届き、見事正解しました！相手のメッセージを開封できます。",
+        link: "/account?tab=sent",
+        is_read: 0,
+        created_at: new Date(now.getTime() - 1000 * 60 * 120).toISOString().replace('T', ' ').substring(0, 19)
+      },
+      {
+        type: "admin_broadcast",
+        content: "【ReMEETs運営事務局より】\nいつもReMEETsをご利用いただき誠にありがとうございます。\n\nより安心して想い出の再会を果たしていただけるよう、AI安全防衛エンジンの精度向上と、本人確認（eKYC）認証スピードの高速化アップデートを実施いたしました。\n\n引き続き、温かい思い出の海を守るため健全な運営に努めてまいります。ご不明な点がございましたら「お問い合わせ」窓口よりお気軽にお寄せください。",
+        link: null,
+        is_read: 1,
+        created_at: new Date(now.getTime() - 86400000 * 1).toISOString().replace('T', ' ').substring(0, 19)
+      },
+      {
+        type: "system",
+        content: "【公式サポーター認定】ReMEETsプラットフォームのサーバー運営・AI安全防衛への温かいご寄付（1口 500円）をいただき、心より御礼申し上げます。\n\nプロフィール等に「⭐ 公式サポーター」ゴールドバッジが付与されました。温かいご支援に心より感謝申し上げます。",
+        link: "/supporter",
+        is_read: 1,
+        created_at: new Date(now.getTime() - 86400000 * 2).toISOString().replace('T', ' ').substring(0, 19)
+      },
+      {
+        type: "system",
+        content: "【公的本人確認 完了】ご提出いただいた公的証明書類（eKYC）の審査が正常に完了し、承認されました。\n\nアカウントに「🛡️ 公的本人確認済み」バッジが点灯し、安心・スムーズにお手紙を開封していただけるようになりました。",
+        link: "/account?tab=profile",
+        is_read: 1,
+        created_at: new Date(now.getTime() - 86400000 * 3).toISOString().replace('T', ' ').substring(0, 19)
+      },
+      {
+        type: "broadcast",
+        content: "【漂流レポート】あなたが海に流したボトルメールが、これまでに全国から「34回」静かに検索・閲覧されました。大切なお手紙は暗号化され、安全に海を漂っています。",
+        link: "/account?tab=sent",
+        is_read: 1,
+        created_at: new Date(now.getTime() - 86400000 * 5).toISOString().replace('T', ' ').substring(0, 19)
+      }
+    ];
+
+    allUsers.forEach(u => {
+      notifTemplates.forEach(t => {
+        insertNotifStmt.run(u.id, t.type, t.content, t.link, t.is_read, t.created_at);
+      });
     });
   })();
 };

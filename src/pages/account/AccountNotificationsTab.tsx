@@ -34,10 +34,13 @@ export const AccountNotificationsTab = (props: any) => {
     handleTabChange = (tab: string) => navigate(`/account?tab=${tab}`)
   } = props;
 
+  const [selectedNotification, setSelectedNotification] = useState<any | null>(null);
+
   const notifications = accountNotifications;
   const notificationsLoading = notificationLoading;
   const handleMarkAllAsRead = handleMarkAllNotificationsAsRead;
   const handleMarkAsRead = handleSingleNotificationClick || (() => {});
+  const handleDelete = handleDeleteSingleNotification || (() => {});
 
   const handleToggleNotifyAlert = () => {
     setIsUpdatingNotifyAlert(true);
@@ -54,6 +57,13 @@ export const AccountNotificationsTab = (props: any) => {
       return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
     } catch {
       return dateStr;
+    }
+  };
+
+  const handleNotificationClick = async (n: any) => {
+    setSelectedNotification(n);
+    if (!n.is_read) {
+      await handleMarkAsRead(n.id);
     }
   };
 
@@ -181,7 +191,7 @@ export const AccountNotificationsTab = (props: any) => {
                         )}
                       </h2>
                       <p className="text-xs text-brand-dark/50 font-sans">
-                        事務局公式の一括配信アナウンス、ボトルメッセージへの回答試行・クイズ正解、想い出照合・連絡先開示通知などが時系列で一元整理されています。
+                        通知をクリックすると詳細ポップアップが開き、内容の確認や該当ページへの移動ができます。
                       </p>
                     </div>
                     {notifications.filter(n => !n.is_read).length > 0 && (
@@ -238,41 +248,162 @@ export const AccountNotificationsTab = (props: any) => {
                       return (
                         <div
                           key={n.id}
-                          className={`p-4 rounded-2xl border transition-all flex flex-col md:flex-row justify-between items-start md:items-center gap-3 ${
-                            !n.is_read ? 'bg-rose-50/50 border-rose-200' : 'bg-white border-zinc-100'
+                          onClick={() => handleNotificationClick(n)}
+                          className={`p-4 rounded-2xl border transition-all flex flex-col md:flex-row justify-between items-start md:items-center gap-3 cursor-pointer hover:shadow-md hover:scale-[1.005] group ${
+                            !n.is_read
+                              ? 'bg-rose-50/60 border-rose-300 ring-1 ring-rose-200'
+                              : 'bg-white border-zinc-200/80 hover:border-zinc-300'
                           }`}
                         >
-                          <div className="flex items-start gap-3 flex-1">
-                            <IconComponent size={18} className="mt-0.5 text-zinc-600 shrink-0" />
-                            <div>
-                              <div className="flex items-center gap-2">
+                          <div className="flex items-start gap-3 flex-1 min-w-0">
+                            <div className="relative shrink-0 mt-0.5">
+                              <IconComponent size={18} className="text-zinc-600 group-hover:text-brand-primary transition-colors" />
+                              {!n.is_read && (
+                                <span className="absolute -top-1 -right-1 w-2 h-2 bg-rose-500 rounded-full animate-ping" />
+                              )}
+                            </div>
+                            <div className="space-y-1 min-w-0 flex-1">
+                              <div className="flex items-center gap-2 flex-wrap">
                                 <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${colorClasses}`}>
                                   {badgeText}
                                 </span>
+                                {!n.is_read && (
+                                  <span className="text-[9px] font-extrabold bg-rose-600 text-white px-1.5 py-0.2 rounded-md">
+                                    NEW
+                                  </span>
+                                )}
                                 <span className="text-[10px] text-zinc-400 font-mono">
                                   {formatNotificationDate(n.created_at)}
                                 </span>
                               </div>
-                              <p className="text-xs text-zinc-800 font-medium mt-1">{n.content}</p>
+                              <p className="text-xs text-zinc-800 font-medium line-clamp-2 leading-relaxed group-hover:text-zinc-950">
+                                {n.content}
+                              </p>
                             </div>
                           </div>
-                          {n.link && (
+
+                          <div className="flex items-center gap-2 shrink-0 self-end md:self-center">
                             <button
-                              onClick={async () => {
-                                if (!n.is_read) await handleMarkAsRead(n.id);
-                                navigate(n.link);
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleNotificationClick(n);
                               }}
-                              className="px-3 py-1 bg-zinc-900 text-white text-xs font-bold rounded-lg hover:bg-zinc-800 shrink-0"
+                              className="px-3.5 py-1.5 bg-zinc-900 hover:bg-brand-primary text-white text-xs font-bold rounded-xl transition-all shadow-xs flex items-center gap-1 cursor-pointer active:scale-95"
                             >
-                              {actionText}
+                              <span>{n.link ? actionText : '詳細を開く'}</span>
+                              <ArrowRight size={12} />
                             </button>
-                          )}
+                            <button
+                              type="button"
+                              onClick={async (e) => {
+                                e.stopPropagation();
+                                if (window.confirm('この通知を削除してもよろしいですか？')) {
+                                  await handleDelete(n.id);
+                                }
+                              }}
+                              className="p-1.5 text-zinc-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                              title="通知を削除"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
                         </div>
                       );
                     })}
                   </div>
                 )}
               </div>
+
+              {/* 📖 お知らせ・通知詳細ポップアップモーダル */}
+              {selectedNotification && (
+                <div
+                  className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in font-sans"
+                  onClick={() => setSelectedNotification(null)}
+                >
+                  <div
+                    className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-zinc-200 relative overflow-hidden space-y-5 animate-scale-in"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setSelectedNotification(null)}
+                      className="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition-colors cursor-pointer"
+                    >
+                      <X size={16} />
+                    </button>
+
+                    <div className="flex items-center gap-3 border-b border-zinc-100 pb-4">
+                      <div className="w-10 h-10 rounded-2xl bg-teal-50 border border-teal-200 text-teal-700 flex items-center justify-center shrink-0">
+                        <Bell size={20} />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-800 border border-teal-200">
+                            {selectedNotification.type === 'reunion_reveal' ? '想い出照合・開通' : selectedNotification.type === 'reunion' ? '思い出再会' : '事務局・システム通知'}
+                          </span>
+                          <span className="text-[10px] text-zinc-400 font-mono">
+                            {formatNotificationDate(selectedNotification.created_at)}
+                          </span>
+                        </div>
+                        <h3 className="font-bold text-base sm:text-lg text-zinc-900 font-serif mt-0.5">
+                          通知の詳細内容
+                        </h3>
+                      </div>
+                    </div>
+
+                    <div className="p-4 bg-slate-50/90 rounded-2xl border border-slate-200/80 space-y-2">
+                      <span className="text-[10.5px] font-bold text-slate-400 uppercase tracking-wider block font-sans">
+                        MESSAGE
+                      </span>
+                      <p className="text-xs sm:text-sm text-slate-800 leading-relaxed whitespace-pre-wrap font-sans">
+                        {selectedNotification.content}
+                      </p>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          if (window.confirm('この通知を削除してもよろしいですか？')) {
+                            const id = selectedNotification.id;
+                            setSelectedNotification(null);
+                            await handleDelete(id);
+                          }
+                        }}
+                        className="w-full sm:w-auto px-4 py-2.5 text-xs text-rose-600 hover:bg-rose-50 border border-rose-200 rounded-xl transition-all font-bold flex items-center justify-center gap-1.5 cursor-pointer"
+                      >
+                        <Trash2 size={14} />
+                        <span>通知を削除</span>
+                      </button>
+
+                      <div className="flex items-center gap-2 w-full sm:w-auto">
+                        <button
+                          type="button"
+                          onClick={() => setSelectedNotification(null)}
+                          className="flex-1 sm:flex-initial px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all cursor-pointer"
+                        >
+                          閉じる
+                        </button>
+                        {selectedNotification.link && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const link = selectedNotification.link;
+                              setSelectedNotification(null);
+                              navigate(link);
+                            }}
+                            className="flex-1 sm:flex-initial px-5 py-2.5 bg-gradient-to-r from-teal-700 to-indigo-700 hover:from-teal-800 hover:to-indigo-800 text-white font-bold text-xs rounded-xl shadow-md hover:shadow transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
+                          >
+                            <span>該当ページを開く</span>
+                            <ArrowRight size={13} />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
   );
 };

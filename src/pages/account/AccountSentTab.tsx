@@ -5,6 +5,7 @@ import {
   Trash2, Edit3, PlusCircle, ShieldCheck, ExternalLink, Eye, Edit, Activity 
 } from "lucide-react";
 import { getPostUrl, formatEraLabel } from "../../lib/utils";
+import { ReunionStorySection } from "../../components/account/ReunionStorySection";
 
 export const AccountSentTab = (props: any) => {
   const [selectedPostIds, setSelectedPostIds] = useState<number[]>([]);
@@ -23,7 +24,11 @@ export const AccountSentTab = (props: any) => {
     setShowEditModal,
     setStoryTargetPost,
     setStoryTargetRole,
-    setStoryModalOpen
+    setStoryModalOpen,
+    mySubmittedStories = [],
+    storyCurrentPage = 1,
+    setStoryCurrentPage = () => {},
+    STORIES_PER_PAGE = 5
   } = props;
 
   return (
@@ -200,6 +205,22 @@ export const AccountSentTab = (props: any) => {
                       ))}
                     </div>
                   )}
+                </div>
+
+                {/* 💌 再会エピソード・感謝の声セクション */}
+                <div className="pt-4 border-t border-brand-border">
+                  <ReunionStorySection
+                    mySubmittedStories={mySubmittedStories}
+                    storyCurrentPage={storyCurrentPage}
+                    setStoryCurrentPage={setStoryCurrentPage}
+                    STORIES_PER_PAGE={STORIES_PER_PAGE}
+                    defaultRole="sender"
+                    onOpenStoryModal={(role) => {
+                      setStoryTargetPost(null);
+                      setStoryTargetRole(role || 'sender');
+                      setStoryModalOpen(true);
+                    }}
+                  />
                 </div>
               </div>
   );

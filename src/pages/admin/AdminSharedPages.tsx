@@ -3,10 +3,11 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  User as UserIcon, MapPin, ChevronRight, RefreshCw,
+  User as UserIcon, MapPin, ChevronRight, ChevronDown, RefreshCw,
   Mail, Send, CheckCircle2, AlertCircle, Home, FileText, Shield,
   BookOpen, HelpCircle, Users, ExternalLink, ArrowRight, Activity,
-  Info, MessageSquare, AlertTriangle, Search, Heart, Sparkles, LogIn
+  Info, MessageSquare, AlertTriangle, Search, Heart, Sparkles, LogIn,
+  Copy, Check, Clock, LifeBuoy, ShieldAlert
 } from "lucide-react";
 import { cn, PageHeader } from "../../lib/utils";
 import { Navbar, BackToHomeButton } from "../../components/SharedComponents";
@@ -175,166 +176,339 @@ export const SitemapPage = () => {
 };
 
 export const ContactPage = () => {
-  const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
-  const subjects = [
-    "サービス全般について",
-    "ログイン・アカウントについて",
-    "不具合・技術的なお問い合わせ",
-    "メディア対応・取材について",
-    "広告掲載について",
-    "その他"
-  ];
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    referenceUrl: '',
+    message: ''
+  });
+  const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
+  const [ticketToken, setTicketToken] = useState('');
+  const [copied, setCopied] = useState(false);
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [error, setError] = useState('');
 
+  const categories = [
+    { value: "料金・決済・自動返金について", label: "💳 料金・決済・自動返金について（Stripe決済、領収書、600円/1,200円等）" },
+    { value: "想い出クイズ・手紙の開封・再会について", label: "💌 想い出クイズ・手紙の開封・再会について（誤答ロック、連絡先の再確認等）" },
+    { value: "本人確認（eKYC）・年齢確認について", label: "🪪 本人確認（eKYC）・年齢確認について（身分証審査、認証ステータス等）" },
+    { value: "ログイン・SNS連携・アカウント設定について", label: "🔐 ログイン・SNS連携・アカウント設定について（LINE/Google認証、通知メール等）" },
+    { value: "不具合・エラー・技術的なご報告", label: "⚙️ 不具合・エラー・技術的なご報告（画面崩れ、ボタン動作不良等）" },
+    { value: "迷惑行為・ストーカー・不審な手紙の通報・ご相談", label: "🚨 迷惑行為・ストーカー・不審な手紙の通報・ご相談（最優先トリアージ対象）" },
+    { value: "メディア取材・提携・ビジネスのお問い合わせ", label: "📰 メディア取材・提携・ビジネスのお問い合わせ" },
+    { value: "その他・ご意見・ご要望", label: "📝 その他・ご意見・ご要望" }
+  ];
+
+  const handleCopyTicket = () => {
+    if (!ticketToken) return;
+    navigator.clipboard.writeText(ticketToken);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 3000);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStatus('loading');
     setError('');
+
+    if (!agreedToPrivacy) {
+      setError('プライバシーポリシーへの同意をお願いいたします。');
+      return;
+    }
+
+    if (formData.message.trim().length > 2000) {
+      setError('お問い合わせ内容は2,000文字以内でご入力ください。');
+      return;
+    }
+
+    setStatus('loading');
 
     try {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          reference_url: formData.referenceUrl,
+          message: formData.message
+        }),
       });
 
+      const data = await res.json();
+
       if (!res.ok) {
-        const data = await res.json();
         throw new Error(data.error || '送信に失敗しました。');
       }
 
+      setTicketToken(data.ticket_token || '');
       setStatus('success');
-      setFormData({ name: '', email: '', subject: '', message: '' });
+      setFormData({ name: '', email: '', subject: '', referenceUrl: '', message: '' });
+      setAgreedToPrivacy(false);
     } catch (err: any) {
       setStatus('error');
-      setError(err.message);
+      setError(err.message || '送信中にエラーが発生しました。時間をおいて再度お試しください。');
     }
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-12 font-sans text-black">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 md:py-12 text-black font-sans">
       <BackToHomeButton />
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="glass-card p-8 md:p-16 text-black"
-      >
-        <div className="flex items-center gap-4 mb-8 border-b border-brand-border pb-6">
-          <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shrink-0 shadow-sm">
-            <Mail size={26} />
-          </div>
-          <div>
-            <span className="text-[10px] md:text-xs font-bold text-brand-primary uppercase tracking-[0.3em] block mb-0.5 font-sans">
-              Contact & Support
+      
+      {/* 🏛️ Standard Unified Glass Card */}
+      <div className="glass-card p-6 sm:p-8 md:p-12 bg-white rounded-3xl border border-brand-border shadow-sm space-y-8">
+        {/* 🌟 Unified PageHeader */}
+        <PageHeader
+          icon={<Mail size={26} className="text-teal-700" />}
+          iconBoxClassName="bg-teal-50 text-teal-700 border border-teal-200"
+          category="Contact & Support"
+          title="お問い合わせ窓口"
+          description="サービスに関するご質問やご要望、不具合の報告、迷惑行為の通報などがございましたら、以下のフォームよりお気軽にお問い合わせください。"
+        />
+
+        {/* 💡 FAQ Self-Resolution Banner */}
+        <div className="p-4 bg-teal-50/60 rounded-2xl border border-teal-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs md:text-sm">
+          <div className="flex items-center gap-2.5 text-teal-900 font-sans">
+            <HelpCircle size={18} className="text-teal-700 shrink-0" />
+            <span>
+              <strong>お問い合わせの前に：</strong>料金や想い出クイズ、返金保証等は「よくある質問」ですぐに解決できる場合があります。
             </span>
-            <h1 className="text-2xl md:text-3xl font-serif font-bold text-brand-dark tracking-widest leading-tight">
-              お問い合わせ
-            </h1>
-            <p className="text-xs md:text-sm text-brand-dark/60 font-sans leading-relaxed mt-1">
-              サービスに関するご質問やご要望、不具合の報告などがございましたら、以下のフォームよりお気軽にお問い合わせください。
-            </p>
           </div>
+          <Link
+            to="/faq"
+            className="px-3.5 py-1.5 bg-white hover:bg-teal-100/50 text-teal-800 font-bold rounded-xl border border-teal-300 shrink-0 text-xs shadow-2xs transition-all flex items-center gap-1"
+          >
+            <span>FAQを見る</span>
+            <ChevronRight size={14} />
+          </Link>
         </div>
 
-          {status === 'success' ? (
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="bg-emerald-50 border border-emerald-100 p-8 rounded-2xl text-center space-y-4"
-            >
-              <CheckCircle2 className="mx-auto text-emerald-500" size={48} />
-              <h2 className="text-xl font-bold text-emerald-800">お問い合わせを送信しました</h2>
-              <p className="text-emerald-700/80">
-                内容を確認の上、必要に応じて担当者よりご連絡させていただきます。<br />
-                （内容によってはお返事にお時間をいただく場合や、お答えできない場合がございます。予めご了承ください。）
+        {status === 'success' ? (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-emerald-50/80 border border-emerald-200 p-6 sm:p-10 rounded-3xl text-center space-y-5"
+          >
+            <div className="w-16 h-16 bg-emerald-100 border border-emerald-300 rounded-full flex items-center justify-center mx-auto text-emerald-700 shadow-sm">
+              <CheckCircle2 size={36} />
+            </div>
+
+            <div className="space-y-1.5">
+              <span className="text-xs font-bold text-emerald-800 tracking-wider uppercase font-sans">
+                Submission Completed
+              </span>
+              <h2 className="text-xl sm:text-2xl font-serif font-bold text-emerald-950">
+                お問い合わせを受け付けました
+              </h2>
+              <p className="text-xs sm:text-sm text-emerald-800/90 font-sans max-w-lg mx-auto leading-relaxed">
+                ご入力いただいたメールアドレス宛に、受付控えメールをお送りいたしました。<br />
+                内容を確認の上、通常 <strong className="font-bold text-emerald-950">1〜2営業日以内（土日祝除く）</strong> に担当者よりご連絡いたします。
               </p>
+            </div>
+
+            {/* 🎟️ Ticket Token Display */}
+            {ticketToken && (
+              <div className="p-4 bg-white rounded-2xl border border-emerald-200/90 max-w-md mx-auto space-y-1.5 shadow-2xs">
+                <span className="text-[11px] font-bold text-slate-500 font-sans block">
+                  お問い合わせ受付番号（チケットID）
+                </span>
+                <div className="flex items-center justify-center gap-2">
+                  <span className="text-base sm:text-lg font-mono font-bold text-slate-900 tracking-wider">
+                    {ticketToken}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleCopyTicket}
+                    className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-600 transition-colors cursor-pointer"
+                    title="受付番号をコピー"
+                  >
+                    {copied ? <Check size={16} className="text-emerald-600" /> : <Copy size={16} />}
+                  </button>
+                </div>
+                {copied && (
+                  <p className="text-[10px] text-emerald-600 font-bold font-sans animate-fade-in">
+                    ✓ 受付番号をクリップボードにコピーしました
+                  </p>
+                )}
+              </div>
+            )}
+
+            <div className="pt-3 flex flex-wrap items-center justify-center gap-3">
               <button 
+                type="button"
                 onClick={() => setStatus('idle')}
-                className="btn-primary bg-emerald-600 hover:bg-emerald-700 mt-4"
+                className="px-5 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-xs transition-all cursor-pointer font-sans"
               >
-                フォームに戻る
+                別のお問い合わせを送信する
               </button>
-            </motion.div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-black uppercase tracking-wider ml-1 font-sans">お名前</label>
-                  <input 
-                    type="text" 
-                    required
-                    value={formData.name}
-                    onChange={e => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 transition-all font-sans"
-                    placeholder="山田 太郎"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-black uppercase tracking-wider ml-1 font-sans">メールアドレス</label>
-                  <input 
-                    type="email" 
-                    required
-                    value={formData.email}
-                    onChange={e => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 transition-all font-sans"
-                    placeholder="example@email.com"
-                  />
-                </div>
+              <Link
+                to="/faq"
+                className="px-5 py-2.5 rounded-xl bg-white hover:bg-zinc-50 text-slate-800 font-bold text-xs border border-slate-300 shadow-2xs transition-all font-sans"
+              >
+                よくあるご質問へ
+              </Link>
+              <Link
+                to="/"
+                className="px-5 py-2.5 rounded-xl bg-white hover:bg-zinc-50 text-slate-800 font-bold text-xs border border-slate-300 shadow-2xs transition-all font-sans"
+              >
+                トップページへ戻る
+              </Link>
+            </div>
+          </motion.div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {/* お名前 */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-900 font-sans flex items-center justify-between">
+                  <span>お名前（ニックネーム可）</span>
+                  <span className="text-[10px] text-rose-600 bg-rose-50 border border-rose-200 px-1.5 py-0.5 rounded font-bold">必須</span>
+                </label>
+                <input 
+                  type="text" 
+                  required
+                  value={formData.name}
+                  onChange={e => setFormData({ ...formData, name: e.target.value })}
+                  className="w-full bg-zinc-50/50 border border-slate-300 rounded-xl px-4 py-3 text-xs md:text-sm text-slate-900 focus:bg-white focus:outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 transition-all font-sans placeholder:text-slate-400"
+                  placeholder="山田 太郎"
+                />
               </div>
 
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-black uppercase tracking-wider ml-1 font-sans">件名</label>
+              {/* メールアドレス */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-900 font-sans flex items-center justify-between">
+                  <span>メールアドレス（ご返信用）</span>
+                  <span className="text-[10px] text-rose-600 bg-rose-50 border border-rose-200 px-1.5 py-0.5 rounded font-bold">必須</span>
+                </label>
+                <input 
+                  type="email" 
+                  required
+                  value={formData.email}
+                  onChange={e => setFormData({ ...formData, email: e.target.value })}
+                  className="w-full bg-zinc-50/50 border border-slate-300 rounded-xl px-4 py-3 text-xs md:text-sm text-slate-900 focus:bg-white focus:outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 transition-all font-sans placeholder:text-slate-400"
+                  placeholder="example@email.com"
+                />
+              </div>
+            </div>
+
+            {/* お問い合わせ種別 */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-900 font-sans flex items-center justify-between">
+                <span>お問い合わせ種別（件名）</span>
+                <span className="text-[10px] text-rose-600 bg-rose-50 border border-rose-200 px-1.5 py-0.5 rounded font-bold">必須</span>
+              </label>
+              <div className="relative">
                 <select 
                   required
                   value={formData.subject}
                   onChange={e => setFormData({ ...formData, subject: e.target.value })}
-                  className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 transition-all font-sans appearance-none"
+                  className="w-full bg-zinc-50/50 border border-slate-300 rounded-xl px-4 py-3 text-xs md:text-sm text-slate-900 focus:bg-white focus:outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 transition-all font-sans appearance-none pr-10 cursor-pointer"
                 >
-                  <option value="" disabled>選択してください</option>
-                  {subjects.map(s => (
-                    <option key={s} value={s}>{s}</option>
+                  <option value="" disabled>お問い合わせの項目を選択してください</option>
+                  {categories.map(c => (
+                    <option key={c.value} value={c.value}>{c.label}</option>
                   ))}
                 </select>
+                <ChevronDown size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
               </div>
+            </div>
 
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-black uppercase tracking-wider ml-1 font-sans">お問い合わせ内容</label>
-                <textarea 
+            {/* 対象のボトルメールIDまたはURL（任意） */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-900 font-sans flex items-center justify-between">
+                <span>対象のボトルメールID または URL</span>
+                <span className="text-[10px] text-slate-500 bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded font-bold">任意</span>
+              </label>
+              <input 
+                type="text" 
+                value={formData.referenceUrl}
+                onChange={e => setFormData({ ...formData, referenceUrl: e.target.value })}
+                className="w-full bg-zinc-50/50 border border-slate-300 rounded-xl px-4 py-3 text-xs md:text-sm text-slate-900 focus:bg-white focus:outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 transition-all font-sans placeholder:text-slate-400"
+                placeholder="例: https://remeets.jp/posts/123 または ボトルメールID"
+              />
+              <p className="text-[11px] text-slate-500 font-sans">
+                ※特定の手紙やクイズ、通報に関するお問い合わせの場合はご入力いただくとスムーズです。
+              </p>
+            </div>
+
+            {/* お問い合わせ内容 */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-slate-900 font-sans flex items-center gap-1.5">
+                  <span>お問い合わせ内容</span>
+                  <span className="text-[10px] text-rose-600 bg-rose-50 border border-rose-200 px-1.5 py-0.5 rounded font-bold">必須</span>
+                </label>
+                <span className={`text-[11px] font-mono ${formData.message.length > 2000 ? 'text-rose-600 font-bold' : 'text-slate-400'}`}>
+                  {formData.message.length} / 2000文字
+                </span>
+              </div>
+              <textarea 
+                required
+                rows={6}
+                maxLength={2000}
+                value={formData.message}
+                onChange={e => setFormData({ ...formData, message: e.target.value })}
+                className="w-full bg-zinc-50/50 border border-slate-300 rounded-xl px-4 py-3.5 text-xs md:text-sm text-slate-900 focus:bg-white focus:outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 transition-all resize-none font-sans leading-relaxed placeholder:text-slate-400"
+                placeholder="お問い合わせの具体的な内容をご入力ください。&#10;（不具合報告の場合は、ご利用の端末・OS・ブラウザや発生時の状況をお書き添えいただけますと迅速に調査可能です。）"
+              />
+            </div>
+
+            {/* 🛡️ 警察・緊急時のセーフティ注記 */}
+            <div className="p-3.5 bg-amber-50/70 border border-amber-200/90 rounded-2xl flex items-start gap-2.5 text-[11px] text-amber-900 leading-relaxed font-sans">
+              <ShieldAlert size={16} className="text-amber-700 shrink-0 mt-0.5" />
+              <div>
+                <strong className="block font-bold text-amber-950 mb-0.5 text-[11px]">⚠️ 緊急時・身の危険を感じる場合のご案内</strong>
+                <p className="m-0 text-amber-900/90 text-[11px] leading-relaxed">
+                  脅迫、ストーカー、重大な犯罪被害など身の危険を感じる場合は、本フォームへのご連絡と並行して、直ちに最寄りの警察署（生活安全課）または警察相談専用電話「#9110」へご相談ください。運営事務局では警察からの公的な捜査関係照会に迅速に協力いたします。
+                </p>
+              </div>
+            </div>
+
+            {/* プライバシーポリシー同意チェック */}
+            <div className="p-4 bg-zinc-50 rounded-2xl border border-slate-200">
+              <label className="flex items-start gap-2.5 cursor-pointer select-none text-xs text-slate-700 font-sans leading-relaxed">
+                <input 
+                  type="checkbox"
                   required
-                  rows={6}
-                  value={formData.message}
-                  onChange={e => setFormData({ ...formData, message: e.target.value })}
-                  className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3.5 text-sm text-slate-900 focus:outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 transition-all resize-none font-sans leading-relaxed"
-                  placeholder="こちらにお問い合わせ内容を入力してください。"
+                  checked={agreedToPrivacy}
+                  onChange={e => setAgreedToPrivacy(e.target.checked)}
+                  className="mt-0.5 rounded border-slate-300 text-teal-700 focus:ring-teal-600 h-4 w-4 shrink-0 cursor-pointer"
                 />
+                <span>
+                  当サービスの <Link to="/privacy" target="_blank" className="text-teal-700 font-bold underline hover:text-teal-800">プライバシーポリシー</Link>（個人情報の取り扱い）を確認し、同意の上で送信します。
+                </span>
+              </label>
+            </div>
+
+            {error && (
+              <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl flex items-center gap-3 text-rose-700 text-xs md:text-sm font-sans">
+                <AlertCircle size={18} className="shrink-0" />
+                <span>{error}</span>
               </div>
+            )}
 
-              {error && (
-                <div className="p-4 bg-red-50 border border-red-100 rounded-xl flex items-center gap-3 text-red-600 text-sm">
-                  <AlertCircle size={18} />
-                  <span>{error}</span>
-                </div>
+            <button 
+              type="submit" 
+              disabled={status === 'loading' || !agreedToPrivacy}
+              className="w-full py-3.5 px-6 rounded-2xl bg-teal-700 hover:bg-teal-800 disabled:bg-slate-300 text-white font-bold text-sm md:text-base shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed font-sans"
+            >
+              {status === 'loading' ? (
+                <>
+                  <RefreshCw className="animate-spin" size={18} />
+                  <span>送信中...</span>
+                </>
+              ) : (
+                <>
+                  <Send size={18} />
+                  <span>お問い合わせを送信する</span>
+                </>
               )}
-
-              <button 
-                type="submit" 
-                disabled={status === 'loading'}
-                className="w-full btn-primary py-4 text-lg"
-              >
-                {status === 'loading' ? (
-                  <RefreshCw className="animate-spin" size={20} />
-                ) : (
-                  <>
-                    <Send size={20} />
-                    <span>送信する</span>
-                  </>
-                )}
-              </button>
-            </form>
-          )}
-        </motion.div>
+            </button>
+          </form>
+        )}
       </div>
+    </div>
   );
 };
 

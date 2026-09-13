@@ -67,6 +67,15 @@ export const contactRevealLimiter = rateLimit({
   validate: { trustProxy: false },
 });
 
+export const contactLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: isProd ? 5 : 5000,
+  message: { error: "お問い合わせ送信の制限回数を超えました。恐れ入りますが1時間ほど時間を置いてから再度お試しください。" },
+  standardHeaders: true,
+  legacyHeaders: false,
+  validate: { trustProxy: false },
+});
+
 export const ADMIN_ROLES = ['admin', 'super_admin', 'moderator', 'auditor', 'cs_support', 'operator'];
 
 export const ROLE_PERMISSIONS: Record<string, string[]> = {
