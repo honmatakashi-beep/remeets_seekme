@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Shield, Key, Lock, Unlock, Mail, Clock, Download, RefreshCw,
@@ -7,7 +7,9 @@ import {
   FileText, ExternalLink, HelpCircle, UserCheck, Check, Sparkles,
   Award, Heart, Calendar, Building, MapPin, Tag, Briefcase, FileCode, CheckSquare,
   Layers, Settings, ChevronLeft, ChevronRight, BarChart2, Users, FileCheck, DollarSign,
-  ShieldCheck, Menu, X, Radio
+  ShieldCheck, Menu, X, Radio, Activity, Brain, ShieldAlert, Bot, Bell, Terminal,
+  History, CreditCard, Image as ImageIcon, Palette, Rocket, BookOpen, ArrowLeft,
+  User as UserIcon, LogOut
 } from "lucide-react";
 import { BottleLoader } from "../../components/SharedComponents";
 import { cn, getPostUrl } from "../../lib/utils";
@@ -59,24 +61,29 @@ import {
 import { AdminInfoPage, SitemapPage, ContactPage, ConfirmModal, AuroraAmbientGlow, PageViewTracker } from "./AdminSharedPages";
 import { samplePhrasesCategories } from "./AdminPhrases";
 
-const Badge = ({ count }: { count?: number }) => {
-  if (!count || count <= 0) return null;
-  return (
-    <span className="ml-auto bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-      {count}
-    </span>
-  );
-};
-
 export const AdminDashboard: React.FC = () => {
+  const navigate = useNavigate();
   const state = useAdminDashboardState();
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(false);
+
+  const Badge = ({ count }: { count?: number }) => {
+    if (!count || count <= 0) return null;
+    return (
+      <span className={cn(
+        "ml-auto bg-red-500 text-white text-[10px] font-serif font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center",
+        isSidebarCollapsed && !state.isMobileMenuOpen ? "absolute -top-1 -right-1" : ""
+      )}>
+        {count > 99 ? '99+' : count}
+      </span>
+    );
+  };
 
   const {
     user,
     updateUser,
     token,
+    logout,
     authLoading,
     isAllowedAdminRole,
     activeTab,
@@ -389,59 +396,87 @@ export const AdminDashboard: React.FC = () => {
     tabs
   } = state as any;
 
-  const categories = useMemo(() => [
+  interface NavItem {
+    id: string;
+    label: string;
+    icon: any;
+    badge?: number;
+    onClick?: () => void;
+  }
+
+  const navCategories: { title: string; items: NavItem[] }[] = useMemo(() => [
     {
-      title: 'ダッシュボード・統計',
+      title: 'Main Menu',
       items: [
-        tabs.find((t: any) => t.id === 'stats'),
-        tabs.find((t: any) => t.id === 'valuation'),
-        tabs.find((t: any) => t.id === 'quizAnalytics'),
-        tabs.find((t: any) => t.id === 'policeConsultation'),
-      ].filter(Boolean)
+        { id: 'stats', label: '概要', icon: Activity },
+        { id: 'quizAnalytics', label: 'クイズ＆照合分析\n(ファネル・検索需要)', icon: Brain },
+        { id: 'settings', label: 'サイト設定', icon: Settings },
+        { id: 'users', label: 'ユーザー', icon: Users },
+        { id: 'posts', label: 'ボトルメール', icon: Mail },
+        { id: 'successStories', label: '幸せな再会の物語', icon: Sparkles },
+      ]
     },
     {
-      title: 'コンテンツ・モデレーション',
+      title: 'Trust & Safety (安全・本人確認)',
       items: [
-        tabs.find((t: any) => t.id === 'moderation'),
-        tabs.find((t: any) => t.id === 'reports'),
-        tabs.find((t: any) => t.id === 'deletionRequests'),
-        tabs.find((t: any) => t.id === 'contacts'),
-        tabs.find((t: any) => t.id === 'posts'),
-        tabs.find((t: any) => t.id === 'users'),
-        tabs.find((t: any) => t.id === 'ageVerification'),
-        tabs.find((t: any) => t.id === 'ngWords'),
-        tabs.find((t: any) => t.id === 'successStories'),
-      ].filter(Boolean)
+        { id: 'security', label: 'サイト治安健全度 ＆\n総合セキュリティ', icon: ShieldAlert },
+        { id: 'ageVerification', label: '本人確認（eKYC）\n照合ゲージ・監査ログ', icon: UserCheck },
+        { id: 'policeConsultation', label: '警察事前相談 ＆\n法令適合サマリー', icon: ShieldCheck },
+        { id: 'moderation', label: 'AI検知キュー', icon: Bot, badge: (posts || []).filter((p: any) => p.ai_flagged === 1).length },
+        { id: 'reports', label: 'ユーザー通報', icon: AlertTriangle, badge: (reports || []).filter((r: any) => r.status === 'pending').length },
+        { id: 'deletion', label: '削除依頼', icon: Trash2, badge: (deletionRequests || []).filter((r: any) => r.status === 'pending').length },
+        { id: 'ngWords', label: 'NGワード', icon: Shield },
+      ]
     },
     {
-      title: '運用・システム・管理',
+      title: 'System',
       items: [
-        tabs.find((t: any) => t.id === 'broadcast'),
-        tabs.find((t: any) => t.id === 'emailTemplates'),
-        tabs.find((t: any) => t.id === 'versions'),
-        tabs.find((t: any) => t.id === 'guide'),
-        tabs.find((t: any) => t.id === 'manualSections'),
-        tabs.find((t: any) => t.id === 'masterKnowledge'),
-        tabs.find((t: any) => t.id === 'logs'),
-        tabs.find((t: any) => t.id === 'securityCenter'),
-        tabs.find((t: any) => t.id === 'systemCenter'),
-        tabs.find((t: any) => t.id === 'rbac'),
-        tabs.find((t: any) => t.id === 'designSystem'),
-        tabs.find((t: any) => t.id === 'monetization'),
-        tabs.find((t: any) => t.id === 'payments'),
-        tabs.find((t: any) => t.id === 'assetCleaner'),
-      ].filter(Boolean)
+        { id: 'rbac', label: '管理者権限・ロール (RBAC)', icon: ShieldCheck },
+        { id: 'contacts', label: 'お問い合わせ', icon: Mail, badge: (contacts || []).filter((c: any) => c.status === 'pending').length },
+        { id: 'emailTemplates', label: '送信メール一覧・テスト配信', icon: Mail },
+        { id: 'notifications', label: '一括配信', icon: Bell },
+        { id: 'logs', label: 'ログ', icon: Terminal },
+        { id: 'versions', label: 'バージョン履歴 (Versions)', icon: History },
+        { id: 'system', label: 'システム', icon: Activity },
+      ]
+    },
+    {
+      title: 'Finance & eKYC',
+      items: [
+        { id: 'valuation', label: 'M&A譲渡・企業価値評価\nデータ室', icon: Award },
+        { id: 'payments', label: '売上・収益アナリティクス\n＆ 決済・eKYC台帳', icon: CreditCard },
+        { id: 'monetization', label: '課金モデル\n収益シミュレーター', icon: DollarSign },
+      ]
+    },
+    {
+      title: 'Support & UI Specs',
+      items: [
+        { id: 'assetCleaner', label: '画像アセット管理 ＆\n選択クリーンアップ', icon: ImageIcon },
+        { id: 'designSystem', label: 'デザインシステム\n(UI/UX Specs)', icon: Palette },
+        { id: 'masterMemo', label: '運営方針・意思決定備忘録', icon: FileText, onClick: () => { setActiveTab('masterMemo'); } },
+        { id: 'deployment', label: '本番デプロイ・広報ライブラリ', icon: Rocket, onClick: () => { setActiveTab('deployment'); setGuideDocType('deployment'); } },
+        { id: 'manual', label: '管理画面操作マニュアル', icon: BookOpen },
+      ]
+    },
+    {
+      title: 'Account',
+      items: [
+        { id: 'home', label: 'HOMEに戻る', icon: ArrowLeft, onClick: () => navigate('/') },
+        { id: 'account', label: 'マイページ', icon: UserIcon, onClick: () => navigate('/account') },
+        { id: 'logout', label: 'ログアウト', icon: LogOut, onClick: () => { logout(); navigate('/'); } },
+      ]
     }
-  ], [tabs]);
+  ], [posts, reports, deletionRequests, contacts, navigate, logout, setActiveTab, setGuideDocType]);
 
   const filteredCategories = useMemo(() => {
-    if (!searchTerm.trim()) return categories;
-    const lower = searchTerm.toLowerCase();
-    return categories.map(cat => ({
+    return navCategories.map(cat => ({
       ...cat,
-      items: cat.items.filter((item: any) => item.label.toLowerCase().includes(lower) || item.id.toLowerCase().includes(lower))
+      items: cat.items.filter(item => 
+        item.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.id.toLowerCase().includes(searchTerm.toLowerCase())
+      )
     })).filter(cat => cat.items.length > 0);
-  }, [categories, searchTerm]);
+  }, [navCategories, searchTerm]);
 
   if (authLoading) {
     return (

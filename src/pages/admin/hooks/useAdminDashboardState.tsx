@@ -115,7 +115,7 @@ export const useAdminDashboardState = () => {
   };
 
   // UI & Tab States
-  const [activeTab, setActiveTab] = useState<'stats' | 'valuation' | 'quizAnalytics' | 'manual' | 'manualSections' | 'masterKnowledge' | 'broadcast' | 'emailTemplates' | 'moderation' | 'reports' | 'deletionRequests' | 'ageVerification' | 'posts' | 'users' | 'ngWords' | 'contacts' | 'versions' | 'successStories' | 'guide' | 'logs' | 'securityCenter' | 'systemCenter' | 'rbac' | 'designSystem' | 'monetization' | 'payments' | 'assetCleaner' | 'policeConsultation'>('stats');
+  const [activeTab, setActiveTab] = useState<'stats' | 'valuation' | 'quizAnalytics' | 'liveAlerts' | 'users' | 'posts' | 'logs' | 'reports' | 'deletion' | 'ngWords' | 'contacts' | 'emailTemplates' | 'successStories' | 'security' | 'system' | 'versions' | 'notifications' | 'moderation' | 'manual' | 'designSystem' | 'ageVerification' | 'settings' | 'deployment' | 'masterMemo' | 'templates' | 'monetization' | 'payments' | 'rbac' | 'assetCleaner' | 'policeConsultation' | 'manualSections' | 'masterKnowledge' | 'broadcast' | 'guide' | 'deletionRequests' | 'securityCenter' | 'systemCenter'>('stats');
   const [guideDocType, setGuideDocType] = useState<'deployment' | 'cost_estimate' | 'police_manual' | 'investor_deck' | 'google_eval'>('deployment');
   const [loading, setLoading] = useState(true);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
