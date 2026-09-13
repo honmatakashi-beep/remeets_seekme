@@ -5,7 +5,7 @@ import {
   AlertTriangle, ArrowLeft, ArrowRight, BookOpen, Check, Coffee, Copy, CreditCard,
   HeartHandshake, LogIn, LogOut, Mail, Menu, Search, Send, Shield,
   ShieldCheck, Sparkles, User as UserIcon, X, Heart, MapPin, Plus,
-  ChevronDown, ChevronUp, Bell, Settings, Shield as ShieldIcon, HelpCircle
+  ChevronDown, ChevronUp, Bell, Settings, Shield as ShieldIcon, HelpCircle, Palette
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { cn, formatEraLabel, getPostUrl, getCategoryText, PREFECTURES } from '../lib/utils';
@@ -40,24 +40,40 @@ export const Navbar = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) 
     setIsMenuOpen(false);
   }, [location.pathname]);
   const [unreadCount, setUnreadCount] = useState(0);
-  const [homeDesign, setHomeDesign] = useState<'v1' | 'v2'>(() => {
-    return (localStorage.getItem('remeets_home_design') as 'v1' | 'v2') || 'v2';
+  const [homeDesign, setHomeDesign] = useState<'v2' | 'v1' | 'sub2' | 'sub3'>(() => {
+    return (localStorage.getItem('remeets_home_design') as any) || 
+           (localStorage.getItem('remeets_home_design_mode') as any) || 
+           'v2';
   });
 
   useEffect(() => {
     const handleDesignChange = () => {
-      const current = (localStorage.getItem('remeets_home_design') as 'v1' | 'v2') || 'v2';
+      const current = (localStorage.getItem('remeets_home_design') as any) || 
+                      (localStorage.getItem('remeets_home_design_mode') as any) || 
+                      'v2';
       setHomeDesign(current);
     };
     window.addEventListener('home_design_changed', handleDesignChange);
-    return () => window.removeEventListener('home_design_changed', handleDesignChange);
+    window.addEventListener('remeets_home_mode_changed', handleDesignChange);
+    window.addEventListener('remeets_design_system_changed', handleDesignChange);
+    window.addEventListener('storage', handleDesignChange);
+    return () => {
+      window.removeEventListener('home_design_changed', handleDesignChange);
+      window.removeEventListener('remeets_home_mode_changed', handleDesignChange);
+      window.removeEventListener('remeets_design_system_changed', handleDesignChange);
+      window.removeEventListener('storage', handleDesignChange);
+    };
   }, []);
 
   const toggleHomeDesign = () => {
-    const next = homeDesign === 'v1' ? 'v2' : 'v1';
+    const sequence: ('v2' | 'v1' | 'sub2' | 'sub3')[] = ['v2', 'v1', 'sub2', 'sub3'];
+    const currentIndex = sequence.indexOf(homeDesign);
+    const next = sequence[(currentIndex + 1) % sequence.length];
     setHomeDesign(next);
     localStorage.setItem('remeets_home_design', next);
+    localStorage.setItem('remeets_home_design_mode', next);
     window.dispatchEvent(new Event('home_design_changed'));
+    window.dispatchEvent(new CustomEvent('remeets_home_mode_changed', { detail: { mode: next } }));
   };
 
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -427,6 +443,15 @@ export const Navbar = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) 
                   >
                     <Mail size={15} className="text-blue-600 shrink-0" />
                     <span>お問い合わせ</span>
+                  </Link>
+
+                  <Link
+                    to="/home-designs"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="flex items-center gap-3 px-3 py-2 text-xs text-teal-800 hover:text-teal-950 hover:bg-teal-50/70 rounded-xl transition-all font-semibold text-left border border-teal-200/60 bg-teal-50/30"
+                  >
+                    <Palette size={15} className="text-teal-600 shrink-0" />
+                    <span>🎨 HOMEデザイン比較・切替</span>
                   </Link>
 
                   {Boolean(

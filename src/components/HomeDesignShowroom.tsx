@@ -372,6 +372,24 @@ export const HomeDesignShowroom = () => {
               <ImageIcon size={13} className="text-violet-600" />
               <span>🖼️ 画像アーカイブ ({ARCHIVED_IMAGE_GALLERY.length}点)</span>
             </button>
+
+            {/* 本番トップへ適用ボタン */}
+            {activeDesign !== 'archive' && (
+              <button
+                onClick={() => {
+                  const targetMode = activeDesign === 'recommended' ? 'v2' : 'sub2';
+                  localStorage.setItem('remeets_home_design', targetMode);
+                  localStorage.setItem('remeets_home_design_mode', targetMode);
+                  window.dispatchEvent(new Event('home_design_changed'));
+                  window.dispatchEvent(new CustomEvent('remeets_home_mode_changed', { detail: { mode: targetMode } }));
+                  navigate('/');
+                }}
+                className="ml-auto px-4 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white rounded-xl text-xs font-serif font-bold shadow-sm transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap border border-emerald-400/40"
+              >
+                <CheckCircle2 size={14} className="text-emerald-200" />
+                <span>このデザインをトップページに適用して戻る</span>
+              </button>
+            )}
           </div>
         </div>
       </div>

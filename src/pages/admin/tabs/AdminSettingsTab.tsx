@@ -25,7 +25,10 @@ export const AdminSettingsTab: React.FC<AdminSettingsTabProps> = ({
       setAdminHomeDesign(mode);
     }
     try {
+      localStorage.setItem('remeets_home_design', mode);
       localStorage.setItem('remeets_home_design_mode', mode);
+      window.dispatchEvent(new Event('home_design_changed'));
+      window.dispatchEvent(new CustomEvent('remeets_home_mode_changed', { detail: { mode } }));
       window.dispatchEvent(new CustomEvent('remeets_design_system_changed'));
     } catch (e) {
       console.warn(e);

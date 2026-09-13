@@ -775,8 +775,8 @@ export const SafetyPage = () => (
           <h1 className="text-2xl md:text-3xl font-serif font-bold text-brand-dark tracking-widest leading-tight">
             安全対策・セキュリティへの取り組み
           </h1>
-          <p className="text-xs md:text-sm text-brand-dark/70 font-sans leading-relaxed mt-1">
-            安心・安全に思い出の人と繋がれるよう、厳格なセキュリティポリシーと最新の技術対策を導入しています。
+          <p className="text-xs md:text-sm text-brand-dark/70 font-sans leading-relaxed mt-1 [text-wrap:pretty]">
+            安心・安全に大切な人と繋がれるよう、厳格なセキュリティと安全対策を導入しています。
           </p>
         </div>
       </div>

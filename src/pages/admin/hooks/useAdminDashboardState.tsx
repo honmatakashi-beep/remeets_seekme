@@ -75,7 +75,9 @@ export const useAdminDashboardState = () => {
     return saved !== null ? Number(saved) : 0.85;
   });
   const [homeDesignMode, setHomeDesignMode] = useState<'v2' | 'v1' | 'sub2' | 'sub3'>(() => {
-    return (localStorage.getItem('remeets_home_design_mode') as any) || 'v2';
+    return (localStorage.getItem('remeets_home_design') as any) || 
+           (localStorage.getItem('remeets_home_design_mode') as any) || 
+           'v2';
   });
 
   const handleUpdateBgDarkness = (darknessVal: number) => {
@@ -110,8 +112,11 @@ export const useAdminDashboardState = () => {
 
   const handleToggleHomeDesignMode = (mode: 'v2' | 'v1' | 'sub2' | 'sub3') => {
     setHomeDesignMode(mode);
+    localStorage.setItem('remeets_home_design', mode);
     localStorage.setItem('remeets_home_design_mode', mode);
+    window.dispatchEvent(new Event('home_design_changed'));
     window.dispatchEvent(new CustomEvent('remeets_home_mode_changed', { detail: { mode } }));
+    window.dispatchEvent(new CustomEvent('remeets_design_system_changed'));
   };
 
   // UI & Tab States

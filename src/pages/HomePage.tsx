@@ -21,31 +21,45 @@ import { CreditCardPaymentForm } from '../components/CreditCardPaymentForm';
 import { ConceptStoryModal } from '../components/ConceptStoryModal';
 import { EkycExplanationModal } from '../components/posts/EkycExplanationModal';
 
-export type HomeDesignMode = 'sub2' | 'v2' | 'v1' | 'sub3';
+export type HomeDesignMode = 'v2' | 'v1' | 'sub2' | 'sub3';
 
 export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) => {
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [homeDesign, setHomeDesign] = useState<HomeDesignMode>(() => {
-    return (localStorage.getItem('remeets_home_design') as HomeDesignMode) || 'sub2';
+    return (localStorage.getItem('remeets_home_design') as HomeDesignMode) || 
+           (localStorage.getItem('remeets_home_design_mode') as HomeDesignMode) || 
+           'v2';
   });
 
   useEffect(() => {
     const handleDesignChange = () => {
-      const current = (localStorage.getItem('remeets_home_design') as HomeDesignMode) || 'sub2';
+      const current = (localStorage.getItem('remeets_home_design') as HomeDesignMode) || 
+                      (localStorage.getItem('remeets_home_design_mode') as HomeDesignMode) || 
+                      'v2';
       setHomeDesign(current);
     };
     window.addEventListener('home_design_changed', handleDesignChange);
-    return () => window.removeEventListener('home_design_changed', handleDesignChange);
+    window.addEventListener('remeets_home_mode_changed', handleDesignChange);
+    window.addEventListener('remeets_design_system_changed', handleDesignChange);
+    window.addEventListener('storage', handleDesignChange);
+    return () => {
+      window.removeEventListener('home_design_changed', handleDesignChange);
+      window.removeEventListener('remeets_home_mode_changed', handleDesignChange);
+      window.removeEventListener('remeets_design_system_changed', handleDesignChange);
+      window.removeEventListener('storage', handleDesignChange);
+    };
   }, []);
 
   const toggleHomeDesign = () => {
-    const sequence: HomeDesignMode[] = ['sub2', 'v2', 'v1', 'sub3'];
+    const sequence: HomeDesignMode[] = ['v2', 'v1', 'sub2', 'sub3'];
     const currentIndex = sequence.indexOf(homeDesign);
     const next = sequence[(currentIndex + 1) % sequence.length];
     setHomeDesign(next);
     localStorage.setItem('remeets_home_design', next);
+    localStorage.setItem('remeets_home_design_mode', next);
     window.dispatchEvent(new Event('home_design_changed'));
+    window.dispatchEvent(new CustomEvent('remeets_home_mode_changed', { detail: { mode: next } }));
   };
 
   const [showEkycModal, setShowEkycModal] = useState(false);
