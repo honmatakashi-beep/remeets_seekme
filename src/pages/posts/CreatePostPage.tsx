@@ -41,8 +41,13 @@ export const CreatePostPage = () => {
   // 進行ステップ ('form': メッセージ作成, 'preview': プレビュー確認, 'plan': 公開方法選択, 'success': 投函完了)
   const [step, setStep] = useState<'form' | 'preview' | 'plan' | 'success'>('form');
 
+  // すでに公的本人確認（eKYC）が完了しているアカウントか判定
+  const isAlreadyVerified = Boolean(
+    user?.is_ekyc_verified || localStorage.getItem('ekyc_verified') === 'true'
+  );
+
   // 選択されたプラン ('free' | 'ekyc')
-  const [pendingPlan, setPendingPlan] = useState<'free' | 'ekyc'>('ekyc');
+  const [pendingPlan, setPendingPlan] = useState<'free' | 'ekyc'>(isAlreadyVerified ? 'ekyc' : 'ekyc');
 
   // プレビュー表示切り替えタブ ('ekyc': 認証あり表示, 'free': 通常無料表示)
   const [previewTab, setPreviewTab] = useState<'ekyc' | 'free'>('ekyc');
@@ -564,69 +569,99 @@ export const CreatePostPage = () => {
           )}
 
           {/* =========================================================================
-              1. プレビュー見え方比較スイッチ（公認バッジ ON / OFF）
+              1. プレビュー見え方比較スイッチ（未認証ユーザー向け） / 認証済み案内（認証済みユーザー向け）
           ========================================================================= */}
-          <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="space-y-1 text-left">
-              <div className="flex items-center gap-2 flex-wrap">
-                <button
-                  type="button"
-                  onClick={() => setShowEkycExplanationModal(true)}
-                  className="w-8 h-8 rounded-full seal-rainbow flex items-center justify-center text-white shadow-xs shrink-0 cursor-pointer hover:scale-110 active:scale-95 transition-all ring-2 ring-amber-200"
-                  title="クリックして公認バッジの証明内容を確認"
-                >
-                  <ShieldCheck size={16} />
-                </button>
-                <h4 className="text-xs sm:text-sm font-bold text-slate-800 font-serif">
-                  公的本人確認（公認バッジ）の表示切替
-                </h4>
-                {previewTab === 'ekyc' ? (
+          {isAlreadyVerified ? (
+            <div className="bg-gradient-to-r from-emerald-50/90 via-teal-50/50 to-white rounded-2xl border-2 border-emerald-300 p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="space-y-1 text-left">
+                <div className="flex items-center gap-2 flex-wrap">
                   <button
                     type="button"
                     onClick={() => setShowEkycExplanationModal(true)}
-                    className="text-[10px] font-bold text-amber-900 bg-amber-50 hover:bg-amber-100 border border-amber-300 px-2.5 py-0.5 rounded-full font-sans cursor-pointer transition-colors flex items-center gap-1"
+                    className="w-8 h-8 rounded-full seal-rainbow flex items-center justify-center text-white shadow-xs shrink-0 cursor-pointer hover:scale-110 active:scale-95 transition-all ring-2 ring-emerald-300"
+                    title="クリックして公認バッジの証明内容を確認"
                   >
-                    <span>✨ バッジ表示中</span>
-                    <span className="text-[9px] text-amber-700 underline">詳細確認</span>
+                    <ShieldCheck size={16} />
                   </button>
-                ) : (
-                  <span className="text-[10px] font-bold text-slate-500 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full font-sans">
-                    通常表示中
+                  <h4 className="text-xs sm:text-sm font-bold text-slate-900 font-serif">
+                    🛡️ 公的本人確認（eKYC）認証済みアカウント
+                  </h4>
+                  <span className="text-[10px] font-extrabold text-emerald-800 bg-emerald-100 border border-emerald-300 px-2.5 py-0.5 rounded-full font-sans">
+                    ✨ 公認バッジ自動適用中
                   </span>
-                )}
+                </div>
+                <p className="text-xs text-slate-600 font-sans leading-relaxed">
+                  あなたのアカウントは公的本人確認が完了しているため、このメッセージには自動的に「虹色公認バッジ（封蝋印）」が付与され、最高水準の信頼度で公開されます。
+                </p>
               </div>
-              <p className="text-xs text-slate-600 font-sans leading-relaxed">
-                公的本人確認を行うと公認バッジが付与されます。それにより相手に安心感を与え、連絡をもらえる確率が格段に上がります。
-              </p>
+              <div className="bg-white/95 border border-emerald-200 px-3.5 py-1.5 rounded-xl text-center shrink-0 shadow-2xs">
+                <span className="text-[10px] text-slate-400 font-bold block">認証ステータス</span>
+                <span className="text-xs font-bold text-emerald-800 font-sans">✓ 公認証明済み</span>
+              </div>
             </div>
+          ) : (
+            <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="space-y-1 text-left">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <button
+                    type="button"
+                    onClick={() => setShowEkycExplanationModal(true)}
+                    className="w-8 h-8 rounded-full seal-rainbow flex items-center justify-center text-white shadow-xs shrink-0 cursor-pointer hover:scale-110 active:scale-95 transition-all ring-2 ring-amber-200"
+                    title="クリックして公認バッジの証明内容を確認"
+                  >
+                    <ShieldCheck size={16} />
+                  </button>
+                  <h4 className="text-xs sm:text-sm font-bold text-slate-800 font-serif">
+                    公的本人確認（公認バッジ）の表示切替
+                  </h4>
+                  {previewTab === 'ekyc' ? (
+                    <button
+                      type="button"
+                      onClick={() => setShowEkycExplanationModal(true)}
+                      className="text-[10px] font-bold text-amber-900 bg-amber-50 hover:bg-amber-100 border border-amber-300 px-2.5 py-0.5 rounded-full font-sans cursor-pointer transition-colors flex items-center gap-1"
+                    >
+                      <span>✨ バッジ表示中</span>
+                      <span className="text-[9px] text-amber-700 underline">詳細確認</span>
+                    </button>
+                  ) : (
+                    <span className="text-[10px] font-bold text-slate-500 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full font-sans">
+                      通常表示中
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-slate-600 font-sans leading-relaxed">
+                  公的本人確認を行うと公認バッジが付与されます。それにより相手に安心感を与え、連絡をもらえる確率が格段に上がります。
+                </p>
+              </div>
 
-            {/* ON / OFF 切り替えスイッチ */}
-            <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200 shrink-0 self-start sm:self-center">
-              <button
-                type="button"
-                onClick={() => setPreviewTab('ekyc')}
-                className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-                  previewTab === 'ekyc'
-                    ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-xs ring-2 ring-amber-300'
-                    : 'text-slate-500 hover:text-slate-800'
-                }`}
-              >
-                <span className={`w-2 h-2 rounded-full ${previewTab === 'ekyc' ? 'bg-white animate-pulse' : 'bg-slate-400'}`} />
-                <span>公認バッジ ON</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setPreviewTab('free')}
-                className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-                  previewTab === 'free'
-                    ? 'bg-slate-700 text-white shadow-xs'
-                    : 'text-slate-500 hover:text-slate-800'
-                }`}
-              >
-                <span>OFF</span>
-              </button>
+              {/* ON / OFF 切り替えスイッチ */}
+              <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200 shrink-0 self-start sm:self-center">
+                <button
+                  type="button"
+                  onClick={() => setPreviewTab('ekyc')}
+                  className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                    previewTab === 'ekyc'
+                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-xs ring-2 ring-amber-300'
+                      : 'text-slate-500 hover:text-slate-800'
+                  }`}
+                >
+                  <span className={`w-2 h-2 rounded-full ${previewTab === 'ekyc' ? 'bg-white animate-pulse' : 'bg-slate-400'}`} />
+                  <span>公認バッジ ON</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPreviewTab('free')}
+                  className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                    previewTab === 'free'
+                      ? 'bg-slate-700 text-white shadow-xs'
+                      : 'text-slate-500 hover:text-slate-800'
+                  }`}
+                >
+                  <span>OFF</span>
+                </button>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* =========================================================================
               2. 💌 ネット公開画面の実物プレビュー（本番HTMLと100%同一）
@@ -894,7 +929,7 @@ export const CreatePostPage = () => {
               }}
               className="w-full sm:w-auto px-7 py-3.5 bg-gradient-to-r from-teal-700 via-emerald-700 to-teal-800 hover:from-teal-800 hover:to-emerald-800 text-white font-bold text-xs sm:text-sm rounded-2xl shadow-md hover:shadow-lg active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer font-serif"
             >
-              <span>メッセージの公開方法を選択する（次へ）</span>
+              <span>{isAlreadyVerified ? 'メッセージの公開確認へ進む（次へ）' : 'メッセージの公開方法を選択する（次へ）'}</span>
               <ArrowRight size={16} />
             </button>
           </div>
@@ -912,157 +947,242 @@ export const CreatePostPage = () => {
             </div>
           )}
 
-          {/* 公開プラン選択メインカード */}
-          <div className="bg-white rounded-3xl border-2 border-teal-500/40 p-6 sm:p-10 space-y-8 shadow-xl text-left">
-            <div className="text-center space-y-2 max-w-xl mx-auto">
-              <span className="text-[10px] font-extrabold text-teal-800 uppercase tracking-widest bg-teal-50 px-3.5 py-1 rounded-full border border-teal-200 inline-block font-sans">
-                STEP 3: SELECT PUBLISH PLAN
-              </span>
-              <h2 className="text-xl sm:text-3xl font-bold text-slate-900 font-serif">
-                メッセージの公開方法を選択してください
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-600 font-sans leading-relaxed">
-                お相手があなたを見つけた際、<strong>「間違いなく本物のあの人だ！」</strong>と確信できるよう、公的本人確認（eKYC）認証マーク付きでの投函を推奨しています。
-              </p>
-
-              {/* 💡 アカウント登録と通知・管理に関する重要案内 */}
-              <div className="p-3.5 bg-sky-50/80 rounded-2xl border border-sky-200 text-left text-xs text-sky-900 flex items-start gap-2.5 font-sans mt-3">
-                <CheckCircle2 size={16} className="text-sky-600 shrink-0 mt-0.5" />
-                <div className="space-y-0.5 leading-relaxed">
-                  <strong className="block text-sky-950 font-bold">メッセージの設置とアカウント連携について</strong>
-                  <span>
-                    お相手から再会エピソードが届いた際の<strong>メール通知</strong>および、マイページでの<strong>メッセージの再確認・管理</strong>のため、プラン選択後にアカウント登録（30秒）を行います。
-                    {pendingPlan === 'ekyc' && ' 公的本人確認（eKYC）では身元確認証明のためアカウント登録が必須となります。'}
-                  </span>
-                </div>
+          {isAlreadyVerified ? (
+            /* =====================================================================
+                🛡️ 認証済みユーザー専用：公認バッジ即時公開カード（0円 / 追加費用なし）
+            ===================================================================== */
+            <div className="bg-white rounded-3xl border-2 border-emerald-500/50 p-6 sm:p-10 space-y-8 shadow-xl text-left">
+              <div className="text-center space-y-2 max-w-xl mx-auto">
+                <span className="text-[10px] font-extrabold text-emerald-800 uppercase tracking-widest bg-emerald-50 px-3.5 py-1 rounded-full border border-emerald-200 inline-block font-sans">
+                  STEP 3: CONFIRM & PUBLISH
+                </span>
+                <h2 className="text-xl sm:text-3xl font-bold text-slate-900 font-serif">
+                  公認バッジ付きでメッセージを公開します
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-600 font-sans leading-relaxed">
+                  あなたのアカウントは公的本人確認（eKYC）が完了しています。<br className="hidden sm:inline" />
+                  追加費用なし（¥0）で、最高水準の信頼度を誇る<strong>「虹色公認バッジ（封蝋印）」</strong>付きでメッセージを即時公開できます。
+                </p>
               </div>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 pt-1">
-              {/* プランA: 🌟 公的認証（eKYC）付き投函（おすすめ） */}
-              <div className="relative rounded-3xl border-2 border-amber-500 bg-gradient-to-b from-amber-50/80 via-white to-orange-50/40 p-6 sm:p-8 space-y-5 shadow-lg hover:shadow-xl transition-all flex flex-col justify-between ring-4 ring-amber-400/20">
-                <div className="absolute -top-3.5 left-6 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-white text-[11px] font-black px-3.5 py-1 rounded-full shadow-md uppercase tracking-wider flex items-center gap-1.5 font-sans">
-                  <Crown size={13} />
-                  <span>おすすめ・信頼度 No.1</span>
-                </div>
-
-                <div className="space-y-4 pt-1">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h4 className="text-lg sm:text-xl font-serif font-bold text-amber-950 flex items-center gap-1.5">
-                        <span>公的本人確認（eKYC）付き</span>
-                      </h4>
-                      <p className="text-xs text-amber-800/90 font-sans mt-0.5">
-                        本名と生まれ年を公的書類で証明
-                      </p>
+              {/* 認証済み専用メインカード */}
+              <div className="max-w-2xl mx-auto rounded-3xl border-2 border-emerald-400 bg-gradient-to-b from-emerald-50/80 via-white to-teal-50/40 p-6 sm:p-9 space-y-6 shadow-lg ring-4 ring-emerald-400/20">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-emerald-200/80 pb-5">
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-13 h-13 rounded-full seal-rainbow flex flex-col items-center justify-center text-white shadow-md shrink-0">
+                      <ShieldCheck size={22} className="text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]" />
+                      <span className="text-[7px] font-black tracking-tighter uppercase -mt-0.5 text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">eKYC済</span>
                     </div>
-                    <div className="text-right">
-                      <span className="text-3xl font-serif font-black text-amber-950">¥600</span>
-                      <span className="text-[10px] text-amber-700 block font-sans">税込 / 1回のみ</span>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-extrabold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full uppercase tracking-widest border border-emerald-300">
+                          Identity Verified
+                        </span>
+                        <span className="text-xs font-bold text-emerald-900">
+                          公的本人確認 完了済み
+                        </span>
+                      </div>
+                      <h3 className="text-lg sm:text-xl font-serif font-bold text-slate-900 mt-0.5">
+                        公認バッジ付きメッセージ公開
+                      </h3>
                     </div>
                   </div>
-
-                  {/* 特徴リスト */}
-                  <ul className="space-y-2.5 text-xs sm:text-sm text-slate-700 font-sans pt-3 border-t border-amber-200/80">
-                    <li className="flex items-start gap-2.5">
-                      <div className="w-5 h-5 rounded-full seal-rainbow flex items-center justify-center text-white shrink-0 mt-0.5 shadow-2xs">
-                        <ShieldCheck size={12} />
-                      </div>
-                      <span className="leading-snug">
-                        メッセージと検索カードに<strong>動く虹色公的認証マーク（封蝋印）</strong>が付与
-                      </span>
-                    </li>
-                    <li className="flex items-start gap-2.5">
-                      <CheckCircle2 size={17} className="text-amber-600 shrink-0 mt-0.5" />
-                      <span className="leading-snug">
-                        運転免許証等で<strong>氏名・年齢の一致が100%証明</strong>される
-                      </span>
-                    </li>
-                    <li className="flex items-start gap-2.5">
-                      <Sparkles size={17} className="text-amber-600 shrink-0 mt-0.5" />
-                      <span className="leading-snug">
-                        相手の「なりすまし不安」を解消し、<strong>再会エピソード返信率が大幅UP</strong>
-                      </span>
-                    </li>
-                  </ul>
+                  <div className="text-left sm:text-right shrink-0">
+                    <span className="text-3xl font-serif font-black text-emerald-950">¥0</span>
+                    <span className="text-[10px] text-emerald-700 block font-sans">認証済み（追加費用なし）</span>
+                  </div>
                 </div>
 
-                <div className="pt-5 border-t border-amber-200/80">
+                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-sans bg-white/80 p-4 rounded-2xl border border-emerald-100">
+                  あなたのアカウントは公的身分証明書による本人確認が完了しているため、メッセージに<strong>「動く虹色公認バッジ（封蝋印）」</strong>が自動適用されます。お相手が検索した際も安心感が高く、再会エピソードの返信率が格段に高まります。
+                </p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs font-sans">
+                  <div className="bg-white p-3 rounded-xl border border-emerald-100 shadow-2xs">
+                    <span className="text-slate-400 text-[10px] font-bold block">公認バッジ</span>
+                    <span className="font-bold text-emerald-800 mt-0.5 block">✓ 虹色封蝋マーク適用</span>
+                  </div>
+                  <div className="bg-white p-3 rounded-xl border border-emerald-100 shadow-2xs">
+                    <span className="text-slate-400 text-[10px] font-bold block">本人証明</span>
+                    <span className="font-bold text-teal-800 mt-0.5 block">✓ 100% 本人確認済み</span>
+                  </div>
+                  <div className="bg-white p-3 rounded-xl border border-emerald-100 shadow-2xs">
+                    <span className="text-slate-400 text-[10px] font-bold block">追加費用</span>
+                    <span className="font-bold text-slate-900 mt-0.5 block">完全無料（0円）</span>
+                  </div>
+                </div>
+
+                <div className="pt-2 border-t border-emerald-200/80">
                   <button
                     type="button"
                     onClick={() => handleSelectPlan('ekyc')}
                     disabled={isSubmitting}
-                    className="w-full py-4 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-sm sm:text-base rounded-2xl shadow-lg hover:shadow-xl active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer font-serif disabled:opacity-50"
+                    className="w-full py-4.5 bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 hover:from-emerald-700 hover:via-teal-700 hover:to-indigo-700 text-white font-bold text-base sm:text-lg rounded-2xl shadow-xl hover:shadow-2xl active:scale-98 transition-all flex items-center justify-center gap-2.5 cursor-pointer font-serif disabled:opacity-50 border border-emerald-400/30"
                   >
-                    <ShieldCheck size={18} className="text-amber-100" />
-                    <span>公的認証付きでメッセージを届ける（600円） ✨</span>
+                    <ShieldCheck size={20} className="text-white drop-shadow-xs" />
+                    <span>✨ 公認バッジ付きでメッセージを公開する（即時公開）</span>
                   </button>
-                  <span className="text-[11px] text-amber-800/80 text-center block mt-2 font-sans">
-                    ※ 審査落ち時や不一致時は全額即時自動返金
-                  </span>
-                </div>
-              </div>
-
-              {/* プランB: ✉️ 通常無料投函 */}
-              <div className="rounded-3xl border border-slate-200 bg-slate-50/60 hover:bg-white p-6 sm:p-8 space-y-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
-                <div className="space-y-4">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 bg-slate-200/80 px-2.5 py-0.5 rounded-full inline-block font-mono">
-                        BASIC
-                      </span>
-                      <h4 className="text-lg sm:text-xl font-serif font-bold text-slate-800 mt-1">
-                        通常のメッセージとして届ける
-                      </h4>
-                      <p className="text-xs text-slate-500 font-sans mt-0.5">
-                        まずは費用をかけずにメッセージを作成
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-3xl font-serif font-bold text-slate-900">¥0</span>
-                      <span className="text-[10px] text-slate-500 block font-sans">通常プラン</span>
-                    </div>
-                  </div>
-
-                  {/* 特徴リスト */}
-                  <ul className="space-y-2.5 text-xs sm:text-sm text-slate-600 font-sans pt-3 border-t border-slate-200">
-                    <li className="flex items-start gap-2.5">
-                      <Check size={17} className="text-teal-600 shrink-0 mt-0.5" />
-                      <span className="leading-snug">
-                        初期費用・月額維持費は一切かかりません
-                      </span>
-                    </li>
-                    <li className="flex items-start gap-2.5">
-                      <Check size={17} className="text-teal-600 shrink-0 mt-0.5" />
-                      <span className="leading-snug">
-                        いつでも後からマイページで公的認証を追加可能
-                      </span>
-                    </li>
-                    <li className="flex items-start gap-2.5 text-slate-400">
-                      <span className="text-xs leading-snug">
-                        ※ 公的認証マークは付与されず通常表示となります
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="pt-5 border-t border-slate-200">
-                  <button
-                    type="button"
-                    onClick={() => handleSelectPlan('free')}
-                    disabled={isSubmitting}
-                    className="w-full py-4 bg-slate-800 hover:bg-slate-900 text-white font-bold text-sm sm:text-base rounded-2xl shadow-md hover:shadow-lg active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer font-serif disabled:opacity-50"
-                  >
-                    <Send size={16} className="text-slate-300" />
-                    <span>通常公開でメッセージを届ける</span>
-                  </button>
-                  <span className="text-[11px] text-slate-400 text-center block mt-2 font-sans">
-                    ※ 維持費・月額費用などは一切不要
+                  <span className="text-[11px] text-slate-500 text-center block mt-2.5 font-sans">
+                    ※ 公開後もマイアカウントからいつでも内容の修正や削除が可能です
                   </span>
                 </div>
               </div>
             </div>
-          </div>
+          ) : (
+            /* =====================================================================
+                未認証ユーザー向け：通常2択プラン選択カード（eKYC 600円 vs 通常無料 0円）
+            ===================================================================== */
+            <div className="bg-white rounded-3xl border-2 border-teal-500/40 p-6 sm:p-10 space-y-8 shadow-xl text-left">
+              <div className="text-center space-y-2 max-w-xl mx-auto">
+                <span className="text-[10px] font-extrabold text-teal-800 uppercase tracking-widest bg-teal-50 px-3.5 py-1 rounded-full border border-teal-200 inline-block font-sans">
+                  STEP 3: SELECT PUBLISH PLAN
+                </span>
+                <h2 className="text-xl sm:text-3xl font-bold text-slate-900 font-serif">
+                  メッセージの公開方法を選択してください
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-600 font-sans leading-relaxed">
+                  お相手があなたを見つけた際、<strong>「間違いなく本物のあの人だ！」</strong>と確信できるよう、公的本人確認（eKYC）認証マーク付きでの投函を推奨しています。
+                </p>
+
+                {/* 💡 アカウント登録と通知・管理に関する重要案内 */}
+                <div className="p-3.5 bg-sky-50/80 rounded-2xl border border-sky-200 text-left text-xs text-sky-900 flex items-start gap-2.5 font-sans mt-3">
+                  <CheckCircle2 size={16} className="text-sky-600 shrink-0 mt-0.5" />
+                  <div className="space-y-0.5 leading-relaxed">
+                    <strong className="block text-sky-950 font-bold">メッセージの設置とアカウント連携について</strong>
+                    <span>
+                      お相手から再会エピソードが届いた際の<strong>メール通知</strong>および、マイページでの<strong>メッセージの再確認・管理</strong>のため、プラン選択後にアカウント登録（30秒）を行います。
+                      {pendingPlan === 'ekyc' && ' 公的本人確認（eKYC）では身元確認証明のためアカウント登録が必須となります。'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 pt-1">
+                {/* プランA: 🌟 公的認証（eKYC）付き投函（おすすめ） */}
+                <div className="relative rounded-3xl border-2 border-amber-500 bg-gradient-to-b from-amber-50/80 via-white to-orange-50/40 p-6 sm:p-8 space-y-5 shadow-lg hover:shadow-xl transition-all flex flex-col justify-between ring-4 ring-amber-400/20">
+                  <div className="absolute -top-3.5 left-6 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-white text-[11px] font-black px-3.5 py-1 rounded-full shadow-md uppercase tracking-wider flex items-center gap-1.5 font-sans">
+                    <Crown size={13} />
+                    <span>おすすめ・信頼度 No.1</span>
+                  </div>
+
+                  <div className="space-y-4 pt-1">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h4 className="text-lg sm:text-xl font-serif font-bold text-amber-950 flex items-center gap-1.5">
+                          <span>公的本人確認（eKYC）付き</span>
+                        </h4>
+                        <p className="text-xs text-amber-800/90 font-sans mt-0.5">
+                          本名と生まれ年を公的書類で証明
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-3xl font-serif font-black text-amber-950">¥600</span>
+                        <span className="text-[10px] text-amber-700 block font-sans">税込 / 1回のみ</span>
+                      </div>
+                    </div>
+
+                    {/* 特徴リスト */}
+                    <ul className="space-y-2.5 text-xs sm:text-sm text-slate-700 font-sans pt-3 border-t border-amber-200/80">
+                      <li className="flex items-start gap-2.5">
+                        <div className="w-5 h-5 rounded-full seal-rainbow flex items-center justify-center text-white shrink-0 mt-0.5 shadow-2xs">
+                          <ShieldCheck size={12} />
+                        </div>
+                        <span className="leading-snug">
+                          メッセージと検索カードに<strong>動く虹色公的認証マーク（封蝋印）</strong>が付与
+                        </span>
+                      </li>
+                      <li className="flex items-start gap-2.5">
+                        <CheckCircle2 size={17} className="text-amber-600 shrink-0 mt-0.5" />
+                        <span className="leading-snug">
+                          運転免許証等で<strong>氏名・年齢の一致が100%証明</strong>される
+                        </span>
+                      </li>
+                      <li className="flex items-start gap-2.5">
+                        <Sparkles size={17} className="text-amber-600 shrink-0 mt-0.5" />
+                        <span className="leading-snug">
+                          相手の「なりすまし不安」を解消し、<strong>再会エピソード返信率が大幅UP</strong>
+                        </span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div className="pt-5 border-t border-amber-200/80">
+                    <button
+                      type="button"
+                      onClick={() => handleSelectPlan('ekyc')}
+                      disabled={isSubmitting}
+                      className="w-full py-4 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-sm sm:text-base rounded-2xl shadow-lg hover:shadow-xl active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer font-serif disabled:opacity-50"
+                    >
+                      <ShieldCheck size={18} className="text-amber-100" />
+                      <span>公的認証付きでメッセージを届ける（600円） ✨</span>
+                    </button>
+                    <span className="text-[11px] text-amber-800/80 text-center block mt-2 font-sans">
+                      ※ 審査落ち時や不一致時は全額即時自動返金
+                    </span>
+                  </div>
+                </div>
+
+                {/* プランB: ✉️ 通常無料投函 */}
+                <div className="rounded-3xl border border-slate-200 bg-slate-50/60 hover:bg-white p-6 sm:p-8 space-y-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 bg-slate-200/80 px-2.5 py-0.5 rounded-full inline-block font-mono">
+                          BASIC
+                        </span>
+                        <h4 className="text-lg sm:text-xl font-serif font-bold text-slate-800 mt-1">
+                          通常のメッセージとして届ける
+                        </h4>
+                        <p className="text-xs text-slate-500 font-sans mt-0.5">
+                          まずは費用をかけずにメッセージを作成
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-3xl font-serif font-bold text-slate-900">¥0</span>
+                        <span className="text-[10px] text-slate-500 block font-sans">通常プラン</span>
+                      </div>
+                    </div>
+
+                    {/* 特徴リスト */}
+                    <ul className="space-y-2.5 text-xs sm:text-sm text-slate-600 font-sans pt-3 border-t border-slate-200">
+                      <li className="flex items-start gap-2.5">
+                        <Check size={17} className="text-teal-600 shrink-0 mt-0.5" />
+                        <span className="leading-snug">
+                          初期費用・月額維持費は一切かかりません
+                        </span>
+                      </li>
+                      <li className="flex items-start gap-2.5">
+                        <Check size={17} className="text-teal-600 shrink-0 mt-0.5" />
+                        <span className="leading-snug">
+                          いつでも後からマイページで公的認証を追加可能
+                        </span>
+                      </li>
+                      <li className="flex items-start gap-2.5 text-slate-400">
+                        <span className="text-xs leading-snug">
+                          ※ 公的認証マークは付与されず通常表示となります
+                        </span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div className="pt-5 border-t border-slate-200">
+                    <button
+                      type="button"
+                      onClick={() => handleSelectPlan('free')}
+                      disabled={isSubmitting}
+                      className="w-full py-4 bg-slate-800 hover:bg-slate-900 text-white font-bold text-sm sm:text-base rounded-2xl shadow-md hover:shadow-lg active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer font-serif disabled:opacity-50"
+                    >
+                      <Send size={16} className="text-slate-300" />
+                      <span>通常公開でメッセージを届ける</span>
+                    </button>
+                    <span className="text-[11px] text-slate-400 text-center block mt-2 font-sans">
+                      ※ 維持費・月額費用などは一切不要
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* 戻るフッターナビゲーション */}
           <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
