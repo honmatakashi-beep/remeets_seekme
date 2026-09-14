@@ -425,14 +425,23 @@ export const authRouter = express.Router();
 
   authRouter.get("/me", authenticateToken, (req: any, res) => {
     try {
-      const user = db.prepare("SELECT id, username, email, role, full_name, last_name, first_name, nickname, maiden_name, birthdate, gender, is_ekyc_verified, ekyc_verified_at, ekyc_document_type, ekyc_name FROM users WHERE id = ?").get(req.user.id) as any;
+      const user = db.prepare("SELECT id, username, email, role, full_name, last_name, first_name, last_name_kana, first_name_kana, nickname, maiden_name, maiden_name_kana, hometown, contact_type, contact_id, birthdate, gender, is_ekyc_verified, ekyc_verified_at, ekyc_document_type, ekyc_name FROM users WHERE id = ?").get(req.user.id) as any;
+      if (!user) {
+        return res.status(404).json({ error: "ユーザーが見つかりません。" });
+      }
       res.json({ 
         ...user, 
         fullName: user.full_name || `${user.last_name || ''} ${user.first_name || ''}`.trim(),
         lastName: user.last_name || '',
         firstName: user.first_name || '',
+        lastNameKana: user.last_name_kana || '',
+        firstNameKana: user.first_name_kana || '',
         nickname: user.nickname || '',
         maiden_name: user.maiden_name || '',
+        maidenNameKana: user.maiden_name_kana || '',
+        hometown: user.hometown || '',
+        contact_type: user.contact_type || 'LINE',
+        contact_id: user.contact_id || '',
         birthdate: user.birthdate || '',
         gender: user.gender || '',
         is_ekyc_verified: user.is_ekyc_verified === 1 || Boolean(user.is_ekyc_verified)
@@ -511,23 +520,62 @@ export const authRouter = express.Router();
   authRouter.post("/reset-ekyc", authenticateToken, resetEkycHandler);
   authRouter.post("/ekyc-reset", authenticateToken, resetEkycHandler);
 
-  authRouter.patch("/me", authenticateToken, async (req: any, res) => {
-    const { nickname, email, maiden_name, full_name, last_name, first_name, birthdate, gender } = req.body;
+  const updateProfileHandler = async (req: any, res: any) => {
+    const { 
+      nickname, 
+      email, 
+      maiden_name, 
+      maidenName,
+      maiden_name_kana,
+      maidenNameKana,
+      hometown,
+      contact_type,
+      contactType,
+      contact_id,
+      contactId,
+      full_name, 
+      fullName,
+      last_name, 
+      lastName,
+      first_name, 
+      firstName,
+      last_name_kana,
+      lastNameKana,
+      first_name_kana,
+      firstNameKana,
+      birthdate, 
+      gender 
+    } = req.body;
+
+    const actualMaidenName = maiden_name ?? maidenName;
+    const actualMaidenKana = maiden_name_kana ?? maidenNameKana;
+    const actualContactType = contact_type ?? contactType;
+    const actualContactId = contact_id ?? contactId;
+    const actualLastName = last_name ?? lastName;
+    const actualFirstName = first_name ?? firstName;
+    const actualLastNameKana = last_name_kana ?? lastNameKana;
+    const actualFirstNameKana = first_name_kana ?? firstNameKana;
+    const actualFullName = full_name ?? fullName ?? (actualLastName && actualFirstName ? `${actualLastName} ${actualFirstName}`.trim() : undefined);
+
     if (nickname && filterNGWords(nickname) !== nickname) {
       return res.status(400).json({ error: "ニックネームに不適切な言葉、または個人情報が含まれています。" });
     }
-    if (maiden_name && filterNGWords(maiden_name) !== maiden_name) {
+    if (actualMaidenName && filterNGWords(actualMaidenName) !== actualMaidenName) {
       return res.status(400).json({ error: "旧姓に不適切な言葉が含まれています。" });
     }
+
     try {
       const currentUser = db.prepare("SELECT email, is_ekyc_verified, birthdate FROM users WHERE id = ?").get(req.user.id) as any;
-      
+      if (!currentUser) {
+        return res.status(404).json({ error: "ユーザーが見つかりません。" });
+      }
+
       // 🛡️ SEC-020: 「生年月日・年齢」は登録・認証後の改ざん不可ロック（未成年保護・なりすまし防止）
       if (birthdate !== undefined && currentUser?.birthdate && birthdate !== currentUser.birthdate) {
         return res.status(400).json({ error: "生年月日（年齢）は本人認証および安全管理上の固定情報のため、変更することはできません。" });
       }
 
-      if (currentUser?.is_ekyc_verified && (full_name !== undefined || last_name !== undefined || first_name !== undefined)) {
+      if (currentUser?.is_ekyc_verified && (actualFullName !== undefined || actualLastName !== undefined || actualFirstName !== undefined)) {
         return res.status(400).json({ error: "公的本人確認（eKYC）完了後は、氏名の変更はできません。変更が必要な場合は運営サポート窓口へお問い合わせください。" });
       }
 
@@ -547,34 +595,78 @@ export const authRouter = express.Router();
         verificationToken = crypto.randomBytes(32).toString("hex");
       }
 
+      db.prepare(`
+        UPDATE users 
+        SET full_name = COALESCE(?, full_name),
+            last_name = COALESCE(?, last_name),
+            first_name = COALESCE(?, first_name),
+            last_name_kana = COALESCE(?, last_name_kana),
+            first_name_kana = COALESCE(?, first_name_kana),
+            nickname = COALESCE(?, nickname), 
+            email = COALESCE(?, email), 
+            maiden_name = COALESCE(?, maiden_name), 
+            maiden_name_kana = COALESCE(?, maiden_name_kana),
+            hometown = COALESCE(?, hometown),
+            contact_type = COALESCE(?, contact_type),
+            contact_id = COALESCE(?, contact_id),
+            gender = COALESCE(?, gender),
+            is_verified = CASE WHEN ? THEN 0 ELSE is_verified END,
+            verification_token = CASE WHEN ? THEN ? ELSE verification_token END
+        WHERE id = ?
+      `).run(
+        actualFullName ?? null,
+        actualLastName ?? null,
+        actualFirstName ?? null,
+        actualLastNameKana ?? null,
+        actualFirstNameKana ?? null,
+        nickname ?? null,
+        email ?? null,
+        actualMaidenName ?? null,
+        actualMaidenKana ?? null,
+        hometown ?? null,
+        actualContactType ?? null,
+        actualContactId ?? null,
+        gender ?? null,
+        emailChanged ? 1 : 0,
+        emailChanged ? 1 : 0,
+        verificationToken,
+        req.user.id
+      );
+
       if (emailChanged) {
-        db.prepare(`
-          UPDATE users 
-          SET nickname = COALESCE(?, nickname), 
-              email = ?, 
-              maiden_name = COALESCE(?, maiden_name), 
-              gender = ?, 
-              is_verified = 0, 
-              verification_token = ? 
-          WHERE id = ?
-        `).run(nickname ?? null, email, maiden_name ?? null, gender || null, verificationToken, req.user.id);
-        await sendVerificationEmail(email, verificationToken);
-      } else {
-        db.prepare(`
-          UPDATE users 
-          SET nickname = COALESCE(?, nickname), 
-              email = COALESCE(?, email), 
-              maiden_name = COALESCE(?, maiden_name),
-              gender = ?
-          WHERE id = ?
-        `).run(nickname ?? null, email ?? null, maiden_name ?? null, gender || null, req.user.id);
+        await sendVerificationEmail(email, verificationToken!);
       }
 
-      res.json({ success: true, emailChanged, gender });
+      const updatedUser = db.prepare("SELECT id, username, email, role, full_name, last_name, first_name, last_name_kana, first_name_kana, nickname, maiden_name, maiden_name_kana, hometown, contact_type, contact_id, birthdate, gender, is_ekyc_verified FROM users WHERE id = ?").get(req.user.id) as any;
+
+      res.json({ 
+        success: true, 
+        emailChanged, 
+        user: {
+          ...updatedUser,
+          fullName: updatedUser.full_name || `${updatedUser.last_name || ''} ${updatedUser.first_name || ''}`.trim(),
+          lastName: updatedUser.last_name || '',
+          firstName: updatedUser.first_name || '',
+          lastNameKana: updatedUser.last_name_kana || '',
+          firstNameKana: updatedUser.first_name_kana || '',
+          maiden_name: updatedUser.maiden_name || '',
+          maidenNameKana: updatedUser.maiden_name_kana || '',
+          hometown: updatedUser.hometown || '',
+          contact_type: updatedUser.contact_type || 'LINE',
+          contact_id: updatedUser.contact_id || '',
+          is_ekyc_verified: updatedUser.is_ekyc_verified === 1 || Boolean(updatedUser.is_ekyc_verified)
+        }
+      });
     } catch (err) {
+      console.error("Profile update error:", err);
       res.status(500).json({ error: "プロフィールの更新に失敗しました。" });
     }
-  });
+  };
+
+  authRouter.patch("/me", authenticateToken, updateProfileHandler);
+  authRouter.put("/me", authenticateToken, updateProfileHandler);
+  authRouter.put("/profile", authenticateToken, updateProfileHandler);
+  authRouter.post("/profile", authenticateToken, updateProfileHandler);
 
   // 🛡️ SEC-011: ユーザー退会・個人データ完全物理消去API
   authRouter.delete("/me", authenticateToken, async (req: any, res) => {

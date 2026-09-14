@@ -11,7 +11,7 @@ import {
   Heart, Lock, Mail, MessageSquare, RotateCcw, Search, Send,
   ShieldCheck, Sparkles, Trash2, User as UserIcon, X, AlertCircle,
   Shield, Info, Clock, ChevronDown, ChevronUp, ArrowLeft,
-  MessageCircle, Key, Plus, Zap
+  MessageCircle, Key, Plus, Zap, MapPin
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { cn, PageHeader, formatEraLabel, getCategoryText, getPostUrl, PREFECTURES } from '../lib/utils';
@@ -1075,14 +1075,6 @@ export const AccountPage = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    setEditingNickname(user?.nickname || '');
-                    setEditingEmail(user?.email || '');
-                    setEditingMaidenName(user?.maiden_name || '');
-                    setEditingGender((user as any)?.gender || '');
-                    setEditingContactType((user as any)?.contact_type || localStorage.getItem('remeets_default_contact_type') || 'LINE');
-                    setEditingContactId((user as any)?.contact_id || localStorage.getItem('remeets_default_contact_id') || '');
-                    setUpdateError('');
-                    setUpdateSuccess(false);
                     setShowEditProfileModal(true);
                   }}
                   className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-xs shadow-xs hover:shadow-md transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
@@ -1096,13 +1088,20 @@ export const AccountPage = () => {
             {/* Middle Section: 各項目がゆったり美しく整列する 2列グリッド構造（2列×4行 = 計8項目） */}
             <div className="space-y-3 font-sans">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-3.5">
-                {/* 1. ニックネーム */}
-                <div className="bg-white hover:border-indigo-400 px-4 sm:px-5 py-3 rounded-2xl border-2 border-slate-300/90 shadow-2xs transition-all flex items-center justify-between gap-3 group min-h-[58px]">
-                  <span className="text-xs font-bold text-slate-500 shrink-0">
-                    【ニックネーム】
+                {/* 1. ゆかりの地 */}
+                <div className="bg-white hover:border-teal-400 px-4 sm:px-5 py-3 rounded-2xl border-2 border-slate-300/90 shadow-2xs transition-all flex items-center justify-between gap-3 group min-h-[58px]">
+                  <span className="text-xs font-bold text-slate-500 shrink-0 flex items-center gap-1">
+                    <MapPin size={12} className="text-teal-600" />
+                    <span>【ゆかりの地】</span>
                   </span>
-                  <div className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-indigo-900 transition-colors truncate text-right">
-                    {user?.nickname || '未設定'}
+                  <div className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-teal-900 transition-colors truncate text-right">
+                    {(user as any)?.hometown ? (
+                      <span className="bg-teal-50 text-teal-800 border border-teal-200 px-2.5 py-0.5 rounded-lg font-bold">
+                        {(user as any).hometown}
+                      </span>
+                    ) : (
+                      <span className="text-slate-400 font-medium text-xs">未設定（変更ボタンから登録）</span>
+                    )}
                   </div>
                 </div>
 
@@ -1325,37 +1324,33 @@ export const AccountPage = () => {
                     {/* メタデータグリッド（大きめ・高コントラスト） */}
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200 text-xs">
                       <div className="space-y-0.5">
-                        <span className="font-bold text-slate-600 block">メッセージを書いた人</span>
+                        <span className="font-bold text-slate-600 block">ゆかりの地</span>
                         <span className="font-bold text-slate-950 text-sm sm:text-base block">
-                          {currentPost.target_name || currentPost.searcher_full_name || '名前未設定'}
-                          {(currentPost.target_last_name_kana || currentPost.target_first_name_kana) && (
-                            <span className="text-xs font-normal text-slate-600 ml-1">
-                              （{currentPost.target_last_name_kana || ''} {currentPost.target_first_name_kana || ''}）
-                            </span>
-                          )}
+                          {currentPost.target_hometown || (user as any)?.hometown || '未選択'}
                         </span>
                       </div>
                       <div className="space-y-0.5">
                         <span className="font-bold text-slate-600 block">旧姓・当時の苗字</span>
                         <span className="font-bold text-slate-950 text-sm sm:text-base block">
-                          {currentPost.searcher_maiden_name || currentPost.target_maiden_name || 'なし'}
-                          {currentPost.target_maiden_name_kana && (
+                          {currentPost.searcher_maiden_name || currentPost.target_maiden_name || (user as any)?.maiden_name || 'なし'}
+                          {(currentPost.target_maiden_name_kana || (user as any)?.maiden_name_kana) && (
                             <span className="text-xs font-normal text-slate-600 ml-1">
-                              （{currentPost.target_maiden_name_kana}）
+                              （{currentPost.target_maiden_name_kana || (user as any)?.maiden_name_kana}）
                             </span>
                           )}
-                        </span>
-                      </div>
-                      <div className="space-y-0.5">
-                        <span className="font-bold text-slate-600 block">ゆかりの地</span>
-                        <span className="font-bold text-slate-950 text-sm sm:text-base block">
-                          {currentPost.target_hometown || '未選択'}
                         </span>
                       </div>
                       <div className="space-y-0.5">
                         <span className="font-bold text-slate-600 block">生まれ年</span>
                         <span className="font-bold text-slate-950 text-sm sm:text-base block">
                           {currentPost.era ? formatEraLabel(currentPost.era) : '非公開'}
+                        </span>
+                      </div>
+                      <div className="space-y-0.5">
+                        <span className="font-bold text-slate-600 block">公開ステータス</span>
+                        <span className="font-bold text-emerald-800 text-xs sm:text-sm block flex items-center gap-1 mt-0.5">
+                          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                          <span>Google検索対象</span>
                         </span>
                       </div>
                     </div>

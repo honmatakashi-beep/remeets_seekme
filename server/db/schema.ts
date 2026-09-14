@@ -449,6 +449,10 @@ export function initDatabase() {
     try { db.exec("ALTER TABLE users ADD COLUMN auth_provider TEXT DEFAULT 'email'"); } catch (e) {}
     try { db.exec("ALTER TABLE users ADD COLUMN verification_code TEXT"); } catch (e) {}
     try { db.exec("ALTER TABLE users ADD COLUMN verification_code_expires DATETIME"); } catch (e) {}
+    try { db.exec("ALTER TABLE users ADD COLUMN hometown TEXT"); } catch (e) {}
+    try { db.exec("ALTER TABLE users ADD COLUMN last_name_kana TEXT"); } catch (e) {}
+    try { db.exec("ALTER TABLE users ADD COLUMN first_name_kana TEXT"); } catch (e) {}
+    try { db.exec("ALTER TABLE users ADD COLUMN maiden_name_kana TEXT"); } catch (e) {}
     
     // Distribute sample auth_providers realistically for existing users
     try {

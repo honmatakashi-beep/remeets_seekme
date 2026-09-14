@@ -90,6 +90,7 @@ export const CreatePostPage = () => {
         lastName: prev.lastName || userLastName || '',
         firstName: prev.firstName || userFirstName || '',
         maidenName: prev.maidenName || (user as any).maiden_name || '',
+        hometownPref: prev.hometownPref || (user as any).hometown || '',
         birthYear: prev.birthYear || (user.birthdate ? new Date(user.birthdate).getFullYear().toString() : ''),
         contactType: prev.contactId ? prev.contactType : ((user as any).contact_type || 'LINE'),
         contactId: prev.contactId || (user as any).contact_id || ''

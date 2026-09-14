@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Edit3, Lock, CheckCircle2, RotateCcw } from "lucide-react";
+import { Edit3, Lock, CheckCircle2, RotateCcw, MapPin } from "lucide-react";
+import { PREFECTURES } from "../../lib/utils";
 
 interface EditProfileModalProps {
   isOpen: boolean;
@@ -20,8 +21,9 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
   getAgeFromBirthdate,
   onSuccess
 }) => {
-  const [editingNickname, setEditingNickname] = useState(user?.nickname || "");
+  const [editingHometown, setEditingHometown] = useState((user as any)?.hometown || "");
   const [editingMaidenName, setEditingMaidenName] = useState((user as any)?.maiden_name || "");
+  const [editingMaidenNameKana, setEditingMaidenNameKana] = useState((user as any)?.maiden_name_kana || "");
   const [editingGender, setEditingGender] = useState<string>((user as any)?.gender || "");
   const [editingEmailNotifications, setEditingEmailNotifications] = useState<boolean>(true);
   const [editingContactType, setEditingContactType] = useState<string>(() => localStorage.getItem("remeets_default_contact_type") || "LINE");
@@ -32,11 +34,12 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
 
   useEffect(() => {
     if (user) {
-      setEditingNickname(user.nickname || "");
+      setEditingHometown((user as any)?.hometown || "");
       setEditingMaidenName((user as any)?.maiden_name || "");
+      setEditingMaidenNameKana((user as any)?.maiden_name_kana || "");
       setEditingGender((user as any)?.gender || "");
       setEditingContactId((user as any)?.contact_id || localStorage.getItem("remeets_default_contact_id") || "");
-      setEditingContactType(localStorage.getItem("remeets_default_contact_type") || "LINE");
+      setEditingContactType(localStorage.getItem("remeets_default_contact_type") || (user as any)?.contact_type || "LINE");
     }
   }, [user, isOpen]);
 
@@ -59,8 +62,9 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
           "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({
-          nickname: editingNickname,
+          hometown: editingHometown,
           maiden_name: editingMaidenName,
+          maiden_name_kana: editingMaidenNameKana,
           gender: editingGender,
           contact_type: editingContactType,
           contact_id: editingContactId,
@@ -72,8 +76,9 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
         const data = await res.json();
         updateUser(data.user || {
           ...user,
-          nickname: editingNickname,
+          hometown: editingHometown,
           maiden_name: editingMaidenName,
+          maiden_name_kana: editingMaidenNameKana,
           gender: editingGender,
           contact_type: editingContactType,
           contact_id: editingContactId
@@ -278,23 +283,63 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
               <span>✏️ 変更できる項目</span>
             </span>
 
+            {/* ゆかりの地（出身地・都道府県） */}
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
-                ニックネーム（表示名） <span className="text-rose-500">*</span>
+              <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+                <span className="flex items-center gap-1">
+                  <MapPin size={13} className="text-teal-600" />
+                  <span>ゆかりの地（出身地・都道府県）</span>
+                </span>
+                <span className="text-[10px] text-teal-700 font-bold bg-teal-50 px-2 py-0.5 rounded border border-teal-200">
+                  メッセージ作成時にも自動連動
+                </span>
               </label>
-              <input
-                type="text"
-                value={editingNickname}
-                onChange={(e) => setEditingNickname(e.target.value)}
-                placeholder="例: たろう"
-                required
-                className="w-full px-3.5 py-2.5 bg-white border border-slate-200 hover:border-indigo-400 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 rounded-xl text-xs font-medium text-slate-900 transition-all"
-              />
+              <select
+                value={editingHometown}
+                onChange={(e) => setEditingHometown(e.target.value)}
+                className="w-full px-3.5 py-2.5 bg-white border border-slate-200 hover:border-indigo-400 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 rounded-xl text-xs font-medium text-slate-900 transition-all cursor-pointer"
+              >
+                <option value="">都道府県を選択してください</option>
+                {PREFECTURES.map(pref => (
+                  <option key={pref} value={pref}>{pref}</option>
+                ))}
+              </select>
               <p className="text-[10px] text-slate-400 mt-1">
-                ※ボトルメール内や公開プロフィールで相手に表示されるお名前です。
+                ※あなたの出身地や学生時代を過ごしたゆかりの地を設定できます。
               </p>
             </div>
 
+            {/* 旧姓・当時の苗字 */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+                  <span>旧姓・当時の苗字（漢字）</span>
+                  <span className="text-[10px] text-slate-400 font-normal">任意</span>
+                </label>
+                <input
+                  type="text"
+                  value={editingMaidenName}
+                  onChange={(e) => setEditingMaidenName(e.target.value)}
+                  placeholder="例: 鈴木（旧姓がある場合のみ）"
+                  className="w-full px-3.5 py-2.5 bg-white border border-slate-200 hover:border-indigo-400 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 rounded-xl text-xs font-medium text-slate-900 transition-all"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+                  <span>旧姓フリガナ（カタカナ）</span>
+                  <span className="text-[10px] text-slate-400 font-normal">任意</span>
+                </label>
+                <input
+                  type="text"
+                  value={editingMaidenNameKana}
+                  onChange={(e) => setEditingMaidenNameKana(e.target.value)}
+                  placeholder="例: スズキ"
+                  className="w-full px-3.5 py-2.5 bg-white border border-slate-200 hover:border-indigo-400 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 rounded-xl text-xs font-medium text-slate-900 transition-all"
+                />
+              </div>
+            </div>
+
+            {/* 性別 */}
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
                 <span>性別</span>
@@ -322,23 +367,6 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
               </div>
               <p className="text-[10px] text-slate-400 mt-1">
                 ※サービス改善や統計分析のために利用されます（相手に強制開示されることはありません）。
-              </p>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
-                <span>旧姓（旧氏名・結婚前の名字）</span>
-                <span className="text-[10px] text-slate-400 font-normal">任意</span>
-              </label>
-              <input
-                type="text"
-                value={editingMaidenName}
-                onChange={(e) => setEditingMaidenName(e.target.value)}
-                placeholder="例: 鈴木（旧姓がある場合のみ記入）"
-                className="w-full px-3.5 py-2.5 bg-white border border-slate-200 hover:border-indigo-400 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 rounded-xl text-xs font-medium text-slate-900 transition-all"
-              />
-              <p className="text-[10px] text-slate-400 mt-1">
-                ※昔の同級生やお知り合いが旧姓でメッセージを探している際に気づきやすくなります。マイアカウントのお名前横に表示されます。
               </p>
             </div>
 
