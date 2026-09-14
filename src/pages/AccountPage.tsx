@@ -563,23 +563,78 @@ export const AccountPage = () => {
     ? (urlTab as 'profile' | 'received' | 'sent' | 'notifications')
     : (location.state?.defaultTab || 'received');
   const [activeSubTab, setActiveSubTab] = useState<'profile' | 'received' | 'sent' | 'notifications'>(initialSubTab);
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [notificationsLoading, setNotificationsLoading] = useState(false);
+
+  const fetchNotifications = async () => {
+    if (!token) return;
+    setNotificationsLoading(true);
+    try {
+      const res = await fetch('/api/notifications', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          setNotifications(data);
+        }
+      }
+    } catch {
+      // Silently handle fetch issues
+    } finally {
+      setNotificationsLoading(false);
+    }
+  };
+
+  const scrollToAccountTabs = (smooth = true) => {
+    const el = document.getElementById('account-tabs');
+    if (el) {
+      const yOffset = -24;
+      const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({
+        top: Math.max(0, y),
+        behavior: smooth ? 'smooth' : 'auto'
+      });
+    }
+  };
+
+  const handleTabChange = (tab: 'profile' | 'received' | 'sent' | 'notifications') => {
+    setActiveSubTab(tab);
+    setSearchParams({ tab }, { replace: true });
+    if (tab === 'notifications') {
+      fetchNotifications();
+    }
+    setTimeout(() => {
+      scrollToAccountTabs(true);
+    }, 50);
+  };
+
   useEffect(() => {
     const tab = searchParams.get('tab');
     if (tab && ['profile', 'received', 'sent', 'notifications'].includes(tab)) {
       setActiveSubTab(tab as any);
+      if (tab === 'notifications') {
+        fetchNotifications();
+      }
     }
   }, [searchParams]);
 
   useEffect(() => {
     if (!loading) {
       const tab = searchParams.get('tab');
-      if (tab === 'sent' || location.hash.includes('sent')) {
-        setActiveSubTab('sent');
+      const hash = location.hash.replace('#', '');
+      const validTabs = ['profile', 'received', 'sent', 'notifications'];
+      const targetTab = (tab && validTabs.includes(tab))
+        ? tab
+        : (validTabs.includes(hash) ? hash : null);
+
+      if (targetTab) {
+        setActiveSubTab(targetTab as any);
+        if (targetTab === 'notifications') {
+          fetchNotifications();
+        }
         setTimeout(() => {
-          const el = document.getElementById('account-tabs');
-          if (el) {
-            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
+          scrollToAccountTabs(true);
         }, 150);
       }
     }
@@ -611,14 +666,6 @@ export const AccountPage = () => {
     };
     syncUserInfo();
   }, [token]);
-
-  const handleTabChange = (tab: 'profile' | 'received' | 'sent' | 'notifications') => {
-    setActiveSubTab(tab);
-    setSearchParams({ tab });
-  };
-
-  const [notifications, setNotifications] = useState<any[]>([]);
-  const [notificationsLoading, setNotificationsLoading] = useState(false);
 
   // マイページ用eKYCプログレスバー＆API処理連動
   useEffect(() => {
@@ -668,26 +715,6 @@ export const AccountPage = () => {
     }
     return () => clearInterval(interval);
   }, [mypageEkycStep, showMypageEkycModal, token]);
-
-  const fetchNotifications = async () => {
-    if (!token) return;
-    setNotificationsLoading(true);
-    try {
-      const res = await fetch('/api/notifications', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (Array.isArray(data)) {
-          setNotifications(data);
-        }
-      }
-    } catch {
-      // Silently handle fetch issues
-    } finally {
-      setNotificationsLoading(false);
-    }
-  };
 
   const formatNotificationDate = (dateStr: string) => {
     try {
@@ -1589,10 +1616,7 @@ export const AccountPage = () => {
               {/* タブ4: 通知ログ */}
               <button
                 type="button"
-                onClick={() => {
-                  handleTabChange('notifications');
-                  fetchNotifications();
-                }}
+                onClick={() => handleTabChange('notifications')}
                 className={`py-2.5 sm:py-3 px-2 sm:px-4 text-[11px] sm:text-xs md:text-sm font-bold transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 sm:gap-2 rounded-xl relative ${
                   activeSubTab === 'notifications'
                     ? 'bg-white text-slate-900 shadow-md ring-1 ring-slate-900/10 font-serif'
