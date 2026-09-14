@@ -1324,44 +1324,44 @@ export const AccountPage = () => {
                     {/* メタデータグリッド（大きめ・高コントラスト） */}
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200 text-xs">
                       <div className="space-y-0.5">
-                        <span className="font-bold text-slate-600 block">ゆかりの地</span>
-                        <span className="font-bold text-slate-950 text-sm sm:text-base block">
+                        <span className="font-bold text-slate-600 block font-sans">ゆかりの地</span>
+                        <span className="font-bold text-slate-950 text-sm sm:text-base block font-serif">
                           {currentPost.target_hometown || (user as any)?.hometown || '未選択'}
                         </span>
                       </div>
                       <div className="space-y-0.5">
-                        <span className="font-bold text-slate-600 block">旧姓・当時の苗字</span>
-                        <span className="font-bold text-slate-950 text-sm sm:text-base block">
+                        <span className="font-bold text-slate-600 block font-sans">旧姓・当時の苗字</span>
+                        <span className="font-bold text-slate-950 text-sm sm:text-base block font-serif">
                           {currentPost.searcher_maiden_name || currentPost.target_maiden_name || (user as any)?.maiden_name || 'なし'}
                           {(currentPost.target_maiden_name_kana || (user as any)?.maiden_name_kana) && (
-                            <span className="text-xs font-normal text-slate-600 ml-1">
+                            <span className="text-xs font-normal text-slate-600 ml-1 font-sans">
                               （{currentPost.target_maiden_name_kana || (user as any)?.maiden_name_kana}）
                             </span>
                           )}
                         </span>
                       </div>
                       <div className="space-y-0.5">
-                        <span className="font-bold text-slate-600 block">生まれ年</span>
-                        <span className="font-bold text-slate-950 text-sm sm:text-base block">
+                        <span className="font-bold text-slate-600 block font-sans">生まれ年</span>
+                        <span className="font-bold text-slate-950 text-sm sm:text-base block font-serif">
                           {currentPost.era ? formatEraLabel(currentPost.era) : '非公開'}
                         </span>
                       </div>
                       <div className="space-y-0.5">
-                        <span className="font-bold text-slate-600 block">公開ステータス</span>
-                        <span className="font-bold text-emerald-800 text-xs sm:text-sm block flex items-center gap-1 mt-0.5">
+                        <span className="font-bold text-slate-600 block font-sans">公開ステータス</span>
+                        <span className="font-bold text-emerald-800 text-xs sm:text-sm block flex items-center gap-1 mt-0.5 font-sans">
                           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                           <span>Google検索対象</span>
                         </span>
                       </div>
                     </div>
 
-                    {/* メッセージ本文（高コントラスト） */}
+                    {/* メッセージ本文（便箋風・情緒ある明朝体・高コントラスト） */}
                     <div className="space-y-2">
-                      <span className="text-xs font-bold text-slate-700 block flex items-center justify-between">
+                      <span className="text-xs font-bold text-slate-700 block flex items-center justify-between font-sans">
                         <span>公開メッセージ本文</span>
                         <span className="text-[11px] text-teal-700 font-bold">誰でも閲覧可能（Google検索対象）</span>
                       </span>
-                      <div className="p-4 sm:p-5 bg-white rounded-2xl border-2 border-slate-200 text-slate-950 font-sans font-medium text-sm sm:text-base leading-relaxed whitespace-pre-wrap shadow-2xs">
+                      <div className="p-5 sm:p-6 bg-white rounded-2xl border-2 border-slate-200 text-slate-950 font-letter-mincho font-serif font-medium text-base sm:text-lg leading-relaxed sm:leading-loose tracking-wide whitespace-pre-wrap shadow-2xs">
                         {currentPost.message || currentPost.searcher_profile || '（メッセージが入力されていません）'}
                       </div>
                     </div>

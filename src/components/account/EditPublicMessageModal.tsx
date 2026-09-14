@@ -402,7 +402,7 @@ export const EditPublicMessageModal: React.FC<EditPublicMessageModalProps> = ({
                   value={formData.message}
                   onChange={e => setFormData(prev => ({ ...prev, message: e.target.value }))}
                   placeholder="あなたを探している相手に向けたメッセージをご記入ください。"
-                  className="w-full p-3.5 text-sm sm:text-base text-slate-950 font-sans font-medium border-2 border-slate-300 rounded-xl bg-white focus:border-teal-600 outline-none leading-relaxed"
+                  className="w-full p-3.5 text-sm sm:text-base text-slate-950 font-letter-mincho font-serif font-medium border-2 border-slate-300 rounded-xl bg-white focus:border-teal-600 outline-none leading-relaxed"
                 />
 
                 {privacyWarning && (
