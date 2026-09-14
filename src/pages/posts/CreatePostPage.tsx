@@ -5,7 +5,7 @@ import {
   ArrowRight, ArrowLeft, BookOpen, Check, CheckCircle2,
   HelpCircle, Info, Lock, MapPin, Send, Shield,
   ShieldCheck, Sparkles, User, AlertTriangle, Eye, AlertCircle, Calendar,
-  Edit3, Mail, Key, Crown, CreditCard, FileCheck
+  Edit3, Mail, Key, Crown, CreditCard, FileCheck, Share2, Copy
 } from 'lucide-react';
 import { useAuth, useNgFilter } from '../../contexts/AuthContext';
 import { PREFECTURES, BIRTH_YEAR_OPTIONS, formatBirthYearLabel, getPostUrl, PageHeader } from '../../lib/utils';
@@ -34,14 +34,17 @@ export const CreatePostPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [warningMessage, setWarningMessage] = useState<string | null>(null);
 
-  // 進行ステップ ('form': 手紙作成, 'preview': プレビュー確認, 'plan': 公開方法選択)
-  const [step, setStep] = useState<'form' | 'preview' | 'plan'>('form');
+  // 進行ステップ ('form': 手紙作成, 'preview': プレビュー確認, 'plan': 公開方法選択, 'success': 投函完了)
+  const [step, setStep] = useState<'form' | 'preview' | 'plan' | 'success'>('form');
 
   // 選択されたプラン ('free' | 'ekyc')
   const [pendingPlan, setPendingPlan] = useState<'free' | 'ekyc'>('ekyc');
 
   // プレビュー表示切り替えタブ ('ekyc': 認証あり表示, 'free': 通常無料表示)
   const [previewTab, setPreviewTab] = useState<'ekyc' | 'free'>('ekyc');
+
+  // 公開URLコピー完了ステート
+  const [copiedUrl, setCopiedUrl] = useState(false);
 
   // 無料アカウント登録・ログインモーダル
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -223,18 +226,14 @@ export const CreatePostPage = () => {
           // 🌟 eKYC認証プランの場合: eKYCモーダルを起動
           setShowEkycModal(true);
         } else {
-          // ✉️ 無料プランの場合: そのまま公開詳細ページへ遷移
-          navigate(getPostUrl(data), {
-            state: {
-              justPosted: true,
-              postPreview: data
-            }
-          });
+          // ✉️ 無料プランの場合: 投函完了（Step 4）画面へ遷移
+          setStep('success');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
         }
       } else {
         const err = await res.json();
         setWarningMessage(err.error || '手紙の登録に失敗しました。入力内容をご確認ください。');
-        setStep('form');
+        setStep('plan');
       }
     } catch (e) {
       console.error(e);
@@ -364,17 +363,17 @@ export const CreatePostPage = () => {
       <BackToHomeButton className="mb-2" />
 
       {/* ステップバー（進行インジケーター） */}
-      <div className="flex items-center justify-center gap-2 sm:gap-4 max-w-lg mx-auto mb-4 text-xs font-bold font-sans">
-        <div className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full transition-all ${
+      <div className="flex items-center justify-center gap-1.5 sm:gap-3 max-w-xl mx-auto mb-4 text-xs font-bold font-sans">
+        <div className={`flex items-center gap-1 px-3 py-1.5 rounded-full transition-all ${
           step === 'form' ? 'bg-teal-700 text-white shadow-xs' : 'bg-slate-100 text-slate-500'
         }`}>
           <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${
             step === 'form' ? 'bg-white/20 text-white' : 'bg-slate-300 text-slate-700'
           }`}>1</span>
-          <span>手紙を作成</span>
+          <span>手紙作成</span>
         </div>
         <span className="text-slate-300 font-bold">→</span>
-        <div className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full transition-all ${
+        <div className={`flex items-center gap-1 px-3 py-1.5 rounded-full transition-all ${
           step === 'preview' ? 'bg-teal-700 text-white shadow-xs' : 'bg-slate-100 text-slate-500'
         }`}>
           <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${
@@ -383,13 +382,22 @@ export const CreatePostPage = () => {
           <span>プレビュー確認</span>
         </div>
         <span className="text-slate-300 font-bold">→</span>
-        <div className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full transition-all ${
+        <div className={`flex items-center gap-1 px-3 py-1.5 rounded-full transition-all ${
           step === 'plan' ? 'bg-amber-600 text-white shadow-xs' : 'bg-slate-100 text-slate-500'
         }`}>
           <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${
             step === 'plan' ? 'bg-white/20 text-white' : 'bg-slate-300 text-slate-700'
           }`}>3</span>
-          <span>公開方法の選択</span>
+          <span>公開方法選択</span>
+        </div>
+        <span className="text-slate-300 font-bold">→</span>
+        <div className={`flex items-center gap-1 px-3 py-1.5 rounded-full transition-all ${
+          step === 'success' ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 text-slate-500'
+        }`}>
+          <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${
+            step === 'success' ? 'bg-white/20 text-white' : 'bg-slate-300 text-slate-700'
+          }`}>4</span>
+          <span>公開完了</span>
         </div>
       </div>
 
@@ -733,6 +741,18 @@ export const CreatePostPage = () => {
               <p className="text-xs sm:text-sm text-slate-600 font-sans leading-relaxed">
                 お相手があなたを見つけた際、<strong>「間違いなく本物のあの人だ！」</strong>と確信できるよう、公的本人確認（eKYC）認証マーク付きでの投函を推奨しています。
               </p>
+
+              {/* 💡 アカウント登録と通知・管理に関する重要案内 */}
+              <div className="p-3.5 bg-sky-50/80 rounded-2xl border border-sky-200 text-left text-xs text-sky-900 flex items-start gap-2.5 font-sans mt-3">
+                <CheckCircle2 size={16} className="text-sky-600 shrink-0 mt-0.5" />
+                <div className="space-y-0.5 leading-relaxed">
+                  <strong className="block text-sky-950 font-bold">手紙の設置とアカウント連携について</strong>
+                  <span>
+                    お相手から再会エピソードが届いた際の<strong>メール通知</strong>および、マイページでの<strong>手紙の再確認・管理</strong>のため、プラン選択後に無料アカウント登録（30秒）を行います。
+                    {pendingPlan === 'ekyc' && ' 公的本人確認（eKYC）では身元確認証明のためアカウント登録が必須となります。'}
+                  </span>
+                </div>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 pt-1">
@@ -885,6 +905,219 @@ export const CreatePostPage = () => {
             >
               手紙の文章や内容を修正する
             </button>
+          </div>
+        </div>
+      ) : step === 'success' ? (
+        /* =========================================================================
+            C. 投函・公開完了画面（インターネットの海に手紙が置かれた完了ページ）
+        ========================================================================= */
+        <div className="space-y-6 animate-fade-in text-left">
+          {/* お祝いヘッダーバナー */}
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-teal-800 via-emerald-800 to-teal-950 text-white p-6 sm:p-10 shadow-2xl text-center space-y-3 border-2 border-emerald-400/40">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="w-16 h-16 bg-white/15 rounded-3xl mx-auto flex items-center justify-center backdrop-blur-md border border-white/30 shadow-lg text-amber-300 animate-bounce">
+              <Sparkles size={32} />
+            </div>
+
+            <span className="text-[10px] font-extrabold uppercase tracking-widest bg-emerald-500/20 text-emerald-200 px-3.5 py-1 rounded-full border border-emerald-400/40 inline-block font-mono">
+              PUBLISH COMPLETE
+            </span>
+
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-white tracking-wide">
+              手紙がインターネットの海に置かれました
+            </h1>
+
+            <p className="text-xs sm:text-sm text-emerald-100/90 max-w-lg mx-auto font-sans leading-relaxed">
+              あなたを探しているお相手に向けた目印（手紙）が正常に公開されました。お相手がこの手紙を見つけ、当時の思い出を届けてくれる日を心待ちにしましょう。
+            </p>
+          </div>
+
+          {/* 公開された手紙の要約カード */}
+          <div className="bg-white rounded-3xl border-2 border-slate-200 p-6 sm:p-8 space-y-6 shadow-lg text-left">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-xs font-bold bg-teal-100 text-teal-800 px-3 py-1 rounded-full uppercase tracking-wider font-mono">
+                  {formData.hometownPref || '全国'}
+                </span>
+                {formData.birthYear && (
+                  <span className="text-xs font-bold bg-sky-100 text-sky-900 px-3 py-1 rounded-full font-mono">
+                    {formatBirthYearLabel(parseInt(formData.birthYear, 10))}
+                  </span>
+                )}
+                <span className="text-[11px] text-slate-400 font-mono">
+                  #{createdPostData?.id || 'ONLINE'}
+                </span>
+              </div>
+
+              {/* 認証マーク */}
+              {(createdPostData?.is_ekyc_verified || pendingPlan === 'ekyc' || user?.is_ekyc_verified) ? (
+                <span className="seal-rainbow px-3.5 py-1 text-white text-xs font-bold rounded-full shadow-xs flex items-center gap-1.5 font-serif">
+                  <ShieldCheck size={14} className="text-amber-200" />
+                  <span>🌈 公的本人確認（eKYC）認証済み</span>
+                </span>
+              ) : (
+                <span className="text-xs font-bold text-slate-600 bg-slate-100 border border-slate-200 px-3 py-1 rounded-full">
+                  ✉️ 通常の手紙として公開中
+                </span>
+              )}
+            </div>
+
+            {/* お名前 & メッセージ抜粋 */}
+            <div className="space-y-3">
+              <div>
+                <span className="text-xs font-bold text-slate-400 font-sans">手紙を置いた人</span>
+                <h2 className="text-xl sm:text-2xl font-serif font-bold text-slate-900">
+                  {fullName}
+                  {formData.maidenName && (
+                    <span className="text-sm font-normal text-slate-500 font-sans ml-2">
+                      （旧姓: {formData.maidenName}）
+                    </span>
+                  )}
+                </h2>
+              </div>
+
+              <div className="p-5 bg-slate-50 rounded-2xl border border-slate-200 font-serif text-slate-700 text-xs sm:text-sm leading-relaxed whitespace-pre-wrap">
+                {formData.message}
+              </div>
+            </div>
+
+            {/* 🔗 公開URLシェアボックス */}
+            {createdPostData && (
+              <div className="p-4 sm:p-5 bg-teal-50/60 rounded-2xl border border-teal-200/80 space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-teal-900 flex items-center gap-1.5 font-sans">
+                    <Share2 size={14} className="text-teal-700" />
+                    <span>あなたのお手紙の専用URL（シェア・保存用）</span>
+                  </span>
+                  <span className="text-[10px] text-teal-700 font-mono">
+                    PUBLIC LINK
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    readOnly
+                    value={`${window.location.origin}${getPostUrl(createdPostData)}`}
+                    className="flex-1 px-3.5 py-2 text-xs bg-white border border-teal-200 rounded-xl text-slate-700 font-mono select-all outline-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigator.clipboard.writeText(`${window.location.origin}${getPostUrl(createdPostData)}`);
+                      setCopiedUrl(true);
+                      setTimeout(() => setCopiedUrl(false), 2500);
+                    }}
+                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shrink-0 shadow-xs ${
+                      copiedUrl
+                        ? 'bg-emerald-600 text-white'
+                        : 'bg-teal-700 hover:bg-teal-800 text-white'
+                    }`}
+                  >
+                    {copiedUrl ? (
+                      <>
+                        <Check size={14} />
+                        <span>コピー完了！</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy size={14} />
+                        <span>URLをコピー</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+                <p className="text-[11px] text-teal-800/80 font-sans">
+                  ※ SNSやブログ、メモ帳等にこのURLを保存しておくと、いつでも直接手紙を開くことができます。
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* 今後の流れと通知の確認カード */}
+          <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 space-y-4 shadow-sm text-left font-sans">
+            <h3 className="text-base sm:text-lg font-serif font-bold text-slate-900 flex items-center gap-2">
+              <Sparkles size={18} className="text-teal-600" />
+              <span>今後の通知と手紙の管理について</span>
+            </h3>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+              <div className="p-4 bg-teal-50/50 rounded-2xl border border-teal-100 space-y-1.5">
+                <span className="text-[10px] font-bold text-teal-700 font-mono block">1. 通知メール</span>
+                <strong className="text-slate-900 block">再会申請をメールでお届け</strong>
+                <p className="text-slate-600 text-[11px] leading-relaxed">
+                  お相手があなたを見つけてエピソードを送信すると、ご登録のメールアドレス宛てに即座にお知らせが届きます。
+                </p>
+              </div>
+
+              <div className="p-4 bg-sky-50/50 rounded-2xl border border-sky-100 space-y-1.5">
+                <span className="text-[10px] font-bold text-sky-700 font-mono block">2. 相互承認制</span>
+                <strong className="text-slate-900 block">安心のプライバシー保護</strong>
+                <p className="text-slate-600 text-[11px] leading-relaxed">
+                  あなたが届いたエピソードを読んで「本人だ」と承認するまで、あなたの連絡先は相手に開示されません。
+                </p>
+              </div>
+
+              <div className="p-4 bg-amber-50/50 rounded-2xl border border-amber-100 space-y-1.5">
+                <span className="text-[10px] font-bold text-amber-800 font-mono block">3. いつでも再確認</span>
+                <strong className="text-slate-900 block">マイページで手紙を管理</strong>
+                <p className="text-slate-600 text-[11px] leading-relaxed">
+                  ログイン後のマイページから、いつでも手紙の内容再確認・メッセージ修正・取り下げが可能です。
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* メインCTAボタン群 */}
+          <div className="p-6 bg-gradient-to-r from-teal-900 via-slate-900 to-teal-950 text-white rounded-3xl shadow-xl space-y-4">
+            <div className="text-center space-y-1">
+              <h3 className="text-base sm:text-lg font-bold text-white font-serif">
+                次はどちらのページをご覧になりますか？
+              </h3>
+              <p className="text-xs text-slate-300 font-sans">
+                公開された実際の手紙ページ、または手紙を管理できるマイページへ移動できます。
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  if (createdPostData) {
+                    navigate(getPostUrl(createdPostData), {
+                      state: {
+                        justPosted: true,
+                        postPreview: createdPostData
+                      }
+                    });
+                  } else {
+                    navigate('/');
+                  }
+                }}
+                className="py-4 px-6 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold text-sm rounded-2xl shadow-md hover:shadow-lg active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer font-serif"
+              >
+                <Eye size={18} />
+                <span>公開された実際の手紙を見に行く</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => navigate('/mypage')}
+                className="py-4 px-6 bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm rounded-2xl shadow-md hover:shadow-lg active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer border border-slate-700 font-serif"
+              >
+                <User size={18} />
+                <span>マイページで手紙を管理・確認する</span>
+              </button>
+            </div>
+
+            <div className="pt-2 text-center">
+              <Link
+                to="/"
+                className="text-xs text-slate-400 hover:text-white underline font-sans"
+              >
+                トップページへ戻る
+              </Link>
+            </div>
           </div>
         </div>
       ) : (
@@ -1325,14 +1558,16 @@ export const CreatePostPage = () => {
                   </div>
                 </div>
 
-                <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/80 text-xs text-slate-600 leading-relaxed font-sans space-y-1">
-                  <p className="font-bold text-slate-800 flex items-center gap-1">
-                    <ShieldCheck size={14} className="text-teal-600 shrink-0" />
-                    <span>なぜアカウント登録が必要なのですか？</span>
+                <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/80 text-xs text-slate-600 leading-relaxed font-sans space-y-1.5">
+                  <p className="font-bold text-slate-800 flex items-center gap-1.5">
+                    <ShieldCheck size={15} className="text-teal-600 shrink-0" />
+                    <span>アカウント登録が必要な3つの理由</span>
                   </p>
-                  <p>
-                    あなたを探しているお相手から「再会エピソード」が届いた際、<strong>メールで確実に通知をお届けし、安全に承認・開示手続きを行うため</strong>に必要です。
-                  </p>
+                  <ul className="space-y-1 text-[11px] text-slate-600 list-disc pl-4">
+                    <li>相手から再会エピソードが届いた際に<strong>メール通知</strong>を受け取るため</li>
+                    <li>マイページで手紙の内容を<strong>いつでも再確認・編集・削除</strong>できるようにするため</li>
+                    <li>公的本人確認（eKYC）を行う場合、<strong>身元確認データを安全に紐付ける</strong>ため</li>
+                  </ul>
                 </div>
 
                 {/* SNSログイン / 登録 */}
@@ -1456,23 +1691,18 @@ export const CreatePostPage = () => {
         isOpen={showEkycModal}
         onClose={() => {
           setShowEkycModal(false);
-          if (createdPostData) {
-            navigate(getPostUrl(createdPostData), {
-              state: {
-                justPosted: true,
-                postPreview: {
-                  ...createdPostData,
-                  is_ekyc_verified: Boolean(user?.is_ekyc_verified || localStorage.getItem('ekyc_verified') === 'true')
-                }
-              }
-            });
-          }
+          setStep('success');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
         user={user}
         token={token}
         updateUser={(updated) => {
           updateUser(updated);
           if (createdPostData) {
+            setCreatedPostData((prev: any) => ({
+              ...prev,
+              is_ekyc_verified: true
+            }));
             // 手紙側にも eKYC 認証反映
             fetch(`/api/posts/${createdPostData.id}`, {
               headers: token ? { 'Authorization': `Bearer ${token}` } : {}
