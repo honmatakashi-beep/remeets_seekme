@@ -152,26 +152,38 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
 
   return (
     <div className="min-h-screen bg-transparent py-6 sm:py-10 text-slate-800 font-sans">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 space-y-6">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 space-y-5">
         
+        {/* 上部ナビゲーション（トップに戻る ＆ マイアカウントに戻る） */}
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <div className="flex items-center gap-2 flex-wrap">
+            <Link
+              to="/"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-600 bg-white/80 hover:bg-white border border-slate-200/80 hover:border-slate-300 shadow-2xs transition-all cursor-pointer"
+            >
+              <ArrowLeft size={14} className="text-slate-500" />
+              <span>トップに戻る</span>
+            </Link>
+            {user && (
+              <Link
+                to="/account"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-teal-800 bg-teal-50/90 hover:bg-teal-100 border border-teal-200/90 shadow-2xs transition-all cursor-pointer"
+              >
+                <User size={13} className="text-teal-600" />
+                <span>マイアカウントに戻る</span>
+              </Link>
+            )}
+          </div>
+        </div>
+
         {/* オーナー（作成者本人）閲覧時のスマートプレビューバナー */}
-        {isAuthor ? (
+        {isAuthor && (
           <div className="p-4 bg-gradient-to-r from-teal-50 via-emerald-50 to-teal-50 border-2 border-teal-300 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
             <div className="flex items-center gap-2.5 text-teal-950 text-xs sm:text-sm font-bold">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
               <span>あなたが公開中のメッセージです（Google検索対象・一般の方にはこのように見えます）</span>
             </div>
-            <div className="flex items-center gap-2 shrink-0">
-              <Link
-                to="/account"
-                className="px-4 py-2 bg-white hover:bg-slate-50 text-teal-900 border border-teal-200 rounded-xl text-xs font-bold transition-all shadow-2xs"
-              >
-                マイアカウントへ戻る
-              </Link>
-            </div>
           </div>
-        ) : (
-          <BackToHomeButton />
         )}
 
         {/* 投稿直後バナー */}
