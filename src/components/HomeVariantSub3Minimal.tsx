@@ -14,7 +14,6 @@ import {
 
 interface HomeVariantSub3MinimalProps {
   onToggleDesign?: () => void;
-  recentPosts?: any[];
   onOpenConceptModal?: () => void;
 }
 

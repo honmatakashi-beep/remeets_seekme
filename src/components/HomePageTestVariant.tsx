@@ -27,7 +27,6 @@ import {
 
 interface HomePageTestVariantProps {
   onToggleDesign: () => void;
-  recentPosts?: any[];
   onOpenConceptModal?: () => void;
 }
 

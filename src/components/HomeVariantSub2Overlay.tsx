@@ -22,7 +22,6 @@ import {
 
 interface HomeVariantSub2OverlayProps {
   onToggleDesign?: () => void;
-  recentPosts?: any[];
   onOpenConceptModal?: () => void;
 }
 
@@ -104,7 +103,6 @@ const TRIGGER_CATEGORIES = [
 
 export const HomeVariantSub2Overlay: React.FC<HomeVariantSub2OverlayProps> = ({
   onToggleDesign,
-  recentPosts = [],
   onOpenConceptModal
 }) => {
   const navigate = useNavigate();

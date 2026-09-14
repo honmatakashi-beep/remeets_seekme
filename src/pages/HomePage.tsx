@@ -170,7 +170,6 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
       <>
         <HomeVariantSub2Overlay
           onToggleDesign={toggleHomeDesign}
-          recentPosts={posts}
           onOpenConceptModal={() => setIsConceptModalOpen(true)}
         />
 
@@ -188,7 +187,6 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
       <>
         <HomeVariantSub3Minimal
           onToggleDesign={toggleHomeDesign}
-          recentPosts={posts}
           onOpenConceptModal={() => setIsConceptModalOpen(true)}
         />
 
