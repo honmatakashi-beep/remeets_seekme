@@ -610,23 +610,23 @@ export const CreatePostPage = () => {
                 : 'border-slate-300 shadow-md'
             }`}>
               {/* 手紙ヘッダー */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-teal-100 pb-4">
-                <div className="space-y-1.5">
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-teal-100 pb-4">
+                <div className="space-y-1.5 flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-[11px] font-bold text-teal-800 tracking-wider font-sans bg-teal-50 border border-teal-200 px-2.5 py-0.5 rounded-full flex items-center gap-1">
                       <span>💌</span>
-                      <span>想い出再会プラットフォーム ReMEETs 公式レター</span>
+                      <span>想い出再会プラットフォーム ReMEETs SEEKME 公式レター</span>
                     </span>
                   </div>
                   <div className="flex items-center gap-2.5 flex-wrap">
-                    <h3 className="text-xl sm:text-2xl font-serif font-bold text-slate-900">
+                    <h3 className="text-xl sm:text-2xl font-serif font-bold text-slate-900 leading-snug">
                       {fullName || 'お名前'} 様から貴方宛のメッセージです。
                     </h3>
                     {previewTab === 'ekyc' && (
                       <button
                         type="button"
                         onClick={() => setShowEkycExplanationModal(true)}
-                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-900 border border-rose-300 shadow-2xs text-xs font-bold cursor-pointer transition-all hover:scale-105 active:scale-95 group"
+                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-900 border border-rose-300 shadow-2xs text-xs font-bold cursor-pointer transition-all hover:scale-105 active:scale-95 group shrink-0"
                         title="クリックして公的本人確認（eKYC）の証明内容を確認"
                       >
                         <div className="w-4 h-4 rounded-full seal-rainbow flex items-center justify-center text-white shadow-2xs shrink-0">
@@ -640,10 +640,12 @@ export const CreatePostPage = () => {
                     )}
                   </div>
                 </div>
-                <div className="text-xs text-slate-500 font-sans flex items-center gap-3">
-                  <span>公開予定：本日</span>
+
+                {/* 右側：公開予定日 ＆ eKYC大型封蝋バッジ */}
+                <div className="flex items-center sm:flex-col sm:items-end justify-between sm:justify-start gap-2 shrink-0 pt-1 sm:pt-0 border-t sm:border-t-0 border-teal-100/60 sm:border-none">
+                  <span className="text-xs text-slate-500 font-sans whitespace-nowrap">公開予定：本日</span>
                   {previewTab === 'ekyc' && (
-                    <div className="relative group">
+                    <div className="relative group sm:mt-1">
                       <button
                         type="button"
                         onClick={() => setShowEkycExplanationModal(true)}
@@ -705,43 +707,66 @@ export const CreatePostPage = () => {
           </div>
 
           {/* =========================================================================
-              3. 安心解説: 相互承認制・eKYC本人確認の仕組み図解
+              3. この手紙について（ReMEETs SEEKMEの目的と利用方法の端的な解説）
           ========================================================================= */}
-          <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-5">
-            <div className="text-center space-y-1">
-              <span className="text-[10px] font-bold text-teal-700 tracking-[0.25em] uppercase font-sans">
-                SAFETY & PRIVACY
+          <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-5 text-left font-sans">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
+              <div className="space-y-1">
+                <span className="text-[10px] font-extrabold text-teal-700 tracking-widest uppercase font-mono">
+                  ABOUT THIS LETTER & SERVICE
+                </span>
+                <h3 className="text-base sm:text-lg font-serif font-bold text-slate-900">
+                  このページは「ReMEETs SEEKME」がお届けしています
+                </h3>
+              </div>
+              <span className="text-[11px] text-slate-600 bg-slate-50 border border-slate-200 px-3 py-1 rounded-full self-start sm:self-auto font-medium">
+                🔒 安心・安全の想い出再会プラットフォーム
               </span>
-              <h2 className="text-lg sm:text-xl font-serif font-bold text-slate-900">
-                安心・安全の相互承認フロー
-              </h2>
-              <p className="text-xs text-slate-500 font-sans">
-                一方的な連絡先開示や悪用を防ぐため、完全な相互合意制を採用しています。
-              </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left font-sans text-xs">
-              <div className="p-4 bg-teal-50/50 rounded-2xl border border-teal-100 space-y-1.5">
-                <span className="text-[10px] font-bold text-teal-700 font-mono block">STEP 1</span>
-                <strong className="text-slate-900 block">エピソード送信</strong>
-                <p className="text-slate-600 leading-relaxed text-[11px]">
-                  相手が当時の思い出を添えて申請。あなた宛てにメールで通知が届きます。
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+              {/* 1. どういう手紙か（手紙の目的） */}
+              <div className="p-4 sm:p-5 bg-gradient-to-br from-teal-50/70 to-emerald-50/40 rounded-2xl border border-teal-200/80 space-y-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-lg bg-teal-700 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
+                    1
+                  </div>
+                  <strong className="text-slate-900 text-xs sm:text-sm font-bold block font-serif">
+                    手紙の目的について
+                  </strong>
+                </div>
+                <p className="text-slate-600 text-[11.5px] leading-relaxed">
+                  昔の同級生・恩師・お世話になった知人など、<strong>「もう一度再会したい大切な相手」</strong>に向けて、差出人が想い出と感謝を込めて海に託した手紙です。
                 </p>
               </div>
 
-              <div className="p-4 bg-sky-50/50 rounded-2xl border border-sky-100 space-y-1.5">
-                <span className="text-[10px] font-bold text-sky-700 font-mono block">STEP 2</span>
-                <strong className="text-slate-900 block">あなたが確認＆承認</strong>
-                <p className="text-slate-600 leading-relaxed text-[11px]">
-                  あなたが届いたエピソードを読み、「本人だ！」と納得して承認します。
+              {/* 2. 心当たりがある場合の利用方法 */}
+              <div className="p-4 sm:p-5 bg-gradient-to-br from-sky-50/70 to-blue-50/40 rounded-2xl border border-sky-200/80 space-y-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-lg bg-sky-700 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
+                    2
+                  </div>
+                  <strong className="text-slate-900 text-xs sm:text-sm font-bold block font-serif">
+                    心当たりがある時の利用方法
+                  </strong>
+                </div>
+                <p className="text-slate-600 text-[11.5px] leading-relaxed">
+                  「自分宛てかもしれない」と思ったら、手紙下のボタンから<strong>当時の思い出エピソードを添えて再会希望を申請</strong>できます。差出人に通知が届きます。
                 </p>
               </div>
 
-              <div className="p-4 bg-emerald-50/50 rounded-2xl border border-emerald-100 space-y-1.5">
-                <span className="text-[10px] font-bold text-emerald-700 font-mono block">STEP 3</span>
-                <strong className="text-slate-900 block">連絡先を安全に交換</strong>
-                <p className="text-slate-600 leading-relaxed text-[11px]">
-                  相互承認後、登録したLINEやメール等の連絡先が安全に開示されます。
+              {/* 3. プライバシーと相互承認 */}
+              <div className="p-4 sm:p-5 bg-gradient-to-br from-amber-50/70 to-orange-50/40 rounded-2xl border border-amber-200/80 space-y-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-lg bg-amber-700 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
+                    3
+                  </div>
+                  <strong className="text-slate-900 text-xs sm:text-sm font-bold block font-serif">
+                    安心の相互合意システム
+                  </strong>
+                </div>
+                <p className="text-slate-600 text-[11.5px] leading-relaxed">
+                  差出人が届いたエピソードを読んで「間違いなく本人だ」と<strong>双方が合意するまで連絡先は開示されません</strong>。悪用や冷やかしを防ぐ安全設計です。
                 </p>
               </div>
             </div>
