@@ -405,112 +405,10 @@ export const CreatePostPage = () => {
             </div>
           )}
 
-          {/* 💌 お相手が見る実際の手紙詳細カード（本番HTMLと100%同一） */}
-          <div className="relative rounded-3xl bg-gradient-to-br from-white via-teal-50/20 to-sky-50/30 border-2 border-teal-300/80 p-6 sm:p-10 shadow-lg text-left space-y-6 overflow-hidden">
-            <div className="absolute top-0 right-0 w-48 h-48 bg-teal-200/20 rounded-full blur-3xl pointer-events-none" />
-
-            {/* ヘッダー情報 */}
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-teal-100 pb-4">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-xs font-bold bg-teal-100 text-teal-800 px-3 py-1 rounded-full uppercase tracking-wider font-mono">
-                  {formData.hometownPref || '全国'}
-                </span>
-                {formData.birthYear && (
-                  <span className="text-xs font-bold bg-sky-100 text-sky-900 px-3 py-1 rounded-full font-mono">
-                    {formatBirthYearLabel(parseInt(formData.birthYear, 10))}
-                  </span>
-                )}
-                <span className="text-[11px] text-slate-400 font-mono">
-                  #NEW-PREVIEW
-                </span>
-              </div>
-              <span className="text-xs font-bold text-teal-700 bg-white/90 border border-teal-200 px-3 py-1 rounded-full shadow-2xs">
-                💌 私を探すあなたへ
-              </span>
-            </div>
-
-            {/* 氏名・旧姓 */}
-            <div className="space-y-1">
-              <span className="text-xs font-bold text-slate-500 font-sans">手紙を置いた人</span>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-slate-900 tracking-wide">
-                {fullName || 'お名前'}
-                {formData.maidenName && (
-                  <span className="text-sm sm:text-base font-normal text-slate-500 font-sans ml-2">
-                    （旧姓: {formData.maidenName}）
-                  </span>
-                )}
-              </h1>
-            </div>
-
-            {/* メッセージ本文 */}
-            <div className="p-6 sm:p-8 bg-white/95 rounded-2xl border border-slate-200 shadow-inner space-y-3 font-serif">
-              <span className="text-xs text-teal-700 font-bold block uppercase tracking-widest font-sans">
-                MESSAGE
-              </span>
-              <p className="text-sm sm:text-base md:text-lg text-slate-800 leading-relaxed sm:leading-loose whitespace-pre-wrap">
-                {formData.message || '私を探しているあなたへ。メッセージをお待ちしています。'}
-              </p>
-            </div>
-
-            {/* メインCTA（相手側の視点） */}
-            <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-teal-100">
-              <div className="text-xs text-slate-600 font-sans space-y-0.5 text-center sm:text-left">
-                <span className="font-bold text-slate-800 block">この人に心当たりはありませんか？</span>
-                <span>当時のエピソードを添えて、無料で再会希望を申請できます。</span>
-              </div>
-
-              <div className="px-6 py-3 bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-bold rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2 opacity-90 cursor-default shadow-sm pointer-events-none">
-                <Send size={15} className="text-teal-200" />
-                <span>この人に再会を希望する（相手用ボタン）</span>
-              </div>
-            </div>
-          </div>
-
-          {/* 3. 安心解説: 相互承認制・eKYC本人確認の仕組み図解 */}
-          <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-5">
-            <div className="text-center space-y-1">
-              <span className="text-[10px] font-bold text-teal-700 tracking-[0.25em] uppercase font-sans">
-                SAFETY & PRIVACY
-              </span>
-              <h2 className="text-lg sm:text-xl font-serif font-bold text-slate-900">
-                安心・安全の相互承認フロー
-              </h2>
-              <p className="text-xs text-slate-500 font-sans">
-                一方的な連絡先開示や悪用を防ぐため、完全な相互合意制を採用しています。
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left font-sans text-xs">
-              <div className="p-4 bg-teal-50/50 rounded-2xl border border-teal-100 space-y-1.5">
-                <span className="text-[10px] font-bold text-teal-700 font-mono block">STEP 1</span>
-                <strong className="text-slate-900 block">エピソード送信（無料）</strong>
-                <p className="text-slate-600 leading-relaxed text-[11px]">
-                  相手が当時の思い出を添えて申請。あなた宛てにメールで通知が届きます。
-                </p>
-              </div>
-
-              <div className="p-4 bg-sky-50/50 rounded-2xl border border-sky-100 space-y-1.5">
-                <span className="text-[10px] font-bold text-sky-700 font-mono block">STEP 2</span>
-                <strong className="text-slate-900 block">あなたが確認＆承認</strong>
-                <p className="text-slate-600 leading-relaxed text-[11px]">
-                  あなたが届いたエピソードを読み、「本人だ！」と納得して承認します。
-                </p>
-              </div>
-
-              <div className="p-4 bg-emerald-50/50 rounded-2xl border border-emerald-100 space-y-1.5">
-                <span className="text-[10px] font-bold text-emerald-700 font-mono block">STEP 3</span>
-                <strong className="text-slate-900 block">連絡先を安全に交換</strong>
-                <p className="text-slate-600 leading-relaxed text-[11px]">
-                  相互承認後、登録したLINEやメール等の連絡先が安全に開示されます。
-                </p>
-              </div>
-            </div>
-          </div>
-
           {/* =========================================================================
-              4. 投函プランの選択エリア（🌟 eKYC公的認証付き 600円 vs ✉️ 通常無料 0円）
+              1. 投函プランの選択エリア（🌟 eKYC公的認証付き 600円 vs ✉️ 通常無料 0円）
           ========================================================================= */}
-          <div className="bg-white rounded-3xl border-2 border-slate-200 p-6 sm:p-8 space-y-6 shadow-xl text-left">
+          <div className="bg-white rounded-3xl border-2 border-teal-500/40 p-6 sm:p-8 space-y-6 shadow-xl text-left">
             <div className="text-center space-y-1.5 max-w-lg mx-auto">
               <span className="text-[10px] font-extrabold text-teal-800 uppercase tracking-widest bg-teal-50 px-3 py-0.5 rounded-full border border-teal-200 inline-block font-sans">
                 SELECT PUBLISH PLAN
@@ -647,21 +545,138 @@ export const CreatePostPage = () => {
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* 戻るボタン */}
-            <div className="pt-3 flex justify-center border-t border-slate-100">
-              <button
-                type="button"
-                onClick={() => {
-                  setIsPreviewMode(false);
-                  window.scrollTo({ top: 200, behavior: 'smooth' });
-                }}
-                className="px-5 py-2 text-slate-500 hover:text-slate-800 text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
-              >
-                <ArrowLeft size={14} />
-                <span>入力画面に戻って手紙を修正する</span>
-              </button>
+          {/* 💌 2. お相手が見る実際の手紙詳細カード（本番HTMLと100%同一） */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between px-2">
+              <span className="text-xs font-bold text-slate-600 flex items-center gap-1.5 font-sans">
+                <Eye size={14} className="text-teal-600" />
+                <span>お相手が見る公開画面の実物プレビュー</span>
+              </span>
+              <span className="text-[11px] text-slate-400 font-mono">
+                REAL HTML VIEW
+              </span>
             </div>
+
+            <div className="relative rounded-3xl bg-gradient-to-br from-white via-teal-50/20 to-sky-50/30 border-2 border-teal-300/80 p-6 sm:p-10 shadow-lg text-left space-y-6 overflow-hidden">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-teal-200/20 rounded-full blur-3xl pointer-events-none" />
+
+              {/* ヘッダー情報 */}
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-teal-100 pb-4">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-xs font-bold bg-teal-100 text-teal-800 px-3 py-1 rounded-full uppercase tracking-wider font-mono">
+                    {formData.hometownPref || '全国'}
+                  </span>
+                  {formData.birthYear && (
+                    <span className="text-xs font-bold bg-sky-100 text-sky-900 px-3 py-1 rounded-full font-mono">
+                      {formatBirthYearLabel(parseInt(formData.birthYear, 10))}
+                    </span>
+                  )}
+                  <span className="text-[11px] text-slate-400 font-mono">
+                    #NEW-PREVIEW
+                  </span>
+                </div>
+                <span className="text-xs font-bold text-teal-700 bg-white/90 border border-teal-200 px-3 py-1 rounded-full shadow-2xs">
+                  💌 私を探すあなたへ
+                </span>
+              </div>
+
+              {/* 氏名・旧姓 */}
+              <div className="space-y-1">
+                <span className="text-xs font-bold text-slate-500 font-sans">手紙を置いた人</span>
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-slate-900 tracking-wide">
+                  {fullName || 'お名前'}
+                  {formData.maidenName && (
+                    <span className="text-sm sm:text-base font-normal text-slate-500 font-sans ml-2">
+                      （旧姓: {formData.maidenName}）
+                    </span>
+                  )}
+                </h1>
+              </div>
+
+              {/* メッセージ本文 */}
+              <div className="p-6 sm:p-8 bg-white/95 rounded-2xl border border-slate-200 shadow-inner space-y-3 font-serif">
+                <span className="text-xs text-teal-700 font-bold block uppercase tracking-widest font-sans">
+                  MESSAGE
+                </span>
+                <p className="text-sm sm:text-base md:text-lg text-slate-800 leading-relaxed sm:leading-loose whitespace-pre-wrap">
+                  {formData.message || '私を探しているあなたへ。メッセージをお待ちしています。'}
+                </p>
+              </div>
+
+              {/* メインCTA（相手側の視点） */}
+              <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-teal-100">
+                <div className="text-xs text-slate-600 font-sans space-y-0.5 text-center sm:text-left">
+                  <span className="font-bold text-slate-800 block">この人に心当たりはありませんか？</span>
+                  <span>当時のエピソードを添えて、無料で再会希望を申請できます。</span>
+                </div>
+
+                <div className="px-6 py-3 bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-bold rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2 opacity-90 cursor-default shadow-sm pointer-events-none">
+                  <Send size={15} className="text-teal-200" />
+                  <span>この人に再会を希望する（相手用ボタン）</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 3. 安心解説: 相互承認制・eKYC本人確認の仕組み図解 */}
+          <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-5">
+            <div className="text-center space-y-1">
+              <span className="text-[10px] font-bold text-teal-700 tracking-[0.25em] uppercase font-sans">
+                SAFETY & PRIVACY
+              </span>
+              <h2 className="text-lg sm:text-xl font-serif font-bold text-slate-900">
+                安心・安全の相互承認フロー
+              </h2>
+              <p className="text-xs text-slate-500 font-sans">
+                一方的な連絡先開示や悪用を防ぐため、完全な相互合意制を採用しています。
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left font-sans text-xs">
+              <div className="p-4 bg-teal-50/50 rounded-2xl border border-teal-100 space-y-1.5">
+                <span className="text-[10px] font-bold text-teal-700 font-mono block">STEP 1</span>
+                <strong className="text-slate-900 block">エピソード送信（無料）</strong>
+                <p className="text-slate-600 leading-relaxed text-[11px]">
+                  相手が当時の思い出を添えて申請。あなた宛てにメールで通知が届きます。
+                </p>
+              </div>
+
+              <div className="p-4 bg-sky-50/50 rounded-2xl border border-sky-100 space-y-1.5">
+                <span className="text-[10px] font-bold text-sky-700 font-mono block">STEP 2</span>
+                <strong className="text-slate-900 block">あなたが確認＆承認</strong>
+                <p className="text-slate-600 leading-relaxed text-[11px]">
+                  あなたが届いたエピソードを読み、「本人だ！」と納得して承認します。
+                </p>
+              </div>
+
+              <div className="p-4 bg-emerald-50/50 rounded-2xl border border-emerald-100 space-y-1.5">
+                <span className="text-[10px] font-bold text-emerald-700 font-mono block">STEP 3</span>
+                <strong className="text-slate-900 block">連絡先を安全に交換</strong>
+                <p className="text-slate-600 leading-relaxed text-[11px]">
+                  相互承認後、登録したLINEやメール等の連絡先が安全に開示されます。
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* 4. 入力修正フッターバー */}
+          <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+            <span className="text-xs text-slate-600 font-sans">
+              内容を変更したい箇所はありますか？
+            </span>
+            <button
+              type="button"
+              onClick={() => {
+                setIsPreviewMode(false);
+                window.scrollTo({ top: 200, behavior: 'smooth' });
+              }}
+              className="px-5 py-2.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded-xl text-xs font-bold transition-all shadow-2xs flex items-center gap-1.5 cursor-pointer"
+            >
+              <ArrowLeft size={14} />
+              <span>入力画面に戻って手紙を修正する</span>
+            </button>
           </div>
         </div>
       ) : (
