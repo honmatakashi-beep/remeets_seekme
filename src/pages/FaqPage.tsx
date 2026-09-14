@@ -473,14 +473,14 @@ export const FaqPage: React.FC = () => {
       id: 'q-edit-1',
       category: 'edit',
       categoryName: 'メッセージの編集・削除・退会',
-      question: '流したメッセージの内容を修正したり、後から消すことはできますか？',
+      question: '公開したメッセージの内容を修正したり、後から消すことはできますか？',
       answer: (
         <>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            はい、いつでも可能です。ログイン後、マイページの「流したボトルメール一覧」から、該当のメッセージの <strong className="text-slate-900 font-bold">「編集」または「海から引き上げる（完全削除）」</strong> をワンタップで実行できます。
+            はい、いつでも可能です。ログイン後、マイアカウント（マイページ）最上部の「あなたの公開メッセージ」カードから、メッセージの <strong className="text-slate-900 font-bold">「メッセージを編集する」または「メッセージを完全削除」</strong> をワンタップで実行できます。
           </p>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            削除を実行したメッセージはデータベースから物理的に完全抹消され、海（検索一覧・タイムライン）からも即座に消去されます。
+            削除を実行したメッセージはデータベースから物理的に完全抹消され、検索一覧からも即座に消去されます。
           </p>
         </>
       ),
@@ -493,7 +493,7 @@ export const FaqPage: React.FC = () => {
       question: '退会したい場合はどのように手続きすればいいですか？',
       answer: (
         <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-          マイページの「アカウント設定」内にある「退会・データ完全消去」よりいつでもご自身で即時退会いただけます。退会と同時に、流したメッセージ・プロフィール・認証履歴などの全データが安全に物理消去されます。
+          マイアカウント最下部にある「退会手続きへ」ボタンよりいつでもご自身で即時退会いただけます。退会と同時に、公開メッセージ・送受信した再会申請・プロフィール・認証履歴などの全データが安全に物理消去されます。
         </p>
       ),
       tags: ['退会', 'アカウント削除', 'データ抹消']

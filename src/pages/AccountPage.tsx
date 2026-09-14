@@ -559,9 +559,9 @@ export const AccountPage = () => {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const urlTab = searchParams.get('tab');
-  const initialSubTab = (urlTab && ['profile', 'received', 'sent', 'notifications'].includes(urlTab))
+  const initialSubTab = (urlTab && ['received', 'sent', 'profile', 'notifications'].includes(urlTab))
     ? (urlTab as 'profile' | 'received' | 'sent' | 'notifications')
-    : (location.state?.defaultTab || 'profile');
+    : (location.state?.defaultTab || 'received');
   const [activeSubTab, setActiveSubTab] = useState<'profile' | 'received' | 'sent' | 'notifications'>(initialSubTab);
   useEffect(() => {
     const tab = searchParams.get('tab');
@@ -973,7 +973,7 @@ export const AccountPage = () => {
           </span>
         }
         title="マイアカウント"
-        description="登録情報の変更、流したメッセージ（ボトルメール）への再会申請の確認、及び想い出の照合・連絡先開示状況を一元管理できます。"
+        description="公開メッセージへの再会希望の確認、送った再会申請の進捗、公的本人確認（eKYC）、及び通知ログを一元管理できます。"
         action={
           <button 
             type="button"
@@ -1485,34 +1485,15 @@ export const AccountPage = () => {
                 <span>マイアカウント管理（タブを選択して表示項目を切り替え）</span>
               </span>
               <span className="text-[10px] text-teal-800 font-extrabold bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-200/60">
-                {activeSubTab === 'profile' && '🛡️ 本人確認・応援 表示中'}
                 {activeSubTab === 'received' && '💌 届いた再会希望 一覧表示中'}
-                {activeSubTab === 'sent' && '📮 送信した再会申請 一覧表示中'}
-                {activeSubTab === 'notifications' && '🔔 通知・履歴 表示中'}
+                {activeSubTab === 'sent' && '📮 送った再会申請 一覧表示中'}
+                {activeSubTab === 'profile' && '🛡️ 公的本人確認 (eKYC) ステータス表示中'}
+                {activeSubTab === 'notifications' && '🔔 通知ログ・履歴 表示中'}
               </span>
             </div>
 
             <div className="p-1.5 bg-slate-200/70 rounded-2xl border border-slate-300/80 shadow-inner grid grid-cols-2 sm:grid-cols-4 gap-1.5 select-none">
-              <button
-                type="button"
-                onClick={() => handleTabChange('profile')}
-                className={`py-2.5 sm:py-3 px-2 sm:px-4 text-[11px] sm:text-xs md:text-sm font-bold transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 sm:gap-2 rounded-xl relative ${
-                  activeSubTab === 'profile'
-                    ? 'bg-white text-slate-900 shadow-md ring-1 ring-slate-900/10 font-serif'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/60 font-sans'
-                }`}
-              >
-                <span className={`p-1 sm:p-1.5 rounded-lg transition-colors shrink-0 ${
-                  activeSubTab === 'profile' ? 'bg-teal-700 text-white shadow-2xs' : 'bg-slate-300/60 text-slate-500'
-                }`}>
-                  <ShieldCheck size={13} />
-                </span>
-                <span className="truncate">本人確認・応援</span>
-                {activeSubTab === 'profile' && (
-                  <span className="absolute -top-1 -right-1 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-teal-500 border-2 border-white rounded-full shadow-2xs animate-pulse" />
-                )}
-              </button>
-
+              {/* タブ1: 届いた再会希望 */}
               <button
                 type="button"
                 onClick={() => handleTabChange('received')}
@@ -1539,7 +1520,8 @@ export const AccountPage = () => {
                   <span className="absolute -top-1 -right-1 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-emerald-500 border-2 border-white rounded-full shadow-2xs animate-pulse" />
                 )}
               </button>
-              
+
+              {/* タブ2: 送った再会申請 */}
               <button
                 type="button"
                 onClick={() => handleTabChange('sent')}
@@ -1554,7 +1536,7 @@ export const AccountPage = () => {
                 }`}>
                   <Send size={12} />
                 </span>
-                <span className="truncate">流したメッセージ</span>
+                <span className="truncate">送った再会申請</span>
                 <span className={`text-[9.5px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full font-bold transition-all shrink-0 ${
                   myPosts.length > 0
                     ? (activeSubTab === 'sent' ? 'bg-teal-600 text-white shadow-2xs' : 'bg-teal-100 text-teal-800 border border-teal-300')
@@ -1567,6 +1549,35 @@ export const AccountPage = () => {
                 )}
               </button>
 
+              {/* タブ3: 公的本人確認 (eKYC) */}
+              <button
+                type="button"
+                onClick={() => handleTabChange('profile')}
+                className={`py-2.5 sm:py-3 px-2 sm:px-4 text-[11px] sm:text-xs md:text-sm font-bold transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 sm:gap-2 rounded-xl relative ${
+                  activeSubTab === 'profile'
+                    ? 'bg-white text-slate-900 shadow-md ring-1 ring-slate-900/10 font-serif'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/60 font-sans'
+                }`}
+              >
+                <span className={`p-1 sm:p-1.5 rounded-lg transition-colors shrink-0 ${
+                  activeSubTab === 'profile' ? 'bg-teal-700 text-white shadow-2xs' : 'bg-slate-300/60 text-slate-500'
+                }`}>
+                  <ShieldCheck size={13} />
+                </span>
+                <span className="truncate">公的本人確認</span>
+                <span className={`text-[9.5px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full font-bold transition-all shrink-0 ${
+                  Boolean(user?.is_ekyc_verified || localStorage.getItem('ekyc_verified') === 'true')
+                    ? (activeSubTab === 'profile' ? 'bg-emerald-600 text-white shadow-2xs' : 'bg-emerald-100 text-emerald-800 border border-emerald-300')
+                    : (activeSubTab === 'profile' ? 'bg-amber-500 text-white shadow-2xs' : 'bg-amber-100 text-amber-800 border border-amber-300')
+                }`}>
+                  {Boolean(user?.is_ekyc_verified || localStorage.getItem('ekyc_verified') === 'true') ? '認証済' : '未認証'}
+                </span>
+                {activeSubTab === 'profile' && (
+                  <span className="absolute -top-1 -right-1 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-teal-500 border-2 border-white rounded-full shadow-2xs animate-pulse" />
+                )}
+              </button>
+
+              {/* タブ4: 通知ログ */}
               <button
                 type="button"
                 onClick={() => {
@@ -1630,6 +1641,16 @@ export const AccountPage = () => {
               />
             )}
 
+            {activeSubTab === "profile" && (
+              <AccountProfileTab
+                user={user}
+                token={token}
+                updateUser={updateUser}
+                setShowMypageEkycModal={setShowMypageEkycModal}
+                setMypageEkycStep={setMypageEkycStep}
+              />
+            )}
+
             {activeSubTab === "notifications" && (
               <AccountNotificationsTab
                 accountNotifications={notifications}
@@ -1646,19 +1667,79 @@ export const AccountPage = () => {
                 fetchNotifications={fetchNotifications}
               />
             )}
+          </div>
 
-            {activeSubTab === "profile" && (
-              <AccountProfileTab
-                user={user}
-                token={token}
-                updateUser={updateUser}
-                setShowMypageEkycModal={setShowMypageEkycModal}
-                setMypageEkycStep={setMypageEkycStep}
-                setDeleteAccountConsent={setDeleteAccountConsent}
-                setShowDeleteAccountModal={setShowDeleteAccountModal}
-              />
-            )}
+          {/* サポーター応援（寄付）＆ アカウント退会（常設セクション） */}
+          <div className="pt-8 space-y-6">
+            {/* 💖 サービスを応援する（サポーター寄付）カード */}
+            <div id="supporter-donation-card" className="p-6 md:p-8 bg-gradient-to-br from-pink-50/80 via-rose-50/30 to-white rounded-3xl border-2 border-pink-300 shadow-xs space-y-5 relative overflow-hidden">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-pink-200/80 pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-teal-600 text-white flex items-center justify-center shadow-xs shrink-0">
+                    <Coffee size={24} className="text-white" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-[10px] font-extrabold text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full font-serif uppercase tracking-widest border border-amber-300/60">
+                        Supporter Contribution
+                      </span>
+                      {(user?.is_supporter || localStorage.getItem('remeets_is_supporter') === 'true') && (
+                        <span className="text-[10px] text-pink-900 bg-pink-100 border border-pink-300 font-extrabold px-2 py-0.5 rounded-full flex items-center gap-1">
+                          ⭐ 公式サポーター認証済み
+                        </span>
+                      )}
+                    </div>
+                    <h3 className="text-xl font-serif font-bold text-slate-900 mt-1 flex items-center gap-2">
+                      ☕ ReMEETs SEEKMEを応援（寄付）
+                    </h3>
+                  </div>
+                </div>
+                <span className="text-xs font-bold text-teal-800 bg-white/90 border border-teal-200 px-3 py-1.5 rounded-xl text-center shrink-0 shadow-2xs font-serif">
+                  1口 500円〜 (都度決済)
+                </span>
+              </div>
 
+              <p className="text-xs text-slate-700 leading-relaxed font-sans bg-white/80 p-4 rounded-2xl border border-pink-100">
+                ReMEETs SEEKMEはユーザーの皆様の「思い出の再会」を安全かつ快適に守るため、月額会費0円で運営されています。<br className="hidden md:inline" />
+                「サービスを継続応援したい」「プラットフォームの発展に貢献したい」と思ってくださる方のための任意応援寄付です。ご寄付いただいた方にはプロファイル等に<strong>「⭐ 公式サポーター」ゴールドバッジ</strong>が付与されます。
+              </p>
+
+              <div className="pt-1">
+                <button
+                  type="button"
+                  onClick={() => navigate('/supporter')}
+                  className="w-full h-12 px-6 bg-gradient-to-r from-amber-500 via-orange-600 to-amber-800 hover:from-amber-600 hover:via-orange-700 hover:to-amber-900 text-white font-bold text-xs rounded-2xl shadow-sm shadow-amber-950/20 hover:shadow-md transition-all flex items-center justify-center gap-2.5 cursor-pointer font-sans active:scale-98 border border-amber-400/40"
+                >
+                  <BookOpen size={16} className="text-white drop-shadow-xs" />
+                  <span className="drop-shadow-xs">📖 サポーター寄付の趣旨・特典を見る</span>
+                </button>
+              </div>
+            </div>
+
+            {/* 🛡️ 退会・アカウント完全削除（プライバシー保護） */}
+            <div className="bg-rose-50/40 rounded-3xl border border-rose-200/60 p-5 md:p-6 space-y-4 font-sans text-left">
+              <div className="flex items-center justify-between gap-3">
+                <div className="space-y-1">
+                  <h4 className="text-sm font-bold text-rose-950 flex items-center gap-1.5">
+                    <Trash2 size={16} className="text-rose-600" />
+                    <span>アカウントの退会・個人データの完全消去</span>
+                  </h4>
+                  <p className="text-xs text-rose-800/80 leading-relaxed">
+                    アカウントを退会すると、登録メールアドレス、通知設定、および保管データが安全に物理消去されます。
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDeleteAccountConsent(false);
+                    setShowDeleteAccountModal(true);
+                  }}
+                  className="px-4 py-2 bg-white hover:bg-rose-100 text-rose-700 border border-rose-300 rounded-xl text-xs font-bold transition-all shadow-xs shrink-0 cursor-pointer"
+                >
+                  退会手続きへ
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
