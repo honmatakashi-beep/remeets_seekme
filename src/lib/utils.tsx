@@ -36,14 +36,19 @@ export const formatBirthYearLabel = (birthYear?: number | string): string => {
   const y = typeof birthYear === 'string' ? parseInt(birthYear, 10) : birthYear;
   if (!y || isNaN(y)) return '';
   const wareki = getWarekiYear(y);
-  return `${y}年（${wareki}）生まれ`;
+  const currentYear = new Date().getFullYear();
+  const age = Math.max(0, currentYear - y);
+  return `${y}年（${wareki}・${age}歳）`;
 };
 
 export const BIRTH_YEAR_OPTIONS = Array.from({ length: 85 }, (_, i) => {
-  const y = 2015 - i; // 2015年〜1931年
+  const currentYear = new Date().getFullYear();
+  const y = currentYear - 18 - i; // 18歳以上（2008年〜1924年）
+  const wareki = getWarekiYear(y);
+  const age = currentYear - y;
   return {
     year: y,
-    label: `${y}年（${getWarekiYear(y)}）生まれ`
+    label: `${y}年（${wareki}・${age}歳）`
   };
 });
 

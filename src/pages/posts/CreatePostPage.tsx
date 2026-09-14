@@ -172,7 +172,7 @@ export const CreatePostPage = () => {
     return true;
   };
 
-  // 1. 「お相手が見る公開画面を確認する」ボタン押下
+  // 1. 「ネット公開画面の完成プレビューを確認する」ボタン押下
   const handleGoToPreview = (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -482,10 +482,10 @@ export const CreatePostPage = () => {
                   STEP 2: LIVE HTML PREVIEW
                 </span>
                 <h2 className="text-base sm:text-lg font-serif font-bold text-white mt-0.5">
-                  お相手が見る公開画面の完成プレビュー
+                  ネット公開画面の完成プレビュー
                 </h2>
                 <p className="text-xs text-white/90 font-sans">
-                  あなたを探すお相手がアクセスした際、この画面が表示されます。
+                  ネット上に手紙が置かれた際、このような画面として公開されます。
                 </p>
               </div>
             </div>
@@ -522,7 +522,7 @@ export const CreatePostPage = () => {
                 </span>
                 <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2 font-serif">
                   <Sparkles size={18} className="text-amber-400" />
-                  <span>お相手からの見え方を比較する</span>
+                  <span>ネット公開時の見え方を比較する</span>
                 </h3>
                 <p className="text-xs text-slate-300 font-sans leading-relaxed">
                   公的本人確認（eKYC）の有無で、お相手に見える安心感がどう変わるか切り替えて確認できます。
@@ -579,13 +579,13 @@ export const CreatePostPage = () => {
           </div>
 
           {/* =========================================================================
-              2. 💌 お相手が見る実際の手紙詳細カード（本番HTMLと100%同一）
+              2. 💌 ネット公開画面の実物プレビュー（本番HTMLと100%同一）
           ========================================================================= */}
           <div className="space-y-2">
             <div className="flex items-center justify-between px-2">
               <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5 font-sans">
                 <Eye size={14} className="text-teal-600" />
-                <span>お相手が見る公開画面の実物プレビュー</span>
+                <span>ネット公開画面の実物プレビュー</span>
                 {previewTab === 'ekyc' && (
                   <span className="text-[10px] font-bold bg-amber-100 text-amber-900 px-2 py-0.5 rounded-md border border-amber-300 font-mono ml-1">
                     🌈 eKYC認証マーク点灯中
@@ -605,23 +605,33 @@ export const CreatePostPage = () => {
               {/* 手紙ヘッダー */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-teal-100 pb-4">
                 <div className="space-y-1">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-xs font-bold text-teal-800 uppercase tracking-widest font-mono">
                       SEEKME LETTER
                     </span>
                     {previewTab === 'ekyc' && (
-                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full seal-rainbow text-white text-[10px] font-extrabold shadow-xs">
-                        <Sparkles size={10} />
-                        <span>公的本人確認 済</span>
-                      </span>
+                      <div className="flex items-center gap-1.5 bg-gradient-to-r from-sky-50 to-teal-50 border border-teal-300 px-2.5 py-0.5 rounded-full shadow-2xs">
+                        <div className="w-4 h-4 rounded-full seal-rainbow flex items-center justify-center text-white shadow-xs shrink-0">
+                          <ShieldCheck size={10} />
+                        </div>
+                        <span className="text-[10px] font-black text-teal-950 font-sans">
+                          公的本人確認済
+                        </span>
+                      </div>
                     )}
                   </div>
                   <h3 className="text-xl sm:text-2xl font-serif font-bold text-slate-900">
                     {fullName || 'お名前'} 様からの手紙
                   </h3>
                 </div>
-                <div className="text-xs text-slate-500 font-sans">
+                <div className="text-xs text-slate-500 font-sans flex items-center gap-2">
                   <span>公開予定：本日</span>
+                  {previewTab === 'ekyc' && (
+                    <div className="w-7 h-7 rounded-full seal-rainbow flex flex-col items-center justify-center text-white shadow-xs shrink-0" title="差出人は公的本人確認（eKYC）完了済み">
+                      <ShieldCheck size={12} className="text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.6)]" />
+                      <span className="text-[5px] font-black tracking-tighter uppercase -mt-0.5 text-white">eKYC済</span>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -640,8 +650,8 @@ export const CreatePostPage = () => {
                   <span className="font-bold text-slate-800">{formData.hometownPref || '未選択'}</span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block text-[10px]">生まれた年代</span>
-                  <span className="font-bold text-slate-800">{formData.birthYear ? `${formData.birthYear}年代` : '非公開'}</span>
+                  <span className="text-slate-400 block text-[10px]">生まれ年</span>
+                  <span className="font-bold text-slate-800">{formData.birthYear ? formatBirthYearLabel(formData.birthYear) : '非公開'}</span>
                 </div>
               </div>
 
@@ -1660,11 +1670,11 @@ export const CreatePostPage = () => {
                   className="w-full sm:w-auto min-w-[300px] px-8 py-4 bg-gradient-to-r from-teal-700 via-emerald-700 to-teal-800 hover:from-teal-800 hover:to-emerald-800 active:scale-98 text-white font-bold text-sm sm:text-base rounded-2xl shadow-lg hover:shadow-xl transition-all disabled:opacity-40 disabled:pointer-events-none cursor-pointer inline-flex items-center justify-center gap-2 font-serif"
                 >
                   <Eye size={18} />
-                  <span>お相手が見る公開画面を確認する ✨</span>
+                  <span>ネット公開画面の完成プレビューを確認する ✨</span>
                   <ArrowRight size={16} />
                 </button>
                 <p className="text-[11px] text-slate-400 mt-2 font-sans">
-                  ※ 次の画面で、お相手が実際に見るHTML画面のプレビューを確認して手紙を流せます。
+                  ※ 次の画面で、ネット公開画面の完成プレビューを確認して手紙を作成できます。
                 </p>
               </div>
             </div>
