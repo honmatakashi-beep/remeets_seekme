@@ -1374,249 +1374,84 @@ export const CreatePostPage = () => {
           />
 
           {/* 🧪 【テスト・動作確認用】一括自動入力バー */}
-          <div className="p-3.5 sm:p-4 bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50/60 rounded-2xl border border-amber-300/90 shadow-2xs space-y-2.5">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-amber-950 flex items-center gap-1.5 font-sans">
-                <Sparkles size={14} className="text-amber-600 shrink-0" />
-                <span>【動作確認】ワンクリック自動入力 ＆ プレビューへ進む</span>
-              </span>
-              <span className="text-[10px] text-amber-800/80 font-mono">
-                ショートカット
-              </span>
+          <div className="p-3.5 sm:p-4 bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 rounded-2xl border-2 border-amber-300 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5 text-left w-full sm:w-auto">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 text-white flex items-center justify-center font-bold text-base shadow-xs shrink-0">
+                ⚡
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs sm:text-sm font-bold text-amber-950 font-serif">テスト用自動入力（東北 太郎）</span>
+                  <span className="text-[10px] bg-amber-200 text-amber-900 font-bold px-2 py-0.5 rounded-full font-sans">動作確認用</span>
+                </div>
+                <p className="text-[11px] text-amber-800/80 font-sans mt-0.5">
+                  岩手県・1990年生まれ・旧姓八王子・ふりがな付きのメッセージを一括入力します。
+                </p>
+              </div>
             </div>
 
-            {/* ログインユーザーがいる場合は最優先で自分自身の情報で入力するボタンを表示 */}
-            {user && (
-              <div className="p-3 bg-white rounded-xl border-2 border-teal-500 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-2.5">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-teal-600 text-white flex items-center justify-center font-bold text-xs">
-                    {user.fullName ? user.fullName.charAt(0) : '私'}
-                  </div>
-                  <div>
-                    <span className="text-xs font-bold text-slate-900 block font-serif">
-                      👤 あなたのアカウント情報（{user.fullName || '登録ユーザー'} 様）
-                    </span>
-                    <span className="text-[10px] text-slate-500 font-sans">
-                      ログイン中のご自身のお名前・連絡先でフォームを補完します
-                    </span>
-                  </div>
-                </div>
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              {/* ログインユーザーがいる場合の補完ボタン */}
+              {user && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    const lName = (user as any)?.lastName || (user?.fullName ? user.fullName.trim().split(/\s+/)[0] : '');
+                    const fName = (user as any)?.firstName || (user?.fullName ? user.fullName.trim().split(/\s+/).slice(1).join(' ') : '');
+                    setFormData(prev => ({
+                      ...prev,
+                      lastName: lName,
+                      firstName: fName,
+                      lastNameKana: prev.lastNameKana || '',
+                      firstNameKana: prev.firstNameKana || '',
+                      maidenName: (user as any)?.maiden_name || '',
+                      birthYear: user?.birthdate ? new Date(user.birthdate).getFullYear().toString() : '1990',
+                      hometownPref: prev.hometownPref || '岩手県',
+                      message: prev.message || '昔お世話になった大切なあなたへ。当時は伝えきれなかった感謝の気持ちを、今でも心に抱き続けています。もし私を探してくれたら、メッセージを届けていただけると幸いです。',
+                      contactType: (user as any)?.contact_type || 'LINE',
+                      contactId: (user as any)?.contact_id || 'my_contact_id',
+                      contactNote: 'メッセージを見つけていただきありがとうございます！'
+                    }));
+                    setAgreed(true);
+                    setWarningMessage(null);
+                  }}
+                  className="px-3.5 py-2 bg-white hover:bg-teal-50 text-teal-800 border border-teal-300 rounded-xl text-xs font-bold shadow-2xs transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 whitespace-nowrap"
+                  title="ログイン中のご自身の情報で入力"
+                >
+                  <User size={13} className="text-teal-600" />
+                  <span>ご自身の情報</span>
+                </button>
+              )}
 
-                <div className="flex items-center gap-2 w-full sm:w-auto">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const lName = (user as any).lastName || (user.fullName ? user.fullName.trim().split(/\s+/)[0] : '');
-                      const fName = (user as any).firstName || (user.fullName ? user.fullName.trim().split(/\s+/).slice(1).join(' ') : '');
-                      setFormData(prev => ({
-                        ...prev,
-                        lastName: lName,
-                        firstName: fName,
-                        maidenName: (user as any).maiden_name || '',
-                        birthYear: user.birthdate ? new Date(user.birthdate).getFullYear().toString() : '1990',
-                        hometownPref: prev.hometownPref || '東京都',
-                        message: prev.message || '元気にしていますか？あの時一緒に過ごした放課後の夕暮れの風景を今でもよく思い出します。もし私を探してくれたら、メッセージを届けてください。',
-                        contactType: (user as any).contact_type || 'LINE',
-                        contactId: (user as any).contact_id || 'my_contact_id',
-                        contactNote: 'メッセージを見つけていただきありがとうございます！'
-                      }));
-                      setAgreed(true);
-                      setWarningMessage(null);
-                      setStep('preview');
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}
-                    className="flex-1 sm:flex-none px-4 py-2 bg-teal-700 hover:bg-teal-800 text-white rounded-xl text-xs font-bold shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 whitespace-nowrap"
-                  >
-                    <Sparkles size={12} className="text-teal-200" />
-                    <span>ご自身の情報で入力してプレビューへ ➔</span>
-                  </button>
-                </div>
-              </div>
-            )}
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-              {/* 1. 山田 太郎 */}
-              <div className="bg-white p-2.5 rounded-xl border border-amber-200 shadow-2xs space-y-2">
-                <div className="text-[11px] font-bold text-amber-950 flex items-center gap-1">
-                  <span>👤 サンプル：山田 太郎</span>
-                  <span className="text-[10px] text-slate-500 font-normal">（昭和60年・神奈川）</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setFormData({
-                        lastName: '山田',
-                        firstName: '太郎',
-                        maidenName: '',
-                        birthYear: '1985',
-                        hometownPref: '神奈川県',
-                        message: '元気にしていますか？あの時一緒に過ごした放課後の夕暮れの風景を今でもよく思い出します。もし私を探してくれたら、メッセージを届けてください。',
-                        contactType: 'LINE',
-                        contactId: 'yamada_taro_test2026',
-                        contactNote: '平日の夜ならいつでもLINE返信できます！'
-                      });
-                      setAgreed(true);
-                      setAuthEmail('yamada_test@example.com');
-                      setAuthPassword('password123');
-                      setWarningMessage(null);
-                      setStep('preview');
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}
-                    className="flex-1 py-1.5 px-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-lg text-[11px] font-bold transition-all shadow-xs flex items-center justify-center gap-1 cursor-pointer active:scale-95"
-                    title="山田太郎のデータを入力して即座にプレビュー画面へ進む"
-                  >
-                    <Sparkles size={11} className="text-amber-200" />
-                    <span>⚡ 入力して次へ進む</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setFormData({
-                        lastName: '山田',
-                        firstName: '太郎',
-                        maidenName: '',
-                        birthYear: '1985',
-                        hometownPref: '神奈川県',
-                        message: '元気にしていますか？あの時一緒に過ごした放課後の夕暮れの風景を今でもよく思い出します。もし私を探してくれたら、メッセージを届けてください。',
-                        contactType: 'LINE',
-                        contactId: 'yamada_taro_test2026',
-                        contactNote: '平日の夜ならいつでもLINE返信できます！'
-                      });
-                      setAgreed(true);
-                      setAuthEmail('yamada_test@example.com');
-                      setAuthPassword('password123');
-                      setWarningMessage(null);
-                    }}
-                    className="py-1.5 px-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[10px] font-bold transition-all cursor-pointer"
-                    title="フォームに入力のみ"
-                  >
-                    入力のみ
-                  </button>
-                </div>
-              </div>
-
-              {/* 2. 佐藤 美咲 */}
-              <div className="bg-white p-2.5 rounded-xl border border-amber-200 shadow-2xs space-y-2">
-                <div className="text-[11px] font-bold text-amber-950 flex items-center gap-1">
-                  <span>🌸 佐藤 美咲</span>
-                  <span className="text-[10px] text-slate-500 font-normal">（旧姓:高橋・東京）</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setFormData({
-                        lastName: '佐藤',
-                        firstName: '美咲',
-                        maidenName: '高橋',
-                        birthYear: '1990',
-                        hometownPref: '東京都',
-                        message: '学生時代を卒業してから随分経ちましたね。みんなで集まった時の写真を見るたび懐かしくなります。見つけたら気軽に声をかけてね。',
-                        contactType: 'EMAIL',
-                        contactId: 'misaki_sato_test@example.com',
-                        contactNote: 'メールは毎日チェックしています。'
-                      });
-                      setAgreed(true);
-                      setAuthEmail('misaki_test@example.com');
-                      setAuthPassword('password123');
-                      setWarningMessage(null);
-                      setStep('preview');
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}
-                    className="flex-1 py-1.5 px-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-lg text-[11px] font-bold transition-all shadow-xs flex items-center justify-center gap-1 cursor-pointer active:scale-95"
-                    title="佐藤美咲のデータを入力して即座にプレビュー画面へ進む"
-                  >
-                    <Sparkles size={11} className="text-amber-200" />
-                    <span>⚡ 入力して次へ進む</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setFormData({
-                        lastName: '佐藤',
-                        firstName: '美咲',
-                        maidenName: '高橋',
-                        birthYear: '1990',
-                        hometownPref: '東京都',
-                        message: '学生時代を卒業してから随分経ちましたね。みんなで集まった時の写真を見るたび懐かしくなります。見つけたら気軽に声をかけてね。',
-                        contactType: 'EMAIL',
-                        contactId: 'misaki_sato_test@example.com',
-                        contactNote: 'メールは毎日チェックしています。'
-                      });
-                      setAgreed(true);
-                      setAuthEmail('misaki_test@example.com');
-                      setAuthPassword('password123');
-                      setWarningMessage(null);
-                    }}
-                    className="py-1.5 px-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[10px] font-bold transition-all cursor-pointer"
-                    title="フォームに入力のみ"
-                  >
-                    入力のみ
-                  </button>
-                </div>
-              </div>
-
-              {/* 3. 鈴木 健一 */}
-              <div className="bg-white p-2.5 rounded-xl border border-amber-200 shadow-2xs space-y-2">
-                <div className="text-[11px] font-bold text-amber-950 flex items-center gap-1">
-                  <span>☕ 鈴木 健一</span>
-                  <span className="text-[10px] text-slate-500 font-normal">（昭和53年・大阪）</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setFormData({
-                        lastName: '鈴木',
-                        firstName: '健一',
-                        maidenName: '',
-                        birthYear: '1978',
-                        hometownPref: '大阪府',
-                        message: '昔お世話になった皆様へ。ふと当時の温かい思い出が蘇り、こちらにメッセージを届けることにしました。元気でお過ごしでしょうか。',
-                        contactType: 'LINE',
-                        contactId: 'suzuki_kenichi_1978',
-                        contactNote: '週末に返信いたします。'
-                      });
-                      setAgreed(true);
-                      setAuthEmail('suzuki_test@example.com');
-                      setAuthPassword('password123');
-                      setWarningMessage(null);
-                      setStep('preview');
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}
-                    className="flex-1 py-1.5 px-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-lg text-[11px] font-bold transition-all shadow-xs flex items-center justify-center gap-1 cursor-pointer active:scale-95"
-                    title="鈴木健一のデータを入力して即座にプレビュー画面へ進む"
-                  >
-                    <Sparkles size={11} className="text-amber-200" />
-                    <span>⚡ 入力して次へ進む</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setFormData({
-                        lastName: '鈴木',
-                        firstName: '健一',
-                        maidenName: '',
-                        birthYear: '1978',
-                        hometownPref: '大阪府',
-                        message: '昔お世話になった皆様へ。ふと当時の温かい思い出が蘇り、こちらにメッセージを届けることにしました。元気でお過ごしでしょうか。',
-                        contactType: 'LINE',
-                        contactId: 'suzuki_kenichi_1978',
-                        contactNote: '週末に返信いたします。'
-                      });
-                      setAgreed(true);
-                      setAuthEmail('suzuki_test@example.com');
-                      setAuthPassword('password123');
-                      setWarningMessage(null);
-                    }}
-                    className="py-1.5 px-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[10px] font-bold transition-all cursor-pointer"
-                    title="フォームに入力のみ"
-                  >
-                    入力のみ
-                  </button>
-                </div>
-              </div>
+              {/* ⚡ 東北 太郎テスト自動入力ボタン（ボタン1つ） */}
+              <button
+                type="button"
+                onClick={() => {
+                  setFormData({
+                    lastName: '東北',
+                    firstName: '太郎',
+                    lastNameKana: 'とうほく',
+                    firstNameKana: 'たろう',
+                    maidenName: '八王子',
+                    maidenNameKana: 'はちおうじ',
+                    birthYear: '1990',
+                    hometownPref: '岩手県',
+                    message: '昔お世話になった大切なあなたへ。当時は伝えきれなかった感謝の気持ちを、今でも心に抱き続けています。もし私を探してくれたら、メッセージを届けていただけると幸いです。',
+                    contactType: 'LINE',
+                    contactId: 'touhoku_taro_line',
+                    contactNote: '平日の夜か週末ならいつでもLINE返信できます！'
+                  });
+                  setAgreed(true);
+                  setAuthEmail('touhoku_test@example.com');
+                  setAuthPassword('password123');
+                  setWarningMessage(null);
+                }}
+                className="flex-1 sm:flex-none px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl text-xs sm:text-sm font-bold shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95 whitespace-nowrap"
+                title="東北太郎のテストデータを一括自動入力"
+              >
+                <Sparkles size={15} className="text-amber-200" />
+                <span>⚡ テスト自動入力（東北 太郎）</span>
+              </button>
             </div>
           </div>
 
