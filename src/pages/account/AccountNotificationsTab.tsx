@@ -149,7 +149,7 @@ export const AccountNotificationsTab = (props: any) => {
               <span>📬 あなた宛て新着メッセージの入荷メール通知</span>
             </h3>
             <p className="text-xs text-slate-600 font-sans leading-relaxed max-w-xl">
-              あなたのお名前（本名・旧姓・愛称）宛てに新しいメッセージが公開された瞬間、ご登録のメールアドレスへ即座にお知らせします。
+              あなたのお名前（本名・旧姓）宛てに新しいメッセージが公開された瞬間、ご登録のメールアドレスへ即座にお知らせします。
             </p>
           </div>
 
@@ -210,9 +210,9 @@ export const AccountNotificationsTab = (props: any) => {
             </div>
 
             <div className="bg-white p-3.5 rounded-2xl border border-slate-200 space-y-1 shadow-2xs">
-              <span className="text-[10px] text-slate-400 font-bold block">✨ 愛称・ニックネーム</span>
-              <span className="text-xs font-extrabold text-indigo-700 block truncate">
-                {user?.nickname ? `@${user.nickname}` : '未登録（任意）'}
+              <span className="text-[10px] text-slate-400 font-bold block">📍 ゆかりの地（出身・居住）</span>
+              <span className="text-xs font-extrabold text-emerald-800 block truncate">
+                {(user as any)?.hometown || '未登録（任意）'}
               </span>
             </div>
 
@@ -225,7 +225,7 @@ export const AccountNotificationsTab = (props: any) => {
           </div>
 
           <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1">
-            <span>※ 本名・旧姓・ニックネームは「マイアカウント」上部の編集ボタンからいつでも変更いただけます。</span>
+            <span>※ 本名・旧姓・ゆかりの地は「マイアカウント」上部の編集ボタンからいつでも変更いただけます。</span>
             <button
               type="button"
               onClick={() => handleTabChange('profile')}

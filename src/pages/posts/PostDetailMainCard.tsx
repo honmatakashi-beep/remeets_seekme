@@ -107,7 +107,7 @@ export const PostDetailMainCard = (props: any) => {
                           <User size={16} />
                         </div>
                         <div>
-                          <span className="text-[10px] text-slate-400 font-bold block">ニックネーム・呼称</span>
+                          <span className="text-[10px] text-slate-400 font-bold block">差出人のお名前（呼び名）</span>
                           <span className="font-bold text-slate-800 text-sm">
                             {post.searcher_name || revealedContact?.searcherName || '差出人'}
                           </span>

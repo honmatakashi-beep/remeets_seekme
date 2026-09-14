@@ -275,7 +275,7 @@ export const Step0BasicInfo = (props: any) => {
                 <div className="flex items-center justify-between">
                   <label className="text-xs sm:text-sm font-bold text-black flex items-center gap-1.5">
                     <Sparkles size={15} className="text-amber-700" />
-                    このメッセージでのあなたのニックネーム（当時のあだ名・呼び名）
+                    このメッセージでのあなたの呼び名（当時のあだ名・お名前）
                     <span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
                   </label>
                   <span className="text-[11px] text-amber-900/70 font-medium">※ メッセージごとに自由に変更可能</span>
@@ -289,7 +289,7 @@ export const Step0BasicInfo = (props: any) => {
                   onChange={e => handleSearcherNameChange(e.target.value)}
                 />
                 <p className="text-[11px] text-zinc-500">
-                  お相手があなただとピンとくる、当時のあだ名や呼び名を設定してください（初期値: アカウント登録時ニックネーム）。
+                  お相手があなただとピンとくる、当時のあだ名や呼び名を設定してください。
                 </p>
                 <WarningMessage message={warnings.searcherName} />
               </div>

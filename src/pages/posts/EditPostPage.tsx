@@ -375,7 +375,7 @@ export const EditPostPage = () => {
                       <div className="flex items-center justify-between">
                         <label className="text-xs sm:text-sm font-bold text-black flex items-center gap-1.5">
                           <Sparkles size={15} className="text-amber-700" />
-                          このメッセージでのあなたのニックネーム（当時のあだ名・呼び名）
+                          このメッセージでのあなたの呼び名（当時のあだ名・お名前）
                           <span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
                         </label>
                         <span className="text-[11px] text-amber-900/70 font-medium">※ メッセージごとに自由に変更可能</span>
