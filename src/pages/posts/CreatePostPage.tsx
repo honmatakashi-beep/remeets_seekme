@@ -619,24 +619,6 @@ export const CreatePostPage = () => {
                     <span className="text-xs font-bold text-teal-800 uppercase tracking-widest font-mono">
                       SEEKME LETTER
                     </span>
-                    {previewTab === 'ekyc' && (
-                      <button
-                        type="button"
-                        onClick={() => setShowEkycExplanationModal(true)}
-                        className="flex items-center gap-1.5 bg-gradient-to-r from-sky-50 via-teal-50 to-amber-50 hover:from-sky-100 hover:to-amber-100 border border-teal-300 hover:border-amber-400 px-3 py-1 rounded-full shadow-2xs cursor-pointer hover:scale-105 active:scale-95 transition-all group"
-                        title="クリックして公的本人確認（eKYC）の証明内容を確認"
-                      >
-                        <div className="w-5 h-5 rounded-full seal-rainbow flex items-center justify-center text-white shadow-xs shrink-0">
-                          <ShieldCheck size={11} />
-                        </div>
-                        <span className="text-[11px] font-black text-teal-950 font-sans">
-                          公的本人確認済
-                        </span>
-                        <span className="text-[9px] font-bold text-teal-800 bg-white/90 border border-teal-200 px-1.5 py-0.2 rounded-full font-sans group-hover:bg-amber-500 group-hover:text-white transition-colors">
-                          詳細 🔍
-                        </span>
-                      </button>
-                    )}
                   </div>
                   <h3 className="text-xl sm:text-2xl font-serif font-bold text-slate-900">
                     {fullName || 'お名前'} 様からの手紙
@@ -693,9 +675,9 @@ export const CreatePostPage = () => {
                   <span>当時のエピソードを添えて、再会希望を申請できます。</span>
                 </div>
 
-                <div className="px-6 py-3 bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-bold rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2 opacity-90 cursor-default shadow-sm pointer-events-none">
-                  <Send size={15} className="text-teal-200" />
-                  <span>この人に再会を希望する（相手用ボタン）</span>
+                <div className="px-6 py-3 bg-gradient-to-r from-rose-100 via-pink-100 to-rose-200 text-rose-900 border border-rose-300 font-bold rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2 opacity-95 cursor-default shadow-2xs pointer-events-none font-serif">
+                  <Send size={15} className="text-rose-600" />
+                  <span>{fullName ? `${fullName}さんに再会を希望する` : '○○さんに再会を希望する'}</span>
                 </div>
               </div>
             </div>
@@ -745,46 +727,32 @@ export const CreatePostPage = () => {
           </div>
 
           {/* =========================================================================
-              4. プレビュー画面のフッターナビゲーション（次ページ「公開方法選択」へ進む）
+              4. プレビュー画面のフッターナビゲーション
           ========================================================================= */}
-          <div className="p-5 sm:p-7 bg-gradient-to-r from-teal-900 via-slate-900 to-teal-950 text-white rounded-3xl shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="space-y-1 text-center sm:text-left">
-              <span className="text-[10px] font-extrabold uppercase tracking-widest text-teal-300 font-mono bg-teal-800/60 px-2.5 py-0.5 rounded-full inline-block">
-                NEXT STEP
-              </span>
-              <h3 className="text-base sm:text-lg font-bold text-white font-serif">
-                手紙のプレビュー確認は完了しましたか？
-              </h3>
-              <p className="text-xs text-slate-300 font-sans">
-                次のページで「認証マーク付き公開（推奨）」または「通常公開」を選択して投函します。
-              </p>
-            </div>
+          <div className="p-4 sm:p-5 bg-white rounded-3xl border border-slate-200 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
+            <button
+              type="button"
+              onClick={() => {
+                setStep('form');
+                window.scrollTo({ top: 200, behavior: 'smooth' });
+              }}
+              className="w-full sm:w-auto px-5 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer font-sans"
+            >
+              <ArrowLeft size={14} />
+              <span>手紙を修正する</span>
+            </button>
 
-            <div className="flex flex-col sm:flex-row items-center gap-2.5 w-full sm:w-auto shrink-0">
-              <button
-                type="button"
-                onClick={() => {
-                  setStep('form');
-                  window.scrollTo({ top: 200, behavior: 'smooth' });
-                }}
-                className="w-full sm:w-auto px-4 py-3 bg-white/10 hover:bg-white/20 text-white rounded-2xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer border border-white/20"
-              >
-                <ArrowLeft size={14} />
-                <span>手紙を修正する</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setStep('plan');
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
-                className="w-full sm:w-auto px-7 py-3.5 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-sm rounded-2xl shadow-lg hover:shadow-xl active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer font-serif"
-              >
-                <span>手紙の公開方法を選択する（次へ）</span>
-                <ArrowRight size={16} />
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setStep('plan');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="w-full sm:w-auto px-7 py-3.5 bg-gradient-to-r from-teal-700 via-emerald-700 to-teal-800 hover:from-teal-800 hover:to-emerald-800 text-white font-bold text-xs sm:text-sm rounded-2xl shadow-md hover:shadow-lg active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer font-serif"
+            >
+              <span>手紙の公開方法を選択する（次へ）</span>
+              <ArrowRight size={16} />
+            </button>
           </div>
         </div>
       ) : step === 'plan' ? (
