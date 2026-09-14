@@ -1204,7 +1204,7 @@ export const postsRouter = express.Router();
     try {
       const post = db.prepare("SELECT * FROM posts WHERE id = ?").get(postId) as any;
       if (!post) {
-        return res.status(404).json({ error: "該当するメッセージ（目印）が見つかりませんでした。" });
+        return res.status(404).json({ error: "該当するメッセージが見つかりませんでした。" });
       }
 
       const userId = req.user ? req.user.id : null;

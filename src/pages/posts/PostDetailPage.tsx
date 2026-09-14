@@ -50,7 +50,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
     const fetchPost = async () => {
       if (!resolvedId) {
         setLoading(false);
-        setError('該当するメッセージ（目印）のIDが指定されていません。');
+        setError('該当するメッセージのIDが指定されていません。');
         return;
       }
       try {
@@ -61,7 +61,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
           setPost(data);
           setError(null);
         } else {
-          if (!post) setError('該当するメッセージ（目印）が見つかりませんでした。');
+          if (!post) setError('該当するメッセージが見つかりませんでした。');
         }
       } catch (err) {
         console.error(err);

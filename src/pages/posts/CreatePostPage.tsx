@@ -232,7 +232,8 @@ export const CreatePostPage = () => {
           searcherNameKana: effFullNameKana || undefined,
           searcherMaidenNameKana: effMaidenNameKana || undefined,
           birthYear: effBirthYear,
-          targetName: effFullName, // SeekMe では自分自身が目印
+          // SeekMeの投稿構造: 探す対象は自分自身（自分からのメッセージを届けておく）
+          targetName: effFullName, // SeekMe では自分自身の情報
           targetLastName: effLastName,
           targetFirstName: effFirstName,
           targetLastNameKana: effLastNameKana || undefined,
@@ -1470,7 +1471,7 @@ export const CreatePostPage = () => {
               <span>安心・安全のための「公開メッセージの約束ごと」</span>
             </div>
             <p className="text-xs text-slate-600 font-sans leading-relaxed">
-              メッセージはGoogle検索等にも掲載される目印となります。悪質な居場所特定や嫌がらせを防ぐため、以下のルールをお守りください。
+              メッセージはGoogle検索等にも掲載されます。悪質な居場所特定や嫌がらせを防ぐため、以下のルールをお守りください。
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1 text-xs">
               <div className="p-3 bg-white/90 rounded-2xl border border-teal-100 shadow-2xs space-y-1">
@@ -1482,7 +1483,7 @@ export const CreatePostPage = () => {
               <div className="p-3 bg-white/90 rounded-2xl border border-teal-100 shadow-2xs space-y-1">
                 <span className="font-bold text-rose-700 block">🚫 駅名・詳細住所は書かない</span>
                 <span className="text-[11px] text-slate-500 leading-tight block">
-                  最寄り駅や町名・番地は書かず、都道府県のみで目印を置きます。
+                  最寄り駅や町名・番地は書かず、都道府県のみを公開します。
                 </span>
               </div>
               <div className="p-3 bg-white/90 rounded-2xl border border-teal-100 shadow-2xs space-y-1">
@@ -1503,14 +1504,14 @@ export const CreatePostPage = () => {
           )}
 
           <form onSubmit={handleGoToPreview} className="space-y-6">
-            {/* 1. あなたについて（目印となる情報） */}
+            {/* 1. あなたについて */}
             <div className="bg-white rounded-3xl border-2 border-slate-200/90 p-5 sm:p-7 space-y-5 shadow-sm">
               <div className="flex items-center gap-2.5 border-b border-slate-100 pb-3">
                 <div className="w-8 h-8 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center font-bold text-xs border border-teal-200">
                   1
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-slate-900 font-serif">あなたについて（目印）</h3>
+                  <h3 className="text-base font-bold text-slate-900 font-serif">あなたについて</h3>
                   <p className="text-xs text-slate-500 font-sans">探す方があなたを見つけられるよう、お名前とゆかりの都道府県を入力します。</p>
                 </div>
               </div>
@@ -1650,7 +1651,7 @@ export const CreatePostPage = () => {
                     2
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-slate-900 font-serif">メッセージ（公開）</h3>
+                    <h3 className="text-base font-bold text-slate-900 font-serif">公開メッセージ</h3>
                     <p className="text-xs text-slate-500 font-sans">あなたを探している相手に向けた温かいひと言をご記入ください。</p>
                   </div>
                 </div>

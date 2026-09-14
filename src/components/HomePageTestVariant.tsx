@@ -334,7 +334,7 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
                   transition={{ delay: 0.2 }}
                   className="text-xs sm:text-sm md:text-base text-slate-800 font-serif leading-relaxed sm:leading-relaxed tracking-wide max-w-2xl mx-auto font-medium"
                 >
-                  同窓生、昔の仲間、お世話になったあの人。もし誰かがあなたの名前をGoogleなどで探したとき、あたたかい目印が見つかるように。ここは、私を探す大切な人に向けて静かにメッセージを書いておく、灯台のような再会プラットフォームです。
+                  同窓生、昔の仲間、お世話になったあの人。もし誰かがあなたの名前をGoogleなどで探したとき、あたたかいメッセージが見つかるように。ここは、私を探す大切な人に向けて静かにメッセージを届けておく、灯台のような再会プラットフォームです。
                 </motion.p>
 
                 {/* サブデザインと同等の「ボトルメールが届ける再会の奇跡」コンセプトモーダル起動ボタン */}
