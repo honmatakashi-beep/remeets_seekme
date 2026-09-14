@@ -287,17 +287,17 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
           </div>
 
           {/* メッセージ本文 */}
-          <div className="p-6 sm:p-8 bg-white/95 rounded-2xl border border-slate-200/90 shadow-sm space-y-3 font-serif">
-            <div className="flex items-center justify-between border-b border-teal-100 pb-2">
-              <span className="text-xs text-teal-800 font-extrabold uppercase tracking-widest font-sans flex items-center gap-1.5">
+          <div className="p-6 sm:p-8 bg-white rounded-2xl border-2 border-slate-200 shadow-sm space-y-3 font-sans">
+            <div className="flex items-center justify-between border-b-2 border-teal-100 pb-2">
+              <span className="text-xs text-teal-900 font-extrabold uppercase tracking-widest font-sans flex items-center gap-1.5">
                 <span>✉️</span>
                 <span>MESSAGE FROM SENDER</span>
               </span>
-              <span className="text-[11px] text-slate-500 font-sans">
+              <span className="text-xs text-slate-600 font-sans font-medium">
                 当時の想い出・メッセージ
               </span>
             </div>
-            <p className="text-sm sm:text-base text-slate-800 font-semibold leading-relaxed sm:leading-loose whitespace-pre-wrap">
+            <p className="text-base sm:text-lg text-slate-950 font-medium leading-relaxed sm:leading-loose whitespace-pre-wrap">
               {post.message || post.content || '昔の仲間や知人へ。もし私の名前を見つけたら、ぜひご連絡ください。'}
             </p>
           </div>

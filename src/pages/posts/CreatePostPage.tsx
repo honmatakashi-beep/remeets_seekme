@@ -705,58 +705,62 @@ export const CreatePostPage = () => {
                 </div>
               </div>
 
-              {/* メッセージメタデータ（大きめ・見やすい文字サイズ） */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-white/90 p-5 sm:p-6 rounded-2xl border border-slate-200/90 font-sans shadow-2xs">
+              {/* メッセージメタデータ（大きめ・見やすい文字サイズ・高コントラスト） */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-white p-5 sm:p-6 rounded-2xl border-2 border-slate-200 font-sans shadow-xs">
                 <div className="space-y-1">
-                  <span className="text-xs font-bold text-slate-500 block">メッセージを書いた人</span>
-                  <div className="text-base sm:text-lg font-bold text-slate-900 font-sans">
+                  <span className="text-xs font-bold text-slate-700 block">メッセージを書いた人</span>
+                  <div className="text-base sm:text-lg font-bold text-slate-950 font-sans">
                     <span>{fullName || '未入力'}</span>
                     {fullNameKana && (
-                      <span className="text-xs font-normal text-slate-500 ml-1">
+                      <span className="text-xs font-normal text-slate-600 ml-1">
                         （{fullNameKana}）
                       </span>
                     )}
                   </div>
                 </div>
                 <div className="space-y-1">
-                  <span className="text-xs font-bold text-slate-500 block">旧姓</span>
-                  <div className="text-base sm:text-lg font-bold text-slate-900 font-sans">
+                  <span className="text-xs font-bold text-slate-700 block">旧姓</span>
+                  <div className="text-base sm:text-lg font-bold text-slate-950 font-sans">
                     <span>{formData.maidenName || 'なし'}</span>
                     {formData.maidenNameKana && (
-                      <span className="text-xs font-normal text-slate-500 ml-1">
+                      <span className="text-xs font-normal text-slate-600 ml-1">
                         （{formData.maidenNameKana}）
                       </span>
                     )}
                   </div>
                 </div>
                 <div className="space-y-1">
-                  <span className="text-xs font-bold text-slate-500 block">ゆかりの地</span>
-                  <div className="text-base sm:text-lg font-bold text-slate-900 font-sans">
+                  <span className="text-xs font-bold text-slate-700 block">ゆかりの地</span>
+                  <div className="text-base sm:text-lg font-bold text-slate-950 font-sans">
                     {formData.hometownPref || '未選択'}
                   </div>
                 </div>
                 <div className="space-y-1">
-                  <span className="text-xs font-bold text-slate-500 block">生まれ年</span>
-                  <div className="text-base sm:text-lg font-bold text-slate-900 font-sans">
+                  <span className="text-xs font-bold text-slate-700 block">生まれ年</span>
+                  <div className="text-base sm:text-lg font-bold text-slate-950 font-sans">
                     {formData.birthYear ? formatBirthYearLabel(formData.birthYear) : '非公開'}
                   </div>
                 </div>
               </div>
 
-              {/* メッセージ本文 */}
+              {/* メッセージ本文（高コントラスト・くっきり濃い文字） */}
               <div className="space-y-2">
-                <div className="flex items-center justify-between border-b border-teal-100 pb-1.5">
-                  <span className="text-xs font-bold text-teal-800 font-sans flex items-center gap-1.5">
-                    <span>✉️</span>
+                <div className="flex items-center justify-between border-b-2 border-teal-100 pb-2">
+                  <span className="text-xs sm:text-sm font-extrabold text-teal-900 font-sans flex items-center gap-1.5">
+                    <span className="text-base">✉️</span>
                     <span>メッセージ本文（公開プレビュー）</span>
                   </span>
-                  <span className="text-[11px] text-slate-400 font-sans">
+                  <span className="text-xs font-medium text-slate-600 font-sans">
                     当時の想い出・メッセージ
                   </span>
                 </div>
-                <p className="text-xs sm:text-sm md:text-base font-semibold font-serif text-slate-800 bg-white/95 p-5 rounded-2xl border border-slate-200/90 leading-relaxed sm:leading-loose whitespace-pre-wrap shadow-2xs">
-                  {formData.message || '（メッセージが入力されていません）'}
-                </p>
+                <div className="bg-white p-6 sm:p-7 rounded-2xl border-2 border-slate-300/90 shadow-sm">
+                  <p className="text-sm sm:text-base md:text-lg font-medium font-sans text-slate-950 leading-relaxed sm:leading-loose whitespace-pre-wrap">
+                    {formData.message || (
+                      <span className="text-slate-400 italic">（メッセージが入力されていません）</span>
+                    )}
+                  </p>
+                </div>
               </div>
 
               {/* メインCTA（相手側の視点） */}
@@ -1128,18 +1132,18 @@ export const CreatePostPage = () => {
             {/* お名前 & メッセージ抜粋 */}
             <div className="space-y-3">
               <div>
-                <span className="text-xs font-bold text-slate-400 font-sans">メッセージを書いた人</span>
-                <h2 className="text-xl sm:text-2xl font-serif font-bold text-slate-900">
+                <span className="text-xs font-bold text-slate-700 font-sans">メッセージを書いた人</span>
+                <h2 className="text-xl sm:text-2xl font-bold text-slate-950 font-sans">
                   {fullName}
                   {formData.maidenName && (
-                    <span className="text-sm font-normal text-slate-500 font-sans ml-2">
+                    <span className="text-sm font-normal text-slate-600 font-sans ml-2">
                       （旧姓: {formData.maidenName}）
                     </span>
                   )}
                 </h2>
               </div>
 
-              <div className="p-5 bg-slate-50 rounded-2xl border border-slate-200 font-serif text-slate-700 text-xs sm:text-sm leading-relaxed whitespace-pre-wrap">
+              <div className="p-5 sm:p-6 bg-white rounded-2xl border-2 border-slate-200 font-sans text-slate-950 font-medium text-sm sm:text-base leading-relaxed whitespace-pre-wrap shadow-xs">
                 {formData.message}
               </div>
             </div>
@@ -1758,7 +1762,7 @@ export const CreatePostPage = () => {
                     value={formData.message}
                     onChange={e => setFormData(prev => ({ ...prev, message: e.target.value }))}
                     placeholder="例：元気にしていますか？あの時一緒に過ごした放課後の夕暮れの風景を今でもよく思い出します。もし私を探してくれたら、メッセージを届けてください。"
-                    className="w-full p-4 text-sm border border-slate-200 rounded-2xl bg-slate-50/60 focus:bg-white focus:border-teal-600 outline-none transition-all shadow-inner font-serif leading-relaxed"
+                    className="w-full p-4 sm:p-5 text-base sm:text-lg text-slate-950 font-sans font-medium border-2 border-slate-300 rounded-2xl bg-white focus:border-teal-600 focus:ring-4 focus:ring-teal-500/10 outline-none transition-all shadow-sm leading-relaxed placeholder:text-slate-400 placeholder:font-normal"
                   />
                   {!formData.message && !showAiAssistant && (
                     <button

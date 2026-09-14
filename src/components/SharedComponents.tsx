@@ -684,7 +684,7 @@ export const GoogleSearchResultPreview = ({
           <h3 className="text-sm md:text-[15px] text-[#1a0dab] hover:underline leading-snug cursor-pointer font-medium font-sans">
             {title}
           </h3>
-          <p className="text-xs text-[#4d5156] leading-relaxed font-normal font-sans">
+          <p className="text-xs text-slate-800 font-medium leading-relaxed font-sans">
             {snippet}
           </p>
         </div>
