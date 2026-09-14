@@ -1231,8 +1231,9 @@ export const CreatePostPage = () => {
               PUBLISH COMPLETE
             </span>
 
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-serif font-bold text-slate-900 tracking-wide leading-snug">
-              メッセージがインターネットの海に<br className="sm:hidden" />届けられました
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-serif font-bold text-slate-900 tracking-wide leading-relaxed text-center">
+              メッセージがインターネットの海に<br />
+              届けられました
             </h1>
 
             <p className="text-xs sm:text-sm text-slate-600 max-w-lg mx-auto font-sans leading-relaxed">
