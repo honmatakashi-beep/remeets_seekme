@@ -176,15 +176,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
           </div>
         </div>
 
-        {/* オーナー（作成者本人）閲覧時のスマートプレビューバナー */}
-        {isAuthor && (
-          <div className="p-4 bg-gradient-to-r from-teal-50 via-emerald-50 to-teal-50 border-2 border-teal-300 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
-            <div className="flex items-center gap-2.5 text-teal-950 text-xs sm:text-sm font-bold">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-              <span>あなたが公開中のメッセージです（Google検索対象・一般の方にはこのように見えます）</span>
-            </div>
-          </div>
-        )}
+
 
         {/* 投稿直後バナー */}
         {justPosted && (
