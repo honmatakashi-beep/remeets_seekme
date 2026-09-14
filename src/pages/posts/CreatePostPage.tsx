@@ -547,6 +547,89 @@ export const CreatePostPage = () => {
             description="私を探している誰かに向けて、あなたの目印を置いておきましょう。学校名や詳細な住所は非公開のため、プライバシーを完全に守りながら待つことができます。"
           />
 
+          {/* 🧪 【テスト・動作確認用】一括自動入力バー */}
+          <div className="p-3.5 sm:p-4 bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50/60 rounded-2xl border border-amber-200/80 shadow-2xs space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-amber-900 flex items-center gap-1.5 font-sans">
+                <Sparkles size={14} className="text-amber-600 shrink-0" />
+                <span>【テスト用】ワンクリック一括自動入力</span>
+              </span>
+              <span className="text-[10px] text-amber-700/70 font-mono">
+                検証用ショートカット
+              </span>
+            </div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <button
+                type="button"
+                onClick={() => {
+                  setFormData({
+                    lastName: '山田',
+                    firstName: '太郎',
+                    maidenName: '',
+                    birthYear: '1985',
+                    hometownPref: '神奈川県',
+                    message: '元気にしていますか？あの時一緒に過ごした放課後の夕暮れの風景を今でもよく思い出します。もし私を探してくれたら、メッセージを届けてください。',
+                    contactType: 'LINE',
+                    contactId: 'yamada_taro_test2026',
+                    contactNote: '平日の夜ならいつでもLINE返信できます！'
+                  });
+                  setAgreed(true);
+                  setAuthEmail('yamada_test@example.com');
+                  setAuthPassword('password123');
+                }}
+                className="px-3 py-1.5 bg-white hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-xs font-bold transition-all shadow-2xs cursor-pointer flex items-center gap-1 active:scale-95"
+              >
+                <span>👤 山田 太郎（昭和60年生・神奈川）</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setFormData({
+                    lastName: '佐藤',
+                    firstName: '美咲',
+                    maidenName: '高橋',
+                    birthYear: '1990',
+                    hometownPref: '東京都',
+                    message: '中学を卒業してから随分経ちましたね。みんなで集まった時の写真を見るたび懐かしくなります。見つけたら気軽に声をかけてね。',
+                    contactType: 'EMAIL',
+                    contactId: 'misaki_sato_test@example.com',
+                    contactNote: 'メールは毎日チェックしています。'
+                  });
+                  setAgreed(true);
+                  setAuthEmail('misaki_test@example.com');
+                  setAuthPassword('password123');
+                }}
+                className="px-3 py-1.5 bg-white hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-xs font-bold transition-all shadow-2xs cursor-pointer flex items-center gap-1 active:scale-95"
+              >
+                <span>🌸 佐藤 美咲（旧姓:高橋・東京）</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setFormData({
+                    lastName: '鈴木',
+                    firstName: '健一',
+                    maidenName: '',
+                    birthYear: '1978',
+                    hometownPref: '大阪府',
+                    message: '昔お世話になった皆様へ。ふと当時の温かい思い出が蘇り、こちらに手紙を置くことにしました。元気でお過ごしでしょうか。',
+                    contactType: 'LINE',
+                    contactId: 'suzuki_kenichi_1978',
+                    contactNote: '週末に返信いたします。'
+                  });
+                  setAgreed(true);
+                  setAuthEmail('suzuki_test@example.com');
+                  setAuthPassword('password123');
+                }}
+                className="px-3 py-1.5 bg-white hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-xs font-bold transition-all shadow-2xs cursor-pointer flex items-center gap-1 active:scale-95"
+              >
+                <span>☕ 鈴木 健一（昭和53年生・大阪）</span>
+              </button>
+            </div>
+          </div>
+
           {/* 🛡️ 公開メッセージの「安心の約束ごと（3箇条）」バナー */}
           <div className="bg-gradient-to-br from-teal-50/90 via-sky-50/60 to-emerald-50/80 border border-teal-200/90 rounded-3xl p-5 sm:p-6 space-y-3.5 shadow-sm">
             <div className="flex items-center gap-2 text-teal-900 font-bold text-sm sm:text-base font-serif">
