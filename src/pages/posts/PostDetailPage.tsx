@@ -223,7 +223,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               )}
             </div>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-slate-900 tracking-wide flex items-center gap-2 flex-wrap">
-              <span>{postFullName} 様から貴方宛のメッセージです。</span>
+              <span>{postFullName} 様から貴方へのメッセージです。</span>
               {postMaidenName && (
                 <span className="text-sm sm:text-base font-normal text-slate-500 font-sans">
                   （旧姓: {postMaidenName}）

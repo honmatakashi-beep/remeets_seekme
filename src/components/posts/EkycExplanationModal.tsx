@@ -93,7 +93,7 @@ export const EkycExplanationModal: React.FC<EkycExplanationModalProps> = ({
                   <span className="text-[9.5px] font-mono text-slate-400">#ONLINE</span>
                 </div>
                 <div className="text-xs font-serif font-bold text-slate-900 truncate">
-                  {senderName ? `${senderName} 様から貴方宛のメッセージです。` : '山田 太郎 様から貴方宛のメッセージです。'}
+                  {senderName ? `${senderName} 様から貴方へのメッセージです。` : '山田 太郎 様から貴方へのメッセージです。'}
                 </div>
                 <div className="text-[10.5px] text-slate-500 truncate">
                   「元気にしていますか？あの時の想い出を…」

@@ -620,7 +620,7 @@ export const CreatePostPage = () => {
                   </div>
                   <div className="flex items-center gap-2.5 flex-wrap">
                     <h3 className="text-xl sm:text-2xl font-serif font-bold text-slate-900 leading-snug">
-                      {fullName || 'お名前'} 様から貴方宛のメッセージです。
+                      {fullName || 'お名前'} 様から貴方へのメッセージです。
                     </h3>
                     {previewTab === 'ekyc' && (
                       <button
