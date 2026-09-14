@@ -296,6 +296,7 @@ export const CreatePostPage = () => {
           contactType: effContactType,
           contactId: effContactId,
           contactNote: formData.contactNote.trim(),
+          isEkycVerified: isAlreadyVerified,
           questions: [
             { question: '当時の思い出のエピソード', answer: '相互承認で確認' },
             { question: 'ゆかりの都道府県', answer: effHometown }
@@ -308,11 +309,15 @@ export const CreatePostPage = () => {
         const data = await res.json();
         setCreatedPostData(data);
 
-        if (isEkycPlan) {
-          // 🌟 eKYC認証プランの場合: eKYCモーダルを起動
+        if (isAlreadyVerified) {
+          // 🛡️ 既に公的本人確認（eKYC）認証済みの場合は、eKYCモーダルをスキップして即座に完了画面へ進む
+          setStep('success');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else if (isEkycPlan) {
+          // 🌟 未認証で新規にeKYC認証プラン（600円）を選択した場合: eKYCモーダルを起動
           setShowEkycModal(true);
         } else {
-          // ✉️ 無料プランの場合: 投函完了（Step 4）画面へ遷移
+          // ✉️ 通常無料プランの場合: 投函完了（Step 4）画面へ遷移
           setStep('success');
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }
