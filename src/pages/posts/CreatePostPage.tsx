@@ -110,18 +110,21 @@ export const CreatePostPage = () => {
   // リアルタイム特定情報（学校名・会社名・駅名・連絡先等）の検知ロジック
   const getPrivacyWarning = (text: string): string | null => {
     if (!text) return null;
-    const lower = text.toLowerCase();
 
-    if (lower.includes('高校') || lower.includes('大学') || lower.includes('中学') || lower.includes('小学校') || lower.includes('幼稚園') || lower.includes('保育園')) {
-      return '防犯のため、具体的な学校名は含めず、当時の部活動や放課後の様子などの思い出をご記入ください。';
+    // 具体的な学校名（例: 〇〇高校、〇〇中学校、〇〇大学）
+    if (/(?:市立|県立|都立|府立|道立|私立|国立)?.{2,10}(?:高等学校|高校|中学校|小学校|幼稚園|保育園|大学)/.test(text)) {
+      return '防犯のため、具体的な学校名・大学名は含めず、当時の部活動や放課後の様子などの思い出をご記入ください。';
     }
-    if (lower.includes('株式会社') || lower.includes('有限会社') || lower.includes('病院') || lower.includes('支店') || lower.includes('部署')) {
+    // 具体的な会社名
+    if (/(?:株式会社|有限会社|合同会社|合資会社).{2,10}/.test(text)) {
       return 'プライバシー保護のため、会社名・勤務先名は含めずにご記入ください。';
     }
-    if (lower.includes('駅') || lower.includes('丁目') || lower.includes('番地') || lower.includes('マンション') || lower.includes('アパート')) {
-      return '居場所特定を防ぐため、最寄り駅名や詳細な町名・番地は含めずにご記入ください。';
+    // 詳細な丁目番地
+    if (/\d+丁目\d+番|\d+-\d+-\d+/.test(text)) {
+      return '居場所特定を防ぐため、詳細な町名・番地は含めずにご記入ください。';
     }
-    if (text.match(/0\d{1,4}-?\d{1,4}-?\d{4}/) || text.includes('@') || lower.includes('line') || lower.includes('twitter') || lower.includes('instagram')) {
+    // 直接の連絡先露出
+    if (text.match(/0\d{1,4}-?\d{1,4}-?\d{4}/) || text.includes('@') || /line\s*id|ライン\s*id/i.test(text)) {
       return '本文中に直接連絡先を記載することはできません。連絡先は下記の【再会時の開示連絡先】欄にご入力ください。';
     }
     return null;
@@ -142,8 +145,8 @@ export const CreatePostPage = () => {
       window.scrollTo({ top: 200, behavior: 'smooth' });
       return false;
     }
-    if (!formData.message.trim() || formData.message.trim().length < 15) {
-      setWarningMessage('昔の知人や友人に向けたメッセージを15文字以上で入力してください。');
+    if (!formData.message.trim() || formData.message.trim().length < 10) {
+      setWarningMessage('昔の知人や友人に向けたメッセージを10文字以上で入力してください。');
       return false;
     }
     if (!formData.contactId.trim()) {
@@ -1202,85 +1205,199 @@ export const CreatePostPage = () => {
           />
 
           {/* 🧪 【テスト・動作確認用】一括自動入力バー */}
-          <div className="p-3.5 sm:p-4 bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50/60 rounded-2xl border border-amber-200/80 shadow-2xs space-y-2">
+          <div className="p-3.5 sm:p-4 bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50/60 rounded-2xl border border-amber-300/90 shadow-2xs space-y-2.5">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-amber-900 flex items-center gap-1.5 font-sans">
+              <span className="text-xs font-bold text-amber-950 flex items-center gap-1.5 font-sans">
                 <Sparkles size={14} className="text-amber-600 shrink-0" />
-                <span>【テスト用】ワンクリック一括自動入力</span>
+                <span>【テスト用】ワンクリック自動入力 ＆ プレビューへ進む</span>
               </span>
-              <span className="text-[10px] text-amber-700/70 font-mono">
+              <span className="text-[10px] text-amber-800/80 font-mono">
                 検証用ショートカット
               </span>
             </div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <button
-                type="button"
-                onClick={() => {
-                  setFormData({
-                    lastName: '山田',
-                    firstName: '太郎',
-                    maidenName: '',
-                    birthYear: '1985',
-                    hometownPref: '神奈川県',
-                    message: '元気にしていますか？あの時一緒に過ごした放課後の夕暮れの風景を今でもよく思い出します。もし私を探してくれたら、メッセージを届けてください。',
-                    contactType: 'LINE',
-                    contactId: 'yamada_taro_test2026',
-                    contactNote: '平日の夜ならいつでもLINE返信できます！'
-                  });
-                  setAgreed(true);
-                  setAuthEmail('yamada_test@example.com');
-                  setAuthPassword('password123');
-                }}
-                className="px-3 py-1.5 bg-white hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-xs font-bold transition-all shadow-2xs cursor-pointer flex items-center gap-1 active:scale-95"
-              >
-                <span>👤 山田 太郎（昭和60年生・神奈川）</span>
-              </button>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              {/* 1. 山田 太郎 */}
+              <div className="bg-white p-2.5 rounded-xl border border-amber-200 shadow-2xs space-y-2">
+                <div className="text-[11px] font-bold text-amber-950 flex items-center gap-1">
+                  <span>👤 山田 太郎</span>
+                  <span className="text-[10px] text-slate-500 font-normal">（昭和60年・神奈川）</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFormData({
+                        lastName: '山田',
+                        firstName: '太郎',
+                        maidenName: '',
+                        birthYear: '1985',
+                        hometownPref: '神奈川県',
+                        message: '元気にしていますか？あの時一緒に過ごした放課後の夕暮れの風景を今でもよく思い出します。もし私を探してくれたら、メッセージを届けてください。',
+                        contactType: 'LINE',
+                        contactId: 'yamada_taro_test2026',
+                        contactNote: '平日の夜ならいつでもLINE返信できます！'
+                      });
+                      setAgreed(true);
+                      setAuthEmail('yamada_test@example.com');
+                      setAuthPassword('password123');
+                      setWarningMessage(null);
+                      setStep('preview');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className="flex-1 py-1.5 px-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-lg text-[11px] font-bold transition-all shadow-xs flex items-center justify-center gap-1 cursor-pointer active:scale-95"
+                    title="山田太郎のデータを入力して即座にプレビュー画面へ進む"
+                  >
+                    <Sparkles size={11} className="text-amber-200" />
+                    <span>⚡ 入力して次へ進む</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFormData({
+                        lastName: '山田',
+                        firstName: '太郎',
+                        maidenName: '',
+                        birthYear: '1985',
+                        hometownPref: '神奈川県',
+                        message: '元気にしていますか？あの時一緒に過ごした放課後の夕暮れの風景を今でもよく思い出します。もし私を探してくれたら、メッセージを届けてください。',
+                        contactType: 'LINE',
+                        contactId: 'yamada_taro_test2026',
+                        contactNote: '平日の夜ならいつでもLINE返信できます！'
+                      });
+                      setAgreed(true);
+                      setAuthEmail('yamada_test@example.com');
+                      setAuthPassword('password123');
+                      setWarningMessage(null);
+                    }}
+                    className="py-1.5 px-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[10px] font-bold transition-all cursor-pointer"
+                    title="フォームに入力のみ"
+                  >
+                    入力のみ
+                  </button>
+                </div>
+              </div>
 
-              <button
-                type="button"
-                onClick={() => {
-                  setFormData({
-                    lastName: '佐藤',
-                    firstName: '美咲',
-                    maidenName: '高橋',
-                    birthYear: '1990',
-                    hometownPref: '東京都',
-                    message: '中学を卒業してから随分経ちましたね。みんなで集まった時の写真を見るたび懐かしくなります。見つけたら気軽に声をかけてね。',
-                    contactType: 'EMAIL',
-                    contactId: 'misaki_sato_test@example.com',
-                    contactNote: 'メールは毎日チェックしています。'
-                  });
-                  setAgreed(true);
-                  setAuthEmail('misaki_test@example.com');
-                  setAuthPassword('password123');
-                }}
-                className="px-3 py-1.5 bg-white hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-xs font-bold transition-all shadow-2xs cursor-pointer flex items-center gap-1 active:scale-95"
-              >
-                <span>🌸 佐藤 美咲（旧姓:高橋・東京）</span>
-              </button>
+              {/* 2. 佐藤 美咲 */}
+              <div className="bg-white p-2.5 rounded-xl border border-amber-200 shadow-2xs space-y-2">
+                <div className="text-[11px] font-bold text-amber-950 flex items-center gap-1">
+                  <span>🌸 佐藤 美咲</span>
+                  <span className="text-[10px] text-slate-500 font-normal">（旧姓:高橋・東京）</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFormData({
+                        lastName: '佐藤',
+                        firstName: '美咲',
+                        maidenName: '高橋',
+                        birthYear: '1990',
+                        hometownPref: '東京都',
+                        message: '学生時代を卒業してから随分経ちましたね。みんなで集まった時の写真を見るたび懐かしくなります。見つけたら気軽に声をかけてね。',
+                        contactType: 'EMAIL',
+                        contactId: 'misaki_sato_test@example.com',
+                        contactNote: 'メールは毎日チェックしています。'
+                      });
+                      setAgreed(true);
+                      setAuthEmail('misaki_test@example.com');
+                      setAuthPassword('password123');
+                      setWarningMessage(null);
+                      setStep('preview');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className="flex-1 py-1.5 px-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-lg text-[11px] font-bold transition-all shadow-xs flex items-center justify-center gap-1 cursor-pointer active:scale-95"
+                    title="佐藤美咲のデータを入力して即座にプレビュー画面へ進む"
+                  >
+                    <Sparkles size={11} className="text-amber-200" />
+                    <span>⚡ 入力して次へ進む</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFormData({
+                        lastName: '佐藤',
+                        firstName: '美咲',
+                        maidenName: '高橋',
+                        birthYear: '1990',
+                        hometownPref: '東京都',
+                        message: '学生時代を卒業してから随分経ちましたね。みんなで集まった時の写真を見るたび懐かしくなります。見つけたら気軽に声をかけてね。',
+                        contactType: 'EMAIL',
+                        contactId: 'misaki_sato_test@example.com',
+                        contactNote: 'メールは毎日チェックしています。'
+                      });
+                      setAgreed(true);
+                      setAuthEmail('misaki_test@example.com');
+                      setAuthPassword('password123');
+                      setWarningMessage(null);
+                    }}
+                    className="py-1.5 px-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[10px] font-bold transition-all cursor-pointer"
+                    title="フォームに入力のみ"
+                  >
+                    入力のみ
+                  </button>
+                </div>
+              </div>
 
-              <button
-                type="button"
-                onClick={() => {
-                  setFormData({
-                    lastName: '鈴木',
-                    firstName: '健一',
-                    maidenName: '',
-                    birthYear: '1978',
-                    hometownPref: '大阪府',
-                    message: '昔お世話になった皆様へ。ふと当時の温かい思い出が蘇り、こちらに手紙を置くことにしました。元気でお過ごしでしょうか。',
-                    contactType: 'LINE',
-                    contactId: 'suzuki_kenichi_1978',
-                    contactNote: '週末に返信いたします。'
-                  });
-                  setAgreed(true);
-                  setAuthEmail('suzuki_test@example.com');
-                  setAuthPassword('password123');
-                }}
-                className="px-3 py-1.5 bg-white hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-xs font-bold transition-all shadow-2xs cursor-pointer flex items-center gap-1 active:scale-95"
-              >
-                <span>☕ 鈴木 健一（昭和53年生・大阪）</span>
-              </button>
+              {/* 3. 鈴木 健一 */}
+              <div className="bg-white p-2.5 rounded-xl border border-amber-200 shadow-2xs space-y-2">
+                <div className="text-[11px] font-bold text-amber-950 flex items-center gap-1">
+                  <span>☕ 鈴木 健一</span>
+                  <span className="text-[10px] text-slate-500 font-normal">（昭和53年・大阪）</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFormData({
+                        lastName: '鈴木',
+                        firstName: '健一',
+                        maidenName: '',
+                        birthYear: '1978',
+                        hometownPref: '大阪府',
+                        message: '昔お世話になった皆様へ。ふと当時の温かい思い出が蘇り、こちらに手紙を置くことにしました。元気でお過ごしでしょうか。',
+                        contactType: 'LINE',
+                        contactId: 'suzuki_kenichi_1978',
+                        contactNote: '週末に返信いたします。'
+                      });
+                      setAgreed(true);
+                      setAuthEmail('suzuki_test@example.com');
+                      setAuthPassword('password123');
+                      setWarningMessage(null);
+                      setStep('preview');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className="flex-1 py-1.5 px-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-lg text-[11px] font-bold transition-all shadow-xs flex items-center justify-center gap-1 cursor-pointer active:scale-95"
+                    title="鈴木健一のデータを入力して即座にプレビュー画面へ進む"
+                  >
+                    <Sparkles size={11} className="text-amber-200" />
+                    <span>⚡ 入力して次へ進む</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFormData({
+                        lastName: '鈴木',
+                        firstName: '健一',
+                        maidenName: '',
+                        birthYear: '1978',
+                        hometownPref: '大阪府',
+                        message: '昔お世話になった皆様へ。ふと当時の温かい思い出が蘇り、こちらに手紙を置くことにしました。元気でお過ごしでしょうか。',
+                        contactType: 'LINE',
+                        contactId: 'suzuki_kenichi_1978',
+                        contactNote: '週末に返信いたします。'
+                      });
+                      setAgreed(true);
+                      setAuthEmail('suzuki_test@example.com');
+                      setAuthPassword('password123');
+                      setWarningMessage(null);
+                    }}
+                    className="py-1.5 px-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[10px] font-bold transition-all cursor-pointer"
+                    title="フォームに入力のみ"
+                  >
+                    入力のみ
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
