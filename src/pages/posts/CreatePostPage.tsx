@@ -496,21 +496,19 @@ export const CreatePostPage = () => {
           {/* プレビュー中ヘッダー（白ベタを外した背景透過・クリーンデザイン） */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 px-1 py-1 font-sans">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-2xl bg-teal-500/10 text-teal-700 flex items-center justify-center shrink-0 border border-teal-500/20 shadow-2xs">
-                <Eye size={18} />
+              <div className="w-10 h-10 rounded-2xl bg-teal-500/10 text-teal-700 flex items-center justify-center shrink-0 border border-teal-500/20 shadow-2xs">
+                <Eye size={19} />
               </div>
               <div>
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[10px] font-bold uppercase tracking-widest bg-teal-500/10 text-teal-900 border border-teal-500/20 px-2.5 py-0.5 rounded-full inline-block font-mono">
-                    STEP 2: PREVIEW
-                  </span>
-                  <span className="text-[11px] text-slate-500">
-                    ネット公開画面の完成プレビュー
-                  </span>
-                </div>
-                <h2 className="text-sm sm:text-base font-serif font-bold text-slate-900 mt-0.5">
-                  手紙がネット上に公開された際、このような画面として表示されます
+                <span className="text-[10px] font-bold uppercase tracking-widest bg-teal-500/10 text-teal-900 border border-teal-500/20 px-2.5 py-0.5 rounded-full inline-block font-mono">
+                  STEP 2: LIVE HTML PREVIEW
+                </span>
+                <h2 className="text-base sm:text-lg font-serif font-bold text-slate-900 mt-0.5">
+                  ネット公開画面の完成プレビュー
                 </h2>
+                <p className="text-xs text-slate-500 font-sans">
+                  ネット上に手紙が流された際、このような画面として公開されます。
+                </p>
               </div>
             </div>
 
@@ -520,7 +518,7 @@ export const CreatePostPage = () => {
                 setStep('form');
                 window.scrollTo({ top: 200, behavior: 'smooth' });
               }}
-              className="px-3.5 py-1.5 bg-white/80 hover:bg-white text-slate-700 hover:text-slate-900 border border-slate-300/80 rounded-xl text-xs font-bold transition-all shadow-2xs flex items-center gap-1.5 cursor-pointer shrink-0 font-sans"
+              className="px-3.5 py-2 bg-white/80 hover:bg-white text-slate-700 hover:text-slate-900 border border-slate-300/80 rounded-xl text-xs font-bold transition-all shadow-2xs flex items-center gap-1.5 cursor-pointer shrink-0 font-sans"
             >
               <Edit3 size={13} />
               <span>入力画面に戻って修正</span>
