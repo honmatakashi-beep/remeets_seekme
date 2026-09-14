@@ -310,6 +310,51 @@ export const CreatePostPage = () => {
     }
   };
 
+  // 4.5 テスト用のワンクリック自動アカウント登録＆手紙設置
+  const handleQuickTestAuth = async () => {
+    const rand = Math.floor(1000 + Math.random() * 9000);
+    const testEmail = `test_user_${rand}@example.com`;
+    const testPassword = 'Password123!';
+    setAuthEmail(testEmail);
+    setAuthPassword(testPassword);
+    setAuthLoading(true);
+    setAuthError(null);
+
+    try {
+      const payload: any = {
+        username: testEmail,
+        email: testEmail,
+        password: testPassword,
+        fullName: fullName || '山田 太郎',
+        lastName: formData.lastName.trim() || '山田',
+        firstName: formData.firstName.trim() || '太郎',
+        maidenName: formData.maidenName.trim(),
+        contactType: formData.contactType,
+        contactId: formData.contactId.trim() || 'test_contact'
+      };
+
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        login(data.token, data.user);
+        setShowAuthModal(false);
+        await executeSubmitPost(data.token, pendingPlan === 'ekyc');
+      } else {
+        setAuthError(data.error || 'テストアカウント登録に失敗しました。');
+      }
+    } catch (err) {
+      console.error(err);
+      setAuthError('通信エラーが発生しました。接続を確認してください。');
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
   // 5. SNSログイン/登録
   const handleSnsAuth = async (provider: 'line' | 'google') => {
     setAuthLoading(true);
@@ -1556,19 +1601,41 @@ export const CreatePostPage = () => {
                       {authMode === 'register' ? '無料アカウント登録（手紙の設置）' : 'ログインして手紙を公開'}
                     </h3>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const rand = Math.floor(1000 + Math.random() * 9000);
-                      setAuthEmail(`test_user_${rand}@example.com`);
-                      setAuthPassword('Password123!');
-                    }}
-                    className="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 rounded-lg text-[11px] font-bold transition-all shadow-2xs shrink-0 flex items-center gap-1 cursor-pointer"
-                    title="検証用のテストメールアドレス・パスワードを自動入力"
-                  >
-                    <Sparkles size={12} className="text-amber-600" />
-                    <span>⚡ テスト自動入力</span>
-                  </button>
+                </div>
+
+                {/* 🧪 【テスト・動作確認用】ワンクリック登録バー */}
+                <div className="p-3 bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50/60 rounded-2xl border border-amber-300/80 shadow-2xs space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-amber-950 flex items-center gap-1.5 font-sans">
+                      <Sparkles size={14} className="text-amber-600 shrink-0" />
+                      <span>【テスト用】ワンクリック自動登録＆投稿</span>
+                    </span>
+                    <span className="text-[10px] text-amber-700/70 font-mono">
+                      検証用
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-0.5">
+                    <button
+                      type="button"
+                      onClick={handleQuickTestAuth}
+                      disabled={authLoading}
+                      className="py-2.5 px-3 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 font-serif active:scale-98"
+                    >
+                      <Sparkles size={13} className="text-amber-200" />
+                      <span>⚡ ワンクリックで登録して手紙を置く</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const rand = Math.floor(1000 + Math.random() * 9000);
+                        setAuthEmail(`test_user_${rand}@example.com`);
+                        setAuthPassword('Password123!');
+                      }}
+                      className="py-2.5 px-3 bg-white hover:bg-amber-100/70 border border-amber-300 text-amber-950 rounded-xl text-xs font-bold transition-all shadow-2xs flex items-center justify-center gap-1.5 cursor-pointer active:scale-98"
+                    >
+                      <span>📝 フォームに自動入力のみ</span>
+                    </button>
+                  </div>
                 </div>
 
                 <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/80 text-xs text-slate-600 leading-relaxed font-sans space-y-1.5">

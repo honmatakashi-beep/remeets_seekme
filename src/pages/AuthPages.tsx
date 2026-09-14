@@ -86,6 +86,32 @@ export const LoginPage = () => {
     setPassword(p);
   };
 
+  const handleDirectTestLogin = async (u: string, p: string) => {
+    setUsername(u);
+    setPassword(p);
+    setLoading(true);
+    setError('');
+
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: u, password: p })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        login(data.token, data.user);
+        navigate(from, { replace: true });
+      } else {
+        setError(data.error || 'ログインに失敗しました。');
+      }
+    } catch (err) {
+      setError('サーバーとの通信に失敗しました。時間をおいて再度お試しください。');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const fromPath = (location.state as any)?.from?.pathname || '';
   const customMessage = (location.state as any)?.message;
 
@@ -286,17 +312,19 @@ export const LoginPage = () => {
           <div className="grid grid-cols-2 gap-2 pt-0.5">
             <button
               type="button"
-              onClick={() => handleQuickFill('test@example.com', 'password123')}
-              className="py-2 px-2.5 bg-white hover:bg-amber-100/70 border border-amber-300/80 text-amber-950 text-xs rounded-xl font-bold transition-all shadow-2xs flex items-center justify-center gap-1.5 cursor-pointer"
+              onClick={() => handleDirectTestLogin('test@example.com', 'password123')}
+              disabled={loading}
+              className="py-2.5 px-2.5 bg-gradient-to-r from-sky-600 to-blue-700 hover:from-sky-700 hover:to-blue-800 text-white text-xs rounded-xl font-bold transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
             >
-              <span>👤 テストユーザー</span>
+              <span>👤 テストユーザー（即ログイン）</span>
             </button>
             <button
               type="button"
-              onClick={() => handleQuickFill('admin', 'admin123')}
-              className="py-2 px-2.5 bg-white hover:bg-amber-100/70 border border-amber-300/80 text-amber-950 text-xs rounded-xl font-bold transition-all shadow-2xs flex items-center justify-center gap-1.5 cursor-pointer"
+              onClick={() => handleDirectTestLogin('admin', 'admin123')}
+              disabled={loading}
+              className="py-2.5 px-2.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white text-xs rounded-xl font-bold transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
             >
-              <span>👑 管理者</span>
+              <span>👑 管理者（即ログイン）</span>
             </button>
           </div>
         </div>
@@ -833,14 +861,19 @@ export const RegisterPage = () => {
                   type="button"
                   onClick={() => {
                     const rand = Math.floor(1000 + Math.random() * 9000);
-                    setEmail(`test_user_${rand}@example.com`);
-                    setPassword('Password123!');
+                    const testMail = `test_user_${rand}@example.com`;
+                    const testPass = 'Password123!';
+                    setEmail(testMail);
+                    setPassword(testPass);
+                    setAuthMethod('email');
+                    setStep(2);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
-                  className="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 rounded-lg text-[11px] font-bold transition-all shadow-2xs shrink-0 flex items-center gap-1 cursor-pointer"
-                  title="検証用のテストメールアドレス・パスワードを自動入力"
+                  className="px-3 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl text-xs font-bold transition-all shadow-2xs flex items-center gap-1 cursor-pointer active:scale-98"
+                  title="テストメールとパスワードを自動入力してStep 2へ進む"
                 >
-                  <Sparkles size={12} className="text-amber-600" />
-                  <span>⚡ テスト自動入力</span>
+                  <Sparkles size={12} className="text-amber-200" />
+                  <span>⚡ テスト入力して次へ進む</span>
                 </button>
               </div>
 
@@ -943,10 +976,10 @@ export const RegisterPage = () => {
                     setHasReadTerms(true);
                     setHasReadPrivacy(true);
                   }}
-                  className="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 rounded-lg text-[11px] font-bold transition-all shadow-2xs shrink-0 flex items-center gap-1 cursor-pointer"
+                  className="px-3 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl text-xs font-bold transition-all shadow-2xs shrink-0 flex items-center gap-1 cursor-pointer active:scale-98"
                   title="検証用のテスト氏名・生年月日・規約同意を一括自動入力"
                 >
-                  <Sparkles size={12} className="text-amber-600" />
+                  <Sparkles size={12} className="text-amber-200" />
                   <span>⚡ 全項目テスト自動入力</span>
                 </button>
                 <button
