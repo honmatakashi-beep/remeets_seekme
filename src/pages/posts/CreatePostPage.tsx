@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { useAuth, useNgFilter } from '../../contexts/AuthContext';
 import { PREFECTURES, BIRTH_YEAR_OPTIONS, formatBirthYearLabel, getPostUrl, PageHeader, toHiragana } from '../../lib/utils';
-import { GoogleSearchResultPreview, BackToHomeButton } from '../../components/SharedComponents';
+import { BackToHomeButton } from '../../components/SharedComponents';
 import { MypageEkycModal } from '../../components/account/MypageEkycModal';
 import { EkycExplanationModal } from '../../components/posts/EkycExplanationModal';
 
@@ -38,7 +38,7 @@ export const CreatePostPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [warningMessage, setWarningMessage] = useState<string | null>(null);
 
-  // 進行ステップ ('form': メッセージ作成, 'preview': プレビュー確認, 'plan': 公開方法選択, 'success': 投函完了)
+  // 進行ステップ ('form': メッセージ作成, 'preview': プレビュー確認, 'plan': 本人確認・登録設定, 'success': 登録完了)
   const [step, setStep] = useState<'form' | 'preview' | 'plan' | 'success'>('form');
 
   // ステップ遷移時は通常のページ遷移と同様に瞬時に最上部を表示（違和感のあるスムーズスクロールを排除）
@@ -59,9 +59,6 @@ export const CreatePostPage = () => {
 
   // 公認バッジ証明内容モーダル表示ステート
   const [showEkycExplanationModal, setShowEkycExplanationModal] = useState(false);
-
-  // 公開URLコピー完了ステート
-  const [copiedUrl, setCopiedUrl] = useState(false);
 
   // 無料アカウント登録・ログインモーダル
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -562,7 +559,7 @@ export const CreatePostPage = () => {
           <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${
             step === 'plan' ? 'bg-white/20 text-white' : 'bg-slate-300 text-slate-700'
           }`}>3</span>
-          <span>公開方法選択</span>
+          <span>本人確認・登録設定</span>
         </div>
         <span className="text-slate-300 font-bold">→</span>
         <div className={`flex items-center gap-1 px-3 py-1.5 rounded-full transition-all ${
@@ -571,12 +568,12 @@ export const CreatePostPage = () => {
           <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${
             step === 'success' ? 'bg-white/20 text-white' : 'bg-slate-300 text-slate-700'
           }`}>4</span>
-          <span>公開完了</span>
+          <span>登録完了</span>
         </div>
       </div>
 
       {/* =========================================================================
-          A. プレビュー画面（メッセージを見つけた相手が実際に見るHTML画面のリアルプレビュー & 見え方比較）
+          A. プレビュー画面（完全非公開・暗号化自動照合の登録内容プレビュー）
       ========================================================================= */}
       {step === 'preview' ? (
         <div className="space-y-6 animate-fade-in">
@@ -584,14 +581,14 @@ export const CreatePostPage = () => {
           <div className="space-y-1.5 px-1 py-1 font-sans">
             <div className="flex items-center gap-2">
               <span className="text-[10px] font-bold uppercase tracking-widest bg-teal-500/10 text-teal-900 border border-teal-500/20 px-2.5 py-0.5 rounded-full inline-block font-mono">
-                STEP 2: LIVE HTML PREVIEW
+                STEP 2: PRIVATE MESSAGE PREVIEW
               </span>
             </div>
             <h1 className="text-xl sm:text-2xl md:text-3xl font-serif font-bold text-slate-900 tracking-wide">
-              ネット公開画面の完成プレビュー
+              想い出メッセージの登録内容プレビュー
             </h1>
             <p className="text-xs sm:text-sm text-slate-500 font-sans">
-              ネット上にメッセージが流された際、このような画面として公開されます。
+              このメッセージは一般公開されず、暗号化されて安全に保管されます。お相手との情報が一致した時のみ、安全に通知されます。
             </p>
           </div>
 
@@ -626,7 +623,7 @@ export const CreatePostPage = () => {
                   </span>
                 </div>
                 <p className="text-xs text-slate-600 font-sans leading-relaxed">
-                  あなたのアカウントは公的本人確認が完了しているため、このメッセージには自動的に「虹色公認バッジ（封蝋印）」が付与され、最高水準の信頼度で公開されます。
+                  あなたのアカウントは公的本人確認が完了しているため、このメッセージには自動的に「虹色公認バッジ（封蝋印）」が付与され、最高水準の信頼度で暗号化保管・照合されます。
                 </p>
               </div>
               <div className="bg-white/95 border border-emerald-200 px-3.5 py-1.5 rounded-xl text-center shrink-0 shadow-2xs">
@@ -665,7 +662,7 @@ export const CreatePostPage = () => {
                   )}
                 </div>
                 <p className="text-xs text-slate-600 font-sans leading-relaxed">
-                  公的本人確認を行うと公認バッジが付与されます。それにより相手に安心感を与え、連絡をもらえる確率が格段に上がります。
+                  公的本人確認を行うと公認バッジが付与されます。照合時にお相手に「間違いなく本人の登録だ」と安心感を与え、再会エピソードの返信率が格段に上がります。
                 </p>
               </div>
 
@@ -699,13 +696,13 @@ export const CreatePostPage = () => {
           )}
 
           {/* =========================================================================
-              2. 💌 ネット公開画面の実物プレビュー（本番HTMLと100%同一）
+              2. 💌 非公開保管メッセージの実物プレビュー（照合時に開示される画面）
           ========================================================================= */}
           <div className="space-y-2">
             <div className="flex items-center justify-between px-2">
               <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5 font-sans">
                 <Eye size={14} className="text-teal-600" />
-                <span>ネット公開画面の実物プレビュー</span>
+                <span>照合時のお相手画面プレビュー（非公開保管）</span>
                 {previewTab === 'ekyc' && (
                   <button
                     type="button"
@@ -718,7 +715,7 @@ export const CreatePostPage = () => {
                 )}
               </span>
               <span className="text-[11px] text-slate-400 font-mono">
-                REAL HTML VIEW
+                ENCRYPTED STORAGE VIEW
               </span>
             </div>
 
@@ -732,8 +729,8 @@ export const CreatePostPage = () => {
                 <div className="space-y-1.5 flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-[11px] font-bold text-teal-800 tracking-wider font-sans bg-teal-50 border border-teal-200 px-2.5 py-0.5 rounded-full flex items-center gap-1">
-                      <span>✉️</span>
-                      <span>想い出再会プラットフォーム ReMEETs SEEKME 公開メッセージ</span>
+                      <Lock size={12} className="text-teal-600" />
+                      <span>想い出再会プラットフォーム ReMEETs SEEKME 非公開保管メッセージ</span>
                     </span>
                   </div>
                   <div className="flex items-center gap-2.5 flex-wrap">
@@ -769,9 +766,12 @@ export const CreatePostPage = () => {
                   </div>
                 </div>
 
-                {/* 右側：公開予定日 ＆ eKYC大型封蝋バッジ */}
+                {/* 右側：保管ステータス ＆ eKYC大型封蝋バッジ */}
                 <div className="flex items-center sm:flex-col sm:items-end justify-between sm:justify-start gap-2 shrink-0 pt-1 sm:pt-0 border-t sm:border-t-0 border-teal-100/60 sm:border-none">
-                  <span className="text-xs text-slate-500 font-sans whitespace-nowrap">公開予定：本日</span>
+                  <span className="text-xs text-slate-500 font-sans whitespace-nowrap flex items-center gap-1">
+                    <Lock size={12} className="text-teal-600" />
+                    <span>暗号化保管・自動照合待機</span>
+                  </span>
                   {previewTab === 'ekyc' && (
                     <div className="relative group sm:mt-1">
                       <button
@@ -791,7 +791,7 @@ export const CreatePostPage = () => {
                 </div>
               </div>
 
-              {/* メッセージメタデータ（すっきり見やすい文字サイズ・高コントラスト） */}
+              {/* メッセージメタデータ */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-white p-4 sm:p-5 rounded-2xl border-2 border-slate-200 font-sans shadow-xs">
                 <div className="space-y-1">
                   <span className="text-xs font-bold text-slate-700 block font-sans">メッセージを書いた人</span>
@@ -829,12 +829,12 @@ export const CreatePostPage = () => {
                 </div>
               </div>
 
-              {/* メッセージ本文（便箋風・情緒ある明朝体・高コントラスト・くっきり濃い文字） */}
+              {/* メッセージ本文 */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between border-b-2 border-teal-100 pb-2">
                   <span className="text-xs sm:text-sm font-extrabold text-teal-900 font-sans flex items-center gap-1.5">
                     <span className="text-base">✉️</span>
-                    <span>メッセージ本文（公開プレビュー）</span>
+                    <span>メッセージ本文（登録内容）</span>
                   </span>
                   <span className="text-xs font-medium text-slate-600 font-sans">
                     当時の想い出・メッセージ
@@ -849,11 +849,11 @@ export const CreatePostPage = () => {
                 </div>
               </div>
 
-              {/* メインCTA（相手側の視点） */}
+              {/* メインCTA（照合成立時のお相手側視点） */}
               <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-teal-100">
                 <div className="text-xs text-slate-600 font-sans space-y-0.5 text-center sm:text-left">
-                  <span className="font-bold text-slate-800 block">この人に心当たりはありませんか？</span>
-                  <span>当時のエピソードを添えて、再会希望を申請できます。</span>
+                  <span className="font-bold text-slate-800 block">照合成立時のお相手画面イメージ</span>
+                  <span>お相手は当時のエピソードを添えて、あなたへ再会希望を申請できます。</span>
                 </div>
 
                 <div className="px-6 py-3 bg-gradient-to-r from-rose-100 via-pink-100 to-rose-200 text-rose-900 border border-rose-300 font-bold rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2 opacity-95 cursor-default shadow-2xs pointer-events-none font-serif">
@@ -865,56 +865,56 @@ export const CreatePostPage = () => {
           </div>
 
           {/* =========================================================================
-              3. 連絡先がわからなくなってしまった貴方へ（再会のきっかけと安心ガイド）
+              3. 完全非公開・暗号化自動照合の安心ガイド
           ========================================================================= */}
           <div className="bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-8 shadow-sm space-y-5 text-left">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
               <div className="space-y-1">
                 <span className="text-[10px] font-extrabold text-teal-700 tracking-widest uppercase font-mono flex items-center gap-1">
-                  <span>ABOUT THIS MESSAGE</span>
+                  <span>ABOUT THIS SYSTEM</span>
                   <span>・</span>
-                  <span>メッセージに込められた想いと安心の仕組み</span>
+                  <span>完全非公開・暗号化自動照合の仕組み</span>
                 </span>
                 <h3 className="text-lg sm:text-xl md:text-2xl font-serif font-bold text-slate-900 flex items-center gap-2 flex-wrap">
-                  <span>🕊️ 連絡先がわからなくなってしまった貴方へ</span>
+                  <span>🕊️ あなたと相手を安全につなぐ照合システム</span>
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-600 font-serif leading-relaxed">
-                  「もう一度つながるきっかけ」として、当時の大切な想い出と共に届けられたメッセージです。
+                  全体へのWeb公開は一切行わず、お互いの登録情報が一致した時のみ安全に通知されます。
                 </p>
               </div>
               <span className="text-[11px] font-bold text-teal-800 bg-teal-50 border border-teal-200 px-3 py-1 rounded-full self-start sm:self-auto shadow-2xs font-sans">
-                🔒 登録・返信無料 ／ 完全相互合意制
+                🔒 完全非公開 ／ 相互合意制
               </span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-serif">
-              {/* 1. メッセージの目的 */}
+              {/* 1. 暗号化安全保管 */}
               <div className="p-4 sm:p-5 bg-gradient-to-br from-teal-50/70 to-emerald-50/30 rounded-2xl border border-teal-200/80 space-y-2">
                 <div className="flex items-center gap-2">
                   <div className="w-6 h-6 rounded-lg bg-teal-700 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs font-sans">
                     1
                   </div>
                   <strong className="text-slate-900 text-sm sm:text-base font-bold block font-serif">
-                    メッセージに込められた想い
+                    暗号化による安全保管
                   </strong>
                 </div>
                 <p className="text-slate-700 text-xs sm:text-[12.5px] leading-relaxed">
-                  引っ越しや環境の変化で連絡先が途絶えた大切な人に向けて、差出人が<strong>「もう一度話したい、元気か知りたい」</strong>という想いを込めて届けているメッセージです。
+                  メッセージや登録情報は一般のWeb上や検索エンジンには一切公開されず、強固に暗号化されて安全に保管されます。
                 </p>
               </div>
 
-              {/* 2. 心当たりがある時 */}
+              {/* 2. 自動照合と通知 */}
               <div className="p-4 sm:p-5 bg-gradient-to-br from-sky-50/70 to-blue-50/30 rounded-2xl border border-sky-200/80 space-y-2">
                 <div className="flex items-center gap-2">
                   <div className="w-6 h-6 rounded-lg bg-sky-700 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs font-sans">
                     2
                   </div>
                   <strong className="text-slate-900 text-sm sm:text-base font-bold block font-serif">
-                    心当たりがある時は
+                    お相手との自動照合
                   </strong>
                 </div>
                 <p className="text-slate-700 text-xs sm:text-[12.5px] leading-relaxed">
-                  「自分宛てかもしれない」と思ったら、メッセージ下のボタンから<strong>当時の呼び名や想い出のエピソードを添えて返信</strong>できます（登録・申請は無料）。
+                  お相手があなたを探して情報を登録した際に、システムが安全に照合し、双方のメールおよびマイアカウントへ通知を届けます。
                 </p>
               </div>
 
@@ -929,14 +929,14 @@ export const CreatePostPage = () => {
                   </strong>
                 </div>
                 <p className="text-slate-700 text-xs sm:text-[12.5px] leading-relaxed">
-                  差出人がエピソードを読み<strong>『確かにあの頃の仲間だ！』と双方が納得した場合のみ</strong>連絡先が開示されます。第三者には一切公開されません。
+                  届いたエピソードを読み<strong>『確かにあの頃の仲間だ！』と双方が納得した場合のみ</strong>連絡先が開示されます。第三者には一切公開されません。
                 </p>
               </div>
             </div>
 
             <div className="p-3.5 bg-slate-50/90 rounded-xl border border-slate-200/80 text-xs text-slate-700 leading-relaxed flex items-center gap-2 font-serif">
               <span className="text-base font-sans">✨</span>
-              <span>一方的な連絡先開示や悪用はAIと相互承認システムで100%遮断されています。安心してお気持ちをお伝えください。</span>
+              <span>一方的な連絡先開示や悪用はAIと相互承認システムで100%遮断されています。安心してお気持ちをご登録ください。</span>
             </div>
           </div>
 
@@ -962,14 +962,14 @@ export const CreatePostPage = () => {
               }}
               className="w-full sm:w-auto px-7 py-3.5 bg-gradient-to-r from-teal-700 via-emerald-700 to-teal-800 hover:from-teal-800 hover:to-emerald-800 text-white font-bold text-xs sm:text-sm rounded-2xl shadow-md hover:shadow-lg active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer font-serif"
             >
-              <span>{isAlreadyVerified ? 'メッセージの公開確認へ進む（次へ）' : 'メッセージの公開方法を選択する（次へ）'}</span>
+              <span>{isAlreadyVerified ? 'メッセージの登録確認へ進む（次へ）' : '本人確認・登録設定へ進む（次へ）'}</span>
               <ArrowRight size={16} />
             </button>
           </div>
         </div>
       ) : step === 'plan' ? (
         /* =========================================================================
-            B. 公開プラン選択画面（独立した第3ステップページ）
+            B. 本人確認・登録設定画面（独立した第3ステップページ）
         ========================================================================= */
         <div className="space-y-6 animate-fade-in">
           {/* 警告メッセージ */}
@@ -982,19 +982,19 @@ export const CreatePostPage = () => {
 
           {isAlreadyVerified ? (
             /* =====================================================================
-                🛡️ 認証済みユーザー専用：公認バッジ即時公開カード（0円 / 追加費用なし）
+                🛡️ 認証済みユーザー専用：公認バッジ即時登録カード（0円 / 追加費用なし）
             ===================================================================== */
             <div className="bg-white rounded-3xl border-2 border-emerald-500/50 p-6 sm:p-10 space-y-8 shadow-xl text-left">
               <div className="text-center space-y-2 max-w-xl mx-auto">
                 <span className="text-[10px] font-extrabold text-emerald-800 uppercase tracking-widest bg-emerald-50 px-3.5 py-1 rounded-full border border-emerald-200 inline-block font-sans">
-                  STEP 3: CONFIRM & PUBLISH
+                  STEP 3: CONFIRM & REGISTER
                 </span>
                 <h2 className="text-xl sm:text-3xl font-bold text-slate-900 font-serif">
-                  公認バッジ付きでメッセージを公開します
+                  公認バッジ付きでメッセージを登録します
                 </h2>
                 <p className="text-xs sm:text-sm text-slate-600 font-sans leading-relaxed">
                   あなたのアカウントは公的本人確認（eKYC）が完了しています。<br className="hidden sm:inline" />
-                  追加費用なし（¥0）で、最高水準の信頼度を誇る<strong>「虹色公認バッジ（封蝋印）」</strong>付きでメッセージを即時公開できます。
+                  追加費用なし（¥0）で、最高水準の信頼度を誇る<strong>「虹色公認バッジ（封蝋印）」</strong>付きでメッセージを安全に登録・照合待機します。
                 </p>
               </div>
 
@@ -1016,7 +1016,7 @@ export const CreatePostPage = () => {
                         </span>
                       </div>
                       <h3 className="text-lg sm:text-xl font-serif font-bold text-slate-900 mt-0.5">
-                        公認バッジ付きメッセージ公開
+                        公認バッジ付きメッセージ登録
                       </h3>
                     </div>
                   </div>
@@ -1027,7 +1027,7 @@ export const CreatePostPage = () => {
                 </div>
 
                 <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-sans bg-white/80 p-4 rounded-2xl border border-emerald-100">
-                  あなたのアカウントは公的身分証明書による本人確認が完了しているため、メッセージに<strong>「動く虹色公認バッジ（封蝋印）」</strong>が自動適用されます。お相手が検索した際も安心感が高く、再会エピソードの返信率が格段に高まります。
+                  あなたのアカウントは公的身分証明書による本人確認が完了しているため、メッセージに<strong>「動く虹色公認バッジ（封蝋印）」</strong>が自動適用されます。お相手との照合時にも高い信頼性が担保され、再会エピソードの返信率が格段に高まります。
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs font-sans">
@@ -1053,10 +1053,10 @@ export const CreatePostPage = () => {
                     className="w-full py-4.5 bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 hover:from-emerald-700 hover:via-teal-700 hover:to-indigo-700 text-white font-bold text-base sm:text-lg rounded-2xl shadow-xl hover:shadow-2xl active:scale-98 transition-all flex items-center justify-center gap-2.5 cursor-pointer font-serif disabled:opacity-50 border border-emerald-400/30"
                   >
                     <ShieldCheck size={20} className="text-white drop-shadow-xs" />
-                    <span>✨ 公認バッジ付きでメッセージを公開する（即時公開）</span>
+                    <span>✨ 公認バッジ付きでメッセージを登録する（安全保管）</span>
                   </button>
                   <span className="text-[11px] text-slate-500 text-center block mt-2.5 font-sans">
-                    ※ 公開後もマイアカウントからいつでも内容の修正や削除が可能です
+                    ※ 登録後もマイアカウントからいつでも内容の修正や削除が可能です
                   </span>
                 </div>
               </div>
@@ -1068,22 +1068,22 @@ export const CreatePostPage = () => {
             <div className="bg-white rounded-3xl border-2 border-teal-500/40 p-6 sm:p-10 space-y-8 shadow-xl text-left">
               <div className="text-center space-y-2 max-w-xl mx-auto">
                 <span className="text-[10px] font-extrabold text-teal-800 uppercase tracking-widest bg-teal-50 px-3.5 py-1 rounded-full border border-teal-200 inline-block font-sans">
-                  STEP 3: SELECT PUBLISH PLAN
+                  STEP 3: REGISTRATION OPTIONS
                 </span>
                 <h2 className="text-xl sm:text-3xl font-bold text-slate-900 font-serif">
-                  メッセージの公開方法を選択してください
+                  メッセージの登録・本人確認オプション
                 </h2>
                 <p className="text-xs sm:text-sm text-slate-600 font-sans leading-relaxed">
-                  お相手があなたを見つけた際、<strong>「間違いなく本物のあの人だ！」</strong>と確信できるよう、公的本人確認（eKYC）認証マーク付きでの投函を推奨しています。
+                  お相手との照合時に<strong>「間違いなく本物のあの人だ！」</strong>と確信できるよう、公的本人確認（eKYC）認証マーク付きでの登録を推奨しています。
                 </p>
 
                 {/* 💡 アカウント登録と通知・管理に関する重要案内 */}
                 <div className="p-3.5 bg-sky-50/80 rounded-2xl border border-sky-200 text-left text-xs text-sky-900 flex items-start gap-2.5 font-sans mt-3">
                   <CheckCircle2 size={16} className="text-sky-600 shrink-0 mt-0.5" />
                   <div className="space-y-0.5 leading-relaxed">
-                    <strong className="block text-sky-950 font-bold">メッセージの設置とアカウント連携について</strong>
+                    <strong className="block text-sky-950 font-bold">メッセージの登録とアカウント連携について</strong>
                     <span>
-                      お相手から再会エピソードが届いた際の<strong>メール通知</strong>および、マイページでの<strong>メッセージの再確認・管理</strong>のため、プラン選択後にアカウント登録（30秒）を行います。
+                      お相手との照合や再会エピソードが届いた際の<strong>メール通知</strong>および、マイアカウントでの<strong>メッセージの確認・管理</strong>のため、プラン選択後にアカウント登録（30秒）を行います。
                       {pendingPlan === 'ekyc' && ' 公的本人確認（eKYC）では身元確認証明のためアカウント登録が必須となります。'}
                     </span>
                   </div>
@@ -1091,7 +1091,7 @@ export const CreatePostPage = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 pt-1">
-                {/* プランA: 🌟 公的認証（eKYC）付き投函（おすすめ） */}
+                {/* プランA: 🌟 公的認証（eKYC）付き登録（おすすめ） */}
                 <div className="relative rounded-3xl border-2 border-amber-500 bg-gradient-to-b from-amber-50/80 via-white to-orange-50/40 p-6 sm:p-8 space-y-5 shadow-lg hover:shadow-xl transition-all flex flex-col justify-between ring-4 ring-amber-400/20">
                   <div className="absolute -top-3.5 left-6 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-white text-[11px] font-black px-3.5 py-1 rounded-full shadow-md uppercase tracking-wider flex items-center gap-1.5 font-sans">
                     <Crown size={13} />
@@ -1121,7 +1121,7 @@ export const CreatePostPage = () => {
                           <ShieldCheck size={12} />
                         </div>
                         <span className="leading-snug">
-                          メッセージと検索カードに<strong>動く虹色公的認証マーク（封蝋印）</strong>が付与
+                          メッセージと照合結果に<strong>動く虹色公的認証マーク（封蝋印）</strong>が付与
                         </span>
                       </li>
                       <li className="flex items-start gap-2.5">
@@ -1147,7 +1147,7 @@ export const CreatePostPage = () => {
                       className="w-full py-4 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-sm sm:text-base rounded-2xl shadow-lg hover:shadow-xl active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer font-serif disabled:opacity-50"
                     >
                       <ShieldCheck size={18} className="text-amber-100" />
-                      <span>公的認証付きでメッセージを届ける（600円） ✨</span>
+                      <span>公的認証付きでメッセージを登録する（600円） ✨</span>
                     </button>
                     <span className="text-[11px] text-amber-800/80 text-center block mt-2 font-sans">
                       ※ 審査落ち時や不一致時は全額即時自動返金
@@ -1155,7 +1155,7 @@ export const CreatePostPage = () => {
                   </div>
                 </div>
 
-                {/* プランB: ✉️ 通常無料投函 */}
+                {/* プランB: ✉️ 通常無料登録 */}
                 <div className="rounded-3xl border border-slate-200 bg-slate-50/60 hover:bg-white p-6 sm:p-8 space-y-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
                   <div className="space-y-4">
                     <div className="flex justify-between items-start">
@@ -1164,7 +1164,7 @@ export const CreatePostPage = () => {
                           BASIC
                         </span>
                         <h4 className="text-lg sm:text-xl font-serif font-bold text-slate-800 mt-1">
-                          通常のメッセージとして届ける
+                          通常のメッセージとして登録
                         </h4>
                         <p className="text-xs text-slate-500 font-sans mt-0.5">
                           まずは費用をかけずにメッセージを作成
@@ -1187,7 +1187,7 @@ export const CreatePostPage = () => {
                       <li className="flex items-start gap-2.5">
                         <Check size={17} className="text-teal-600 shrink-0 mt-0.5" />
                         <span className="leading-snug">
-                          いつでも後からマイページで公的認証を追加可能
+                          いつでも後からマイアカウントで公的認証を追加可能
                         </span>
                       </li>
                       <li className="flex items-start gap-2.5 text-slate-400">
@@ -1206,7 +1206,7 @@ export const CreatePostPage = () => {
                       className="w-full py-4 bg-slate-800 hover:bg-slate-900 text-white font-bold text-sm sm:text-base rounded-2xl shadow-md hover:shadow-lg active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer font-serif disabled:opacity-50"
                     >
                       <Send size={16} className="text-slate-300" />
-                      <span>通常公開でメッセージを届ける</span>
+                      <span>通常登録でメッセージを安全保管する</span>
                     </button>
                     <span className="text-[11px] text-slate-400 text-center block mt-2 font-sans">
                       ※ 維持費・月額費用などは一切不要
@@ -1243,31 +1243,31 @@ export const CreatePostPage = () => {
         </div>
       ) : step === 'success' ? (
         /* =========================================================================
-            C. 投函・公開完了画面（インターネットの海にメッセージが公開された完了ページ）
+            C. 登録完了画面（暗号化保管・自動照合開始の完了ページ）
         ========================================================================= */
         <div className="max-w-2xl mx-auto space-y-6 animate-fade-in text-left">
-          {/* 1. 清潔感のある白ベースの完了ヘッダー（緑ベタ廃止） */}
+          {/* 1. 清潔感のある白ベースの完了ヘッダー */}
           <div className="bg-white rounded-3xl border-2 border-emerald-200/80 p-6 sm:p-10 shadow-lg text-center space-y-3">
             <div className="w-14 h-14 bg-gradient-to-br from-emerald-50 to-teal-100 text-emerald-700 rounded-2xl mx-auto flex items-center justify-center border border-emerald-200 shadow-2xs">
               <Sparkles size={28} />
             </div>
 
             <span className="text-[10px] font-extrabold uppercase tracking-widest bg-emerald-50 text-emerald-800 px-3.5 py-1 rounded-full border border-emerald-200 inline-block font-sans">
-              PUBLISH COMPLETE
+              REGISTRATION COMPLETE
             </span>
 
             <h1 className="text-xl sm:text-2xl md:text-3xl font-serif font-bold text-slate-900 tracking-wide leading-relaxed text-center">
-              メッセージがインターネットの海に<br />
-              届けられました
+              想い出メッセージの登録が<br />
+              完了しました
             </h1>
 
             <p className="text-xs sm:text-sm text-slate-600 max-w-lg mx-auto font-sans leading-relaxed">
-              あなたを探しているお相手に向けた想い出のメッセージが正常に公開されました。<br className="hidden sm:inline" />
-              お相手がこのメッセージを見つけ、当時の思い出を届けてくれる日を心待ちにしましょう。
+              あなたを探しているお相手に向けた想い出メッセージが暗号化保管されました。<br className="hidden sm:inline" />
+              システムによる安全な自動照合を開始しました。お相手からの連絡を心待ちにしましょう。
             </p>
           </div>
 
-          {/* 2. メッセージ公開後の流れと確認方法（シンプル3ステップ） */}
+          {/* 2. メッセージ登録後の流れと確認方法（シンプル3ステップ） */}
           <div className="bg-white rounded-3xl border-2 border-slate-200/90 p-6 sm:p-9 space-y-6 shadow-md text-left font-sans">
             <div className="border-b border-slate-200 pb-4 space-y-1">
               <span className="text-[10px] font-extrabold text-teal-800 uppercase tracking-widest bg-teal-50 px-3 py-0.5 rounded-full border border-teal-200 inline-block font-mono">
@@ -1278,7 +1278,7 @@ export const CreatePostPage = () => {
                 <span>今後の確認方法と連絡が届いたときの流れ</span>
               </h2>
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed pt-1">
-                メッセージはインターネットの海に設置され、お相手が見つけるまで安全に待機します。あなたがアクションを行うポイントは以下の3つです。
+                メッセージは暗号化されて安全に保管され、お相手と一致するまで安全に待機します。あなたがアクションを行うポイントは以下の3つです。
               </p>
             </div>
 
@@ -1299,7 +1299,7 @@ export const CreatePostPage = () => {
                     メッセージの確認・修正は「マイアカウント」でいつでも可能
                   </h3>
                   <p className="text-slate-600 text-xs sm:text-[13px] leading-relaxed font-sans">
-                    公開中のメッセージ内容の確認、文章の推敲・修正、または公開停止（削除）は、マイアカウント（マイページ）最上部からいつでも自由に行えます。
+                    登録したメッセージ内容の確認、文章の推敲・修正、または登録解除は、マイアカウント最上部からいつでも自由に行えます。
                   </p>
                 </div>
               </div>
@@ -1317,10 +1317,10 @@ export const CreatePostPage = () => {
                     <span className="text-xs font-bold text-teal-800">お相手からのアクション</span>
                   </div>
                   <h3 className="text-base sm:text-lg font-bold text-teal-950 font-serif leading-snug">
-                    お相手から連絡が届いたら、メールとマイアカウントに即座に通知
+                    お相手と照合されたら、メールとマイアカウントに即座に通知
                   </h3>
                   <p className="text-slate-700 text-xs sm:text-[13px] leading-relaxed font-sans">
-                    お相手がメッセージを見つけ、2人だけの想い出エピソードを添えて返信（再会申請）を届けると、ご登録のメールアドレスおよびマイアカウント通知にお知らせが届きます。
+                    お相手があなたを探して情報を登録し、照合が一致して想い出エピソード（再会申請）が届くと、ご登録のメールアドレスおよびマイアカウント通知にお知らせが届きます。
                   </p>
                 </div>
               </div>
@@ -1387,14 +1387,14 @@ export const CreatePostPage = () => {
           <PageHeader
             icon={<Send size={24} className="text-teal-600" />}
             iconBoxClassName="bg-teal-50 text-teal-600 border border-teal-100"
-            category="Create Letter"
+            category="Private Message"
             badge={
               <span className="text-[10px] font-bold text-teal-800 bg-teal-50 border border-teal-200 px-2 py-0.5 rounded-md font-sans">
-                プライバシー・防犯設計
+                完全非公開・暗号化照合
               </span>
             }
             title="メッセージを届ける"
-            description="私を探している誰かに向けて、あなたからのメッセージを届けておきましょう。学校名や詳細な住所は非公開のため、プライバシーを完全に守りながら待つことができます。"
+            description="私を探している誰かに向けて、あなたからのメッセージを登録しておきましょう。全体へのWeb公開は一切行わず、暗号化されて安全に保管・自動照合されます。"
           />
 
           {/* 🧪 【テスト・動作確認用】一括自動入力バー */}
@@ -1479,20 +1479,20 @@ export const CreatePostPage = () => {
             </div>
           </div>
 
-          {/* ℹ️ 既に公開メッセージ作成済みのユーザーへの案内バナー（1人1通ポリシー） */}
+          {/* ℹ️ 既にメッセージ登録済みのユーザーへの案内バナー（1人1通ポリシー） */}
           {existingUserPost && (
             <div className="p-5 bg-gradient-to-r from-teal-50 via-sky-50 to-emerald-50 border-2 border-teal-300 rounded-3xl space-y-3 shadow-sm animate-fade-in font-sans text-left">
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2 text-teal-900 font-bold text-sm font-serif">
                   <Sparkles size={18} className="text-teal-600 shrink-0" />
-                  <span>既にあなたの公開メッセージが1通登録されています</span>
+                  <span>既にあなたの想い出メッセージが1通登録されています（非公開照合中）</span>
                 </div>
                 <span className="text-[10px] bg-emerald-100 text-emerald-800 border border-emerald-300 px-2.5 py-0.5 rounded-full font-bold">
-                  公開中
+                  登録済み
                 </span>
               </div>
               <p className="text-xs text-slate-600 leading-relaxed font-sans">
-                ReMEETs SEEKME では、相手に届くメッセージの信憑性を保つため<strong>「原則1ユーザーにつき1通」</strong>の公開となっております。
+                ReMEETs SEEKME では、相手に届くメッセージの信憑性を保つため<strong>「原則1ユーザーにつき1通」</strong>の登録となっております。
                 内容の変更・推敲は<strong>「マイアカウント」</strong>からいつでも自由に行えます。
               </p>
               <div className="flex flex-wrap items-center gap-2.5 pt-1">
@@ -1502,14 +1502,6 @@ export const CreatePostPage = () => {
                 >
                   <Edit3 size={13} />
                   <span>マイアカウントでメッセージを修正する</span>
-                </Link>
-                <Link
-                  to={`/posts/${existingUserPost.id}`}
-                  target="_blank"
-                  className="px-3.5 py-2 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition-all flex items-center gap-1"
-                >
-                  <Eye size={13} />
-                  <span>現在の公開画面を確認</span>
                 </Link>
               </div>
             </div>
@@ -1577,7 +1569,7 @@ export const CreatePostPage = () => {
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-teal-900 block flex items-center justify-between">
                     <span>ふりがな（せい）</span>
-                    <span className="text-teal-700 font-bold text-[10px]">ひらがな検索・読み間違い防止用</span>
+                    <span className="text-teal-700 font-bold text-[10px]">ひらがな照合・読み間違い防止用</span>
                   </label>
                   <input
                     type="text"
@@ -1601,7 +1593,7 @@ export const CreatePostPage = () => {
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-teal-900 block flex items-center justify-between">
                     <span>ふりがな（めい）</span>
-                    <span className="text-teal-700 font-bold text-[10px]">ひらがな検索対応</span>
+                    <span className="text-teal-700 font-bold text-[10px]">ひらがな照合対応</span>
                   </label>
                   <input
                     type="text"
@@ -1709,7 +1701,7 @@ export const CreatePostPage = () => {
               </div>
             </div>
 
-            {/* 2. 探している相手に向けた公開メッセージ */}
+            {/* 2. 探している相手に向けた想い出メッセージ */}
             <div className="bg-white rounded-3xl border-2 border-slate-200/90 p-5 sm:p-7 space-y-4 shadow-sm">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
                 <div className="flex items-center gap-2.5">
@@ -1717,7 +1709,7 @@ export const CreatePostPage = () => {
                     2
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-slate-900 font-serif">公開メッセージ</h3>
+                    <h3 className="text-base font-bold text-slate-900 font-serif">想い出メッセージ</h3>
                     <p className="text-xs text-slate-500 font-sans">あなたを探している相手に向けた温かいひと言をご記入ください。</p>
                   </div>
                 </div>
@@ -1756,7 +1748,7 @@ export const CreatePostPage = () => {
                     )}
                   </div>
                   <p className="text-[11px] sm:text-xs text-slate-600 leading-relaxed font-sans">
-                    シチュエーションを選ぶだけで、お名前やゆかりの地の情報をもとに安心・温かい公開メッセージを自動生成します。
+                    シチュエーションを選ぶだけで、お名前やゆかりの地の情報をもとに安心・温かい想い出メッセージを自動生成します。
                   </p>
 
                   {/* シチュエーション選択ボタン */}
@@ -1852,7 +1844,7 @@ export const CreatePostPage = () => {
                 <div className="bg-gradient-to-br from-teal-50/60 via-sky-50/40 to-slate-50 border border-teal-100 rounded-2xl p-4 space-y-2.5">
                   <div className="flex items-center gap-1.5 text-teal-900 font-bold text-xs font-serif">
                     <ShieldCheck size={16} className="text-teal-600 shrink-0" />
-                    <span>安心・安全のための「公開メッセージの約束ごと」</span>
+                    <span>安心・安全のための「想い出メッセージの約束ごと」</span>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
                     <div className="p-2.5 bg-white/95 rounded-xl border border-teal-100 shadow-2xs space-y-0.5">
@@ -1864,7 +1856,7 @@ export const CreatePostPage = () => {
                     <div className="p-2.5 bg-white/95 rounded-xl border border-teal-100 shadow-2xs space-y-0.5">
                       <span className="font-bold text-rose-700 block text-[11px]">🚫 駅名・詳細住所は書かない</span>
                       <span className="text-[10px] text-slate-500 leading-tight block">
-                        最寄り駅や番地は書かず、都道府県のみを公開します。
+                        最寄り駅や番地は書かず、都道府県のみを登録します。
                       </span>
                     </div>
                     <div className="p-2.5 bg-white/95 rounded-xl border border-teal-100 shadow-2xs space-y-0.5">
@@ -1958,27 +1950,15 @@ export const CreatePostPage = () => {
               </div>
             </div>
 
-            {/* 4. リアルタイムGoogle検索プレビュー */}
-            <div className="bg-slate-50 rounded-3xl border border-slate-200 p-5 sm:p-6 space-y-3 shadow-inner">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-700 font-serif flex items-center gap-1.5">
-                  <Eye size={14} className="text-teal-600" />
-                  <span>Google検索結果での表示プレビュー</span>
-                </span>
-                <span className="text-[10px] text-slate-400 font-sans">
-                  ※学校名や連絡先は表示されません
-                </span>
+            {/* 4. 完全非公開・暗号化保護の安心設計 */}
+            <div className="bg-slate-50 rounded-3xl border border-slate-200 p-5 sm:p-6 space-y-2 shadow-inner">
+              <div className="flex items-center gap-2 text-slate-800 font-bold text-xs sm:text-sm font-serif">
+                <Lock size={16} className="text-teal-600 shrink-0" />
+                <span>完全非公開・暗号化保護について</span>
               </div>
-
-              <GoogleSearchResultPreview
-                targetName={fullName || 'あなたのお名前'}
-                targetNameKana={fullNameKana || undefined}
-                targetMaidenName={formData.maidenName}
-                targetMaidenNameKana={formData.maidenNameKana || undefined}
-                targetHometown={formData.hometownPref || 'ゆかりの都道府県'}
-                searcherProfile={formData.message || '私を探しているあなたへ。メッセージをお待ちしています。'}
-                era={formData.birthYear ? `${formData.birthYear}年生まれ` : undefined}
-              />
+              <p className="text-xs text-slate-600 font-sans leading-relaxed">
+                ご登録いただいた内容は一般のWebサイトや検索エンジンには一切公開されません。お相手との情報が一致した時のみ安全に照合通知が届くプライベート仕様です。
+              </p>
             </div>
 
             {/* 利用規約同意 ＆ 確認プレビューへ進むボタン */}
@@ -2005,11 +1985,11 @@ export const CreatePostPage = () => {
                   className="w-full sm:w-auto min-w-[300px] px-8 py-4 bg-gradient-to-r from-teal-700 via-emerald-700 to-teal-800 hover:from-teal-800 hover:to-emerald-800 active:scale-98 text-white font-bold text-sm sm:text-base rounded-2xl shadow-lg hover:shadow-xl transition-all disabled:opacity-40 disabled:pointer-events-none cursor-pointer inline-flex items-center justify-center gap-2 font-serif"
                 >
                   <Eye size={18} />
-                  <span>ネット公開画面の完成プレビューを確認する ✨</span>
+                  <span>登録内容のプレビューを確認する ✨</span>
                   <ArrowRight size={16} />
                 </button>
                 <p className="text-[11px] text-slate-400 mt-2 font-sans">
-                  ※ 次の画面で、ネット公開画面の完成プレビューを確認してメッセージを作成できます。
+                  ※ 次の画面で、登録内容のプレビューを確認してメッセージを登録できます。
                 </p>
               </div>
             </div>
@@ -2050,7 +2030,7 @@ export const CreatePostPage = () => {
                       {authMode === 'register' ? 'Registration' : 'Login'}
                     </span>
                     <h3 className="text-base sm:text-lg font-serif font-bold text-slate-900 mt-0.5">
-                      {authMode === 'register' ? 'アカウント登録（メッセージの作成）' : 'ログインしてメッセージを公開'}
+                      {authMode === 'register' ? 'アカウント登録（メッセージの作成）' : 'ログインしてメッセージを登録'}
                     </h3>
                   </div>
                 </div>
@@ -2097,7 +2077,7 @@ export const CreatePostPage = () => {
                   </p>
                   <ul className="space-y-1 text-[11px] text-slate-600 list-disc pl-4">
                     <li>相手から再会エピソードが届いた際に<strong>メール通知</strong>を受け取るため</li>
-                    <li>マイページでメッセージの内容を<strong>いつでも再確認・編集・削除</strong>できるようにするため</li>
+                    <li>マイアカウントでメッセージの内容を<strong>いつでも再確認・編集・削除</strong>できるようにするため</li>
                     <li>公的本人確認（eKYC）を行う場合、<strong>身元確認データを安全に紐付ける</strong>ため</li>
                   </ul>
                 </div>
