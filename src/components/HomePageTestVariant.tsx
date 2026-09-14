@@ -369,7 +369,7 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
                   className="w-full sm:w-auto min-w-[220px] px-7 py-3.5 sm:py-4 bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-700 hover:from-teal-700 hover:to-emerald-800 text-white font-bold rounded-2xl text-xs sm:text-sm transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.01] active:scale-95 group border border-teal-400/30 whitespace-nowrap"
                 >
                   <Send size={17} className="text-teal-200 group-hover:rotate-12 transition-transform shrink-0" />
-                  <span className="font-bold tracking-wide">手紙を書く（無料）</span>
+                  <span className="font-bold tracking-wide">手紙を書く</span>
                   <ArrowRight size={16} className="shrink-0 text-teal-200" />
                 </Link>
 
@@ -403,12 +403,12 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
                     <div className="bg-emerald-50/60 border border-emerald-100/80 rounded-xl p-2 sm:p-2.5">
                       <span className="text-[10px] text-emerald-800 font-bold block">手紙を書く</span>
                       <span className="text-base sm:text-lg font-bold text-emerald-700">0円</span>
-                      <span className="text-[9px] text-slate-500 block">何通でも完全無料</span>
+                      <span className="text-[9px] text-slate-500 block">何通でも作成可能</span>
                     </div>
                     <div className="bg-emerald-50/60 border border-emerald-100/80 rounded-xl p-2 sm:p-2.5">
                       <span className="text-[10px] text-emerald-800 font-bold block">手紙の検索・申請</span>
                       <span className="text-base sm:text-lg font-bold text-emerald-700">0円</span>
-                      <span className="text-[9px] text-slate-500 block">エピソード送信無料</span>
+                      <span className="text-[9px] text-slate-500 block">エピソード送信</span>
                     </div>
                     <div className="bg-emerald-50/60 border border-emerald-100/80 rounded-xl p-2 sm:p-2.5">
                       <span className="text-[10px] text-emerald-800 font-bold block">連絡先開示（相互合意）</span>
@@ -495,7 +495,7 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
               <div className="space-y-2 sm:space-y-3 flex-1 flex flex-col justify-between pt-1">
                 <div className="space-y-1 sm:space-y-1.5">
                   <h3 className="text-sm sm:text-base md:text-lg font-serif font-extrabold text-slate-900 leading-snug tracking-tight">
-                    手紙を書く（無料）
+                    手紙を書く
                   </h3>
                   <p className="text-[11px] sm:text-xs md:text-sm text-slate-600 font-sans leading-relaxed">
                     お名前・旧姓・ゆかりの都道府県とメッセージを投稿。学校名や詳細住所は非公開で防犯徹底。
@@ -534,7 +534,7 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
               <div className="space-y-2 sm:space-y-3 flex-1 flex flex-col justify-between pt-1">
                 <div className="space-y-1 sm:space-y-1.5">
                   <h3 className="text-sm sm:text-base md:text-lg font-serif font-extrabold text-slate-900 leading-snug tracking-tight">
-                    エピソードで申請（無料）
+                    エピソードで申請
                   </h3>
                   <p className="text-[11px] sm:text-xs md:text-sm text-slate-600 font-sans leading-relaxed">
                     探していた知人が手紙を見つけ、当時の思い出のエピソードを添えて「再会希望」を送信します。
@@ -710,15 +710,15 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
                   <Send size={16} className="text-teal-200 shrink-0" />
                   <span className="font-bold tracking-wide">
                     {fullTargetName 
-                      ? `『${fullTargetName}』の名前で手紙を書く（無料）`
-                      : '手紙を作成する（完全無料）'}
+                      ? `『${fullTargetName}』の名前で手紙を書く`
+                      : '手紙を作成する'}
                   </span>
                   <ArrowRight size={16} className="shrink-0 text-teal-200" />
                 </button>
               </form>
 
               <div className="pt-2 border-t border-teal-200/60 text-[11px] sm:text-xs text-slate-500 font-sans text-center">
-                <span>※手紙の投稿・閲覧・エピソード申請は完全無料です。学校名や詳細住所は非公開で防犯徹底。</span>
+                <span>※手紙の投稿・閲覧・エピソード申請は無料です。学校名や詳細住所は非公開で防犯徹底。</span>
               </div>
             </div>
           </div>

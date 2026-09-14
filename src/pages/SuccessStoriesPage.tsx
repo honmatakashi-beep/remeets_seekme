@@ -378,11 +378,11 @@ export const SuccessStoriesPage = () => {
           ) : (
             <>
               <Link 
-                to="/register" 
+                to="/create" 
                 className="px-6 py-3 bg-gradient-to-r from-sky-600 via-teal-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 text-white font-extrabold text-xs sm:text-sm rounded-2xl shadow-sm hover:shadow-md hover:scale-[1.02] active:scale-98 transition-all flex items-center gap-2 cursor-pointer"
               >
                 <Mail size={15} />
-                <span>無料会員登録して手紙を流す</span>
+                <span>手紙を書く</span>
               </Link>
               <button 
                 onClick={() => setIsModalOpen(true)} 

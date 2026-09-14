@@ -271,14 +271,14 @@ export const Navbar = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) 
             className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-700 hover:from-teal-700 hover:via-emerald-700 hover:to-teal-800 text-white font-bold rounded-full text-xs shadow-xs shadow-teal-950/20 hover:shadow-sm transition-all hover:scale-[1.03] active:scale-98 cursor-pointer shrink-0 border border-teal-400/40"
           >
             <Send size={13} className="text-teal-100 shrink-0 drop-shadow-2xs" />
-            <span className="drop-shadow-2xs">手紙を書く（無料）</span>
+            <span className="drop-shadow-2xs">手紙を書く</span>
           </Link>
 
           {/* 手紙を探す Link */}
           <Link
             to="/search"
             onClick={() => setIsMenuOpen(false)}
-            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 text-slate-800 text-xs font-semibold font-sans transition-all border border-slate-200 shrink-0"
+            className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 text-slate-800 text-xs font-semibold font-sans transition-all border border-slate-200 shrink-0"
           >
             <Search size={14} className="text-teal-600" />
             <span>手紙を探す</span>
@@ -288,7 +288,7 @@ export const Navbar = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) 
           <Link
             to="/guide"
             onClick={() => setIsMenuOpen(false)}
-            className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-brand-primary/5 hover:bg-brand-primary/10 text-brand-dark text-xs font-semibold font-sans transition-all border border-brand-primary/15 hover:border-brand-primary/30 shrink-0"
+            className="hidden md:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-brand-primary/5 hover:bg-brand-primary/10 text-brand-dark text-xs font-semibold font-sans transition-all border border-brand-primary/15 hover:border-brand-primary/30 shrink-0"
           >
             <BookOpen size={14} className="text-brand-primary" />
             <span>ご利用ガイド</span>
@@ -368,7 +368,7 @@ export const Navbar = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) 
                   className="flex items-center gap-3 px-3 py-2.5 text-xs text-slate-700 hover:text-teal-700 hover:bg-teal-50/60 rounded-xl transition-all font-semibold text-left"
                 >
                   <Send size={16} className="text-teal-600 shrink-0" />
-                  <span>手紙を書く（無料）</span>
+                  <span>手紙を書く</span>
                 </Link>
 
                 <Link
@@ -567,7 +567,7 @@ export const Footer = () => {
         <div className="space-y-2.5 sm:space-y-3">
           <h4 className="text-[11px] sm:text-xs font-bold text-brand-dark/80 tracking-widest uppercase">サービス</h4>
           <ul className="space-y-1.5 sm:space-y-2 text-xs text-brand-dark/60">
-            <li><Link to="/create" className="hover:text-teal-700">手紙を書く（無料）</Link></li>
+            <li><Link to="/create" className="hover:text-teal-700">手紙を書く</Link></li>
             <li><Link to="/search" className="hover:text-teal-700">想い出の手紙を探す</Link></li>
             <li><Link to="/pricing" className="hover:text-teal-700">利用料金表</Link></li>
             <li><Link to="/supporter" className="hover:text-teal-700">SeekMeを応援（寄付）</Link></li>

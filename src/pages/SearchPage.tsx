@@ -269,7 +269,7 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
                     : 'bg-teal-600 text-white hover:bg-teal-700'
                 }`}
               >
-                {isUpdatingNotify ? '更新中...' : notifyEnabled ? '通知を解除する' : 'メール通知を有効化（無料）'}
+                {isUpdatingNotify ? '更新中...' : notifyEnabled ? '通知を解除する' : 'メール通知を有効化'}
               </button>
             ) : (
               <button
@@ -281,7 +281,7 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
                 className="px-4 py-2 rounded-xl font-bold text-xs bg-gradient-to-r from-teal-600 via-teal-700 to-indigo-600 hover:from-teal-700 hover:to-indigo-700 text-white transition-all cursor-pointer shadow-xs whitespace-nowrap flex items-center gap-1.5"
               >
                 <Mail size={13} />
-                <span>通知を受け取る（無料）</span>
+                <span>通知を受け取る</span>
               </button>
             )}
           </div>
@@ -802,7 +802,7 @@ export const SuccessStoryModal = ({
               <div className="space-y-2">
                 <h3 className="text-lg font-serif font-bold text-slate-900">ログインしてエピソードを投稿</h3>
                 <p className="text-xs text-slate-600 leading-relaxed max-w-sm mx-auto font-sans">
-                  再会ストーリーをご投稿いただくには、無料会員登録またはログインが必要です。
+                  再会ストーリーをご投稿いただくには、会員登録またはログインが必要です。
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row justify-center gap-3 pt-2">
@@ -818,7 +818,7 @@ export const SuccessStoryModal = ({
                   onClick={onClose}
                   className="btn-secondary text-xs px-6 py-3 bg-white"
                 >
-                  無料新規登録
+                  新規会員登録
                 </Link>
               </div>
             </div>

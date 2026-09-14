@@ -242,7 +242,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
           <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-teal-100">
             <div className="text-xs text-slate-600 font-sans space-y-0.5 text-center sm:text-left">
               <span className="font-bold text-slate-800 block">この人に心当たりはありませんか？</span>
-              <span>当時のエピソードを添えて、無料で再会希望を申請できます。</span>
+              <span>当時のエピソードを添えて、再会希望を申請できます。</span>
             </div>
 
             <button
@@ -251,7 +251,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-700 hover:from-teal-700 hover:to-emerald-800 text-white font-bold rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer shadow-md hover:shadow-lg transition-all hover:scale-[1.01] active:scale-95 whitespace-nowrap"
             >
               <Send size={16} className="text-teal-200" />
-              <span>この人に再会を希望する（無料）</span>
+              <span>この人に再会を希望する</span>
               <ArrowRight size={15} />
             </button>
           </div>
@@ -276,7 +276,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left font-sans text-xs">
             <div className="p-4 bg-teal-50/50 rounded-2xl border border-teal-100 space-y-1.5">
               <span className="text-[10px] font-bold text-teal-700 font-mono block">STEP 1</span>
-              <strong className="text-slate-900 block">エピソード送信（無料）</strong>
+              <strong className="text-slate-900 block">エピソード送信</strong>
               <p className="text-slate-600 leading-relaxed text-[11px]">
                 当時の思い出を添えて申請。相手に通知が届きます。
               </p>
@@ -309,14 +309,14 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               あなたも大切な人に向けて、手紙を書きませんか？
             </h3>
             <p className="text-xs text-teal-100 font-sans">
-              何通でも完全無料。お名前とゆかりの地を登録しておくだけで、探している知人が見つけられます。
+              お名前とゆかりの地を登録しておくだけで、探している知人が見つけられます。
             </p>
           </div>
           <Link
             to="/create"
             className="px-6 py-3 bg-white text-teal-800 hover:bg-teal-50 font-bold rounded-2xl text-xs sm:text-sm shadow-sm transition-all whitespace-nowrap"
           >
-            手紙を書く（無料）
+            手紙を書く
           </Link>
         </div>
       </div>
@@ -377,7 +377,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                       「{postFullName}」様へ再会希望を送信
                     </h3>
                     <p className="text-xs text-slate-500">
-                      当時の思い出のエピソードを添えて送信してください（申請は完全無料です）。
+                      当時の思い出のエピソードを添えて送信してください。
                     </p>
                   </div>
 
@@ -453,7 +453,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                       className="w-full py-3.5 bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-700 hover:from-teal-700 hover:to-emerald-800 disabled:opacity-40 text-white font-bold rounded-xl text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all"
                     >
                       <Send size={15} className="text-teal-200" />
-                      <span>{isSending ? '送信中...' : '再会希望エピソードを送信（無料）'}</span>
+                      <span>{isSending ? '送信中...' : '再会希望エピソードを送信'}</span>
                     </button>
                   </div>
                 </form>

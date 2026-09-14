@@ -553,7 +553,7 @@ export const CreatePostPage = () => {
                   }`}
                 >
                   <Send size={13} className={previewTab === 'free' ? 'text-slate-200' : 'text-slate-400'} />
-                  <span>✉️ 通常表示（無料）</span>
+                  <span>✉️ 通常表示</span>
                 </button>
               </div>
             </div>
@@ -598,85 +598,58 @@ export const CreatePostPage = () => {
             </div>
 
             <div className={`relative rounded-3xl bg-gradient-to-br from-white via-teal-50/20 to-sky-50/30 border-2 p-6 sm:p-10 shadow-lg text-left space-y-6 overflow-hidden transition-all ${
-              previewTab === 'ekyc' ? 'border-amber-400/90 ring-4 ring-amber-400/10' : 'border-teal-300/80'
+              previewTab === 'ekyc'
+                ? 'border-amber-400/90 shadow-[0_10px_35px_rgba(251,191,36,0.18)]'
+                : 'border-slate-300 shadow-md'
             }`}>
-              <div className="absolute top-0 right-0 w-48 h-48 bg-teal-200/20 rounded-full blur-3xl pointer-events-none" />
-
-              {/* ヘッダー情報 */}
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-teal-100 pb-4">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-xs font-bold bg-teal-100 text-teal-800 px-3 py-1 rounded-full uppercase tracking-wider font-mono">
-                    {formData.hometownPref || '全国'}
-                  </span>
-                  {formData.birthYear && (
-                    <span className="text-xs font-bold bg-sky-100 text-sky-900 px-3 py-1 rounded-full font-mono">
-                      {formatBirthYearLabel(parseInt(formData.birthYear, 10))}
-                    </span>
-                  )}
-                  <span className="text-[11px] text-slate-400 font-mono">
-                    #PREVIEW
-                  </span>
-                </div>
-
-                {/* 認証状態に応じたマーク表示 */}
-                {previewTab === 'ekyc' ? (
+              {/* 手紙ヘッダー */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-teal-100 pb-4">
+                <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="seal-rainbow px-3 py-1 text-white text-xs font-bold rounded-full shadow-xs flex items-center gap-1.5 animate-pulse">
-                      <ShieldCheck size={14} className="text-amber-200" />
-                      <span>🌈 公的本人確認済</span>
+                    <span className="text-xs font-bold text-teal-800 uppercase tracking-widest font-mono">
+                      SEEKME LETTER
                     </span>
-                  </div>
-                ) : (
-                  <span className="text-xs font-bold text-teal-700 bg-white/90 border border-teal-200 px-3 py-1 rounded-full shadow-2xs">
-                    💌 私を探すあなたへ
-                  </span>
-                )}
-              </div>
-
-              {/* 氏名・旧姓 & 認証バッジ */}
-              <div className="space-y-1.5">
-                <span className="text-xs font-bold text-slate-500 font-sans">手紙を書いた人</span>
-                <div className="flex flex-wrap items-center gap-3">
-                  <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-slate-900 tracking-wide">
-                    {fullName || 'お名前'}
-                    {formData.maidenName && (
-                      <span className="text-sm sm:text-base font-normal text-slate-500 font-sans ml-2">
-                        （旧姓: {formData.maidenName}）
+                    {previewTab === 'ekyc' && (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full seal-rainbow text-white text-[10px] font-extrabold shadow-xs">
+                        <Sparkles size={10} />
+                        <span>公的本人確認 済</span>
                       </span>
                     )}
-                  </h1>
-
-                  {previewTab === 'ekyc' && (
-                    <span className="text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-300 px-2.5 py-1 rounded-full flex items-center gap-1 shadow-2xs font-sans">
-                      <CheckCircle2 size={13} className="text-emerald-600" />
-                      <span>✓ 氏名・生まれ年 公的確認済み</span>
-                    </span>
-                  )}
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-serif font-bold text-slate-900">
+                    {fullName || 'お名前'} 様からの手紙
+                  </h3>
+                </div>
+                <div className="text-xs text-slate-500 font-sans">
+                  <span>公開予定：本日</span>
                 </div>
               </div>
 
-              {/* 🌟 認証あり時の安心解説バナー */}
-              {previewTab === 'ekyc' && (
-                <div className="p-4 bg-gradient-to-r from-amber-50/90 to-orange-50/90 rounded-2xl border border-amber-300/80 shadow-xs space-y-1">
-                  <div className="flex items-center gap-2">
-                    <ShieldCheck size={16} className="text-amber-700 shrink-0" />
-                    <strong className="text-xs sm:text-sm font-serif font-bold text-amber-950">
-                      差出人の身元確認（公的本人確認 eKYC）が完了しています
-                    </strong>
-                  </div>
-                  <p className="text-[11px] text-amber-900/80 leading-relaxed font-sans pl-6">
-                    このお手紙は、公的書類（運転免許証・マイナンバーカード等）により本名と生年月日の実在が確認されています。お相手が安心して再会申請できるよう保証されています。
-                  </p>
+              {/* 手紙メタデータ */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-white/80 p-4 rounded-2xl border border-slate-200/80 font-sans text-xs">
+                <div>
+                  <span className="text-slate-400 block text-[10px]">手紙を書いた人</span>
+                  <span className="font-bold text-slate-800">{fullName || '未入力'}</span>
                 </div>
-              )}
+                <div>
+                  <span className="text-slate-400 block text-[10px]">旧姓</span>
+                  <span className="font-bold text-slate-800">{formData.maidenName || 'なし'}</span>
+                </div>
+                <div>
+                  <span className="text-slate-400 block text-[10px]">ゆかりの地</span>
+                  <span className="font-bold text-slate-800">{formData.hometownPref || '未選択'}</span>
+                </div>
+                <div>
+                  <span className="text-slate-400 block text-[10px]">生まれた年代</span>
+                  <span className="font-bold text-slate-800">{formData.birthYear ? `${formData.birthYear}年代` : '非公開'}</span>
+                </div>
+              </div>
 
-              {/* メッセージ本文 */}
-              <div className="p-6 sm:p-8 bg-white/95 rounded-2xl border border-slate-200 shadow-inner space-y-3 font-serif">
-                <span className="text-xs text-teal-700 font-bold block uppercase tracking-widest font-sans">
-                  MESSAGE
-                </span>
-                <p className="text-sm sm:text-base md:text-lg text-slate-800 leading-relaxed sm:leading-loose whitespace-pre-wrap">
-                  {formData.message || '私を探しているあなたへ。メッセージをお待ちしています。'}
+              {/* 手紙メッセージ本文 */}
+              <div className="space-y-2">
+                <span className="text-xs font-bold text-slate-500 font-sans">【メッセージ本文】</span>
+                <p className="text-xs sm:text-sm md:text-base font-serif text-slate-800 bg-white/90 p-5 rounded-2xl border border-slate-200 leading-relaxed sm:leading-loose whitespace-pre-wrap">
+                  {formData.message || '（メッセージが入力されていません）'}
                 </p>
               </div>
 
@@ -684,7 +657,7 @@ export const CreatePostPage = () => {
               <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-teal-100">
                 <div className="text-xs text-slate-600 font-sans space-y-0.5 text-center sm:text-left">
                   <span className="font-bold text-slate-800 block">この人に心当たりはありませんか？</span>
-                  <span>当時のエピソードを添えて、無料で再会希望を申請できます。</span>
+                  <span>当時のエピソードを添えて、再会希望を申請できます。</span>
                 </div>
 
                 <div className="px-6 py-3 bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-bold rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2 opacity-90 cursor-default shadow-sm pointer-events-none">
@@ -714,7 +687,7 @@ export const CreatePostPage = () => {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left font-sans text-xs">
               <div className="p-4 bg-teal-50/50 rounded-2xl border border-teal-100 space-y-1.5">
                 <span className="text-[10px] font-bold text-teal-700 font-mono block">STEP 1</span>
-                <strong className="text-slate-900 block">エピソード送信（無料）</strong>
+                <strong className="text-slate-900 block">エピソード送信</strong>
                 <p className="text-slate-600 leading-relaxed text-[11px]">
                   相手が当時の思い出を添えて申請。あなた宛てにメールで通知が届きます。
                 </p>
@@ -750,7 +723,7 @@ export const CreatePostPage = () => {
                 手紙のプレビュー確認は完了しましたか？
               </h3>
               <p className="text-xs text-slate-300 font-sans">
-                次のページで「認証マーク付き公開（推奨）」または「無料公開」を選択して投函します。
+                次のページで「認証マーク付き公開（推奨）」または「通常公開」を選択して投函します。
               </p>
             </div>
 
@@ -813,7 +786,7 @@ export const CreatePostPage = () => {
                 <div className="space-y-0.5 leading-relaxed">
                   <strong className="block text-sky-950 font-bold">手紙の設置とアカウント連携について</strong>
                   <span>
-                    お相手から再会エピソードが届いた際の<strong>メール通知</strong>および、マイページでの<strong>手紙の再確認・管理</strong>のため、プラン選択後に無料アカウント登録（30秒）を行います。
+                    お相手から再会エピソードが届いた際の<strong>メール通知</strong>および、マイページでの<strong>手紙の再確認・管理</strong>のため、プラン選択後にアカウント登録（30秒）を行います。
                     {pendingPlan === 'ekyc' && ' 公的本人確認（eKYC）では身元確認証明のためアカウント登録が必須となります。'}
                   </span>
                 </div>
@@ -902,7 +875,7 @@ export const CreatePostPage = () => {
                     </div>
                     <div className="text-right">
                       <span className="text-3xl font-serif font-bold text-slate-900">¥0</span>
-                      <span className="text-[10px] text-slate-500 block font-sans">完全無料</span>
+                      <span className="text-[10px] text-slate-500 block font-sans">通常プラン</span>
                     </div>
                   </div>
 
@@ -936,10 +909,10 @@ export const CreatePostPage = () => {
                     className="w-full py-4 bg-slate-800 hover:bg-slate-900 text-white font-bold text-sm sm:text-base rounded-2xl shadow-md hover:shadow-lg active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer font-serif disabled:opacity-50"
                   >
                     <Send size={16} className="text-slate-300" />
-                    <span>無料で手紙を書く（0円）</span>
+                    <span>通常公開で手紙を書く</span>
                   </button>
                   <span className="text-[11px] text-slate-400 text-center block mt-2 font-sans">
-                    ※ 永久無料（維持費などは一切不要）
+                    ※ 維持費・月額費用などは一切不要
                   </span>
                 </div>
               </div>
@@ -1197,7 +1170,7 @@ export const CreatePostPage = () => {
             category="Create Letter"
             badge={
               <span className="text-[10px] font-bold text-teal-800 bg-teal-50 border border-teal-200 px-2 py-0.5 rounded-md font-sans">
-                完全無料・防犯設計
+                プライバシー・防犯設計
               </span>
             }
             title="手紙を書く"
@@ -1729,10 +1702,10 @@ export const CreatePostPage = () => {
                   </div>
                   <div className="flex-1">
                     <span className="text-[10px] font-extrabold text-teal-800 uppercase tracking-widest bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200 font-sans">
-                      {authMode === 'register' ? 'Free Registration' : 'Login'}
+                      {authMode === 'register' ? 'Registration' : 'Login'}
                     </span>
                     <h3 className="text-base sm:text-lg font-serif font-bold text-slate-900 mt-0.5">
-                      {authMode === 'register' ? '無料アカウント登録（手紙の設置）' : 'ログインして手紙を公開'}
+                      {authMode === 'register' ? 'アカウント登録（手紙の作成）' : 'ログインして手紙を公開'}
                     </h3>
                   </div>
                 </div>
@@ -1794,7 +1767,7 @@ export const CreatePostPage = () => {
                       className="py-2.5 px-3 bg-[#06C755] hover:bg-[#05b34c] text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
                     >
                       <span className="font-black text-[13px]">LINE</span>
-                      <span>で簡単登録</span>
+                      <span>で登録</span>
                     </button>
                     <button
                       type="button"
@@ -1862,7 +1835,7 @@ export const CreatePostPage = () => {
                     ) : (
                       <>
                         <Send size={14} />
-                        <span>{authMode === 'register' ? '登録して手紙を書く（完全無料） ✨' : 'ログインして手紙を書く ✨'}</span>
+                        <span>{authMode === 'register' ? '登録して手紙を書く ✨' : 'ログインして手紙を書く ✨'}</span>
                       </>
                     )}
                   </button>
@@ -1890,7 +1863,7 @@ export const CreatePostPage = () => {
                       }}
                       className="text-xs text-teal-700 hover:underline font-bold cursor-pointer font-sans"
                     >
-                      新しくアカウントを作成する（無料新規登録） →
+                      新しくアカウントを作成する →
                     </button>
                   )}
                 </div>
