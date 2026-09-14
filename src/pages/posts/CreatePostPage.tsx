@@ -82,30 +82,19 @@ export const CreatePostPage = () => {
   // ユーザーの登録情報から初期補完
   useEffect(() => {
     if (user) {
-      if (user.fullName && !formData.lastName && !formData.firstName) {
-        const parts = user.fullName.trim().split(/\s+/);
-        setFormData(prev => ({
-          ...prev,
-          lastName: parts[0] || '',
-          firstName: parts[1] || ''
-        }));
-      }
-      if (user.maiden_name && !formData.maidenName) {
-        setFormData(prev => ({ ...prev, maidenName: user.maiden_name }));
-      }
-      if (user.birthdate && !formData.birthYear) {
-        const y = new Date(user.birthdate).getFullYear();
-        if (!isNaN(y)) {
-          setFormData(prev => ({ ...prev, birthYear: y.toString() }));
-        }
-      }
-      if (user.contact_id && !formData.contactId) {
-        setFormData(prev => ({
-          ...prev,
-          contactType: user.contact_type || 'LINE',
-          contactId: user.contact_id
-        }));
-      }
+      const userLastName = (user as any).lastName || (user.fullName ? user.fullName.trim().split(/\s+/)[0] : '');
+      const userFirstName = (user as any).firstName || (user.fullName ? user.fullName.trim().split(/\s+/).slice(1).join(' ') : '');
+
+      setFormData(prev => ({
+        ...prev,
+        lastName: prev.lastName || userLastName || '',
+        firstName: prev.firstName || userFirstName || '',
+        maidenName: prev.maidenName || (user as any).maiden_name || '',
+        birthYear: prev.birthYear || (user.birthdate ? new Date(user.birthdate).getFullYear().toString() : ''),
+        contactType: prev.contactId ? prev.contactType : ((user as any).contact_type || 'LINE'),
+        contactId: prev.contactId || (user as any).contact_id || ''
+      }));
+
       if (user.email && !authEmail) {
         setAuthEmail(user.email);
       }
@@ -249,19 +238,19 @@ export const CreatePostPage = () => {
     setIsSubmitting(true);
     setWarningMessage(null);
 
-    const effLastName = formData.lastName.trim() || '山田';
-    const effFirstName = formData.firstName.trim() || '太郎';
+    const effLastName = formData.lastName.trim() || (user as any)?.lastName || (user?.fullName ? user.fullName.split(' ')[0] : '');
+    const effFirstName = formData.firstName.trim() || (user as any)?.firstName || (user?.fullName ? user.fullName.split(' ').slice(1).join(' ') : '');
     const effFullName = `${effLastName} ${effFirstName}`.trim();
     const effLastNameKana = formData.lastNameKana.trim();
     const effFirstNameKana = formData.firstNameKana.trim();
     const effFullNameKana = `${effLastNameKana} ${effFirstNameKana}`.trim();
     const effMaidenName = formData.maidenName.trim();
     const effMaidenNameKana = formData.maidenNameKana.trim();
-    const effHometown = formData.hometownPref || '神奈川県';
+    const effHometown = formData.hometownPref || '東京都';
     const effMessage = formData.message.trim() || '元気にしていますか？あの時一緒に過ごした放課後の夕暮れの風景を今でもよく思い出します。もし私を探してくれたら、メッセージを届けてください。';
-    const effContactId = formData.contactId.trim() || 'yamada_taro_test2026';
+    const effContactId = formData.contactId.trim() || (user as any)?.contact_id || '';
     const effContactType = formData.contactType || 'LINE';
-    const effBirthYear = formData.birthYear ? parseInt(formData.birthYear, 10) : 1985;
+    const effBirthYear = formData.birthYear ? parseInt(formData.birthYear, 10) : (user?.birthdate ? new Date(user.birthdate).getFullYear() : 1990);
 
     try {
       const headers: Record<string, string> = {
@@ -365,14 +354,14 @@ export const CreatePostPage = () => {
         password: authPassword
       };
       if (authMode === 'register') {
-        payload.fullName = fullName || '山田 太郎';
-        payload.lastName = formData.lastName.trim() || '山田';
-        payload.firstName = formData.firstName.trim() || '太郎';
-        payload.nickname = fullName || 'タロウ';
+        payload.fullName = fullName || `${formData.lastName} ${formData.firstName}`.trim();
+        payload.lastName = formData.lastName.trim();
+        payload.firstName = formData.firstName.trim();
+        payload.nickname = fullName || `${formData.lastName} ${formData.firstName}`.trim();
         payload.birthdate = formData.birthYear ? `${formData.birthYear}-01-01` : '1990-01-01';
         payload.maidenName = formData.maidenName.trim();
         payload.contactType = formData.contactType;
-        payload.contactId = formData.contactId.trim() || 'test_contact';
+        payload.contactId = formData.contactId.trim() || 'contact_id';
         payload.captchaAnswer = '4';
         payload.quickPost = true;
       }
@@ -415,14 +404,14 @@ export const CreatePostPage = () => {
         username: testEmail,
         email: testEmail,
         password: testPassword,
-        fullName: fullName || '山田 太郎',
-        lastName: formData.lastName.trim() || '山田',
-        firstName: formData.firstName.trim() || '太郎',
-        nickname: fullName || 'タロウ',
+        fullName: fullName || `${formData.lastName} ${formData.firstName}`.trim(),
+        lastName: formData.lastName.trim(),
+        firstName: formData.firstName.trim(),
+        nickname: fullName || `${formData.lastName} ${formData.firstName}`.trim(),
         birthdate: formData.birthYear ? `${formData.birthYear}-01-01` : '1990-01-01',
         maidenName: formData.maidenName.trim(),
         contactType: formData.contactType,
-        contactId: formData.contactId.trim() || 'test_contact',
+        contactId: formData.contactId.trim() || 'contact_id',
         captchaAnswer: '4',
         quickPost: true
       };
@@ -1327,17 +1316,67 @@ export const CreatePostPage = () => {
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-amber-950 flex items-center gap-1.5 font-sans">
                 <Sparkles size={14} className="text-amber-600 shrink-0" />
-                <span>【テスト用】ワンクリック自動入力 ＆ プレビューへ進む</span>
+                <span>【動作確認】ワンクリック自動入力 ＆ プレビューへ進む</span>
               </span>
               <span className="text-[10px] text-amber-800/80 font-mono">
-                検証用ショートカット
+                ショートカット
               </span>
             </div>
+
+            {/* ログインユーザーがいる場合は最優先で自分自身の情報で入力するボタンを表示 */}
+            {user && (
+              <div className="p-3 bg-white rounded-xl border-2 border-teal-500 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-2.5">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-teal-600 text-white flex items-center justify-center font-bold text-xs">
+                    {user.fullName ? user.fullName.charAt(0) : '私'}
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold text-slate-900 block font-serif">
+                      👤 あなたのアカウント情報（{user.fullName || '登録ユーザー'} 様）
+                    </span>
+                    <span className="text-[10px] text-slate-500 font-sans">
+                      ログイン中のご自身のお名前・連絡先でフォームを補完します
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const lName = (user as any).lastName || (user.fullName ? user.fullName.trim().split(/\s+/)[0] : '');
+                      const fName = (user as any).firstName || (user.fullName ? user.fullName.trim().split(/\s+/).slice(1).join(' ') : '');
+                      setFormData(prev => ({
+                        ...prev,
+                        lastName: lName,
+                        firstName: fName,
+                        maidenName: (user as any).maiden_name || '',
+                        birthYear: user.birthdate ? new Date(user.birthdate).getFullYear().toString() : '1990',
+                        hometownPref: prev.hometownPref || '東京都',
+                        message: prev.message || '元気にしていますか？あの時一緒に過ごした放課後の夕暮れの風景を今でもよく思い出します。もし私を探してくれたら、メッセージを届けてください。',
+                        contactType: (user as any).contact_type || 'LINE',
+                        contactId: (user as any).contact_id || 'my_contact_id',
+                        contactNote: 'メッセージを見つけていただきありがとうございます！'
+                      }));
+                      setAgreed(true);
+                      setWarningMessage(null);
+                      setStep('preview');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className="flex-1 sm:flex-none px-4 py-2 bg-teal-700 hover:bg-teal-800 text-white rounded-xl text-xs font-bold shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 whitespace-nowrap"
+                  >
+                    <Sparkles size={12} className="text-teal-200" />
+                    <span>ご自身の情報で入力してプレビューへ ➔</span>
+                  </button>
+                </div>
+              </div>
+            )}
+
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
               {/* 1. 山田 太郎 */}
               <div className="bg-white p-2.5 rounded-xl border border-amber-200 shadow-2xs space-y-2">
                 <div className="text-[11px] font-bold text-amber-950 flex items-center gap-1">
-                  <span>👤 山田 太郎</span>
+                  <span>👤 サンプル：山田 太郎</span>
                   <span className="text-[10px] text-slate-500 font-normal">（昭和60年・神奈川）</span>
                 </div>
                 <div className="flex items-center gap-1.5">
