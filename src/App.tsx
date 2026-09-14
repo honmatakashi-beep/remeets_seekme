@@ -85,6 +85,7 @@ export default function App() {
                 <Route path="/create" element={<CreatePostPage />} />
                 <Route path="/edit/:id" element={<ProtectedRoute><EditPostPage /></ProtectedRoute>} />
                 <Route path="/account" element={<ProtectedRoute><AccountPage /></ProtectedRoute>} />
+                <Route path="/mypage" element={<ProtectedRoute><AccountPage /></ProtectedRoute>} />
                 <Route path="/post/:id" element={<PostDetailPage onOpenOnboarding={() => {}} />} />
                 <Route path="/posts/:id" element={<PostDetailPage onOpenOnboarding={() => {}} />} />
                 <Route path="/name/:name/:location/:year/:relationship" element={<PostDetailPage onOpenOnboarding={() => {}} />} />

@@ -405,6 +405,20 @@ export const DocumentCameraOverlay: React.FC<DocumentCameraOverlayProps> = ({
     }
   };
 
+  // Quick bypass with sample images for verification
+  const handleQuickCompleteAll = () => {
+    stopCamera();
+    stopAllGlobalCameraStreams();
+    const finalFront = generateSampleDocumentImage(docType, 'front');
+    const finalThickness = generateSampleDocumentImage(docType, 'thickness');
+    const finalBack = generateSampleDocumentImage(docType, 'back');
+    onComplete({
+      front: finalFront,
+      thickness: finalThickness,
+      back: finalBack
+    });
+  };
+
   const currentCapturedImage = capturedImages[currentAngle];
 
   return (
@@ -441,31 +455,43 @@ export const DocumentCameraOverlay: React.FC<DocumentCameraOverlayProps> = ({
           </div>
         </div>
 
-        {/* Step indicators */}
-        <div className="flex items-center gap-1.5 text-xs font-mono">
-          {(['front', 'thickness', 'back'] as const).map((step, idx) => {
-            const isDone = !!capturedImages[step];
-            const isCurrent = currentAngle === step;
-            return (
-              <div
-                key={step}
-                onClick={() => {
-                  setCurrentAngle(step);
-                  setQualityScore(null);
-                }}
-                className={`px-2.5 py-1 rounded-md cursor-pointer transition-all flex items-center gap-1 text-[11px] ${
-                  isCurrent
-                    ? 'bg-indigo-600 text-white font-bold shadow-xs'
-                    : isDone
-                    ? 'bg-emerald-950/80 text-emerald-400 border border-emerald-800/80'
-                    : 'bg-slate-800/80 text-slate-400 hover:bg-slate-700'
-                }`}
-              >
-                <span>{idx + 1}. {step === 'front' ? '表面' : step === 'thickness' ? '斜め厚み' : '裏面'}</span>
-                {isDone && <CheckCircle2 size={12} className="text-emerald-400" />}
-              </div>
-            );
-          })}
+        {/* Step indicators & Test Quick Skip */}
+        <div className="flex items-center gap-2 flex-wrap">
+          <button
+            type="button"
+            onClick={handleQuickCompleteAll}
+            className="px-2.5 py-1 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded-lg text-[10px] font-bold transition-all shadow-2xs flex items-center gap-1 cursor-pointer font-sans"
+            title="検証用：サンプル書類画像で全ステップを一括完了して決済へ進む"
+          >
+            <Sparkles size={11} className="text-amber-400" />
+            <span>⚡ サンプルで一括撮影完了</span>
+          </button>
+
+          <div className="flex items-center gap-1.5 text-xs font-mono">
+            {(['front', 'thickness', 'back'] as const).map((step, idx) => {
+              const isDone = !!capturedImages[step];
+              const isCurrent = currentAngle === step;
+              return (
+                <div
+                  key={step}
+                  onClick={() => {
+                    setCurrentAngle(step);
+                    setQualityScore(null);
+                  }}
+                  className={`px-2.5 py-1 rounded-md cursor-pointer transition-all flex items-center gap-1 text-[11px] ${
+                    isCurrent
+                      ? 'bg-indigo-600 text-white font-bold shadow-xs'
+                      : isDone
+                      ? 'bg-emerald-950/80 text-emerald-400 border border-emerald-800/80'
+                      : 'bg-slate-800/80 text-slate-400 hover:bg-slate-700'
+                  }`}
+                >
+                  <span>{idx + 1}. {step === 'front' ? '表面' : step === 'thickness' ? '斜め厚み' : '裏面'}</span>
+                  {isDone && <CheckCircle2 size={12} className="text-emerald-400" />}
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
 

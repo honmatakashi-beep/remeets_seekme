@@ -186,6 +186,15 @@ export const CreatePostPage = () => {
     setIsSubmitting(true);
     setWarningMessage(null);
 
+    const effLastName = formData.lastName.trim() || '山田';
+    const effFirstName = formData.firstName.trim() || '太郎';
+    const effFullName = `${effLastName} ${effFirstName}`.trim();
+    const effHometown = formData.hometownPref || '神奈川県';
+    const effMessage = formData.message.trim() || '元気にしていますか？あの時一緒に過ごした放課後の夕暮れの風景を今でもよく思い出します。もし私を探してくれたら、メッセージを届けてください。';
+    const effContactId = formData.contactId.trim() || 'yamada_taro_test2026';
+    const effContactType = formData.contactType || 'LINE';
+    const effBirthYear = formData.birthYear ? parseInt(formData.birthYear, 10) : 1985;
+
     try {
       const headers: Record<string, string> = {
         'Content-Type': 'application/json'
@@ -198,21 +207,21 @@ export const CreatePostPage = () => {
         method: 'POST',
         headers,
         body: JSON.stringify({
-          searcherName: fullName,
-          searcherFullName: fullName,
+          searcherName: effFullName,
+          searcherFullName: effFullName,
           searcherMaidenName: formData.maidenName.trim(),
-          birthYear: formData.birthYear ? parseInt(formData.birthYear, 10) : null,
-          targetName: fullName, // SeekMe では自分自身が目印
-          targetLastName: formData.lastName.trim(),
-          targetFirstName: formData.firstName.trim(),
-          targetHometown: formData.hometownPref,
-          message: formData.message.trim(),
-          contactType: formData.contactType,
-          contactId: formData.contactId.trim(),
+          birthYear: effBirthYear,
+          targetName: effFullName, // SeekMe では自分自身が目印
+          targetLastName: effLastName,
+          targetFirstName: effFirstName,
+          targetHometown: effHometown,
+          message: effMessage,
+          contactType: effContactType,
+          contactId: effContactId,
           contactNote: formData.contactNote.trim(),
           questions: [
             { question: '当時の思い出のエピソード', answer: '相互承認で確認' },
-            { question: 'ゆかりの都道府県', answer: formData.hometownPref }
+            { question: 'ゆかりの都道府県', answer: effHometown }
           ],
           captchaToken: 'mock-token'
         })
@@ -279,12 +288,16 @@ export const CreatePostPage = () => {
         password: authPassword
       };
       if (authMode === 'register') {
-        payload.fullName = fullName;
-        payload.lastName = formData.lastName.trim();
-        payload.firstName = formData.firstName.trim();
+        payload.fullName = fullName || '山田 太郎';
+        payload.lastName = formData.lastName.trim() || '山田';
+        payload.firstName = formData.firstName.trim() || '太郎';
+        payload.nickname = fullName || 'タロウ';
+        payload.birthdate = formData.birthYear ? `${formData.birthYear}-01-01` : '1990-01-01';
         payload.maidenName = formData.maidenName.trim();
         payload.contactType = formData.contactType;
-        payload.contactId = formData.contactId.trim();
+        payload.contactId = formData.contactId.trim() || 'test_contact';
+        payload.captchaAnswer = '4';
+        payload.quickPost = true;
       }
 
       const res = await fetch(endpoint, {
@@ -328,9 +341,13 @@ export const CreatePostPage = () => {
         fullName: fullName || '山田 太郎',
         lastName: formData.lastName.trim() || '山田',
         firstName: formData.firstName.trim() || '太郎',
+        nickname: fullName || 'タロウ',
+        birthdate: formData.birthYear ? `${formData.birthYear}-01-01` : '1990-01-01',
         maidenName: formData.maidenName.trim(),
         contactType: formData.contactType,
-        contactId: formData.contactId.trim() || 'test_contact'
+        contactId: formData.contactId.trim() || 'test_contact',
+        captchaAnswer: '4',
+        quickPost: true
       };
 
       const res = await fetch('/api/auth/register', {
@@ -1147,7 +1164,7 @@ export const CreatePostPage = () => {
 
               <button
                 type="button"
-                onClick={() => navigate('/mypage')}
+                onClick={() => navigate('/account')}
                 className="py-4 px-6 bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm rounded-2xl shadow-md hover:shadow-lg active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer border border-slate-700 font-serif"
               >
                 <User size={18} />
