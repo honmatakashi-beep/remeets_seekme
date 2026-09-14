@@ -41,6 +41,11 @@ export const CreatePostPage = () => {
   // 進行ステップ ('form': メッセージ作成, 'preview': プレビュー確認, 'plan': 公開方法選択, 'success': 投函完了)
   const [step, setStep] = useState<'form' | 'preview' | 'plan' | 'success'>('form');
 
+  // ステップ遷移時は通常のページ遷移と同様に瞬時に最上部を表示（違和感のあるスムーズスクロールを排除）
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [step]);
+
   // すでに公的本人確認（eKYC）が完了しているアカウントか判定
   const isAlreadyVerified = Boolean(
     user?.is_ekyc_verified || localStorage.getItem('ekyc_verified') === 'true'
@@ -240,7 +245,6 @@ export const CreatePostPage = () => {
     e.preventDefault();
     if (!validateForm()) return;
     setStep('preview');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // 2. 実際にメッセージを保存・公開する処理
@@ -315,14 +319,12 @@ export const CreatePostPage = () => {
         if (isAlreadyVerified) {
           // 🛡️ 既に公的本人確認（eKYC）認証済みの場合は、eKYCモーダルをスキップして即座に完了画面へ進む
           setStep('success');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
         } else if (isEkycPlan) {
           // 🌟 未認証で新規にeKYC認証プラン（600円）を選択した場合: eKYCモーダルを起動
           setShowEkycModal(true);
         } else {
           // ✉️ 通常無料プランの場合: 投函完了（Step 4）画面へ遷移
           setStep('success');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
         }
       } else {
         const err = await res.json();
@@ -921,7 +923,6 @@ export const CreatePostPage = () => {
               type="button"
               onClick={() => {
                 setStep('form');
-                window.scrollTo({ top: 200, behavior: 'smooth' });
               }}
               className="w-full sm:w-auto px-5 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer font-sans"
             >
@@ -933,7 +934,6 @@ export const CreatePostPage = () => {
               type="button"
               onClick={() => {
                 setStep('plan');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
               className="w-full sm:w-auto px-7 py-3.5 bg-gradient-to-r from-teal-700 via-emerald-700 to-teal-800 hover:from-teal-800 hover:to-emerald-800 text-white font-bold text-xs sm:text-sm rounded-2xl shadow-md hover:shadow-lg active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer font-serif"
             >
@@ -1198,7 +1198,6 @@ export const CreatePostPage = () => {
               type="button"
               onClick={() => {
                 setStep('preview');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
               className="px-5 py-2.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded-xl text-xs font-bold transition-all shadow-2xs flex items-center gap-1.5 cursor-pointer"
             >
@@ -1210,7 +1209,6 @@ export const CreatePostPage = () => {
               type="button"
               onClick={() => {
                 setStep('form');
-                window.scrollTo({ top: 200, behavior: 'smooth' });
               }}
               className="text-xs text-slate-500 hover:text-slate-800 font-bold transition-all cursor-pointer underline"
             >
@@ -2206,7 +2204,6 @@ export const CreatePostPage = () => {
         onClose={() => {
           setShowEkycModal(false);
           setStep('success');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
         user={user}
         token={token}
