@@ -10,14 +10,16 @@ import { AccountPage } from './pages/AccountPage';
 import { GuidePage } from './components/GuidePage';
 import { SupporterPage } from './components/SupporterPage';
 import { FaqPage } from './pages/FaqPage';
-import { SuccessStoriesPage, AdminDeploymentGuidePage, ManualPage, NotFoundPage } from './pages/MiscPages';
-import { AdminInfoPage, SitemapPage, ContactPage, ConfirmModal, AuroraAmbientGlow, PageViewTracker } from './pages/AdminDashboard';
+import { SuccessStoriesPage, NotFoundPage } from './pages/MiscPages';
+import { AdminInfoPage, SitemapPage, ContactPage, ConfirmModal, AuroraAmbientGlow, PageViewTracker } from './pages/admin/AdminSharedPages';
 import { TermsPage, PrivacyPage, GuidelinesPage, CompanyPage, PricingPage, SafetyPage, DeletionRequestPage } from './pages/StaticPages';
-import { PaymentPreviewPage } from './pages/PaymentPreviewPage';
 import { stopAllGlobalCameraStreams } from './components/DocumentCameraOverlay';
-import { HomeDesignShowroom } from './components/HomeDesignShowroom';
 
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard').then(m => ({ default: m.AdminDashboard })));
+const AdminDeploymentGuidePage = lazy(() => import('./pages/MiscPages').then(m => ({ default: m.AdminDeploymentGuidePage })));
+const ManualPage = lazy(() => import('./pages/MiscPages').then(m => ({ default: m.ManualPage })));
+const HomeDesignShowroom = lazy(() => import('./components/HomeDesignShowroom').then(m => ({ default: m.HomeDesignShowroom })));
+const PaymentPreviewPage = lazy(() => import('./pages/PaymentPreviewPage').then(m => ({ default: m.PaymentPreviewPage })));
 
 
 
@@ -72,48 +74,46 @@ export default function App() {
               <Navbar onOpenOnboarding={() => {}} />
             </div>
             <main className="flex-grow relative">
-              <Routes>
-                <Route path="/guide" element={<GuidePage />} />
-                <Route path="/" element={<HomePage onOpenOnboarding={() => {}} />} />
-                <Route path="/search" element={<SearchPage onOpenOnboarding={() => {}} />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
-                <Route path="/verify-email" element={<VerifyEmailPage />} />
-                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-                <Route path="/reset-password" element={<ResetPasswordPage />} />
-                <Route path="/success-stories" element={<SuccessStoriesPage />} />
-                <Route path="/create" element={<CreatePostPage />} />
-                <Route path="/edit/:id" element={<ProtectedRoute><EditPostPage /></ProtectedRoute>} />
-                <Route path="/account" element={<ProtectedRoute><AccountPage /></ProtectedRoute>} />
-                <Route path="/mypage" element={<ProtectedRoute><AccountPage /></ProtectedRoute>} />
-                <Route path="/post/:id" element={<PostDetailPage onOpenOnboarding={() => {}} />} />
-                <Route path="/posts/:id" element={<PostDetailPage onOpenOnboarding={() => {}} />} />
-                <Route path="/posts/:id/:slug" element={<PostDetailPage onOpenOnboarding={() => {}} />} />
-                <Route path="/name/:name/:location/:year/:relationship" element={<PostDetailPage onOpenOnboarding={() => {}} />} />
-                <Route path="/admin" element={
-                  <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-slate-500 font-sans text-sm">読み込み中...</div>}>
-                    <AdminDashboard />
-                  </Suspense>
-                } />
-                <Route path="/admin/deployment-guide" element={<AdminDeploymentGuidePage />} />
-                <Route path="/admin-info" element={<AdminInfoPage />} />
-                <Route path="/guidelines" element={<GuidelinesPage />} />
-                <Route path="/terms" element={<TermsPage />} />
-                <Route path="/privacy" element={<PrivacyPage />} />
-                <Route path="/company" element={<CompanyPage />} />
-                <Route path="/pricing" element={<PricingPage />} />
-                <Route path="/supporter" element={<SupporterPage />} />
-                <Route path="/safety" element={<SafetyPage />} />
-                <Route path="/faq" element={<FaqPage />} />
-                <Route path="/manual" element={<ManualPage />} />
-                <Route path="/contact" element={<ContactPage />} />
-                <Route path="/deletion-request" element={<DeletionRequestPage />} />
-                <Route path="/sitemap" element={<SitemapPage />} />
-                <Route path="/payment-preview" element={<PaymentPreviewPage />} />
-                <Route path="/admin/payments-preview" element={<PaymentPreviewPage />} />
-                <Route path="/home-designs" element={<HomeDesignShowroom />} />
-                <Route path="*" element={<NotFoundPage />} />
-              </Routes>
+              <Suspense fallback={<div className="min-h-[60vh] flex items-center justify-center text-slate-500 font-sans text-sm">読み込み中...</div>}>
+                <Routes>
+                  <Route path="/guide" element={<GuidePage />} />
+                  <Route path="/" element={<HomePage onOpenOnboarding={() => {}} />} />
+                  <Route path="/search" element={<SearchPage onOpenOnboarding={() => {}} />} />
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/register" element={<RegisterPage />} />
+                  <Route path="/verify-email" element={<VerifyEmailPage />} />
+                  <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                  <Route path="/reset-password" element={<ResetPasswordPage />} />
+                  <Route path="/success-stories" element={<SuccessStoriesPage />} />
+                  <Route path="/create" element={<CreatePostPage />} />
+                  <Route path="/edit/:id" element={<ProtectedRoute><EditPostPage /></ProtectedRoute>} />
+                  <Route path="/account" element={<ProtectedRoute><AccountPage /></ProtectedRoute>} />
+                  <Route path="/mypage" element={<ProtectedRoute><AccountPage /></ProtectedRoute>} />
+                  <Route path="/post/:id" element={<PostDetailPage onOpenOnboarding={() => {}} />} />
+                  <Route path="/posts/:id" element={<PostDetailPage onOpenOnboarding={() => {}} />} />
+                  <Route path="/posts/:id/:slug" element={<PostDetailPage onOpenOnboarding={() => {}} />} />
+                  <Route path="/name/:name/:location/:year/:relationship" element={<PostDetailPage onOpenOnboarding={() => {}} />} />
+                  <Route path="/admin" element={<AdminDashboard />} />
+                  <Route path="/admin/deployment-guide" element={<AdminDeploymentGuidePage />} />
+                  <Route path="/admin-info" element={<AdminInfoPage />} />
+                  <Route path="/guidelines" element={<GuidelinesPage />} />
+                  <Route path="/terms" element={<TermsPage />} />
+                  <Route path="/privacy" element={<PrivacyPage />} />
+                  <Route path="/company" element={<CompanyPage />} />
+                  <Route path="/pricing" element={<PricingPage />} />
+                  <Route path="/supporter" element={<SupporterPage />} />
+                  <Route path="/safety" element={<SafetyPage />} />
+                  <Route path="/faq" element={<FaqPage />} />
+                  <Route path="/manual" element={<ManualPage />} />
+                  <Route path="/contact" element={<ContactPage />} />
+                  <Route path="/deletion-request" element={<DeletionRequestPage />} />
+                  <Route path="/sitemap" element={<SitemapPage />} />
+                  <Route path="/payment-preview" element={<PaymentPreviewPage />} />
+                  <Route path="/admin/payments-preview" element={<PaymentPreviewPage />} />
+                  <Route path="/home-designs" element={<HomeDesignShowroom />} />
+                  <Route path="*" element={<NotFoundPage />} />
+                </Routes>
+              </Suspense>
             </main>
             <Footer />
             <ScrollToTopButton />
