@@ -251,10 +251,10 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-white/90 p-5 sm:p-6 rounded-2xl border border-slate-200/90 font-sans shadow-2xs">
               <div className="space-y-1">
                 <span className="text-xs font-bold text-slate-500 block">手紙を書いた人</span>
-                <div className="text-base sm:text-lg font-bold text-slate-900 font-serif">
+                <div className="text-base sm:text-lg font-bold text-slate-900 font-sans">
                   <span>{postFullName}</span>
                   {postKana && (
-                    <span className="text-xs font-normal text-slate-500 font-sans ml-1">
+                    <span className="text-xs font-normal text-slate-500 ml-1">
                       （{postKana}）
                     </span>
                   )}
@@ -262,10 +262,10 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               </div>
               <div className="space-y-1">
                 <span className="text-xs font-bold text-slate-500 block">旧姓</span>
-                <div className="text-base sm:text-lg font-bold text-slate-900 font-serif">
+                <div className="text-base sm:text-lg font-bold text-slate-900 font-sans">
                   <span>{postMaidenName || 'なし'}</span>
                   {postMaidenNameKana && (
-                    <span className="text-xs font-normal text-slate-500 font-sans ml-1">
+                    <span className="text-xs font-normal text-slate-500 ml-1">
                       （{postMaidenNameKana}）
                     </span>
                   )}
@@ -273,13 +273,13 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               </div>
               <div className="space-y-1">
                 <span className="text-xs font-bold text-slate-500 block">ゆかりの地</span>
-                <div className="text-base sm:text-lg font-bold text-slate-900">
+                <div className="text-base sm:text-lg font-bold text-slate-900 font-sans">
                   {postLocation}
                 </div>
               </div>
               <div className="space-y-1">
                 <span className="text-xs font-bold text-slate-500 block">生まれ年</span>
-                <div className="text-sm sm:text-base font-bold text-slate-900">
+                <div className="text-base sm:text-lg font-bold text-slate-900 font-sans">
                   {postBirthYear || '非公開'}
                 </div>
               </div>
