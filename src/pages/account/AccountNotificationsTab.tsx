@@ -130,9 +130,9 @@ export const AccountNotificationsTab = (props: any) => {
 
   return (
     <div className="space-y-8 animate-fade-in text-black font-sans">
-      {/* 1. あなた宛て新着メッセージのメール通知（プロファイル連動・ワンタップON/OFF） */}
-      <div className="bg-gradient-to-br from-teal-50/90 via-white to-emerald-50/60 p-6 md:p-8 rounded-3xl border-2 border-teal-300/80 shadow-sm space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-teal-200/70 pb-5">
+      {/* 1. あなた宛て新着メッセージのメール通知（ワンタップON/OFF） */}
+      <div className="bg-gradient-to-br from-teal-50/90 via-white to-emerald-50/60 p-5 sm:p-6 rounded-3xl border border-teal-200/80 shadow-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1.5">
             <div className="flex items-center gap-2">
               <span className="text-[10px] font-extrabold text-teal-800 uppercase tracking-widest bg-teal-100/90 px-2.5 py-0.5 rounded-full border border-teal-200">
@@ -144,17 +144,17 @@ export const AccountNotificationsTab = (props: any) => {
                 {notifyAlertEnabled ? '✓ メール通知 有効' : '✕ メール通知 停止中'}
               </span>
             </div>
-            <h3 className="text-lg font-serif font-bold text-slate-900 flex items-center gap-2">
-              <Bell size={20} className={notifyAlertEnabled ? "text-teal-700 animate-pulse" : "text-slate-400"} />
+            <h3 className="text-base sm:text-lg font-serif font-bold text-slate-900 flex items-center gap-2">
+              <Bell size={18} className={notifyAlertEnabled ? "text-teal-700 animate-pulse" : "text-slate-400"} />
               <span>📬 あなた宛て新着メッセージの入荷メール通知</span>
             </h3>
             <p className="text-xs text-slate-600 font-sans leading-relaxed max-w-xl">
-              あなたのお名前（本名・旧姓）宛てに新しいメッセージが公開された瞬間、ご登録のメールアドレスへ即座にお知らせします。
+              あなたのお名前（本名・旧姓）宛てに新しい想い出メッセージが公開された際、ご登録のメールアドレスへ自動で即座にお知らせします。
             </p>
           </div>
 
           {/* ワンタップON/OFFスイッチ */}
-          <div className="flex items-center gap-3 bg-white px-4 py-3 rounded-2xl border border-teal-200/80 shadow-xs shrink-0">
+          <div className="flex items-center gap-3 bg-white px-4 py-3 rounded-2xl border border-teal-200/80 shadow-xs shrink-0 self-start sm:self-center">
             <div className="text-right">
               <span className="text-xs font-bold block text-slate-800">
                 {notifyAlertEnabled ? '自動通知 ON' : '自動通知 OFF'}
@@ -183,56 +183,6 @@ export const AccountNotificationsTab = (props: any) => {
                   <X size={13} className="text-slate-400" />
                 )}
               </div>
-            </button>
-          </div>
-        </div>
-
-        {/* 自動照合されるプロファイル連動情報 */}
-        <div className="space-y-3">
-          <h4 className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-            <ShieldCheck size={14} className="text-teal-700" />
-            <span>自動照合されるあなたのアカウント情報（他人の名前による監視を100%防止）</span>
-          </h4>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 font-sans">
-            <div className="bg-white p-3.5 rounded-2xl border border-slate-200 space-y-1 shadow-2xs">
-              <span className="text-[10px] text-slate-400 font-bold block">👤 登録本名（姓名）</span>
-              <span className="text-xs font-extrabold text-slate-900 block truncate">
-                {user?.fullName || user?.username || '未設定'}
-              </span>
-            </div>
-
-            <div className="bg-white p-3.5 rounded-2xl border border-slate-200 space-y-1 shadow-2xs">
-              <span className="text-[10px] text-slate-400 font-bold block">🌸 旧姓（同窓生照合用）</span>
-              <span className="text-xs font-extrabold text-rose-700 block truncate">
-                {(user as any)?.maiden_name || (user as any)?.maidenName ? `旧姓: ${(user as any)?.maiden_name || (user as any)?.maidenName}` : '未登録（任意）'}
-              </span>
-            </div>
-
-            <div className="bg-white p-3.5 rounded-2xl border border-slate-200 space-y-1 shadow-2xs">
-              <span className="text-[10px] text-slate-400 font-bold block">📍 ゆかりの地（出身・居住）</span>
-              <span className="text-xs font-extrabold text-emerald-800 block truncate">
-                {(user as any)?.hometown || '未登録（任意）'}
-              </span>
-            </div>
-
-            <div className="bg-white p-3.5 rounded-2xl border border-slate-200 space-y-1 shadow-2xs">
-              <span className="text-[10px] text-slate-400 font-bold block">📧 通知先メール</span>
-              <span className="text-xs font-bold text-teal-800 block truncate">
-                {user?.email || '未設定'}
-              </span>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1">
-            <span>※ 本名・旧姓・ゆかりの地は「マイアカウント」上部の編集ボタンからいつでも変更いただけます。</span>
-            <button
-              type="button"
-              onClick={() => handleTabChange('profile')}
-              className="text-teal-700 hover:text-teal-900 font-bold cursor-pointer hover:underline flex items-center gap-1 shrink-0"
-            >
-              <span>公的本人確認を確認する</span>
-              <ArrowRight size={11} />
             </button>
           </div>
         </div>
