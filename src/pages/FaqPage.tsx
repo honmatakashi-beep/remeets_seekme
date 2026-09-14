@@ -252,19 +252,19 @@ export const FaqPage: React.FC = () => {
     {
       id: 'q-quiz-4',
       category: 'quiz',
-      categoryName: '想い出クイズ・再会',
-      question: '探している相手がまだReMEETsを知らない・登録していない場合は？',
+      categoryName: '想い出照合・再会',
+      question: '探している相手がまだReMEETs SEEKMEを知らない・登録していない場合は？',
       answer: (
         <>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            メッセージを一度流しておけば、<strong className="text-slate-900 font-bold">インターネット上の海（Google検索）に宛名と想い出のキーワードが安全にインデックス</strong> されます。
+            想い出メッセージを一度登録しておけば、<strong className="text-slate-900 font-bold">システム内に暗号化保管され、お相手が将来会員登録した際に自動照合</strong> されます。
           </p>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            お相手がふと自分の名前や出身校を検索（エゴサーチ）した際や、知人から「ReMEETsであなた宛のメッセージが流れているよ」とシェアされた際にいつでもメッセージを見つけることができます。メッセージはあなたが削除しない限り、何年間でも海を漂い続けます。
+            お相手がお名前やゆかりの地を登録した瞬間にシステムが自動で照合を行い、双方に通知が届きます。メッセージはあなたが削除しない限り、安全に照合待機状態を維持します。
           </p>
         </>
       ),
-      tags: ['未登録', 'Google検索', 'エゴサーチ', '届く仕組み']
+      tags: ['未登録', '自動照合', '通知', '届く仕組み']
     },
     {
       id: 'q-quiz-5',
@@ -487,14 +487,14 @@ export const FaqPage: React.FC = () => {
       id: 'q-edit-1',
       category: 'edit',
       categoryName: 'メッセージの編集・削除・退会',
-      question: '公開したメッセージの内容を修正したり、後から消すことはできますか？',
+      question: '登録した想い出メッセージの内容を修正したり、後から消すことはできますか？',
       answer: (
         <>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            はい、いつでも可能です。ログイン後、マイアカウント（マイページ）最上部の「あなたの公開メッセージ」カードから、メッセージの <strong className="text-slate-900 font-bold">「メッセージを編集する」または「メッセージを完全削除」</strong> をワンタップで実行できます。
+            はい、いつでも可能です。ログイン後、マイアカウント（マイページ）最上部の「あなたの想い出メッセージ」カードから、メッセージの <strong className="text-slate-900 font-bold">「✏️ メッセージを修正」または「🗑️ 削除」</strong> をワンタップで実行できます。
           </p>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            削除を実行したメッセージはデータベースから物理的に完全抹消され、検索一覧からも即座に消去されます。
+            削除を実行したメッセージは暗号化データベースから安全に完全抹消され、自動照合も停止します。
           </p>
         </>
       ),
@@ -507,7 +507,7 @@ export const FaqPage: React.FC = () => {
       question: '退会したい場合はどのように手続きすればいいですか？',
       answer: (
         <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-          マイアカウント最下部にある「退会手続きへ」ボタンよりいつでもご自身で即時退会いただけます。退会と同時に、公開メッセージ・送受信した再会申請・プロフィール・認証履歴などの全データが安全に物理消去されます。
+          マイアカウント最下部にある「退会手続きへ」ボタンよりいつでもご自身で即時退会いただけます。退会と同時に、想い出メッセージ・送受信した再会申請・プロフィール・認証履歴などの全データが安全に物理消去されます。
         </p>
       ),
       tags: ['退会', 'アカウント削除', 'データ抹消']

@@ -2,7 +2,7 @@ import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, ConfirmContext } from './contexts/AuthContext';
 import { Navbar, Footer, ProtectedRoute } from './components/SharedComponents';
-import { ScrollToTop, ScrollToTopButton, CreatePostPage, EditPostPage, PostDetailPage } from './pages/PostPages';
+import { ScrollToTop, ScrollToTopButton, CreatePostPage, PostDetailPage } from './pages/PostPages';
 import { HomePage } from './pages/HomePage';
 import { SearchPage } from './pages/SearchPage';
 import { LoginPage, RegisterPage, VerifyEmailPage, ForgotPasswordPage, ResetPasswordPage } from './pages/AuthPages';
@@ -86,7 +86,7 @@ export default function App() {
                   <Route path="/reset-password" element={<ResetPasswordPage />} />
                   <Route path="/success-stories" element={<SuccessStoriesPage />} />
                   <Route path="/create" element={<CreatePostPage />} />
-                  <Route path="/edit/:id" element={<ProtectedRoute><EditPostPage /></ProtectedRoute>} />
+                  <Route path="/edit/:id" element={<Navigate to="/account" replace />} />
                   <Route path="/account" element={<ProtectedRoute><AccountPage /></ProtectedRoute>} />
                   <Route path="/mypage" element={<ProtectedRoute><AccountPage /></ProtectedRoute>} />
                   <Route path="/post/:id" element={<PostDetailPage onOpenOnboarding={() => {}} />} />

@@ -121,8 +121,8 @@ export const DeletePublicMessageModal: React.FC<DeletePublicMessageModalProps> =
               <Trash2 size={22} />
             </div>
             <div>
-              <h3 className="text-base sm:text-lg font-serif font-bold text-slate-900">公開メッセージを削除しますか？</h3>
-              <p className="text-xs text-rose-600 font-bold font-sans">ネット（Google検索・公開画面）から完全に削除されます</p>
+              <h3 className="text-base sm:text-lg font-serif font-bold text-slate-900">想い出メッセージを削除しますか？</h3>
+              <p className="text-xs text-rose-600 font-bold font-sans">システム内の暗号化保管データから完全に削除されます</p>
             </div>
           </div>
 
@@ -139,7 +139,7 @@ export const DeletePublicMessageModal: React.FC<DeletePublicMessageModalProps> =
             )}
           </div>
 
-          {/* ネットからの完全削除・注意事項 */}
+          {/* 完全削除・注意事項 */}
           <div className="p-4 bg-rose-50/80 rounded-2xl border border-rose-200 text-xs text-rose-950 space-y-2.5 leading-relaxed">
             <p className="font-bold flex items-center gap-1.5 text-rose-900 text-sm">
               <AlertCircle size={16} className="text-rose-600 shrink-0" />
@@ -148,15 +148,15 @@ export const DeletePublicMessageModal: React.FC<DeletePublicMessageModalProps> =
             <ul className="space-y-2 text-[11px] text-rose-900">
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-rose-500 mt-1.5 shrink-0" />
-                <span><strong>ネット上から完全に非公開化：</strong> 削除を実行すると、ReMEETs SEEKMEの公開画面およびGoogle等の検索エンジンからこのメッセージが完全に削除されます。</span>
+                <span><strong>システム内から安全に完全消去：</strong> 削除を実行すると、暗号化保管されたメッセージデータおよび照合用データがシステムから完全に消去されます。</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-rose-500 mt-1.5 shrink-0" />
-                <span><strong>相手から見つからなくなります：</strong> あなたを探している大切な人が検索しても、このメッセージは表示されなくなります。</span>
+                <span><strong>自動照合が停止します：</strong> あなたを探している大切な人が登録しても、自動照合による通知が届かなくなります。</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-rose-500 mt-1.5 shrink-0" />
-                <span><strong>いつでも新規作成が可能：</strong> 削除完了後は、マイアカウントや新規作成画面から、いつでも新しい内容でメッセージを作成・公開できます。</span>
+                <span><strong>いつでも新規作成が可能：</strong> 削除完了後は、マイアカウントや新規作成画面から、いつでも新しい内容で想い出メッセージを作成・登録できます。</span>
               </li>
             </ul>
           </div>
@@ -170,7 +170,7 @@ export const DeletePublicMessageModal: React.FC<DeletePublicMessageModalProps> =
               className="mt-0.5 rounded border-slate-300 text-rose-600 focus:ring-rose-500 h-4 w-4 shrink-0"
             />
             <span className="font-bold leading-normal">
-              上記内容を理解し、この公開メッセージをネット上から完全に削除することに同意します。
+              上記内容を理解し、この想い出メッセージをシステム内から完全に削除することに同意します。
             </span>
           </label>
 
@@ -197,7 +197,7 @@ export const DeletePublicMessageModal: React.FC<DeletePublicMessageModalProps> =
               ) : (
                 <>
                   <Trash2 size={14} />
-                  <span>公開メッセージを完全に削除</span>
+                  <span>想い出メッセージを完全に削除</span>
                 </>
               )}
             </button>

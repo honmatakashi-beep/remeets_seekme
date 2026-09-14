@@ -57,7 +57,7 @@ export const AccountAlertModal: React.FC<AccountAlertModalProps> = ({
               </div>
 
               <p className="text-xs text-slate-600 leading-relaxed font-sans bg-slate-50 p-3.5 rounded-2xl border border-slate-200/80">
-                該当する新着ボトルメールが投函された際、登録メールアドレス宛てに即時自動でお知らせします。お相手にメールアドレスが開示されることはありません。
+                該当する新着メッセージが登録された際、登録メールアドレス宛てに即時自動でお知らせします。お相手にメールアドレスが開示されることはありません。
               </p>
 
               <form onSubmit={handleSaveAlertModal} className="space-y-4 text-left font-sans">

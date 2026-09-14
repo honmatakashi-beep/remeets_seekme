@@ -81,7 +81,7 @@ export const AccountPage = () => {
         setMyPosts([]);
         setShowDeletePublicMessageModal(false);
         setDeletePublicMessageConsent(false);
-        alert('公開メッセージを削除しました。Google検索および公開画面から完全に削除されました。いつでも新しいメッセージを作成できます。');
+        alert('想い出メッセージを削除しました。システム内の暗号化データから安全に消去されました。いつでも新しいメッセージを作成できます。');
       } else {
         const err = await res.json();
         alert(err.error || 'メッセージの削除に失敗しました。');
@@ -1020,7 +1020,7 @@ export const AccountPage = () => {
           </span>
         }
         title="マイアカウント"
-        description="公開メッセージへの再会希望の確認、送った再会申請の進捗、公的本人確認（eKYC）、及び通知ログを一元管理できます。"
+        description="想い出メッセージの管理、届いた再会希望の確認、送った再会申請の進捗、公的本人確認（eKYC）、及び自動照合・通知ログを一元管理できます。"
         action={
           <button 
             type="button"
@@ -1296,7 +1296,7 @@ export const AccountPage = () => {
             </div>
           </div>
 
-          {/* ✉️ あなたの公開メッセージ（1人1通・最重要カード） */}
+          {/* ✉️ あなたの想い出メッセージ（1人1通・最重要カード） */}
           {(() => {
             const currentPost = myPosts && myPosts.length > 0 ? myPosts[0] : null;
             return (
@@ -1308,17 +1308,17 @@ export const AccountPage = () => {
                     </div>
                     <div>
                       <div className="flex items-center gap-2 flex-wrap">
-                        <h3 className="text-lg sm:text-xl font-serif font-bold text-slate-900">あなたの公開メッセージ</h3>
+                        <h3 className="text-lg sm:text-xl font-serif font-bold text-slate-900">あなたの想い出メッセージ</h3>
                         {currentPost && (
-                          <span className="text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-2xs">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
-                            Google検索・公開中
+                          <span className="text-[10px] font-bold bg-teal-100 text-teal-900 border border-teal-300 px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-2xs">
+                            <span className="w-1.5 h-1.5 rounded-full bg-teal-600 animate-pulse" />
+                            🔒 暗号化保管・自動照合待機中
                           </span>
                         )}
                       </div>
                       <p className="text-xs text-slate-500 font-sans">
                         {currentPost 
-                          ? 'あなたを探している相手がGoogle検索等で見つけられるメッセージです（原則1ユーザー1通）。' 
+                          ? 'あなたを探している相手に向けて暗号化保管され、システムが安全に自動照合を行っています（原則1ユーザー1通）。' 
                           : 'あなたを探している大切な人のために、メッセージを届けておきましょう。'}
                       </p>
                     </div>
@@ -1334,14 +1334,6 @@ export const AccountPage = () => {
                         <Edit3 size={13} />
                         <span>✏️ メッセージを修正</span>
                       </button>
-                      <Link
-                        to={`/posts/${currentPost.id}`}
-                        target="_blank"
-                        className="px-3.5 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
-                      >
-                        <Eye size={13} />
-                        <span>公開画面</span>
-                      </Link>
                       <button
                         type="button"
                         onClick={() => {
@@ -1349,7 +1341,7 @@ export const AccountPage = () => {
                           setShowDeletePublicMessageModal(true);
                         }}
                         className="px-3 py-2 border border-rose-200 bg-rose-50/60 hover:bg-rose-100 text-rose-700 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer active:scale-95"
-                        title="Google検索・公開画面から完全に削除します"
+                        title="暗号化保管データから安全に完全削除します"
                       >
                         <Trash2 size={13} />
                         <span>🗑️ 削除</span>
@@ -1394,10 +1386,10 @@ export const AccountPage = () => {
                         </span>
                       </div>
                       <div className="space-y-0.5">
-                        <span className="font-bold text-slate-600 block font-sans">公開ステータス</span>
-                        <span className="font-bold text-emerald-800 text-xs sm:text-sm block flex items-center gap-1 mt-0.5 font-sans">
-                          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                          <span>Google検索対象</span>
+                        <span className="font-bold text-slate-600 block font-sans">照合ステータス</span>
+                        <span className="font-bold text-teal-800 text-xs sm:text-sm block flex items-center gap-1 mt-0.5 font-sans">
+                          <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse" />
+                          <span>システム自動照合中</span>
                         </span>
                       </div>
                     </div>
@@ -1405,15 +1397,15 @@ export const AccountPage = () => {
                     {/* メッセージ本文（便箋風・情緒ある明朝体・高コントラスト） */}
                     <div className="space-y-2">
                       <span className="text-xs font-bold text-slate-700 block flex items-center justify-between font-sans">
-                        <span>公開メッセージ本文</span>
-                        <span className="text-[11px] text-teal-700 font-bold">誰でも閲覧可能（Google検索対象）</span>
+                        <span>想い出メッセージ本文</span>
+                        <span className="text-[11px] text-teal-700 font-bold">🔒 暗号化保管中（非公開）</span>
                       </span>
                       <div className="p-5 sm:p-6 bg-white rounded-2xl border-2 border-slate-200 text-slate-950 font-letter-mincho font-serif font-medium text-base sm:text-lg leading-relaxed sm:leading-loose tracking-wide whitespace-pre-wrap shadow-2xs">
                         {currentPost.message || currentPost.searcher_profile || '（メッセージが入力されていません）'}
                       </div>
                     </div>
 
-                    {/* 開示連絡先 ＆ 公開リンク */}
+                    {/* 開示連絡先 ＆ プライバシー照合情報 */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                       {/* 開示連絡先 */}
                       <div className="p-3.5 bg-teal-50/60 rounded-2xl border border-teal-200/80 space-y-1">
@@ -1423,7 +1415,7 @@ export const AccountPage = () => {
                             <span>再会時の開示連絡先</span>
                           </span>
                           <span className="text-[10px] text-teal-800 bg-white border border-teal-200 px-2 py-0.2 rounded-full font-bold">
-                            承認時のみ開示
+                            照合・承認時のみ開示
                           </span>
                         </div>
                         <div className="text-xs font-mono font-bold text-teal-950 flex items-center gap-1.5 flex-wrap">
@@ -1436,51 +1428,35 @@ export const AccountPage = () => {
                         </div>
                       </div>
 
-                      {/* 公開URL */}
+                      {/* プライバシー保護・照合待機ステータス */}
                       <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 space-y-1">
                         <div className="flex items-center justify-between">
                           <span className="text-xs font-bold text-slate-700 flex items-center gap-1">
-                            <ExternalLink size={12} className="text-slate-500" />
-                            <span>専用公開URL</span>
+                            <ShieldCheck size={12} className="text-teal-600" />
+                            <span>プライバシー安心照合</span>
                           </span>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const url = `${window.location.origin}${getPostUrl(currentPost)}`;
-                              navigator.clipboard.writeText(url);
-                              setCopiedPostLink(true);
-                              setTimeout(() => setCopiedPostLink(false), 2000);
-                            }}
-                            className="text-[10px] text-teal-700 hover:text-teal-900 font-bold flex items-center gap-1 cursor-pointer"
-                          >
-                            {copiedPostLink ? (
-                              <span className="text-emerald-700 font-bold flex items-center gap-0.5"><Check size={11} /> コピー完了</span>
-                            ) : (
-                              <span className="flex items-center gap-0.5"><Copy size={11} /> URLをコピー</span>
-                            )}
-                          </button>
+                          <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 border border-emerald-200 px-2 py-0.2 rounded-full">
+                            保護中
+                          </span>
                         </div>
-                        <input
-                          type="text"
-                          readOnly
-                          value={`${window.location.origin}${getPostUrl(currentPost)}`}
-                          className="w-full text-xs font-mono text-slate-600 bg-white px-2.5 py-1 rounded-lg border border-slate-200 outline-none select-all"
-                        />
+                        <p className="text-[11px] text-slate-600 leading-normal">
+                          メッセージは第三者に公開されず、お相手が会員登録した際にシステムが自動照合してあなたへ通知します。
+                        </p>
                       </div>
                     </div>
                   </div>
                 ) : (
                   <div className="py-6 px-4 bg-gradient-to-br from-teal-50/60 to-slate-50 rounded-2xl border border-dashed border-teal-200 text-center space-y-3">
-                    <p className="text-sm font-bold text-slate-800 font-serif">まだ公開メッセージが登録されていません</p>
+                    <p className="text-sm font-bold text-slate-800 font-serif">まだ想い出メッセージが登録されていません</p>
                     <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
-                      お名前やゆかりの地、当時の思い出メッセージを登録すると、Google検索等であなたを探している相手がメッセージを見つけられるようになります。
+                      お名前やゆかりの地、当時の想い出メッセージを登録しておくと、あなたを探している相手が登録した際にシステムが自動照合してお知らせします。
                     </p>
                     <Link
                       to="/create"
                       className="inline-flex items-center gap-1.5 px-6 py-2.5 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-bold shadow-sm transition-all"
                     >
                       <Sparkles size={14} />
-                      <span>メッセージを作成して公開する</span>
+                      <span>メッセージを作成して届ける</span>
                     </Link>
                   </div>
                 )}
@@ -1488,7 +1464,7 @@ export const AccountPage = () => {
             );
           })()}
 
-          {/* 公開メッセージ編集ポップアップモーダル */}
+          {/* 想い出メッセージ編集ポップアップモーダル */}
           {myPosts && myPosts.length > 0 && (
             <EditPublicMessageModal
               isOpen={showEditMessageModal}
@@ -1505,7 +1481,7 @@ export const AccountPage = () => {
             />
           )}
 
-          {/* 公開メッセージ削除確認ポップアップモーダル */}
+          {/* 想い出メッセージ削除確認ポップアップモーダル */}
           {myPosts && myPosts.length > 0 && (
             <DeletePublicMessageModal
               isOpen={showDeletePublicMessageModal}

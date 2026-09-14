@@ -143,7 +143,7 @@ export const EditPublicMessageModal: React.FC<EditPublicMessageModalProps> = ({
       return;
     }
     if (!formData.message.trim() || formData.message.trim().length < 10) {
-      setErrorMsg('公開メッセージは10文字以上で入力してください。');
+      setErrorMsg('想い出メッセージは10文字以上で入力してください。');
       return;
     }
     if (!formData.contactId.trim()) {
@@ -175,7 +175,7 @@ export const EditPublicMessageModal: React.FC<EditPublicMessageModalProps> = ({
 
       if (res.ok) {
         const data = await res.json();
-        setSuccessMsg('公開メッセージを更新しました！');
+        setSuccessMsg('想い出メッセージを更新しました！');
         if (onUpdated && data.post) {
           onUpdated(data.post);
         }
@@ -218,8 +218,8 @@ export const EditPublicMessageModal: React.FC<EditPublicMessageModalProps> = ({
                 <Send size={18} />
               </div>
               <div>
-                <h3 className="text-base sm:text-lg font-bold font-serif">公開メッセージの編集</h3>
-                <p className="text-xs text-teal-100/80 font-sans">公開中のメッセージ内容や開示連絡先を最新の情報に更新できます。</p>
+                <h3 className="text-base sm:text-lg font-bold font-serif">想い出メッセージの編集</h3>
+                <p className="text-xs text-teal-100/80 font-sans">登録した想い出メッセージ内容や開示連絡先を最新の情報に更新できます。</p>
               </div>
             </div>
             <button
@@ -396,12 +396,12 @@ export const EditPublicMessageModal: React.FC<EditPublicMessageModalProps> = ({
               </div>
             </div>
 
-            {/* 2. 公開メッセージ */}
+            {/* 2. 想い出メッセージ */}
             <div className="space-y-3 bg-slate-50/70 p-4 sm:p-5 rounded-2xl border border-slate-200">
               <div className="flex items-center justify-between border-b border-slate-200 pb-2.5">
                 <div className="flex items-center gap-2">
                   <span className="w-6 h-6 rounded-lg bg-teal-100 text-teal-800 text-xs font-bold flex items-center justify-center">2</span>
-                  <h4 className="text-sm font-bold text-slate-900 font-serif">公開メッセージ</h4>
+                  <h4 className="text-sm font-bold text-slate-900 font-serif">想い出メッセージ</h4>
                 </div>
                 <button
                   type="button"
@@ -448,7 +448,7 @@ export const EditPublicMessageModal: React.FC<EditPublicMessageModalProps> = ({
                   rows={4}
                   value={formData.message}
                   onChange={e => setFormData(prev => ({ ...prev, message: e.target.value }))}
-                  placeholder="あなたを探している相手に向けたメッセージをご記入ください。"
+                  placeholder="あなたを探している相手に向けた想い出メッセージをご記入ください。"
                   className="w-full p-3.5 text-sm sm:text-base text-slate-950 font-letter-mincho font-serif font-medium border-2 border-slate-300 rounded-xl bg-white focus:border-teal-600 outline-none leading-relaxed"
                 />
 
