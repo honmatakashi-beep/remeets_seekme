@@ -215,8 +215,7 @@ export const postsRouter = express.Router();
   postsRouter.get("/my-posts", authenticateToken, (req: any, res) => {
     try {
       const posts = db.prepare(`
-        SELECT p.id, p.searcher_name, p.searcher_profile, p.target_name, p.target_last_name, p.target_first_name, 
-               p.target_hometown, p.target_school, p.era, p.category, p.category as relationship, p.status, p.created_at, p.verified_by,
+        SELECT p.*,
                u.username as verifier_username, u.full_name as verifier_full_name, u.nickname as verifier_nickname
         FROM posts p
         LEFT JOIN users u ON p.verified_by = u.id
@@ -229,12 +228,88 @@ export const postsRouter = express.Router();
     }
   });
 
+  // 自分の公開メッセージの直接更新エンドポイント
+  postsRouter.put("/my-post/update", authenticateToken, async (req: any, res) => {
+    try {
+      const {
+        id,
+        lastName,
+        firstName,
+        lastNameKana,
+        firstNameKana,
+        maidenName,
+        maidenNameKana,
+        birthYear,
+        hometownPref,
+        message,
+        contactType,
+        contactId,
+        contactNote
+      } = req.body;
+
+      if (!id) {
+        return res.status(400).json({ error: "Post ID is required" });
+      }
+
+      const existing = db.prepare("SELECT * FROM posts WHERE id = ? AND user_id = ?").get(id, req.user.id) as any;
+      if (!existing && req.user.role !== 'admin' && req.user.role !== 'super_admin') {
+        return res.status(403).json({ error: "Unauthorized or post not found" });
+      }
+
+      const fullName = `${lastName || ''} ${firstName || ''}`.trim() || existing.target_name;
+      const targetLastNameKana = lastNameKana !== undefined ? lastNameKana : existing.target_last_name_kana;
+      const targetFirstNameKana = firstNameKana !== undefined ? firstNameKana : existing.target_first_name_kana;
+      const targetNameKana = (targetLastNameKana || targetFirstNameKana) ? `${targetLastNameKana || ''} ${targetFirstNameKana || ''}`.trim() : existing.target_name_kana;
+
+      db.prepare(`
+        UPDATE posts SET
+          target_name = ?,
+          target_last_name = ?,
+          target_first_name = ?,
+          target_last_name_kana = ?,
+          target_first_name_kana = ?,
+          target_name_kana = ?,
+          searcher_maiden_name = ?,
+          target_maiden_name_kana = ?,
+          target_hometown = ?,
+          era = ?,
+          message = ?,
+          searcher_profile = ?,
+          contact_type = ?,
+          contact_id = ?,
+          contact_note = ?
+        WHERE id = ?
+      `).run(
+        fullName,
+        lastName || existing.target_last_name,
+        firstName || existing.target_first_name,
+        targetLastNameKana,
+        targetFirstNameKana,
+        targetNameKana,
+        maidenName !== undefined ? maidenName : existing.searcher_maiden_name,
+        maidenNameKana !== undefined ? maidenNameKana : existing.target_maiden_name_kana,
+        hometownPref || existing.target_hometown,
+        birthYear || existing.era,
+        message !== undefined ? message : existing.message,
+        message !== undefined ? message : existing.searcher_profile,
+        contactType || existing.contact_type,
+        contactId || existing.contact_id,
+        contactNote !== undefined ? contactNote : existing.contact_note,
+        id
+      );
+
+      const updated = db.prepare("SELECT * FROM posts WHERE id = ?").get(id);
+      res.json({ success: true, post: updated, message: "公開メッセージを更新しました。" });
+    } catch (err) {
+      console.error("Error updating user post:", err);
+      res.status(500).json({ error: "Failed to update your message" });
+    }
+  });
+
   postsRouter.get("/my", authenticateToken, (req: any, res) => {
     try {
       const posts = db.prepare(`
-        SELECT id, searcher_name, searcher_profile, target_name, target_last_name, target_first_name, 
-               target_hometown, target_school, era, category, category as relationship, status, created_at 
-        FROM posts 
+        SELECT * FROM posts 
         WHERE user_id = ?
         ORDER BY created_at DESC
       `).all(req.user.id);

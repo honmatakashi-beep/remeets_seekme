@@ -22,10 +22,12 @@ import { EkycProgressTelemetryPanel } from '../components/EkycProgressTelemetryP
 import { CreditCardPaymentForm } from '../components/CreditCardPaymentForm';
 import postSuccessSoft from '../assets/images/post_success_soft_1785869214309.jpg';
 import { EditProfileModal } from "../components/account/EditProfileModal";
+import { EditPublicMessageModal } from "../components/account/EditPublicMessageModal";
 import { DeleteAccountModal } from "../components/account/AccountDeleteModals";
 import { MypageEkycModal } from "../components/account/MypageEkycModal";
 import { AccountAlertModal } from "../components/account/AccountAlertModal";
 import quizMatchHearts from '../assets/images/quiz_match_hearts_pastel_1785940521320.jpg';
+import { Copy } from 'lucide-react';
 
 export const AccountPage = () => {
   const { user, token, logout, updateUser } = useAuth();
@@ -55,6 +57,8 @@ export const AccountPage = () => {
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [showEmailChangeSuccess, setShowEmailChangeSuccess] = useState(false);
   const [showEditProfileModal, setShowEditProfileModal] = useState(false);
+  const [showEditMessageModal, setShowEditMessageModal] = useState(false);
+  const [copiedPostLink, setCopiedPostLink] = useState(false);
   const navigate = useNavigate();
 
   // 再会ストーリー・感謝の声モーダル＆投稿管理
@@ -1215,7 +1219,200 @@ export const AccountPage = () => {
             </div>
           </div>
 
-                {/* 登録内容・SNS ID 変更ポップアップモーダル */}
+          {/* ✉️ あなたの公開メッセージ（1人1通・最重要カード） */}
+          {(() => {
+            const currentPost = myPosts && myPosts.length > 0 ? myPosts[0] : null;
+            return (
+              <div className="bg-white border-2 border-teal-300/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-5 text-left relative overflow-hidden font-sans">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-2 border-teal-100 pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center font-bold text-lg border border-teal-200 shrink-0 shadow-2xs">
+                      ✉️
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h3 className="text-lg sm:text-xl font-serif font-bold text-slate-900">あなたの公開メッセージ</h3>
+                        {currentPost && (
+                          <span className="text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-2xs">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
+                            Google検索・公開中
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs text-slate-500 font-sans">
+                        {currentPost 
+                          ? 'あなたを探している相手がGoogle検索等で見つけられるメッセージです（原則1ユーザー1通）。' 
+                          : 'あなたを探している大切な人のために、メッセージを届けておきましょう。'}
+                      </p>
+                    </div>
+                  </div>
+
+                  {currentPost ? (
+                    <div className="flex items-center gap-2 self-end sm:self-auto">
+                      <button
+                        type="button"
+                        onClick={() => setShowEditMessageModal(true)}
+                        className="px-4 py-2 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white rounded-xl text-xs font-bold shadow-xs hover:shadow transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
+                      >
+                        <Edit3 size={13} />
+                        <span>✏️ メッセージを修正</span>
+                      </button>
+                      <Link
+                        to={`/posts/${currentPost.id}`}
+                        target="_blank"
+                        className="px-3.5 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
+                      >
+                        <Eye size={13} />
+                        <span>公開画面</span>
+                      </Link>
+                    </div>
+                  ) : (
+                    <Link
+                      to="/create"
+                      className="px-5 py-2.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white rounded-xl text-xs font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 self-start sm:self-auto"
+                    >
+                      <Sparkles size={14} />
+                      <span>✍️ メッセージを届ける（作成）</span>
+                    </Link>
+                  )}
+                </div>
+
+                {currentPost ? (
+                  <div className="space-y-4">
+                    {/* メタデータグリッド（大きめ・高コントラスト） */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200 text-xs">
+                      <div className="space-y-0.5">
+                        <span className="font-bold text-slate-600 block">メッセージを書いた人</span>
+                        <span className="font-bold text-slate-950 text-sm sm:text-base block">
+                          {currentPost.target_name || currentPost.searcher_full_name || '名前未設定'}
+                          {(currentPost.target_last_name_kana || currentPost.target_first_name_kana) && (
+                            <span className="text-xs font-normal text-slate-600 ml-1">
+                              （{currentPost.target_last_name_kana || ''} {currentPost.target_first_name_kana || ''}）
+                            </span>
+                          )}
+                        </span>
+                      </div>
+                      <div className="space-y-0.5">
+                        <span className="font-bold text-slate-600 block">旧姓・当時の苗字</span>
+                        <span className="font-bold text-slate-950 text-sm sm:text-base block">
+                          {currentPost.searcher_maiden_name || currentPost.target_maiden_name || 'なし'}
+                          {currentPost.target_maiden_name_kana && (
+                            <span className="text-xs font-normal text-slate-600 ml-1">
+                              （{currentPost.target_maiden_name_kana}）
+                            </span>
+                          )}
+                        </span>
+                      </div>
+                      <div className="space-y-0.5">
+                        <span className="font-bold text-slate-600 block">ゆかりの地</span>
+                        <span className="font-bold text-slate-950 text-sm sm:text-base block">
+                          {currentPost.target_hometown || '未選択'}
+                        </span>
+                      </div>
+                      <div className="space-y-0.5">
+                        <span className="font-bold text-slate-600 block">生まれ年</span>
+                        <span className="font-bold text-slate-950 text-sm sm:text-base block">
+                          {currentPost.era ? formatEraLabel(currentPost.era) : '非公開'}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* メッセージ本文（高コントラスト） */}
+                    <div className="space-y-2">
+                      <span className="text-xs font-bold text-slate-700 block flex items-center justify-between">
+                        <span>公開メッセージ本文</span>
+                        <span className="text-[11px] text-teal-700 font-bold">誰でも閲覧可能（Google検索対象）</span>
+                      </span>
+                      <div className="p-4 sm:p-5 bg-white rounded-2xl border-2 border-slate-200 text-slate-950 font-sans font-medium text-sm sm:text-base leading-relaxed whitespace-pre-wrap shadow-2xs">
+                        {currentPost.message || currentPost.searcher_profile || '（メッセージが入力されていません）'}
+                      </div>
+                    </div>
+
+                    {/* 開示連絡先 ＆ 公開リンク */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                      {/* 開示連絡先 */}
+                      <div className="p-3.5 bg-teal-50/60 rounded-2xl border border-teal-200/80 space-y-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-teal-900 flex items-center gap-1">
+                            <Lock size={12} className="text-teal-700" />
+                            <span>再会時の開示連絡先</span>
+                          </span>
+                          <span className="text-[10px] text-teal-800 bg-white border border-teal-200 px-2 py-0.2 rounded-full font-bold">
+                            承認時のみ開示
+                          </span>
+                        </div>
+                        <div className="text-xs font-mono font-bold text-teal-950">
+                          <span className="bg-teal-200/60 px-1.5 py-0.5 rounded mr-1.5 text-[11px]">{currentPost.contact_type || 'LINE'}</span>
+                          <span>{currentPost.contact_id || '未登録'}</span>
+                        </div>
+                      </div>
+
+                      {/* 公開URL */}
+                      <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 space-y-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-slate-700 flex items-center gap-1">
+                            <ExternalLink size={12} className="text-slate-500" />
+                            <span>専用公開URL</span>
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const url = `${window.location.origin}${getPostUrl(currentPost)}`;
+                              navigator.clipboard.writeText(url);
+                              setCopiedPostLink(true);
+                              setTimeout(() => setCopiedPostLink(false), 2000);
+                            }}
+                            className="text-[10px] text-teal-700 hover:text-teal-900 font-bold flex items-center gap-1 cursor-pointer"
+                          >
+                            {copiedPostLink ? (
+                              <span className="text-emerald-700 font-bold flex items-center gap-0.5"><Check size={11} /> コピー完了</span>
+                            ) : (
+                              <span className="flex items-center gap-0.5"><Copy size={11} /> URLをコピー</span>
+                            )}
+                          </button>
+                        </div>
+                        <input
+                          type="text"
+                          readOnly
+                          value={`${window.location.origin}${getPostUrl(currentPost)}`}
+                          className="w-full text-xs font-mono text-slate-600 bg-white px-2.5 py-1 rounded-lg border border-slate-200 outline-none select-all"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="py-6 px-4 bg-gradient-to-br from-teal-50/60 to-slate-50 rounded-2xl border border-dashed border-teal-200 text-center space-y-3">
+                    <p className="text-sm font-bold text-slate-800 font-serif">まだ公開メッセージが登録されていません</p>
+                    <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
+                      お名前やゆかりの地、当時の思い出メッセージを登録すると、Google検索等であなたを探している相手がメッセージを見つけられるようになります。
+                    </p>
+                    <Link
+                      to="/create"
+                      className="inline-flex items-center gap-1.5 px-6 py-2.5 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-bold shadow-sm transition-all"
+                    >
+                      <Sparkles size={14} />
+                      <span>メッセージを作成して公開する</span>
+                    </Link>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+
+          {/* 公開メッセージ編集ポップアップモーダル */}
+          {myPosts && myPosts.length > 0 && (
+            <EditPublicMessageModal
+              isOpen={showEditMessageModal}
+              onClose={() => setShowEditMessageModal(false)}
+              post={myPosts[0]}
+              token={token}
+              onUpdated={(updatedPost) => {
+                setMyPosts(prev => prev.map(p => p.id === updatedPost.id ? { ...p, ...updatedPost } : p));
+              }}
+            />
+          )}
+
+          {/* 登録内容・SNS ID 変更ポップアップモーダル */}
           <EditProfileModal
             isOpen={showEditProfileModal}
             onClose={() => setShowEditProfileModal(false)}
@@ -1224,7 +1421,8 @@ export const AccountPage = () => {
             updateUser={updateUser}
             getAgeFromBirthdate={getAgeFromBirthdate}
           />
-{/* Tab Selection Segments: Modern Pill Card Control */}
+
+          {/* Tab Selection Segments: Modern Pill Card Control */}
           <div id="account-tabs" className="space-y-2">
             <div className="flex items-center justify-between px-1 text-[11px] font-bold text-slate-500">
               <span className="flex items-center gap-1.5 font-sans">
@@ -1234,7 +1432,7 @@ export const AccountPage = () => {
               <span className="text-[10px] text-teal-800 font-extrabold bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-200/60">
                 {activeSubTab === 'profile' && '🛡️ 本人確認・応援 表示中'}
                 {activeSubTab === 'received' && '💌 届いた再会希望 一覧表示中'}
-                {activeSubTab === 'sent' && '📮 流したメッセージ 一覧表示中'}
+                {activeSubTab === 'sent' && '📮 送信した再会申請 一覧表示中'}
                 {activeSubTab === 'notifications' && '🔔 通知・履歴 表示中'}
               </span>
             </div>

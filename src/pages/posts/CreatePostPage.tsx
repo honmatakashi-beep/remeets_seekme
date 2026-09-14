@@ -109,8 +109,24 @@ export const CreatePostPage = () => {
       if (user.email && !authEmail) {
         setAuthEmail(user.email);
       }
+
+      // 既存の公開メッセージの確認（原則1人1通ポリシー）
+      if (token) {
+        fetch('/api/posts/my-posts', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        })
+          .then(res => res.json())
+          .then(posts => {
+            if (Array.isArray(posts) && posts.length > 0) {
+              setExistingUserPost(posts[0]);
+            }
+          })
+          .catch(() => {});
+      }
     }
-  }, [user]);
+  }, [user, token]);
+
+  const [existingUserPost, setExistingUserPost] = useState<any | null>(null);
 
   const fullName = `${formData.lastName || ''} ${formData.firstName || ''}`.trim();
   const rawKanaStr = (formData.lastNameKana || formData.firstNameKana) ? `${formData.lastNameKana || ''} ${formData.firstNameKana || ''}` : '';
@@ -1502,6 +1518,42 @@ export const CreatePostPage = () => {
               </div>
             </div>
           </div>
+
+          {/* ℹ️ 既に公開メッセージ作成済みのユーザーへの案内バナー（1人1通ポリシー） */}
+          {existingUserPost && (
+            <div className="p-5 bg-gradient-to-r from-teal-50 via-sky-50 to-emerald-50 border-2 border-teal-300 rounded-3xl space-y-3 shadow-sm animate-fade-in font-sans text-left">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 text-teal-900 font-bold text-sm font-serif">
+                  <Sparkles size={18} className="text-teal-600 shrink-0" />
+                  <span>既にあなたの公開メッセージが1通登録されています</span>
+                </div>
+                <span className="text-[10px] bg-emerald-100 text-emerald-800 border border-emerald-300 px-2.5 py-0.5 rounded-full font-bold">
+                  公開中
+                </span>
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed font-sans">
+                ReMEETs SEEKME では、相手に届くメッセージの信憑性を保つため<strong>「原則1ユーザーにつき1通」</strong>の公開となっております。
+                内容の変更・推敲は<strong>「マイアカウント」</strong>からいつでも自由に行えます。
+              </p>
+              <div className="flex flex-wrap items-center gap-2.5 pt-1">
+                <Link
+                  to="/mypage"
+                  className="px-4 py-2 bg-teal-700 hover:bg-teal-800 text-white rounded-xl text-xs font-bold shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Edit3 size={13} />
+                  <span>マイアカウントでメッセージを修正する</span>
+                </Link>
+                <Link
+                  to={`/posts/${existingUserPost.id}`}
+                  target="_blank"
+                  className="px-3.5 py-2 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition-all flex items-center gap-1"
+                >
+                  <Eye size={13} />
+                  <span>現在の公開画面を確認</span>
+                </Link>
+              </div>
+            </div>
+          )}
 
           {/* 警告メッセージ */}
           {warningMessage && (
