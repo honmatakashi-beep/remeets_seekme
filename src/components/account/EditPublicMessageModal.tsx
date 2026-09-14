@@ -138,6 +138,10 @@ export const EditPublicMessageModal: React.FC<EditPublicMessageModalProps> = ({
       setErrorMsg('ゆかりの地（都道府県）を選択してください。');
       return;
     }
+    if (!formData.birthYear) {
+      setErrorMsg('生まれ年（西暦・和暦）を選択してください。');
+      return;
+    }
     if (!formData.message.trim() || formData.message.trim().length < 10) {
       setErrorMsg('公開メッセージは10文字以上で入力してください。');
       return;
@@ -334,13 +338,14 @@ export const EditPublicMessageModal: React.FC<EditPublicMessageModalProps> = ({
                   </select>
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-700">生まれ年（任意）</label>
+                  <label className="text-xs font-bold text-slate-700">生まれ年（西暦・和暦）*</label>
                   <select
+                    required
                     value={formData.birthYear}
                     onChange={e => setFormData(prev => ({ ...prev, birthYear: e.target.value }))}
                     className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-slate-300 rounded-xl bg-white text-slate-950 font-medium focus:border-teal-600 outline-none cursor-pointer"
                   >
-                    <option value="">生まれ年を選択</option>
+                    <option value="">生まれ年を選択（必須）</option>
                     {BIRTH_YEAR_OPTIONS.map(opt => (
                       <option key={opt.year} value={opt.year}>{opt.label}</option>
                     ))}

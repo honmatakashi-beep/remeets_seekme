@@ -58,6 +58,10 @@ export const postsRouter = express.Router();
     const searcherMaidenName = req.body.searcherMaidenName || req.body.maidenName || null;
     const birthYear = req.body.birthYear ? parseInt(req.body.birthYear, 10) : null;
 
+    if (!birthYear && !era && !userBirthdate) {
+      return res.status(400).json({ error: "同姓同名の混同防止のため、生まれ年（生年）は必須項目です。" });
+    }
+
     // 生年月日チェック（18歳未満の自動遮断）
     if (userBirthdate) {
       const birth = new Date(userBirthdate);
@@ -254,6 +258,10 @@ export const postsRouter = express.Router();
       const existing = db.prepare("SELECT * FROM posts WHERE id = ? AND user_id = ?").get(id, req.user.id) as any;
       if (!existing && req.user.role !== 'admin' && req.user.role !== 'super_admin') {
         return res.status(403).json({ error: "Unauthorized or post not found" });
+      }
+
+      if (!birthYear && !existing.era) {
+        return res.status(400).json({ error: "同姓同名の混同防止のため、生まれ年（生年）は必須項目です。" });
       }
 
       const fullName = `${lastName || ''} ${firstName || ''}`.trim() || existing.target_name;

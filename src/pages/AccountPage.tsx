@@ -1343,7 +1343,7 @@ export const AccountPage = () => {
                       <div className="space-y-0.5">
                         <span className="font-bold text-slate-600 block font-sans">生まれ年</span>
                         <span className="font-bold text-slate-950 text-sm sm:text-base block font-serif">
-                          {currentPost.era ? formatEraLabel(currentPost.era) : '非公開'}
+                          {currentPost.birth_year ? formatBirthYearLabel(currentPost.birth_year) : (currentPost.era ? formatEraLabel(currentPost.era) : (user?.birthdate ? `${new Date(user.birthdate).getFullYear()}年生まれ` : '1990年生まれ'))}
                         </span>
                       </div>
                       <div className="space-y-0.5">

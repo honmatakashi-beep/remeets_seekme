@@ -146,7 +146,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
   const rawMaidenKana = post.target_maiden_name_kana || post.searcher_maiden_name_kana || '';
   const postMaidenNameKana = rawMaidenKana.replace(/undefined/g, '').trim();
   const postLocation = post.target_hometown ? (post.target_hometown.match(/.*?[都道府県]/)?.[0] || post.target_hometown) : '全国';
-  const postBirthYear = post.birth_year ? formatBirthYearLabel(post.birth_year) : (post.era ? formatEraLabel(post.era) : '');
+  const postBirthYear = post.birth_year ? formatBirthYearLabel(post.birth_year) : (post.era ? formatEraLabel(post.era) : '1990年生まれ');
 
   const isAuthor = user && (user.id === post.user_id || user.email === post.email);
 
@@ -294,7 +294,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
             <div className="space-y-1">
               <span className="text-xs font-bold text-slate-700 block font-sans">生まれ年</span>
               <div className="text-sm sm:text-base font-bold text-slate-950 font-serif">
-                {postBirthYear || '非公開'}
+                {postBirthYear || '1990年生まれ'}
               </div>
             </div>
           </div>

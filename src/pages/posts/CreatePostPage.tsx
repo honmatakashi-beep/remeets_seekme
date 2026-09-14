@@ -195,6 +195,11 @@ export const CreatePostPage = () => {
       window.scrollTo({ top: 200, behavior: 'smooth' });
       return false;
     }
+    if (!formData.birthYear) {
+      setWarningMessage('生まれ年（西暦・和暦）を選択してください。');
+      window.scrollTo({ top: 200, behavior: 'smooth' });
+      return false;
+    }
     if (!formData.message.trim() || formData.message.trim().length < 10) {
       setWarningMessage('昔の知人や友人に向けたメッセージを10文字以上で入力してください。');
       return false;
@@ -749,7 +754,7 @@ export const CreatePostPage = () => {
                 <div className="space-y-1">
                   <span className="text-xs font-bold text-slate-700 block font-sans">生まれ年</span>
                   <div className="text-sm sm:text-base font-bold text-slate-950 font-serif">
-                    {formData.birthYear ? formatBirthYearLabel(formData.birthYear) : '非公開'}
+                    {formData.birthYear ? formatBirthYearLabel(formData.birthYear) : '1990年生まれ'}
                   </div>
                 </div>
               </div>
@@ -1714,15 +1719,16 @@ export const CreatePostPage = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-slate-700 block flex items-center justify-between">
-                    <span>生まれ年（西暦・和暦）</span>
+                    <span>生まれ年（西暦・和暦）<span className="text-rose-500 ml-1 font-bold">*必須</span></span>
                     <span className="text-teal-700 font-bold text-[11px]">同姓同名判別用</span>
                   </label>
                   <select
+                    required
                     value={formData.birthYear}
                     onChange={e => setFormData(prev => ({ ...prev, birthYear: e.target.value }))}
                     className="w-full px-3.5 py-3 text-xs sm:text-sm border border-slate-200 rounded-xl bg-slate-50/60 focus:bg-white focus:border-teal-600 outline-none transition-all shadow-inner cursor-pointer"
                   >
-                    <option value="">生まれ年を選択（任意）</option>
+                    <option value="">生まれ年を選択（必須）</option>
                     {BIRTH_YEAR_OPTIONS.map(opt => (
                       <option key={opt.year} value={opt.year}>{opt.label}</option>
                     ))}
