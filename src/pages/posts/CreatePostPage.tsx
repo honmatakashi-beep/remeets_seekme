@@ -493,36 +493,19 @@ export const CreatePostPage = () => {
       ========================================================================= */}
       {step === 'preview' ? (
         <div className="space-y-6 animate-fade-in">
-          {/* プレビュー中ヘッダー（白ベタを外した背景透過・クリーンデザイン） */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 px-1 py-1 font-sans">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-teal-500/10 text-teal-700 flex items-center justify-center shrink-0 border border-teal-500/20 shadow-2xs">
-                <Eye size={19} />
-              </div>
-              <div>
-                <span className="text-[10px] font-bold uppercase tracking-widest bg-teal-500/10 text-teal-900 border border-teal-500/20 px-2.5 py-0.5 rounded-full inline-block font-mono">
-                  STEP 2: LIVE HTML PREVIEW
-                </span>
-                <h2 className="text-base sm:text-lg font-serif font-bold text-slate-900 mt-0.5">
-                  ネット公開画面の完成プレビュー
-                </h2>
-                <p className="text-xs text-slate-500 font-sans">
-                  ネット上に手紙が流された際、このような画面として公開されます。
-                </p>
-              </div>
+          {/* プレビュー中ヘッダー */}
+          <div className="space-y-1.5 px-1 py-1 font-sans">
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-bold uppercase tracking-widest bg-teal-500/10 text-teal-900 border border-teal-500/20 px-2.5 py-0.5 rounded-full inline-block font-mono">
+                STEP 2: LIVE HTML PREVIEW
+              </span>
             </div>
-
-            <button
-              type="button"
-              onClick={() => {
-                setStep('form');
-                window.scrollTo({ top: 200, behavior: 'smooth' });
-              }}
-              className="px-3.5 py-2 bg-white/80 hover:bg-white text-slate-700 hover:text-slate-900 border border-slate-300/80 rounded-xl text-xs font-bold transition-all shadow-2xs flex items-center gap-1.5 cursor-pointer shrink-0 font-sans"
-            >
-              <Edit3 size={13} />
-              <span>入力画面に戻って修正</span>
-            </button>
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-serif font-bold text-slate-900 tracking-wide">
+              ネット公開画面の完成プレビュー
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-500 font-sans">
+              ネット上に手紙が流された際、このような画面として公開されます。
+            </p>
           </div>
 
           {/* 警告メッセージ */}
