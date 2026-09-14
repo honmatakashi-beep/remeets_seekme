@@ -101,7 +101,7 @@ export const DeploymentChecklistModal: React.FC<DeploymentChecklistModalProps> =
       { id: 4, category: "2. 手紙投函・AI検閲", title: "ボトル（手紙）新規作成・秘密の想い出クイズ登録テスト", description: "宛名、ゆかりの地、手紙本文、想い出クイズ（質問・正解・表記ゆれ別解）が破損なくDBに保存・投函されるか検証します。", completed: false, date: "", notes: "" },
       { id: 5, category: "2. 手紙投函・AI検閲", title: "フルネーム判定（常用姓名辞書）ガード検証", description: "プロフィールや手紙内に日本の常用姓名辞書に基づくフルネーム（実名）を入力した際、検閲警告・ブロックされるか検証します。", completed: false, date: "", notes: "" },
       { id: 6, category: "2. 手紙投函・AI検閲", title: "AI自動検閲（誹謗中傷・個人情報・脅迫）フィルターテスト", description: "手紙本文に脅迫・暴言や直接の連絡先（電話番号、他SNS ID）を入力し、AIモデレーションが自動で隔離・警告するか検証します。", completed: false, date: "", notes: "" },
-      { id: 7, category: "3. 検索・秘匿性", title: "キーワード検索・年代地域フィルター＆本文マスキング検証", description: "名前や学校名で検索し、該当手紙がヒットすること、およびクイズ未正解の段階で本文・連絡先が完全に秘匿されているか検証します。", completed: false, date: "", notes: "" },
+      { id: 7, category: "3. 検索・秘匿性", title: "キーワード検索・年代地域フィルター＆本文マスキング検証", description: "お名前や都道府県で検索し、該当手紙がヒットすること、およびクイズ未正解の段階で本文・連絡先が完全に秘匿されているか検証します。", completed: false, date: "", notes: "" },
       { id: 8, category: "4. クイズ照合・本人認証", title: "想い出クイズ完全一致判定 ＆ 表記ゆれ救済テスト", description: "質問に完全正解（または登録された表記ゆれ別解）を入力した際、即座に想い出一致（照合成功）画面へ遷移するか検証します。", completed: false, date: "", notes: "" },
       { id: 9, category: "4. クイズ照合・本人認証", title: "クイズ不正解時の安全遮断 ＆ ブルートフォース制限テスト", description: "誤答時に本文が絶対に開示されないこと、および連続誤答時に一時ロックアウト（レート制限）がかかるか検証します。", completed: false, date: "", notes: "" },
       { id: 10, category: "5. SMS・eKYC・宣誓", title: "SMS認証コード実機送信・6桁照合・1日3回制限テスト", description: "実機スマホへSMS認証コードが即時届き、6桁入力で認証が通ること、およびいたずら防止レート制限（1日最大3回）が作動するか検証します。", completed: false, date: "", notes: "" },

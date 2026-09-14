@@ -173,8 +173,8 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
         icon={<Search size={24} className="text-teal-600" />}
         iconBoxClassName="bg-teal-50 text-teal-600 border border-teal-100"
         category="Search Directory"
-        title="自分宛ての手紙を探す"
-        description="ご自身のお名前や、ゆかりの深い地域などで検索し、あなたを探している大切な人から届いているボトルメール（手紙）と出会うことができます。"
+        title="目印の手紙を探す"
+        description="探しているお相手のお名前やご自身のお名前、ゆかりの都道府県などで検索し、あなたを待っている大切な人の置き手紙と出会うことができます。"
       />
 
       {/* 🔍 上部統合検索 & 絞り込み & 新着通知コントロールカード */}
@@ -182,7 +182,7 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
         {/* 検索入力バー */}
         <form onSubmit={handleSearch} className="space-y-2">
           <label className="block text-xs sm:text-sm font-bold text-slate-800 font-sans">
-            あなたのお名前のフルネーム（旧姓・ニックネーム）を入れてください
+            探したい人のお名前（フルネーム・旧姓）または都道府県を入力してください
           </label>
           <div className="flex gap-2 sm:gap-3">
             <div className="relative flex-grow">
@@ -190,7 +190,7 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
                 type="text"
                 value={query}
                 onChange={e => setQuery(e.target.value)}
-                placeholder="あなたのお名前"
+                placeholder="例：山田 太郎、佐藤（旧姓）、東京都"
                 className="w-full pl-3.5 sm:pl-5 pr-9 sm:pr-12 py-2.5 sm:py-3 text-xs sm:text-sm border border-brand-border rounded-xl sm:rounded-2xl bg-slate-50/60 focus:bg-white focus:border-brand-primary outline-none focus:ring-2 focus:ring-brand-primary/20 transition-all font-sans placeholder:text-slate-400 text-black shadow-inner"
               />
               <Search className="absolute right-3 sm:right-4 top-2.5 sm:top-3.5 text-slate-400" size={16} />
@@ -301,8 +301,8 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
           <div>
             <p className="font-bold text-xs text-amber-950">💡 検索方法のアドバイス</p>
             <p className="mt-0.5 text-[11px] text-amber-900/90 leading-relaxed font-sans">
-              現在検索条件が未入力のため、<b>最新の漂うボトルメール（新着順）</b>を表示しています。<br />
-              ご自身宛ての手紙をお探しの場合は、上の検索ボックスに<b>「あなたのお名前（苗字・旧姓・お名前・ニックネーム）」</b>や<b>「ゆかりの都道府県」「年代」</b>等を入力して検索してください。（※具体的な市区町村や学校名は安全のため非公開となっており、思い出クイズ正解後に開示されます）
+              現在検索条件が未入力のため、<b>最新の置かれた手紙（新着順）</b>を表示しています。<br />
+              お相手またはご自身宛ての手紙をお探しの場合は、上の検索ボックスに<b>「お名前（フルネーム・苗字・旧姓）」</b>や<b>「ゆかりの都道府県」「年代」</b>等を入力して検索してください。（※市区町村や学校名は防犯のため非公開となっており、再会申請が承認・開通された後に連絡先が開示されます）
             </p>
           </div>
         </div>
@@ -336,10 +336,10 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
                 </div>
                 <div className="space-y-1.5">
                   <h3 className="text-base md:text-xl font-serif font-bold text-slate-800">
-                    該当するボトルメールが見つかりませんでした
+                    該当する手紙が見つかりませんでした
                   </h3>
                   <p className="text-xs md:text-sm font-serif text-slate-600 leading-relaxed">
-                    まだボトルが届いていないか、異なる表現で投稿されている可能性があります。<br />
+                    まだ手紙が置かれていないか、異なる表記で投稿されている可能性があります。<br />
                     ひらがな、旧姓、または都道府県のみで再検索をお試しいただくか、<b>「新着通知」</b>をご登録ください。
                   </p>
                 </div>
@@ -405,15 +405,20 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
                   <div className="flex justify-between items-start gap-3">
                     <div className="space-y-1 flex-1 min-w-0">
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className="text-[9px] font-bold text-brand-primary uppercase tracking-widest block bg-brand-primary/5 border border-brand-primary/10 px-2 py-0.5 rounded-full w-fit font-sans">
-                          {post.era?.toString().startsWith('19') ? post.era : `19${post.era}`}年代 / {post.category === 'friend' ? '同級生・友人' : post.category === 'love' ? '初恋・他' : 'その他'}
+                        <span className="text-[9px] font-bold text-teal-800 uppercase tracking-widest block bg-teal-50 border border-teal-200 px-2 py-0.5 rounded-full w-fit font-sans">
+                          {post.target_hometown ? (post.target_hometown.match(/.*?[都道府県]/)?.[0] || post.target_hometown) : '全国'} / {post.era?.toString().startsWith('19') ? post.era : `19${post.era || '90'}`}年代
                         </span>
                         <span className="text-[10px] text-brand-dark/40 font-mono">
                           {new Date(post.created_at).toLocaleDateString('ja-JP')}
                         </span>
                       </div>
-                      <h3 className="text-base font-serif font-bold text-brand-dark group-hover:text-brand-primary transition-all truncate">
+                      <h3 className="text-base font-serif font-bold text-brand-dark group-hover:text-teal-700 transition-all truncate">
                         {post.target_name} 様
+                        {post.maiden_name && (
+                          <span className="text-xs text-slate-500 font-sans font-normal ml-1.5">
+                            （旧姓: {post.maiden_name}）
+                          </span>
+                        )}
                       </h3>
                     </div>
 
@@ -431,9 +436,7 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
                     )}
                   </div>
                   <p className="text-xs text-brand-dark/70 font-sans leading-relaxed line-clamp-2">
-                    ゆかりの地: {post.target_hometown ? (post.target_hometown.match(/.*?[都道府県]/)?.[0] || post.target_hometown) : '未特定'} (市区町村以下は非公開) / 所属：{post.target_school ? (post.category === 'work' ? '関連職場（正解後に開示）' : '関連学校（正解後に開示）') : '未設定'}<br/>
-                    差し出し: {post.searcher_name}<br/>
-                    「{post.searcher_profile}」
+                    {post.message || post.searcher_profile || '私を探しているあなたへ。メッセージをお待ちしています。'}
                   </p>
                 </Link>
               ))}

@@ -705,7 +705,7 @@ module.exports = {
                     <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-black/40" />
                     <input 
                       type="text"
-                      placeholder="お名前、地域、学校名で検索..."
+                      placeholder="お名前、ゆかりの都道府県で検索..."
                       className="w-full pl-10 pr-4 py-2.5 bg-zinc-50 border border-zinc-300 rounded-xl text-sm focus:bg-white focus:border-teal-600 focus:ring-4 focus:ring-teal-100 outline-none transition-all text-black"
                     />
                   </div>

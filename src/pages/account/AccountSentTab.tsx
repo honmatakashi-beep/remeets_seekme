@@ -1,227 +1,277 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { 
-  Waves, Heart, User, Calendar, MapPin, Sparkles, Clock, AlertCircle, 
-  Trash2, Edit3, PlusCircle, ShieldCheck, ExternalLink, Eye, Edit, Activity 
-} from "lucide-react";
-import { getPostUrl, formatEraLabel } from "../../lib/utils";
-import { ReunionStorySection } from "../../components/account/ReunionStorySection";
+import { Check, CheckCircle2, Lock, ArrowRight, AlertTriangle, Send, User, CreditCard, Sparkles } from "lucide-react";
+import { useAuth } from "../../contexts/AuthContext";
 
 export const AccountSentTab = (props: any) => {
-  const [selectedPostIds, setSelectedPostIds] = useState<number[]>([]);
-  const [isBulkDeleting, setIsBulkDeleting] = useState<boolean>(false);
+  const { token, user } = useAuth();
+  const [requests, setRequests] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [payingRequestId, setPayingRequestId] = useState<number | null>(null);
+  const [contactType, setContactType] = useState("LINE");
+  const [contactId, setContactId] = useState(user?.contact_id || "");
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  const {
-    myPosts = [],
-    loading,
-    postActionLoading,
-    handleTogglePostStatus,
-    setDeleteConfirmModal,
-    setDeleteConfirmPost = props.setDeleteConfirmModal || (() => {}),
-    setDeleteConsent = () => {},
-    handleBulkDeletePosts = async () => {},
-    setEditingPost,
-    setShowEditModal,
-    setStoryTargetPost,
-    setStoryTargetRole,
-    setStoryModalOpen,
-    mySubmittedStories = [],
-    storyCurrentPage = 1,
-    setStoryCurrentPage = () => {},
-    STORIES_PER_PAGE = 5
-  } = props;
+  const fetchSentRequests = async () => {
+    if (!token) return;
+    try {
+      setLoading(true);
+      const res = await fetch("/api/posts/reunion-requests/sent", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setRequests(data || []);
+      }
+    } catch (err) {
+      console.error("Failed to fetch sent reunion requests:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSentRequests();
+  }, [token]);
+
+  const handlePayAndUnlock = async (requestId: number) => {
+    if (!contactId.trim()) {
+      alert("再会相手にお渡しするあなたの連絡先（LINE IDまたはメールアドレス）を入力してください。");
+      return;
+    }
+    setIsProcessing(true);
+    try {
+      const res = await fetch(`/api/posts/reunion-requests/${requestId}/pay-and-unlock`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          contactType,
+          contactId: contactId.trim()
+        })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        alert("決済および連絡先の開示が完了しました！");
+        setPayingRequestId(null);
+        fetchSentRequests();
+      } else {
+        const err = await res.json();
+        alert(err.error || "開示処理に失敗しました。");
+      }
+    } catch (e) {
+      console.error(e);
+      alert("通信エラーが発生しました。");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   return (
-<div id="sent-bottles" className="space-y-6 animate-fade-in text-black">
-                {/* Section 2: Owned Bottle Letters */}
-                <div className="space-y-6">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-brand-border pb-3 gap-3">
-                    <h2 id="sent-bottles-title" className="text-lg font-serif font-bold text-brand-dark tracking-widest flex items-center gap-2">
-                      <span>あなたが流したボトルメールの一覧</span>
-                      {myPosts.length > 0 && (
-                        <span className="text-xs bg-brand-primary/10 text-brand-primary px-2.5 py-0.5 rounded-full font-bold font-sans">
-                          {myPosts.length}
-                        </span>
-                      )}
-                    </h2>
-                    {myPosts.length > 0 && (
-                      <div className="flex items-center gap-3">
-                        <label className="flex items-center gap-2 text-xs text-brand-dark/70 font-sans cursor-pointer hover:text-brand-dark select-none">
-                          <input
-                            type="checkbox"
-                            className="w-4 h-4 rounded border-brand-border text-brand-primary focus:ring-brand-primary cursor-pointer"
-                            checked={selectedPostIds.length > 0 && selectedPostIds.length === myPosts.length}
-                            onChange={(e) => {
-                              if (e.target.checked) {
-                                setSelectedPostIds(myPosts.map((p: any) => p.id));
-                              } else {
-                                setSelectedPostIds([]);
-                              }
-                            }}
-                          />
-                          <span>すべて選択 ({selectedPostIds.length}/{myPosts.length})</span>
-                        </label>
-                        {selectedPostIds.length > 0 && (
+    <div className="space-y-6 animate-fade-in text-slate-900 font-sans">
+      <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+        <h2 className="text-lg font-serif font-bold text-slate-900 flex items-center gap-2">
+          <span>送信した再会申請</span>
+          {requests.length > 0 && (
+            <span className="text-xs bg-sky-100 text-sky-800 px-2.5 py-0.5 rounded-full font-bold font-sans">
+              {requests.length}件
+            </span>
+          )}
+        </h2>
+        <button
+          onClick={fetchSentRequests}
+          className="text-xs text-teal-700 hover:underline font-bold cursor-pointer"
+        >
+          更新
+        </button>
+      </div>
+
+      {loading ? (
+        <div className="text-center py-10 text-xs text-slate-400">読み込み中...</div>
+      ) : requests.length === 0 ? (
+        <div className="text-center py-12 border border-dashed border-slate-200 rounded-3xl p-6 bg-white/50 space-y-3">
+          <p className="text-xs font-serif text-slate-500">送信した再会申請はまだありません。</p>
+          <p className="text-[11px] text-slate-400 leading-relaxed max-w-sm mx-auto">
+            手紙の検索画面から気になる人を探し、エピソードを添えて再会希望を送信しましょう。
+          </p>
+          <div className="pt-2">
+            <Link to="/search" className="text-xs font-bold text-teal-700 hover:underline">
+              手紙を探しに行く →
+            </Link>
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {requests.map((req) => {
+            const isPending = req.status === "pending";
+            const isApproved = req.status === "approved";
+            const isCompleted = req.status === "completed" || req.status === "paid";
+            const isRejected = req.status === "rejected";
+
+            return (
+              <div
+                key={req.id}
+                className="p-6 border border-slate-200 bg-white rounded-3xl space-y-4 shadow-sm text-left relative overflow-hidden"
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                      <User size={14} className="text-teal-600" />
+                      <span>「{req.searcher_full_name || req.searcher_name}」様宛ての申請</span>
+                    </span>
+                    <span className="text-[10px] text-slate-400 font-mono">
+                      {new Date(req.created_at).toLocaleDateString("ja-JP")}
+                    </span>
+                  </div>
+
+                  <div>
+                    {isPending && (
+                      <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                        お相手の承認待ち
+                      </span>
+                    )}
+                    {isApproved && (
+                      <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 animate-pulse">
+                        🎉 お相手が承認しました！
+                      </span>
+                    )}
+                    {isCompleted && (
+                      <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-teal-100 text-teal-800 border border-teal-200 flex items-center gap-1">
+                        <CheckCircle2 size={12} />
+                        <span>連絡先開示完了</span>
+                      </span>
+                    )}
+                    {isRejected && (
+                      <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-500">
+                        見送り
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* 送信したエピソード */}
+                <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-1">
+                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block font-mono">
+                    送信したエピソード
+                  </span>
+                  <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-serif whitespace-pre-wrap">
+                    “{req.episode}”
+                  </p>
+                </div>
+
+                {/* 承認済みの場合の決済・開示アクション */}
+                {isApproved && (
+                  <div className="p-5 bg-gradient-to-br from-emerald-50 via-teal-50/50 to-sky-50 rounded-2xl border-2 border-emerald-300 space-y-4">
+                    <div className="space-y-1">
+                      <h4 className="text-sm font-bold text-emerald-950 flex items-center gap-2">
+                        <Sparkles size={16} className="text-emerald-600" />
+                        <span>お相手があなたの申請を承認しました！</span>
+                      </h4>
+                      <p className="text-xs text-emerald-800 leading-relaxed">
+                        本人確認（eKYC）と決済（1,200円: 開封料600円+eKYC料600円）を完了すると、お相手の連絡先（LINE ID等）が即時開示されます。
+                      </p>
+                    </div>
+
+                    {payingRequestId === req.id ? (
+                      <div className="bg-white p-4 rounded-xl border border-emerald-200 space-y-3">
+                        <div className="space-y-2">
+                          <label className="text-xs font-bold text-slate-800 block">
+                            あなたのお相手にお渡しする連絡先
+                          </label>
+                          <div className="grid grid-cols-3 gap-2">
+                            <select
+                              value={contactType}
+                              onChange={(e) => setContactType(e.target.value)}
+                              className="px-2.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold"
+                            >
+                              <option value="LINE">LINE ID</option>
+                              <option value="EMAIL">メール</option>
+                              <option value="PHONE">電話番号</option>
+                            </select>
+                            <input
+                              type="text"
+                              value={contactId}
+                              onChange={(e) => setContactId(e.target.value)}
+                              placeholder="例：@my_line_id"
+                              className="col-span-2 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="pt-2 flex items-center justify-between">
                           <button
-                            onClick={handleBulkDeletePosts}
-                            disabled={isBulkDeleting}
-                            className="px-3.5 py-1.5 text-xs bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white font-bold rounded-xl transition-all shadow-sm flex items-center gap-1.5 cursor-pointer active:scale-95"
+                            type="button"
+                            onClick={() => setPayingRequestId(null)}
+                            className="px-3 py-1.5 text-xs text-slate-500 hover:text-slate-800"
                           >
-                            <Trash2 size={13} />
-                            <span>選択した {selectedPostIds.length} 件を一括削除</span>
+                            キャンセル
                           </button>
-                        )}
+                          <button
+                            type="button"
+                            disabled={isProcessing}
+                            onClick={() => handlePayAndUnlock(req.id)}
+                            className="px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold rounded-xl text-xs shadow-sm flex items-center gap-1.5 cursor-pointer"
+                          >
+                            <CreditCard size={14} />
+                            <span>{isProcessing ? "処理中..." : "1,200円を決済して連絡先を開示"}</span>
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex justify-end">
+                        <button
+                          type="button"
+                          onClick={() => setPayingRequestId(req.id)}
+                          className="px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold rounded-xl text-xs shadow-sm flex items-center gap-1.5 cursor-pointer"
+                        >
+                          <CreditCard size={14} />
+                          <span>本人確認・決済へ進む（1,200円）</span>
+                          <ArrowRight size={14} />
+                        </button>
                       </div>
                     )}
                   </div>
-                  
-                  {myPosts.length === 0 ? (
-                    <div className="text-center py-10 border border-dashed border-brand-border rounded-3xl p-6 bg-white/50 space-y-3">
-                      <p className="text-xs font-serif text-brand-dark/50">漂流しているボトル手紙はありません。</p>
-                      <Link to="/create" className="btn-primary inline-flex animate-none text-xs">ボトルを海に投函する</Link>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      {myPosts.map((post: any) => (
-                        <div key={post.id} className="p-6 border border-brand-border bg-white rounded-3xl flex flex-col gap-5 shadow-sm hover:shadow transition-all relative overflow-hidden group">
-                          <div className={`absolute left-0 top-0 bottom-0 w-1 ${post.status === 'resolved' ? 'bg-indigo-500' : 'bg-brand-primary/30'}`} />
-                          
-                          {/* 上段部分: お手紙概要と操作ボタン */}
-                          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 w-full pl-1">
-                            <div className="flex items-start gap-3 flex-1 min-w-0">
-                              <input
-                                type="checkbox"
-                                className="w-5 h-5 mt-1 rounded border-zinc-300 text-brand-primary focus:ring-brand-primary cursor-pointer shrink-0"
-                                checked={selectedPostIds.includes(post.id)}
-                                onChange={(e) => {
-                                  if (e.target.checked) {
-                                    setSelectedPostIds(prev => [...prev, post.id]);
-                                  } else {
-                                    setSelectedPostIds(prev => prev.filter(id => id !== post.id));
-                                  }
-                                }}
-                              />
-                              <div className="space-y-2 max-w-2xl flex-1 min-w-0">
-                                <div className="flex items-center gap-2">
-                                  <span className="text-[10px] font-bold text-brand-primary uppercase tracking-widest bg-brand-primary/5 px-2 py-0.5 rounded-full font-sans">
-                                    {post.era?.toString().startsWith('19') ? post.era : `19${post.era}`}年頃
-                                  </span>
-                                  <span className="text-[10px] font-bold text-brand-dark/40 font-mono">
-                                    ID: {post.id}
-                                  </span>
-                                  {post.status === 'resolved' ? (
-                                    <span className="text-[9px] font-extrabold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-500/10 font-sans">
-                                      手紙開封済み（出会えた人）
-                                    </span>
-                                  ) : (
-                                    <span className="text-[9px] font-bold text-zinc-500 bg-zinc-100 px-2 py-0.5 rounded font-sans">
-                                      漂流中（返信待ち）
-                                    </span>
-                                  )}
-                                </div>
-                                <Link to={getPostUrl(post)} className="block group/title">
-                                  <h3 className="font-serif font-bold text-brand-dark group-hover/title:text-brand-primary text-base leading-tight mt-1 transition-colors flex items-center gap-1.5">
-                                    <span>{post.target_name} 様宛てのお手紙</span>
-                                    <ExternalLink size={13} className="text-brand-dark/40 group-hover/title:text-brand-primary transition-colors" />
-                                  </h3>
-                                </Link>
-                                <p className="text-xs text-brand-dark/60 leading-relaxed font-sans">
-                                  思い出の手がかり： 「{post.searcher_profile}」
-                                </p>
-                              </div>
-                            </div>
-                            <div className="flex flex-wrap items-center gap-2 shrink-0 self-start lg:self-center w-full lg:w-auto justify-start lg:justify-end mt-2 lg:mt-0">
-                              {post.status === 'resolved' && (
-                                <button
-                                  onClick={() => {
-                                    setStoryTargetPost(post);
-                                    setStoryTargetRole('sender');
-                                    setStoryModalOpen(true);
-                                  }}
-                                  className="px-4 py-2.5 text-xs bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 hover:border-amber-400 rounded-xl transition-all font-bold font-sans cursor-pointer flex items-center gap-1.5 shadow-xs active:scale-95 whitespace-nowrap"
-                                >
-                                  <Sparkles size={13} className="text-amber-600 shrink-0" />
-                                  <span>再会エピソード・お礼を投稿 💌</span>
-                                </button>
-                              )}
-                              <Link to={getPostUrl(post)} className="px-4 py-2.5 text-xs bg-brand-dark hover:bg-brand-primary text-white rounded-xl transition-all font-bold font-sans shadow-sm hover:shadow-md flex items-center gap-1.5 whitespace-nowrap">
-                                <Eye size={13} />
-                                <span>{post.status === 'resolved' ? '開示された連絡先・手紙を確認' : 'お手紙・内容を閲覧・管理する'}</span>
-                              </Link>
-                              {post.status !== 'resolved' && (
-                                <Link to={`/edit/${post.id}`} className="px-4 py-2.5 text-xs bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition-all font-bold font-sans shadow-sm hover:shadow-md flex items-center gap-1.5 whitespace-nowrap">
-                                  <Edit size={13} />
-                                  <span>編集する</span>
-                                </Link>
-                              )}
-                              <button
-                                onClick={() => { setDeleteConfirmPost(post); setDeleteConsent(false); }}
-                                className="px-4 py-2.5 text-xs bg-white hover:bg-rose-50 text-rose-600 border border-rose-200 hover:border-rose-300 rounded-xl transition-all font-bold font-sans cursor-pointer flex items-center gap-1.5 shadow-sm whitespace-nowrap"
-                              >
-                                <Trash2 size={13} />
-                                <span>削除する</span>
-                              </button>
-                            </div>
-                          </div>
+                )}
 
-                          {/* 下段部分: 🌊 漂流中ボトルの静かな活動ログ */}
-                          <div className="p-4 bg-brand-primary/5 rounded-2xl border border-brand-primary/10 space-y-3 font-sans max-w-full">
-                            <div className="flex items-center gap-2 text-brand-dark font-serif font-bold text-xs">
-                              <Activity size={14} className="text-brand-accent animate-pulse" />
-                              <span>漂流中ボトルの静かな活動ログ（統計カウンター）</span>
-                            </div>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-[11px] font-sans">
-                              <div className="p-2.5 bg-white rounded-xl border border-zinc-150 flex flex-col gap-1 shadow-sm">
-                                <span className="text-[9px] text-zinc-400 font-bold block uppercase tracking-wider">🌊 漂流/公開経過</span>
-                                <strong className="text-xs text-zinc-800 block">
-                                  {Math.max(1, Math.floor((Date.now() - new Date(post.created_at).getTime()) / (1000 * 60 * 60 * 24)))} <span className="text-[9px] font-normal text-zinc-400">日目</span>
-                                </strong>
-                              </div>
-                              <div className="p-2.5 bg-white rounded-xl border border-zinc-150 flex flex-col gap-1 shadow-sm">
-                                <span className="text-[9px] text-zinc-400 font-bold block uppercase tracking-wider">🔍 緩やかな検索露出</span>
-                                <strong className="text-xs text-zinc-800 block">
-                                  {Math.max(12, (post.id * 13) % 80 + 15)} <span className="text-[9px] font-normal text-zinc-400">回のヒット</span>
-                                </strong>
-                              </div>
-                              <div className="p-2.5 bg-white rounded-xl border border-zinc-150 flex flex-col gap-1 shadow-sm">
-                                <span className="text-[9px] text-zinc-400 font-bold block uppercase tracking-wider">🤖 検索ロボット巡回</span>
-                                <strong className="text-xs text-zinc-800 block">
-                                  {Math.max(2, Math.floor(post.id % 5) + 3)} <span className="text-[9px] font-normal text-zinc-400">回の検知</span>
-                                </strong>
-                              </div>
-                              <div className="p-2.5 bg-white rounded-xl border border-zinc-150 flex flex-col gap-1 shadow-sm">
-                                <span className="text-[9px] text-zinc-400 font-bold block uppercase tracking-wider">🔐 思い出クイズアクセス</span>
-                                <strong className="text-xs text-zinc-800 block">
-                                  {Math.max(1, (post.id * 3) % 9)} <span className="text-[9px] font-normal text-zinc-400">回の解決試行</span>
-                                </strong>
-                              </div>
-                            </div>
-                            <div className="text-[9px] text-zinc-500 flex items-center gap-1 justify-end font-sans">
-                              <ShieldCheck size={11} className="text-emerald-500" />
-                              <span>ボトルの死活・インデックス連携シグナル: 正常稼働中 (常時監視完了)</span>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
+                {/* 決済完了・開示済みの場合の相手連絡先カード */}
+                {isCompleted && (
+                  <div className="p-4 bg-teal-50 rounded-2xl border border-teal-200 space-y-2">
+                    <div className="flex items-center justify-between gap-2 flex-wrap">
+                      <div className="flex items-center gap-2">
+                        <span className="px-2.5 py-0.5 bg-teal-700 text-white font-extrabold text-[10px] rounded-md uppercase">
+                          「{req.searcher_name}」様の連絡先 ({req.author_contact_type || "LINE"})
+                        </span>
+                        <span className="font-mono text-sm font-bold text-slate-900 select-all">
+                          {req.author_contact_id || `@${req.author_username || "seekme_user"}`}
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => {
+                          const idText = req.author_contact_id || `@${req.author_username || "seekme_user"}`;
+                          navigator.clipboard.writeText(idText);
+                          alert(`連絡先（${idText}）をコピーしました！`);
+                        }}
+                        className="px-3 py-1 text-xs font-bold text-teal-900 bg-white hover:bg-teal-100 border border-teal-300 rounded-lg transition-all cursor-pointer shadow-2xs"
+                      >
+                        コピー
+                      </button>
                     </div>
-                  )}
-                </div>
-
-                {/* 💌 再会エピソード・感謝の声セクション */}
-                <div className="pt-4 border-t border-brand-border">
-                  <ReunionStorySection
-                    mySubmittedStories={mySubmittedStories}
-                    storyCurrentPage={storyCurrentPage}
-                    setStoryCurrentPage={setStoryCurrentPage}
-                    STORIES_PER_PAGE={STORIES_PER_PAGE}
-                    defaultRole="sender"
-                    onOpenStoryModal={(role) => {
-                      setStoryTargetPost(null);
-                      setStoryTargetRole(role || 'sender');
-                      setStoryModalOpen(true);
-                    }}
-                  />
-                </div>
+                    {req.author_contact_note && (
+                      <p className="text-[11px] text-teal-800 font-sans">
+                        メッセージ: {req.author_contact_note}
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
   );
 };
+export default AccountSentTab;

@@ -1,245 +1,122 @@
-import { Step0BasicInfo } from "./createSteps/Step0BasicInfo";
-import { Step1Quiz } from "./createSteps/Step1Quiz";
-import { Step2Message } from "./createSteps/Step2Message";
-import { Step3Confirm } from "./createSteps/Step3Confirm";
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useNavigate, useParams, useSearchParams, useLocation, Link, Navigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import Markdown from 'react-markdown';
 import {
-  Activity, AlertCircle, AlertTriangle, Anchor, ArrowDown, ArrowLeft, ArrowRight,
-  Award, BookOpen, Calendar, Check, CheckCircle, CheckCircle2, CheckSquare,
-  ChevronLeft, ChevronRight, ChevronUp, ChevronDown, Clock, Coins, Copy,
-  CreditCard, Edit, Edit2, Edit3, ExternalLink, Eye, EyeOff, FileText,
-  FileWarning, Filter, Heart, HeartHandshake, HelpCircle, Info, Key, Lock,
-  LogOut, Mail, MapPin, MessageCircle, MessageSquare, MoreVertical,
-  PlusCircle, RefreshCw, RotateCcw, School, Search, Send, Share2,
-  Shield, ShieldAlert, ShieldCheck, Sparkles, Star, Tag, Trash2,
-  User, User as UserIcon, Users, Wind, X, Zap, Bot, Image as ImageIcon,
-  Plus, Globe, Unlock, UserCheck, Gift, FileSpreadsheet, Phone
+  ArrowLeft, ArrowRight, BookOpen, Check, CheckCircle2,
+  Copy, HelpCircle, Info, Lock, MapPin, Send, Shield,
+  ShieldCheck, Sparkles, User, AlertTriangle
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import { useConfirm } from '../../contexts/AuthContext';
 import { useNgFilter } from '../../contexts/AuthContext';
-import { cn, PageHeader, formatEraLabel, getCategoryText, getPostUrl, PREFECTURES } from '../../lib/utils';
-import { BottleLoader, WarningMessage, ProtectedRoute, GoogleSearchResultPreview, BackToHomeButton } from '../../components/SharedComponents';
-import { DocumentCameraOverlay, stopAllGlobalCameraStreams } from '../../components/DocumentCameraOverlay';
-import { QuizMatchingAnalyticsView } from '../../components/QuizMatchingAnalyticsView';
-import { CreditCardPaymentForm } from '../../components/CreditCardPaymentForm';
-import { ReunionEffectTitle } from '../../components/ReunionEffectTitle';
-import { QuestionSampleModal } from '../AuthPages';
-import { SuccessStoryModal } from '../SearchPage';
-import quizMatchHearts from '../../assets/images/quiz_match_hearts_pastel_1785940521320.jpg';
-import postSuccessSoft from '../../assets/images/post_success_soft_1785869214309.jpg';
-
-
-import { ScrollToTop, ScrollToTopButton } from './PostUtils';
-import { FlowExplanation, RecipientSafetyGuide, RevealContactModal, SuccessModal, AgeVerificationGate, ComplianceBanner, ReportModal } from './PostModals';
+import { PREFECTURES, getPostUrl } from '../../lib/utils';
+import { GoogleSearchResultPreview, BackToHomeButton } from '../../components/SharedComponents';
 
 export const CreatePostPage = () => {
   const { user, token } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { check: checkNg } = useNgFilter();
+
   const [formData, setFormData] = useState({
-    searcherName: '',
-    searcherFullName: '',
-    searcherProfile: '',
-    targetName: '',
-    targetLastName: '',
-    targetFirstName: '',
-    targetNameEn: '',
-    targetLastNameEn: '',
-    targetFirstNameEn: '',
-    targetHometown: '',
-    targetHometownPref: '',
-    targetHometownArea: '',
-    targetSchool: '',
-    era: '',
-    category: '',
+    lastName: '',
+    firstName: '',
+    maidenName: '',
+    hometownPref: '',
+    era: '1990',
+    category: 'friend',
     message: '',
     contactType: 'LINE',
     contactId: '',
     contactNote: ''
   });
 
+  const [step, setStep] = useState<1 | 2 | 3>(1); // 1: 基本情報, 2: メッセージ・連絡先, 3: プレビュー＆確認
+  const [agreed, setAgreed] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [warningMessage, setWarningMessage] = useState<string | null>(null);
+
+  // 初期値の引き継ぎ
   useEffect(() => {
     if (location.state) {
       const { initialTargetName, initialTargetLastName, initialTargetFirstName, initialCategory } = location.state as any;
-      if (initialTargetName || initialTargetLastName || initialTargetFirstName || initialCategory) {
+      if (initialTargetLastName || initialTargetFirstName || initialTargetName) {
         setFormData(prev => ({
           ...prev,
-          targetName: initialTargetName || prev.targetName,
-          targetLastName: initialTargetLastName || prev.targetLastName,
-          targetFirstName: initialTargetFirstName || prev.targetFirstName,
+          lastName: initialTargetLastName || (initialTargetName ? initialTargetName.split(' ')[0] : prev.lastName),
+          firstName: initialTargetFirstName || (initialTargetName ? initialTargetName.split(' ')[1] || '' : prev.firstName),
           category: initialCategory || prev.category
         }));
       }
     }
   }, [location.state]);
-  const [questions, setQuestions] = useState([
-    { question: '', answer: '', hint: '' },
-    { question: '', answer: '', hint: '' }
-  ]);
-  const [step, setStep] = useState(0);
-  const [agreed, setAgreed] = useState(false);
-  const [stepEnteredTime, setStepEnteredTime] = useState<number>(Date.now());
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [captchaQuestion, setCaptchaQuestion] = useState(() => {
-    const a = Math.floor(Math.random() * 10);
-    const b = Math.floor(Math.random() * 10);
-    return { q: `${a} + ${b} = ?`, a: (a + b).toString() };
-  });
-  const [captchaAnswer, setCaptchaAnswer] = useState('');
 
-  const refreshCaptcha = () => {
-    const a = Math.floor(Math.random() * 10);
-    const b = Math.floor(Math.random() * 10);
-    const ans = (a + b).toString();
-    setCaptchaQuestion({ q: `${a} + ${b} = ?`, a: ans });
-    setCaptchaAnswer('');
-  };
-  const [nameWarning, setNameWarning] = useState(false);
-  const [warnings, setWarnings] = useState<Record<string, string | null>>({});
-  const [showSearchPreview, setShowSearchPreview] = useState(true);
-  const [isAiDiagnosing, setIsAiDiagnosing] = useState(false);
-  const [aiDiagnosisResult, setAiDiagnosisResult] = useState<{ score: number, feedback: string } | null>(null);
-
-  // Demographics States (Birthdate & Gender)
-  const [searcherBirthYear, setSearcherBirthYear] = useState(() => {
-    if (user?.birthdate) {
-      const parts = user.birthdate.split('-');
-      if (parts.length === 3) return parts[0];
-    }
-    return '';
-  });
-  const [searcherBirthMonth, setSearcherBirthMonth] = useState(() => {
-    if (user?.birthdate) {
-      const parts = user.birthdate.split('-');
-      if (parts.length === 3) return parseInt(parts[1], 10).toString();
-    }
-    return '';
-  });
-  const [searcherBirthDay, setSearcherBirthDay] = useState(() => {
-    if (user?.birthdate) {
-      const parts = user.birthdate.split('-');
-      if (parts.length === 3) return parseInt(parts[2], 10).toString();
-    }
-    return '';
-  });
-  const [searcherGender, setSearcherGender] = useState<'男性' | '女性' | 'その他 / 回答しない' | ''>(() => {
-    return (user?.gender as any) || '';
-  });
-
-  // Calculate searcher age
-  const calculatedSearcherAge = (() => {
-    if (user?.birthdate) {
-      const b = new Date(user.birthdate);
-      if (!isNaN(b.getTime())) {
-        const today = new Date();
-        let age = today.getFullYear() - b.getFullYear();
-        const m = today.getMonth() - b.getMonth();
-        if (m < 0 || (m === 0 && today.getDate() < b.getDate())) age--;
-        return age;
+  // ユーザーの登録情報から初期補完
+  useEffect(() => {
+    if (user) {
+      if (user.fullName && !formData.lastName && !formData.firstName) {
+        const parts = user.fullName.trim().split(/\s+/);
+        setFormData(prev => ({
+          ...prev,
+          lastName: parts[0] || '',
+          firstName: parts[1] || ''
+        }));
+      }
+      if (user.maiden_name && !formData.maidenName) {
+        setFormData(prev => ({ ...prev, maidenName: user.maiden_name }));
+      }
+      if (user.contact_id && !formData.contactId) {
+        setFormData(prev => ({
+          ...prev,
+          contactType: user.contact_type || 'LINE',
+          contactId: user.contact_id
+        }));
       }
     }
-    if (!searcherBirthYear || !searcherBirthMonth || !searcherBirthDay) return null;
-    const y = parseInt(searcherBirthYear, 10);
-    const m = parseInt(searcherBirthMonth, 10);
-    const d = parseInt(searcherBirthDay, 10);
-    if (isNaN(y) || isNaN(m) || isNaN(d)) return null;
-    const birth = new Date(y, m - 1, d);
-    const today = new Date();
-    let age = today.getFullYear() - birth.getFullYear();
-    const monthDiff = today.getMonth() - birth.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-      age--;
-    }
-    return age;
-  })();
-
-  // eKYC Pre-submit Confirmation Modal States
-  const [showPostConfirmModal, setShowPostConfirmModal] = useState(false);
-  const [ekycConfirmStep, setEkycConfirmStep] = useState<number>(1); // 1: Select Type, 2: eKYC Form, 3: Camera Capture, 4: Payment, 5: Processing
-  const [payCardNumber, setPayCardNumber] = useState('');
-  const [payCardExpiry, setPayCardExpiry] = useState('');
-  const [payCardCvc, setPayCardCvc] = useState('');
-  const [payCardName, setPayCardName] = useState('');
-  const [isPaying, setIsPaying] = useState(false);
-  const [ekycDocType, setEkycDocType] = useState<'license' | 'mynumber' | 'passport'>('license');
-  const [postCapturedImages, setPostCapturedImages] = useState<{ front?: string; thickness?: string; back?: string }>({});
-  const [ekycProgress, setEkycProgress] = useState(0);
-  const [ekycName, setEkycName] = useState('');
-  const [ekycBirthdate, setEkycBirthdate] = useState('');
-  const [isEkycCompleted, setIsEkycCompleted] = useState(() => 
-    localStorage.getItem('ekyc_verified') === 'true' || user?.is_ekyc_verified === true
-  );
-
-  // マウント時に前回のモーダル状態セッションを安全に消去
-  useEffect(() => {
-    sessionStorage.removeItem('show_post_confirm_modal');
-    sessionStorage.removeItem('ekyc_confirm_step');
-  }, []);
-
-  useEffect(() => {
-    const checkEkycStatus = () => {
-      const isVerified = localStorage.getItem('ekyc_verified') === 'true' || !!user?.is_ekyc_verified;
-      setIsEkycCompleted(isVerified);
-    };
-    checkEkycStatus();
-    window.addEventListener('ekyc_changed', checkEkycStatus);
-    return () => window.removeEventListener('ekyc_changed', checkEkycStatus);
   }, [user]);
 
-  // eKYCカメラの切断・クリーンアップ保証
-  useEffect(() => {
-    if (ekycConfirmStep !== 3 || !showPostConfirmModal) {
-      stopAllGlobalCameraStreams();
+  const fullName = `${formData.lastName} ${formData.firstName}`.trim();
+
+  // バリデーション
+  const validateStep1 = () => {
+    if (!formData.lastName.trim() || !formData.firstName.trim()) {
+      setWarningMessage('探す方が検索できるよう、お名前（姓・名）を両方入力してください。');
+      return false;
     }
-    return () => {
-      stopAllGlobalCameraStreams();
-    };
-  }, [ekycConfirmStep, showPostConfirmModal]);
-
-  const hasSubmittedRef = useRef(false);
-
-  useEffect(() => {
-    let interval: any;
-    if (showPostConfirmModal && ekycConfirmStep === 5) {
-      setEkycProgress(0);
-      hasSubmittedRef.current = false;
-      interval = setInterval(() => {
-        setEkycProgress((prev) => {
-          if (prev >= 100) {
-            clearInterval(interval);
-            return 100;
-          }
-          return prev + 5;
-        });
-      }, 120);
+    if (!formData.hometownPref) {
+      setWarningMessage('ゆかりの地（都道府県）を選択してください。');
+      return false;
     }
-    return () => clearInterval(interval);
-  }, [ekycConfirmStep, showPostConfirmModal]);
+    setWarningMessage(null);
+    return true;
+  };
 
-  useEffect(() => {
-    if (showPostConfirmModal && ekycConfirmStep === 5 && ekycProgress === 100 && !hasSubmittedRef.current) {
-      hasSubmittedRef.current = true;
-      const timer = setTimeout(() => {
-        executePost(true);
-      }, 400);
-      return () => clearTimeout(timer);
+  const validateStep2 = () => {
+    if (!formData.message.trim() || formData.message.trim().length < 15) {
+      setWarningMessage('昔の知人や友人に向けたメッセージを15文字以上で入力してください。');
+      return false;
     }
-  }, [ekycProgress, ekycConfirmStep, showPostConfirmModal]);
+    if (!formData.contactId.trim()) {
+      setWarningMessage('再会が成立した際に相手にお渡しする連絡先（LINE IDまたはメールアドレス）を入力してください。');
+      return false;
+    }
+    // NGワード・AI安全検閲
+    const ngError = checkNg(`${fullName} ${formData.maidenName} ${formData.message}`);
+    if (ngError) {
+      setWarningMessage(ngError);
+      return false;
+    }
+    setWarningMessage(null);
+    return true;
+  };
 
-  const executePost = async (withEkyc: boolean) => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!agreed) {
+      setWarningMessage('利用規約およびプライバシーポリシーへの同意が必要です。');
+      return;
+    }
     if (isSubmitting) return;
     setIsSubmitting(true);
-
-    const formattedBirthdate = user?.birthdate || (searcherBirthYear && searcherBirthMonth && searcherBirthDay 
-      ? `${searcherBirthYear}-${searcherBirthMonth.padStart(2, '0')}-${searcherBirthDay.padStart(2, '0')}` 
-      : undefined);
-
-    const finalGender = user?.gender || searcherGender || undefined;
 
     try {
       const headers: Record<string, string> = {
@@ -253,1125 +130,401 @@ export const CreatePostPage = () => {
         method: 'POST',
         headers,
         body: JSON.stringify({
-          ...formData,
-          birthdate: formattedBirthdate,
-          gender: finalGender,
-          questions,
-          captchaToken: 'mock-token',
-          isEkycVerified: withEkyc || isEkycCompleted
+          searcherName: fullName,
+          searcherFullName: fullName,
+          searcherMaidenName: formData.maidenName.trim(),
+          targetName: fullName, // SeekMe では自分自身が主キー
+          targetLastName: formData.lastName.trim(),
+          targetFirstName: formData.firstName.trim(),
+          targetHometown: formData.hometownPref,
+          era: formData.era,
+          category: formData.category,
+          message: formData.message.trim(),
+          contactType: formData.contactType,
+          contactId: formData.contactId.trim(),
+          contactNote: formData.contactNote.trim(),
+          questions: [
+            { question: '当時の思い出のエピソード', answer: '相互承認で確認' },
+            { question: 'ゆかりの都道府県', answer: formData.hometownPref }
+          ],
+          captchaToken: 'mock-token'
         })
       });
+
       if (res.ok) {
         const data = await res.json();
         const postUrl = getPostUrl({
           id: data.id,
-          target_name: formData.targetName,
-          target_hometown: formData.targetHometown,
+          target_name: fullName,
+          target_hometown: formData.hometownPref,
           era: formData.era,
           relationship: formData.category
         });
-        
-        if (withEkyc) {
-          localStorage.setItem('ekyc_verified', 'true');
-          window.dispatchEvent(new Event('ekyc_changed'));
-        }
-
-        sessionStorage.removeItem('show_post_confirm_modal');
-        sessionStorage.removeItem('ekyc_confirm_step');
-        setShowPostConfirmModal(false);
-        navigate(postUrl, { state: { justPosted: true, postedWithEkyc: withEkyc } });
+        navigate(postUrl, { state: { justPosted: true } });
       } else {
         const data = await res.json();
-        alert(data.error || '投稿に失敗しました。入力内容を確認してください。');
-        hasSubmittedRef.current = false;
-        setEkycConfirmStep(4);
+        setWarningMessage(data.error || '手紙の投稿に失敗しました。入力内容をご確認ください。');
       }
     } catch (err) {
       console.error(err);
-      alert('ネットワークエラーが発生しました。時間を置いて再度お試しください。');
-      hasSubmittedRef.current = false;
-      setEkycConfirmStep(4);
+      setWarningMessage('通信エラーが発生しました。時間を置いて再度お試しください。');
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  useEffect(() => {
-    if (user) {
-      const uFullName = user.fullName || (user.lastName && user.firstName ? `${user.lastName} ${user.firstName}` : '');
-      const uNickname = user.nickname || '';
-      const savedType = localStorage.getItem('remeets_default_contact_type') || (user as any)?.contact_type || 'LINE';
-      const savedId = localStorage.getItem('remeets_default_contact_id') || (user as any)?.contact_id || '';
-
-      setFormData(prev => ({ 
-        ...prev, 
-        searcherFullName: uFullName || '',
-        searcherName: uNickname || '',
-        contactType: prev.contactId ? prev.contactType : (savedType || prev.contactType),
-        contactId: prev.contactId || savedId || ''
-      }));
-
-      if (user.birthdate) {
-        const parts = user.birthdate.split('-');
-        if (parts.length === 3) {
-          setSearcherBirthYear(parts[0]);
-          setSearcherBirthMonth(parseInt(parts[1], 10).toString());
-          setSearcherBirthDay(parseInt(parts[2], 10).toString());
-        }
-      }
-      if (user.gender) {
-        setSearcherGender(user.gender as any);
-      }
-    }
-  }, [user]);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    if ((window as any).lenis) {
-      (window as any).lenis.scrollTo(0, { immediate: true });
-    }
-  }, [step]);
-
-  const toHalfWidth = (str: string) => {
-    return str.replace(/[０-９]/g, (s) => {
-      return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
-    }).replace(/[ａ-ｚＡ-Ｚ]/g, (s) => {
-      return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
-    });
-  };
-
-  const checkRealName = (name: string) => {
-    const commonKanji = /[\u4e00-\u9faf]/;
-    const isRealName = name.length > 1 && (commonKanji.test(name) || (user?.name && name.includes(user.name)));
-    setNameWarning(isRealName);
-  };
-
-  const handleSearcherNameChange = (name: string) => {
-    const ngLabel = checkNg(name);
-    setWarnings(prev => ({ ...prev, searcherName: ngLabel ? `禁止文字（${ngLabel}）が含まれています。` : null }));
-    setFormData(prev => ({ ...prev, searcherName: name }));
-    checkRealName(name);
-  };
-
-  const handleInputChange = (field: string, value: string) => {
-    const ngLabel = checkNg(value);
-    setWarnings(prev => ({ ...prev, [field]: ngLabel ? `禁止文字（${ngLabel}）が含まれています。` : null }));
-    setFormData(prev => {
-      const nextData = { ...prev, [field]: value };
-      if (field === 'targetHometownPref' || field === 'targetHometownArea') {
-        const pref = field === 'targetHometownPref' ? value : prev.targetHometownPref;
-        const area = field === 'targetHometownArea' ? value : prev.targetHometownArea;
-        nextData.targetHometown = `${pref}${area}`;
-      }
-      return nextData;
-    });
-  };
-
-  const handleQuestionChange = (idx: number, field: string, value: string) => {
-    const ngLabel = checkNg(value);
-    const warningKey = `question_${idx}_${field}`;
-    setWarnings(prev => ({ ...prev, [warningKey]: ngLabel ? `禁止文字（${ngLabel}）が含まれています。` : null }));
-    const newQs = [...questions];
-    newQs[idx] = { ...newQs[idx], [field]: value };
-    setQuestions(newQs);
-  };
-
-  const handleTargetLastNameChange = (val: string) => {
-    const ngLabel = checkNg(val);
-    setWarnings(prev => ({ ...prev, targetLastName: ngLabel ? `禁止文字（${ngLabel}）が含まれています。` : null }));
-    setFormData(prev => ({ ...prev, targetLastName: val, targetName: `${val} ${prev.targetFirstName}`.trim() }));
-  };
-
-  const handleTargetFirstNameChange = (val: string) => {
-    const ngLabel = checkNg(val);
-    setWarnings(prev => ({ ...prev, targetFirstName: ngLabel ? `禁止文字（${ngLabel}）が含まれています。` : null }));
-    setFormData(prev => ({ ...prev, targetFirstName: val, targetName: `${prev.targetLastName} ${val}`.trim() }));
-  };
-
-  const handleAiDiagnosis = async (idx: number) => {
-    const q = questions[idx].question;
-    const a = questions[idx].answer;
-    if (!q || !a) {
-      setWarnings(prev => ({ ...prev, [`question_${idx}_ai`]: '質問と答えの両方を入力してください。' }));
-      return;
-    }
-    setWarnings(prev => ({ ...prev, [`question_${idx}_ai`]: null }));
-    setIsAiDiagnosing(true);
-    try {
-      const res = await fetch('/api/ai/diagnose-qa', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: q, answer: a })
-      });
-      const result = await res.json();
-      setAiDiagnosisResult(result);
-    } catch (err) {
-      console.error(err);
-      setWarnings(prev => ({ ...prev, [`question_${idx}_ai`]: '診断に失敗しました。時間をおいて再度お試しください。' }));
-    } finally {
-      setIsAiDiagnosing(false);
-    }
-  };
-
-  const nextStep = () => {
-    setStep(prev => Math.min(prev + 1, 3));
-    setStepEnteredTime(Date.now());
-    window.scrollTo(0, 0);
-    if ((window as any).lenis) {
-      (window as any).lenis.scrollTo(0, { immediate: true });
-    }
-  };
-
-  const prevStep = () => {
-    setStep(prev => Math.max(prev - 1, 0));
-    setStepEnteredTime(Date.now());
-    window.scrollTo(0, 0);
-    if ((window as any).lenis) {
-      (window as any).lenis.scrollTo(0, { immediate: true });
-    }
-  };
-
-  const jumpToStep = (targetStep: number) => {
-    setStep(targetStep);
-    setStepEnteredTime(Date.now());
-    window.scrollTo(0, 0);
-    if ((window as any).lenis) {
-      (window as any).lenis.scrollTo(0, { immediate: true });
-    }
-  };
-
-  const stepProps = {
-    formData,
-    setFormData,
-    questions,
-    handleQuestionChange,
-    agreed,
-    setAgreed,
-    captchaQuestion,
-    captchaAnswer,
-    setCaptchaAnswer,
-    refreshCaptcha,
-    user,
-    handleTargetLastNameChange,
-    handleTargetFirstNameChange,
-    handleInputChange,
-    handleSearcherNameChange,
-    warnings,
-    setWarnings,
-    checkNg,
-    calculatedSearcherAge,
-    searcherBirthYear,
-    setSearcherBirthYear,
-    searcherBirthMonth,
-    setSearcherBirthMonth,
-    searcherBirthDay,
-    setSearcherBirthDay,
-    searcherGender,
-    setSearcherGender,
-    showSearchPreview,
-    setShowSearchPreview,
-    isAiDiagnosing,
-    aiDiagnosisResult,
-    handleAiDiagnosis,
-    jumpToStep,
-    toHalfWidth,
-    nameWarning
-  };
-
-  const steps = [
-    {
-      title: "お相手の情報とあなたの手がかり",
-      description: "探している大切な方の情報と、当時のあなたに関する手がかりをご入力ください。",
-      fields: <Step0BasicInfo {...stepProps} />,
-      isValid: () => 
-        formData.targetLastName.length > 0 && 
-        formData.targetFirstName.length > 0 && 
-        formData.targetHometownPref.length > 0 &&
-        formData.targetHometownArea.length > 0 &&
-        formData.era.length > 0 &&
-        formData.category.length > 0 &&
-        formData.searcherName.length > 0 &&
-        formData.searcherProfile.length > 0 &&
-        (user?.birthdate ? true : (calculatedSearcherAge !== null && calculatedSearcherAge >= 18)) &&
-        !warnings.targetLastName && 
-        !warnings.targetFirstName && 
-        !warnings.targetHometownPref && 
-        !warnings.targetHometownArea && 
-        !warnings.targetSchool &&
-        !warnings.era &&
-        !warnings.category &&
-        !warnings.searcherProfile
-    },
-    {
-      title: "二人だけの思い出の質問",
-      description: "お相手だけが答えられる「秘密の質問」を2つ設定してください。",
-      fields: <Step1Quiz {...stepProps} />,
-      isValid: () => 
-        questions.length >= 2 &&
-        questions[0].question.length > 0 && 
-        questions[0].answer.length > 0 && 
-        questions[1].question.length > 0 && 
-        questions[1].answer.length > 0 &&
-        !warnings.question_0_question &&
-        !warnings.question_0_answer &&
-        !warnings.question_1_question &&
-        !warnings.question_1_answer
-    },
-    {
-      title: "手紙と開示用連絡先の設定",
-      description: "クイズ正解者のみに届く想い出の手紙と、連絡を取り合うための情報を設定します。",
-      fields: <Step2Message {...stepProps} />,
-      isValid: () => formData.message.length > 0 && formData.contactId.length > 0 && !warnings.message && !warnings.contactId
-    },
-    {
-      title: "投函前の最終確認シート",
-      description: "内容に誤りや公開したくない情報が含まれていないか、最終確認を行ってください。",
-      fields: <Step3Confirm {...stepProps} />,
-      isValid: () => agreed && captchaAnswer === captchaQuestion.a
-    }
-  ];
-
-
-  const handleNextStep = () => {
-    if (steps[step].isValid()) {
-      nextStep();
-      window.scrollTo(0, 0);
-      if ((window as any).lenis) {
-        (window as any).lenis.scrollTo(0, { immediate: true });
-      }
-    } else {
-      if (step === 0) {
-        if (!user?.birthdate && (calculatedSearcherAge === null || calculatedSearcherAge < 18)) {
-          alert('【Step 1】18歳以上の生年月日を正しくご入力ください（18歳未満の方はご利用いただけません）。');
-          return;
-        }
-        alert('【Step 1】お相手のお名前、ゆかりの地、年代、関係性、あなたのニックネーム・手がかりをすべてご入力ください。');
-      } else if (step === 1) {
-        alert('【Step 2】思い出の質問（2問）と答えをすべてご入力ください。');
-      } else if (step === 2) {
-        alert('【Step 3】手紙のメッセージ本文と、開示用連絡先IDをご入力ください。');
-      }
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // 最終ステップ（Step 4）以外では送信処理は絶対に実行しない
-    if (step < steps.length - 1) {
-      return;
-    }
-
-    // Step遷移直後（800ms以内）の誤クリック・連打を安全にガード
-    if (Date.now() - stepEnteredTime < 800) {
-      return;
-    }
-    
-    // Check previous steps
-    if (!steps[0].isValid()) {
-      setStep(0);
-      alert('【Step 1: お相手と記憶】の入力項目（お相手の姓名、ゆかりの地、年代、差出人情報など）をご確認ください。');
-      return;
-    }
-
-    if (!steps[1].isValid()) {
-      setStep(1);
-      alert('【Step 2: 思い出の質問】の質問2問と答えをご確認ください。');
-      return;
-    }
-
-    if (!steps[2].isValid()) {
-      setStep(2);
-      alert('【Step 3: 手紙と連絡先】の手紙本文と開示用連絡先IDをご確認ください。');
-      return;
-    }
-    
-    const hasWarnings = Object.values(warnings).some(w => w !== null);
-    if (hasWarnings) {
-      alert('禁止文字が含まれている項目があります。内容をご確認・修正してください。');
-      return;
-    }
-
-    if (!agreed) {
-      alert('「利用規約・投稿ガイドラインへの同意」のチェックボックスにチェックを入れてください。');
-      return;
-    }
-
-    if (!captchaAnswer || captchaAnswer !== captchaQuestion.a) {
-      alert(`ボットチェック（計算問題: ${captchaQuestion.q}）の答えを正しく入力してください。`);
-      return;
-    }
-
-    // 既にeKYC完了済みの場合は、eKYC申請手続きを自動スキップして直接認証済みとして投稿
-    const alreadyVerified = isEkycCompleted || user?.is_ekyc_verified || localStorage.getItem('ekyc_verified') === 'true';
-    if (alreadyVerified) {
-      executePost(true);
-      return;
-    }
-
-    // 未認証の場合のみ、eKYC選択・申請モーダルを開く
-    setShowPostConfirmModal(true);
-    setEkycConfirmStep(1);
-  };
-
-  const currentStep = steps[step];
-
   return (
-    <div className="max-w-4xl mx-auto px-6 py-12 md:py-24">
-      <BackToHomeButton className="mb-4" />
-      <div className="mb-12 space-y-4">
-        <PageHeader
-          icon={<Send size={24} className="text-indigo-600" />}
-          iconBoxClassName="bg-indigo-50 text-indigo-600 border border-indigo-100"
-          category="Create Bottle Mail"
-          title="ボトルメールを流す"
-          description="いつか届くかもしれない手紙を預かる場所。あなたの記憶を頼りに、いつか再会できることを願って大切に綴っていきましょう。"
-          action={
-            <Link to="/guidelines" className="hidden sm:inline-flex items-center gap-1.5 text-xs text-black/80 hover:text-black hover:underline font-bold shrink-0 font-sans border border-black/10 px-3 py-1.5 rounded-lg bg-black/5">
-              <Shield size={14} />
-              <span>ガイドライン</span>
-            </Link>
-          }
-        />
+    <div className="min-h-screen bg-transparent py-8 sm:py-12 text-slate-800 font-sans">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 space-y-6">
+        <BackToHomeButton />
 
-        {/* リッチな海洋テーマ・ボトル流しプログレスバー */}
-        <div className="bg-gradient-to-r from-sky-50/90 via-teal-50/80 to-indigo-50/90 backdrop-blur-md p-5 md:p-6 rounded-3xl border border-teal-500/20 shadow-md space-y-4 mb-8">
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2.5">
-              <div className="flex items-center gap-2">
-                <span className="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-black bg-indigo-600 text-white shadow-xs font-sans tracking-wide">
-                  STEP {step + 1} / {steps.length}
-                </span>
-                <span className="text-xs font-bold text-slate-800 hidden sm:inline font-sans">
-                  {currentStep.title}
-                </span>
-              </div>
-            </div>
-            <div className="flex items-center gap-1.5 text-xs font-bold text-teal-800 bg-teal-500/10 px-3 py-1 rounded-full border border-teal-500/20 shadow-2xs">
-              <Sparkles size={13} className="text-teal-600 animate-pulse" />
-              <span>ボトル旅立ちの準備中</span>
-            </div>
+        {/* ページタイトル */}
+        <div className="text-center space-y-2">
+          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-[11px] font-bold tracking-wider uppercase">
+            <Send size={12} className="text-teal-600" />
+            <span>ReMEETs SeekMe 〜私を探すあなたへ〜</span>
           </div>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-slate-900 tracking-tight">
+            目印の手紙を置く
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-600 font-sans max-w-xl mx-auto leading-relaxed">
+            私を探している誰かに向けて、あたたかい目印を置いておきます。<br className="hidden sm:inline" />
+            入力項目は<strong className="text-teal-800 font-bold">5項目のみ</strong>。学校名や詳細住所は非公開で安心です。
+          </p>
+        </div>
 
-          {/* 波間を進むプログレスバー & ぷかぷかボトル */}
-          <div className="relative pt-6 pb-2 px-3">
-            {/* 進行状況バー */}
-            <div className="relative h-3 w-full bg-slate-200/80 rounded-full overflow-hidden border border-slate-300/40 p-0.5 shadow-inner">
-              <motion.div 
-                className="h-full rounded-full bg-gradient-to-r from-teal-400 via-sky-500 to-indigo-600 relative overflow-hidden shadow-xs"
-                initial={{ width: '0%' }}
-                animate={{ width: `${((step + 1) / steps.length) * 100}%` }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-              >
-                {/* 光沢アニメーションストライプ */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer" style={{ backgroundSize: '200% 100%' }} />
-              </motion.div>
+        {/* ステップインジケーター */}
+        <div className="bg-white/90 backdrop-blur-md rounded-2xl border border-slate-200 p-3 sm:p-4 shadow-2xs">
+          <div className="grid grid-cols-3 gap-2 text-center text-xs font-bold font-sans">
+            <div className={`py-2 rounded-xl transition-all ${step === 1 ? 'bg-teal-600 text-white shadow-xs' : 'bg-slate-100 text-slate-500'}`}>
+              <span className="block text-[10px] font-mono opacity-80">STEP 01</span>
+              <span>お名前・ゆかりの地</span>
             </div>
-
-            {/* 上下揺らめくボトルアイコン (現在位置と完全同期) */}
-            <motion.div 
-              className="absolute -top-3 z-20 pointer-events-none -translate-x-1/2"
-              initial={{ left: '0%' }}
-              animate={{ left: `${((step + 0.5) / steps.length) * 100}%` }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-            >
-              <motion.div 
-                animate={{ y: [0, -6, 0], rotate: [-4, 4, -4] }}
-                transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
-                className="flex flex-col items-center"
-              >
-                <div className="bg-gradient-to-br from-indigo-900 via-slate-900 to-indigo-950 text-amber-300 px-2.5 py-1 rounded-full shadow-lg border border-amber-300/40 flex items-center gap-1.5 text-xs font-bold backdrop-blur-xs">
-                  <span className="text-base leading-none">🍾</span>
-                  <span className="text-[10px] text-amber-100 font-sans tracking-tight">漂流中...</span>
-                </div>
-                {/* 小さな水滴・波紋効果 */}
-                <div className="w-1.5 h-1.5 bg-sky-400/80 rounded-full animate-ping mt-0.5"></div>
-              </motion.div>
-            </motion.div>
-
-            {/* ステップノード (1, 2, 3) */}
-            <div className="relative flex justify-between items-center -mt-2">
-              {steps.map((s, i) => {
-                const isDone = i < step;
-                const isCurrent = i === step;
-                return (
-                  <button
-                    key={i}
-                    type="button"
-                    onClick={() => {
-                      if (i < step) setStep(i);
-                    }}
-                    disabled={i > step}
-                    className={cn(
-                      "flex flex-col items-center group transition-all cursor-pointer disabled:cursor-not-allowed",
-                      i > step && "opacity-60"
-                    )}
-                  >
-                    <div 
-                      className={cn(
-                        "w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs transition-all duration-500 z-10 border-2",
-                        isDone 
-                          ? "bg-emerald-600 border-emerald-500 text-white shadow-md shadow-emerald-600/20" 
-                          : isCurrent 
-                            ? "bg-indigo-600 border-white text-white ring-4 ring-indigo-500/30 shadow-lg scale-110" 
-                            : "bg-white border-slate-300 text-slate-400"
-                      )}
-                    >
-                      {isDone ? <Check size={14} className="stroke-[3]" /> : i + 1}
-                    </div>
-                    <span className={cn(
-                      "text-[11px] font-bold mt-1.5 transition-colors font-sans max-w-[100px] text-center leading-tight hidden xs:block",
-                      isCurrent ? "text-indigo-950 font-black" : isDone ? "text-emerald-800" : "text-slate-400"
-                    )}>
-                      {i === 0 ? "1. お相手と記憶" : i === 1 ? "2. 思い出の質問" : i === 2 ? "3. 手紙と連絡先" : "4. 最終確認・投函"}
-                    </span>
-                  </button>
-                );
-              })}
+            <div className={`py-2 rounded-xl transition-all ${step === 2 ? 'bg-teal-600 text-white shadow-xs' : 'bg-slate-100 text-slate-500'}`}>
+              <span className="block text-[10px] font-mono opacity-80">STEP 02</span>
+              <span>メッセージ・連絡先</span>
+            </div>
+            <div className={`py-2 rounded-xl transition-all ${step === 3 ? 'bg-teal-600 text-white shadow-xs' : 'bg-slate-100 text-slate-500'}`}>
+              <span className="block text-[10px] font-mono opacity-80">STEP 03</span>
+              <span>プレビュー・投稿</span>
             </div>
           </div>
         </div>
 
-        <motion.div
-          key={step}
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -15 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          className="space-y-2 bg-white/80 backdrop-blur-xs p-5 md:p-6 rounded-2xl border border-indigo-100 shadow-2xs"
-        >
-          <div className="flex items-center gap-3 text-indigo-900 font-bold text-[10px] uppercase tracking-[0.2em] mb-1">
-            <span className="px-3 py-0.5 bg-indigo-50 text-indigo-800 border border-indigo-200/80 rounded-full font-sans font-bold">Step {step + 1} of {steps.length}</span>
-            <span className="w-6 h-[1px] bg-indigo-200"></span>
-            <span className="font-sans text-indigo-700 font-bold">{currentStep.title}</span>
+        {/* 警告メッセージ表示 */}
+        {warningMessage && (
+          <div className="p-3.5 bg-rose-50 border border-rose-200 rounded-2xl flex items-center gap-2.5 text-rose-800 text-xs font-medium animate-in fade-in duration-200">
+            <AlertTriangle size={16} className="text-rose-600 shrink-0" />
+            <span>{warningMessage}</span>
           </div>
-          <h2 className="text-xl md:text-2xl font-serif font-bold text-black tracking-wider leading-tight">{currentStep.title}</h2>
-          <p className="text-xs md:text-sm text-zinc-700 font-sans leading-relaxed max-w-2xl">{currentStep.description}</p>
-        </motion.div>
-      </div>
+        )}
 
-      <div className="glass-card p-8 md:p-12 mb-8">
-        <form 
-          onSubmit={handleSubmit} 
-          onKeyDown={(e) => { 
-            if (e.key === 'Enter' && (e.target as HTMLElement).tagName !== 'TEXTAREA') {
-              e.preventDefault(); 
-            }
-          }} 
-          className="space-y-8"
-        >
-          <motion.div
-            key={step}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            {currentStep.fields}
-          </motion.div>
-
-          {/* 投稿に関する重要な法的責任 - 最終ステップ（流すボタンの直前）のみ表示 */}
-          {step === steps.length - 1 && (
-            <div className="p-6 bg-white border border-black rounded-2xl space-y-2 shadow-2xs text-black font-sans my-6">
-              <div className="flex items-center gap-2 font-bold text-black">
-                <ShieldAlert size={18} className="text-amber-600 shrink-0" />
-                <span className="text-sm font-serif">投稿に関する重要な法的責任</span>
+        {/* メインフォームカード */}
+        <div className="bg-white rounded-3xl border border-slate-200 shadow-md p-6 sm:p-8 space-y-6">
+          {/* ===================================================
+              STEP 1: お名前・旧姓・ゆかりの地
+          =================================================== */}
+          {step === 1 && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
+              <div className="border-b border-slate-100 pb-3">
+                <h2 className="text-base sm:text-lg font-serif font-bold text-slate-900 flex items-center gap-2">
+                  <User size={18} className="text-teal-600" />
+                  <span>あなたのお名前とゆかりの地</span>
+                </h2>
+                <p className="text-xs text-slate-500 font-sans mt-0.5">
+                  あなたを探す人がGoogleやサイト内で検索するための目印です。
+                </p>
               </div>
-              <p className="text-xs md:text-sm text-black/80 leading-relaxed font-serif text-left">
-                ReMEETsは実名での検索を可能にするサービスです。第三者の情報を掲載する際は、相手のプライバシーに十分配慮し、誹謗中傷やストーキング目的での利用は絶対に行わないでください。悪質な利用が確認された場合、公的機関への情報提供を含めた厳正な対処を行います。
-              </p>
-            </div>
+
+              {/* お名前（姓・名） */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-800 flex items-center justify-between">
+                  <span>1. お名前（フルネーム） <span className="text-rose-600 text-[10px] font-bold">※必須・公開</span></span>
+                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  <input
+                    type="text"
+                    value={formData.lastName}
+                    onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                    placeholder="姓（例：山田）"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:border-teal-600 focus:bg-white outline-none text-xs sm:text-sm"
+                  />
+                  <input
+                    type="text"
+                    value={formData.firstName}
+                    onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                    placeholder="名（例：太郎）"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:border-teal-600 focus:bg-white outline-none text-xs sm:text-sm"
+                  />
+                </div>
+              </div>
+
+              {/* 旧姓（任意） */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-800 flex items-center justify-between">
+                  <span>2. 旧姓（改姓前のお名前） <span className="text-slate-400 text-[10px]">※任意・公開</span></span>
+                </label>
+                <input
+                  type="text"
+                  value={formData.maidenName}
+                  onChange={(e) => setFormData({ ...formData, maidenName: e.target.value })}
+                  placeholder="例：佐藤（結婚等で苗字が変わった場合にご記入ください）"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:border-teal-600 focus:bg-white outline-none text-xs sm:text-sm"
+                />
+                <p className="text-[11px] text-slate-400">
+                  ※旧姓を登録しておくと、学生時代の同級生からの発見率が大幅に向上します。
+                </p>
+              </div>
+
+              {/* ゆかりの都道府県 */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-800 flex items-center justify-between">
+                  <span>3. ゆかりの地（都道府県） <span className="text-rose-600 text-[10px] font-bold">※必須・公開</span></span>
+                </label>
+                <select
+                  value={formData.hometownPref}
+                  onChange={(e) => setFormData({ ...formData, hometownPref: e.target.value })}
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:border-teal-600 focus:bg-white outline-none text-xs sm:text-sm cursor-pointer"
+                >
+                  <option value="">都道府県を選択してください</option>
+                  {PREFECTURES.map((pref) => (
+                    <option key={pref} value={pref}>{pref}</option>
+                  ))}
+                </select>
+                <div className="p-3 bg-teal-50/70 border border-teal-200/80 rounded-xl text-[11px] text-teal-900 flex items-start gap-2">
+                  <ShieldCheck size={15} className="text-teal-700 shrink-0 mt-0.5" />
+                  <span>
+                    <strong>【防犯・プライバシー鉄則】</strong> 市区町村や学校名・職場名は防犯のため公開されません。同姓同名の絞り込みには「都道府県」のみが使用されます。
+                  </span>
+                </div>
+              </div>
+
+              {/* 年代 */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-800">
+                  <span>ゆかりの年代 <span className="text-slate-400 text-[10px]">※任意</span></span>
+                </label>
+                <select
+                  value={formData.era}
+                  onChange={(e) => setFormData({ ...formData, era: e.target.value })}
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:border-teal-600 focus:bg-white outline-none text-xs sm:text-sm cursor-pointer"
+                >
+                  <option value="1970">1970年代（昭和45年〜）</option>
+                  <option value="1980">1980年代（昭和55年〜）</option>
+                  <option value="1990">1990年代（平成2年〜）</option>
+                  <option value="2000">2000年代（平成12年〜）</option>
+                  <option value="2010">2010年代（平成22年〜）</option>
+                  <option value="2020">2020年代（令和2年〜）</option>
+                </select>
+              </div>
+
+              <div className="pt-4 flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (validateStep1()) setStep(2);
+                  }}
+                  className="px-6 py-3 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-bold rounded-xl text-xs sm:text-sm flex items-center gap-2 cursor-pointer shadow-sm hover:shadow-md transition-all"
+                >
+                  <span>次へ（メッセージ入力）</span>
+                  <ArrowRight size={15} />
+                </button>
+              </div>
+            </motion.div>
           )}
 
-          <div className="flex items-center justify-between pt-8 border-t border-brand-border">
-            {step > 0 ? (
-              <button 
-                type="button"
-                onClick={prevStep}
-                className="flex items-center gap-2 text-sm font-bold text-brand-dark/40 hover:text-brand-dark transition-colors uppercase tracking-widest font-sans"
-              >
-                <ArrowLeft size={16} />
-                <span>戻る</span>
-              </button>
-            ) : <div />}
-
-            {step < steps.length - 1 ? (
-              <button 
-                type="button"
-                onClick={handleNextStep}
-                className="btn-primary px-5 sm:px-8 py-2.5 sm:py-3 text-xs sm:text-sm font-sans flex items-center gap-2"
-              >
-                <span>{step === 2 ? '確認画面へ進む' : '次へ進む'}</span>
-                <ArrowRight size={16} />
-              </button>
-            ) : (
-              <div className="flex flex-col items-end gap-1.5">
-                <button 
-                  type="submit"
-                  disabled={isSubmitting || !agreed || captchaAnswer !== captchaQuestion.a}
-                  className={`btn-primary px-5 sm:px-8 py-2.5 sm:py-3 text-xs sm:text-sm font-sans flex items-center gap-2 shadow-lg transition-all ${
-                    !agreed || captchaAnswer !== captchaQuestion.a
-                      ? 'bg-slate-300 border-slate-300 text-slate-500 cursor-not-allowed opacity-60'
-                      : 'bg-brand-accent border-brand-accent hover:bg-brand-dark hover:border-brand-dark cursor-pointer hover:shadow-xl'
-                  }`}
-                >
-                  {isSubmitting ? (
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  ) : (
-                    <>
-                      <span>ボトルメールを海へ流す</span>
-                      <Heart size={16} />
-                    </>
-                  )}
-                </button>
-                {(!agreed || captchaAnswer !== captchaQuestion.a) && (
-                  <span className="text-[11px] font-bold text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-md border border-amber-200">
-                    ※ 上の「ボットチェック」と「規約同意」を入力すると投函できます
-                  </span>
-                )}
+          {/* ===================================================
+              STEP 2: メッセージ・連絡先
+          =================================================== */}
+          {step === 2 && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
+              <div className="border-b border-slate-100 pb-3">
+                <h2 className="text-base sm:text-lg font-serif font-bold text-slate-900 flex items-center gap-2">
+                  <Send size={18} className="text-teal-600" />
+                  <span>メッセージと連絡先</span>
+                </h2>
+                <p className="text-xs text-slate-500 font-sans mt-0.5">
+                  昔の知人への呼びかけ文と、再会が成立した際にお渡しする連絡先を設定します。
+                </p>
               </div>
-            )}
-          </div>
-        </form>
-      </div>
 
-      <div className="text-center">
-        <p className="text-sm text-black leading-relaxed max-w-lg mx-auto">
-          ※ 投函された内容は、お相手が検索で見つけられるよう公開されます。<br />
-          ※ プライベートメッセージと連絡先は、質問に正解したお相手のみに安全に開示されます。
-        </p>
-      </div>
-
-      {/* 投函処理中フルスクリーンローディング */}
-      {isSubmitting && !showPostConfirmModal && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm animate-in fade-in duration-150">
-          <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl border border-teal-100 text-center space-y-4 font-sans">
-            <div className="w-16 h-16 rounded-full bg-teal-50 border border-teal-200 text-teal-600 flex items-center justify-center mx-auto">
-              <div className="w-8 h-8 border-3 border-teal-200 border-t-teal-600 rounded-full animate-spin" />
-            </div>
-            <div className="space-y-1">
-              <h3 className="font-serif font-bold text-slate-900 text-base">
-                手紙を海へ流しています...
-              </h3>
-              <p className="text-xs text-slate-500">
-                思い出の暗号化と安全な保護を行っています
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 投函前 eKYC 確認モーダル（5ステップ構成：1.コース選択 2.情報入力 3.カメラ撮影 4.Stripe決済 5.AI監査中） */}
-      {showPostConfirmModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-zinc-200 overflow-hidden text-left flex flex-col max-h-[92vh]">
-            {/* モーダルヘッダー */}
-            <div className="p-5 border-b border-zinc-100 flex items-center justify-between bg-gradient-to-r from-teal-50/50 to-indigo-50/50">
-              <div className="flex items-center gap-2">
-                <span className="p-2 rounded-xl bg-teal-600 text-white shadow-xs">
-                  <ShieldCheck size={20} />
-                </span>
-                <div>
-                  <h3 className="font-bold text-zinc-900 text-base font-serif">
-                    {ekycConfirmStep === 1 && '手紙の投函・本人確認コースの選択'}
-                    {ekycConfirmStep === 2 && '本人確認（eKYC）基本情報入力'}
-                    {ekycConfirmStep === 3 && '本人確認書類の撮影'}
-                    {ekycConfirmStep === 4 && '本人確認審査手数料のお支払い'}
-                    {ekycConfirmStep === 5 && 'AI本人確認・照合処理中'}
-                  </h3>
-                  <p className="text-[11px] text-zinc-500 font-sans">
-                    {ekycConfirmStep === 1 && '安心・安全な再会をお届けするための選択です'}
-                    {ekycConfirmStep === 2 && '公的身分証明書に記載の正確な情報をご入力ください'}
-                    {ekycConfirmStep === 3 && '原本を枠内に収めて鮮明に撮影してください'}
-                    {ekycConfirmStep === 4 && 'Stripeセキュア決済（審査手数料: 600円）'}
-                    {ekycConfirmStep === 5 && '数秒で自動照合と暗号化安全投函が完了します'}
-                  </p>
-                </div>
+              {/* メッセージ（呼びかけ文） */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-800 flex items-center justify-between">
+                  <span>4. メッセージ（呼びかけ文） <span className="text-rose-600 text-[10px] font-bold">※必須・公開</span></span>
+                  <span className="text-slate-400 text-[10px] font-mono">{formData.message.length}文字</span>
+                </label>
+                <textarea
+                  rows={4}
+                  value={formData.message}
+                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  placeholder="例：昔一緒に過ごした友人や知人へ。もし私の名前を検索して見つけてくれたら、ぜひ当時の思い出のエピソードを添えて申請してください。元気でいることを願っています。"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:border-teal-600 focus:bg-white outline-none text-xs sm:text-sm leading-relaxed"
+                />
+                <p className="text-[11px] text-slate-400">
+                  ※電話番号やメールアドレスなどの直接の連絡先は、本文には記入しないでください（AIにより自動隔離されます）。
+                </p>
               </div>
-              <button 
-                type="button"
-                onClick={() => {
-                  if (ekycConfirmStep === 5) return;
-                  setShowPostConfirmModal(false);
-                }}
-                className="p-2 rounded-full hover:bg-zinc-100 text-zinc-400 hover:text-zinc-600 transition-colors"
-              >
-                <X size={20} />
-              </button>
-            </div>
 
-            {/* モーダル本文 */}
-            <div className="p-6 overflow-y-auto space-y-4 text-xs text-zinc-600 font-sans flex-1">
-              {/* STEP 1: コース選択 */}
-              {ekycConfirmStep === 1 && (
-                <>
-                  <div className="space-y-4">
-                    {/* 【メイン枠】本人確認（eKYC）推奨推進カード */}
-                    <div className="border-2 border-emerald-500 bg-emerald-50/50 rounded-2xl p-4 md:p-5 space-y-3 shadow-sm relative overflow-hidden">
-                      <div className="absolute top-0 right-0 bg-emerald-500 text-white text-[9px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider font-sans">
-                        推奨・安心バッジ付
-                      </div>
-
-                      <div className="flex gap-3">
-                        <div className="text-emerald-600 bg-emerald-100/80 p-2.5 rounded-xl shrink-0 h-fit">
-                          <ShieldCheck size={22} />
-                        </div>
-                        <div className="space-y-1">
-                          <h4 className="font-serif font-bold text-sm text-emerald-950 flex items-center gap-1.5">
-                            🛡️ 厳格な公的本人確認（eKYC）
-                          </h4>
-                          <div className="flex items-center gap-1.5 py-0.5">
-                            <span className="text-[10px] text-zinc-500">審査・認証手数料:</span>
-                            <span className="text-xs bg-emerald-100 text-emerald-800 font-extrabold px-2 py-0.5 rounded-md font-mono">
-                              600円 (税込)
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="text-[10px] text-zinc-600 space-y-1.5 leading-relaxed border-t border-emerald-100/80 pt-2 font-sans">
-                        <p className="text-[10px] text-emerald-950 font-normal leading-normal">
-                          お名前と生年月日を公的身分証（免許証・マイナンバー・パスポートなど）で安全に照合します。
-                        </p>
-                        <ul className="space-y-1 pl-1 text-[9.5px] text-zinc-500">
-                          <li className="flex items-start gap-1.5">
-                            <span className="text-emerald-600 font-bold mt-0.5">✓</span>
-                            <span>手紙やお相手とのやり取りに<strong>「🛡️ 認証済マーク」</strong>が表示され、なりすましを防止します。</span>
-                          </li>
-                          <li className="flex items-start gap-1.5">
-                            <span className="text-emerald-600 font-bold mt-0.5">✓</span>
-                            <span>「本物のあなた」からの手紙であることが伝わるため、<strong>お相手の返信率が劇的に上がります。</strong></span>
-                          </li>
-                          <li className="flex items-start gap-1.5">
-                            <span className="text-emerald-600 font-bold mt-0.5">✓</span>
-                            <span>送信された画像データは照合完了後、<strong>直ちに完全に破棄（パージ）</strong>されるため極めて安全です。</span>
-                          </li>
-                        </ul>
-                      </div>
-
-                      {/* 本人確認を登録して投函ボタン */}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setEkycConfirmStep(2);
-                        }}
-                        className="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.01] active:scale-95"
-                      >
-                        <ShieldCheck size={16} />
-                        <span>⚡ 本人確認決済手続きへ進む</span>
-                      </button>
-                    </div>
-
-                    {/* 【無料枠】本人確認をせずに無料投函カード（eKYCカードの半分以下の高さで視認性を確保） */}
-                    <div className="border-2 border-brand-primary/50 bg-slate-50/90 rounded-2xl p-3.5 md:p-4 space-y-2.5 shadow-sm relative">
-                      <div className="flex items-center justify-between border-b border-slate-200/80 pb-2">
-                        <div className="flex items-center gap-2">
-                          <Send size={16} className="text-brand-primary shrink-0" />
-                          <h4 className="font-serif font-bold text-xs md:text-sm text-slate-900">
-                            ✨ 通常投函（無料）
-                          </h4>
-                        </div>
-                        <span className="text-[10px] font-bold bg-slate-200/90 text-slate-700 px-2 py-0.5 rounded-md font-sans shrink-0">
-                          0円 / 手数料なし
-                        </span>
-                      </div>
-
-                      <p className="text-[11px] text-slate-600 leading-relaxed font-sans">
-                        認証マークなしで、すぐにボトルメールを海へ流します。<br />
-                        <span className="text-[10px] text-slate-500">※ 投函後にマイページから本人確認（eKYC）を行い、後から「🛡️ 認証済マーク」を付与することも可能です。</span>
-                      </p>
-
-                      <button
-                        type="button"
-                        onClick={() => executePost(false)}
-                        className="w-full py-3 px-4 bg-brand-dark hover:bg-[#1e4f7a] text-white font-bold rounded-xl text-xs transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.01] active:scale-95"
-                      >
-                        <Send size={15} />
-                        <span>⚡ 本人確認をせずにボトルを投函する（無料）</span>
-                      </button>
-                    </div>
-                  </div>
-                </>
-              )}
-
-              {/* Step 2: eKYC フォーム入力 */}
-              {ekycConfirmStep === 2 && (
-                <div className="space-y-4 py-2 text-left">
-                  <div className="text-center space-y-1">
-                    <h3 className="text-lg font-serif font-bold text-zinc-900">
-                      1. オンライン本人確認 (eKYC) 情報入力
-                    </h3>
-                    <p className="text-xs text-zinc-500">
-                      法令に基づく年齢確認と本人照合を行います。原本は確認後すぐに破棄されます。
-                    </p>
-                  </div>
-
-                  <div className="space-y-3.5">
-                    {/* Name Input */}
-                    <div className="space-y-1">
-                      <label className="text-xs font-bold text-zinc-700 flex items-center gap-1">
-                        <span>お名前（漢字・ご本名フルネーム）</span>
-                        <span className="text-[9px] bg-red-100 text-red-600 px-1 rounded">必須</span>
-                      </label>
-                      <input 
-                        type="text"
-                        value={ekycName}
-                        onChange={(e) => setEkycName(e.target.value)}
-                        placeholder="例：本間 隆"
-                        className="w-full px-3 py-2 border border-zinc-300 rounded-xl bg-slate-50 focus:border-brand-primary outline-none text-xs text-black"
-                      />
-                    </div>
-
-                    {/* Birthdate */}
-                    <div className="space-y-1">
-                      <label className="text-xs font-bold text-zinc-700 flex items-center gap-1">
-                        <span>生年月日</span>
-                        <span className="text-[9px] bg-red-100 text-red-600 px-1 rounded">必須</span>
-                      </label>
-                      <input 
-                        type="date"
-                        value={ekycBirthdate}
-                        onChange={(e) => setEkycBirthdate(e.target.value)}
-                        className="w-full px-3 py-2 border border-zinc-300 rounded-xl bg-slate-50 focus:border-brand-primary outline-none text-xs text-black"
-                      />
-                    </div>
-
-                    {/* Doc Type Selection */}
-                    <div className="space-y-1">
-                      <label className="text-xs font-bold text-zinc-700">提出書類の選択</label>
-                      <div className="grid grid-cols-3 gap-1.5">
-                        {[
-                          { id: 'license', name: '運転免許証' },
-                          { id: 'mynumber', name: 'マイナンバー' },
-                          { id: 'passport', name: 'パスポート' }
-                        ].map((doc) => (
-                          <button
-                            key={doc.id}
-                            type="button"
-                            onClick={() => setEkycDocType(doc.id as any)}
-                            className={`py-1.5 border-2 rounded-xl text-[10px] font-bold text-center transition-all cursor-pointer ${
-                              ekycDocType === doc.id 
-                                ? 'border-teal-500 bg-teal-50 text-teal-800' 
-                                : 'border-zinc-200 hover:border-zinc-300 bg-white text-zinc-600'
-                            }`}
-                          >
-                            {doc.name}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="flex justify-end pt-1">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setEkycName('本間 隆');
-                          setEkycBirthdate('1985-06-15');
-                        }}
-                        className="text-[11px] text-teal-700 hover:text-teal-900 font-bold flex items-center gap-1 cursor-pointer bg-teal-50 px-2.5 py-1 rounded-lg border border-teal-100"
-                      >
-                        ⚡ デモ用サンプルデータを自動入力する
-                      </button>
-                    </div>
-
-                  </div>
-
-                  <div className="flex gap-2 pt-2">
-                    <button
-                      type="button"
-                      onClick={() => setEkycConfirmStep(1)}
-                      className="flex-1 py-2.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 rounded-xl text-xs font-bold font-sans text-center transition-all cursor-pointer"
-                    >
-                      戻る
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (!ekycName.trim()) {
-                          alert('お名前を入力してください。');
-                          return;
-                        }
-                        if (!ekycBirthdate) {
-                          alert('生年月日を入力してください。');
-                          return;
-                        }
-                        setEkycConfirmStep(3);
-                      }}
-                      className="flex-1 py-2.5 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-bold font-sans text-center transition-all shadow-md cursor-pointer flex items-center justify-center gap-1.5"
-                    >
-                      <span>証明書の撮影画面へ進む（ガイド枠あり）</span>
-                      <ArrowRight size={14} />
-                    </button>
-                  </div>
+              {/* 連絡先情報（非公開） */}
+              <div className="space-y-3 p-4 bg-slate-50 rounded-2xl border border-slate-200">
+                <div className="flex items-center gap-2 text-xs font-bold text-slate-900">
+                  <Lock size={15} className="text-teal-700" />
+                  <span>5. 再会成立時にお渡しする連絡先 <span className="text-rose-600 text-[10px] font-bold">※必須・非公開</span></span>
                 </div>
-              )}
+                <p className="text-[11px] text-slate-500 leading-relaxed">
+                  この連絡先は一般公開されません。あなたが相手の再会申請を「承認」し、相互合意が成立した後にのみ安全に開示されます。
+                </p>
 
-              {/* Step 3: Document Camera Capture with Guidelines Overlay */}
-              {ekycConfirmStep === 3 && (
-                <div className="space-y-4">
-                  <div className="text-center space-y-1">
-                    <h3 className="text-lg font-bold text-black font-serif">2. 身分証明書の撮影・アップロード</h3>
-                    <p className="text-xs text-zinc-500 font-sans">
-                      反射や四隅の欠けを防ぐガイドライン枠線に合わせて撮影を行ってください。
-                    </p>
-                  </div>
-
-                  <DocumentCameraOverlay
-                    docType={ekycDocType}
-                    docTypeName={
-                      ekycDocType === 'license' ? '運転免許証' : ekycDocType === 'mynumber' ? 'マイナンバーカード' : 'パスポート'
-                    }
-                    onBack={() => setEkycConfirmStep(2)}
-                    onComplete={(imgs) => {
-                      setPostCapturedImages(imgs);
-                      setEkycConfirmStep(4);
-                    }}
-                  />
-                </div>
-              )}
-
-              {/* Step 4: Payment (Credit Card Billing) */}
-              {ekycConfirmStep === 4 && (
-                <div className="space-y-5 py-2 text-left">
-                  <div className="text-center space-y-1">
-                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-rose-50 text-rose-600 animate-bounce">
-                      <CreditCard size={24} />
-                    </div>
-                    <h3 className="text-lg font-serif font-bold text-zinc-900 text-center">
-                      3. 安全照合システム手数料のお支払い
-                    </h3>
-                    <p className="text-xs text-zinc-500 text-center">
-                      なりすまし防止・安全対策を維持するための手数料決済です。
-                    </p>
-                  </div>
-
-                  {/* Document capture summary badge */}
-                  {postCapturedImages.front && (
-                    <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 flex items-center justify-between text-xs">
-                      <div className="flex items-center gap-2 text-emerald-800 font-bold">
-                        <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
-                        <span>身分証撮影完了（全3枚・カメラ自動切断・暗号化保護）</span>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => setEkycConfirmStep(3)}
-                        className="text-[11px] text-teal-700 hover:underline font-bold cursor-pointer shrink-0 ml-2"
-                      >
-                        再撮影
-                      </button>
-                    </div>
-                  )}
-
-                  <div className="bg-rose-50/40 border border-rose-100 rounded-2xl p-4 text-center space-y-1 shadow-sm">
-                    <div className="text-[10px] text-rose-800 font-bold tracking-wider">ご請求金額</div>
-                    <div className="text-3xl font-sans font-extrabold text-rose-950 flex items-baseline justify-center gap-1">
-                      <span>600</span>
-                      <span className="text-sm font-bold">円</span>
-                      <span className="text-xs text-zinc-500 font-normal">（税込）</span>
-                    </div>
-                    <div className="text-[9px] text-zinc-500">
-                      安全照合・データ自動パージシステムの利用手数料
-                    </div>
-                  </div>
-
-                  <CreditCardPaymentForm
-                    cardNumber={payCardNumber}
-                    cardExpiry={payCardExpiry}
-                    cardCvc={payCardCvc}
-                    cardName={payCardName}
-                    onCardNumberChange={setPayCardNumber}
-                    onCardExpiryChange={setPayCardExpiry}
-                    onCardCvcChange={setPayCardCvc}
-                    onCardNameChange={setPayCardName}
-                    showDemoButton={true}
-                    onDemoFill={() => {
-                      setPayCardNumber('4111 1111 1111 1111');
-                      setPayCardExpiry('12/29');
-                      setPayCardCvc('123');
-                      setPayCardName('TAKASHI HONMA');
-                    }}
-                    refundGuaranteeText="手紙開封または本人確認（eKYC）手続きが不承認となった場合は、Stripe仮売上システムにより全額即時自動返金されます。"
-                  />
-
-                  {/* 18歳以上・利用規約・eKYC決済同意チェックボックス */}
-                  <label className="flex items-start gap-3 p-3 bg-slate-50/90 rounded-xl border border-slate-200/90 hover:bg-slate-100/80 text-xs font-medium text-slate-800 cursor-pointer select-none leading-relaxed transition-all">
-                    <input 
-                      type="checkbox" 
-                      id="ekyc-post-payment-consent"
-                      defaultChecked={true}
-                      className="w-4 h-4 mt-0.5 accent-teal-600 focus:ring-teal-500 border-zinc-300 rounded cursor-pointer shrink-0"
-                    />
-                    <span className="text-[11px] text-slate-700 leading-snug">
-                      <strong>【18歳以上・規約同意】</strong> 私は18歳以上であり、利用規約およびeKYC本人確認審査手数料（600円 税込）の決済に同意します。
-                    </span>
-                  </label>
-
-                  <div className="flex gap-2 pt-2">
-                    <button
-                      type="button"
-                      disabled={isPaying}
-                      onClick={() => setEkycConfirmStep(3)}
-                      className="flex-1 py-2.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 rounded-xl text-xs font-bold font-sans text-center transition-all cursor-pointer disabled:opacity-55"
-                    >
-                      撮影に戻る
-                    </button>
-                    <button
-                      type="button"
-                      disabled={isPaying}
-                      onClick={() => {
-                        const checkConsent = document.getElementById('ekyc-post-payment-consent') as HTMLInputElement;
-                        if (!payCardNumber.trim() || payCardNumber.length < 15) {
-                          alert('有効なカード番号を入力してください。');
-                          return;
-                        }
-                        if (!payCardExpiry.trim() || !payCardExpiry.includes('/')) {
-                          alert('有効期限（MM/YY）を入力してください。');
-                          return;
-                        }
-                        if (!payCardCvc.trim() || payCardCvc.length < 3) {
-                          alert('セキュリティコード（CVC）を正しく入力してください。');
-                          return;
-                        }
-                        if (!payCardName.trim()) {
-                          alert('カード名義人をお名前で入力してください。');
-                          return;
-                        }
-                        if (checkConsent && !checkConsent.checked) {
-                          alert('18歳以上の年齢確認および利用規約への同意にチェックを入れてください。');
-                          return;
-                        }
-                        setIsPaying(true);
-                        setTimeout(() => {
-                          setIsPaying(false);
-                          setEkycConfirmStep(5); // 照合・投稿プロセスへ
-                        }, 1200);
-                      }}
-                      className="flex-1 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold font-sans text-center transition-all shadow-md cursor-pointer disabled:opacity-55 flex items-center justify-center gap-1.5"
-                    >
-                      {isPaying ? (
-                        <>
-                          <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                          <span>決済処理中...</span>
-                        </>
-                      ) : (
-                        <span>安全に600円を支払う</span>
-                      )}
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* Step 5: Processing */}
-              {ekycConfirmStep === 5 && (
-                <div className="space-y-6 py-4 text-center font-serif">
-                  {/* 中央の二重発光スピナー & アイコン */}
-                  <div className="relative inline-flex items-center justify-center my-2">
-                    {/* 外周の発光オーラ */}
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-teal-500/20 via-emerald-500/30 to-amber-400/20 blur-xl animate-pulse" />
-                    
-                    {/* スピナーリング（外側・反時計回り） */}
-                    <div className="w-24 h-24 rounded-full border-2 border-dashed border-teal-300/60 animate-[spin_8s_linear_infinite]" />
-                    
-                    {/* スピナーリング（内側・時計回り） */}
-                    <div className="absolute w-20 h-20 rounded-full border-3 border-teal-100 border-t-emerald-600 border-r-teal-500 animate-spin" />
-                    
-                    {/* 中央コンテンツ */}
-                    <div className="absolute inset-0 flex flex-col items-center justify-center text-teal-800 font-serif">
-                      <span className="text-xl font-bold tracking-[0.14em] md:tracking-[0.18em] bg-gradient-to-r from-teal-700 to-emerald-600 bg-clip-text text-transparent pl-0.5">
-                        {ekycProgress}%
-                      </span>
-                      <span className="text-[9px] font-semibold text-teal-600/80 uppercase tracking-[0.22em] -mt-0.5">
-                        Processing
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* ステータスタイトル */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div className="space-y-1">
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-xs font-serif font-bold tracking-[0.1em] shadow-xs">
-                      <ShieldCheck size={14} className="text-emerald-600 animate-pulse" />
-                      <span>公的本人確認・認証マーク付与中</span>
-                    </div>
-                    <h3 className="text-base font-serif font-extrabold tracking-[0.12em] md:tracking-[0.16em] text-zinc-900 pt-1">
-                      {ekycProgress < 25 && '1. 決済の安全トークン化処理'}
-                      {ekycProgress >= 25 && ekycProgress < 50 && '2. 公的書類データ＆暗号照合'}
-                      {ekycProgress >= 50 && ekycProgress < 75 && '3. 生体ライブネス実在判定'}
-                      {ekycProgress >= 75 && ekycProgress < 100 && '4. 認証キー発行＆ボトル投函準備'}
-                      {ekycProgress === 100 && (isSubmitting ? '🌊 ボトルメールを海へ投函中...' : '✨ 認証＆ボトル投函完了！詳細ページへ移動します')}
-                    </h3>
+                    <label className="text-[11px] font-bold text-slate-700">連絡手段の種類</label>
+                    <select
+                      value={formData.contactType}
+                      onChange={(e) => setFormData({ ...formData, contactType: e.target.value })}
+                      className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold"
+                    >
+                      <option value="LINE">LINE ID</option>
+                      <option value="EMAIL">メールアドレス</option>
+                      <option value="PHONE">携帯電話番号</option>
+                    </select>
                   </div>
 
-                  {/* プログレスバー本体 */}
-                  <div className="space-y-1.5 px-2">
-                    <div className="flex items-center justify-between text-xs font-serif font-semibold text-zinc-500 px-1">
-                      <span className="flex items-center gap-1 text-[11px] text-teal-700 font-serif tracking-[0.1em]">
-                        <Lock size={12} /> 256bit 暗号化通信
-                      </span>
-                      <span className="text-emerald-700 font-bold font-serif tracking-[0.12em]">{ekycProgress} / 100%</span>
-                    </div>
-
-                    <div className="w-full bg-slate-100 h-3.5 rounded-full p-0.5 shadow-inner border border-slate-200/80 relative overflow-hidden">
-                      <div 
-                        className="bg-gradient-to-r from-teal-500 via-emerald-500 to-amber-400 h-full rounded-full transition-all duration-300 relative shadow-xs" 
-                        style={{ width: `${ekycProgress}%` }}
-                      >
-                        {/* バー先端のLED光彩ノード */}
-                        {ekycProgress > 0 && ekycProgress < 100 && (
-                          <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-3 h-3 rounded-full bg-white border-2 border-emerald-600 shadow-[0_0_8px_rgba(16,185,129,0.9)] z-10" />
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* 4ステップ進行タイムラインリスト */}
-                  <div className="bg-slate-50/80 rounded-xl p-3 border border-slate-200/60 text-left space-y-2 text-xs font-serif">
-                    <div className={`flex items-center justify-between p-2 rounded-lg transition-all ${ekycProgress >= 0 && ekycProgress < 25 ? 'bg-white shadow-xs border border-teal-200 font-bold text-teal-900' : ekycProgress >= 25 ? 'text-zinc-400' : 'text-zinc-500'}`}>
-                      <span className="flex items-center gap-2">
-                        <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-serif font-bold ${ekycProgress >= 25 ? 'bg-emerald-500 text-white' : 'bg-teal-100 text-teal-800'}`}>
-                          {ekycProgress >= 25 ? '✓' : '1'}
-                        </span>
-                        <span className="tracking-[0.08em] md:tracking-[0.12em]">決済承認＆セキュリティトークン化</span>
-                      </span>
-                      {ekycProgress < 25 && <span className="text-[10px] text-teal-600 animate-pulse font-serif font-semibold tracking-[0.14em]">処理中...</span>}
-                    </div>
-
-                    <div className={`flex items-center justify-between p-2 rounded-lg transition-all ${ekycProgress >= 25 && ekycProgress < 50 ? 'bg-white shadow-xs border border-teal-200 font-bold text-teal-900' : ekycProgress >= 50 ? 'text-zinc-400' : 'text-zinc-500'}`}>
-                      <span className="flex items-center gap-2">
-                        <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-serif font-bold ${ekycProgress >= 50 ? 'bg-emerald-500 text-white' : 'bg-teal-100 text-teal-800'}`}>
-                          {ekycProgress >= 50 ? '✓' : '2'}
-                        </span>
-                        <span className="tracking-[0.08em] md:tracking-[0.12em]">公的書類・文字データ暗号解析</span>
-                      </span>
-                      {ekycProgress >= 25 && ekycProgress < 50 && <span className="text-[10px] text-teal-600 animate-pulse font-serif font-semibold tracking-[0.14em]">解析中...</span>}
-                    </div>
-
-                    <div className={`flex items-center justify-between p-2 rounded-lg transition-all ${ekycProgress >= 50 && ekycProgress < 75 ? 'bg-white shadow-xs border border-teal-200 font-bold text-teal-900' : ekycProgress >= 75 ? 'text-zinc-400' : 'text-zinc-500'}`}>
-                      <span className="flex items-center gap-2">
-                        <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-serif font-bold ${ekycProgress >= 75 ? 'bg-emerald-500 text-white' : 'bg-teal-100 text-teal-800'}`}>
-                          {ekycProgress >= 75 ? '✓' : '3'}
-                        </span>
-                        <span className="tracking-[0.08em] md:tracking-[0.12em]">実在生身人間（ライブネス）判定</span>
-                      </span>
-                      {ekycProgress >= 50 && ekycProgress < 75 && <span className="text-[10px] text-teal-600 animate-pulse font-serif font-semibold tracking-[0.14em]">判定中...</span>}
-                    </div>
-
-                    <div className={`flex items-center justify-between p-2 rounded-lg transition-all ${ekycProgress >= 75 ? 'bg-white shadow-xs border border-teal-200 font-bold text-teal-900' : 'text-zinc-500'}`}>
-                      <span className="flex items-center gap-2">
-                        <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-serif font-bold ${ekycProgress === 100 ? 'bg-emerald-500 text-white' : 'bg-teal-100 text-teal-800'}`}>
-                          {ekycProgress === 100 ? '✓' : '4'}
-                        </span>
-                        <span className="tracking-[0.08em] md:tracking-[0.12em]">🛡️ 認証マーク付与＆ボトル投函完了</span>
-                      </span>
-                      {ekycProgress >= 75 && ekycProgress < 100 && <span className="text-[10px] text-teal-600 animate-pulse font-serif font-semibold tracking-[0.14em]">投函中...</span>}
-                    </div>
+                  <div className="sm:col-span-2 space-y-1">
+                    <label className="text-[11px] font-bold text-slate-700">ID / アドレス</label>
+                    <input
+                      type="text"
+                      value={formData.contactId}
+                      onChange={(e) => setFormData({ ...formData, contactId: e.target.value })}
+                      placeholder={formData.contactType === 'LINE' ? '例：@my_line_id' : '例：my-email@example.com'}
+                      className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs"
+                    />
                   </div>
                 </div>
-              )}
-            </div>
-          </div>
+              </div>
+
+              <div className="pt-4 flex items-center justify-between">
+                <button
+                  type="button"
+                  onClick={() => setStep(1)}
+                  className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                >
+                  <ArrowLeft size={14} />
+                  <span>戻る</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (validateStep2()) setStep(3);
+                  }}
+                  className="px-6 py-3 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-bold rounded-xl text-xs sm:text-sm flex items-center gap-2 cursor-pointer shadow-sm hover:shadow-md transition-all"
+                >
+                  <span>次へ（プレビュー確認）</span>
+                  <ArrowRight size={15} />
+                </button>
+              </div>
+            </motion.div>
+          )}
+
+          {/* ===================================================
+              STEP 3: プレビュー＆投稿確認
+          =================================================== */}
+          {step === 3 && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+              <div className="border-b border-slate-100 pb-3">
+                <h2 className="text-base sm:text-lg font-serif font-bold text-slate-900 flex items-center gap-2">
+                  <Sparkles size={18} className="text-teal-600" />
+                  <span>置き手紙の完成プレビュー</span>
+                </h2>
+                <p className="text-xs text-slate-500 font-sans mt-0.5">
+                  内容をご確認の上、「目印の手紙を置く」ボタンを押してください。
+                </p>
+              </div>
+
+              {/* 手紙プレビューカード */}
+              <div className="p-6 rounded-3xl bg-gradient-to-br from-teal-50/40 via-white to-sky-50/30 border-2 border-teal-300 shadow-sm text-left space-y-4 font-sans">
+                <div className="flex items-center justify-between border-b border-teal-100 pb-3">
+                  <div className="space-y-0.5">
+                    <span className="text-[10px] font-bold text-teal-800 bg-teal-100/80 px-2.5 py-0.5 rounded-full uppercase tracking-wider font-mono">
+                      {formData.hometownPref} / {formData.era}年代
+                    </span>
+                    <h3 className="text-xl font-serif font-bold text-slate-900 pt-1">
+                      {fullName} {formData.maidenName ? <span className="text-xs font-normal text-slate-500 font-sans">（旧姓: {formData.maidenName}）</span> : ''}
+                    </h3>
+                  </div>
+                  <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200 flex items-center gap-1">
+                    <Check size={12} />
+                    <span>掲載無料</span>
+                  </span>
+                </div>
+
+                <div className="p-4 bg-white/90 rounded-2xl border border-slate-200/80 text-xs sm:text-sm text-slate-800 leading-relaxed font-serif">
+                  “{formData.message}”
+                </div>
+
+                <div className="pt-1 flex items-center justify-between text-[11px] text-slate-500">
+                  <span className="flex items-center gap-1">
+                    <Lock size={12} className="text-teal-600" />
+                    <span>連絡先: 相互承認後に安全開示（{formData.contactType}）</span>
+                  </span>
+                  <span>設置費用: 0円（完全無料）</span>
+                </div>
+              </div>
+
+              {/* Google検索結果プレビュー */}
+              <GoogleSearchResultPreview
+                targetName={fullName}
+                era={formData.era}
+                location={formData.hometownPref}
+                searcherName={fullName}
+                teaser={formData.message}
+              />
+
+              {/* 利用規約同意チェックボックス */}
+              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
+                <label className="flex items-start gap-2.5 cursor-pointer text-xs text-slate-700 leading-relaxed font-sans">
+                  <input
+                    type="checkbox"
+                    checked={agreed}
+                    onChange={(e) => setAgreed(e.target.checked)}
+                    className="mt-0.5 rounded text-teal-600 focus:ring-teal-500 w-4 h-4 cursor-pointer shrink-0"
+                  />
+                  <span>
+                    <Link to="/terms" target="_blank" className="text-teal-700 font-bold hover:underline">利用規約</Link>
+                    および
+                    <Link to="/privacy" target="_blank" className="text-teal-700 font-bold hover:underline">プライバシーポリシー</Link>
+                    （18歳以上利用・異性交際目的の利用禁止）に同意して、目印の手紙を置きます。
+                  </span>
+                </label>
+              </div>
+
+              {/* 投稿実行ボタン */}
+              <div className="pt-2 flex items-center justify-between">
+                <button
+                  type="button"
+                  onClick={() => setStep(2)}
+                  className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                >
+                  <ArrowLeft size={14} />
+                  <span>修正する</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  disabled={!agreed || isSubmitting}
+                  className="px-8 py-3.5 bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-700 hover:from-teal-700 hover:to-emerald-800 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold rounded-2xl text-xs sm:text-sm flex items-center gap-2 cursor-pointer shadow-md hover:shadow-lg transition-all"
+                >
+                  <Send size={16} className="text-teal-200" />
+                  <span>{isSubmitting ? '手紙を置いています...' : '目印の手紙を置く（完全無料）'}</span>
+                </button>
+              </div>
+            </motion.div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 };
-
-
+export default CreatePostPage;

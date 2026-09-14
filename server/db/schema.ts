@@ -396,11 +396,38 @@ export function initDatabase() {
         user_count INTEGER DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       );
+
+      CREATE TABLE IF NOT EXISTS reunion_requests (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        post_id INTEGER NOT NULL,
+        applicant_user_id INTEGER,
+        applicant_name TEXT NOT NULL,
+        applicant_contact_type TEXT,
+        applicant_contact_id TEXT,
+        episode TEXT NOT NULL,
+        status TEXT DEFAULT 'pending', -- 'pending' | 'approved' | 'rejected' | 'paid' | 'completed' | 'refunded'
+        rejection_reason TEXT,
+        stripe_payment_intent_id TEXT,
+        payment_amount INTEGER DEFAULT 1200,
+        letter_open_fee INTEGER DEFAULT 600,
+        ekyc_fee INTEGER DEFAULT 600,
+        is_ekyc_verified INTEGER DEFAULT 0,
+        refund_status TEXT,
+        refunded_at DATETIME,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+        FOREIGN KEY (applicant_user_id) REFERENCES users(id) ON DELETE SET NULL
+      );
     `);
     try { db.exec("ALTER TABLE system_versions ADD COLUMN git_commit TEXT"); } catch (e) {}
     try { db.exec("ALTER TABLE system_versions ADD COLUMN git_branch TEXT"); } catch (e) {}
     try { db.exec("ALTER TABLE users ADD COLUMN contact_type TEXT"); } catch (e) {}
     try { db.exec("ALTER TABLE users ADD COLUMN contact_id TEXT"); } catch (e) {}
+    try { db.exec("ALTER TABLE posts ADD COLUMN contact_type TEXT"); } catch (e) {}
+    try { db.exec("ALTER TABLE posts ADD COLUMN contact_id TEXT"); } catch (e) {}
+    try { db.exec("ALTER TABLE posts ADD COLUMN maiden_name TEXT"); } catch (e) {}
+    try { db.exec("ALTER TABLE posts ADD COLUMN author_name TEXT"); } catch (e) {}
     try { db.exec("ALTER TABLE users ADD COLUMN is_ekyc_verified INTEGER DEFAULT 0"); } catch (e) {}
     try { db.exec("ALTER TABLE users ADD COLUMN ekyc_verified_at DATETIME"); } catch (e) {}
     try { db.exec("ALTER TABLE users ADD COLUMN ekyc_document_type TEXT"); } catch (e) {}

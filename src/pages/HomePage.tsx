@@ -836,7 +836,7 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                   </div>
                   <p className="text-xs text-brand-dark/70 font-sans leading-relaxed line-clamp-2">
                     差し出し人: {post.searcher_name} <br/>
-                    出会った場所: {post.target_hometown ? (post.target_hometown.match(/.*?[都道府県]/)?.[0] || post.target_hometown) : '未設定'} (市区町村以下は非公開) / 学校名：{post.target_school ? (post.category === 'work' ? '関連職場（正解後に開示）' : '関連学校（正解後に開示）') : '未設定'}<br/>
+                    出会った場所: {post.target_hometown ? (post.target_hometown.match(/.*?[都道府県]/)?.[0] || post.target_hometown) : '未設定'} (市区町村以下は非公開) / 所属・関係先：{post.target_school ? (post.category === 'work' ? '関連職場（正解後に開示）' : '関連学校（正解後に開示）') : '未設定'}<br/>
                     「{post.searcher_profile || 'お相手への簡単なメッセージ。当時の出来事など...'}」
                   </p>
                   <div className="pt-2 flex items-center gap-2 text-[10px] text-brand-primary font-bold uppercase tracking-widest font-sans">

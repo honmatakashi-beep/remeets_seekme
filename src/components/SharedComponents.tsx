@@ -244,29 +244,47 @@ export const Navbar = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) 
       )}
       <nav className="border-b border-brand-border bg-white/90 backdrop-blur-md w-full relative z-40 shadow-2xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 md:h-20 flex items-center justify-between relative">
-          <Link to="/" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 group py-1">
+          <Link to="/" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2.5 group py-1">
             <img 
               src="/logo.png" 
-              alt="ReMEETs" 
+              alt="ReMEETs SeekMe" 
               className="h-5.5 sm:h-6.5 md:h-7.5 w-auto object-contain transition-transform group-hover:scale-[1.02]" 
             />
+            <div className="flex flex-col">
+              <span className="text-[10px] md:text-xs font-bold text-teal-700 tracking-wider font-serif">
+                SeekMe
+              </span>
+              <span className="text-[8px] text-slate-500 font-sans hidden sm:inline">
+                〜私を探すあなたへ〜
+              </span>
+            </div>
           </Link>
           
           <div className="flex items-center gap-2 sm:gap-3">
-          {/* 運営応援寄付ボタン (デスクトップ・PC画面のみ表示、モバイルでは非表示) */}
+          {/* 置き手紙ボタン（CTA） */}
           <Link
-            to="/supporter"
-            className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-gradient-to-r from-amber-500 via-orange-600 to-amber-800 hover:from-amber-600 hover:via-orange-700 hover:to-amber-900 text-white font-bold rounded-full text-xs shadow-xs shadow-amber-950/20 hover:shadow-sm transition-all hover:scale-[1.03] active:scale-98 cursor-pointer shrink-0 border border-amber-400/40"
+            to="/create"
+            className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-700 hover:from-teal-700 hover:via-emerald-700 hover:to-teal-800 text-white font-bold rounded-full text-xs shadow-xs shadow-teal-950/20 hover:shadow-sm transition-all hover:scale-[1.03] active:scale-98 cursor-pointer shrink-0 border border-teal-400/40"
           >
-            <Coffee size={13} className="text-amber-100 shrink-0 drop-shadow-2xs" />
-            <span className="drop-shadow-2xs">ReMEETsを応援（寄付）</span>
+            <Send size={13} className="text-teal-100 shrink-0 drop-shadow-2xs" />
+            <span className="drop-shadow-2xs">目印の手紙を置く（無料）</span>
+          </Link>
+
+          {/* 手紙を探す Link */}
+          <Link
+            to="/search"
+            onClick={() => setIsMenuOpen(false)}
+            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 text-slate-800 text-xs font-semibold font-sans transition-all border border-slate-200 shrink-0"
+          >
+            <Search size={14} className="text-teal-600" />
+            <span>手紙を探す</span>
           </Link>
 
           {/* ご利用ガイド Link */}
           <Link
             to="/guide"
             onClick={() => setIsMenuOpen(false)}
-            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-brand-primary/5 hover:bg-brand-primary/10 text-brand-dark text-xs font-semibold font-sans transition-all border border-brand-primary/15 hover:border-brand-primary/30 shrink-0"
+            className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-brand-primary/5 hover:bg-brand-primary/10 text-brand-dark text-xs font-semibold font-sans transition-all border border-brand-primary/15 hover:border-brand-primary/30 shrink-0"
           >
             <BookOpen size={14} className="text-brand-primary" />
             <span>ご利用ガイド</span>
@@ -327,7 +345,7 @@ export const Navbar = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) 
             >
               {/* Menu Header */}
               <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 bg-slate-50/50 text-[11px] font-bold text-slate-500 uppercase tracking-wider shrink-0">
-                <span>{user ? `${user.username} としてログイン中` : "ReMEETs メニュー"}</span>
+                <span>{user ? `${user.username} としてログイン中` : "ReMEETs SeekMe メニュー"}</span>
                 <button
                   onClick={() => setIsMenuOpen(false)}
                   className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 rounded-lg transition-colors cursor-pointer"
@@ -343,19 +361,19 @@ export const Navbar = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) 
                 <Link
                   to="/create"
                   onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 text-xs text-slate-700 hover:text-indigo-600 hover:bg-indigo-50/60 rounded-xl transition-all font-semibold text-left"
+                  className="flex items-center gap-3 px-3 py-2.5 text-xs text-slate-700 hover:text-teal-700 hover:bg-teal-50/60 rounded-xl transition-all font-semibold text-left"
                 >
-                  <Send size={16} className="text-indigo-600 shrink-0" />
-                  <span>ボトルメールを流す</span>
+                  <Send size={16} className="text-teal-600 shrink-0" />
+                  <span>目印の手紙を置く（無料）</span>
                 </Link>
 
                 <Link
                   to="/search"
                   onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 text-xs text-slate-700 hover:text-teal-600 hover:bg-teal-50/60 rounded-xl transition-all font-semibold text-left"
+                  className="flex items-center gap-3 px-3 py-2.5 text-xs text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/60 rounded-xl transition-all font-semibold text-left"
                 >
-                  <Search size={16} className="text-teal-600 shrink-0" />
-                  <span>ボトルメールを探す</span>
+                  <Search size={16} className="text-emerald-600 shrink-0" />
+                  <span>想い出の手紙を探す</span>
                 </Link>
 
                 {user && (
@@ -536,20 +554,20 @@ export const Footer = () => {
             />
           </div>
           <p className="text-xs text-brand-dark/60 leading-relaxed font-serif max-w-sm sm:max-w-md lg:max-w-none">
-            デジタル技術と情緒が織りなす、懐かしいあの人との再会プラットフォーム。
+            私を探している誰かに向けて、自分の目印（手紙）を置いておく灯台型プラットフォーム。
           </p>
           <p className="text-[10px] text-brand-dark/50 font-sans">
-            運営: ReMEETs TEAM
+            運営: ReMEETs SeekMe 事務局
           </p>
         </div>
         <div className="space-y-2.5 sm:space-y-3">
           <h4 className="text-[11px] sm:text-xs font-bold text-brand-dark/80 tracking-widest uppercase">サービス</h4>
           <ul className="space-y-1.5 sm:space-y-2 text-xs text-brand-dark/60">
-            <li><Link to="/create" className="hover:text-brand-primary">ボトルメールを流す</Link></li>
-            <li><Link to="/search" className="hover:text-brand-primary">ボトルメールを探す</Link></li>
-            <li><Link to="/pricing" className="hover:text-brand-primary">利用料金表</Link></li>
-            <li><Link to="/supporter" className="hover:text-brand-primary">ReMEETsを応援</Link></li>
-            <li><Link to="/success-stories" className="hover:text-brand-primary">奇跡の再会体験談</Link></li>
+            <li><Link to="/create" className="hover:text-teal-700">目印の手紙を置く（無料）</Link></li>
+            <li><Link to="/search" className="hover:text-teal-700">想い出の手紙を探す</Link></li>
+            <li><Link to="/pricing" className="hover:text-teal-700">利用料金表</Link></li>
+            <li><Link to="/supporter" className="hover:text-teal-700">SeekMeを応援（寄付）</Link></li>
+            <li><Link to="/success-stories" className="hover:text-teal-700">奇跡の再会体験談</Link></li>
           </ul>
         </div>
         <div className="space-y-2.5 sm:space-y-3">
@@ -568,12 +586,12 @@ export const Footer = () => {
             <li><Link to="/manual" className="hover:text-brand-primary">ご利用マニュアル</Link></li>
             <li><Link to="/contact" className="hover:text-brand-primary">お問い合わせ</Link></li>
             <li><Link to="/deletion-request" className="hover:text-brand-primary">手紙の削除依頼</Link></li>
-            <li><Link to="/payment-preview" className="hover:text-brand-primary text-indigo-700 font-bold flex items-center gap-1">💳 決済プレビュー</Link></li>
+            <li><Link to="/payment-preview" className="hover:text-brand-primary text-teal-700 font-bold flex items-center gap-1">💳 決済プレビュー</Link></li>
           </ul>
         </div>
       </div>
     <div className="max-w-7xl mx-auto px-6 pt-8 mt-8 border-t border-brand-border/40 flex flex-col sm:flex-row items-center justify-between text-[10px] text-brand-dark/40 font-mono gap-2">
-      <div>&copy; {new Date().getFullYear()} ReMEETs. All rights reserved.</div>
+      <div>&copy; {new Date().getFullYear()} ReMEETs SeekMe. All rights reserved.</div>
       <div className="flex items-center gap-4 flex-wrap">
         <Link to="/home-designs" className="text-indigo-600 hover:text-indigo-900 font-bold hover:underline">
           🎨 HOMEデザイン比較ショールーム

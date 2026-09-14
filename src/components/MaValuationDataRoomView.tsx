@@ -958,7 +958,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle2 size={15} className="text-emerald-600 shrink-0 mt-0.5" />
-                <span><strong>先行優位データベース:</strong> 全国学校名・部活名・年代別想い出インデックスの蓄積</span>
+                <span><strong>先行優位データベース:</strong> 全国地域・年代・想い出キーワードインデックスの蓄積</span>
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle2 size={15} className="text-emerald-600 shrink-0 mt-0.5" />
@@ -1057,7 +1057,7 @@ ReMEETs（再会のボトルメール）事業譲渡・投資案件概要書 (In
             </div>
             <h5 className="font-serif font-bold text-black text-base">デジタルアーカイブとリアル記念品の融合</h5>
             <p className="text-xs text-black/70 leading-relaxed font-sans">
-              学校名データベースを活用した過去の卒アル復刻販売や、シニア層の「元気なうちに昔の恩人に感謝を伝えたい」ニーズを掴んだ終活レター事業展開。
+              想い出・再会データベースを活用した過去の記憶復刻や、シニア層の「元気なうちに昔の恩人に感謝を伝えたい」ニーズを掴んだ終活レター事業展開。
             </p>
             <div className="pt-2 border-t border-amber-100 flex justify-between items-center text-[11px] text-amber-800">
               <span>想定シナジー売上:</span>

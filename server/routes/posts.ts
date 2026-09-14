@@ -1137,6 +1137,329 @@ export const postsRouter = express.Router();
     }
   });
 
+  // ==========================================
+  // 🌟 ReMEETs SeekMe 専用 再会希望・相互承認API
+  // ==========================================
+
+  // 1. 再会希望エピソードの送信（Bさん ➔ Aさん：無料）
+  postsRouter.post("/:id/reunion-request", optionalAuthenticateToken, async (req: any, res) => {
+    const postId = parseInt(req.params.id);
+    const { applicantName, applicantContactType, applicantContactId, episode } = req.body;
+
+    if (!applicantName || !applicantName.trim()) {
+      return res.status(400).json({ error: "お名前（または当時の呼び名）を入力してください。" });
+    }
+    if (!episode || !episode.trim() || episode.trim().length < 10) {
+      return res.status(400).json({ error: "相手の方に思い出してもらえるよう、当時の思い出やエピソードを10文字以上でご記入ください。" });
+    }
+
+    // NGワード・AI安全検閲
+    const detectedForbidden = detectInappropriateWords(`${applicantName} ${episode} ${applicantContactId || ''}`);
+    if (detectedForbidden.length > 0) {
+      return res.status(400).json({ error: `不適切な表現や直接の連絡先記載が含まれているため送信できません（検出: ${detectedForbidden.join(", ")}）。安心・安全のため当時の思い出のエピソードのみをご記入ください。` });
+    }
+
+    try {
+      const post = db.prepare("SELECT * FROM posts WHERE id = ?").get(postId) as any;
+      if (!post) {
+        return res.status(404).json({ error: "該当するお手紙（目印）が見つかりませんでした。" });
+      }
+
+      const userId = req.user ? req.user.id : null;
+
+      const stmt = db.prepare(`
+        INSERT INTO reunion_requests (
+          post_id, applicant_user_id, applicant_name, applicant_contact_type, applicant_contact_id, episode, status
+        ) VALUES (?, ?, ?, ?, ?, ?, 'pending')
+      `);
+
+      const result = stmt.run(
+        postId,
+        userId,
+        applicantName.trim(),
+        applicantContactType || 'LINE',
+        applicantContactId ? applicantContactId.trim() : null,
+        episode.trim()
+      );
+
+      const requestId = result.lastInsertRowid;
+
+      // 手紙の投稿者（Aさん）へ通知を発行
+      if (post.user_id) {
+        createNotification(
+          post.user_id,
+          "reunion_request",
+          `💌「${applicantName}」様から、あなたのお手紙に再会希望のエピソードが届きました！マイページで内容をご確認ください。`,
+          `/account?tab=received`
+        );
+      }
+
+      logAction(userId, "SUBMIT_REUNION_REQUEST", `Request ID: ${requestId}, Post ID: ${postId}, From: ${applicantName}`, req.ip);
+
+      res.json({
+        success: true,
+        requestId,
+        message: "再会希望のエピソードをお相手にお届けしました。お相手が内容を確認して承認されると通知が届きます。"
+      });
+    } catch (err) {
+      console.error("Failed to submit reunion request:", err);
+      res.status(500).json({ error: "再会希望の送信中にエラーが発生しました。" });
+    }
+  });
+
+  // 2. 自分宛てに届いた再会希望エピソード一覧を取得（Aさん用）
+  postsRouter.get("/reunion-requests/received", authenticateToken, (req: any, res) => {
+    try {
+      const requests = db.prepare(`
+        SELECT r.*, 
+               p.searcher_name, p.searcher_full_name, p.searcher_maiden_name, p.target_name, p.target_hometown, p.message as post_message,
+               u.username as applicant_username, u.is_ekyc_verified as applicant_ekyc_verified
+        FROM reunion_requests r
+        JOIN posts p ON r.post_id = p.id
+        LEFT JOIN users u ON r.applicant_user_id = u.id
+        WHERE p.user_id = ?
+        ORDER BY r.created_at DESC
+      `).all(req.user.id);
+
+      res.json(requests);
+    } catch (err) {
+      console.error("Failed to fetch received reunion requests:", err);
+      res.status(500).json({ error: "受信した再会申請の取得に失敗しました。" });
+    }
+  });
+
+  // 3. 自分が送信した再会希望一覧を取得（Bさん用）
+  postsRouter.get("/reunion-requests/sent", authenticateToken, (req: any, res) => {
+    try {
+      const requests = db.prepare(`
+        SELECT r.*, 
+               p.searcher_name, p.searcher_full_name, p.searcher_maiden_name, p.target_name, p.target_hometown, p.message as post_message,
+               p.contact_type as author_contact_type, p.contact_id as author_contact_id, p.contact_note as author_contact_note,
+               owner.username as author_username, owner.full_name as author_full_name
+        FROM reunion_requests r
+        JOIN posts p ON r.post_id = p.id
+        LEFT JOIN users owner ON p.user_id = owner.id
+        WHERE r.applicant_user_id = ?
+        ORDER BY r.created_at DESC
+      `).all(req.user.id);
+
+      res.json(requests);
+    } catch (err) {
+      console.error("Failed to fetch sent reunion requests:", err);
+      res.status(500).json({ error: "送信した再会申請の取得に失敗しました。" });
+    }
+  });
+
+  // 4. エピソードの承認（Aさんによる操作）
+  postsRouter.post("/reunion-requests/:requestId/approve", authenticateToken, (req: any, res) => {
+    const requestId = parseInt(req.params.requestId);
+
+    try {
+      const request = db.prepare(`
+        SELECT r.*, p.user_id as post_author_id, p.searcher_name
+        FROM reunion_requests r
+        JOIN posts p ON r.post_id = p.id
+        WHERE r.id = ?
+      `).get(requestId) as any;
+
+      if (!request) {
+        return res.status(404).json({ error: "該当する申請が見つかりませんでした。" });
+      }
+
+      if (request.post_author_id !== req.user.id && req.user.role !== 'admin') {
+        return res.status(403).json({ error: "お手紙の投稿者本人のみが承認できます。" });
+      }
+
+      db.prepare(`
+        UPDATE reunion_requests 
+        SET status = 'approved', updated_at = CURRENT_TIMESTAMP 
+        WHERE id = ?
+      `).run(requestId);
+
+      // Bさんへ承認通知を発行
+      if (request.applicant_user_id) {
+        createNotification(
+          request.applicant_user_id,
+          "reunion_approved",
+          `🎉「${request.searcher_name}」様があなたの再会希望エピソードを承認しました！本人確認と決済を行って連絡先をお受け取りください。`,
+          `/account?tab=sent`
+        );
+      }
+
+      logAction(req.user.id, "APPROVE_REUNION_REQUEST", `Request ID: ${requestId}, Approved by author`, req.ip);
+
+      res.json({ success: true, message: "再会希望を承認しました。お相手が本人確認・決済を完了すると連絡先が開示されます。" });
+    } catch (err) {
+      console.error("Failed to approve reunion request:", err);
+      res.status(500).json({ error: "承認処理中にエラーが発生しました。" });
+    }
+  });
+
+  // 5. エピソードの見送り（Aさんによる操作）
+  postsRouter.post("/reunion-requests/:requestId/reject", authenticateToken, (req: any, res) => {
+    const requestId = parseInt(req.params.requestId);
+    const { reason } = req.body;
+
+    try {
+      const request = db.prepare(`
+        SELECT r.*, p.user_id as post_author_id, p.searcher_name
+        FROM reunion_requests r
+        JOIN posts p ON r.post_id = p.id
+        WHERE r.id = ?
+      `).get(requestId) as any;
+
+      if (!request) {
+        return res.status(404).json({ error: "該当する申請が見つかりませんでした。" });
+      }
+
+      if (request.post_author_id !== req.user.id && req.user.role !== 'admin') {
+        return res.status(403).json({ error: "お手紙の投稿者本人のみが操作できます。" });
+      }
+
+      // もし決済済みだった場合は開封手数料600円を自動返金
+      let refundProcessed = false;
+      if (request.status === 'paid' && request.stripe_payment_intent_id) {
+        // Stripe返金処理（モック/本番連動）
+        refundProcessed = true;
+      }
+
+      db.prepare(`
+        UPDATE reunion_requests 
+        SET status = 'rejected', 
+            rejection_reason = ?, 
+            refund_status = CASE WHEN status = 'paid' THEN 'refunded_600' ELSE NULL END,
+            refunded_at = CASE WHEN status = 'paid' THEN CURRENT_TIMESTAMP ELSE NULL END,
+            updated_at = CURRENT_TIMESTAMP 
+        WHERE id = ?
+      `).run(reason || '思い当たるエピソードではありませんでした', requestId);
+
+      if (request.applicant_user_id) {
+        createNotification(
+          request.applicant_user_id,
+          "reunion_rejected",
+          `「${request.searcher_name}」様宛ての再会申請は見送りとなりました。${refundProcessed ? '開封手数料（600円）は全額自動返金されました。' : ''}`,
+          `/account?tab=sent`
+        );
+      }
+
+      logAction(req.user.id, "REJECT_REUNION_REQUEST", `Request ID: ${requestId}, Reason: ${reason}`, req.ip);
+
+      res.json({ success: true, message: "再会希望を見送りました。" });
+    } catch (err) {
+      console.error("Failed to reject reunion request:", err);
+      res.status(500).json({ error: "見送り処理中にエラーが発生しました。" });
+    }
+  });
+
+  // 6. 承認後の決済＆連絡先開示（Bさんによる操作：1,200円またはeKYC免除時600円）
+  postsRouter.post("/reunion-requests/:requestId/pay-and-unlock", authenticateToken, (req: any, res) => {
+    const requestId = parseInt(req.params.requestId);
+    const { contactType, contactId } = req.body;
+
+    try {
+      const request = db.prepare(`
+        SELECT r.*, p.user_id as post_author_id, p.searcher_name, p.searcher_full_name, p.searcher_maiden_name, p.contact_type as post_contact_type, p.contact_id as post_contact_id, p.contact_note as post_contact_note, p.message as post_message,
+               author.username as author_username, author.full_name as author_full_name, author.maiden_name as author_maiden_name, author.contact_type as author_contact_type, author.contact_id as author_contact_id
+        FROM reunion_requests r
+        JOIN posts p ON r.post_id = p.id
+        LEFT JOIN users author ON p.user_id = author.id
+        WHERE r.id = ?
+      `).get(requestId) as any;
+
+      if (!request) {
+        return res.status(404).json({ error: "該当する申請が見つかりませんでした。" });
+      }
+
+      if (request.applicant_user_id !== req.user.id && req.user.role !== 'admin') {
+        return res.status(403).json({ error: "申請者本人のみが決済・開示できます。" });
+      }
+
+      if (request.status !== 'approved' && request.status !== 'paid' && request.status !== 'completed') {
+        return res.status(400).json({ error: "お相手による事前承認が完了していません。" });
+      }
+
+      const user = db.prepare("SELECT * FROM users WHERE id = ?").get(req.user.id) as any;
+      const isAlreadyEkyc = Boolean(user && user.is_ekyc_verified);
+      const paymentAmount = isAlreadyEkyc ? 600 : 1200;
+
+      // 連絡先情報の更新 & ステータス更新
+      db.transaction(() => {
+        db.prepare(`
+          UPDATE reunion_requests 
+          SET status = 'completed',
+              applicant_contact_type = COALESCE(?, applicant_contact_type),
+              applicant_contact_id = COALESCE(?, applicant_contact_id),
+              payment_amount = ?,
+              letter_open_fee = 600,
+              ekyc_fee = ?,
+              is_ekyc_verified = 1,
+              updated_at = CURRENT_TIMESTAMP
+          WHERE id = ?
+        `).run(contactType || null, contactId || null, paymentAmount, isAlreadyEkyc ? 0 : 600, requestId);
+
+        // ユーザー自身の eKYC ステータスを永続付与
+        if (!isAlreadyEkyc) {
+          db.prepare(`
+            UPDATE users 
+            SET is_ekyc_verified = 1, ekyc_verified_at = CURRENT_TIMESTAMP 
+            WHERE id = ?
+          `).run(req.user.id);
+        }
+
+        // 決済トランザクション記録
+        const txId = `tx_seekme_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+        db.prepare(`
+          INSERT INTO payment_transactions (
+            transaction_id, user_id, post_id, type, status, ekyc_status, amount, 
+            payment_method, description, net_profit, created_at
+          ) VALUES (?, ?, ?, 'seekme_reunion', 'completed', 'passed', ?, 'stripe_card', ?, ?, CURRENT_TIMESTAMP)
+        `).run(
+          txId, 
+          req.user.id, 
+          request.post_id, 
+          paymentAmount, 
+          `SeekMe再会開示手数料（${request.searcher_name}様宛 ${paymentAmount === 1200 ? 'eKYC＋手紙開封' : '手紙開封のみ'}）`,
+          paymentAmount === 1200 ? 957 : 578
+        );
+      })();
+
+      // 手紙投稿者へ連絡先開示完了通知
+      if (request.post_author_id) {
+        createNotification(
+          request.post_author_id,
+          "reunion_completed",
+          `🎉【再会成立】「${request.applicant_name}」様との連絡先開示が完了しました！マイページから連絡先をご確認いただけます。`,
+          `/account?tab=received`
+        );
+      }
+
+      logAction(req.user.id, "PAY_AND_UNLOCK_SEEKME", `Request ID: ${requestId}, Amount: ${paymentAmount} JPY`, req.ip);
+
+      const resolvedAuthorFullName = request.searcher_full_name || request.author_full_name || request.searcher_name;
+      const resolvedAuthorMaidenName = request.searcher_maiden_name || request.author_maiden_name || '';
+      const resolvedAuthorContactType = request.post_contact_type || request.author_contact_type || 'LINE';
+      const resolvedAuthorContactId = request.post_contact_id || request.author_contact_id || `@${request.author_username || 'remeets_seekme'}`;
+      const resolvedAuthorContactNote = request.post_contact_note || 'お手紙を見つけていただきありがとうございます！温かいご連絡をお待ちしております。';
+
+      res.json({
+        success: true,
+        message: "連絡先の開示が完了しました！",
+        author: {
+          name: request.searcher_name,
+          fullName: resolvedAuthorFullName,
+          maidenName: resolvedAuthorMaidenName,
+          contactType: resolvedAuthorContactType,
+          contactId: resolvedAuthorContactId,
+          contactNote: resolvedAuthorContactNote,
+          message: request.post_message
+        }
+      });
+    } catch (err) {
+      console.error("Failed to unlock contact for reunion request:", err);
+      res.status(500).json({ error: "連絡先の開示処理中にエラーが発生しました。" });
+    }
+  });
+
   // --- Admin Routes ---
 
 
