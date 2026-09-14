@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNgFilter } from '../../contexts/AuthContext';
-import { formatEraLabel, PREFECTURES } from '../../lib/utils';
+import { formatEraLabel, formatBirthYearLabel, PREFECTURES } from '../../lib/utils';
 import { BottleLoader, BackToHomeButton, GoogleSearchResultPreview } from '../../components/SharedComponents';
 
 export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) => {
@@ -100,12 +100,12 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
       if (res.ok) {
         setRequestSuccess(true);
       } else {
-        const data = await res.json();
-        setRequestError(data.error || '再会希望の送信に失敗しました。');
+        const err = await res.json();
+        setRequestError(err.error || '送信に失敗しました。');
       }
     } catch (err) {
       console.error(err);
-      setRequestError('通信エラーが発生しました。時間を置いて再度お試しください。');
+      setRequestError('通信エラーが発生しました。');
     } finally {
       setIsSending(false);
     }
@@ -125,8 +125,8 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
 
   const postFullName = post.searcher_full_name || post.searcher_name || post.target_name || 'お名前';
   const postMaidenName = post.searcher_maiden_name || post.maiden_name || '';
-  const postLocation = post.target_hometown ? (post.target_hometown.match(/.*?[都道府県]/)?.[0] || post.target_hometown) : 'ゆかりの地';
-  const postEra = post.era ? formatEraLabel(post.era) : '年代未設定';
+  const postLocation = post.target_hometown ? (post.target_hometown.match(/.*?[都道府県]/)?.[0] || post.target_hometown) : '全国';
+  const postBirthYear = post.birth_year ? formatBirthYearLabel(post.birth_year) : (post.era ? formatEraLabel(post.era) : '');
 
   return (
     <div className="min-h-screen bg-transparent py-8 sm:py-12 text-slate-800 font-sans">
@@ -153,10 +153,15 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
 
           {/* ヘッダー情報 */}
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-teal-100 pb-4">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <span className="text-xs font-bold bg-teal-100 text-teal-800 px-3 py-1 rounded-full uppercase tracking-wider font-mono">
-                {postLocation} / {postEra}
+                {postLocation}
               </span>
+              {postBirthYear && (
+                <span className="text-xs font-bold bg-sky-100 text-sky-900 px-3 py-1 rounded-full font-mono">
+                  {postBirthYear}
+                </span>
+              )}
               <span className="text-[11px] text-slate-400 font-mono">
                 #{post.id}
               </span>

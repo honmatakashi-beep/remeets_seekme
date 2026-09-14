@@ -4,10 +4,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowRight, BookOpen, Check, CheckCircle2,
   HelpCircle, Info, Lock, MapPin, Send, Shield,
-  ShieldCheck, Sparkles, User, AlertTriangle, Eye, AlertCircle
+  ShieldCheck, Sparkles, User, AlertTriangle, Eye, AlertCircle, Calendar
 } from 'lucide-react';
 import { useAuth, useNgFilter } from '../../contexts/AuthContext';
-import { PREFECTURES, getPostUrl, PageHeader } from '../../lib/utils';
+import { PREFECTURES, BIRTH_YEAR_OPTIONS, formatBirthYearLabel, getPostUrl, PageHeader } from '../../lib/utils';
 import { GoogleSearchResultPreview, BackToHomeButton } from '../../components/SharedComponents';
 
 export const CreatePostPage = () => {
@@ -20,9 +20,8 @@ export const CreatePostPage = () => {
     lastName: '',
     firstName: '',
     maidenName: '',
+    birthYear: '',
     hometownPref: '',
-    era: '1990',
-    category: 'friend',
     message: '',
     contactType: 'LINE',
     contactId: '',
@@ -36,13 +35,12 @@ export const CreatePostPage = () => {
   // 初期値の引き継ぎ
   useEffect(() => {
     if (location.state) {
-      const { initialTargetName, initialTargetLastName, initialTargetFirstName, initialCategory } = location.state as any;
+      const { initialTargetName, initialTargetLastName, initialTargetFirstName } = location.state as any;
       if (initialTargetLastName || initialTargetFirstName || initialTargetName) {
         setFormData(prev => ({
           ...prev,
           lastName: initialTargetLastName || (initialTargetName ? initialTargetName.split(' ')[0] : prev.lastName),
-          firstName: initialTargetFirstName || (initialTargetName ? initialTargetName.split(' ')[1] || '' : prev.firstName),
-          category: initialCategory || prev.category
+          firstName: initialTargetFirstName || (initialTargetName ? initialTargetName.split(' ')[1] || '' : prev.firstName)
         }));
       }
     }
@@ -61,6 +59,12 @@ export const CreatePostPage = () => {
       }
       if (user.maiden_name && !formData.maidenName) {
         setFormData(prev => ({ ...prev, maidenName: user.maiden_name }));
+      }
+      if (user.birthdate && !formData.birthYear) {
+        const y = new Date(user.birthdate).getFullYear();
+        if (!isNaN(y)) {
+          setFormData(prev => ({ ...prev, birthYear: y.toString() }));
+        }
       }
       if (user.contact_id && !formData.contactId) {
         setFormData(prev => ({
@@ -154,12 +158,11 @@ export const CreatePostPage = () => {
           searcherName: fullName,
           searcherFullName: fullName,
           searcherMaidenName: formData.maidenName.trim(),
+          birthYear: formData.birthYear ? parseInt(formData.birthYear, 10) : null,
           targetName: fullName, // SeekMe では自分自身が目印
           targetLastName: formData.lastName.trim(),
           targetFirstName: formData.firstName.trim(),
           targetHometown: formData.hometownPref,
-          era: formData.era,
-          category: formData.category,
           message: formData.message.trim(),
           contactType: formData.contactType,
           contactId: formData.contactId.trim(),
@@ -260,8 +263,8 @@ export const CreatePostPage = () => {
               1
             </div>
             <div>
-              <h3 className="text-base font-bold text-slate-900 font-serif">あなたのお名前（目印として公開）</h3>
-              <p className="text-xs text-slate-500 font-sans">探している人が検索できるよう、正確なお名前を入力してください。</p>
+              <h3 className="text-base font-bold text-slate-900 font-serif">あなたのお名前・基本情報（目印として公開）</h3>
+              <p className="text-xs text-slate-500 font-sans">探している人が検索できるよう、正確なお名前と生まれ年を入力してください。</p>
             </div>
           </div>
 
@@ -295,19 +298,36 @@ export const CreatePostPage = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-1">
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-slate-700 block flex items-center justify-between">
-                <span>旧姓（結婚等で姓が変わった方）</span>
+                <span>旧姓（当時の苗字）</span>
                 <span className="text-slate-400 font-normal text-[11px]">任意</span>
               </label>
               <input
                 type="text"
                 value={formData.maidenName}
                 onChange={e => setFormData(prev => ({ ...prev, maidenName: e.target.value }))}
-                placeholder="例：佐藤（当時の苗字）"
+                placeholder="例：佐藤"
                 className="w-full px-4 py-3 text-sm border border-slate-200 rounded-xl bg-slate-50/60 focus:bg-white focus:border-teal-600 outline-none transition-all shadow-inner"
               />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-700 block flex items-center justify-between">
+                <span>生まれ年（西暦・和暦）</span>
+                <span className="text-teal-700 font-bold text-[11px]">同姓同名判別用</span>
+              </label>
+              <select
+                value={formData.birthYear}
+                onChange={e => setFormData(prev => ({ ...prev, birthYear: e.target.value }))}
+                className="w-full px-3.5 py-3 text-xs sm:text-sm border border-slate-200 rounded-xl bg-slate-50/60 focus:bg-white focus:border-teal-600 outline-none transition-all shadow-inner cursor-pointer"
+              >
+                <option value="">生まれ年を選択（任意）</option>
+                {BIRTH_YEAR_OPTIONS.map(opt => (
+                  <option key={opt.year} value={opt.year}>{opt.label}</option>
+                ))}
+              </select>
             </div>
 
             <div className="space-y-1.5">
@@ -318,49 +338,12 @@ export const CreatePostPage = () => {
                 required
                 value={formData.hometownPref}
                 onChange={e => setFormData(prev => ({ ...prev, hometownPref: e.target.value }))}
-                className="w-full px-4 py-3 text-sm border border-slate-200 rounded-xl bg-slate-50/60 focus:bg-white focus:border-teal-600 outline-none transition-all shadow-inner cursor-pointer"
+                className="w-full px-3.5 py-3 text-xs sm:text-sm border border-slate-200 rounded-xl bg-slate-50/60 focus:bg-white focus:border-teal-600 outline-none transition-all shadow-inner cursor-pointer"
               >
-                <option value="">都道府県を選択してください</option>
+                <option value="">都道府県を選択</option>
                 {PREFECTURES.map(pref => (
                   <option key={pref} value={pref}>{pref}</option>
                 ))}
-              </select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-700 block">
-                当時の年代（目安）
-              </label>
-              <select
-                value={formData.era}
-                onChange={e => setFormData(prev => ({ ...prev, era: e.target.value }))}
-                className="w-full px-4 py-2.5 text-xs sm:text-sm border border-slate-200 rounded-xl bg-slate-50/60 focus:bg-white focus:border-teal-600 outline-none transition-all shadow-inner cursor-pointer"
-              >
-                <option value="1960">1960年代</option>
-                <option value="1970">1970年代</option>
-                <option value="1980">1980年代</option>
-                <option value="1990">1990年代</option>
-                <option value="2000">2000年代</option>
-                <option value="2010">2010年代</option>
-                <option value="2020">2020年代</option>
-              </select>
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-700 block">
-                関係性（目安）
-              </label>
-              <select
-                value={formData.category}
-                onChange={e => setFormData(prev => ({ ...prev, category: e.target.value }))}
-                className="w-full px-4 py-2.5 text-xs sm:text-sm border border-slate-200 rounded-xl bg-slate-50/60 focus:bg-white focus:border-teal-600 outline-none transition-all shadow-inner cursor-pointer"
-              >
-                <option value="friend">同級生・友人・知人</option>
-                <option value="love">初恋・昔の恋人</option>
-                <option value="work">元同僚・仕事関係</option>
-                <option value="other">その他・お世話になった方</option>
               </select>
             </div>
           </div>
@@ -491,8 +474,7 @@ export const CreatePostPage = () => {
             targetMaidenName={formData.maidenName}
             targetHometown={formData.hometownPref || 'ゆかりの都道府県'}
             searcherProfile={formData.message || '私を探しているあなたへ。メッセージをお待ちしています。'}
-            category={formData.category}
-            era={formData.era}
+            era={formData.birthYear ? `${formData.birthYear}年生まれ` : undefined}
           />
         </div>
 

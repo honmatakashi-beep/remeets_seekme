@@ -23,7 +23,29 @@ export const PREFECTURES = [
   "熊本県", "大分県", "宮崎県", "鹿児島県", "沖縄県"
 ];
 
-// --- Helper Functions ---
+export const getWarekiYear = (year: number): string => {
+  if (year >= 2019) return `令和${year === 2019 ? '元' : year - 2018}年`;
+  if (year >= 1989) return `平成${year === 1989 ? '元' : year - 1988}年`;
+  if (year >= 1926) return `昭和${year === 1926 ? '元' : year - 1925}年`;
+  if (year >= 1912) return `大正${year === 1912 ? '元' : year - 1911}年`;
+  return `${year}年`;
+};
+
+export const formatBirthYearLabel = (birthYear?: number | string): string => {
+  if (!birthYear) return '';
+  const y = typeof birthYear === 'string' ? parseInt(birthYear, 10) : birthYear;
+  if (!y || isNaN(y)) return '';
+  const wareki = getWarekiYear(y);
+  return `${y}年（${wareki}）生まれ`;
+};
+
+export const BIRTH_YEAR_OPTIONS = Array.from({ length: 85 }, (_, i) => {
+  const y = 2015 - i; // 2015年〜1931年
+  return {
+    year: y,
+    label: `${y}年（${getWarekiYear(y)}）生まれ`
+  };
+});
 
 export const formatEraLabel = (era?: string): string => {
   if (!era) return '年代未設定';

@@ -7,7 +7,7 @@ import {
   ShieldCheck, Sparkles, Image as ImageIcon, X
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { cn, getPostUrl, formatEraLabel, getCategoryText, PREFECTURES } from '../lib/utils';
+import { cn, getPostUrl, formatEraLabel, formatBirthYearLabel, getCategoryText, PREFECTURES } from '../lib/utils';
 import { BottleLoader } from '../components/SharedComponents';
 import { HomePageTestVariant } from '../components/HomePageTestVariant';
 import { HomeVariantSub2Overlay } from '../components/HomeVariantSub2Overlay';
@@ -809,15 +809,21 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                   <div className="flex justify-between items-start gap-3">
                     <div className="space-y-1 flex-1 min-w-0">
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className="text-[10px] font-[700] text-brand-primary uppercase tracking-widest block bg-brand-primary/5 border border-brand-primary/10 px-2 py-0.5 rounded-full w-fit font-sans">
-                          {post.era?.toString().startsWith('19') ? post.era : `19${post.era}`}年代 / {post.category === 'friend' ? '友人' : post.category === 'love' ? '初恋・恋人' : post.category === 'work' ? '仕事' : 'その他'}
+                        <span className="text-[10px] font-bold text-teal-800 uppercase tracking-widest block bg-teal-50 border border-teal-200 px-2 py-0.5 rounded-full w-fit font-sans">
+                          {post.target_hometown ? (post.target_hometown.match(/.*?[都道府県]/)?.[0] || post.target_hometown) : '全国'}
+                          {(post.birth_year || post.era) && ` / ${post.birth_year ? formatBirthYearLabel(post.birth_year) : formatEraLabel(post.era)}`}
                         </span>
                         <span className="text-[10px] text-brand-dark/40 font-mono">
                           {new Date(post.created_at).toLocaleDateString('ja-JP')}
                         </span>
                       </div>
-                      <h3 className="text-lg font-serif font-bold text-brand-dark group-hover:text-brand-primary transition-colors truncate">
+                      <h3 className="text-lg font-serif font-bold text-brand-dark group-hover:text-teal-700 transition-colors truncate">
                         {post.target_name} 様
+                        {(post.target_maiden_name || post.maiden_name) && (
+                          <span className="text-xs text-slate-500 font-sans font-normal ml-1.5">
+                            （旧姓: {post.target_maiden_name || post.maiden_name}）
+                          </span>
+                        )}
                       </h3>
                     </div>
 
@@ -835,12 +841,10 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                     )}
                   </div>
                   <p className="text-xs text-brand-dark/70 font-sans leading-relaxed line-clamp-2">
-                    差し出し人: {post.searcher_name} <br/>
-                    出会った場所: {post.target_hometown ? (post.target_hometown.match(/.*?[都道府県]/)?.[0] || post.target_hometown) : '未設定'} (市区町村以下は非公開) / 所属・関係先：{post.target_school ? (post.category === 'work' ? '関連職場（正解後に開示）' : '関連学校（正解後に開示）') : '未設定'}<br/>
-                    「{post.searcher_profile || 'お相手への簡単なメッセージ。当時の出来事など...'}」
+                    {post.message || post.searcher_profile || '私を探しているあなたへ。メッセージをお待ちしています。'}
                   </p>
-                  <div className="pt-2 flex items-center gap-2 text-[10px] text-brand-primary font-bold uppercase tracking-widest font-sans">
-                    <span>手紙を引出す</span>
+                  <div className="pt-2 flex items-center gap-2 text-[10px] text-teal-700 font-bold uppercase tracking-widest font-sans">
+                    <span>手紙を開く</span>
                     <ArrowRight size={12} className="group-hover:translate-x-1 transition-all" />
                   </div>
                 </Link>

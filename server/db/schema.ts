@@ -428,6 +428,7 @@ export function initDatabase() {
     try { db.exec("ALTER TABLE posts ADD COLUMN contact_id TEXT"); } catch (e) {}
     try { db.exec("ALTER TABLE posts ADD COLUMN maiden_name TEXT"); } catch (e) {}
     try { db.exec("ALTER TABLE posts ADD COLUMN author_name TEXT"); } catch (e) {}
+    try { db.exec("ALTER TABLE posts ADD COLUMN birth_year INTEGER"); } catch (e) {}
     try { db.exec("ALTER TABLE users ADD COLUMN is_ekyc_verified INTEGER DEFAULT 0"); } catch (e) {}
     try { db.exec("ALTER TABLE users ADD COLUMN ekyc_verified_at DATETIME"); } catch (e) {}
     try { db.exec("ALTER TABLE users ADD COLUMN ekyc_document_type TEXT"); } catch (e) {}

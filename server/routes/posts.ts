@@ -55,6 +55,8 @@ export const postsRouter = express.Router();
 
     const userBirthdate = req.user?.birthdate || birthdate || null;
     const userGender = req.user?.gender || gender || null;
+    const searcherMaidenName = req.body.searcherMaidenName || req.body.maidenName || null;
+    const birthYear = req.body.birthYear ? parseInt(req.body.birthYear, 10) : null;
 
     // 生年月日チェック（18歳未満の自動遮断）
     if (userBirthdate) {
@@ -83,10 +85,9 @@ export const postsRouter = express.Router();
     let safeImageUrl: string | null = null;
     if (imageUrl && typeof imageUrl === 'string') {
       const isBase64Image = /^data:image\/(jpeg|jpg|png|webp|gif);base64,[A-Za-z0-9+/=]+$/.test(imageUrl);
-      const isSafePath = /^\/assets\/[\w-]+\.(jpg|jpeg|png|webp|gif)$/i.test(imageUrl);
-      const isSafeUrl = /^https:\/\/[\w.-]+\/[^?#]+\.(jpg|jpeg|png|webp|gif)(\?.*)?$/i.test(imageUrl);
-      
-      if (isBase64Image || isSafePath || isSafeUrl) {
+      const isCleanFilename = /^\/assets\/images\/[a-zA-Z0-9_-]+\.(jpg|jpeg|png|webp)$/.test(imageUrl) ||
+                              /^\/uploads\/[a-zA-Z0-9_-]+\.(jpg|jpeg|png|webp)$/.test(imageUrl);
+      if (isBase64Image || isCleanFilename) {
         safeImageUrl = imageUrl;
       } else {
         return res.status(400).json({ error: "添付画像の形式が無効です。JPEG, PNG, WebP形式の画像をご使用ください（SVGや実行ファイルは添付できません）。" });
@@ -103,13 +104,13 @@ export const postsRouter = express.Router();
 
       const stmt = db.prepare(`
         INSERT INTO posts (
-          user_id, searcher_name, searcher_full_name, searcher_profile, searcher_birthdate, searcher_gender,
+          user_id, searcher_name, searcher_full_name, searcher_maiden_name, searcher_profile, searcher_birthdate, searcher_gender, birth_year,
           target_name, target_last_name, target_first_name, 
           target_name_en, target_hometown, target_school,
           era, category, secret_question, secret_answer, secret_answer_plain, message, 
           contact_type, contact_id, contact_note, image_url,
           ai_flagged, ai_reason, ai_diagnosed
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `);
 
       const aiFlaggedVal = hasForbidden ? 1 : 0;
@@ -117,7 +118,7 @@ export const postsRouter = express.Router();
       const aiDiagnosedVal = hasForbidden ? 1 : 0;
 
       const result = stmt.run(
-        userId, searcherName, searcherFullName, searcherProfile, userBirthdate, userGender,
+        userId, searcherName, searcherFullName, searcherMaidenName, searcherProfile, userBirthdate, userGender, birthYear,
         targetName, targetLastName || null, targetFirstName || null,
         targetNameEn || null, targetHometown, targetSchool || null,
         era || null, category || null, firstQ.question, hashedA1, req.body.questions[0].answer, message, 
@@ -294,8 +295,9 @@ export const postsRouter = express.Router();
   postsRouter.get("/recent", (req, res) => {
     try {
       const posts = db.prepare(`
-        SELECT posts.id, posts.user_id, posts.searcher_name, posts.searcher_profile, posts.target_name, posts.target_last_name, posts.target_first_name, 
-               posts.target_hometown, posts.target_school, posts.era, posts.category, posts.status, posts.created_at,
+        SELECT posts.id, posts.user_id, posts.searcher_name, posts.searcher_full_name, posts.searcher_profile, posts.searcher_maiden_name, posts.maiden_name, posts.message,
+               posts.target_name, posts.target_last_name, posts.target_first_name, 
+               posts.target_hometown, posts.target_school, posts.era, posts.birth_year, posts.category, posts.status, posts.created_at,
                COALESCE(posts.is_ekyc_verified, u.is_ekyc_verified, 0) as is_ekyc_verified
         FROM posts 
         LEFT JOIN users u ON posts.user_id = u.id
@@ -311,11 +313,12 @@ export const postsRouter = express.Router();
   });
 
   postsRouter.get("/", searchLimiter, (req, res) => {
-    const { q, era, category } = req.query;
+    const { q, era, hometown, category } = req.query;
     
     let baseQuery = `
-      SELECT posts.id, posts.user_id, posts.searcher_name, posts.searcher_profile, posts.target_name, posts.target_last_name, posts.target_first_name, 
-             posts.target_hometown, posts.target_school, posts.era, posts.category, posts.status, posts.created_at,
+      SELECT posts.id, posts.user_id, posts.searcher_name, posts.searcher_full_name, posts.searcher_profile, posts.searcher_maiden_name, posts.maiden_name, posts.message,
+             posts.target_name, posts.target_last_name, posts.target_first_name, 
+             posts.target_hometown, posts.target_school, posts.era, posts.birth_year, posts.category, posts.status, posts.created_at,
              COALESCE(posts.is_ekyc_verified, u.is_ekyc_verified, 0) as is_ekyc_verified
       FROM posts 
       LEFT JOIN users u ON posts.user_id = u.id
@@ -327,7 +330,7 @@ export const postsRouter = express.Router();
     // Log search query
     try {
       const searchStmt = db.prepare("INSERT INTO search_logs (user_id, query, era, hometown, category, ip) VALUES (?, ?, ?, ?, ?, ?)");
-      searchStmt.run(null, q || null, era || null, null, category || null, req.ip || null);
+      searchStmt.run(null, q || null, era || null, (hometown as string) || null, category || null, req.ip || null);
     } catch (err) {
       console.error("Search logging error:", err);
     }
@@ -346,20 +349,29 @@ export const postsRouter = express.Router();
       params.push(searchStr, searchStr, searchStr, searchStr, searchStr, searchStr, searchStr);
     }
 
+    if (hometown) {
+      sqlQuery += " AND posts.target_hometown LIKE ?";
+      params.push(`%${hometown}%`);
+    }
+
     if (era) {
-      const eraStr = String(era).replace(/[^0-9]/g, '');
-      if (eraStr.length === 2) {
-        const fullEra19 = `19${eraStr}`;
-        const fullEra20 = `20${eraStr}`;
-        sqlQuery += " AND (posts.era = ? OR posts.era = ? OR posts.era = ? OR posts.era LIKE ?)";
-        params.push(eraStr, fullEra19, fullEra20, `%${eraStr}%`);
-      } else if (eraStr.length === 4) {
-        const shortEra = eraStr.substring(2);
-        sqlQuery += " AND (posts.era = ? OR posts.era = ? OR posts.era LIKE ?)";
-        params.push(eraStr, shortEra, `%${shortEra}%`);
+      const numVal = parseInt(String(era).replace(/[^0-9]/g, ''), 10);
+      if (!isNaN(numVal)) {
+        if (numVal >= 1900 && numVal <= 2100) {
+          // 生まれ年または西暦年代
+          const shortEra = String(numVal).substring(2);
+          sqlQuery += " AND (posts.birth_year = ? OR posts.era = ? OR posts.era = ? OR posts.era LIKE ?)";
+          params.push(numVal, String(numVal), shortEra, `%${shortEra}%`);
+        } else {
+          // 2桁年代 (例: 80, 90)
+          const fullEra19 = `19${numVal}`;
+          const fullEra20 = `20${numVal}`;
+          sqlQuery += " AND (posts.era = ? OR posts.era = ? OR posts.era = ? OR posts.era LIKE ?)";
+          params.push(String(numVal), fullEra19, fullEra20, `%${numVal}%`);
+        }
       } else {
         sqlQuery += " AND (posts.era = ? OR posts.era LIKE ?)";
-        params.push(eraStr, `%${eraStr}%`);
+        params.push(String(era), `%${era}%`);
       }
     }
 
@@ -424,8 +436,9 @@ export const postsRouter = express.Router();
     const { name, era, hometown, category } = req.query;
     
     let baseQuery = `
-      SELECT posts.id, posts.user_id, posts.searcher_name, posts.searcher_profile, posts.target_name, posts.target_last_name, posts.target_first_name, 
-             posts.target_hometown, posts.target_school, posts.era, posts.category, posts.status, posts.created_at,
+      SELECT posts.id, posts.user_id, posts.searcher_name, posts.searcher_full_name, posts.searcher_profile, posts.searcher_maiden_name, posts.maiden_name, posts.message,
+             posts.target_name, posts.target_last_name, posts.target_first_name, 
+             posts.target_hometown, posts.target_school, posts.era, posts.birth_year, posts.category, posts.status, posts.created_at,
              COALESCE(posts.is_ekyc_verified, u.is_ekyc_verified, 0) as is_ekyc_verified
       FROM posts 
       LEFT JOIN users u ON posts.user_id = u.id
@@ -437,31 +450,31 @@ export const postsRouter = express.Router();
     // Log search
     try {
       const searchStmt = db.prepare("INSERT INTO search_logs (user_id, query, era, hometown, category, ip) VALUES (?, ?, ?, ?, ?, ?)");
-      // We don't have easy access to user here without auth middleware, but search is public
-      // We'll try to get user if possible or just log as null
-      searchStmt.run(null, name || null, era || null, hometown || null, category || null, req.ip || null);
+      searchStmt.run(null, (name as string) || null, (era as string) || null, (hometown as string) || null, (category as string) || null, req.ip || null);
     } catch (err) {
       console.error("Search logging error:", err);
     }
 
     if (name) {
-      sqlQuery += " AND (posts.target_name LIKE ? OR posts.target_last_name LIKE ? OR posts.target_first_name LIKE ? OR posts.target_name_en LIKE ?)";
-      params.push(`%${name}%`, `%${name}%`, `%${name}%`, `%${name}%`);
+      sqlQuery += " AND (posts.target_name LIKE ? OR posts.target_last_name LIKE ? OR posts.target_first_name LIKE ? OR posts.target_name_en LIKE ? OR posts.searcher_maiden_name LIKE ? OR posts.maiden_name LIKE ?)";
+      params.push(`%${name}%`, `%${name}%`, `%${name}%`, `%${name}%`, `%${name}%`, `%${name}%`);
     }
     if (era) {
-      const eraStr = String(era).replace(/[^0-9]/g, '');
-      if (eraStr.length === 2) {
-        const fullEra19 = `19${eraStr}`;
-        const fullEra20 = `20${eraStr}`;
-        sqlQuery += " AND (posts.era = ? OR posts.era = ? OR posts.era = ? OR posts.era LIKE ?)";
-        params.push(eraStr, fullEra19, fullEra20, `%${eraStr}%`);
-      } else if (eraStr.length === 4) {
-        const shortEra = eraStr.substring(2);
-        sqlQuery += " AND (posts.era = ? OR posts.era = ? OR posts.era LIKE ?)";
-        params.push(eraStr, shortEra, `%${shortEra}%`);
+      const numVal = parseInt(String(era).replace(/[^0-9]/g, ''), 10);
+      if (!isNaN(numVal)) {
+        if (numVal >= 1900 && numVal <= 2100) {
+          const shortEra = String(numVal).substring(2);
+          sqlQuery += " AND (posts.birth_year = ? OR posts.era = ? OR posts.era = ? OR posts.era LIKE ?)";
+          params.push(numVal, String(numVal), shortEra, `%${shortEra}%`);
+        } else {
+          const fullEra19 = `19${numVal}`;
+          const fullEra20 = `20${numVal}`;
+          sqlQuery += " AND (posts.era = ? OR posts.era = ? OR posts.era = ? OR posts.era LIKE ?)";
+          params.push(String(numVal), fullEra19, fullEra20, `%${numVal}%`);
+        }
       } else {
         sqlQuery += " AND (posts.era = ? OR posts.era LIKE ?)";
-        params.push(eraStr, `%${eraStr}%`);
+        params.push(String(era), `%${era}%`);
       }
     }
     if (hometown) {

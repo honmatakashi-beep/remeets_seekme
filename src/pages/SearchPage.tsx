@@ -7,7 +7,7 @@ import {
   AlertCircle, ArrowLeft, ArrowRight, Shield, ShieldCheck
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { cn, PageHeader, getPostUrl, formatEraLabel, getCategoryText, PREFECTURES } from '../lib/utils';
+import { cn, PageHeader, getPostUrl, formatEraLabel, formatBirthYearLabel, BIRTH_YEAR_OPTIONS, PREFECTURES } from '../lib/utils';
 import { BottleLoader, GoogleSearchResultPreview, BackToHomeButton } from '../components/SharedComponents';
 import { EkycExplanationModal } from '../components/posts/EkycExplanationModal';
 import searchEmptySea from '../assets/images/search_empty_sea_1785869230086.jpg';
@@ -20,8 +20,8 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
   const [query, setQuery] = useState(qParam);
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [eraFilter, setEraFilter] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('');
+  const [prefFilter, setPrefFilter] = useState('');
+  const [birthYearFilter, setBirthYearFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [showEkycExplanationModal, setShowEkycExplanationModal] = useState(false);
   const ITEMS_PER_PAGE = 20;
@@ -89,15 +89,15 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
       ...prev,
       email: prev.email || user?.email || '',
       targetName: query || prev.targetName,
-      era: eraFilter,
-      category: categoryFilter
+      targetHometown: prefFilter,
+      era: birthYearFilter
     }));
-  }, [query, eraFilter, categoryFilter, user?.email]);
+  }, [query, prefFilter, birthYearFilter, user?.email]);
 
   const fetchPosts = async () => {
     setLoading(true);
     try {
-      const url = `/api/posts?q=${encodeURIComponent(query)}&era=${eraFilter}&category=${categoryFilter}`;
+      const url = `/api/posts?q=${encodeURIComponent(query)}&hometown=${encodeURIComponent(prefFilter)}&era=${encodeURIComponent(birthYearFilter)}`;
       const res = await fetch(url);
       if (res.ok) {
         const data = await res.json();
@@ -113,14 +113,14 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
 
   useEffect(() => {
     fetchPosts();
-  }, [qParam, eraFilter, categoryFilter]);
+  }, [qParam, prefFilter, birthYearFilter]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     fetchPosts();
   };
 
-  const isNullSearch = !query.trim() && !eraFilter && !categoryFilter;
+  const isNullSearch = !query.trim() && !prefFilter && !birthYearFilter;
   const totalPages = Math.ceil(posts.length / ITEMS_PER_PAGE) || 1;
   const paginatedPosts = posts.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
@@ -206,33 +206,27 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
         <div className="pt-3 border-t border-slate-100 flex items-center gap-2 flex-wrap text-xs">
           <span className="text-[11px] font-bold text-slate-600 uppercase tracking-wider flex items-center gap-1">
             <Info size={13} className="text-teal-600" />
-            <span>年代・関係性で絞り込み:</span>
+            <span>絞り込み:</span>
           </span>
           <select 
-            value={eraFilter}
-            onChange={e => setEraFilter(e.target.value)}
+            value={prefFilter}
+            onChange={e => setPrefFilter(e.target.value)}
             className="px-3 py-1.5 border border-slate-200 rounded-xl bg-white text-xs outline-none text-slate-800 focus:border-teal-600 font-sans cursor-pointer shadow-2xs"
           >
-            <option value="">すべての年代</option>
-            <option value="1950">1950年代</option>
-            <option value="1960">1960年代</option>
-            <option value="1970">1970年代</option>
-            <option value="1980">1980年代</option>
-            <option value="1990">1990年代</option>
-            <option value="2000">2000年代</option>
-            <option value="2010">2010年代</option>
-            <option value="2020">2020年代</option>
+            <option value="">すべての都道府県</option>
+            {PREFECTURES.map(pref => (
+              <option key={pref} value={pref}>{pref}</option>
+            ))}
           </select>
           <select 
-            value={categoryFilter}
-            onChange={e => setCategoryFilter(e.target.value)}
+            value={birthYearFilter}
+            onChange={e => setBirthYearFilter(e.target.value)}
             className="px-3 py-1.5 border border-slate-200 rounded-xl bg-white text-xs outline-none text-slate-800 focus:border-teal-600 font-sans cursor-pointer shadow-2xs"
           >
-            <option value="">すべての関係性</option>
-            <option value="friend">同級生・友人</option>
-            <option value="love">初恋・元恋人</option>
-            <option value="work">元同僚・仕事仲間</option>
-            <option value="other">その他</option>
+            <option value="">すべての生まれ年</option>
+            {BIRTH_YEAR_OPTIONS.map(opt => (
+              <option key={opt.year} value={opt.year}>{opt.label}</option>
+            ))}
           </select>
         </div>
 
@@ -406,7 +400,8 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
                     <div className="space-y-1 flex-1 min-w-0">
                       <div className="flex items-center gap-1.5 flex-wrap">
                         <span className="text-[9px] font-bold text-teal-800 uppercase tracking-widest block bg-teal-50 border border-teal-200 px-2 py-0.5 rounded-full w-fit font-sans">
-                          {post.target_hometown ? (post.target_hometown.match(/.*?[都道府県]/)?.[0] || post.target_hometown) : '全国'} / {post.era?.toString().startsWith('19') ? post.era : `19${post.era || '90'}`}年代
+                          {post.target_hometown ? (post.target_hometown.match(/.*?[都道府県]/)?.[0] || post.target_hometown) : '全国'}
+                          {(post.birth_year || post.era) && ` / ${post.birth_year ? formatBirthYearLabel(post.birth_year) : formatEraLabel(post.era)}`}
                         </span>
                         <span className="text-[10px] text-brand-dark/40 font-mono">
                           {new Date(post.created_at).toLocaleDateString('ja-JP')}
@@ -414,9 +409,9 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
                       </div>
                       <h3 className="text-base font-serif font-bold text-brand-dark group-hover:text-teal-700 transition-all truncate">
                         {post.target_name} 様
-                        {post.maiden_name && (
+                        {(post.target_maiden_name || post.maiden_name) && (
                           <span className="text-xs text-slate-500 font-sans font-normal ml-1.5">
-                            （旧姓: {post.maiden_name}）
+                            （旧姓: {post.target_maiden_name || post.maiden_name}）
                           </span>
                         )}
                       </h3>
