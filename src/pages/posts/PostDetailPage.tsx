@@ -148,10 +148,31 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
   const postLocation = post.target_hometown ? (post.target_hometown.match(/.*?[都道府県]/)?.[0] || post.target_hometown) : '全国';
   const postBirthYear = post.birth_year ? formatBirthYearLabel(post.birth_year) : (post.era ? formatEraLabel(post.era) : '');
 
+  const isAuthor = user && (user.id === post.user_id || user.email === post.email);
+
   return (
-    <div className="min-h-screen bg-transparent py-8 sm:py-12 text-slate-800 font-sans">
+    <div className="min-h-screen bg-transparent py-6 sm:py-10 text-slate-800 font-sans">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 space-y-6">
-        <BackToHomeButton />
+        
+        {/* オーナー（作成者本人）閲覧時のスマートプレビューバナー */}
+        {isAuthor ? (
+          <div className="p-4 bg-gradient-to-r from-teal-50 via-emerald-50 to-teal-50 border-2 border-teal-300 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
+            <div className="flex items-center gap-2.5 text-teal-950 text-xs sm:text-sm font-bold">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+              <span>あなたが公開中のメッセージです（Google検索対象・一般の方にはこのように見えます）</span>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <Link
+                to="/account"
+                className="px-4 py-2 bg-white hover:bg-slate-50 text-teal-900 border border-teal-200 rounded-xl text-xs font-bold transition-all shadow-2xs"
+              >
+                マイアカウントへ戻る
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <BackToHomeButton />
+        )}
 
         {/* 投稿直後バナー */}
         {justPosted && (
@@ -165,176 +186,183 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
         )}
 
         {/* ===================================================
-            1. エモーショナルなメッセージデザイン（上部カード）
+            1. メイン公開メッセージカード（作成プレビューと100%同一）
         =================================================== */}
-        <div className="relative rounded-3xl bg-gradient-to-br from-white via-teal-50/20 to-sky-50/30 border-2 border-teal-300/80 p-6 sm:p-10 shadow-lg text-left space-y-6 overflow-hidden">
-          {/* 背景装飾 */}
-          <div className="absolute top-0 right-0 w-48 h-48 bg-teal-200/20 rounded-full blur-3xl pointer-events-none" />
-
-          {/* ヘッダー情報 */}
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-teal-100 pb-4">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs font-bold bg-teal-100 text-teal-800 px-3 py-1 rounded-full uppercase tracking-wider font-mono">
-                {postLocation}
-              </span>
-              {postBirthYear && (
-                <span className="text-xs font-bold bg-sky-100 text-sky-900 px-3 py-1 rounded-full font-mono">
-                  {postBirthYear}
+        <div className={`relative rounded-3xl bg-gradient-to-br from-white via-teal-50/20 to-sky-50/30 border-2 p-6 sm:p-10 shadow-lg text-left space-y-6 overflow-hidden transition-all ${
+          post.is_ekyc_verified
+            ? 'border-amber-400/90 shadow-[0_10px_35px_rgba(251,191,36,0.18)]'
+            : 'border-slate-300 shadow-md'
+        }`}>
+          {/* メッセージヘッダー */}
+          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-teal-100 pb-4">
+            <div className="space-y-1.5 flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-[11px] font-bold text-teal-800 tracking-wider font-sans bg-teal-50 border border-teal-200 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                  <span>✉️</span>
+                  <span>想い出再会プラットフォーム ReMEETs SEEKME 公開メッセージ</span>
                 </span>
-              )}
-              <span className="text-[11px] text-slate-400 font-mono">
-                #{post.id}
-              </span>
-            </div>
-            
-            <div className="flex items-center gap-2">
-              {Boolean(post.is_ekyc_verified) && (
-                <button
-                  type="button"
-                  onClick={() => setShowEkycExplanationModal(true)}
-                  className="flex items-center gap-1.5 bg-gradient-to-r from-sky-50 via-teal-50 to-amber-50 hover:from-sky-100 hover:to-amber-100 border border-teal-300 hover:border-amber-400 px-3 py-1 rounded-full shadow-2xs cursor-pointer hover:scale-105 active:scale-95 transition-all group"
-                  title="クリックして公的本人確認（eKYC）の証明内容を確認"
-                >
-                  <div className="w-5 h-5 rounded-full seal-rainbow flex items-center justify-center text-white shadow-xs">
-                    <ShieldCheck size={11} />
-                  </div>
-                  <span className="text-[11px] font-black text-teal-950 font-sans">
-                    公的本人確認済
-                  </span>
-                  <span className="text-[9px] font-bold text-teal-800 bg-white/90 border border-teal-200 px-1.5 py-0.2 rounded-full font-sans group-hover:bg-amber-500 group-hover:text-white transition-colors">
-                    詳細 🔍
-                  </span>
-                </button>
-              )}
-              <span className="text-xs font-bold text-teal-800 bg-teal-50 border border-teal-200 px-3 py-1 rounded-full shadow-2xs">
-                💌 ReMEETs 公式レター
-              </span>
-            </div>
-          </div>
-
-          {/* 氏名・旧姓 ＆ eKYC公的証明バナー */}
-          <div className="space-y-2">
-            <div className="flex flex-wrap items-baseline gap-2">
-              <span className="text-xs font-bold text-slate-500 font-sans">メッセージを書いた人</span>
-              {Boolean(post.is_ekyc_verified) && (
-                <button
-                  type="button"
-                  onClick={() => setShowEkycExplanationModal(true)}
-                  className="text-[10px] font-bold text-emerald-900 bg-emerald-100/90 hover:bg-emerald-200 border border-emerald-300 px-2.5 py-0.5 rounded-full font-sans cursor-pointer transition-colors inline-flex items-center gap-1"
-                >
-                  <span>✓ 氏名・生まれ年 公的確認済み</span>
-                  <span className="text-[9px] underline">確認 🔍</span>
-                </button>
-              )}
-            </div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-slate-900 tracking-wide flex items-center gap-2 flex-wrap">
-              <span>{postFullName} 様から貴方へのメッセージです。</span>
-              {postMaidenName && (
-                <span className="text-sm sm:text-base font-normal text-slate-500 font-sans">
-                  （旧姓: {postMaidenName}{postMaidenNameKana ? ` / ${postMaidenNameKana}` : ''}）
-                </span>
-              )}
-            </h1>
-
-            {/* 🛡️ 公的本人確認（eKYC）済みの安心解説バナー */}
-            {Boolean(post.is_ekyc_verified) && (
-              <div className="p-3 bg-gradient-to-r from-teal-50/90 via-sky-50/70 to-emerald-50/80 rounded-2xl border border-teal-200/90 flex items-start gap-2.5 text-xs text-teal-950 font-sans">
-                <ShieldCheck size={16} className="text-teal-600 shrink-0 mt-0.5" />
-                <div className="leading-relaxed">
-                  <strong className="font-bold block text-teal-900">【公的本人確認（eKYC）完了済みのメッセージです】</strong>
-                  差出人は運転免許証・マイナンバーカード等による身元確認（本名・実在・生まれ年の一致）を完了しています。なりすまし等の心配なく、安心して再会希望をお送りいただけます。
-                </div>
-              </div>
-            )}
-
-            {/* メッセージメタデータ（大きめ・見やすい文字サイズ） */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-white/90 p-5 sm:p-6 rounded-2xl border border-slate-200/90 font-sans shadow-2xs">
-              <div className="space-y-1">
-                <span className="text-xs font-bold text-slate-500 block">メッセージを書いた人</span>
-                <div className="text-base sm:text-lg font-bold text-slate-900 font-sans">
-                  <span>{postFullName}</span>
-                  {postKana && (
-                    <span className="text-xs font-normal text-slate-500 ml-1">
-                      （{postKana}）
-                    </span>
-                  )}
-                </div>
-              </div>
-              <div className="space-y-1">
-                <span className="text-xs font-bold text-slate-500 block">旧姓</span>
-                <div className="text-base sm:text-lg font-bold text-slate-900 font-sans">
-                  <span>{postMaidenName || 'なし'}</span>
-                  {postMaidenNameKana && (
-                    <span className="text-xs font-normal text-slate-500 ml-1">
-                      （{postMaidenNameKana}）
-                    </span>
-                  )}
-                </div>
-              </div>
-              <div className="space-y-1">
-                <span className="text-xs font-bold text-slate-500 block">ゆかりの地</span>
-                <div className="text-base sm:text-lg font-bold text-slate-900 font-sans">
+                <span className="text-[11px] font-bold bg-teal-100 text-teal-800 px-2.5 py-0.5 rounded-full font-mono">
                   {postLocation}
-                </div>
+                </span>
+                {postBirthYear && (
+                  <span className="text-[11px] font-bold bg-sky-100 text-sky-900 px-2.5 py-0.5 rounded-full font-mono">
+                    {postBirthYear}
+                  </span>
+                )}
               </div>
-              <div className="space-y-1">
-                <span className="text-xs font-bold text-slate-500 block">生まれ年</span>
-                <div className="text-base sm:text-lg font-bold text-slate-900 font-sans">
-                  {postBirthYear || '非公開'}
+              <div className="flex items-center gap-2.5 flex-wrap pt-1">
+                <h2 className="text-xl sm:text-2xl font-bold font-sans text-slate-900 leading-snug">
+                  <span>{postFullName || 'お名前'} 様から貴方へのメッセージです。</span>
+                  {postMaidenName && (
+                    <span className="text-xs sm:text-sm font-normal text-slate-500 font-sans ml-1">
+                      （旧姓: {postMaidenName}{postMaidenNameKana ? ` / ${postMaidenNameKana}` : ''}）
+                    </span>
+                  )}
+                </h2>
+                {Boolean(post.is_ekyc_verified) && (
+                  <button
+                    type="button"
+                    onClick={() => setShowEkycExplanationModal(true)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-900 border border-rose-300 shadow-2xs text-xs font-bold cursor-pointer transition-all hover:scale-105 active:scale-95 group shrink-0"
+                    title="クリックして公的本人確認（eKYC）の証明内容を確認"
+                  >
+                    <div className="w-4 h-4 rounded-full seal-rainbow flex items-center justify-center text-white shadow-2xs shrink-0">
+                      <ShieldCheck size={10} />
+                    </div>
+                    <span className="font-bold text-[11px]">公的本人確認済</span>
+                    <span className="text-[9.5px] font-medium text-rose-700 bg-white/90 border border-rose-200 px-1.5 py-0.2 rounded-full group-hover:bg-rose-600 group-hover:text-white transition-colors">
+                      詳細を見る 🔍
+                    </span>
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* 右側：公開ステータス ＆ eKYC大型封蝋バッジ */}
+            <div className="flex items-center sm:flex-col sm:items-end justify-between sm:justify-start gap-2 shrink-0 pt-1 sm:pt-0 border-t sm:border-t-0 border-teal-100/60 sm:border-none">
+              <span className="text-xs text-slate-500 font-sans whitespace-nowrap">公開中（Google検索対象）</span>
+              {Boolean(post.is_ekyc_verified) && (
+                <div className="relative group sm:mt-1">
+                  <button
+                    type="button"
+                    onClick={() => setShowEkycExplanationModal(true)}
+                    className="w-12 h-12 rounded-full seal-rainbow flex flex-col items-center justify-center text-white shadow-md hover:shadow-xl hover:scale-110 active:scale-95 transition-all cursor-pointer ring-2 ring-amber-300 shrink-0"
+                    title="クリックして公的本人確認の証明内容を確認"
+                  >
+                    <ShieldCheck size={18} className="text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)] group-hover:rotate-6 transition-transform" />
+                    <span className="text-[6px] font-black tracking-tighter uppercase -mt-0.5 text-white drop-shadow-xs">eKYC済</span>
+                  </button>
+                  <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[8.5px] font-bold text-amber-900 bg-amber-100/90 border border-amber-300 px-1.5 py-0.2 rounded-full whitespace-nowrap pointer-events-none font-sans">
+                    詳細 👆
+                  </span>
                 </div>
+              )}
+            </div>
+          </div>
+
+          {/* メッセージメタデータ（大きめ・見やすい文字サイズ・高コントラスト） */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-white p-5 sm:p-6 rounded-2xl border-2 border-slate-200 font-sans shadow-xs">
+            <div className="space-y-1">
+              <span className="text-xs font-bold text-slate-700 block">メッセージを書いた人</span>
+              <div className="text-base sm:text-lg font-bold text-slate-950 font-sans">
+                <span>{postFullName || '未設定'}</span>
+                {postKana && (
+                  <span className="text-xs font-normal text-slate-600 ml-1">
+                    （{postKana}）
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="space-y-1">
+              <span className="text-xs font-bold text-slate-700 block">旧姓</span>
+              <div className="text-base sm:text-lg font-bold text-slate-950 font-sans">
+                <span>{postMaidenName || 'なし'}</span>
+                {postMaidenNameKana && (
+                  <span className="text-xs font-normal text-slate-600 ml-1">
+                    （{postMaidenNameKana}）
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="space-y-1">
+              <span className="text-xs font-bold text-slate-700 block">ゆかりの地</span>
+              <div className="text-base sm:text-lg font-bold text-slate-950 font-sans">
+                {postLocation || '未設定'}
+              </div>
+            </div>
+            <div className="space-y-1">
+              <span className="text-xs font-bold text-slate-700 block">生まれ年</span>
+              <div className="text-base sm:text-lg font-bold text-slate-950 font-sans">
+                {postBirthYear || '非公開'}
               </div>
             </div>
           </div>
 
-          {/* メッセージ本文 */}
-          <div className="p-6 sm:p-8 bg-white rounded-2xl border-2 border-slate-200 shadow-sm space-y-3 font-sans">
+          {/* メッセージ本文（高コントラスト・くっきり濃い文字） */}
+          <div className="space-y-2">
             <div className="flex items-center justify-between border-b-2 border-teal-100 pb-2">
-              <span className="text-xs text-teal-900 font-extrabold uppercase tracking-widest font-sans flex items-center gap-1.5">
-                <span>✉️</span>
-                <span>MESSAGE FROM SENDER</span>
+              <span className="text-xs sm:text-sm font-extrabold text-teal-900 font-sans flex items-center gap-1.5">
+                <span className="text-base">✉️</span>
+                <span>メッセージ本文</span>
               </span>
-              <span className="text-xs text-slate-600 font-sans font-medium">
+              <span className="text-xs font-medium text-slate-600 font-sans">
                 当時の想い出・メッセージ
               </span>
             </div>
-            <p className="text-base sm:text-lg text-slate-950 font-medium leading-relaxed sm:leading-loose whitespace-pre-wrap">
-              {post.message || post.content || '昔の仲間や知人へ。もし私の名前を見つけたら、ぜひご連絡ください。'}
-            </p>
+            <div className="bg-white p-6 sm:p-7 rounded-2xl border-2 border-slate-300/90 shadow-sm">
+              <p className="text-sm sm:text-base md:text-lg font-medium font-sans text-slate-950 leading-relaxed sm:leading-loose whitespace-pre-wrap">
+                {post.message || post.content || (
+                  <span className="text-slate-400 italic">（メッセージが入力されていません）</span>
+                )}
+              </p>
+            </div>
           </div>
 
-          {/* ===================================================
-              2. メインCTA: 「この人に再会を希望する」
-          =================================================== */}
+          {/* メインCTA */}
           <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-teal-100">
             <div className="text-xs text-slate-600 font-sans space-y-0.5 text-center sm:text-left">
-              <span className="font-bold text-slate-800 block">この人に心当たりはありませんか？</span>
-              <span>当時のエピソードを添えて、再会希望を申請できます。</span>
+              <span className="font-bold text-slate-800 block">
+                {isAuthor ? 'あなたのメッセージが正常に公開されています' : 'この人に心当たりはありませんか？'}
+              </span>
+              <span>
+                {isAuthor ? '心当たりのある方からの再会希望が届くと通知されます。' : '当時のエピソードを添えて、再会希望を申請できます。'}
+              </span>
             </div>
 
-            <button
-              type="button"
-              onClick={() => setShowRequestModal(true)}
-              className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-700 hover:from-teal-700 hover:to-emerald-800 text-white font-bold rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer shadow-md hover:shadow-lg transition-all hover:scale-[1.01] active:scale-95 whitespace-nowrap"
-            >
-              <Send size={16} className="text-teal-200" />
-              <span>この人に再会を希望する</span>
-              <ArrowRight size={15} />
-            </button>
+            {isAuthor ? (
+              <Link
+                to="/account"
+                className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-bold rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md transition-all whitespace-nowrap"
+              >
+                <span>マイアカウントで管理・修正</span>
+                <ArrowRight size={15} />
+              </Link>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setShowRequestModal(true)}
+                className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-700 hover:from-teal-700 hover:to-emerald-800 text-white font-bold rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer shadow-md hover:shadow-lg transition-all hover:scale-[1.01] active:scale-95 whitespace-nowrap font-sans"
+              >
+                <Send size={16} className="text-teal-200" />
+                <span>{postFullName ? `${postFullName}さんに再会を希望する` : 'この人に再会を希望する'}</span>
+                <ArrowRight size={15} />
+              </button>
+            )}
           </div>
         </div>
 
         {/* ===================================================
-            3. 連絡先がわからなくなってしまった貴方へ（再会のきっかけと安心ガイド）
+            2. 連絡先がわからなくなってしまった貴方へ（安心ガイド）
         =================================================== */}
         <div className="bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-8 shadow-sm space-y-5 text-left font-sans">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
             <div className="space-y-1">
-              <span className="text-[10px] font-extrabold text-teal-700 tracking-widest uppercase font-mono flex items-center gap-1">
-                <span>ABOUT THIS LETTER</span>
+              <span className="text-[10px] font-extrabold text-teal-700 tracking-widest uppercase font-sans flex items-center gap-1">
+                <span>ABOUT THIS MESSAGE</span>
                 <span>・</span>
                 <span>メッセージに込められた想いと安心の仕組み</span>
               </span>
-              <h3 className="text-base sm:text-lg font-serif font-bold text-slate-900 flex items-center gap-2 flex-wrap">
+              <h3 className="text-base sm:text-lg font-bold font-sans text-slate-900 flex items-center gap-2 flex-wrap">
                 <span>🕊️ 連絡先がわからなくなってしまった貴方へ</span>
               </h3>
               <p className="text-xs text-slate-500 font-sans">
@@ -353,12 +381,12 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                 <div className="w-6 h-6 rounded-lg bg-teal-700 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
                   1
                 </div>
-                <strong className="text-slate-900 text-xs sm:text-sm font-bold block font-serif">
+                <strong className="text-slate-900 text-xs sm:text-sm font-bold block font-sans">
                   メッセージに込められた想い
                 </strong>
               </div>
               <p className="text-slate-600 text-[11.5px] leading-relaxed">
-                引っ越しや環境の変化で連絡先が途絶えた大切な人に向けて、差出人が<strong>「もう一度話したい、元気か知りたい」</strong>という想いを込めて海に託したメッセージです。
+                引っ越しや環境の変化で連絡先が途絶えた大切な人に向けて、差出人が<strong>「もう一度話したい、元気か知りたい」</strong>という想いを込めて届けているメッセージです。
               </p>
             </div>
 
@@ -368,7 +396,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                 <div className="w-6 h-6 rounded-lg bg-sky-700 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
                   2
                 </div>
-                <strong className="text-slate-900 text-xs sm:text-sm font-bold block font-serif">
+                <strong className="text-slate-900 text-xs sm:text-sm font-bold block font-sans">
                   心当たりがある時は
                 </strong>
               </div>
@@ -383,7 +411,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                 <div className="w-6 h-6 rounded-lg bg-amber-700 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
                   3
                 </div>
-                <strong className="text-slate-900 text-xs sm:text-sm font-bold block font-serif">
+                <strong className="text-slate-900 text-xs sm:text-sm font-bold block font-sans">
                   安心の相互合意システム
                 </strong>
               </div>
@@ -400,24 +428,26 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
         </div>
 
         {/* ===================================================
-            4. サブCTA: 「あなたもメッセージを届けませんか？」
+            3. サブCTA: 「あなたもメッセージを届けませんか？」
         =================================================== */}
-        <div className="p-6 rounded-3xl bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-700 text-white shadow-md flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
-          <div className="space-y-1">
-            <h3 className="text-base sm:text-lg font-serif font-bold">
-              あなたも大切な人に向けて、メッセージを届けませんか？
-            </h3>
-            <p className="text-xs text-teal-100 font-sans">
-              お名前とゆかりの地を登録しておくだけで、探している知人が見つけられます。
-            </p>
+        {!isAuthor && (
+          <div className="p-6 rounded-3xl bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-700 text-white shadow-md flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+            <div className="space-y-1">
+              <h3 className="text-base sm:text-lg font-bold font-sans">
+                あなたも大切な人に向けて、メッセージを届けませんか？
+              </h3>
+              <p className="text-xs text-teal-100 font-sans">
+                お名前とゆかりの地を登録しておくだけで、探している知人が見つけられます。
+              </p>
+            </div>
+            <Link
+              to="/create"
+              className="px-6 py-3 bg-white text-teal-800 hover:bg-teal-50 font-bold rounded-2xl text-xs sm:text-sm shadow-sm transition-all whitespace-nowrap"
+            >
+              メッセージを届ける
+            </Link>
           </div>
-          <Link
-            to="/create"
-            className="px-6 py-3 bg-white text-teal-800 hover:bg-teal-50 font-bold rounded-2xl text-xs sm:text-sm shadow-sm transition-all whitespace-nowrap"
-          >
-            メッセージを届ける
-          </Link>
-        </div>
+        )}
       </div>
 
       {/* ===================================================
