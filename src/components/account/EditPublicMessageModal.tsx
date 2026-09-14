@@ -270,7 +270,10 @@ export const EditPublicMessageModal: React.FC<EditPublicMessageModalProps> = ({
                     type="text"
                     required
                     value={formData.firstName}
-                    onChange={e => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
+                    onChange={e => {
+                      const val = e.target.value;
+                      setFormData(prev => ({ ...prev, firstName: val }));
+                    }}
                     className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-slate-300 rounded-xl bg-white text-slate-950 font-medium focus:border-teal-600 outline-none"
                   />
                 </div>
@@ -289,8 +292,10 @@ export const EditPublicMessageModal: React.FC<EditPublicMessageModalProps> = ({
                     pattern="^[ぁ-んー\s　]*$"
                     title="全角ひらがなでご入力ください"
                     value={formData.lastNameKana}
-                    onChange={e => setFormData(prev => ({ ...prev, lastNameKana: toHiragana(e.target.value) }))}
-                    onCompositionEnd={e => setFormData(prev => ({ ...prev, lastNameKana: toHiragana(e.currentTarget.value) }))}
+                    onChange={e => {
+                      const val = e.target.value;
+                      setFormData(prev => ({ ...prev, lastNameKana: toHiragana(val) }));
+                    }}
                     placeholder="例：やまだ"
                     className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl bg-white text-slate-950 focus:border-teal-600 outline-none font-sans"
                   />
@@ -307,8 +312,10 @@ export const EditPublicMessageModal: React.FC<EditPublicMessageModalProps> = ({
                     pattern="^[ぁ-んー\s　]*$"
                     title="全角ひらがなでご入力ください"
                     value={formData.firstNameKana}
-                    onChange={e => setFormData(prev => ({ ...prev, firstNameKana: toHiragana(e.target.value) }))}
-                    onCompositionEnd={e => setFormData(prev => ({ ...prev, firstNameKana: toHiragana(e.currentTarget.value) }))}
+                    onChange={e => {
+                      const val = e.target.value;
+                      setFormData(prev => ({ ...prev, firstNameKana: toHiragana(val) }));
+                    }}
                     placeholder="例：たろう"
                     className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl bg-white text-slate-950 focus:border-teal-600 outline-none font-sans"
                   />
@@ -321,7 +328,10 @@ export const EditPublicMessageModal: React.FC<EditPublicMessageModalProps> = ({
                   <input
                     type="text"
                     value={formData.maidenName}
-                    onChange={e => setFormData(prev => ({ ...prev, maidenName: e.target.value }))}
+                    onChange={e => {
+                      const val = e.target.value;
+                      setFormData(prev => ({ ...prev, maidenName: val }));
+                    }}
                     placeholder="例：佐藤"
                     className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl bg-white text-slate-950 focus:border-teal-600 outline-none"
                   />
@@ -338,8 +348,10 @@ export const EditPublicMessageModal: React.FC<EditPublicMessageModalProps> = ({
                     pattern="^[ぁ-んー\s　]*$"
                     title="全角ひらがなでご入力ください"
                     value={formData.maidenNameKana}
-                    onChange={e => setFormData(prev => ({ ...prev, maidenNameKana: toHiragana(e.target.value) }))}
-                    onCompositionEnd={e => setFormData(prev => ({ ...prev, maidenNameKana: toHiragana(e.currentTarget.value) }))}
+                    onChange={e => {
+                      const val = e.target.value;
+                      setFormData(prev => ({ ...prev, maidenNameKana: toHiragana(val) }));
+                    }}
                     placeholder="例：さとう"
                     className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl bg-white text-slate-950 focus:border-teal-600 outline-none font-sans"
                   />
@@ -352,11 +364,14 @@ export const EditPublicMessageModal: React.FC<EditPublicMessageModalProps> = ({
                   <select
                     required
                     value={formData.hometownPref}
-                    onChange={e => setFormData(prev => ({ ...prev, hometownPref: e.target.value }))}
+                    onChange={e => {
+                      const val = e.target.value;
+                      setFormData(prev => ({ ...prev, hometownPref: val }));
+                    }}
                     className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-slate-300 rounded-xl bg-white text-slate-950 font-medium focus:border-teal-600 outline-none cursor-pointer"
                   >
                     <option value="">都道府県を選択</option>
-                    {PREFECTURES.map(pref => (
+                    {PREFECTURES?.map(pref => pref && (
                       <option key={pref} value={pref}>{pref}</option>
                     ))}
                   </select>
@@ -366,7 +381,10 @@ export const EditPublicMessageModal: React.FC<EditPublicMessageModalProps> = ({
                   <select
                     required
                     value={formData.birthYear}
-                    onChange={e => setFormData(prev => ({ ...prev, birthYear: e.target.value }))}
+                    onChange={e => {
+                      const val = e.target.value;
+                      setFormData(prev => ({ ...prev, birthYear: val }));
+                    }}
                     className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-slate-300 rounded-xl bg-white text-slate-950 font-medium focus:border-teal-600 outline-none cursor-pointer"
                   >
                     <option value="">生まれ年を選択（必須）</option>

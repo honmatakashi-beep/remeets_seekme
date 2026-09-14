@@ -72,8 +72,11 @@ export const CreatePostPage = () => {
 
   // 初期値の引き継ぎ
   useEffect(() => {
-    if (location.state) {
-      const { initialTargetName, initialTargetLastName, initialTargetFirstName } = location.state as any;
+    if (location?.state) {
+      const state = location.state as any;
+      const initialTargetName = state?.initialTargetName;
+      const initialTargetLastName = state?.initialTargetLastName;
+      const initialTargetFirstName = state?.initialTargetFirstName;
       if (initialTargetLastName || initialTargetFirstName || initialTargetName) {
         setFormData(prev => ({
           ...prev,
@@ -82,26 +85,26 @@ export const CreatePostPage = () => {
         }));
       }
     }
-  }, [location.state]);
+  }, [location?.state]);
 
   // ユーザーの登録情報から初期補完
   useEffect(() => {
     if (user) {
-      const userLastName = (user as any).lastName || (user.fullName ? user.fullName.trim().split(/\s+/)[0] : '');
-      const userFirstName = (user as any).firstName || (user.fullName ? user.fullName.trim().split(/\s+/).slice(1).join(' ') : '');
+      const userLastName = (user as any)?.lastName || (user?.fullName ? user.fullName.trim().split(/\s+/)[0] : '');
+      const userFirstName = (user as any)?.firstName || (user?.fullName ? user.fullName.trim().split(/\s+/).slice(1).join(' ') : '');
 
       setFormData(prev => ({
         ...prev,
         lastName: prev.lastName || userLastName || '',
         firstName: prev.firstName || userFirstName || '',
-        maidenName: prev.maidenName || (user as any).maiden_name || '',
-        hometownPref: prev.hometownPref || (user as any).hometown || '',
-        birthYear: prev.birthYear || (user.birthdate ? new Date(user.birthdate).getFullYear().toString() : ''),
-        contactType: prev.contactId ? prev.contactType : ((user as any).contact_type || 'LINE'),
-        contactId: prev.contactId || (user as any).contact_id || ''
+        maidenName: prev.maidenName || (user as any)?.maiden_name || '',
+        hometownPref: prev.hometownPref || (user as any)?.hometown || '',
+        birthYear: prev.birthYear || (user?.birthdate ? new Date(user.birthdate).getFullYear().toString() : ''),
+        contactType: prev.contactId ? prev.contactType : ((user as any)?.contact_type || 'LINE'),
+        contactId: prev.contactId || (user as any)?.contact_id || ''
       }));
 
-      if (user.email && !authEmail) {
+      if (user?.email && !authEmail) {
         setAuthEmail(user.email);
       }
 
@@ -1683,7 +1686,10 @@ export const CreatePostPage = () => {
                     type="text"
                     required
                     value={formData.lastName}
-                    onChange={e => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
+                    onChange={e => {
+                      const val = e.target.value;
+                      setFormData(prev => ({ ...prev, lastName: val }));
+                    }}
                     placeholder="例：山田"
                     className="w-full px-4 py-3 text-sm border border-slate-200 rounded-xl bg-slate-50/60 focus:bg-white focus:border-teal-600 outline-none transition-all shadow-inner"
                   />
@@ -1697,7 +1703,10 @@ export const CreatePostPage = () => {
                     type="text"
                     required
                     value={formData.firstName}
-                    onChange={e => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
+                    onChange={e => {
+                      const val = e.target.value;
+                      setFormData(prev => ({ ...prev, firstName: val }));
+                    }}
                     placeholder="例：太郎"
                     className="w-full px-4 py-3 text-sm border border-slate-200 rounded-xl bg-slate-50/60 focus:bg-white focus:border-teal-600 outline-none transition-all shadow-inner"
                   />
@@ -1721,8 +1730,10 @@ export const CreatePostPage = () => {
                     pattern="^[ぁ-んー\s　]*$"
                     title="全角ひらがなでご入力ください"
                     value={formData.lastNameKana}
-                    onChange={e => setFormData(prev => ({ ...prev, lastNameKana: toHiragana(e.target.value) }))}
-                    onCompositionEnd={e => setFormData(prev => ({ ...prev, lastNameKana: toHiragana(e.currentTarget.value) }))}
+                    onChange={e => {
+                      const val = e.target.value;
+                      setFormData(prev => ({ ...prev, lastNameKana: toHiragana(val) }));
+                    }}
                     placeholder="例：やまだ"
                     className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-teal-200/80 rounded-xl bg-white focus:border-teal-600 outline-none transition-all shadow-2xs font-sans"
                   />
@@ -1743,8 +1754,10 @@ export const CreatePostPage = () => {
                     pattern="^[ぁ-んー\s　]*$"
                     title="全角ひらがなでご入力ください"
                     value={formData.firstNameKana}
-                    onChange={e => setFormData(prev => ({ ...prev, firstNameKana: toHiragana(e.target.value) }))}
-                    onCompositionEnd={e => setFormData(prev => ({ ...prev, firstNameKana: toHiragana(e.currentTarget.value) }))}
+                    onChange={e => {
+                      const val = e.target.value;
+                      setFormData(prev => ({ ...prev, firstNameKana: toHiragana(val) }));
+                    }}
                     placeholder="例：たろう"
                     className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-teal-200/80 rounded-xl bg-white focus:border-teal-600 outline-none transition-all shadow-2xs font-sans"
                   />
@@ -1760,7 +1773,10 @@ export const CreatePostPage = () => {
                   <input
                     type="text"
                     value={formData.maidenName}
-                    onChange={e => setFormData(prev => ({ ...prev, maidenName: e.target.value }))}
+                    onChange={e => {
+                      const val = e.target.value;
+                      setFormData(prev => ({ ...prev, maidenName: val }));
+                    }}
                     placeholder="例：佐藤（当時の苗字）"
                     className="w-full px-4 py-2.5 text-xs sm:text-sm border border-slate-200 rounded-xl bg-slate-50/60 focus:bg-white focus:border-teal-600 outline-none transition-all shadow-inner"
                   />
@@ -1780,8 +1796,10 @@ export const CreatePostPage = () => {
                     pattern="^[ぁ-んー\s　]*$"
                     title="全角ひらがなでご入力ください"
                     value={formData.maidenNameKana}
-                    onChange={e => setFormData(prev => ({ ...prev, maidenNameKana: toHiragana(e.target.value) }))}
-                    onCompositionEnd={e => setFormData(prev => ({ ...prev, maidenNameKana: toHiragana(e.currentTarget.value) }))}
+                    onChange={e => {
+                      const val = e.target.value;
+                      setFormData(prev => ({ ...prev, maidenNameKana: toHiragana(val) }));
+                    }}
                     placeholder="例：さとう"
                     className="w-full px-4 py-2.5 text-xs sm:text-sm border border-slate-200 rounded-xl bg-slate-50/60 focus:bg-white focus:border-teal-600 outline-none transition-all shadow-inner font-sans"
                   />
@@ -1797,11 +1815,14 @@ export const CreatePostPage = () => {
                   <select
                     required
                     value={formData.birthYear}
-                    onChange={e => setFormData(prev => ({ ...prev, birthYear: e.target.value }))}
+                    onChange={e => {
+                      const val = e.target.value;
+                      setFormData(prev => ({ ...prev, birthYear: val }));
+                    }}
                     className="w-full px-3.5 py-3 text-xs sm:text-sm border border-slate-200 rounded-xl bg-slate-50/60 focus:bg-white focus:border-teal-600 outline-none transition-all shadow-inner cursor-pointer"
                   >
                     <option value="">生まれ年を選択（必須）</option>
-                    {BIRTH_YEAR_OPTIONS.map(opt => (
+                    {BIRTH_YEAR_OPTIONS?.map(opt => opt && (
                       <option key={opt.year} value={opt.year}>{opt.label}</option>
                     ))}
                   </select>
@@ -1814,11 +1835,14 @@ export const CreatePostPage = () => {
                   <select
                     required
                     value={formData.hometownPref}
-                    onChange={e => setFormData(prev => ({ ...prev, hometownPref: e.target.value }))}
+                    onChange={e => {
+                      const val = e.target.value;
+                      setFormData(prev => ({ ...prev, hometownPref: val }));
+                    }}
                     className="w-full px-3.5 py-3 text-xs sm:text-sm border border-slate-200 rounded-xl bg-slate-50/60 focus:bg-white focus:border-teal-600 outline-none transition-all shadow-inner cursor-pointer"
                   >
                     <option value="">都道府県を選択</option>
-                    {PREFECTURES.map(pref => (
+                    {PREFECTURES?.map(pref => pref && (
                       <option key={pref} value={pref}>{pref}</option>
                     ))}
                   </select>
@@ -1935,7 +1959,10 @@ export const CreatePostPage = () => {
                     required
                     rows={4}
                     value={formData.message}
-                    onChange={e => setFormData(prev => ({ ...prev, message: e.target.value }))}
+                    onChange={e => {
+                      const val = e.target.value;
+                      setFormData(prev => ({ ...prev, message: val }));
+                    }}
                     placeholder="例：元気にしていますか？あの時一緒に過ごした放課後の夕暮れの風景を今でもよく思い出します。もし私を探してくれたら、メッセージを届けてください。"
                     className="w-full p-4 sm:p-5 text-base sm:text-lg text-slate-950 font-letter-mincho font-serif font-medium border-2 border-slate-300 rounded-2xl bg-white focus:border-teal-600 focus:ring-4 focus:ring-teal-500/10 outline-none transition-all shadow-sm leading-relaxed placeholder:text-slate-400 placeholder:font-normal"
                   />
@@ -2023,7 +2050,10 @@ export const CreatePostPage = () => {
                   </label>
                   <select
                     value={formData.contactType}
-                    onChange={e => setFormData(prev => ({ ...prev, contactType: e.target.value }))}
+                    onChange={e => {
+                      const val = e.target.value;
+                      setFormData(prev => ({ ...prev, contactType: val }));
+                    }}
                     className="w-full px-3.5 py-3 text-xs sm:text-sm border border-slate-200 rounded-xl bg-slate-50/60 focus:bg-white focus:border-teal-600 outline-none transition-all shadow-inner cursor-pointer"
                   >
                     <option value="LINE">LINE ID</option>
@@ -2041,7 +2071,10 @@ export const CreatePostPage = () => {
                     type="text"
                     required
                     value={formData.contactId}
-                    onChange={e => setFormData(prev => ({ ...prev, contactId: e.target.value }))}
+                    onChange={e => {
+                      const val = e.target.value;
+                      setFormData(prev => ({ ...prev, contactId: val }));
+                    }}
                     placeholder={formData.contactType === 'LINE' ? '例：taro_line_1234' : '例：your-email@example.com'}
                     className="w-full px-4 py-3 text-sm border border-slate-200 rounded-xl bg-slate-50/60 focus:bg-white focus:border-teal-600 outline-none transition-all shadow-inner font-mono"
                   />
@@ -2056,7 +2089,10 @@ export const CreatePostPage = () => {
                 <input
                   type="text"
                   value={formData.contactNote}
-                  onChange={e => setFormData(prev => ({ ...prev, contactNote: e.target.value }))}
+                  onChange={e => {
+                    const val = e.target.value;
+                    setFormData(prev => ({ ...prev, contactNote: val }));
+                  }}
                   placeholder="例：平日の夜か週末ならいつでもLINE返信できます！"
                   className="w-full px-4 py-2.5 text-xs sm:text-sm border border-slate-200 rounded-xl bg-slate-50/60 focus:bg-white focus:border-teal-600 outline-none transition-all shadow-inner"
                 />
@@ -2253,7 +2289,10 @@ export const CreatePostPage = () => {
                       type="email"
                       required
                       value={authEmail}
-                      onChange={e => setAuthEmail(e.target.value)}
+                      onChange={e => {
+                        const val = e.target.value;
+                        setAuthEmail(val);
+                      }}
                       placeholder="your-email@example.com"
                       className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-slate-200 rounded-xl bg-slate-50/60 focus:bg-white focus:border-teal-600 outline-none transition-all shadow-inner font-mono"
                     />
@@ -2269,7 +2308,10 @@ export const CreatePostPage = () => {
                       required
                       minLength={authMode === 'register' ? 8 : 1}
                       value={authPassword}
-                      onChange={e => setAuthPassword(e.target.value)}
+                      onChange={e => {
+                        const val = e.target.value;
+                        setAuthPassword(val);
+                      }}
                       placeholder="••••••••"
                       className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-slate-200 rounded-xl bg-slate-50/60 focus:bg-white focus:border-teal-600 outline-none transition-all shadow-inner"
                     />

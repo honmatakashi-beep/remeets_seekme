@@ -319,7 +319,10 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
                 <input
                   type="text"
                   value={editingMaidenName}
-                  onChange={(e) => setEditingMaidenName(e.target.value)}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setEditingMaidenName(val);
+                  }}
                   placeholder="例: 鈴木（旧姓がある場合のみ）"
                   className="w-full px-3.5 py-2.5 bg-white border border-slate-200 hover:border-indigo-400 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 rounded-xl text-xs font-medium text-slate-900 transition-all"
                 />
@@ -339,8 +342,10 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
                   pattern="^[ぁ-んー\s　]*$"
                   title="全角ひらがなでご入力ください"
                   value={editingMaidenNameKana}
-                  onChange={(e) => setEditingMaidenNameKana(toHiragana(e.target.value))}
-                  onCompositionEnd={(e) => setEditingMaidenNameKana(toHiragana(e.currentTarget.value))}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setEditingMaidenNameKana(toHiragana(val));
+                  }}
                   placeholder="例: すずき"
                   className="w-full px-3.5 py-2.5 bg-white border border-slate-200 hover:border-indigo-400 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 rounded-xl text-xs font-medium text-slate-900 transition-all font-sans"
                 />
