@@ -40,6 +40,9 @@ export const CreatePostPage = () => {
   // 選択されたプラン ('free' | 'ekyc')
   const [pendingPlan, setPendingPlan] = useState<'free' | 'ekyc'>('ekyc');
 
+  // プレビュー表示切り替えタブ ('ekyc': 認証あり表示, 'free': 通常無料表示)
+  const [previewTab, setPreviewTab] = useState<'ekyc' | 'free'>('ekyc');
+
   // 無料アカウント登録・ログインモーダル
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState<'register' | 'login'>('register');
@@ -406,7 +409,234 @@ export const CreatePostPage = () => {
           )}
 
           {/* =========================================================================
-              1. 投函プランの選択エリア（🌟 eKYC公的認証付き 600円 vs ✉️ 通常無料 0円）
+              1. プレビュー見え方比較スイッチ（🌈 認証あり vs ✉️ 通常無料）
+          ========================================================================= */}
+          <div className="bg-slate-900 text-white rounded-3xl p-5 sm:p-7 shadow-xl space-y-4 border border-slate-800">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <span className="text-[10px] font-extrabold uppercase tracking-widest text-amber-400 font-mono bg-amber-400/10 px-2 py-0.5 rounded-md border border-amber-400/30 inline-block">
+                  PREVIEW COMPARISON
+                </span>
+                <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2 font-serif">
+                  <Sparkles size={18} className="text-amber-400" />
+                  <span>お相手からの見え方を比較する</span>
+                </h3>
+                <p className="text-xs text-slate-300 font-sans leading-relaxed">
+                  公的本人確認（eKYC）の有無で、お相手に見える安心感がどう変わるか切り替えて確認できます。
+                </p>
+              </div>
+
+              {/* 切り替えボタングループ */}
+              <div className="flex items-center bg-slate-800/90 p-1.5 rounded-2xl border border-slate-700 shrink-0 self-stretch sm:self-auto shadow-inner">
+                <button
+                  type="button"
+                  onClick={() => setPreviewTab('ekyc')}
+                  className={`flex-1 sm:flex-initial px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer font-serif ${
+                    previewTab === 'ekyc'
+                      ? 'bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-white shadow-md'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <ShieldCheck size={15} className={previewTab === 'ekyc' ? 'text-amber-100' : 'text-slate-400'} />
+                  <span>🌈 公的認証あり（推奨）</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPreviewTab('free')}
+                  className={`flex-1 sm:flex-initial px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer font-serif ${
+                    previewTab === 'free'
+                      ? 'bg-slate-700 text-white shadow-md'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <Send size={13} className={previewTab === 'free' ? 'text-slate-200' : 'text-slate-400'} />
+                  <span>✉️ 通常表示（無料）</span>
+                </button>
+              </div>
+            </div>
+
+            {/* 現在のプレビューモードの解説タグ */}
+            <div className="pt-3 border-t border-slate-800/80 text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 font-sans">
+              {previewTab === 'ekyc' ? (
+                <span className="text-amber-300 font-medium flex items-center gap-1.5">
+                  <CheckCircle2 size={15} className="text-amber-400 shrink-0" />
+                  <span>
+                    【認証プレビュー中】動く虹色封蝋印・公的証明バッジが付与され、相手の「なりすまし不安」をゼロにします。
+                  </span>
+                </span>
+              ) : (
+                <span className="text-slate-400 font-medium flex items-center gap-1.5">
+                  <Check size={15} className="text-slate-500 shrink-0" />
+                  <span>
+                    【通常プレビュー中】認証マークなしの標準表示です（いつでも後からマイページで認証を追加できます）。
+                  </span>
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* =========================================================================
+              2. 💌 お相手が見る実際の手紙詳細カード（本番HTMLと100%同一）
+          ========================================================================= */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between px-2">
+              <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5 font-sans">
+                <Eye size={14} className="text-teal-600" />
+                <span>お相手が見る公開画面の実物プレビュー</span>
+                {previewTab === 'ekyc' && (
+                  <span className="text-[10px] font-bold bg-amber-100 text-amber-900 px-2 py-0.5 rounded-md border border-amber-300 font-mono ml-1">
+                    🌈 eKYC認証マーク点灯中
+                  </span>
+                )}
+              </span>
+              <span className="text-[11px] text-slate-400 font-mono">
+                REAL HTML VIEW
+              </span>
+            </div>
+
+            <div className={`relative rounded-3xl bg-gradient-to-br from-white via-teal-50/20 to-sky-50/30 border-2 p-6 sm:p-10 shadow-lg text-left space-y-6 overflow-hidden transition-all ${
+              previewTab === 'ekyc' ? 'border-amber-400/90 ring-4 ring-amber-400/10' : 'border-teal-300/80'
+            }`}>
+              <div className="absolute top-0 right-0 w-48 h-48 bg-teal-200/20 rounded-full blur-3xl pointer-events-none" />
+
+              {/* ヘッダー情報 */}
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-teal-100 pb-4">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-xs font-bold bg-teal-100 text-teal-800 px-3 py-1 rounded-full uppercase tracking-wider font-mono">
+                    {formData.hometownPref || '全国'}
+                  </span>
+                  {formData.birthYear && (
+                    <span className="text-xs font-bold bg-sky-100 text-sky-900 px-3 py-1 rounded-full font-mono">
+                      {formatBirthYearLabel(parseInt(formData.birthYear, 10))}
+                    </span>
+                  )}
+                  <span className="text-[11px] text-slate-400 font-mono">
+                    #PREVIEW
+                  </span>
+                </div>
+
+                {/* 認証状態に応じたマーク表示 */}
+                {previewTab === 'ekyc' ? (
+                  <div className="flex items-center gap-2">
+                    <span className="seal-rainbow px-3 py-1 text-white text-xs font-bold rounded-full shadow-xs flex items-center gap-1.5 animate-pulse">
+                      <ShieldCheck size={14} className="text-amber-200" />
+                      <span>🌈 公的本人確認済</span>
+                    </span>
+                  </div>
+                ) : (
+                  <span className="text-xs font-bold text-teal-700 bg-white/90 border border-teal-200 px-3 py-1 rounded-full shadow-2xs">
+                    💌 私を探すあなたへ
+                  </span>
+                )}
+              </div>
+
+              {/* 氏名・旧姓 & 認証バッジ */}
+              <div className="space-y-1.5">
+                <span className="text-xs font-bold text-slate-500 font-sans">手紙を置いた人</span>
+                <div className="flex flex-wrap items-center gap-3">
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-slate-900 tracking-wide">
+                    {fullName || 'お名前'}
+                    {formData.maidenName && (
+                      <span className="text-sm sm:text-base font-normal text-slate-500 font-sans ml-2">
+                        （旧姓: {formData.maidenName}）
+                      </span>
+                    )}
+                  </h1>
+
+                  {previewTab === 'ekyc' && (
+                    <span className="text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-300 px-2.5 py-1 rounded-full flex items-center gap-1 shadow-2xs font-sans">
+                      <CheckCircle2 size={13} className="text-emerald-600" />
+                      <span>✓ 氏名・生まれ年 公的確認済み</span>
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* 🌟 認証あり時の安心解説バナー */}
+              {previewTab === 'ekyc' && (
+                <div className="p-4 bg-gradient-to-r from-amber-50/90 to-orange-50/90 rounded-2xl border border-amber-300/80 shadow-xs space-y-1">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck size={16} className="text-amber-700 shrink-0" />
+                    <strong className="text-xs sm:text-sm font-serif font-bold text-amber-950">
+                      差出人の身元確認（公的本人確認 eKYC）が完了しています
+                    </strong>
+                  </div>
+                  <p className="text-[11px] text-amber-900/80 leading-relaxed font-sans pl-6">
+                    このお手紙は、公的書類（運転免許証・マイナンバーカード等）により本名と生年月日の実在が確認されています。お相手が安心して再会申請できるよう保証されています。
+                  </p>
+                </div>
+              )}
+
+              {/* メッセージ本文 */}
+              <div className="p-6 sm:p-8 bg-white/95 rounded-2xl border border-slate-200 shadow-inner space-y-3 font-serif">
+                <span className="text-xs text-teal-700 font-bold block uppercase tracking-widest font-sans">
+                  MESSAGE
+                </span>
+                <p className="text-sm sm:text-base md:text-lg text-slate-800 leading-relaxed sm:leading-loose whitespace-pre-wrap">
+                  {formData.message || '私を探しているあなたへ。メッセージをお待ちしています。'}
+                </p>
+              </div>
+
+              {/* メインCTA（相手側の視点） */}
+              <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-teal-100">
+                <div className="text-xs text-slate-600 font-sans space-y-0.5 text-center sm:text-left">
+                  <span className="font-bold text-slate-800 block">この人に心当たりはありませんか？</span>
+                  <span>当時のエピソードを添えて、無料で再会希望を申請できます。</span>
+                </div>
+
+                <div className="px-6 py-3 bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-bold rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2 opacity-90 cursor-default shadow-sm pointer-events-none">
+                  <Send size={15} className="text-teal-200" />
+                  <span>この人に再会を希望する（相手用ボタン）</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* =========================================================================
+              3. 安心解説: 相互承認制・eKYC本人確認の仕組み図解
+          ========================================================================= */}
+          <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-5">
+            <div className="text-center space-y-1">
+              <span className="text-[10px] font-bold text-teal-700 tracking-[0.25em] uppercase font-sans">
+                SAFETY & PRIVACY
+              </span>
+              <h2 className="text-lg sm:text-xl font-serif font-bold text-slate-900">
+                安心・安全の相互承認フロー
+              </h2>
+              <p className="text-xs text-slate-500 font-sans">
+                一方的な連絡先開示や悪用を防ぐため、完全な相互合意制を採用しています。
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left font-sans text-xs">
+              <div className="p-4 bg-teal-50/50 rounded-2xl border border-teal-100 space-y-1.5">
+                <span className="text-[10px] font-bold text-teal-700 font-mono block">STEP 1</span>
+                <strong className="text-slate-900 block">エピソード送信（無料）</strong>
+                <p className="text-slate-600 leading-relaxed text-[11px]">
+                  相手が当時の思い出を添えて申請。あなた宛てにメールで通知が届きます。
+                </p>
+              </div>
+
+              <div className="p-4 bg-sky-50/50 rounded-2xl border border-sky-100 space-y-1.5">
+                <span className="text-[10px] font-bold text-sky-700 font-mono block">STEP 2</span>
+                <strong className="text-slate-900 block">あなたが確認＆承認</strong>
+                <p className="text-slate-600 leading-relaxed text-[11px]">
+                  あなたが届いたエピソードを読み、「本人だ！」と納得して承認します。
+                </p>
+              </div>
+
+              <div className="p-4 bg-emerald-50/50 rounded-2xl border border-emerald-100 space-y-1.5">
+                <span className="text-[10px] font-bold text-emerald-700 font-mono block">STEP 3</span>
+                <strong className="text-slate-900 block">連絡先を安全に交換</strong>
+                <p className="text-slate-600 leading-relaxed text-[11px]">
+                  相互承認後、登録したLINEやメール等の連絡先が安全に開示されます。
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* =========================================================================
+              4. 投函プランの選択エリア（🌟 eKYC公的認証付き 600円 vs ✉️ 通常無料 0円）
           ========================================================================= */}
           <div className="bg-white rounded-3xl border-2 border-teal-500/40 p-6 sm:p-8 space-y-6 shadow-xl text-left">
             <div className="text-center space-y-1.5 max-w-lg mx-auto">
@@ -423,7 +653,9 @@ export const CreatePostPage = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 pt-1">
               {/* プランA: 🌟 公的認証（eKYC）付き投函（おすすめ） */}
-              <div className="relative rounded-3xl border-2 border-amber-400 bg-gradient-to-b from-amber-50/60 via-white to-orange-50/30 p-6 sm:p-7 space-y-4 shadow-md hover:shadow-lg transition-all flex flex-col justify-between">
+              <div className={`relative rounded-3xl border-2 p-6 sm:p-7 space-y-4 shadow-md hover:shadow-lg transition-all flex flex-col justify-between ${
+                previewTab === 'ekyc' ? 'border-amber-500 bg-gradient-to-b from-amber-50/80 via-white to-orange-50/40 ring-4 ring-amber-400/20' : 'border-amber-400 bg-gradient-to-b from-amber-50/60 via-white to-orange-50/30'
+              }`}>
                 <div className="absolute -top-3 left-6 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[10px] font-black px-3 py-0.5 rounded-full shadow-xs uppercase tracking-wider flex items-center gap-1 font-sans">
                   <Crown size={12} />
                   <span>おすすめ・信頼度 No.1</span>
@@ -487,7 +719,9 @@ export const CreatePostPage = () => {
               </div>
 
               {/* プランB: ✉️ 通常無料投函 */}
-              <div className="rounded-3xl border border-slate-200 bg-slate-50/50 hover:bg-white p-6 sm:p-7 space-y-4 shadow-xs hover:shadow-sm transition-all flex flex-col justify-between">
+              <div className={`rounded-3xl border p-6 sm:p-7 space-y-4 shadow-xs hover:shadow-sm transition-all flex flex-col justify-between ${
+                previewTab === 'free' ? 'border-slate-400 bg-white ring-4 ring-slate-200' : 'border-slate-200 bg-slate-50/50 hover:bg-white'
+              }`}>
                 <div className="space-y-3">
                   <div className="flex justify-between items-start">
                     <div>
@@ -547,121 +781,9 @@ export const CreatePostPage = () => {
             </div>
           </div>
 
-          {/* 💌 2. お相手が見る実際の手紙詳細カード（本番HTMLと100%同一） */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between px-2">
-              <span className="text-xs font-bold text-slate-600 flex items-center gap-1.5 font-sans">
-                <Eye size={14} className="text-teal-600" />
-                <span>お相手が見る公開画面の実物プレビュー</span>
-              </span>
-              <span className="text-[11px] text-slate-400 font-mono">
-                REAL HTML VIEW
-              </span>
-            </div>
-
-            <div className="relative rounded-3xl bg-gradient-to-br from-white via-teal-50/20 to-sky-50/30 border-2 border-teal-300/80 p-6 sm:p-10 shadow-lg text-left space-y-6 overflow-hidden">
-              <div className="absolute top-0 right-0 w-48 h-48 bg-teal-200/20 rounded-full blur-3xl pointer-events-none" />
-
-              {/* ヘッダー情報 */}
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-teal-100 pb-4">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-xs font-bold bg-teal-100 text-teal-800 px-3 py-1 rounded-full uppercase tracking-wider font-mono">
-                    {formData.hometownPref || '全国'}
-                  </span>
-                  {formData.birthYear && (
-                    <span className="text-xs font-bold bg-sky-100 text-sky-900 px-3 py-1 rounded-full font-mono">
-                      {formatBirthYearLabel(parseInt(formData.birthYear, 10))}
-                    </span>
-                  )}
-                  <span className="text-[11px] text-slate-400 font-mono">
-                    #NEW-PREVIEW
-                  </span>
-                </div>
-                <span className="text-xs font-bold text-teal-700 bg-white/90 border border-teal-200 px-3 py-1 rounded-full shadow-2xs">
-                  💌 私を探すあなたへ
-                </span>
-              </div>
-
-              {/* 氏名・旧姓 */}
-              <div className="space-y-1">
-                <span className="text-xs font-bold text-slate-500 font-sans">手紙を置いた人</span>
-                <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-slate-900 tracking-wide">
-                  {fullName || 'お名前'}
-                  {formData.maidenName && (
-                    <span className="text-sm sm:text-base font-normal text-slate-500 font-sans ml-2">
-                      （旧姓: {formData.maidenName}）
-                    </span>
-                  )}
-                </h1>
-              </div>
-
-              {/* メッセージ本文 */}
-              <div className="p-6 sm:p-8 bg-white/95 rounded-2xl border border-slate-200 shadow-inner space-y-3 font-serif">
-                <span className="text-xs text-teal-700 font-bold block uppercase tracking-widest font-sans">
-                  MESSAGE
-                </span>
-                <p className="text-sm sm:text-base md:text-lg text-slate-800 leading-relaxed sm:leading-loose whitespace-pre-wrap">
-                  {formData.message || '私を探しているあなたへ。メッセージをお待ちしています。'}
-                </p>
-              </div>
-
-              {/* メインCTA（相手側の視点） */}
-              <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-teal-100">
-                <div className="text-xs text-slate-600 font-sans space-y-0.5 text-center sm:text-left">
-                  <span className="font-bold text-slate-800 block">この人に心当たりはありませんか？</span>
-                  <span>当時のエピソードを添えて、無料で再会希望を申請できます。</span>
-                </div>
-
-                <div className="px-6 py-3 bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-bold rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2 opacity-90 cursor-default shadow-sm pointer-events-none">
-                  <Send size={15} className="text-teal-200" />
-                  <span>この人に再会を希望する（相手用ボタン）</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* 3. 安心解説: 相互承認制・eKYC本人確認の仕組み図解 */}
-          <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-5">
-            <div className="text-center space-y-1">
-              <span className="text-[10px] font-bold text-teal-700 tracking-[0.25em] uppercase font-sans">
-                SAFETY & PRIVACY
-              </span>
-              <h2 className="text-lg sm:text-xl font-serif font-bold text-slate-900">
-                安心・安全の相互承認フロー
-              </h2>
-              <p className="text-xs text-slate-500 font-sans">
-                一方的な連絡先開示や悪用を防ぐため、完全な相互合意制を採用しています。
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left font-sans text-xs">
-              <div className="p-4 bg-teal-50/50 rounded-2xl border border-teal-100 space-y-1.5">
-                <span className="text-[10px] font-bold text-teal-700 font-mono block">STEP 1</span>
-                <strong className="text-slate-900 block">エピソード送信（無料）</strong>
-                <p className="text-slate-600 leading-relaxed text-[11px]">
-                  相手が当時の思い出を添えて申請。あなた宛てにメールで通知が届きます。
-                </p>
-              </div>
-
-              <div className="p-4 bg-sky-50/50 rounded-2xl border border-sky-100 space-y-1.5">
-                <span className="text-[10px] font-bold text-sky-700 font-mono block">STEP 2</span>
-                <strong className="text-slate-900 block">あなたが確認＆承認</strong>
-                <p className="text-slate-600 leading-relaxed text-[11px]">
-                  あなたが届いたエピソードを読み、「本人だ！」と納得して承認します。
-                </p>
-              </div>
-
-              <div className="p-4 bg-emerald-50/50 rounded-2xl border border-emerald-100 space-y-1.5">
-                <span className="text-[10px] font-bold text-emerald-700 font-mono block">STEP 3</span>
-                <strong className="text-slate-900 block">連絡先を安全に交換</strong>
-                <p className="text-slate-600 leading-relaxed text-[11px]">
-                  相互承認後、登録したLINEやメール等の連絡先が安全に開示されます。
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* 4. 入力修正フッターバー */}
+          {/* =========================================================================
+              5. 入力修正フッターバー
+          ========================================================================= */}
           <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
             <span className="text-xs text-slate-600 font-sans">
               内容を変更したい箇所はありますか？
