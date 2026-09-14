@@ -110,7 +110,7 @@ export const CreatePostPage = () => {
         setAuthEmail(user.email);
       }
 
-      // 既存の公開メッセージの確認（原則1人1通ポリシー）
+      // 既存の想い出メッセージの確認（原則1人1通ポリシー）
       if (token) {
         fetch('/api/posts/my-posts', {
           headers: { 'Authorization': `Bearer ${token}` }

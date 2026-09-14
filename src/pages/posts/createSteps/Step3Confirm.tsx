@@ -5,7 +5,6 @@ import {
   AlertTriangle, ShieldAlert, Heart, FileText, Check, BookOpen, HelpCircle, 
   Share2, Shield, RefreshCw 
 } from "lucide-react";
-import { GoogleSearchResultPreview } from "../../../components/SharedComponents";
 import { formatEraLabel, getCategoryText } from "../../../lib/utils";
 
 export const Step3Confirm = (props: any) => {
@@ -180,33 +179,15 @@ export const Step3Confirm = (props: any) => {
             </div>
           </div>
 
-          {/* Google検索プレビュー */}
-          <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
-            <button
-              type="button"
-              onClick={() => setShowSearchPreview(!showSearchPreview)}
-              className="w-full flex items-center justify-between text-left font-bold text-slate-800 text-xs hover:text-brand-primary cursor-pointer"
-            >
-              <div className="flex items-center gap-1.5">
-                <Search size={14} className="text-brand-primary shrink-0" />
-                <span>💡 Google検索結果での見え方イメージを確認</span>
-              </div>
-              <span className="text-[10px] bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full">
-                {showSearchPreview ? '閉じる ▲' : 'プレビュー ▼'}
-              </span>
-            </button>
-
-            {showSearchPreview && (
-              <div className="pt-3 border-t border-slate-200 space-y-3">
-                <GoogleSearchResultPreview 
-                  targetName={formData.targetName}
-                  era={formData.era}
-                  location={formData.targetHometown}
-                  searcherName={formData.searcherName}
-                  teaser={formData.searcherProfile}
-                />
-              </div>
-            )}
+          {/* 暗号化保管・プライベート照合保護案内 */}
+          <div className="p-4 bg-teal-50/70 border border-teal-200 rounded-2xl space-y-2">
+            <div className="flex items-center gap-2 text-teal-900 font-bold text-xs">
+              <ShieldCheck size={16} className="text-teal-700 shrink-0" />
+              <span>🔒 暗号化保管・プライベート照合保護</span>
+            </div>
+            <p className="text-[11px] text-teal-800 leading-relaxed font-sans">
+              メッセージは第三者や検索エンジンに一切公開されません。あなたを探すお相手が会員登録した際に、システムが安全に自動照合してお知らせします。
+            </p>
           </div>
 
           {/* ボットチェック */}

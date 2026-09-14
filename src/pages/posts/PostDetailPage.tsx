@@ -6,10 +6,9 @@ import {
   HelpCircle, Lock, Mail, MapPin, Send, Shield, ShieldCheck,
   Sparkles, User, AlertTriangle, X
 } from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext';
-import { useNgFilter } from '../../contexts/AuthContext';
+import { useAuth, useNgFilter } from '../../contexts/AuthContext';
 import { formatEraLabel, formatBirthYearLabel, PREFECTURES } from '../../lib/utils';
-import { BottleLoader, BackToHomeButton, GoogleSearchResultPreview } from '../../components/SharedComponents';
+import { BottleLoader, BackToHomeButton } from '../../components/SharedComponents';
 import { EkycExplanationModal } from '../../components/posts/EkycExplanationModal';
 
 export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) => {
@@ -174,23 +173,25 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               </Link>
             )}
           </div>
+          <div className="text-[11px] font-bold text-teal-800 bg-white/90 border border-teal-200/80 px-3 py-1 rounded-full flex items-center gap-1 shadow-2xs">
+            <Lock size={12} className="text-teal-600" />
+            <span>🔒 暗号化保管・プライベート照合画面</span>
+          </div>
         </div>
-
-
 
         {/* 投稿直後バナー */}
         {justPosted && (
           <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center gap-3 text-emerald-900 text-xs sm:text-sm font-medium animate-in fade-in duration-300">
             <CheckCircle2 size={20} className="text-emerald-600 shrink-0" />
             <div>
-              <strong className="block font-bold">メッセージを届けました！</strong>
-              <span>あなたを探す誰かがGoogleやサイト内で検索した際、このメッセージが見つかります。</span>
+              <strong className="block font-bold">想い出メッセージを届けました！</strong>
+              <span>あなたを探す相手が会員登録した際、システムが自動照合してお知らせします。</span>
             </div>
           </div>
         )}
 
         {/* ===================================================
-            1. メイン公開メッセージカード（作成プレビューと100%同一）
+            1. メイン想い出照合メッセージカード
         =================================================== */}
         <div className={`relative rounded-3xl bg-gradient-to-br from-white via-teal-50/20 to-sky-50/30 border-2 p-6 sm:p-10 shadow-lg text-left space-y-6 overflow-hidden transition-all ${
           post.is_ekyc_verified
@@ -203,7 +204,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-[11px] font-bold text-teal-800 tracking-wider font-sans bg-teal-50 border border-teal-200 px-2.5 py-0.5 rounded-full flex items-center gap-1">
                   <span>✉️</span>
-                  <span>想い出再会プラットフォーム ReMEETs SEEKME 公開メッセージ</span>
+                  <span>想い出再会プラットフォーム ReMEETs SEEKME 想い出照合メッセージ</span>
                 </span>
               </div>
               <div className="flex items-center gap-2.5 flex-wrap pt-1">
@@ -217,7 +218,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                     )}
                   </span>
                   <span className="block text-sm sm:text-base md:text-lg font-bold text-slate-800">
-                    貴方へのメッセージです。
+                    貴方への想い出メッセージです。
                   </span>
                 </h2>
                 {Boolean(post.is_ekyc_verified) && (
@@ -239,9 +240,12 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               </div>
             </div>
 
-            {/* 右側：公開ステータス ＆ eKYC大型封蝋バッジ */}
+            {/* 右側：照合ステータス ＆ eKYC大型封蝋バッジ */}
             <div className="flex items-center sm:flex-col sm:items-end justify-between sm:justify-start gap-2 shrink-0 pt-1 sm:pt-0 border-t sm:border-t-0 border-teal-100/60 sm:border-none">
-              <span className="text-xs text-slate-500 font-sans whitespace-nowrap">公開中（Google検索対象）</span>
+              <span className="text-xs font-bold text-teal-800 bg-teal-50 border border-teal-200 px-2.5 py-0.5 rounded-full flex items-center gap-1 font-sans whitespace-nowrap">
+                <span className="w-1.5 h-1.5 rounded-full bg-teal-600 animate-pulse" />
+                <span>🔒 暗号化保管・照合中</span>
+              </span>
               {Boolean(post.is_ekyc_verified) && (
                 <div className="relative group sm:mt-1">
                   <button
@@ -323,10 +327,10 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
           <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-teal-100">
             <div className="text-xs text-slate-600 font-sans space-y-0.5 text-center sm:text-left">
               <span className="font-bold text-slate-800 block">
-                {isAuthor ? 'あなたのメッセージが正常に公開されています' : 'この人に心当たりはありませんか？'}
+                {isAuthor ? 'あなたの想い出メッセージが正常に登録・照合待機中です' : 'この人に心当たりはありませんか？'}
               </span>
               <span>
-                {isAuthor ? '心当たりのある方からの再会希望が届くと通知されます。' : '当時のエピソードを添えて、再会希望を申請できます。'}
+                {isAuthor ? '心当たりのある方からの再会希望が届くと通知されます。' : '当時のエピソードを添えて、安全に再会希望を申請できます。'}
               </span>
             </div>
 
@@ -429,16 +433,16 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
         </div>
 
         {/* ===================================================
-            3. サブCTA: 「あなたもメッセージを届けませんか？」
+            3. サブCTA: 「あなたも想い出メッセージを届けませんか？」
         =================================================== */}
         {!isAuthor && (
           <div className="p-6 rounded-3xl bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-700 text-white shadow-md flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
             <div className="space-y-1">
               <h3 className="text-base sm:text-lg font-bold font-sans">
-                あなたも大切な人に向けて、メッセージを届けませんか？
+                あなたも大切な人に向けて、想い出メッセージを届けませんか？
               </h3>
               <p className="text-xs text-teal-100 font-sans">
-                お名前とゆかりの地を登録しておくだけで、探している知人が見つけられます。
+                お名前とゆかりの地を登録しておくだけで、探している相手が登録した際にシステムが自動照合します。
               </p>
             </div>
             <Link
@@ -507,7 +511,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                       「{postFullName}」様へ再会希望を送信
                     </h3>
                     <p className="text-xs text-slate-500">
-                      当時の思い出のエピソードを添えて送信してください。
+                      当時の思い出のエピソードを添えて送信してください。差出人が確認・承認した場合のみ、連絡先の相互開示に進みます。
                     </p>
                   </div>
 
