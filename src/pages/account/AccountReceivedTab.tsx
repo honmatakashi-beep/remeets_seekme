@@ -107,13 +107,59 @@ export const AccountReceivedTab = (props: any) => {
         </button>
       </div>
 
+      {/* 💡 メッセージ差出人向け: 連絡が届いた際の流れ・安心ガイド */}
+      <div className="p-5 bg-gradient-to-br from-teal-50/70 via-emerald-50/40 to-sky-50/60 rounded-3xl border border-teal-200/80 space-y-3">
+        <div className="flex items-center justify-between gap-2 flex-wrap border-b border-teal-200/60 pb-2.5">
+          <div className="flex items-center gap-2">
+            <span className="p-1 rounded-lg bg-teal-600 text-white shadow-2xs">
+              <Sparkles size={14} />
+            </span>
+            <h3 className="text-xs sm:text-sm font-bold font-serif text-teal-950">
+              お相手から再会希望が届いたときの流れ（あなたのアクション手順）
+            </h3>
+          </div>
+          <span className="text-[10px] font-bold text-teal-800 bg-white/90 border border-teal-300 px-2 py-0.5 rounded-full shadow-2xs">
+            🛡️ 承認するまで個人情報は完全非開示
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
+          <div className="p-3 bg-white/90 rounded-2xl border border-teal-100 shadow-2xs space-y-1">
+            <span className="text-[10px] font-extrabold text-teal-700 font-mono block">STEP 1</span>
+            <strong className="text-slate-900 block text-xs">📧 通知メールが届く</strong>
+            <p className="text-slate-600 text-[11px] leading-relaxed">
+              お相手がエピソードを添えて再会希望を送ると、ご登録メールとマイページに即座に通知が届きます。
+            </p>
+          </div>
+
+          <div className="p-3 bg-white/90 rounded-2xl border border-teal-100 shadow-2xs space-y-1">
+            <span className="text-[10px] font-extrabold text-teal-700 font-mono block">STEP 2</span>
+            <strong className="text-slate-900 block text-xs">📖 エピソードを確認</strong>
+            <p className="text-slate-600 text-[11px] leading-relaxed">
+              届いた「2人だけの当時の思い出エピソード」を読み、探していた本人かどうかを確認します。
+            </p>
+          </div>
+
+          <div className="p-3 bg-white/90 rounded-2xl border border-teal-100 shadow-2xs space-y-1">
+            <span className="text-[10px] font-extrabold text-teal-700 font-mono block">STEP 3</span>
+            <strong className="text-slate-900 block text-xs">✨ 承認して連絡先開示</strong>
+            <p className="text-slate-600 text-[11px] leading-relaxed">
+              本人であれば「承認する」を押します。公的本人確認・開通後にお互いの連絡先が開示されます。
+            </p>
+          </div>
+        </div>
+      </div>
+
       {loading ? (
         <div className="text-center py-10 text-xs text-slate-400">読み込み中...</div>
       ) : requests.length === 0 ? (
         <div className="text-center py-12 border border-dashed border-slate-200 rounded-3xl p-6 bg-white/50 space-y-3">
-          <p className="text-xs font-serif text-slate-500">まだ再会希望のエピソードは届いていません。</p>
-          <p className="text-[11px] text-slate-400 leading-relaxed max-w-sm mx-auto">
-            あなたを探している知人がメッセージを見つけ、当時の思い出エピソードを添えて申請するとここに表示されます。
+          <div className="w-12 h-12 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center mx-auto shadow-2xs border border-teal-100">
+            <Send size={20} className="rotate-12" />
+          </div>
+          <p className="text-xs sm:text-sm font-serif font-bold text-slate-700">まだ再会希望のエピソードは届いていません</p>
+          <p className="text-[11px] text-slate-500 leading-relaxed max-w-md mx-auto">
+            あなたを探している知人がメッセージを見つけ、当時の思い出エピソードを添えて申請すると、ここに一覧で届きます。届いた際はご登録のメールアドレス宛てにもお知らせが届きます。
           </p>
         </div>
       ) : (

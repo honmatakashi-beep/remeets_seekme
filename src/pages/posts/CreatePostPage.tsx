@@ -1217,38 +1217,47 @@ export const CreatePostPage = () => {
             )}
           </div>
 
-          {/* 今後の流れと通知の確認カード */}
+          {/* 💡 メッセージ公開後の流れとアクション手順 */}
           <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 space-y-4 shadow-sm text-left font-sans">
-            <h3 className="text-base sm:text-lg font-serif font-bold text-slate-900 flex items-center gap-2">
-              <Sparkles size={18} className="text-teal-600" />
-              <span>今後の通知とメッセージの管理について</span>
-            </h3>
+            <div className="flex items-center justify-between gap-2 flex-wrap border-b border-slate-100 pb-3">
+              <h3 className="text-base sm:text-lg font-serif font-bold text-slate-900 flex items-center gap-2">
+                <Sparkles size={18} className="text-teal-600" />
+                <span>お相手から連絡が届いた際の流れ（あなたのアクション手順）</span>
+              </h3>
+              <span className="text-[10px] font-bold text-teal-800 bg-teal-50 border border-teal-200 px-2.5 py-0.5 rounded-full">
+                🛡️ 承認するまで個人情報は完全非開示
+              </span>
+            </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-              <div className="p-4 bg-teal-50/50 rounded-2xl border border-teal-100 space-y-1.5">
-                <span className="text-[10px] font-bold text-teal-700 font-mono block">1. 通知メール</span>
-                <strong className="text-slate-900 block">再会申請をメールでお届け</strong>
+              <div className="p-4 bg-teal-50/60 rounded-2xl border border-teal-100 space-y-1.5">
+                <span className="text-[10px] font-bold text-teal-700 font-mono block">STEP 1. 通知が届く</span>
+                <strong className="text-slate-900 block">📧 メール & マイページでお知らせ</strong>
                 <p className="text-slate-600 text-[11px] leading-relaxed">
-                  お相手があなたを見つけてエピソードを送信すると、ご登録のメールアドレス宛てに即座にお知らせが届きます。
+                  お相手があなたを見つけてエピソードを送信すると、ご登録のメールアドレスとマイページに即座に通知が届きます。
                 </p>
               </div>
 
-              <div className="p-4 bg-sky-50/50 rounded-2xl border border-sky-100 space-y-1.5">
-                <span className="text-[10px] font-bold text-sky-700 font-mono block">2. 相互承認制</span>
-                <strong className="text-slate-900 block">安心のプライバシー保護</strong>
+              <div className="p-4 bg-sky-50/60 rounded-2xl border border-sky-100 space-y-1.5">
+                <span className="text-[10px] font-bold text-sky-700 font-mono block">STEP 2. エピソード確認</span>
+                <strong className="text-slate-900 block">📖 本人かどうかを判定</strong>
                 <p className="text-slate-600 text-[11px] leading-relaxed">
-                  あなたが届いたエピソードを読んで「本人だ」と承認するまで、あなたの連絡先は相手に開示されません。
+                  マイページの「届いた再会希望」で2人だけの思い出エピソードを読み、探していた本人であれば「承認」を押します。
                 </p>
               </div>
 
-              <div className="p-4 bg-amber-50/50 rounded-2xl border border-amber-100 space-y-1.5">
-                <span className="text-[10px] font-bold text-amber-800 font-mono block">3. いつでも再確認</span>
-                <strong className="text-slate-900 block">マイページでメッセージを管理</strong>
+              <div className="p-4 bg-emerald-50/60 rounded-2xl border border-emerald-100 space-y-1.5">
+                <span className="text-[10px] font-bold text-emerald-800 font-mono block">STEP 3. 連絡先開示</span>
+                <strong className="text-slate-900 block">🎉 双方の連絡先を安全に開示</strong>
                 <p className="text-slate-600 text-[11px] leading-relaxed">
-                  ログイン後のマイページから、いつでもメッセージの内容再確認・メッセージ修正・取り下げが可能です。
+                  公的本人確認・開通手続きを経て、画面上でお互いの連絡先（LINE ID等）が開示され、直接連絡が取れるようになります。
                 </p>
               </div>
             </div>
+            
+            <p className="text-[11px] text-slate-500 bg-slate-50 p-3 rounded-xl border border-slate-200/80 leading-relaxed">
+              ※ あなたがエピソードを読んで「承認」するまで、あなたの本名や連絡先はお相手に一切開示されません。心当たりのない申請はワンタップで見送ることができます。
+            </p>
           </div>
 
           {/* メインCTAボタン群 */}

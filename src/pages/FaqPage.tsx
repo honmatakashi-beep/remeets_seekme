@@ -442,26 +442,40 @@ export const FaqPage: React.FC = () => {
       id: 'q-account-2',
       category: 'account',
       categoryName: '登録・ログイン・通知',
-      question: 'メッセージにお相手から返信や開封があったら、どのように通知されますか？',
+      question: '公開したメッセージにお相手から再会希望が届いたら、どのように通知され、どう対応すればいいですか？',
       answer: (
-        <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-          あなた宛てのメッセージが見つかった際や、あなたが流したメッセージにお相手から開封アクションがあった際は、アカウントにご登録いただいた <strong className="text-slate-900 font-bold">メールアドレス宛てに「再会開通お知らせメール」</strong> がリアルタイムで届きます。
-        </p>
+        <>
+          <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
+            お相手から再会希望のエピソードが届くと、ご登録の <strong className="text-slate-900 font-bold">メールアドレス宛てに「再会希望お知らせメール」</strong> が届くとともに、マイページの「届いた再会希望」タブに通知バッジが表示されます。
+          </p>
+          <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200/80 space-y-1.5 text-xs font-sans mt-2">
+            <strong className="text-slate-900 block font-bold">【あなたのアクション手順】</strong>
+            <ol className="list-decimal pl-5 space-y-1 text-slate-700 leading-relaxed">
+              <li>マイアカウントの「💌 届いた再会希望」タブを開きます。</li>
+              <li>お相手が送ってくれた「2人だけの思い出エピソード」を読み、探していた本人か確認します。</li>
+              <li>本人と確信できたら「承認する」を押します（心当たりがない場合は「見送る」を選択）。</li>
+              <li>公的本人確認・開通後、お互いの連絡先（LINE ID等）が画面上に開示され、直接連絡できるようになります。</li>
+            </ol>
+            <p className="text-[11px] text-teal-800 font-bold pt-1">
+              ※ あなたが「承認」するまで、あなたの本名や連絡先はお相手に一切開示されません。
+            </p>
+          </div>
+        </>
       ),
-      tags: ['通知', 'メール', '開通通知']
+      tags: ['通知', 'メール', '再会希望', '承認手順', 'アクション', 'プライバシー保護']
     },
     {
       id: 'q-account-3',
       category: 'account',
       categoryName: '登録・ログイン・通知',
-      question: '探している相手のメッセージがまだ見つからない場合、後から流れてきたときに通知を受け取ることはできますか？',
+      question: '探している相手のメッセージがまだ見つからない場合、新しく公開されたときに通知を受け取ることはできますか？',
       answer: (
         <>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            はい、<strong className="text-slate-900 font-bold">「新着入荷通知アラート」</strong> 機能をご利用いただけます。
+            はい、マイアカウントの「通知ログ」タブ内にある <strong className="text-slate-900 font-bold">「新着入荷通知アラート」</strong> 機能をご利用いただけます。
           </p>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            探したい相手の「お名前（あだ名・旧姓）」や「ゆかりの都道府県・年代」をキーワード登録（メール通知設定）しておくと、条件に合致する新しいボトルメールが海に流れた瞬間に、ご登録のメールアドレス宛てへ自動でお知らせ通知が届きます。何度も検索し直す手間なく、奇跡の再会の機会を逃しません。
+            探したい相手の「お名前（あだ名・旧姓）」や「ゆかりの都道府県・年代」をキーワード登録（メール通知設定）しておくと、条件に合致する新しいメッセージが公開された瞬間に、ご登録のメールアドレス宛てへ自動でお知らせ通知が届きます。何度も検索し直す手間なく、奇跡の再会の機会を逃しません。
           </p>
         </>
       ),
