@@ -80,13 +80,13 @@ export const PoliceA4SummaryView = (props: any) => {
                     <td className="p-2.5 font-bold text-slate-900">🌐 ネット一般公開情報</td>
                     <td className="p-2.5">・都道府県・年代<br />・出会ったシチュエーション<br />・差出人のニックネーム<br />・想い出の概要</td>
                     <td className="p-2.5 font-bold text-slate-800">誰でも閲覧可能</td>
-                    <td className="p-2.5 text-[11px]">個人を特定できる機微情報（実名・住所・手紙本文）は非公開。晒し・特定を100%防止。</td>
+                    <td className="p-2.5 text-[11px]">個人を特定できる機微情報（実名・住所・メッセージ本文）は非公開。晒し・特定を100%防止。</td>
                   </tr>
                   <tr className="hover:bg-slate-50 bg-blue-50/30">
                     <td className="p-2.5 font-bold text-blue-900">🔐 受取人限定開示情報</td>
-                    <td className="p-2.5">・手紙の全文（詳細）<br />・差出人の連絡先（LINE ID / メアド等）</td>
+                    <td className="p-2.5">・メッセージの全文（詳細）<br />・差出人の連絡先（LINE ID / メアド等）</td>
                     <td className="p-2.5 font-bold text-blue-900">クイズ正解＆同意決済を通過した受取人のみ</td>
-                    <td className="p-2.5 text-[11px]">記憶が一致した実在の本人にのみ安全に手紙と連絡先を引き渡し。</td>
+                    <td className="p-2.5 text-[11px]">記憶が一致した実在の本人にのみ安全にメッセージと連絡先を引き渡し。</td>
                   </tr>
                 </tbody>
               </table>
@@ -171,7 +171,7 @@ export const PoliceA4SummaryView = (props: any) => {
                   <span>🔐</span> 二段階「想い出クイズ」ゲート
                 </div>
                 <p className="text-slate-600 leading-relaxed">
-                  当事者同士しか知り得ない2問の秘密クイズが完全一致しない限り、手紙の本文や連絡先は絶対に開封不可。
+                  当事者同士しか知り得ない2問の秘密クイズが完全一致しない限り、メッセージの本文や連絡先は絶対に開封不可。
                 </p>
               </div>
               <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-1">

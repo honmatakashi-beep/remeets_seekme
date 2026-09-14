@@ -37,16 +37,16 @@ export const TermsContent = () => (
         1. 利用者は、自己の責任において本サービスのアカウントを適切に管理するものとします。<br />
         2. 本サービスでは、パスワード漏洩リスクの排除、重複登録アタックの防止、および成りすまし行為の排除を目的として、信頼性の高い外部SNS（LINE、Google等）を用いたOAuth基盤認証ならびにメール認証を導入しています。<br />
         3. ユーザーは、実体のない使い捨てSNSアカウントを用いた嫌がらせ・荒らし・不正アクセス目的の大量登録を行ってはなりません。<br />
-        4. 手紙の開封・連絡先開示等の特定機能の利用にあたり、公的身分証明書を用いた本人確認（eKYC）およびSMS電話番号認証の完了を任意または必須として求める場合があります。なお、eKYC時に送信される身分証明書の画像生データは提携eKYC事業者のセキュア環境下でのみ処理・検証され、当事務局サーバー側には一切保存されません。
+        4. メッセージの開封・連絡先開示等の特定機能の利用にあたり、公的身分証明書を用いた本人確認（eKYC）およびSMS電話番号認証の完了を任意または必須として求める場合があります。なお、eKYC時に送信される身分証明書の画像生データは提携eKYC事業者のセキュア環境下でのみ処理・検証され、当事務局サーバー側には一切保存されません。
       </p>
     </section>
 
     <section className="space-y-2">
       <h3 className="text-lg font-bold mb-3 border-b border-brand-border pb-2 text-black font-serif">第4条（サービス利用料金・決済・サポーター寄付）</h3>
       <p className="leading-relaxed text-xs text-black font-sans">
-        1. 本サービスへの会員登録、手紙（ボトルメール）の投函、自分宛ての手紙の検索・一覧閲覧、新着メール通知アラートの登録、および思い出クイズへの回答はすべて<strong>永久無料（0円）</strong>です。<br />
-        2. お相手からの手紙の開封および連絡先開示（引き渡し）システムを利用する際、1通あたり<strong>600円（税込・買い切り）</strong>のシステム利用料が発生します。<br />
-        3. 公的本人確認（eKYC）を希望する場合、審査実費として1回あたり<strong>600円（税込）</strong>の本人確認手数料が発生します（手紙開封と同時に利用する場合は合計1,200円）。<br />
+        1. 本サービスへの会員登録、メッセージ（ボトルメール）の投函、自分宛てのメッセージの検索・一覧閲覧、新着メール通知アラートの登録、および思い出クイズへの回答はすべて<strong>永久無料（0円）</strong>です。<br />
+        2. お相手からのメッセージの開封および連絡先開示（引き渡し）システムを利用する際、1通あたり<strong>600円（税込・買い切り）</strong>のシステム利用料が発生します。<br />
+        3. 公的本人確認（eKYC）を希望する場合、審査実費として1回あたり<strong>600円（税込）</strong>の本人確認手数料が発生します（メッセージ開封と同時に利用する場合は合計1,200円）。<br />
         4. 本サービスの健全な運営とAI安全監査体制を支援するための「サポーター寄付（1口 500円〜）」は完全任意であり、税務上の寄付金控除の対象外となります。<br />
         5. 本サービスには月額会費や自動更新されるサブスクリプション費用は一切発生いたしません。<br />
         6. デジタルコンテンツおよびシステム即時開通の性質上、決済完了後の各種手数料および寄付金の返金・換金には原則として応じられません（ただし、eKYC審査で不合格となった場合は自動的に仮売上の全額取消・返金が行われます）。
@@ -56,7 +56,7 @@ export const TermsContent = () => (
     <section className="space-y-2">
       <h3 className="text-lg font-bold mb-3 border-b border-brand-border pb-2 text-black font-serif">第5条（AI安全自動診断・モデレーションおよびコンテンツ監視）</h3>
       <p className="leading-relaxed text-xs text-black font-sans">
-        1. 当事務局は、本サービスの健全性維持、ストーカー行為の未然抑止、プライバシー保護、誹謗中傷排除のため、投稿・更新された手紙（ボトルメール）およびメッセージに対して、最新のAIモデレーションエンジン（Gemini API等）およびシステムによる自動診断・検閲を常時実施します。<br />
+        1. 当事務局は、本サービスの健全性維持、ストーカー行為の未然抑止、プライバシー保護、誹謗中傷排除のため、投稿・更新されたメッセージ（ボトルメール）およびメッセージに対して、最新のAIモデレーションエンジン（Gemini API等）およびシステムによる自動診断・検閲を常時実施します。<br />
         2. AIまたはシステムにより禁止事項（過度な個人情報の直接掲載、脅迫・付きまといの兆候、公序良俗・法令違反等）に該当すると判定された投稿は、事前通知なく自動的に即時非公開（安全隔離・物理保全）または削除される場合があります。<br />
         3. ユーザーは、本サービスを利用してテキストを送信・更新することにより、安全確保およびモデレーションを目的とした当該AI自動診断処理の実行に明示的に同意したものとみなされます。<br />
         4. AI判定の誤検知・不検知、またはこれに伴う一時的な非公開措置によりユーザーに生じた機会損失や不利益について、当事務局は故意または重過失がある場合を除き一切の責任を負いません。
@@ -69,7 +69,7 @@ export const TermsContent = () => (
         ユーザーは、本サービスの利用にあたり、以下の行為を行ってはなりません。<br />
         ・不特定の異性との交際・出会いを目的とした利用（出会い系・マッチング目的利用、売春・パパ活等）<br />
         ・他者へのストーカー行為、付きまとい、威嚇、強要、名誉毀損または誹謗中傷<br />
-        ・手紙本文欄への直接的な連絡先情報（LINE ID、電話番号、詳細住所等）の記載<br />
+        ・メッセージ本文欄への直接的な連絡先情報（LINE ID、電話番号、詳細住所等）の記載<br />
         ・bot等の自動化プログラムを用いた思い出クイズの総当たり回答（ブルートフォースアタック）<br />
         ・実在しない人物の偽装登録、第三者への成りすまし、または虚偽の事実の投稿<br />
         ・商業目的の宣伝・勧誘・スパム送信、マルチ商法・宗教勧誘行為<br />
@@ -98,7 +98,7 @@ export const TermsContent = () => (
     <section className="space-y-2">
       <h3 className="text-lg font-bold mb-3 border-b border-brand-border pb-2 text-black font-serif">第9条（リアルタイム速報通知およびメール配信）</h3>
       <p className="leading-relaxed text-xs text-black font-sans">
-        1. 本サービスでは、ユーザーが投函した手紙に対してお相手が思い出クイズに正解した場合、または手紙・連絡先が開示された場合等に、WebSocket接続によるリアルタイム画面速報通知および登録メールアドレス宛への自動通知メール配信を行います。<br />
+        1. 本サービスでは、ユーザーが投函したメッセージに対してお相手が思い出クイズに正解した場合、またはメッセージ・連絡先が開示された場合等に、WebSocket接続によるリアルタイム画面速報通知および登録メールアドレス宛への自動通知メール配信を行います。<br />
         2. 通信障害、端末設定、またはメール受信拒否等に起因する通知の遅延や不達について、当事務局は故意または重過失がある場合を除き責任を負いません。
       </p>
     </section>
@@ -115,7 +115,7 @@ export const TermsContent = () => (
       <h3 className="text-lg font-bold mb-3 border-b border-brand-border pb-2 text-black font-serif">第11条（本サービスの変更・中断・終了および免責）</h3>
       <p className="leading-relaxed text-xs text-black font-sans">
         1. 当事務局は、運用上、技術上、経営上の都合その他やむを得ない事由により、本サービス上での事前告知等をもって、本サービスの提供を一時中断、休止、または終了（サービス閉鎖）することができるものとします。<br />
-        2. 運営不能やサービス閉鎖を含む本サービスの終了が生じた場合であっても、過去にユーザーが支払った各種利用手数料（手紙開封・開通手数料 600円、eKYC審査実費等）およびサポーター寄付金について、理由の如何を問わず返金、返還、損害賠償等の請求には応じられません。<br />
+        2. 運営不能やサービス閉鎖を含む本サービスの終了が生じた場合であっても、過去にユーザーが支払った各種利用手数料（メッセージ開封・開通手数料 600円、eKYC審査実費等）およびサポーター寄付金について、理由の如何を問わず返金、返還、損害賠償等の請求には応じられません。<br />
         3. 当事務局は、本サービスの連絡先開示機能を通じて開示された連絡先を用いて行われる当事者間の連絡、実際の対面、交際、その他一切のやり取りにおけるトラブルについて、当事者間で解決するものとし、当事務局は故意または重過失がある場合を除き一切の責任を負いません。
       </p>
     </section>
@@ -276,7 +276,7 @@ export const GuidelinesContent = () => (
         <span>お相手に届くキーワード設定の工夫（検索性向上のヒント）</span>
       </h3>
       <p className="leading-relaxed text-xs text-slate-700 font-sans">
-        お探しの当事者が自分宛ての手紙を検索（エゴサーチ等）した際に発見できるよう、以下の「手がかりキーワード」を丁寧に設定してください。
+        お探しの当事者が自分宛てのメッセージを検索（エゴサーチ等）した際に発見できるよう、以下の「手がかりキーワード」を丁寧に設定してください。
       </p>
       <ul className="list-disc pl-5 space-y-1 text-xs text-slate-600 leading-relaxed">
         <li><strong>相手の名前：</strong> 漢字表記に加え、旧姓やひらがな、当時呼んでいたニックネーム等を活用。</li>
@@ -289,14 +289,14 @@ export const GuidelinesContent = () => (
     <section className="space-y-2 p-5 bg-amber-50/80 rounded-2xl border-2 border-amber-300 shadow-2xs">
       <h3 className="text-base font-bold text-amber-950 font-serif flex items-center gap-2 border-b border-amber-200 pb-2">
         <span className="w-6 h-6 rounded-full bg-amber-600 text-white flex items-center justify-center text-xs font-sans">03</span>
-        <span>【重要】手紙本文への「連絡先直書き」の禁止ルール</span>
+        <span>【重要】メッセージ本文への「連絡先直書き」の禁止ルール</span>
       </h3>
       <div className="p-3 bg-white rounded-xl border border-amber-200 text-xs text-amber-950 leading-relaxed font-sans space-y-1.5">
         <p className="font-bold text-rose-700">
-          ⚠️ 手紙の本文欄に、LINE ID、メールアドレス、電話番号、詳細な住所などを直接記載してはなりません。
+          ⚠️ メッセージの本文欄に、LINE ID、メールアドレス、電話番号、詳細な住所などを直接記載してはなりません。
         </p>
         <p className="text-slate-700 text-[11px]">
-          手紙本文はクイズ正解前の画面にも一部露出するため、安全保護の観点からAI検閲により即時自動隔離（非公開化）の対象となります。連絡先情報は、必ず所定の<strong>「開示用連絡先」専用欄</strong>にご入力ください（思い出クイズに全問正解し、手続きを完了したお相手にのみ安全に開示されます）。
+          メッセージ本文はクイズ正解前の画面にも一部露出するため、安全保護の観点からAI検閲により即時自動隔離（非公開化）の対象となります。連絡先情報は、必ず所定の<strong>「開示用連絡先」専用欄</strong>にご入力ください（思い出クイズに全問正解し、手続きを完了したお相手にのみ安全に開示されます）。
         </p>
       </div>
     </section>
@@ -365,10 +365,10 @@ export const GuidelinesContent = () => (
     <section className="space-y-2 p-5 bg-white rounded-2xl border border-slate-200 shadow-2xs">
       <h3 className="text-base font-bold text-slate-900 font-serif flex items-center gap-2 border-b border-slate-100 pb-2">
         <span className="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs font-sans">07</span>
-        <span>手紙開通・公的本人確認（eKYC）におけるゼロデータ保持モデル</span>
+        <span>メッセージ開通・公的本人確認（eKYC）におけるゼロデータ保持モデル</span>
       </h3>
       <p className="leading-relaxed text-xs text-slate-700 font-sans">
-        お相手との手紙開通時において公的本人確認（eKYC）を実施する場合、提出される運転免許証・マイナンバーカード等の画像生データは提携専門機関のセキュア環境でのみ照合され、当事務局サーバーには保存されない「ゼロデータリテンション（非保持）」モデルを採用しています。情報漏洩リスクを完全に排除し、安全な再会をお守りします。
+        お相手とのメッセージ開通時において公的本人確認（eKYC）を実施する場合、提出される運転免許証・マイナンバーカード等の画像生データは提携専門機関のセキュア環境でのみ照合され、当事務局サーバーには保存されない「ゼロデータリテンション（非保持）」モデルを採用しています。情報漏洩リスクを完全に排除し、安全な再会をお守りします。
       </p>
     </section>
 
@@ -435,15 +435,15 @@ export const CompanyContent = () => (
       <div className="grid grid-cols-1 md:grid-cols-3 p-4 gap-2">
         <span className="font-bold text-neutral-800">役務の内容</span>
         <span className="md:col-span-2 text-neutral-900 font-medium leading-relaxed">
-          想い出の手紙（ボトルメール）の投函・検索プラットフォームの提供、思い出クイズによる本人照合、および手紙開封・連絡先開示（引き渡し）システムサービスの提供。
+          想い出のメッセージ（ボトルメール）の投函・検索プラットフォームの提供、思い出クイズによる本人照合、およびメッセージ開封・連絡先開示（引き渡し）システムサービスの提供。
         </span>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 p-4 gap-2 bg-slate-50/60">
         <span className="font-bold text-neutral-800">役務の対価（販売価格）</span>
         <span className="md:col-span-2 text-neutral-900 font-medium leading-relaxed space-y-1 block">
           ・<strong>基本機能（登録・投函・検索・クイズ回答・新着通知アラート）：</strong> 完全無料（0円）<br />
-          ・<strong>手紙開封・連絡先開示手数料：</strong> 1通あたり 600円（税込・買い切り）<br />
-          ・<strong>公的本人確認（eKYC）審査手数料（任意オプション）：</strong> 1回あたり 600円（税込）（※手紙開封と同時利用時 1,200円）<br />
+          ・<strong>メッセージ開封・連絡先開示手数料：</strong> 1通あたり 600円（税込・買い切り）<br />
+          ・<strong>公的本人確認（eKYC）審査手数料（任意オプション）：</strong> 1回あたり 600円（税込）（※メッセージ開封と同時利用時 1,200円）<br />
           ・<strong>サポーター寄付（任意）：</strong> 1口 500円〜（都度決済・税務上の寄付金控除対象外）<br />
           <span className="text-[11px] text-emerald-800 font-bold block pt-0.5">※月額会費や自動更新のサブスクリプション費用は一切発生いたしません。</span>
         </span>
@@ -464,7 +464,7 @@ export const CompanyContent = () => (
       <div className="grid grid-cols-1 md:grid-cols-3 p-4 gap-2">
         <span className="font-bold text-neutral-800">お支払時期・役務の提供時期</span>
         <span className="md:col-span-2 text-neutral-900 font-medium leading-relaxed">
-          決済手続き完了時にお支払いが確定し、手続き完了後即時にシステム上で手紙の開封・想い出照合および連絡先開示が完了します。
+          決済手続き完了時にお支払いが確定し、手続き完了後即時にシステム上でメッセージの開封・想い出照合および連絡先開示が完了します。
         </span>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 p-4 gap-2 bg-slate-50/60">
@@ -562,7 +562,7 @@ export const PricingPage = () => {
                     <span className="w-7 h-7 rounded-full bg-emerald-600 text-white text-xs font-bold flex items-center justify-center shrink-0 shadow-2xs mt-0.5">送</span>
                     <div>
                       <h3 className="font-bold text-emerald-950 text-sm leading-snug">差出人</h3>
-                      <span className="text-[11px] text-emerald-700/90 font-medium block">（手紙を書く側）</span>
+                      <span className="text-[11px] text-emerald-700/90 font-medium block">（メッセージを届ける側）</span>
                     </div>
                   </div>
                   <div className="flex flex-col items-end shrink-0">
@@ -607,7 +607,7 @@ export const PricingPage = () => {
                     <span className="w-7 h-7 rounded-full bg-indigo-600 text-white text-xs font-bold flex items-center justify-center shrink-0 shadow-2xs mt-0.5">受</span>
                     <div>
                       <h3 className="font-bold text-indigo-950 text-sm leading-snug">受取人</h3>
-                      <span className="text-[11px] text-indigo-700/90 font-medium block">（手紙を開封する側）</span>
+                      <span className="text-[11px] text-indigo-700/90 font-medium block">（メッセージを開封する側）</span>
                     </div>
                   </div>
                   <div className="flex flex-col items-end shrink-0">
@@ -623,11 +623,11 @@ export const PricingPage = () => {
                 <ul className="space-y-2 text-slate-700 text-xs">
                   <li className="flex items-start gap-2">
                     <CheckCircle2 size={15} className="text-indigo-600 shrink-0 mt-0.5" />
-                    <span><strong>会員登録・手紙検索・クイズ回答：</strong>0 円</span>
+                    <span><strong>会員登録・メッセージ検索・クイズ回答：</strong>0 円</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CreditCard size={15} className="text-indigo-600 shrink-0 mt-0.5" />
-                    <span><strong>手紙開封・連絡先開示：</strong>600 円（正解時のみ都度精算）</span>
+                    <span><strong>メッセージ開封・連絡先開示：</strong>600 円（正解時のみ都度精算）</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <ShieldCheck size={15} className="text-amber-600 shrink-0 mt-0.5" />
@@ -635,12 +635,12 @@ export const PricingPage = () => {
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 size={15} className="text-indigo-600 shrink-0 mt-0.5" />
-                    <span><strong>手紙開封後の直接やり取り：</strong>0 円</span>
+                    <span><strong>メッセージ開封後の直接やり取り：</strong>0 円</span>
                   </li>
                 </ul>
               </div>
               <div className="pt-2 border-t border-indigo-100 text-[11px] text-slate-500">
-                ※ クイズ正解後の手紙開封時のみ発生する完全買い切り価格です。
+                ※ クイズ正解後のメッセージ開封時のみ発生する完全買い切り価格です。
               </div>
             </div>
           </div>
@@ -679,13 +679,13 @@ export const PricingPage = () => {
               <div className="p-3 bg-white/90 rounded-2xl border border-amber-100 space-y-1 shadow-2xs">
                 <span className="font-bold text-slate-900 block text-xs">✉️ 差出人が受ける場合</span>
                 <p className="text-slate-600 text-[11px] leading-relaxed">
-                  手紙の投函時やマイページでいつでも実施可能。プロフィールに「🛡️ 公的本人確認済」バッジが付与され、お相手が手紙を見つけた際の信頼感と返信率が大幅に向上します。
+                  メッセージの投函時やマイページでいつでも実施可能。プロフィールに「🛡️ 公的本人確認済」バッジが付与され、お相手がメッセージを見つけた際の信頼感と返信率が大幅に向上します。
                 </p>
               </div>
               <div className="p-3 bg-white/90 rounded-2xl border border-amber-100 space-y-1 shadow-2xs">
                 <span className="font-bold text-slate-900 block text-xs">🔍 受取人が受ける場合</span>
                 <p className="text-slate-600 text-[11px] leading-relaxed">
-                  手紙開封時（開封600円＋eKYC600円＝計1,200円）や、事前・事後にいつでも選択可能。安心・安全な身元確認を行ってお相手と連絡を取り合えます。
+                  メッセージ開封時（開封600円＋eKYC600円＝計1,200円）や、事前・事後にいつでも選択可能。安心・安全な身元確認を行ってお相手と連絡を取り合えます。
                 </p>
               </div>
             </div>
@@ -738,7 +738,7 @@ export const PricingPage = () => {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-sans">
             <div className="space-y-0.5 max-w-xl">
               <p className="text-slate-700 leading-relaxed text-[11.5px]">
-                ReMEETsは、すべての方が無料で手紙を流せるよう、個人運営とAI安全監査費を温かい寄付で支えていただいています。コーヒー1杯分（500円〜）から応援いただけます。
+                ReMEETsは、すべての方が無料でメッセージを流せるよう、個人運営とAI安全監査費を温かい寄付で支えていただいています。コーヒー1杯分（500円〜）から応援いただけます。
               </p>
               <p className="text-[10px] text-slate-500 font-sans">
                 ※ 月額自動課金なし・1回限りの都度決済（寄付金控除対象外）
@@ -809,7 +809,7 @@ export const SafetyPage = () => (
                   <h3 className="font-serif font-bold text-sm text-slate-900">共有記憶クイズ ＆ 5回誤答ロック</h3>
                 </div>
                 <p className="text-xs text-slate-700 leading-relaxed font-sans">
-                  当事者しか知り得ない「二人の共通の思い出」に関する質問に完全正解しない限り、手紙は一切開封されません。当てずっぽうの推測やスクリプトによる総当たり攻撃（ブルートフォース）を自動検知し、5回連続の誤答で即座にアクセスを安全ロックします。
+                  当事者しか知り得ない「二人の共通の思い出」に関する質問に完全正解しない限り、メッセージは一切開封されません。当てずっぽうの推測やスクリプトによる総当たり攻撃（ブルートフォース）を自動検知し、5回連続の誤答で即座にアクセスを安全ロックします。
                 </p>
               </div>
               <div className="pt-2 border-t border-slate-200/80 text-[11px] text-emerald-800 font-bold flex items-center gap-1">
@@ -857,7 +857,7 @@ export const SafetyPage = () => (
                   <h3 className="font-serif font-bold text-sm text-slate-900">クレカ身元保証 ＆ セキュア開示</h3>
                 </div>
                 <p className="text-xs text-slate-700 leading-relaxed font-sans">
-                  手紙開封時にStripe暗号化決済（600円）を経由することで、カード会社側の本人照合により架空人物やいたずら開封を強固に排除。アプリ内に無駄なチャットを残さず、想い出照合後に直通連絡先を安全に引き渡してプラットフォームが完結します。
+                  メッセージ開封時にStripe暗号化決済（600円）を経由することで、カード会社側の本人照合により架空人物やいたずら開封を強固に排除。アプリ内に無駄なチャットを残さず、想い出照合後に直通連絡先を安全に引き渡してプラットフォームが完結します。
                 </p>
               </div>
               <div className="pt-2 border-t border-slate-200/80 text-[11px] text-teal-850 font-bold flex items-center gap-1">
@@ -873,7 +873,7 @@ export const SafetyPage = () => (
                   <h3 className="font-serif font-bold text-sm text-slate-900">個人情報マスキング ＆ プライバシー</h3>
                 </div>
                 <p className="text-xs text-slate-700 leading-relaxed font-sans">
-                  手紙本文などの全体公開エリアでは、電話番号やSNS ID、住所などの連絡先投稿を自動で伏字化（マスキング）。差出人ご自身の本名や個人情報は第三者に晒されず、クイズに正解した正規のお相手のみに安全に開示される非公開制御を徹底しています。
+                  メッセージ本文などの全体公開エリアでは、電話番号やSNS ID、住所などの連絡先投稿を自動で伏字化（マスキング）。差出人ご自身の本名や個人情報は第三者に晒されず、クイズに正解した正規のお相手のみに安全に開示される非公開制御を徹底しています。
                 </p>
               </div>
               <div className="pt-2 border-t border-slate-200/80 text-[11px] text-amber-900 font-bold flex items-center gap-1">
@@ -961,7 +961,7 @@ export const DeletionRequestPage = () => {
     { value: "その他安全上の理由", label: "❓ その他安全上の理由" }
   ];
 
-  // 対象手紙の情報を自動取得（ID変更時）
+  // 対象メッセージの情報を自動取得（ID変更時）
   useEffect(() => {
     const targetIdToFetch = postId ? postId.trim() : queryPostId;
     if (targetIdToFetch && /^\d+$/.test(targetIdToFetch)) {
@@ -1011,7 +1011,7 @@ export const DeletionRequestPage = () => {
     setErrorMsg('');
 
     if (!postId || !reason || !content) {
-      setErrorMsg('必須項目（手紙ID、申請理由、掲載内容・特徴）をご入力ください。');
+      setErrorMsg('必須項目（メッセージID、申請理由、掲載内容・特徴）をご入力ください。');
       return;
     }
 
@@ -1069,8 +1069,8 @@ export const DeletionRequestPage = () => {
           icon={<Trash2 size={26} className="text-rose-600" />}
           iconBoxClassName="bg-rose-50 text-rose-600 border border-rose-200"
           category="Deletion & Privacy Protection"
-          title="手紙（ボトルメール）の削除・掲載停止依頼"
-          description="ご自身の個人情報が掲載されている場合や、差出人に心当たりがない手紙について、24時間体制で迅速に非公開・完全削除の申請を受理いたします。"
+          title="メッセージ（ボトルメール）の削除・掲載停止依頼"
+          description="ご自身の個人情報が掲載されている場合や、差出人に心当たりがないメッセージについて、24時間体制で迅速に非公開・完全削除の申請を受理いたします。"
         />
 
         {/* 🔒 24時間体制・オプトアウト保障バッジ */}
@@ -1086,16 +1086,16 @@ export const DeletionRequestPage = () => {
           </span>
         </div>
 
-        {/* 対象手紙の自動検知プレビューカード */}
+        {/* 対象メッセージの自動検知プレビューカード */}
         {targetPost && (
           <div className="bg-gradient-to-r from-teal-50/80 to-slate-50 border-2 border-teal-200/90 rounded-2xl p-4 md:p-5 space-y-2 text-left animate-fadeIn shadow-xs">
             <div className="flex items-center justify-between gap-2 border-b border-teal-150 pb-2">
               <span className="text-xs font-bold text-teal-900 flex items-center gap-1.5 font-sans">
                 <CheckCircle2 size={16} className="text-teal-600 shrink-0" />
-                <span>対象の手紙情報（自動照会完了）</span>
+                <span>対象のメッセージ情報（自動照会完了）</span>
               </span>
               <span className="text-xs font-mono font-bold text-teal-800 bg-white px-2.5 py-0.5 rounded-full border border-teal-200">
-                手紙ID: #{targetPost.id}
+                メッセージID: #{targetPost.id}
               </span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs pt-1 text-slate-850">
@@ -1135,10 +1135,10 @@ export const DeletionRequestPage = () => {
                 Deletion Request Received
               </span>
               <h2 className="text-xl sm:text-2xl font-serif font-bold text-emerald-950">
-                手紙の削除申請を受理いたしました
+                メッセージの削除申請を受理いたしました
               </h2>
               <p className="text-xs sm:text-sm text-emerald-800/90 max-w-lg leading-relaxed font-sans mx-auto">
-                対象手紙<strong>「手紙ID: #{postId}」</strong>に関する削除・非公開申請を正常に受け付けました。<br />
+                対象メッセージ<strong>「メッセージID: #{postId}」</strong>に関する削除・非公開申請を正常に受け付けました。<br />
                 運営事務局にて内容を確認後、速やかに掲載停止・削除処置を実施いたします。処置完了のご案内はご登録のメールアドレス宛てにお知らせいたします。
               </p>
             </div>
@@ -1188,13 +1188,13 @@ export const DeletionRequestPage = () => {
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6 text-left">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* 対象手紙ID */}
+              {/* 対象メッセージID */}
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-slate-900 flex items-center justify-between font-sans">
-                  <span>対象手紙のID（必須）</span>
+                  <span>対象メッセージのID（必須）</span>
                   {postId && targetPost && (
                     <span className="text-[10px] text-teal-700 font-bold bg-teal-50 px-2 py-0.5 rounded border border-teal-200">
-                      ✓ 手紙照会成功
+                      ✓ メッセージ照会成功
                     </span>
                   )}
                 </label>
@@ -1214,7 +1214,7 @@ export const DeletionRequestPage = () => {
                   )}
                 </div>
                 <p className="text-[10px] text-slate-500 font-sans">
-                  ※手紙詳細画面から遷移された場合は自動で入力されています。
+                  ※メッセージ詳細画面から遷移された場合は自動で入力されています。
                 </p>
               </div>
               
@@ -1241,16 +1241,16 @@ export const DeletionRequestPage = () => {
               </div>
             </div>
 
-            {/* 対象手紙の掲載内容・特徴 */}
+            {/* 対象メッセージの掲載内容・特徴 */}
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-slate-900 flex items-center justify-between font-sans">
-                <span>対象手紙の掲載内容・特徴（必須）</span>
+                <span>対象メッセージの掲載内容・特徴（必須）</span>
                 {content && <span className="text-[10px] text-teal-700 font-bold bg-teal-50 px-2 py-0.5 rounded border border-teal-200">✓ 自動入力済み</span>}
               </label>
               <textarea 
                 required
                 rows={3}
-                placeholder="宛先名、年代、本文の特徴など。手紙ID入力時に自動取得されます。"
+                placeholder="宛先名、年代、本文の特徴など。メッセージID入力時に自動取得されます。"
                 value={content}
                 onChange={e => setContent(e.target.value)}
                 className="w-full px-4 py-3 border border-slate-300 rounded-xl bg-zinc-50/50 text-xs md:text-sm text-slate-900 font-sans focus:bg-white focus:outline-none focus:border-rose-600 focus:ring-2 focus:ring-rose-600/20 transition-all leading-relaxed resize-none placeholder:text-slate-400"
@@ -1351,7 +1351,7 @@ export const DeletionRequestPage = () => {
                 ) : (
                   <>
                     <Trash2 size={18} />
-                    <span>手紙の削除申請を安全に送信する</span>
+                    <span>メッセージの削除申請を安全に送信する</span>
                   </>
                 )}
               </button>

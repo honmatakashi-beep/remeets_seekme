@@ -147,12 +147,12 @@ export const AccountProfileTab = (props: any) => {
                         </div>
                         <div className="bg-white/95 border border-sky-200 px-3.5 py-1.5 rounded-xl text-center shrink-0 shadow-2xs">
                           <span className="text-[10px] text-slate-400 font-bold block">利用・事前確認</span>
-                          <span className="text-xs font-bold text-sky-800 font-sans">完全無料（手紙開封時 600円〜1,200円）</span>
+                          <span className="text-xs font-bold text-sky-800 font-sans">完全無料（メッセージ開封時 600円〜1,200円）</span>
                         </div>
                       </div>
 
                       <p className="text-xs text-slate-700 leading-relaxed bg-white/80 p-3.5 rounded-2xl border border-sky-100">
-                        事前に公的身分証明書による本人確認を済ませておくことで、あなた宛ての手紙が海に流された際、<strong>審査待ち時間ゼロで即座に手紙本文と連絡先を開封</strong>できます。完了するとあなたのお手紙やプロフィールに上記の<strong>「動く虹色封蝋バッジ」</strong>が付与されます。
+                        事前に公的身分証明書による本人確認を済ませておくことで、あなた宛てのメッセージが海に流された際、<strong>審査待ち時間ゼロで即座にメッセージ本文と連絡先を開封</strong>できます。完了するとあなたのメッセージやプロフィールに上記の<strong>「動く虹色封蝋バッジ」</strong>が付与されます。
                       </p>
 
                       {/* 3大メリット・アイコン小箱グリッド */}
@@ -163,7 +163,7 @@ export const AccountProfileTab = (props: any) => {
                           </div>
                           <h4 className="font-bold text-slate-900 text-xs">1. 届いたら即時開封</h4>
                           <p className="text-[11px] text-slate-500 leading-relaxed">
-                            お相手からの手紙が見つかった際、審査待ち時間なくその場ですぐ手紙本文と連絡先を開示できます。
+                            お相手からのメッセージが見つかった際、審査待ち時間なくその場ですぐメッセージ本文と連絡先を開示できます。
                           </p>
                         </div>
 
@@ -173,7 +173,7 @@ export const AccountProfileTab = (props: any) => {
                           </div>
                           <h4 className="font-bold text-slate-900 text-xs">2. なりすまし完全防止</h4>
                           <p className="text-[11px] text-slate-500 leading-relaxed">
-                            あなたのお名前を他人が勝手に騙って手紙を受け取る不正を100%防止し、大切な想い出を守ります。
+                            あなたのお名前を他人が勝手に騙ってメッセージを受け取る不正を100%防止し、大切な想い出を守ります。
                           </p>
                         </div>
 

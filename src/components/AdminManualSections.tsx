@@ -38,7 +38,7 @@ export const ManualGeneralSection = () => (
           </div>
           <div className="p-3 bg-sky-50 rounded-xl border border-sky-200 text-sky-900 space-y-1">
             <strong>🔄 誤検知（False Positive）解除：</strong>
-            <p className="text-black/70">健全な思い出の手紙が誤って隔離された場合、管理画面の「ボトル管理」または「通報管理」よりワンクリックで安全フラグを解除（公開化）できます。</p>
+            <p className="text-black/70">健全な思い出のメッセージが誤って隔離された場合、管理画面の「ボトル管理」または「通報管理」よりワンクリックで安全フラグを解除（公開化）できます。</p>
           </div>
         </div>
         <div className="p-4 bg-amber-500/5 rounded-2xl border border-amber-500/20 text-[11px] text-amber-800 leading-relaxed font-sans">
@@ -103,7 +103,7 @@ export const ManualGeneralSection = () => (
               </span>
               <h5 className="font-bold text-amber-950 text-xs font-sans">画像/PDFカード発行モデル</h5>
               <p className="text-[11px] text-amber-900/80 leading-relaxed">
-                照合・決済完了後、手紙本文と連絡先がデザインされた記念用デジタルレターカードを発行・ダウンロード。記念品としての所有感を提示。
+                照合・決済完了後、メッセージ本文と連絡先がデザインされた記念用デジタルレターカードを発行・ダウンロード。記念品としての所有感を提示。
               </p>
             </div>
           </div>
@@ -221,7 +221,7 @@ export const ContractChecklistSection = () => {
       category: 'A. 責任の所在 (Liability)',
       icon: '📱',
       title: 'SMS不達・通信障害時の返金・救済責任の明確化',
-      desc: 'キャリア障害によりSMSが不達になり連絡先開示・手紙開通に失敗した場合、Stripe決済手数料を含め即座に自動返金を行うシステム連携仕様を取り決め。'
+      desc: 'キャリア障害によりSMSが不達になり連絡先開示・メッセージ開通に失敗した場合、Stripe決済手数料を含め即座に自動返金を行うシステム連携仕様を取り決め。'
     },
     {
       id: 'liability_3',
@@ -605,7 +605,7 @@ export const ManualModerationSection = () => (
           <div>
             <span className="text-[10px] font-bold text-black/50 block font-sans">この項目の目的</span>
             <p className="text-xs text-black/80 font-serif leading-relaxed">
-              Gemini AI安全フィルターが投函された手紙を意味解析し、執着、恨み言、売春募集、自殺予告等に類似していると判別したボトルを隔離・査定する場所です。
+              Gemini AI安全フィルターが投函されたメッセージを意味解析し、執着、恨み言、売春募集、自殺予告等に類似していると判別したボトルを隔離・査定する場所です。
             </p>
           </div>
           <div>
@@ -613,7 +613,7 @@ export const ManualModerationSection = () => (
             <ul className="text-[11px] text-black/60 space-y-1 font-sans list-disc list-inside">
               <li><strong>AI判定フラグ：</strong><code>ai_flagged === 1</code> の不適切候補ボトルのみを瞬時に抽出して一覧化。</li>
               <li><strong>AI詳細判定ログの閲覧：</strong>なぜ有害・不適切と判断したのか、Geminiが出した推論コンテキストとスコアを表示。</li>
-              <li><strong>一発措置：</strong>「この手紙を一般公開へ承認」または「ただちに物理削除（アーカイブ監査化）」を実行。</li>
+              <li><strong>一発措置：</strong>「このメッセージを一般公開へ承認」または「ただちに物理削除（アーカイブ監査化）」を実行。</li>
             </ul>
           </div>
         </div>
@@ -640,7 +640,7 @@ export const ManualModerationSection = () => (
             <span className="text-[10px] font-bold text-black/50 block font-sans">主要機能・提供機能</span>
             <ul className="text-[11px] text-black/60 space-y-1 font-sans list-disc list-inside">
               <li><strong>未処理通報のカウントバッジ：</strong>緊急で処理が必要な数がサイドバーに赤バッジで表示されます。</li>
-              <li><strong>通報元と対象の把握：</strong>通報された理由、対象となる手紙、通報者IDの精査。</li>
+              <li><strong>通報元と対象の把握：</strong>通報された理由、対象となるメッセージ、通報者IDの精査。</li>
               <li><strong>1クリック強制遮断：</strong>確認後即座に「アカウント凍結（相手は完全ログイン不可化）」または「通報を誤認識としてクローズ」する操作が連動可能です。</li>
             </ul>
           </div>
@@ -661,7 +661,7 @@ export const ManualModerationSection = () => (
           <div>
             <span className="text-[10px] font-bold text-black/50 block font-sans">この項目の目的</span>
             <p className="text-xs text-black/80 font-serif leading-relaxed">
-              「他人に勝手に名前入りの手紙を流されて検索エンジンのサジェストに載ってしまっている」「過去の思い出だが消してほしい」という当事者の法的削除要請に対応します。
+              「他人に勝手に名前入りのメッセージを流されて検索エンジンのサジェストに載ってしまっている」「過去の思い出だが消してほしい」という当事者の法的削除要請に対応します。
             </p>
           </div>
           <div>
@@ -837,8 +837,8 @@ export const ManualSystemSection = () => (
           <div>
             <span className="text-[10px] font-bold text-black/50 block font-sans">主要機能・提供機能</span>
             <ul className="text-[11px] text-black/60 space-y-1 font-sans list-disc list-inside">
-              <li><strong>物理レコードのセキュア隔離：</strong>論理・物理削除された元の手紙の内容（メッセージ本文、思い出クイズの問いと答え）、および送信者ID内容の内部確認。</li>
-              <li><strong>証跡つきアーカイブ削除：</strong>警察捜査やトラブルに備え、手紙を削除する際は、具体的な削除理由を選択・記述した監査ログをバックエンドに保存しながら処理。</li>
+              <li><strong>物理レコードのセキュア隔離：</strong>論理・物理削除された元のメッセージの内容（メッセージ本文、思い出クイズの問いと答え）、および送信者ID内容の内部確認。</li>
+              <li><strong>証跡つきアーカイブ削除：</strong>警察捜査やトラブルに備え、メッセージを削除する際は、具体的な削除理由を選択・記述した監査ログをバックエンドに保存しながら処理。</li>
             </ul>
           </div>
         </div>
@@ -897,7 +897,7 @@ export const ManualSystemSection = () => (
           <div>
             <span className="text-[10px] font-bold text-black/50 block font-sans">この項目の目的</span>
             <p className="text-xs text-black/80 font-serif leading-relaxed">
-              投函された手紙に対して思い出クイズの正解者が現れた瞬間や、手紙・連絡先が開示された瞬間に、差出人・受取人の双方へ「リアルタイム画面速報通知（WebSocket）」および「確実なメール通知（Resend/SendGrid）」を自動送出するインフラ仕様です。
+              投函されたメッセージに対して思い出クイズの正解者が現れた瞬間や、メッセージ・連絡先が開示された瞬間に、差出人・受取人の双方へ「リアルタイム画面速報通知（WebSocket）」および「確実なメール通知（Resend/SendGrid）」を自動送出するインフラ仕様です。
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -905,7 +905,7 @@ export const ManualSystemSection = () => (
               <span className="text-[10px] font-bold text-black/50 block font-sans">自動トリガーイベント一覧</span>
               <ul className="text-[11px] text-black/60 space-y-1 font-sans list-disc list-inside">
                 <li><strong>クイズ正解イベント：</strong>お相手が思い出クイズに正解した際、差出人のブラウザに「あなた宛ての質問に正解者が現れました！」とリアルタイム通知。</li>
-                <li><strong>連絡先・手紙開通イベント：</strong>決済・eKYC完了時に「手紙・連絡先が開示されました」の相互通知を自動配信。</li>
+                <li><strong>連絡先・メッセージ開通イベント：</strong>決済・eKYC完了時に「メッセージ・連絡先が開示されました」の相互通知を自動配信。</li>
                 <li><strong>新規メッセージ着信：</strong>開通画面内でのメッセージ送信時の即時反映。</li>
               </ul>
             </div>
@@ -1369,7 +1369,7 @@ export const ManualSecuritySection = () => (
                 定額サブスクリプションや初期登録時課金は、ユーザーの「あのお相手を探したい」という初期の探索意欲を阻害し、ボトル投函数の激減（ネットワーク効果の消失）を招きます。また、単純な「年齢承認のみでの一回限り課金」では、サイトを愛用して何度も再会を果たすアクティブユーザーからの継続的なマネタイズ（LTV最大化）に繋がりません。
               </p>
               <div className="p-2 bg-amber-500/5 rounded-xl text-[10px] text-amber-900 border border-amber-500/10 leading-normal">
-                <strong>結論：</strong>「登録・投函・エゴサーチ」は<strong>完全無料（0円）</strong>として流入を最大化し、お相手が見つかって<strong>「思い出クイズに正解し、連絡先・手紙を開通する瞬間」にのみ600円（都度）を課金するモデル</strong>が、ユーザーの熱量が最も高まるタイミングであり、最も支払い意志（Willingness-to-Pay）が高い最適な設計です。
+                <strong>結論：</strong>「登録・投函・エゴサーチ」は<strong>完全無料（0円）</strong>として流入を最大化し、お相手が見つかって<strong>「思い出クイズに正解し、連絡先・メッセージを開通する瞬間」にのみ600円（都度）を課金するモデル</strong>が、ユーザーの熱量が最も高まるタイミングであり、最も支払い意志（Willingness-to-Pay）が高い最適な設計です。
               </div>
             </div>
 
@@ -1472,7 +1472,7 @@ export const ManualSecuritySection = () => (
                 </div>
                 <div>
                   <span className="font-bold text-black block">● 透明な安心料金モデル（任意オプション）：</span>
-                  基本機能はLINE/Google認証（0円）で手軽に利用可能。手紙開封は600円（税込）。公的本人確認（eKYC 600円）は【希望者のみの任意オプション】として提供し、十分な運用差額によりAI監視体制とサーバー維持費を自給自足します。
+                  基本機能はLINE/Google認証（0円）で手軽に利用可能。メッセージ開封は600円（税込）。公的本人確認（eKYC 600円）は【希望者のみの任意オプション】として提供し、十分な運用差額によりAI監視体制とサーバー維持費を自給自足します。
                 </div>
                 <div>
                   <span className="font-bold text-black block">● ユーザーの年齢ステータス連携と暗号化：</span>

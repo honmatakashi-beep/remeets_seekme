@@ -600,7 +600,7 @@ export const AdminModerationTab: React.FC<AdminModerationTabProps> = (props) => 
                                             type="button"
                                             onClick={() => setSelectedModPostModal(post)}
                                             className="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors cursor-pointer"
-                                            title="手紙とAI判定の詳細を確認"
+                                            title="メッセージとAI判定の詳細を確認"
                                           >
                                             <Eye size={13} />
                                           </button>
@@ -624,7 +624,7 @@ export const AdminModerationTab: React.FC<AdminModerationTabProps> = (props) => 
                                             type="button"
                                             onClick={() => triggerDeletePost(post.id)}
                                             className="p-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-lg transition-colors cursor-pointer"
-                                            title="手紙を削除してアーカイブ保管"
+                                            title="メッセージを削除してアーカイブ保管"
                                           >
                                             <Trash2 size={13} />
                                           </button>
@@ -841,7 +841,7 @@ export const AdminModerationTab: React.FC<AdminModerationTabProps> = (props) => 
                           <div className="p-12 text-center text-slate-400">
                             <History size={36} className="mx-auto text-slate-300 mb-2" />
                             <p className="text-sm font-bold text-slate-700">処置対応履歴はありません</p>
-                            <p className="text-xs text-slate-400 mt-1">AI検知保留キューから手紙を審査・対応するとここに記録されます</p>
+                            <p className="text-xs text-slate-400 mt-1">AI検知保留キューからメッセージを審査・対応するとここに記録されます</p>
                           </div>
                         ) : (
                           <>
@@ -853,7 +853,7 @@ export const AdminModerationTab: React.FC<AdminModerationTabProps> = (props) => 
                                   <th className="px-3 py-2.5 whitespace-nowrap">対象ボトル / 宛先</th>
                                   <th className="px-3 py-2.5 whitespace-nowrap">投函主 (UID)</th>
                                   <th className="px-3 py-2.5 whitespace-nowrap">AI自動判定理由</th>
-                                  <th className="px-3 py-2.5 whitespace-nowrap">手紙本文（要約）</th>
+                                  <th className="px-3 py-2.5 whitespace-nowrap">メッセージ本文（要約）</th>
                                   <th className="px-3 py-2.5 whitespace-nowrap">担当管理者</th>
                                   <th className="px-3 py-2.5 whitespace-nowrap">処置詳細・理由</th>
                                 </tr>
@@ -1144,7 +1144,7 @@ export const AdminModerationTab: React.FC<AdminModerationTabProps> = (props) => 
                                   <th className="px-3 py-2.5 whitespace-nowrap">投函主 (UID)</th>
                                   <th className="px-3 py-2.5 whitespace-nowrap">削除実行者</th>
                                   <th className="px-3 py-2.5 whitespace-nowrap">削除理由 / AI判定</th>
-                                  <th className="px-3 py-2.5 whitespace-nowrap">手紙本文（保全データ）</th>
+                                  <th className="px-3 py-2.5 whitespace-nowrap">メッセージ本文（保全データ）</th>
                                 </tr>
                               </thead>
                               <tbody className="divide-y divide-slate-100 text-xs">

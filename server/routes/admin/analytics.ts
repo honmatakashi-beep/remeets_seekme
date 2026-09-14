@@ -638,7 +638,7 @@ export const analyticsRouter = express.Router();
           stepNumber: 5,
           name: '開封・開通決済',
           count: paidPosts,
-          subLabel: '手紙開封・開通手数料の決済完了',
+          subLabel: 'メッセージ開封・開通手数料の決済完了',
           icon: 'CreditCard',
           color: '#d97706',
           convFromPrev: parseFloat(((paidPosts / Math.max(1, ekycCount)) * 100).toFixed(1)),
@@ -901,7 +901,7 @@ export const analyticsRouter = express.Router();
       const verifiedUsers = (db.prepare("SELECT COUNT(*) as count FROM users WHERE is_ekyc_verified = 1").get() as any)?.count || 0;
       
       const transactionCount = Math.max(paidTransactions, totalResolved, 15);
-      const unitRevenue = 1200; // 手紙開封600円 + eKYC600円
+      const unitRevenue = 1200; // メッセージ開封600円 + eKYC600円
       const calculatedRevenue = totalRevenue > 0 ? totalRevenue : transactionCount * unitRevenue;
 
       // 原価分解 (1件あたり)

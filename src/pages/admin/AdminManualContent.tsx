@@ -80,7 +80,7 @@ export const AdminManualContent = () => {
             </div>
             <div style="border: 1px solid #e2e8f0; padding: 20px; border-radius: 12px; background: #fff;">
               <h3 style="margin-top: 0; font-size: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px;">④ ボトル管理タブ (Posts)</h3>
-              <p style="font-size: 12px; color: #64748b; margin-top: 5px;">目的: すべての漂流文字データを監視し、違反手紙への速やかな介入（編集・削除）を行います。</p>
+              <p style="font-size: 12px; color: #64748b; margin-top: 5px;">目的: すべての漂流文字データを監視し、違反メッセージへの速やかな介入（編集・削除）を行います。</p>
               <ul style="font-size: 12px; padding-left: 20px; color: #475569; line-height: 1.7;">
                 <li>漂流ボトル一覧と検索</li>
                 <li>ダイレクト編集（誤記入による連絡不能の救済）</li>
@@ -642,7 +642,7 @@ export const OldAdminManualContent = () => {
                   <div>
                     <span className="text-[10px] font-bold text-black/50 block font-sans">この項目の目的</span>
                     <p className="text-xs text-black/80 font-serif leading-relaxed">
-                      一般タイムラインで漂流しているすべての文字データを監視・管理し、違反手紙への速やかな介入（編集・削除）を行います。
+                      一般タイムラインで漂流しているすべての文字データを監視・管理し、違反メッセージへの速やかな介入（編集・削除）を行います。
                     </p>
                   </div>
                   <div>
@@ -651,7 +651,7 @@ export const OldAdminManualContent = () => {
                       <li><strong>漂流ボトル一覧と検索：</strong>対象者名、場所、ゆかりの地等のファセット等で検索。</li>
                       <li><strong>ダイレクト編集：</strong>誤記入による連絡不能などの際、お相手指定の名前や日付の間違いを修正支援可能。</li>
                       <li><strong>クイズ＆解答の確認：</strong>設定された「思い出の鍵」及び回答内容の内部確認。</li>
-                      <li><strong>証跡つきアーカイブ削除：</strong>警察捜査やトラブルに備え、手紙を削除する際は、具体的な削除理由を選択・記述した監査ログをバックエンドに保存しながら処理。</li>
+                      <li><strong>証跡つきアーカイブ削除：</strong>警察捜査やトラブルに備え、メッセージを削除する際は、具体的な削除理由を選択・記述した監査ログをバックエンドに保存しながら処理。</li>
                     </ul>
                   </div>
                 </div>
@@ -712,7 +712,7 @@ export const OldAdminManualContent = () => {
                   <div>
                     <span className="text-[10px] font-bold text-black/50 block font-sans">この項目の目的</span>
                     <p className="text-xs text-black/80 font-serif leading-relaxed">
-                      Gemini AI安全フィルターが投函された手紙を意味解析し、執着、恨み言、売春募集、自殺予告等に類似していると判別したボトルを隔離・査定する場所です。
+                      Gemini AI安全フィルターが投函されたメッセージを意味解析し、執着、恨み言、売春募集、自殺予告等に類似していると判別したボトルを隔離・査定する場所です。
                     </p>
                   </div>
                   <div>
@@ -720,7 +720,7 @@ export const OldAdminManualContent = () => {
                     <ul className="text-[11px] text-black/60 space-y-1 font-sans list-disc list-inside">
                       <li><strong>AI判定フラグ：</strong>`ai_flagged === 1` の不適切候補ボトルのみを瞬時に抽出して一覧化。</li>
                       <li><strong>AI詳細判定ログの閲覧：</strong>なぜ有害・不適切と判断したのか、Geminiが出した推論コンテキストとスコアを表示。</li>
-                      <li><strong>一発措置：</strong>「この手紙を一般公開へ承認」または「ただちに物理削除（アーカイブ監査化）」を実行。</li>
+                      <li><strong>一発措置：</strong>「このメッセージを一般公開へ承認」または「ただちに物理削除（アーカイブ監査化）」を実行。</li>
                     </ul>
                   </div>
                 </div>
@@ -747,7 +747,7 @@ export const OldAdminManualContent = () => {
                     <span className="text-[10px] font-bold text-black/50 block font-sans">主要機能・提供機能</span>
                     <ul className="text-[11px] text-black/60 space-y-1 font-sans list-disc list-inside">
                       <li><strong>未処理通報のカウントバッジ：</strong>緊急で処理が必要な数がサイドバーに赤バッジで表示されます。</li>
-                      <li><strong>通報元と対象の把握：</strong>通報された理由、対象となる手紙、通報者IDの精査。</li>
+                      <li><strong>通報元と対象の把握：</strong>通報された理由、対象となるメッセージ、通報者IDの精査。</li>
                       <li><strong>1クリック強制遮断：</strong>確認後即座に「アカウント凍結（相手は完全ログイン不可化）」または「通報を誤認識としてクローズ」する操作が連動可能です。</li>
                     </ul>
                   </div>
@@ -768,7 +768,7 @@ export const OldAdminManualContent = () => {
                   <div>
                     <span className="text-[10px] font-bold text-black/50 block font-sans">この項目の目的</span>
                     <p className="text-xs text-black/80 font-serif leading-relaxed">
-                      「他人に勝手に名前入りの手紙を流されて検索エンジンのサジェストに載ってしまっている」「過去の思い出だが消してほしい」という当事者の法的削除要請に対応します。
+                      「他人に勝手に名前入りのメッセージを流されて検索エンジンのサジェストに載ってしまっている」「過去の思い出だが消してほしい」という当事者の法的削除要請に対応します。
                     </p>
                   </div>
                   <div>

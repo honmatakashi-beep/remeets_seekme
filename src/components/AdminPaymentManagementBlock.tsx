@@ -1267,7 +1267,7 @@ export const AdminPaymentManagementBlock: React.FC = () => {
                   健全黒字化ユニットエコノミクス (1,200円開通決済時):
                 </span>
                 <p className="text-[11px] text-emerald-900/90 leading-relaxed">
-                  手紙開封(600円)＋eKYC(600円)の計1,200円から、Stripe(43円)、SMS(12円)、eKYC(200円)を控除し、<strong className="font-serif font-bold text-xs text-emerald-950">1件あたり +945円 (粗利率 78.8%)</strong> の高水準黒字を完全確保。
+                  メッセージ開封(600円)＋eKYC(600円)の計1,200円から、Stripe(43円)、SMS(12円)、eKYC(200円)を控除し、<strong className="font-serif font-bold text-xs text-emerald-950">1件あたり +945円 (粗利率 78.8%)</strong> の高水準黒字を完全確保。
                 </p>
               </div>
             </div>
@@ -1285,7 +1285,7 @@ export const AdminPaymentManagementBlock: React.FC = () => {
                     1決済あたり コスト・純利益 分解シミュレーション (1,200円)
                   </h3>
                   <p className="text-xs text-black/60 font-sans mt-0.5">
-                    手紙開封手数料（600円）＋ eKYC審査手数料（600円）における外部ベンダー原価と純利益
+                    メッセージ開封手数料（600円）＋ eKYC審査手数料（600円）における外部ベンダー原価と純利益
                   </p>
                 </div>
                 <span className="px-3 py-1 bg-emerald-100 text-emerald-900 border border-emerald-300 rounded-full text-xs font-serif font-bold">
@@ -1524,7 +1524,7 @@ export const AdminPaymentManagementBlock: React.FC = () => {
                         <CheckCircle2 size={13} className="text-emerald-600" /> ① 審査合格 (承認完了)
                       </span>
                       <span className="text-[10px] text-emerald-800 mt-0.5 block">
-                        売上確定・手紙開封（純粗利 +366円）
+                        売上確定・メッセージ開封（純粗利 +366円）
                       </span>
                     </button>
 

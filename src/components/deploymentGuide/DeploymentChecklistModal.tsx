@@ -98,19 +98,19 @@ export const DeploymentChecklistModal: React.FC<DeploymentChecklistModalProps> =
       { id: 1, category: "1. 登録・認証・ログイン", title: "新規登録・入力バリデーション＆パスワードリセット検証", description: "パスワード強度チェック、重複メールアドレス登録時の適切なエラー表示、およびパスワード再設定フローが機能するか検証します。", completed: false, date: "", notes: "" },
       { id: 2, category: "1. 登録・認証・ログイン", title: "LINE / Google OAuthログイン連携テスト", description: "本番ドメインでLINE/Googleログインが正常に起動し、ユーザープロファイル（ニックネーム、画像、メールアドレス）が取得できるか検証します。", completed: false, date: "", notes: "" },
       { id: 3, category: "1. 登録・認証・ログイン", title: "利用規約同意・18歳以上確認＆セッション維持テスト", description: "初回登録時の利用規約・PP同意と18歳以上確認が必須化され、ブラウザリロード後もセッションが維持されるか検証します。", completed: false, date: "", notes: "" },
-      { id: 4, category: "2. 手紙投函・AI検閲", title: "ボトル（手紙）新規作成・秘密の想い出クイズ登録テスト", description: "宛名、ゆかりの地、手紙本文、想い出クイズ（質問・正解・表記ゆれ別解）が破損なくDBに保存・投函されるか検証します。", completed: false, date: "", notes: "" },
-      { id: 5, category: "2. 手紙投函・AI検閲", title: "フルネーム判定（常用姓名辞書）ガード検証", description: "プロフィールや手紙内に日本の常用姓名辞書に基づくフルネーム（実名）を入力した際、検閲警告・ブロックされるか検証します。", completed: false, date: "", notes: "" },
-      { id: 6, category: "2. 手紙投函・AI検閲", title: "AI自動検閲（誹謗中傷・個人情報・脅迫）フィルターテスト", description: "手紙本文に脅迫・暴言や直接の連絡先（電話番号、他SNS ID）を入力し、AIモデレーションが自動で隔離・警告するか検証します。", completed: false, date: "", notes: "" },
-      { id: 7, category: "3. 検索・秘匿性", title: "キーワード検索・年代地域フィルター＆本文マスキング検証", description: "お名前や都道府県で検索し、該当手紙がヒットすること、およびクイズ未正解の段階で本文・連絡先が完全に秘匿されているか検証します。", completed: false, date: "", notes: "" },
+      { id: 4, category: "2. メッセージ投函・AI検閲", title: "ボトル（メッセージ）新規作成・秘密の想い出クイズ登録テスト", description: "宛名、ゆかりの地、メッセージ本文、想い出クイズ（質問・正解・表記ゆれ別解）が破損なくDBに保存・投函されるか検証します。", completed: false, date: "", notes: "" },
+      { id: 5, category: "2. メッセージ投函・AI検閲", title: "フルネーム判定（常用姓名辞書）ガード検証", description: "プロフィールやメッセージ内に日本の常用姓名辞書に基づくフルネーム（実名）を入力した際、検閲警告・ブロックされるか検証します。", completed: false, date: "", notes: "" },
+      { id: 6, category: "2. メッセージ投函・AI検閲", title: "AI自動検閲（誹謗中傷・個人情報・脅迫）フィルターテスト", description: "メッセージ本文に脅迫・暴言や直接の連絡先（電話番号、他SNS ID）を入力し、AIモデレーションが自動で隔離・警告するか検証します。", completed: false, date: "", notes: "" },
+      { id: 7, category: "3. 検索・秘匿性", title: "キーワード検索・年代地域フィルター＆本文マスキング検証", description: "お名前や都道府県で検索し、該当メッセージがヒットすること、およびクイズ未正解の段階で本文・連絡先が完全に秘匿されているか検証します。", completed: false, date: "", notes: "" },
       { id: 8, category: "4. クイズ照合・本人認証", title: "想い出クイズ完全一致判定 ＆ 表記ゆれ救済テスト", description: "質問に完全正解（または登録された表記ゆれ別解）を入力した際、即座に想い出一致（照合成功）画面へ遷移するか検証します。", completed: false, date: "", notes: "" },
       { id: 9, category: "4. クイズ照合・本人認証", title: "クイズ不正解時の安全遮断 ＆ ブルートフォース制限テスト", description: "誤答時に本文が絶対に開示されないこと、および連続誤答時に一時ロックアウト（レート制限）がかかるか検証します。", completed: false, date: "", notes: "" },
       { id: 10, category: "5. SMS・eKYC・宣誓", title: "SMS認証コード実機送信・6桁照合・1日3回制限テスト", description: "実機スマホへSMS認証コードが即時届き、6桁入力で認証が通ること、およびいたずら防止レート制限（1日最大3回）が作動するか検証します。", completed: false, date: "", notes: "" },
       { id: 11, category: "5. SMS・eKYC・宣誓", title: "公的証明書（免許証/マイナンバー）アップロード＆eKYC審査テスト", description: "身分証画像が安全にアップロードされ、審査合否ステータスおよび公的認証バッジが正しく更新されるか検証します。", completed: false, date: "", notes: "" },
       { id: 12, category: "5. SMS・eKYC・宣誓", title: "電子的利用宣誓（法令遵守・ストーカー禁止）合意テスト", description: "連絡先開示前の誓約確認画面で、利用宣誓チェック項目への明示的同意が必須化され、合意タイムスタンプ・IPログが安全保存されるか検証します。", completed: false, date: "", notes: "" },
       { id: 13, category: "6. 決済・連絡先開示", title: "Stripe本番決済（開通手数料600円〜1,200円）疎通テスト", description: "開通ボタン押下時にStripe決済画面が起動し、クレジットカード決済が遅延なく正常に完了するか検証します。", completed: false, date: "", notes: "" },
-      { id: 14, category: "6. 決済・連絡先開示", title: "決済完了後の即時連絡先開示（双方向引き渡し完結）検証", description: "決済完了直後にお手紙全文と相手の優先開示連絡先（LINE ID等）が表示され、安全な連絡先引き渡しをもって完結するか検証します。", completed: false, date: "", notes: "" },
+      { id: 14, category: "6. 決済・連絡先開示", title: "決済完了後の即時連絡先開示（双方向引き渡し完結）検証", description: "決済完了直後にメッセージ全文と相手の優先開示連絡先（LINE ID等）が表示され、安全な連絡先引き渡しをもって完結するか検証します。", completed: false, date: "", notes: "" },
       { id: 15, category: "6. 決済・連絡先開示", title: "eKYC審査不合格時のStripe自動返金（仮売上取消）テスト", description: "本人確認審査で不合格となった場合、Stripeで仮決済された手数料が自動的かつ即座にオーソリ取消・返金されるか検証します。", completed: false, date: "", notes: "" },
-      { id: 16, category: "7. マイページ・手紙管理", title: "優先開示連絡先の設定・投函ボトル回収（削除）テスト", description: "自身のLINE ID等の更新保存、および投函ボトルの回収（完全消去）時に検索結果から即時非表示となるか検証します。", completed: false, date: "", notes: "" },
+      { id: 16, category: "7. マイページ・メッセージ管理", title: "優先開示連絡先の設定・投函ボトル回収（削除）テスト", description: "自身のLINE ID等の更新保存、および投函ボトルの回収（完全消去）時に検索結果から即時非表示となるか検証します。", completed: false, date: "", notes: "" },
       { id: 17, category: "8. 管理者・問い合わせ・警察", title: "お問い合わせ・通報チケット送受信 ＆ Gemini AI返信ドラフト生成テスト", description: "ユーザーのお問い合わせがチケットDBに安全に記録され、管理画面でGemini AIによるコンプライアンス返信ドラフトが自動生成されるか検証します。", completed: false, date: "", notes: "" },
       { id: 18, category: "8. 管理者・問い合わせ・警察", title: "管理者ダッシュボードKPI・AI通報ログ＆ユーザー緊急凍結検証", description: "統計メトリクス表示、AI検閲通報ログのリアルタイム確認、問題ユーザーのワンクリックBAN機能が正常動作するか検証します。", completed: false, date: "", notes: "" },
       { id: 19, category: "8. 管理者・問い合わせ・警察", title: "警察提出用・電子的宣誓同意ログ付き監査CSVエクスポートテスト", description: "司法捜査機関からの開示要請を想定し、電子的宣誓同意ログおよび認証イベント履歴を含んだ監査CSVが出力できるか検証します。", completed: false, date: "", notes: "" },
@@ -257,7 +257,7 @@ export const DeploymentChecklistModal: React.FC<DeploymentChecklistModalProps> =
       category: "2. コンセプト",
       layout: 'content',
       points: [
-        "物理的距離や年月の経過、不慮の災害や引越し等により連絡が取れなくなってしまった大切な人々へ、「手紙（ボトルメール）」をネットの海へ投函するシステムです。",
+        "物理的距離や年月の経過、不慮の災害や引越し等により連絡が取れなくなってしまった大切な人々へ、「メッセージ（ボトルメール）」をネットの海へ投函するシステムです。",
         "SNSや掲示板のようにプロファイルや内容を大々的に誰にでも公開・拡散するのではなく、検索をあてた当事者だけがアクセスできる「静謐」なプライベート感覚を重視。",
         "届く相手は「かつての面識者（お互い思い出に心当たりのある人）」に完全に限定された、心温まるクローズドな関係再結合スペースです。"
       ]
@@ -334,7 +334,7 @@ export const DeploymentChecklistModal: React.FC<DeploymentChecklistModalProps> =
       category: "6. 管理・運用機能（バックエンド）",
       layout: 'content',
       points: [
-        "「Gemini AI バックエンド連動」：投函された手紙や送信メッセージは、すべてバックエンドよりGemini AI安全フィルターへ自働転送され、執着や罵倒などの不穏テキストを意味解析します。",
+        "「Gemini AI バックエンド連動」：投函されたメッセージや送信メッセージは、すべてバックエンドよりGemini AI安全フィルターへ自働転送され、執着や罵倒などの不穏テキストを意味解析します。",
         "「擬態送信（シャドウフラグ）」：不当である（ストーキング目的の隠れた接近）と検知された場合、送信者にはエラーを出さず送信成功のように見せかけながら、データベース上で隔離（一般公開フラグを即時0に設定）。",
         "嫌がらせの回答者や攻撃者は「システムに拒否されていること（検知方法）」に気づかないまま不活性化されるため、別口座からの執拗な再アタックを劇的に無力化します。"
       ]
@@ -441,7 +441,7 @@ export const DeploymentChecklistModal: React.FC<DeploymentChecklistModalProps> =
       category: "安全防衛メカニズム③：直接連絡先交換排除",
       layout: 'content',
       points: [
-        "ボトルメールの本文、および手紙開通後のメッセージエリア内から、売春交渉、金銭詐欺、悪質な課金サイトやLINE等への外部誘導を完全に未然回避するため、直接の連絡手段の露呈を徹底防御。",
+        "ボトルメールの本文、およびメッセージ開通後のメッセージエリア内から、売春交渉、金銭詐欺、悪質な課金サイトやLINE等への外部誘導を完全に未然回避するため、直接の連絡手段の露呈を徹底防御。",
         "LINE ID、各種SNS、電話番号、メールアドレス、あるいは外部リンクURL、支払等の特定可能キーを、正規表現（Regex）スキャンでリアルタイム常時監視します。",
         "検知された全ての連絡情報・リンク文字列は、バックエンド側で即座に「****」などへ不変置換。いかなる手法を使っても、相手側端末へ表示される前の段階で完璧に伏字化します。"
       ]

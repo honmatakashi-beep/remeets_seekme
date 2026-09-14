@@ -137,7 +137,7 @@ export const AdminMasterKnowledgeBase: React.FC<AdminMasterKnowledgeBaseProps> =
 
 ■ 3. 認証基本構成 ＆ 600円安心モデル
 - メインログイン: LINE Login / Google OAuth (完全無料・0円)
-- 手紙開封・連絡先開示: 600円 (税込) 買い切り
+- メッセージ開封・連絡先開示: 600円 (税込) 買い切り
 - 公的本人確認 (eKYC): 600円 (税込) ── 【希望者のみの任意オプション】
 
 ■ 4. 警察 (公安・サイバー課) 照会対応
@@ -394,7 +394,7 @@ ReMEETs カスタマーサポート`
 (1) 不特定多数の異性交際を斡旋しない
 一般的なマッチングアプリと異なり、年齢・容姿・年収等による異性の検索・閲覧機能は一切存在しません。
 (2) 二人だけの想い出クイズによる厳格な合意照合
-手紙の閲覧および連絡先開示には、差出人と受取人のみが知る「想い出クイズ（共通記憶）」の完全一致が必須であり、見知らぬ第三者が偶然マッチングすることは不可能です。
+メッセージの閲覧および連絡先開示には、差出人と受取人のみが知る「想い出クイズ（共通記憶）」の完全一致が必須であり、見知らぬ第三者が偶然マッチングすることは不可能です。
 (3) 連絡先安全引き渡し（セキュア・ブリッジ）完結型モデルの採用
 想い出の照合・本人確認後に合意された連絡先（LINE ID等）を安全に引き渡して完結するモデルであり、出会い系サイト規制法第2条第2号に定める「異性交際の機会を提供する役務」には該当いたしません。
 
@@ -1082,13 +1082,13 @@ ReMEETs カスタマーサポート`
                 <div className="space-y-3 text-xs">
                   <p className="text-black/70 leading-relaxed">
                     <b>基本利用完全無料</b>: LINE/Google連携で誰でも0円で投函・検索・回答が可能。<br />
-                    <b>手紙開封（600円）</b>: クイズ正解後の手紙開封・連絡先開示は600円（税込）の完全買い切り価格。<br />
+                    <b>メッセージ開封（600円）</b>: クイズ正解後のメッセージ開封・連絡先開示は600円（税込）の完全買い切り価格。<br />
                     <b>公的本人確認eKYC（600円）</b>: 信頼性を高めたいユーザー向けの【希望者のみの任意オプション】（開封600円＋eKYC600円の同時実施時は計1,200円）。
                   </p>
 
                   {/* Profit breakdown diagram */}
                   <div className="p-4 rounded-2xl bg-teal-50/80 border border-teal-200 space-y-2">
-                    <span className="font-bold text-teal-950 block text-xs">【手紙開封（600円）1件あたりの収益・原価分解】</span>
+                    <span className="font-bold text-teal-950 block text-xs">【メッセージ開封（600円）1件あたりの収益・原価分解】</span>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-[11px] font-mono">
                       <div className="p-2.5 rounded-xl bg-white border border-teal-200">
                         <span className="text-black/50 block text-[10px]">【売上】開通料</span>

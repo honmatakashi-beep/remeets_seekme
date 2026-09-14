@@ -142,7 +142,7 @@ export const PostDetailMainCard = (props: any) => {
                     {/* タグ表示 */}
                     <div className="flex flex-wrap gap-2 text-xs pt-1 border-t border-slate-200/60">
                       <span className="font-bold text-slate-700 bg-white border border-slate-200 px-2.5 py-0.5 rounded-lg shadow-2xs text-[11px]">
-                        お手紙ID: #{post.id}
+                        メッセージID: #{post.id}
                       </span>
                       <span className="font-bold text-[#b45309] bg-[#fef3c7] border border-[#f59e0b]/40 px-2.5 py-0.5 rounded-lg text-[11px]">
                         {getCategoryLabel(post.category)}
@@ -168,7 +168,7 @@ export const PostDetailMainCard = (props: any) => {
                     </div>
                   </div>
 
-                  {/* 🔒 3. 課金後開示項目（手紙本文・開示連絡先の大枠） */}
+                  {/* 🔒 3. 課金後開示項目（メッセージ本文・開示連絡先の大枠） */}
                   <div className="p-5 sm:p-6 bg-gradient-to-br from-emerald-50/40 via-teal-50/30 to-slate-50 rounded-2xl border-2 border-teal-300/80 space-y-5 text-left font-sans shadow-xs">
                     <div className="flex items-center justify-between gap-2 border-b border-teal-200/80 pb-3 flex-wrap">
                       <div className="flex items-center gap-2">
@@ -187,12 +187,12 @@ export const PostDetailMainCard = (props: any) => {
                       </span>
                     </div>
 
-                    {/* 💌 開封されたメッセージ（お手紙の本文） - 独立枠 */}
+                    {/* 💌 開封されたメッセージ（メッセージの本文） - 独立枠 */}
                     <div className="p-4 sm:p-5 bg-emerald-50/60 rounded-xl border border-emerald-200/90 space-y-3 shadow-2xs">
                       <div className="flex items-center justify-between gap-2 flex-wrap border-b border-emerald-200/70 pb-2">
                         <h5 className="text-sm sm:text-base font-bold text-emerald-950 flex items-center gap-2">
                           <Unlock size={18} className="text-emerald-600" />
-                          <span>💌 開封されたメッセージ（お手紙の本文）</span>
+                          <span>💌 開封されたメッセージ（メッセージの本文）</span>
                         </h5>
                         <span className="text-xs font-bold text-emerald-800 bg-white px-2.5 py-0.5 rounded-lg border border-emerald-200/80 shadow-2xs">
                           差出人: {displaySenderFullName} 様
@@ -249,7 +249,7 @@ export const PostDetailMainCard = (props: any) => {
                             if (contactType.includes('EMAIL') || contactVal.includes('@') && !contactVal.startsWith('@')) {
                               return (
                                 <a
-                                  href={`mailto:${contactVal}?subject=${encodeURIComponent('【ReMEETs】手紙を受け取りました')}&body=${encodeURIComponent(`${otherUserFullNameToUse || searcherFullName || post.searcher_full_name || '差出人'}様\n\nReMEETsにてあなたからの手紙を開封いたしました。ご連絡ありがとうございます。`)}`}
+                                  href={`mailto:${contactVal}?subject=${encodeURIComponent('【ReMEETs】メッセージを受け取りました')}&body=${encodeURIComponent(`${otherUserFullNameToUse || searcherFullName || post.searcher_full_name || '差出人'}様\n\nReMEETsにてあなたからのメッセージを開封いたしました。ご連絡ありがとうございます。`)}`}
                                   className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 py-3 sm:py-2.5 px-4 bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold rounded-xl shadow-xs transition-all cursor-pointer"
                                 >
                                   <Mail size={14} />
@@ -298,7 +298,7 @@ export const PostDetailMainCard = (props: any) => {
                       <span>安心・プライバシー保護の窓口:</span>
                     </div>
                     <p className="text-[11px] text-slate-500 leading-relaxed">
-                      この手紙の内容に不適切な点や心当たりのない内容が含まれている場合は、運営事務局へ通報・相談いただけます。
+                      このメッセージの内容に不適切な点や心当たりのない内容が含まれている場合は、運営事務局へ通報・相談いただけます。
                     </p>
                     <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 pt-1">
                       <button 
@@ -312,16 +312,16 @@ export const PostDetailMainCard = (props: any) => {
                       <Link 
                         to={`/deletion-request?id=${post.id}&name=${encodeURIComponent(post.target_name || '')}&content=${encodeURIComponent(`宛先:${post.target_name || ''}様 / ${post.searcher_profile || ''}`)}`}
                         className="flex items-center justify-center gap-1.5 text-xs text-slate-700 hover:text-rose-700 transition-colors bg-white hover:bg-rose-50 px-3.5 py-2 rounded-xl border border-slate-200 hover:border-rose-200 cursor-pointer font-bold shadow-2xs"
-                        title="この手紙の削除・非公開を申請（手紙ID自動入力）"
+                        title="このメッセージの削除・非公開を申請（メッセージID自動入力）"
                       >
                         <Trash2 size={14} className="text-rose-500 shrink-0" />
-                        <span className="truncate">手紙の削除依頼</span>
+                        <span className="truncate">メッセージの削除依頼</span>
                       </Link>
                     </div>
                   </div>
                 </div>
               ) : (
-                /* showDetails が false の場合（未開示・手紙探索画面） */
+                /* showDetails が false の場合（未開示・メッセージ探索画面） */
                 <div className="space-y-6">
                   {/* カード上部: 差出人の属性情報（緑のシマーボタン付き） */}
                   <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-3 text-left">
@@ -352,16 +352,16 @@ export const PostDetailMainCard = (props: any) => {
                         </button>
                       </div>
 
-                      {/* 手紙ID情報 */}
+                      {/* メッセージID情報 */}
                       <span className="text-[11px] font-mono font-bold text-slate-500 bg-white border border-slate-200 px-2.5 py-1 rounded-lg shadow-2xs shrink-0">
-                        お手紙ID: #{post.id}
+                        メッセージID: #{post.id}
                       </span>
                     </div>
 
                     {/* メモリータグ（属性まとめ） */}
                     <div className="flex flex-wrap gap-2 text-xs">
                       <span className="font-bold text-slate-800 bg-white border border-slate-200 px-3 py-1 rounded-xl shadow-2xs">
-                        お手紙ID: #{post.id}
+                        メッセージID: #{post.id}
                       </span>
                       <span className="font-bold text-[#b45309] bg-[#fef3c7] border border-[#f59e0b]/40 px-3 py-1 rounded-xl">
                         {getCategoryLabel(post.category)}
@@ -419,7 +419,7 @@ export const PostDetailMainCard = (props: any) => {
                     </div>
                   </div>
 
-                  {/* カード下部: ダイレクトな手紙開封アクション CTA */}
+                  {/* カード下部: ダイレクトなメッセージ開封アクション CTA */}
                   {post.status !== 'resolved' && (
                     <div className="pt-2 space-y-4 text-left border-t border-slate-200/80">
                       <div className="p-4 sm:p-5 bg-gradient-to-br from-teal-50/90 via-emerald-50/70 to-slate-50 rounded-2xl border-2 border-teal-300/80 space-y-3.5 font-sans shadow-xs">
@@ -445,13 +445,13 @@ export const PostDetailMainCard = (props: any) => {
                             </div>
                           </div>
 
-                          {/* 2. 手紙の全文とエピソードを開封 */}
+                          {/* 2. メッセージの全文とエピソードを開封 */}
                           <div className="p-3 bg-white rounded-xl border border-emerald-200/90 shadow-2xs flex items-center gap-3">
                             <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-base shrink-0 shadow-2xs">
                               💌
                             </div>
                             <div>
-                              <div className="text-xs font-extrabold text-slate-900 leading-tight">【手紙の全文】</div>
+                              <div className="text-xs font-extrabold text-slate-900 leading-tight">【メッセージの全文】</div>
                               <div className="text-[10.5px] text-emerald-800 font-medium">エピソードを開封</div>
                             </div>
                           </div>
@@ -469,12 +469,12 @@ export const PostDetailMainCard = (props: any) => {
                         </div>
                       </div>
 
-                      {/* 鮮やかで目立つグリーンのグラデーション「質問に答えて手紙を開く」ボタン */}
+                      {/* 鮮やかで目立つグリーンのグラデーション「質問に答えてメッセージを開く」ボタン */}
                       <button
                         onClick={handleStartContact}
                         className="w-full py-3.5 sm:py-4 px-4 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold rounded-2xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 text-[13px] sm:text-base cursor-pointer hover:scale-[1.01] active:scale-[0.99] border border-emerald-400/30 group"
                       >
-                        <span className="tracking-wide whitespace-nowrap">思い出の質問に答えて手紙を開く</span>
+                        <span className="tracking-wide whitespace-nowrap">思い出の質問に答えてメッセージを開く</span>
                         <ArrowRight size={16} className="text-emerald-200 group-hover:translate-x-1 transition-transform shrink-0" />
                       </button>
                       <p className="text-[11px] text-slate-500 text-center font-sans">
@@ -502,10 +502,10 @@ export const PostDetailMainCard = (props: any) => {
                         <Link 
                           to={`/deletion-request?id=${post.id}&name=${encodeURIComponent(post.target_name || '')}&content=${encodeURIComponent(`宛先:${post.target_name || ''}様 / ${post.searcher_profile || ''}`)}`}
                           className="flex items-center justify-center gap-1.5 text-xs text-slate-600 hover:text-rose-700 transition-colors bg-white hover:bg-rose-50 px-3 py-2 rounded-xl border border-slate-200 hover:border-rose-200 cursor-pointer font-bold shadow-2xs"
-                          title="この手紙の削除・非公開を申請（手紙ID自動入力）"
+                          title="このメッセージの削除・非公開を申請（メッセージID自動入力）"
                         >
                           <Trash2 size={14} className="text-rose-500 shrink-0" />
-                          <span className="truncate">手紙の削除依頼</span>
+                          <span className="truncate">メッセージの削除依頼</span>
                         </Link>
                       </div>
                     </div>
@@ -542,7 +542,7 @@ export const PostDetailMainCard = (props: any) => {
                       <h4 className="font-bold text-slate-900 text-xs sm:text-sm">まずはテキストで想い出のご挨拶</h4>
                     </div>
                     <p className="text-xs text-slate-600 leading-relaxed">
-                      いきなり通話や面会を求めず、「ReMEETsで手紙を受け取りました」と丁寧にメッセージを送信しましょう。ふたりだけの懐かしいエピソードを添えると自然に会話が弾みます。
+                      いきなり通話や面会を求めず、「ReMEETsでメッセージを受け取りました」と丁寧にメッセージを送信しましょう。ふたりだけの懐かしいエピソードを添えると自然に会話が弾みます。
                     </p>
                   </div>
 
@@ -569,7 +569,7 @@ export const PostDetailMainCard = (props: any) => {
 
                 <div className="pt-1 flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/90 p-4 rounded-2xl border border-teal-100/80">
                   <span className="text-xs text-slate-500 font-sans">
-                    ※ 開示された手紙および連絡先情報はマイアカウントに安全に保存されています。
+                    ※ 開示されたメッセージおよび連絡先情報はマイアカウントに安全に保存されています。
                   </span>
                   <Link
                     to="/account"
@@ -596,7 +596,7 @@ export const PostDetailMainCard = (props: any) => {
                 <div className="space-y-2">
                   <p className="text-black font-serif text-2.5xl font-bold">これはあなたが漂流させたボトルです</p>
                   <p className="text-sm text-brand-dark/95 leading-relaxed">
-                    お相手が秘密の思い出クイズに正解し、誓約手続きを完了すると、お手紙が開かれ連絡先の引き渡しが行われます。
+                    お相手が秘密の思い出クイズに正解し、誓約手続きを完了すると、メッセージが開かれ連絡先の引き渡しが行われます。
                   </p>
                 </div>
                 {post.status !== 'resolved' ? (
@@ -727,7 +727,7 @@ export const PostDetailMainCard = (props: any) => {
                   <span>正解時に安全に開示される情報</span>
                 </div>
                 <p className="text-slate-700 text-xs sm:text-sm leading-relaxed">
-                  思い出クイズに正解することでお互いの記憶が一致していることが確認され、<strong>差出人のフルネーム（実名）</strong>および手紙の本文（詳細メッセージ）、<strong>直接つながる連絡先</strong>が安全に開示されます。これにより、間違いのない確実な再会へ繋がります。
+                  思い出クイズに正解することでお互いの記憶が一致していることが確認され、<strong>差出人のフルネーム（実名）</strong>およびメッセージの本文（詳細メッセージ）、<strong>直接つながる連絡先</strong>が安全に開示されます。これにより、間違いのない確実な再会へ繋がります。
                 </p>
               </div>
 

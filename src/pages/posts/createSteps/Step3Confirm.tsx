@@ -129,13 +129,13 @@ export const Step3Confirm = (props: any) => {
             </div>
           </div>
 
-          {/* 4. 手紙本文シート */}
+          {/* 4. メッセージ本文シート */}
           <div className="bg-white/95 p-5 md:p-6 rounded-2xl border border-indigo-200/80 shadow-xs space-y-4">
             <div className="flex items-center justify-between border-b border-indigo-200/80 pb-3">
               <div className="flex items-center gap-2.5">
                 <span className="w-1.5 h-5 bg-indigo-700 rounded-full inline-block" />
                 <Mail size={20} className="text-indigo-800" />
-                <h3 className="text-base sm:text-lg font-bold text-slate-900">4. 【{formData.targetName || 'お相手'} 様】へ届ける手紙</h3>
+                <h3 className="text-base sm:text-lg font-bold text-slate-900">4. 【{formData.targetName || 'お相手'} 様】へ届けるメッセージ</h3>
               </div>
               <button
                 type="button"
@@ -146,7 +146,7 @@ export const Step3Confirm = (props: any) => {
               </button>
             </div>
             <div className="p-4 bg-indigo-50/40 rounded-xl border border-indigo-100">
-              <span className="text-indigo-900/70 block text-[11px] mb-1 font-sans">手紙本文（正解後のみ開示）</span>
+              <span className="text-indigo-900/70 block text-[11px] mb-1 font-sans">メッセージ本文（正解後のみ開示）</span>
               <p className="text-slate-900 font-serif leading-relaxed whitespace-pre-wrap text-sm md:text-base">{formData.message}</p>
             </div>
           </div>

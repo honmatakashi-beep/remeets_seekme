@@ -72,8 +72,8 @@ export const AdminDesignSystem: React.FC = () => {
       colors: [
         { name: 'Warm Amber (Amber 500)', hex: '#F59E0B', tailwind: 'bg-amber-500', text: 'text-slate-950', contrast: '7.8:1 (AAA)', role: 'ボトルハイライト、おすすめ、星評価' },
         { name: 'Deep Teal (Teal 700)', hex: '#0F766E', tailwind: 'bg-teal-700', text: 'text-white', contrast: '5.6:1 (AA)', role: '再会の海・信頼アクセント、成功指標' },
-        { name: 'Warm Cream (Amber 50)', hex: '#FFFBEB', tailwind: 'bg-amber-50', text: 'text-amber-950', contrast: '17.2:1 (AAA)', role: '手紙風コンテナ背景、回想カード' },
-        { name: 'Sakura Pink (Rose 400)', hex: '#FB7185', tailwind: 'bg-rose-400', text: 'text-slate-950', contrast: '6.4:1 (AA)', role: '初恋・感謝の手紙アクセント' },
+        { name: 'Warm Cream (Amber 50)', hex: '#FFFBEB', tailwind: 'bg-amber-50', text: 'text-amber-950', contrast: '17.2:1 (AAA)', role: 'メッセージ風コンテナ背景、回想カード' },
+        { name: 'Sakura Pink (Rose 400)', hex: '#FB7185', tailwind: 'bg-rose-400', text: 'text-slate-950', contrast: '6.4:1 (AA)', role: '初恋・感謝のメッセージアクセント' },
       ]
     },
     {
@@ -102,7 +102,7 @@ export const AdminDesignSystem: React.FC = () => {
     { level: 'Display Hero (H1)', size: '32px - 40px', weight: 'Bold 700 / Serif', sample: '想い出のボトルメールを探す', fontClass: 'font-serif text-3xl md:text-4xl font-bold', tracking: 'tracking-tight', usage: 'LPメインキャッチコピー、主要画面タイトル' },
     { level: 'Section Heading (H2)', size: '24px - 28px', weight: 'Bold 700 / Serif & Sans', sample: 'あなたを探しているボトルメール', fontClass: 'font-serif text-2xl font-bold', tracking: 'tracking-normal', usage: '各主要セクション見出し、モーダルタイトル' },
     { level: 'Card Title (H3)', size: '18px - 20px', weight: 'Bold 700 / Sans', sample: '緑川中学校（1990年代）', fontClass: 'font-sans text-lg font-bold', tracking: 'tracking-normal', usage: 'ボトルカードタイトル、設定グループ見出し' },
-    { level: 'Body Regular', size: '15px - 16px', weight: 'Regular 400 / Sans', sample: '部活の帰りにいつも寄っていた駄菓子屋の名前を覚えていますか？あの時渡せなかった手紙をここに残します。', fontClass: 'font-sans text-base leading-relaxed', tracking: 'tracking-normal', usage: '手紙本文、説明文、お手紙詳細・メッセージ本文（可読性最優先）' },
+    { level: 'Body Regular', size: '15px - 16px', weight: 'Regular 400 / Sans', sample: '部活の帰りにいつも寄っていた駄菓子屋の名前を覚えていますか？あの時渡せなかったメッセージをここに残します。', fontClass: 'font-sans text-base leading-relaxed', tracking: 'tracking-normal', usage: 'メッセージ本文、説明文、メッセージ詳細・メッセージ本文（可読性最優先）' },
     { level: 'Small / Metadata', size: '12px - 13px', weight: 'Medium 500 / Sans', sample: '投函日: 2026/08/15 ・ 差出人: たかし (eKYC公的認証済)', fontClass: 'font-sans text-xs text-black/60', tracking: 'tracking-wide', usage: 'タイムスタンプ、ユーザーメタデータ、補足注記' },
     { level: 'Monospace / Code', size: '12px - 14px', weight: 'Regular 400 / Mono', sample: 'TX_ID: tx_open_1755331000_a9f2 / eKYC: PASSED', fontClass: 'font-mono text-xs bg-zinc-100 p-2 rounded-lg', tracking: 'tracking-wider', usage: '決済トランザクションID、監査ログ、APIレスポンス' },
   ];
@@ -894,7 +894,7 @@ module.exports = {
                 </div>
 
                 <div className={`p-4 rounded-2xl border ${themeConfig[cardTheme].quoteBg} space-y-2 font-serif text-xs leading-relaxed`}>
-                  <p>「あの時、校庭の桜の木の下で話した約束をずっと覚えています。もしこのボトルメールを見つけたら、秘密の質問に答えて手紙を開封してください。」</p>
+                  <p>「あの時、校庭の桜の木の下で話した約束をずっと覚えています。もしこのボトルメールを見つけたら、秘密の質問に答えてメッセージを開封してください。」</p>
                 </div>
 
                 {/* 旧姓未登録時のフォールバック見本 */}
@@ -933,7 +933,7 @@ module.exports = {
                     onClick={() => setFeeScenario('single')}
                     className={`px-2 py-1 rounded-lg transition-all cursor-pointer ${feeScenario === 'single' ? 'bg-teal-700 text-white shadow-xs' : 'text-teal-900 hover:bg-teal-100'}`}
                   >
-                    ① 通常手紙開示 (¥600)
+                    ① 通常メッセージ開示 (¥600)
                   </button>
                   <button
                     type="button"
@@ -955,7 +955,7 @@ module.exports = {
                   {feeScenario === 'single' && (
                     <>
                       <div className="flex items-center justify-between text-teal-950 pb-1.5 border-b border-teal-200/50">
-                        <span>✉️ 想い出の手紙開示 ＆ 連絡先（LINE等）開示</span>
+                        <span>✉️ 想い出のメッセージ開示 ＆ 連絡先（LINE等）開示</span>
                         <span className="font-mono font-bold text-teal-900">600 円</span>
                       </div>
                       <div className="flex items-center justify-between text-teal-950 pb-1.5 border-b border-teal-200/50">
@@ -975,7 +975,7 @@ module.exports = {
                   {feeScenario === 'both' && (
                     <>
                       <div className="flex items-center justify-between text-indigo-950 pb-1.5 border-b border-indigo-200/50">
-                        <span>✉️ 想い出の手紙開示・連絡先開示手数料</span>
+                        <span>✉️ 想い出のメッセージ開示・連絡先開示手数料</span>
                         <span className="font-mono font-bold text-indigo-900">600 円</span>
                       </div>
                       <div className="flex items-center justify-between text-indigo-950 pb-1.5 border-b border-indigo-200/50">
@@ -1047,7 +1047,7 @@ module.exports = {
                 </div>
                 <h4 className="text-sm font-bold text-black font-serif">情緒と法的信頼性の共存</h4>
                 <p className="text-xs text-black/60 leading-relaxed">
-                  手紙やボトルメールには和文明朝（`font-serif`）と温かみのあるアンバー/ティールを、決済やeKYC・警察照会などの法的画面には厳格なモノスペースフォントとクリーンな白背景を適用します。
+                  メッセージやボトルメールには和文明朝（`font-serif`）と温かみのあるアンバー/ティールを、決済やeKYC・警察照会などの法的画面には厳格なモノスペースフォントとクリーンな白背景を適用します。
                 </p>
               </div>
 
@@ -1077,7 +1077,7 @@ module.exports = {
                 </div>
                 <h4 className="text-sm font-bold text-black font-serif">完全買い切り・透明な料金表示</h4>
                 <p className="text-xs text-black/60 leading-relaxed">
-                  料金表示は「手紙開示 600円 / eKYC同時 1,200円（完全買い切り）」を明示し、ユーザーに予期せぬ月額課金の不安を与えないUIを徹底します。
+                  料金表示は「メッセージ開示 600円 / eKYC同時 1,200円（完全買い切り）」を明示し、ユーザーに予期せぬ月額課金の不安を与えないUIを徹底します。
                 </p>
               </div>
 
@@ -1087,7 +1087,7 @@ module.exports = {
                 </div>
                 <h4 className="text-sm font-bold text-indigo-950 font-serif">差出人「本名＋旧姓」常時統一フォーマット</h4>
                 <p className="text-xs text-black/60 leading-relaxed">
-                  手紙差出人の表記はニックネームへのフォールバックを排除し、必ず本名を表示します。旧姓未登録時も <code>（旧姓: 　　　）</code> とブランク枠を維持して統一フォーマットを堅持します。
+                  メッセージ差出人の表記はニックネームへのフォールバックを排除し、必ず本名を表示します。旧姓未登録時も <code>（旧姓: 　　　）</code> とブランク枠を維持して統一フォーマットを堅持します。
                 </p>
               </div>
             </div>

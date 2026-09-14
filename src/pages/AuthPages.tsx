@@ -125,22 +125,22 @@ export const LoginPage = () => {
     }
     if (fromPath === '/create') {
       return {
-        title: '📮 手紙を書く（想い出をつづる）',
-        desc: '書いた手紙をお相手が見つけた際の自動通知や、内容の安全な管理・編集を行うため、ログインまたは新規会員登録をお願いいたします。',
+        title: '📮 メッセージを届ける（想い出をつづる）',
+        desc: '書いたメッセージをお相手が見つけた際の自動通知や、内容の安全な管理・編集を行うため、ログインまたは新規会員登録をお願いいたします。',
         badge: '本人認証'
       };
     }
     if (fromPath === '/account') {
       return {
-        title: '👤 マイアカウント・手紙の確認',
-        desc: 'あなたが書いた手紙や届いた手紙の状況、登録情報・再会エピソードを確認・管理するにはログインが必要です。',
+        title: '👤 マイアカウント・メッセージの確認',
+        desc: 'あなたが書いたメッセージや届いたメッセージの状況、登録情報・再会エピソードを確認・管理するにはログインが必要です。',
         badge: 'マイページ'
       };
     }
     if (fromPath.startsWith('/edit')) {
       return {
-        title: '✏️ 手紙の編集・内容変更',
-        desc: '書いた手紙の内容を変更または回収（削除）するには、投稿者ご本人様のアカウントでのログインが必要です。',
+        title: '✏️ メッセージの編集・内容変更',
+        desc: '書いたメッセージの内容を変更または回収（削除）するには、投稿者ご本人様のアカウントでのログインが必要です。',
         badge: '本人認証'
       };
     }
@@ -686,7 +686,7 @@ export const RegisterPage = () => {
             <h1 className="text-2xl font-bold font-serif text-stone-900">新規アカウント登録が完了しました</h1>
             <p className="text-xs sm:text-sm text-stone-600 font-serif leading-relaxed">
               メールアドレスの認証が正常に完了し、本登録が完了いたしました。<br />
-              ログインして、あの頃の想い出を手紙に託しましょう。
+              ログインして、あの頃の想い出をメッセージに託しましょう。
             </p>
           </div>
 
@@ -1157,7 +1157,7 @@ export const RegisterPage = () => {
                 </span>
               </div>
               <p className="text-[11px] text-stone-600 leading-relaxed font-serif">
-                ※ 他のユーザーや手紙のお相手には一切公開されません。年齢確認および統計データ分析にのみ利用されます。
+                ※ 他のユーザーやメッセージのお相手には一切公開されません。年齢確認および統計データ分析にのみ利用されます。
               </p>
               <div className="grid grid-cols-3 gap-2.5 pt-1">
                 {[
@@ -1192,7 +1192,7 @@ export const RegisterPage = () => {
                 </span>
               </div>
               <p className="text-[11px] text-stone-600 leading-relaxed font-serif">
-                ※手紙（ボトルメール）を流す際やマイページで公に表示される名前です。実名が出ないためプライバシーが守られます。
+                ※メッセージ（ボトルメール）を流す際やマイページで公に表示される名前です。実名が出ないためプライバシーが守られます。
               </p>
               <input 
                 required

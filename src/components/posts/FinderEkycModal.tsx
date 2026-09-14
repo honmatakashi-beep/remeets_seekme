@@ -159,15 +159,15 @@ export const FinderEkycModal: React.FC<FinderEkycModalProps> = ({
                     ✨ 時を超えて届いた想い出のメッセージ
                   </span>
                   <h3 className="text-xl md:text-2xl font-bold font-serif text-slate-900 pt-0.5">
-                    【{revealedContact?.searcherFullName || otherUserFullNameToUse || searcherFullName || post?.searcher_full_name || post?.owner_full_name || post?.searcher_name || searcherName || 'お相手'}】さんからの手紙を開封する
+                    【{revealedContact?.searcherFullName || otherUserFullNameToUse || searcherFullName || post?.searcher_full_name || post?.owner_full_name || post?.searcher_name || searcherName || 'お相手'}】さんからのメッセージを開封する
                   </h3>
                 </div>
                 <p className="text-xs text-slate-600 font-sans leading-relaxed max-w-md mx-auto">
-                  あなたを探し続けていた【{revealedContact?.searcherFullName || otherUserFullNameToUse || searcherFullName || post?.searcher_full_name || post?.owner_full_name || post?.searcher_name || searcherName || 'お相手'}】さんが残した「手紙の全文」と、今すぐ直接つながる「ご連絡先（LINE・メールアドレス等）」が開示されます。止まっていた大切な時間の続きを、ここから始めましょう。
+                  あなたを探し続けていた【{revealedContact?.searcherFullName || otherUserFullNameToUse || searcherFullName || post?.searcher_full_name || post?.owner_full_name || post?.searcher_name || searcherName || 'お相手'}】さんが残した「メッセージの全文」と、今すぐ直接つながる「ご連絡先（LINE・メールアドレス等）」が開示されます。止まっていた大切な時間の続きを、ここから始めましょう。
                 </p>
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-sky-50 text-sky-900 text-[11px] font-bold rounded-full border border-sky-200">
                   <ShieldCheck size={14} className="text-sky-600" />
-                  <span>公的証明バッジ取得 ＆ 手紙開封コース（600円 税込）</span>
+                  <span>公的証明バッジ取得 ＆ メッセージ開封コース（600円 税込）</span>
                 </div>
               </div>
 
@@ -297,7 +297,7 @@ export const FinderEkycModal: React.FC<FinderEkycModalProps> = ({
                     <div>
                       <span className="text-[10px] font-bold text-sky-700 uppercase tracking-widest block font-sans">Step 3 / 4</span>
                       <h3 className="text-lg font-serif font-bold text-zinc-900">
-                        3. 安全照合・手紙開封手数料のお支払い
+                        3. 安全照合・メッセージ開封手数料のお支払い
                       </h3>
                     </div>
                     <button
@@ -325,7 +325,7 @@ export const FinderEkycModal: React.FC<FinderEkycModalProps> = ({
                     <ul className="space-y-1.5 text-[11px] text-slate-600 pl-1 leading-relaxed">
                       <li className="flex items-start gap-1.5">
                         <span className="text-sky-600 font-bold">✓</span>
-                        <span>差出人の<strong>「手紙の全文」</strong>と<strong>「直通連絡先（LINE・メール等）」</strong>が即座に開示されます。</span>
+                        <span>差出人の<strong>「メッセージの全文」</strong>と<strong>「直通連絡先（LINE・メール等）」</strong>が即座に開示されます。</span>
                       </li>
                       <li className="flex items-start gap-1.5">
                         <span className="text-sky-600 font-bold">✓</span>
@@ -340,7 +340,7 @@ export const FinderEkycModal: React.FC<FinderEkycModalProps> = ({
 
                   <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
                     <div className="flex justify-between items-center text-xs">
-                      <span className="text-zinc-600 font-bold">手紙開封 ＆ 公的本人確認（eKYC）費用</span>
+                      <span className="text-zinc-600 font-bold">メッセージ開封 ＆ 公的本人確認（eKYC）費用</span>
                       <span className="text-zinc-900 font-mono font-bold">600 円</span>
                     </div>
                     <div className="border-t border-dashed border-zinc-200 pt-2 flex justify-between items-center">
@@ -400,7 +400,7 @@ export const FinderEkycModal: React.FC<FinderEkycModalProps> = ({
                       onClick={() => setFinderEkycStep(4)}
                       className="flex-1 py-3.5 bg-gradient-to-r from-sky-400 via-sky-500 to-blue-500 hover:from-sky-500 hover:to-blue-600 disabled:opacity-50 text-white rounded-xl text-sm font-bold shadow-md transition-all cursor-pointer disabled:cursor-not-allowed active:scale-98"
                     >
-                      600円をお支払いして公的証明・手紙開示を完了
+                      600円をお支払いして公的証明・メッセージ開示を完了
                     </button>
                   </div>
                 </div>
@@ -441,7 +441,7 @@ export const FinderEkycModal: React.FC<FinderEkycModalProps> = ({
                       {finderEkycProgress < 25 && '1. 撮影書類の四隅＆光反射AI分析'}
                       {finderEkycProgress >= 25 && finderEkycProgress < 50 && '2. 記載文字暗号化＆身元データ照合'}
                       {finderEkycProgress >= 50 && finderEkycProgress < 75 && '3. Stripe安全決済＆オーソリ完了'}
-                      {finderEkycProgress >= 75 && finderEkycProgress < 100 && '4. お相手連絡先・手紙本文の開示キー発行'}
+                      {finderEkycProgress >= 75 && finderEkycProgress < 100 && '4. お相手連絡先・メッセージ本文の開示キー発行'}
                       {finderEkycProgress === 100 && '✨ 照合＆開示準備が完了しました！'}
                     </h3>
                   </div>
@@ -505,7 +505,7 @@ export const FinderEkycModal: React.FC<FinderEkycModalProps> = ({
                         <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-serif font-bold ${finderEkycProgress === 100 ? 'bg-sky-500 text-white' : 'bg-sky-100 text-sky-800'}`}>
                           {finderEkycProgress === 100 ? '✓' : '4'}
                         </span>
-                        <span className="tracking-[0.08em] md:tracking-[0.12em]">手紙本文＆連絡先開示手続き</span>
+                        <span className="tracking-[0.08em] md:tracking-[0.12em]">メッセージ本文＆連絡先開示手続き</span>
                       </span>
                       {finderEkycProgress >= 75 && finderEkycProgress < 100 && <span className="text-[10px] text-sky-600 animate-pulse font-serif font-semibold tracking-[0.14em]">発行中...</span>}
                     </div>
@@ -522,20 +522,20 @@ export const FinderEkycModal: React.FC<FinderEkycModalProps> = ({
                     </div>
                     <h3 className="text-xl font-bold font-serif text-black">本人確認および決済完了！🎉</h3>
                     <p className="text-xs text-black/60 font-sans leading-relaxed">
-                      撮影書類の照合とお手続きがすべて正常に完了しました！これより手紙本文の全内容および、お相手の連絡先（LINE ID・メールアドレス等）が安全に開示されます。
+                      撮影書類の照合とお手続きがすべて正常に完了しました！これよりメッセージ本文の全内容および、お相手の連絡先（LINE ID・メールアドレス等）が安全に開示されます。
                     </p>
                   </div>
                   <button
                     onClick={() => {
                       setShowFinderEkycModal(false);
-                      // 本人確認が完了したら、手紙・連絡先表示位置までスクロール誘導
+                      // 本人確認が完了したら、メッセージ・連絡先表示位置までスクロール誘導
                       setTimeout(() => {
                         onEkycSuccess();
                       }, 300);
                     }}
                     className="w-full py-3.5 bg-gradient-to-r from-sky-400 via-sky-500 to-blue-500 hover:from-sky-500 hover:to-blue-600 text-white rounded-xl text-sm font-bold shadow transition-all cursor-pointer"
                   >
-                    手紙本文と連絡先を確認する
+                    メッセージ本文と連絡先を確認する
                   </button>
                 </div>
               )}

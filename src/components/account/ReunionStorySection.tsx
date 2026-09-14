@@ -66,7 +66,7 @@ export const ReunionStorySection: React.FC<ReunionStorySectionProps> = ({
       </div>
 
       <p className="text-[11.5px] sm:text-xs text-slate-600 leading-relaxed font-sans">
-        お相手と手紙が繋がり再会を果たされた際、お寄せいただいた温かいエピソードやお礼の言葉は、管理者が確認の上で「奇跡の再会報告」ページに大切に掲載されます。
+        お相手とメッセージが繋がり再会を果たされた際、お寄せいただいた温かいエピソードやお礼の言葉は、管理者が確認の上で「奇跡の再会報告」ページに大切に掲載されます。
       </p>
 
       {/* 投稿済みエピソード一覧（1件以上ある場合のみ展開） */}
@@ -90,7 +90,7 @@ export const ReunionStorySection: React.FC<ReunionStorySectionProps> = ({
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-1.5">
                       <span className="px-2 py-0.5 bg-amber-100 text-amber-800 rounded-md font-bold text-[9px]">
-                        {story.role === 'sender' ? '📮 手紙を流した側' : story.role === 'receiver' ? '📬 手紙を見つけた側' : '💌 体験談'}
+                        {story.role === 'sender' ? '📮 メッセージを流した側' : story.role === 'receiver' ? '📬 メッセージを見つけた側' : '💌 体験談'}
                       </span>
                       {story.target_name && (
                         <span className="text-[10px] text-amber-900/80 font-semibold truncate max-w-[120px]">

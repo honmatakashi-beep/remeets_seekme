@@ -429,7 +429,7 @@ export const useAdminModeration = ({
             ai_safety_details: data.ai_safety_details
           }));
         }
-        alert(data.ai_flagged ? `⚠️ AI警戒判定: ${data.ai_flag_reason}` : '✅ AI診断完了: 安全な想い出の手紙です。');
+        alert(data.ai_flagged ? `⚠️ AI警戒判定: ${data.ai_flag_reason}` : '✅ AI診断完了: 安全な想い出のメッセージです。');
       } else {
         const errorData = await res.json().catch(() => ({}));
         alert(errorData.error || 'AI診断に失敗しました。');

@@ -323,7 +323,7 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
             </div>
 
             <p className="text-sm md:text-base text-slate-800 font-serif font-medium max-w-2xl mx-auto leading-relaxed md:leading-loose pt-2.5 px-2 [text-rendering:geometricPrecision] antialiased">
-              同窓生、昔の友人、お世話になったあの人。連絡先はわからないけれど、もう一度だけ話してみたい大切な人へ、想いを言葉にして海に流す。そして、あなたを探している誰かが流した手紙を、自分の名前やゆかりの地から見つけ出す。ここは、お互いを想い合う偶然と奇跡が交差する、静かな再会の海です。
+              同窓生、昔の友人、お世話になったあの人。連絡先はわからないけれど、もう一度だけ話してみたい大切な人へ、想いを言葉にして海に流す。そして、あなたを探している誰かが流したメッセージを、自分の名前やゆかりの地から見つけ出す。ここは、お互いを想い合う偶然と奇跡が交差する、静かな再会の海です。
             </p>
 
             <div className="flex justify-center pt-3 px-2 md:px-0 animate-fade-in w-full max-w-xl mx-auto">
@@ -361,14 +361,14 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                     to="/pricing"
                     className="bg-emerald-50/70 hover:bg-emerald-100/80 border border-emerald-200/60 hover:border-emerald-400/80 rounded-xl p-2 flex flex-col items-center justify-center transition-all duration-200 hover:scale-[1.02] hover:shadow-xs group cursor-pointer"
                   >
-                    <span className="text-[10px] text-emerald-800 font-bold group-hover:text-emerald-900 leading-tight">手紙を書く<span className="hidden sm:inline">・</span><br className="sm:hidden" />投函</span>
+                    <span className="text-[10px] text-emerald-800 font-bold group-hover:text-emerald-900 leading-tight">メッセージを届ける<span className="hidden sm:inline">・</span><br className="sm:hidden" />投函</span>
                     <span className="text-xs sm:text-sm font-black text-emerald-600 font-serif">完全0円</span>
                   </Link>
                   <Link 
                     to="/pricing"
                     className="bg-emerald-50/70 hover:bg-emerald-100/80 border border-emerald-200/60 hover:border-emerald-400/80 rounded-xl p-2 flex flex-col items-center justify-center transition-all duration-200 hover:scale-[1.02] hover:shadow-xs group cursor-pointer"
                   >
-                    <span className="text-[10px] text-emerald-800 font-bold group-hover:text-emerald-900 leading-tight">手紙を探す<span className="hidden sm:inline">・</span><br className="sm:hidden" />閲覧</span>
+                    <span className="text-[10px] text-emerald-800 font-bold group-hover:text-emerald-900 leading-tight">メッセージを探す<span className="hidden sm:inline">・</span><br className="sm:hidden" />閲覧</span>
                     <span className="text-xs sm:text-sm font-black text-emerald-600 font-serif">完全0円</span>
                   </Link>
                   <Link 
@@ -455,12 +455,12 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                       <span className="text-[10px] sm:text-xs font-sans font-bold tracking-[0.22em] text-emerald-700/80 uppercase">STEP</span>
                       <span className="text-lg sm:text-xl md:text-2xl font-serif font-extrabold tracking-wider text-emerald-600">01</span>
                     </div>
-                    <span className="text-[11px] sm:text-xs font-serif font-bold bg-emerald-50 text-emerald-700 px-2 sm:px-2.5 py-0.5 rounded-full border border-emerald-200">【手紙を書く】</span>
+                    <span className="text-[11px] sm:text-xs font-serif font-bold bg-emerald-50 text-emerald-700 px-2 sm:px-2.5 py-0.5 rounded-full border border-emerald-200">【メッセージを届ける】</span>
                   </div>
                   <div className="relative overflow-hidden rounded-xl aspect-[16/10] bg-slate-100 border border-emerald-200 p-1 shadow-inner group-hover:border-emerald-400 transition-colors duration-300">
                     <img 
                       src={stepMistWriteImg} 
-                      alt="手紙を書く" 
+                      alt="メッセージを届ける" 
                       className="w-full h-full object-cover object-center rounded-lg group-hover:scale-[1.04] transition-transform duration-500 ease-out"
                     />
                   </div>
@@ -525,7 +525,7 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                       <span>思い出クイズで再会</span>
                     </h5>
                     <p className="text-[11px] sm:text-xs text-slate-600 leading-relaxed font-sans">
-                      お相手が検索で見つけ、思い出クイズに正解すると手紙が開き、直接つながれます。
+                      お相手が検索で見つけ、思い出クイズに正解するとメッセージが開き、直接つながれます。
                     </p>
                   </div>
                 </div>
@@ -541,7 +541,7 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
           <div className="flex items-center justify-between">
             <h4 className="text-xs md:text-sm font-bold text-slate-800 flex items-center gap-2">
               <Search size={16} className="text-teal-600" />
-              <span>自分宛ての手紙（ボトルメール）が届いていないか探す</span>
+              <span>自分宛てのメッセージ（ボトルメール）が届いていないか探す</span>
             </h4>
             <span className="text-[10px] text-slate-500 font-sans">検索・閲覧 無料</span>
           </div>
@@ -612,7 +612,7 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                 gender: "男性",
                 tag: "🏫 同級生",
                 title: "卒業から35年。懐かしいあだ名とお互いの記憶が繋いでくれた奇跡",
-                message: "中学の卒業以来、お互いに転居が重なり連絡先が分からなくなっていました。ふとReMEETsで当時の陸上部の手紙を見つけ、懐かしい想い出のキーワードをきっかけに35年ぶりにメッセージが開通。当時のあだ名で呼び合い、まるで当時にタイムスリップしたような感動でした。今では年に一度集まる仲に戻り、一生の友人を再び取り戻せました。"
+                message: "中学の卒業以来、お互いに転居が重なり連絡先が分からなくなっていました。ふとReMEETsで当時の陸上部のメッセージを見つけ、懐かしい想い出のキーワードをきっかけに35年ぶりにメッセージが開通。当時のあだ名で呼び合い、まるで当時にタイムスリップしたような感動でした。今では年に一度集まる仲に戻り、一生の友人を再び取り戻せました。"
               },
               {
                 id: 'def-2',
@@ -621,7 +621,7 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                 gender: "女性",
                 tag: "🌸 恩師・部活",
                 title: "定年退職された吹奏楽部の恩師へ。30年越しの『ありがとう』が届いた日",
-                message: "山本先生が定年退職されたと風の噂で聞き、当時の部活仲間で『どうしても感謝を伝えたい』と手紙を流しました。先生のご家族がこの手紙を見つけて先生に伝えてくださり、30年ぶりに温かいお返事をいただくことができました。先日、当時の部員一同で先生を囲んで同窓会を開き、最高の恩返しができました。"
+                message: "山本先生が定年退職されたと風の噂で聞き、当時の部活仲間で『どうしても感謝を伝えたい』とメッセージを流しました。先生のご家族がこのメッセージを見つけて先生に伝えてくださり、30年ぶりに温かいお返事をいただくことができました。先日、当時の部員一同で先生を囲んで同窓会を開き、最高の恩返しができました。"
               },
               {
                 id: 'def-3',
@@ -761,7 +761,7 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
         <div className="flex items-end justify-between border-b border-brand-border pb-4">
           <div className="space-y-1">
             <h2 className="text-2xl font-serif font-bold text-brand-dark tracking-wider">最近流されたボトルメール</h2>
-            <p className="text-xs text-brand-dark/50 font-serif">海面を漂う、いつかの誰かへの手紙。</p>
+            <p className="text-xs text-brand-dark/50 font-serif">海面を漂う、いつかの誰かへのメッセージ。</p>
           </div>
           <Link to="/search" className="text-xs text-brand-primary uppercase tracking-[0.2em] font-sans font-bold flex items-center gap-2 hover:underline">
             <span>すべて見る</span>
@@ -785,7 +785,7 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                   <span className="text-[5px] font-black tracking-tighter uppercase -mt-0.5 text-white">eKYC済</span>
                 </div>
                 <div className="text-xs text-slate-700 leading-snug">
-                  <span className="font-bold text-sky-950">虹色の「公的確認」マーク</span>は、差出人が運転免許証等による本人確認を完了している<span className="font-bold text-teal-900">実在証明付きの安心なお手紙</span>です。
+                  <span className="font-bold text-sky-950">虹色の「公的確認」マーク</span>は、差出人が運転免許証等による本人確認を完了している<span className="font-bold text-teal-900">実在証明付きの安心なメッセージ</span>です。
                 </div>
               </div>
               <button 
@@ -844,7 +844,7 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                     {post.message || post.searcher_profile || '私を探しているあなたへ。メッセージをお待ちしています。'}
                   </p>
                   <div className="pt-2 flex items-center gap-2 text-[10px] text-teal-700 font-bold uppercase tracking-widest font-sans">
-                    <span>手紙を開く</span>
+                    <span>メッセージを開く</span>
                     <ArrowRight size={12} className="group-hover:translate-x-1 transition-all" />
                   </div>
                 </Link>
@@ -962,7 +962,7 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                         ① お相手への本気の信頼・誠意を届ける
                       </span>
                       <p className="text-zinc-600 pl-3">
-                        「本人確認済（eKYC）」のチェックマークが手紙とプロフィールに付与されます。お相手が見つけた際に「なりすましやいたずらではなく本物のお相手だ」と一目で確信できるため、回答率や開封率が劇的に上がります。
+                        「本人確認済（eKYC）」のチェックマークがメッセージとプロフィールに付与されます。お相手が見つけた際に「なりすましやいたずらではなく本物のお相手だ」と一目で確信できるため、回答率や開封率が劇的に上がります。
                       </p>
                     </div>
 
@@ -1191,7 +1191,7 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                       setPayCardCvc('123');
                       setPayCardName('TAKASHI HONMA');
                     }}
-                    refundGuaranteeText="手紙開封または本人確認（eKYC）手続きが不承認となった場合は、Stripe仮売上システムにより全額即時自動返金されます。"
+                    refundGuaranteeText="メッセージ開封または本人確認（eKYC）手続きが不承認となった場合は、Stripe仮売上システムにより全額即時自動返金されます。"
                   />
 
                   <div className="flex gap-2 pt-2">

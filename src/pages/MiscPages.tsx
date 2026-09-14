@@ -18,7 +18,7 @@ export const ManualContent = () => (
     <section className="space-y-3">
       <h3 className="text-base md:text-lg font-bold font-serif text-slate-900 flex items-center gap-3 border-b border-slate-100 pb-2">
         <span className="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-sans shrink-0">01</span>
-        手紙を書く（ボトルメールの投函）
+        メッセージを届ける（ボトルメールの投函）
       </h3>
       <p className="text-xs md:text-sm text-slate-700 leading-relaxed">
         トップページの「ボトルメールを流す」ボタンから、探している相手へのメッセージを作成できます。あなたの想いが相手に届くよう、以下の項目を丁寧に入力しましょう。
@@ -31,8 +31,8 @@ export const ManualContent = () => (
           <li><strong>交流のあった年代：</strong> 相手と過ごした時代（例：1990年代）を選択します。</li>
           <li><strong>あなたの表示名：</strong> 当時のあだ名や、二人の間だけで通じる呼び名を使用してください。</li>
           <li><strong>思い出クイズ：</strong> 本人確認のための重要なステップです。<strong>思い出クイズ（2問）</strong>を設定してください。第三者が推測しにくい二人の記憶に基づく具体的なエピソードを質問にすることを強く推奨します。</li>
-          <li><strong>開示用連絡先（LINE等）：</strong> クイズに正解し、手続きを行ったお相手だけに安全に公開される連絡先（LINE ID、メールアドレスなど）を設定します。手紙の本文欄には直接書き込まず、こちらの専用欄にご入力ください。</li>
-          <li><strong>メッセージ：</strong> 相手が思い出クイズに正解した後に表示される手紙本文です。</li>
+          <li><strong>開示用連絡先（LINE等）：</strong> クイズに正解し、手続きを行ったお相手だけに安全に公開される連絡先（LINE ID、メールアドレスなど）を設定します。メッセージの本文欄には直接書き込まず、こちらの専用欄にご入力ください。</li>
+          <li><strong>メッセージ：</strong> 相手が思い出クイズに正解した後に表示されるメッセージ本文です。</li>
           <li><strong>AIによる検閲：</strong> 投稿内容はAIによって自動的に解析され、不適切な表現や個人情報の過度な露出がある場合は投稿が制限されることがあります。</li>
         </ul>
       </div>
@@ -41,25 +41,25 @@ export const ManualContent = () => (
     <section className="space-y-3">
       <h3 className="text-base md:text-lg font-bold font-serif text-slate-900 flex items-center gap-3 border-b border-slate-100 pb-2">
         <span className="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-sans shrink-0">02</span>
-        奇跡を拾う（自分宛ての手紙を探す ＆ 新着入荷通知アラート）
+        奇跡を拾う（自分宛てのメッセージを探す ＆ 新着入荷通知アラート）
       </h3>
       <p className="text-xs md:text-sm text-slate-700 leading-relaxed">
-        「自分宛ての手紙を探す」ページでは、ご自身宛てのメッセージが届いていないかを、自身の名前やゆかりの地のキーワードで簡単に見つけることができます。検索エンジンを頼りにしたエゴサーチ等を通じてこのページに偶然たどり着いた方や、心当たりのある方は、ぜひご自身宛てに流されたボトルメールを探してみてください。
+        「自分宛てのメッセージを探す」ページでは、ご自身宛てのメッセージが届いていないかを、自身の名前やゆかりの地のキーワードで簡単に見つけることができます。検索エンジンを頼りにしたエゴサーチ等を通じてこのページに偶然たどり着いた方や、心当たりのある方は、ぜひご自身宛てに流されたボトルメールを探してみてください。
       </p>
       <div className="bg-teal-50/60 p-4 md:p-5 rounded-2xl border border-teal-200/80 space-y-3">
         <div>
-          <p className="text-xs font-bold text-teal-900">自分宛ての手紙を見つけるヒント：</p>
+          <p className="text-xs font-bold text-teal-900">自分宛てのメッセージを見つけるヒント：</p>
           <ul className="list-disc pl-5 space-y-1.5 text-xs text-teal-800 leading-relaxed mt-1">
             <li>ご自身の姓、名、あるいは旧姓などの漢字やひらがなで検索をお試しください。</li>
             <li>お相手と出会った地域や、思い出のゆかりの地などで絞り込むと、届いたボトルが非常に見つかりやすくなります。</li>
-            <li>年代や関係性（部活動、同級生、元同僚など）を指定することで、効率よく自分宛ての手紙を絞り込めます。</li>
+            <li>年代や関係性（部活動、同級生、元同僚など）を指定することで、効率よく自分宛てのメッセージを絞り込めます。</li>
           </ul>
         </div>
 
         <div className="border-t border-teal-200/80 pt-3">
           <p className="text-xs font-bold text-teal-950 flex items-center gap-1.5">
             <span className="px-2 py-0.5 bg-teal-600 text-white text-[10px] rounded-md font-bold">便利機能</span>
-            🔔 自分宛ての手紙が投稿されたらメールで受け取る（新着入荷通知アラート）
+            🔔 自分宛てのメッセージが投稿されたらメールで受け取る（新着入荷通知アラート）
           </p>
           <p className="text-xs text-teal-900/90 leading-relaxed mt-1 font-sans">
             検索画面であなたのお名前やゆかりの地を設定し、「この条件でメール通知を受け取る」を保存しておくと、今後あなたを探しているお相手が新しくボトルメールを投函した際に、システムから自動でメール通知が届きます。<br />
@@ -75,13 +75,13 @@ export const ManualContent = () => (
         再会への一歩（本人確認と連絡先の受け取り）
       </h3>
       <p className="text-xs md:text-sm text-slate-700 leading-relaxed">
-        自分宛てと思われる手紙を見つけたら、詳細を確認します。メッセージ本文と連絡先を開示するには、差出人が設定した「思い出クイズ」に答える必要があります。
+        自分宛てと思われるメッセージを見つけたら、詳細を確認します。メッセージ本文と連絡先を開示するには、差出人が設定した「思い出クイズ」に答える必要があります。
       </p>
       <div className="bg-amber-50/60 p-4 md:p-5 rounded-2xl border border-amber-200/80 space-y-2">
         <p className="text-xs font-bold text-amber-900">再会のプロセス：</p>
         <ol className="list-decimal pl-5 space-y-1.5 text-xs text-amber-800 leading-relaxed">
           <li><strong>クイズに回答：</strong> 思い出クイズに正解すると、ロックが解除されます。</li>
-          <li><strong>手紙の開封と受け取り手続き：</strong> 差出人からの手紙本文を確認し、手続き（600円 / 公的本人確認付き1,200円）を行います。</li>
+          <li><strong>メッセージの開封と受け取り手続き：</strong> 差出人からのメッセージ本文を確認し、手続き（600円 / 公的本人確認付き1,200円）を行います。</li>
           <li><strong>連絡先（LINE等）の開示：</strong> 差出人が設定した連絡先（LINE ID、メールアドレス等）が表示されます。</li>
           <li><strong>直接連絡・再会成功：</strong> 開示された連絡先へ直接メッセージをお送りいただくことで再会が果たせます。</li>
         </ol>
@@ -94,7 +94,7 @@ export const ManualContent = () => (
         開示情報の確認と管理
       </h3>
       <p className="text-xs md:text-sm text-slate-700 leading-relaxed">
-        開示手続きが完了したお手紙やSNS連絡先は、マイアカウントの「開封済みのお手紙」からいつでも再確認できます。
+        開示手続きが完了したメッセージやSNS連絡先は、マイアカウントの「開封済みのメッセージ」からいつでも再確認できます。
       </p>
     </section>
 
@@ -123,7 +123,7 @@ export const ManualContent = () => (
             ② 登録メールアドレスへの即時メール通知
           </p>
           <p className="text-xs text-rose-900/80 leading-relaxed pl-3.5">
-            お相手がクイズに答えた時や全問正解して手紙を開封した際、ご登録のメールアドレス宛に自動的にお知らせメールが送信されます。メール内のリンクからすぐに結果画面を確認できます。
+            お相手がクイズに答えた時や全問正解してメッセージを開封した際、ご登録のメールアドレス宛に自動的にお知らせメールが送信されます。メール内のリンクからすぐに結果画面を確認できます。
           </p>
         </div>
 
@@ -143,7 +143,7 @@ export const ManualContent = () => (
     <div className="p-5 bg-gradient-to-r from-amber-50/90 via-orange-50/40 to-amber-50/90 border-2 border-amber-200/90 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
       <div className="text-xs text-slate-700">
         <strong className="text-amber-950 font-bold block text-sm mb-0.5">💰 ご利用料金の詳細について</strong>
-        基本機能は完全無料（0円）。手紙開封・SNS開示のみ600円（買い切り）です。
+        基本機能は完全無料（0円）。メッセージ開封・SNS開示のみ600円（買い切り）です。
       </div>
       <Link
         to="/pricing"
@@ -178,7 +178,7 @@ export const ManualPage = () => (
             詳細ご利用マニュアル
           </h1>
           <p className="text-xs md:text-sm text-brand-dark/60 font-sans leading-relaxed mt-1">
-            ReMEETsの基本仕様、手紙（ボトルメール）の投函、手紙の検索、および質問回答・連絡先開示手続きの詳細説明です。
+            ReMEETsの基本仕様、メッセージ（ボトルメール）の投函、メッセージの検索、および質問回答・連絡先開示手続きの詳細説明です。
           </p>
         </div>
       </div>
@@ -213,7 +213,7 @@ export const NotFoundPage = () => (
             404 Page Not Found
           </span>
           <h1 className="text-xl sm:text-2xl font-serif font-bold text-slate-900 tracking-wide">
-            お探しの手紙は見つかりませんでした
+            お探しのメッセージは見つかりませんでした
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 font-sans leading-relaxed max-w-sm mx-auto">
             アクセスされた波間（URL）にはボトルメールが存在しないか、すでに回収・移動された可能性があります。
@@ -234,7 +234,7 @@ export const NotFoundPage = () => (
             className="px-5 py-3 bg-teal-600 hover:bg-teal-700 text-white rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
           >
             <Search size={14} />
-            <span>手紙を探す</span>
+            <span>メッセージを探す</span>
           </Link>
 
           <Link
@@ -242,7 +242,7 @@ export const NotFoundPage = () => (
             className="px-5 py-3 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 rounded-xl shadow-2xs transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
             <Send size={14} />
-            <span>手紙を流す</span>
+            <span>メッセージを流す</span>
           </Link>
         </div>
       </div>

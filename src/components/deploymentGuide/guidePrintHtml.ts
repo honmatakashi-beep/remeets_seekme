@@ -96,14 +96,14 @@ export const handlePrintDocument = (
           <td class="log-col">登録時のグローバルIP・UA・登録タイミングスタンプを永続セキュリティ保存。</td>
         </tr>
         <tr>
-          <td class="phase-col">② 手紙ボトル投函（基本）</td>
-          <td class="threat-col">手紙内の「実名・連絡先交換」によるプラットフォーム外への誘導・ハラスメント</td>
+          <td class="phase-col">② メッセージボトル投函（基本）</td>
+          <td class="threat-col">メッセージ内の「実名・連絡先交換」によるプラットフォーム外への誘導・ハラスメント</td>
           <td class="program-col">文字入力ボックスフックに、メール/電話Regex、LINE/インスタ等SNSアカウントの検知Regexをバインド。外部手段の直接掲載自体を仕組みから厳格に弾きます。</td>
           <td class="ai-col"><strong>【レッドアラート格納】</strong><br/>「L!NE」「L_I_N_E」などの伏字や、SNSを示唆する回避文章をGemini AIが文脈解釈。「未承認」に落とし一般漂流から1秒で完全シャット。</td>
           <td class="log-col">AIが判定したアラート文面、危険度判定ログ、ボトル投函元の会員アカウント情報を完全ログ化。</td>
         </tr>
         <tr>
-          <td class="phase-col">③ 手紙ボトル投函（他人特定）</td>
+          <td class="phase-col">③ メッセージボトル投函（他人特定）</td>
           <td class="threat-col">標的のお相手以外の第三者プライバシー権利侵害・特定情報の掲載</td>
           <td class="program-col">宛先を規定の「お名前」「都道府県」「出会った当時の関係性」などの曖昧なデータに制約。具体的なアパート名、個別地番、職場名称などは入力不可。</td>
           <td class="ai-col">「想い出メッセージ」にお相手のプライバシーや実質的なストーキングに繋がる極めて狭い情報を記述していないかをAIモデレーション検知。</td>
@@ -125,8 +125,8 @@ export const handlePrintDocument = (
         </tr>
         <tr>
           <td class="phase-col">⑥ クイズ解答試行</td>
-          <td class="threat-col">あてずっぽうなどクイズの総当たり解答による手紙の不正な解凍（個人情報リーク）</td>
-          <td class="program-col">同じボトル、または同じIP/セッションから一定回数（基本は5回）連続で回答を誤った場合に、<strong>プログラム的に手紙の回答権を24時間完全にロックアウト</strong>。</td>
+          <td class="threat-col">あてずっぽうなどクイズの総当たり解答によるメッセージの不正な解凍（個人情報リーク）</td>
+          <td class="program-col">同じボトル、または同じIP/セッションから一定回数（基本は5回）連続で回答を誤った場合に、<strong>プログラム的にメッセージの回答権を24時間完全にロックアウト</strong>。</td>
           <td class="ai-col">不自然な多回数失敗ボトルの検知。バーストした過剰なアタックセッションを検疫。</td>
           <td class="log-col">失敗時の試行ワード履歴、元セッション・IP情報を保存。管理者によるアカウント拒否権と連動。</td>
         </tr>
@@ -250,7 +250,7 @@ export const handlePrintDocument = (
             </div>
           </div>
           <div class="title-desc">
-            本資料は犯罪抑止・セキュリティ対策に特化したSNS「ReMEETs」におけるすべての利用動線（会員登録から手紙投函、クイズゲート、メッセージ開通、事件防止まで）に対し、想定されるストーカー行為や不正アビューズ脅威をマッピング。一次プログラム防衛策と二次防衛策（Gemini AIによる評価）、および管轄警察署サイバー対策課協議用の永続フォレンジックロギング（痕跡保管）設計の監査適合性を示した全編マトリクス公式書面（A4横適合版）です。
+            本資料は犯罪抑止・セキュリティ対策に特化したSNS「ReMEETs」におけるすべての利用動線（会員登録からメッセージ投函、クイズゲート、メッセージ開通、事件防止まで）に対し、想定されるストーカー行為や不正アビューズ脅威をマッピング。一次プログラム防衛策と二次防衛策（Gemini AIによる評価）、および管轄警察署サイバー対策課協議用の永続フォレンジックロギング（痕跡保管）設計の監査適合性を示した全編マトリクス公式書面（A4横適合版）です。
           </div>
           <table>
             <thead>
@@ -899,7 +899,7 @@ export const handlePrintDocument = (
       '"2026-06-05 13:02:45","QUIZ_POST_PROPOSAL","192.168.12.44","usr_d8f37a90b1e34","思い出ボトル投函 (キーワード: 高校陸上部、担任の名前)","PASS (SafetyScore: 0.98)","SUCCESS (適合)"\n' +
       '"2026-06-05 13:03:15","IDENTITY_VERIFICATION_START","192.168.12.44","usr_d8f37a90b1e34","オンライン本人確認 (eKYC) の申請受理、事業者認証セッション接続","PENDING","LAUNCHED (認証開始)"\n' +
       '"2026-06-05 13:04:02","IDENTITY_VERIFICATION_COMPLETED","192.168.12.44","usr_d8f37a90b1e34","eKYC公的身元照合成功、生年月日照合完了。生身分証データは即時完全パージ破棄済","VERIFIED (TokenHash: ab93f7e...)","SUCCESS (公的適合)"\n' +
-      '"2026-06-05 13:05:22","NG_WORD_MODERATION","203.0.113.88","usr_93f8fe9c6d32","手紙本文の自動スキャン (アビューズ示唆を検知して遮断)","BLOCKED (NGワード: LINEなどの直接交渉・ハラスメントの疑い)","PREVENTED (防衛成功)"\n' +
+      '"2026-06-05 13:05:22","NG_WORD_MODERATION","203.0.113.88","usr_93f8fe9c6d32","メッセージ本文の自動スキャン (アビューズ示唆を検知して遮断)","BLOCKED (NGワード: LINEなどの直接交渉・ハラスメントの疑い)","PREVENTED (防衛成功)"\n' +
       '"2026-06-05 13:12:04","POLICE_FORENSIC_EXPORT","127.0.0.1 (ADMIN)","admin_root","監査官用ログダンプの任意抽出・エクスポート実行","PASS_AUTHORITY","SUCCESS (適合)"\n' +
       '"2026-06-05 13:20:00","LOG_INTEGRITY_SEAL","SYSTEM_DAEMON","N/A","データベース整合性暗号署名の永続ロギング完了","INTEGRITY_SECURE","ACTIVE (正常)"\n' +
       '"2026-06-05 13:31:05","USER_CONSENT_REVOCATION","198.51.100.12","usr_12a76f5e8b41","利用者からのアカウント自己削除・全全データ不活性化(パージ法適合)","USER_ACTION","PURGED (適合)"\n' +

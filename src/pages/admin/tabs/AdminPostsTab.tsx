@@ -146,7 +146,7 @@ export const AdminPostsTab: React.FC<AdminPostsTabProps> = (props) => {
                           <span className="text-xs font-bold text-black/60">通漂流中</span>
                         </div>
                         <div className="mt-1.5 text-[11px] text-black/60 font-medium">
-                          想い出の手紙が受取人を待機中
+                          想い出のメッセージが受取人を待機中
                         </div>
                       </div>
                     </div>
@@ -193,7 +193,7 @@ export const AdminPostsTab: React.FC<AdminPostsTabProps> = (props) => {
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-black/40" size={16} />
                     <input 
                       type="text" 
-                      placeholder="対象者、差出人、本名、手紙本文、秘密の質問、ID等で瞬時検索..." 
+                      placeholder="対象者、差出人、本名、メッセージ本文、秘密の質問、ID等で瞬時検索..." 
                       className="w-full pl-9 pr-8 py-2 bg-slate-50/80 rounded-xl border border-brand-border focus:border-black focus:bg-white outline-none transition-all text-xs sm:text-sm text-black"
                       value={postSearchTerm}
                       onChange={(e) => { setPostSearchTerm(e.target.value); setPostPage(1); }}
@@ -270,7 +270,7 @@ export const AdminPostsTab: React.FC<AdminPostsTabProps> = (props) => {
                           onClick={() => handleGenerateSamplePosts(50)}
                           disabled={isGeneratingSamplePosts}
                           className="flex-1 flex items-center justify-center gap-1 px-2.5 py-1 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-lg text-[11px] transition-colors cursor-pointer shadow-2xs disabled:opacity-50 whitespace-nowrap"
-                          title="既存の手紙を残したまま、重複ゼロの想い出ボトルメールを50通追加生成します"
+                          title="既存のメッセージを残したまま、重複ゼロの想い出ボトルメールを50通追加生成します"
                         >
                           <Plus size={12} className={isGeneratingSamplePosts ? "animate-spin" : ""} />
                           <span className="whitespace-nowrap">追加 (+50)</span>
@@ -280,7 +280,7 @@ export const AdminPostsTab: React.FC<AdminPostsTabProps> = (props) => {
                           onClick={() => handleGenerateSamplePosts(200)}
                           disabled={isGeneratingSamplePosts}
                           className="flex-1 flex items-center justify-center gap-1 px-2.5 py-1 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-lg text-[11px] transition-colors cursor-pointer shadow-2xs disabled:opacity-50 whitespace-nowrap"
-                          title="既存の手紙を残したまま、重複ゼロの想い出ボトルメールを200通追加生成します（例: 200通 → 400通）"
+                          title="既存のメッセージを残したまま、重複ゼロの想い出ボトルメールを200通追加生成します（例: 200通 → 400通）"
                         >
                           <Plus size={12} className={isGeneratingSamplePosts ? "animate-spin" : ""} />
                           <span className="whitespace-nowrap">追加 (+200)</span>
@@ -433,7 +433,7 @@ export const AdminPostsTab: React.FC<AdminPostsTabProps> = (props) => {
                               <th className="px-3 py-2.5 whitespace-nowrap">対象者</th>
                               <th className="px-3 py-2.5 whitespace-nowrap">差出人</th>
                               <th className="px-3 py-2.5 whitespace-nowrap">年代・カテゴリ</th>
-                              <th className="px-3 py-2.5 whitespace-nowrap max-w-[240px]">想い出の手紙</th>
+                              <th className="px-3 py-2.5 whitespace-nowrap max-w-[240px]">想い出のメッセージ</th>
                               <th className="px-3 py-2.5 text-center whitespace-nowrap">AI安全診断</th>
                               <th className="px-3 py-2.5 text-center whitespace-nowrap">状態</th>
                               <th className="px-3 py-2.5 whitespace-nowrap">投函日</th>
@@ -641,7 +641,7 @@ export const AdminPostsTab: React.FC<AdminPostsTabProps> = (props) => {
                                         <a
                                           href={getPostUrl(p)}
                                           className="p-1.5 text-teal-600 hover:text-teal-800 hover:bg-teal-50 rounded-lg transition-colors cursor-pointer inline-flex items-center"
-                                          title="手紙の公開ページを表示（現在のタブで開く）"
+                                          title="メッセージの公開ページを表示（現在のタブで開く）"
                                         >
                                           <ExternalLink size={14} />
                                         </a>

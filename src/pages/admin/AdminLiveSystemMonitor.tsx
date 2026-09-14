@@ -387,7 +387,7 @@ export const AdminLiveSystemMonitor = ({ token }: { token: string }) => {
             {/* Limit Search */}
             <div className="space-y-2">
               <div className="flex justify-between text-xs">
-                <span className="font-bold text-black/75">3. 思い出検索・漂流手紙取得上限 (15分ごと)</span>
+                <span className="font-bold text-black/75">3. 思い出検索・漂流メッセージ取得上限 (15分ごと)</span>
                 <span className="font-serif font-bold text-[#5ea5ad] text-sm">{limitsForm.searchMax} <span className="text-xs font-sans">回</span></span>
               </div>
               <input 
@@ -453,7 +453,7 @@ export const AdminLiveSystemMonitor = ({ token }: { token: string }) => {
             {/* Limit Message */}
             <div className="space-y-2">
               <div className="flex justify-between text-xs">
-                <span className="font-bold text-black/75">6. 手紙内メッセージ送信上限 (15分ごと)</span>
+                <span className="font-bold text-black/75">6. メッセージ内メッセージ送信上限 (15分ごと)</span>
                 <span className="font-serif font-bold text-[#5ea5ad] text-sm">{limitsForm.messageMax} <span className="text-xs font-sans">回</span></span>
               </div>
               <input 

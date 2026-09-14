@@ -69,7 +69,7 @@ export const AccountNotificationsTab = (props: any) => {
 
   return (
 <div className="space-y-10 animate-fade-in text-black font-sans">
-                {/* 1. あなた宛て新着手紙のメール通知（プロファイル連動・ワンタップON/OFF） */}
+                {/* 1. あなた宛て新着メッセージのメール通知（プロファイル連動・ワンタップON/OFF） */}
                 <div className="bg-gradient-to-br from-teal-50/90 via-white to-emerald-50/60 p-6 md:p-8 rounded-3xl border-2 border-teal-300/80 shadow-sm space-y-6">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-teal-200/70 pb-5">
                     <div className="space-y-1.5">
@@ -85,7 +85,7 @@ export const AccountNotificationsTab = (props: any) => {
                       </div>
                       <h3 className="text-lg font-serif font-bold text-slate-900 flex items-center gap-2">
                         <Bell size={20} className={notifyAlertEnabled ? "text-teal-700 animate-pulse" : "text-slate-400"} />
-                        <span>📬 あなた宛て新着手紙の入荷メール通知</span>
+                        <span>📬 あなた宛て新着メッセージの入荷メール通知</span>
                       </h3>
                       <p className="text-xs text-slate-600 font-sans leading-relaxed max-w-xl">
                         あなたのお名前（本名・旧姓・愛称）宛てに新しい想い出のボトルメールが海に流された瞬間、ご登録のメールアドレスへ即座にお知らせします。
@@ -99,7 +99,7 @@ export const AccountNotificationsTab = (props: any) => {
                           {notifyAlertEnabled ? '自動通知 ON' : '自動通知 OFF'}
                         </span>
                         <span className="text-[10px] text-slate-400 block">
-                          {notifyAlertEnabled ? '手紙をリアルタイム検知' : '通知を一時停止中'}
+                          {notifyAlertEnabled ? 'メッセージをリアルタイム検知' : '通知を一時停止中'}
                         </span>
                       </div>
                       <button
@@ -232,12 +232,12 @@ export const AccountNotificationsTab = (props: any) => {
                         IconComponent = MessageCircle;
                         badgeText = "想い出照合・開通";
                         colorClasses = "bg-emerald-50 text-emerald-800 border-emerald-200/40";
-                        actionText = "お手紙・連絡先を確認";
+                        actionText = "メッセージ・連絡先を確認";
                       } else if (n.type === "reunion" || n.type === "reunion_success" || n.type === "match") {
                         IconComponent = Key;
                         badgeText = "思い出再会";
                         colorClasses = "bg-amber-50 text-amber-800 border-amber-200/40";
-                        actionText = "手紙を確認する";
+                        actionText = "メッセージを確認する";
                       } else if (n.type === "admin_broadcast" || n.type === "system" || n.type === "broadcast") {
                         IconComponent = Sparkles;
                         badgeText = "公式アナウンス";

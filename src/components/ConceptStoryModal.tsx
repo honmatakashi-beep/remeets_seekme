@@ -22,7 +22,7 @@ export const ConceptStoryModal: React.FC<ConceptStoryModalProps> = ({ isOpen, on
             className="absolute inset-0 bg-black/70 cursor-pointer backdrop-blur-[2px]"
           />
 
-          {/* 四辺が傷んだヴィンテージ古紙テクスチャの手紙（用紙サイズ max-w-2xl） */}
+          {/* 四辺が傷んだヴィンテージ古紙テクスチャのメッセージ（用紙サイズ max-w-2xl） */}
           <motion.div 
             initial={{ opacity: 0, scale: 0.94, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -53,9 +53,9 @@ export const ConceptStoryModal: React.FC<ConceptStoryModalProps> = ({ isOpen, on
               className="w-full h-full overflow-y-auto overflow-x-hidden custom-scrollbar scrollbar-thin scrollbar-thumb-[#7A5B26]/30 scrollbar-track-transparent px-8 sm:px-14 md:px-18 pt-10 sm:pt-14 md:pt-16 pb-8 sm:pb-12 font-letter-mincho"
               data-lenis-prevent
             >
-              {/* 手紙本文のコンテナ（紙の端からしっかり離れたセーフゾーン max-w-[500px]） */}
+              {/* メッセージ本文のコンテナ（紙の端からしっかり離れたセーフゾーン max-w-[500px]） */}
               <div className="w-full max-w-[500px] mx-auto flex flex-col font-letter-mincho">
-                {/* アンティークな手紙ヘッダー ＆ ボタニカル飾り罫線 */}
+                {/* アンティークなメッセージヘッダー ＆ ボタニカル飾り罫線 */}
                 <div className="text-center mb-3 sm:mb-4 shrink-0 select-none font-letter-mincho">
                   {/* ボタニカル上部飾り（つる草・オリーブの葉・花装飾） */}
                   <div className="flex items-center justify-center gap-2 text-[#6B4E1F]/70 mb-1 px-3">
@@ -110,7 +110,7 @@ export const ConceptStoryModal: React.FC<ConceptStoryModalProps> = ({ isOpen, on
                 {/* 明朝体便箋の本文（フォント太さ・視認性強化） */}
                 <div className="space-y-2.5 sm:space-y-3 text-[15px] sm:text-[16px] md:text-[17px] font-semibold tracking-[0.04em] sm:tracking-[0.06em] text-[#221302] leading-[1.75] font-letter-mincho">
                   <p className="border-b border-dashed border-[#7A5B26]/35 pb-1.5 font-black text-[#1A0E01] text-base sm:text-lg font-letter-mincho">
-                    拝啓、いつかこの手紙を見つけるあなたへ。
+                    拝啓、いつかこのメッセージを見つけるあなたへ。
                   </p>
                   
                   <p className="border-b border-dashed border-[#7A5B26]/25 pb-1.5 indent-4 sm:indent-6 font-semibold font-letter-mincho">

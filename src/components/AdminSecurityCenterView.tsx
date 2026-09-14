@@ -630,7 +630,7 @@ export const AdminSecurityCenterView: React.FC<AdminSecurityCenterViewProps> = (
                 <span className="text-sm font-sans text-blue-700/60 font-normal">%</span>
               </div>
               <p className="text-[10px] text-blue-800 font-sans">
-                健全な想い出の手紙を誤判定せず高精度に通過
+                健全な想い出のメッセージを誤判定せず高精度に通過
               </p>
             </div>
 
@@ -667,7 +667,7 @@ export const AdminSecurityCenterView: React.FC<AdminSecurityCenterViewProps> = (
               <div className="space-y-3">
                 {(securityHealth?.threatDistribution || [
                   { name: "出会い系・不当交際目的", count: 8, percentage: 44.4, color: "#ef4444", desc: "規約違反の不特定異性交際アプローチをAIが事前遮断" },
-                  { name: "個人情報・実名・連絡先露出", count: 5, percentage: 27.8, color: "#f59e0b", desc: "公開手紙内への電話番号・LINE ID記載を自動マスク" },
+                  { name: "個人情報・実名・連絡先露出", count: 5, percentage: 27.8, color: "#f59e0b", desc: "公開メッセージ内への電話番号・LINE ID記載を自動マスク" },
                   { name: "ストーキング・居場所特定", count: 3, percentage: 16.7, color: "#8b5cf6", desc: "現住所や勤務先の執拗な割り出しをAI検閲隔離" },
                   { name: "誹謗中傷・嫌がらせ言動", count: 2, percentage: 11.1, color: "#06b6d4", desc: "感情的な暴言・不当な追及メッセージをブロック" }
                 ]).map((threat: any, idx: number) => (

@@ -520,7 +520,7 @@ export const seedData = async (force: boolean = false) => {
     {
       profile: "高校の合唱部で混声合唱のソプラノとテノールで声を合わせた仲間です。",
       message: "NHK全国学校音楽コンクールを目指して放課後ずっとハーモニーを響かせましたね。あの感動をもう一度共有したいです。",
-      q1: "コンクール地区予選で歌った課題曲のタイトルは？", a1: "手紙",
+      q1: "コンクール地区予選で歌った課題曲のタイトルは？", a1: "メッセージ",
       q2: "発声練習の時にピアノ伴奏で使っていた音階の愛称は？", a2: "マオマオ発声"
     },
     {
@@ -984,7 +984,7 @@ export const seedData = async (force: boolean = false) => {
         status: "completed",
         ekyc_status: "passed",
         amount: 600,
-        description: "旧友との手紙開封・連絡先安全開示（eKYC確認＋600円オーソリ確定）",
+        description: "旧友とのメッセージ開封・連絡先安全開示（eKYC確認＋600円オーソリ確定）",
         stripe_intent: "pi_stripe_1001_live",
         stripe_fee: 22,
         ekyc_cost: 200,
@@ -1086,14 +1086,14 @@ export const seedData = async (force: boolean = false) => {
     const notifTemplates = [
       {
         type: "reunion_reveal",
-        content: "【想い出開通】昔の同窓生「佐藤 さくら」様とのボトルメール（1998年頃・青葉中学校）の想い出クイズが一致し、連絡先とお手紙が開通しました！早速内容をご確認ください。",
+        content: "【想い出開通】昔の同窓生「佐藤 さくら」様とのボトルメール（1998年頃・青葉中学校）の想い出クイズが一致し、連絡先とメッセージが開通しました！早速内容をご確認ください。",
         link: "/account?tab=received",
         is_read: 0,
         created_at: new Date(now.getTime() - 1000 * 60 * 35).toISOString().replace('T', ' ').substring(0, 19)
       },
       {
         type: "reunion",
-        content: "【クイズ照合成功】あなたが海に流したボトルメール「高橋 健二 様宛てのお手紙」にお相手からの思い出回答が届き、見事正解しました！相手のメッセージを開封できます。",
+        content: "【クイズ照合成功】あなたが海に流したボトルメール「高橋 健二 様宛てのメッセージ」にお相手からの思い出回答が届き、見事正解しました！相手のメッセージを開封できます。",
         link: "/account?tab=sent",
         is_read: 0,
         created_at: new Date(now.getTime() - 1000 * 60 * 120).toISOString().replace('T', ' ').substring(0, 19)
@@ -1114,14 +1114,14 @@ export const seedData = async (force: boolean = false) => {
       },
       {
         type: "system",
-        content: "【公的本人確認 完了】ご提出いただいた公的証明書類（eKYC）の審査が正常に完了し、承認されました。\n\nアカウントに「🛡️ 公的本人確認済み」バッジが点灯し、安心・スムーズにお手紙を開封していただけるようになりました。",
+        content: "【公的本人確認 完了】ご提出いただいた公的証明書類（eKYC）の審査が正常に完了し、承認されました。\n\nアカウントに「🛡️ 公的本人確認済み」バッジが点灯し、安心・スムーズにメッセージを開封していただけるようになりました。",
         link: "/account?tab=profile",
         is_read: 1,
         created_at: new Date(now.getTime() - 86400000 * 3).toISOString().replace('T', ' ').substring(0, 19)
       },
       {
         type: "broadcast",
-        content: "【漂流レポート】あなたが海に流したボトルメールが、これまでに全国から「34回」静かに検索・閲覧されました。大切なお手紙は暗号化され、安全に海を漂っています。",
+        content: "【漂流レポート】あなたが海に流したボトルメールが、これまでに全国から「34回」静かに検索・閲覧されました。大切なメッセージは暗号化され、安全に海を漂っています。",
         link: "/account?tab=sent",
         is_read: 1,
         created_at: new Date(now.getTime() - 86400000 * 5).toISOString().replace('T', ' ').substring(0, 19)

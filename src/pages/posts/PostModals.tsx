@@ -83,15 +83,15 @@ export const RecipientSafetyGuide = ({
         <div className="flex items-center gap-2">
           <span className="text-xl">🤝</span>
           <h3 className="text-base sm:text-lg md:text-xl font-extrabold text-slate-900 tracking-tight leading-snug">
-            初めてこの手紙を見つけた方へ ── ReMEETsの安心再会システム
+            初めてこのメッセージを見つけた方へ ── ReMEETsの安心再会システム
           </h3>
         </div>
         <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-medium">
-          お名前は検索エンジンで見つかりますが、手紙本文とお互いの連絡先は<strong className="text-teal-900 font-bold">「二人だけの思い出クイズ」を解いたご本人のみに安全に開示</strong>されます。
+          お名前は検索エンジンで見つかりますが、メッセージ本文とお互いの連絡先は<strong className="text-teal-900 font-bold">「二人だけの思い出クイズ」を解いたご本人のみに安全に開示</strong>されます。
         </p>
       </div>
 
-      {/* 2. 【フロー進行型】手紙を開封するまでのシンプルな 3ステップ（上品なローズ/ピンク調コンテナ） */}
+      {/* 2. 【フロー進行型】メッセージを開封するまでのシンプルな 3ステップ（上品なローズ/ピンク調コンテナ） */}
       <div className="bg-gradient-to-br from-rose-50/90 via-pink-50/70 to-rose-100/50 border border-rose-200/80 rounded-2xl p-5 md:p-6 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-rose-200/70 pb-3">
           <div className="flex items-center gap-2">
@@ -99,7 +99,7 @@ export const RecipientSafetyGuide = ({
               <Mail size={16} />
             </div>
             <h4 className="text-xs md:text-sm font-extrabold text-rose-950 tracking-wide">
-              手紙を開封し連絡先を受け取るまでの流れ（3ステップ）
+              メッセージを開封し連絡先を受け取るまでの流れ（3ステップ）
             </h4>
           </div>
           <span className="text-[11px] font-bold text-rose-900 bg-white/95 px-2.5 py-0.5 rounded-full border border-rose-300/80 shrink-0 self-start sm:self-auto shadow-2xs">
@@ -200,10 +200,10 @@ export const RecipientSafetyGuide = ({
               {/* タイトル＆説明 */}
               <div className="space-y-1">
                 <h5 className="font-extrabold text-sm sm:text-[13px] md:text-sm text-slate-900 leading-snug font-serif">
-                  手紙開封・連絡先受取
+                  メッセージ開封・連絡先受取
                 </h5>
                 <p className="text-xs sm:text-[11px] md:text-xs text-slate-600 leading-relaxed font-sans font-medium">
-                  手紙本文を開封し、差出人のLINEやSNS・連絡先を受け取って直接つながれます。
+                  メッセージ本文を開封し、差出人のLINEやSNS・連絡先を受け取って直接つながれます。
                 </p>
               </div>
             </div>
@@ -241,7 +241,7 @@ export const RecipientSafetyGuide = ({
               </h5>
             </div>
             <p className="text-xs text-slate-600 leading-relaxed font-medium">
-              正解者以外には手紙本文・連絡先は一切開示されず、暗号化で保護されます。
+              正解者以外にはメッセージ本文・連絡先は一切開示されず、暗号化で保護されます。
             </p>
           </div>
 
@@ -278,7 +278,7 @@ export const RecipientSafetyGuide = ({
             onClick={onStartQuiz}
             className="w-full py-3.5 sm:py-4 px-4 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold rounded-2xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 text-[13px] sm:text-base cursor-pointer hover:scale-[1.01] active:scale-[0.99] border border-emerald-400/30 group"
           >
-            <span className="tracking-wide whitespace-nowrap">思い出の質問に答えて手紙を開く</span>
+            <span className="tracking-wide whitespace-nowrap">思い出の質問に答えてメッセージを開く</span>
             <ArrowRight size={16} className="text-emerald-200 group-hover:translate-x-1 transition-transform shrink-0" />
           </button>
           <p className="text-[11px] text-slate-500 text-center font-sans mt-2">
@@ -355,7 +355,7 @@ export const RevealContactModal = ({
   const handleRevealSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!resolvedPostId) {
-      setErrorMessage('手紙のIDが特定できませんでした。ページを再読み込みしてください。');
+      setErrorMessage('メッセージのIDが特定できませんでした。ページを再読み込みしてください。');
       return;
     }
 
@@ -512,7 +512,7 @@ export const RevealContactModal = ({
                 </p>
               </div>
 
-              {/* 手紙本文 & 開示された連絡先カード */}
+              {/* メッセージ本文 & 開示された連絡先カード */}
               <div className="p-5 bg-gradient-to-br from-emerald-50/90 to-teal-50/80 border-2 border-emerald-300 rounded-2xl shadow-sm space-y-4">
                 <div className="space-y-2 bg-white/90 p-4 rounded-xl border border-emerald-200">
                   <div className="flex items-center justify-between text-xs font-bold text-slate-500">
@@ -570,7 +570,7 @@ export const RevealContactModal = ({
                   className="w-full py-3.5 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98 border border-emerald-400/30"
                 >
                   <UserIcon size={16} />
-                  <span>マイアカウントで手紙・連絡先を確認する →</span>
+                  <span>マイアカウントでメッセージ・連絡先を確認する →</span>
                 </button>
                 <button
                   type="button"
@@ -580,7 +580,7 @@ export const RevealContactModal = ({
                   }}
                   className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all cursor-pointer"
                 >
-                  手紙詳細ページで確認する
+                  メッセージ詳細ページで確認する
                 </button>
               </div>
             </div>
@@ -618,14 +618,14 @@ export const RevealContactModal = ({
               <div className="space-y-1">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-serif font-bold tracking-wider shadow-2xs">
                   <ShieldCheck size={14} className="text-emerald-600" />
-                  <span>{isReadyToProceed ? '手紙開示・決済トランザクション照合完了' : '手紙開示・決済トランザクション処理中'}</span>
+                  <span>{isReadyToProceed ? 'メッセージ開示・決済トランザクション照合完了' : 'メッセージ開示・決済トランザクション処理中'}</span>
                 </div>
                 <h3 className="text-base md:text-lg font-serif font-bold text-slate-900 pt-1">
                   {!isReadyToProceed && revealProgress < 25 && '1. Stripeセキュア決済サーバーへ接続中...'}
                   {!isReadyToProceed && revealProgress >= 25 && revealProgress < 50 && '2. 256-bit SSL暗号化決済トランザクション照合中...'}
-                  {!isReadyToProceed && revealProgress >= 50 && revealProgress < 75 && '3. 想い出の手紙・封印メッセージ復号化中...'}
+                  {!isReadyToProceed && revealProgress >= 50 && revealProgress < 75 && '3. 想い出のメッセージ・封印メッセージ復号化中...'}
                   {!isReadyToProceed && revealProgress >= 75 && revealProgress < 100 && '4. 直通連絡先（LINE/メール）開示キー発行中...'}
-                  {isReadyToProceed && '✨ 決済＆手紙開示手続きが完了しました！'}
+                  {isReadyToProceed && '✨ 決済＆メッセージ開示手続きが完了しました！'}
                 </h3>
               </div>
 
@@ -685,7 +685,7 @@ export const RevealContactModal = ({
                     <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${revealProgress >= 75 ? 'bg-emerald-500 text-white' : 'bg-emerald-100 text-emerald-800'}`}>
                       {revealProgress >= 75 ? '✓' : '3'}
                     </span>
-                    <span>想い出の手紙本文・封印メッセージの復号化</span>
+                    <span>想い出のメッセージ本文・封印メッセージの復号化</span>
                   </span>
                   {revealProgress >= 50 && revealProgress < 75 && <span className="text-[11px] text-emerald-600 animate-pulse font-bold">復号中...</span>}
                   {revealProgress >= 75 && <span className="text-[11px] text-emerald-600 font-bold">完了</span>}
@@ -720,10 +720,10 @@ export const RevealContactModal = ({
                     className="w-full py-2.5 sm:py-3 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98 font-sans"
                   >
                     <Heart size={16} className="fill-current text-rose-300 animate-pulse shrink-0" />
-                    <span>【{searcherFullName || searcherName}】さんの手紙を開封する →</span>
+                    <span>【{searcherFullName || searcherName}】さんのメッセージを開封する →</span>
                   </button>
                   <p className="text-[11px] text-slate-500 font-sans">
-                    ※ ボタンをクリックすると手紙本文と開示された連絡先の詳細画面へ進みます
+                    ※ ボタンをクリックするとメッセージ本文と開示された連絡先の詳細画面へ進みます
                   </p>
                 </div>
               ) : (
@@ -735,7 +735,7 @@ export const RevealContactModal = ({
           ) : (
             /* 💳 決済フォーム画面 */
             <div className="space-y-4">
-              {/* ① 上部: 手紙開封対象 ＆ お支払い金額サマリー枠 */}
+              {/* ① 上部: メッセージ開封対象 ＆ お支払い金額サマリー枠 */}
               <div className="p-4 sm:p-5 bg-gradient-to-br from-teal-50/80 via-emerald-50/50 to-slate-50 rounded-2xl border-2 border-teal-300/80 text-left space-y-3.5 shadow-2xs font-sans">
                 <div className="flex items-center justify-between gap-2 border-b border-teal-200/70 pb-2.5 flex-wrap">
                   <div className="flex items-center gap-2">
@@ -743,9 +743,9 @@ export const RevealContactModal = ({
                       ✉️
                     </span>
                     <div>
-                      <span className="text-[10px] text-teal-800 font-bold uppercase tracking-wider block">手紙開封手続き</span>
+                      <span className="text-[10px] text-teal-800 font-bold uppercase tracking-wider block">メッセージ開封手続き</span>
                       <h3 className="text-base sm:text-lg font-bold font-serif text-slate-900">
-                        【{searcherName || '差出人'}】さんからの手紙を開封する
+                        【{searcherName || '差出人'}】さんからのメッセージを開封する
                       </h3>
                     </div>
                   </div>
@@ -759,7 +759,7 @@ export const RevealContactModal = ({
                 <div className="flex items-center justify-between gap-2 bg-white/95 p-3 sm:p-3.5 rounded-xl border border-teal-200/80 text-xs shadow-2xs flex-wrap">
                   <span className="text-slate-600 font-bold">お支払い金額:</span>
                   <span className="text-sm sm:text-base font-bold text-slate-900 font-serif">
-                    手紙開示・接続手数料: <strong className="text-teal-800 text-base sm:text-lg font-extrabold font-mono">600</strong> 円<span className="text-xs text-slate-500 font-sans ml-1">（税込・買い切り）</span>
+                    メッセージ開示・接続手数料: <strong className="text-teal-800 text-base sm:text-lg font-extrabold font-mono">600</strong> 円<span className="text-xs text-slate-500 font-sans ml-1">（税込・買い切り）</span>
                   </span>
                 </div>
               </div>
@@ -806,7 +806,7 @@ export const RevealContactModal = ({
                   className="w-full py-4 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold text-sm sm:text-base rounded-2xl shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.01] active:scale-98 transition-all disabled:opacity-75 disabled:cursor-not-allowed font-sans border border-emerald-400/30"
                 >
                   <Heart size={18} className="fill-current text-rose-300" />
-                  <span>600円で【{searcherName || '差出人'}】さんの手紙と連絡先を開く</span>
+                  <span>600円で【{searcherName || '差出人'}】さんのメッセージと連絡先を開く</span>
                   <ArrowRight size={16} />
                 </button>
               </form>
@@ -900,10 +900,10 @@ export const SuccessModal = ({
                   <span>思い出の鍵が解かれました！</span>
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-serif text-slate-900 font-extrabold tracking-tight leading-snug">
-                  「{searcherName || '差出人'}」さんからの手紙
+                  「{searcherName || '差出人'}」さんからのメッセージ
                 </h2>
                 <p className="text-slate-600 text-xs sm:text-sm font-medium">
-                  二人の記憶が一致し、あなた宛てに大切なお手紙が届いています。
+                  二人の記憶が一致し、あなた宛てに大切なメッセージが届いています。
                 </p>
               </div>
 
@@ -942,7 +942,7 @@ export const SuccessModal = ({
                     </span>
                   </div>
 
-                  {/* 2. 手紙の全文とエピソードを開封 */}
+                  {/* 2. メッセージの全文とエピソードを開封 */}
                   <div className="p-3 sm:p-3.5 bg-white rounded-xl border border-slate-200/90 hover:border-emerald-300 transition-all flex items-center justify-between gap-3 shadow-2xs">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0 text-base font-bold shadow-2xs">
@@ -950,10 +950,10 @@ export const SuccessModal = ({
                       </div>
                       <div>
                         <div className="text-xs sm:text-sm font-bold text-slate-900 flex items-center gap-1.5">
-                          <span>手紙の全文とエピソードを開封</span>
+                          <span>メッセージの全文とエピソードを開封</span>
                         </div>
                         <p className="text-[11px] text-slate-500 font-medium">
-                          あなた宛てに届いた大切な手紙の全文・思い出メッセージ
+                          あなた宛てに届いた大切なメッセージの全文・思い出メッセージ
                         </p>
                       </div>
                     </div>
@@ -986,7 +986,7 @@ export const SuccessModal = ({
                 </div>
 
                 <p className="text-[11.5px] text-slate-600 font-medium leading-relaxed pt-0.5">
-                  ※ 手紙を読み、お相手と直接連絡を取り合うために、下記よりお手続きコースをお選びください。
+                  ※ メッセージを読み、お相手と直接連絡を取り合うために、下記よりお手続きコースをお選びください。
                 </p>
               </div>
 
@@ -995,7 +995,7 @@ export const SuccessModal = ({
                 <div className="p-4 bg-slate-50/90 rounded-2xl border border-slate-200 space-y-2 text-xs">
                   <div className="flex items-center gap-2 text-slate-900 font-extrabold text-sm border-b border-slate-200/80 pb-1.5">
                     <ShieldCheck size={18} className="text-emerald-600 shrink-0" />
-                    <span>手紙の開封・連絡先受取のお手続き</span>
+                    <span>メッセージの開封・連絡先受取のお手続き</span>
                     {isAlreadyVerified && (
                       <span className="ml-auto text-[11px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-200">
                         基本誓約済み
@@ -1010,7 +1010,7 @@ export const SuccessModal = ({
 
                 {/* 2つのプラン並列比較カード */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-1">
-                  {/* 左：【第一推奨・メイン】公的身分証（eKYC）認証 ＋ 手紙開封・連絡先受取 */}
+                  {/* 左：【第一推奨・メイン】公的身分証（eKYC）認証 ＋ メッセージ開封・連絡先受取 */}
                   <div className="relative p-4 bg-gradient-to-br from-sky-50/90 via-white to-blue-50/80 border-2 border-sky-500/80 rounded-2xl space-y-3 shadow-md flex flex-col justify-between hover:border-sky-600 transition-all">
                     <div className="absolute -top-3 left-4 bg-gradient-to-r from-sky-500 via-sky-600 to-blue-600 text-white text-[10.5px] font-extrabold px-3 py-0.5 rounded-full shadow-md flex items-center gap-1">
                       <Sparkles size={12} className="text-amber-300" />
@@ -1041,7 +1041,7 @@ export const SuccessModal = ({
                         </li>
                         <li className="flex items-start gap-1.5">
                           <CheckCircle2 size={14} className="text-sky-600 shrink-0 mt-0.5" />
-                          <span>手紙全文の開封 ＆ 直通連絡先の受け取り</span>
+                          <span>メッセージ全文の開封 ＆ 直通連絡先の受け取り</span>
                         </li>
                       </ul>
 
@@ -1051,7 +1051,7 @@ export const SuccessModal = ({
                           <span className="font-bold">600円（税込）</span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span>② 手紙開封 ＆ 連絡先受取</span>
+                          <span>② メッセージ開封 ＆ 連絡先受取</span>
                           <span className="font-bold">600円（税込）</span>
                         </div>
                       </div>
@@ -1082,13 +1082,13 @@ export const SuccessModal = ({
                     </div>
                   </div>
 
-                  {/* 右：【シンプル】手紙開封・連絡先受取のみ */}
+                  {/* 右：【シンプル】メッセージ開封・連絡先受取のみ */}
                   <div className="p-4 bg-white border-2 border-slate-200/90 rounded-2xl space-y-3 shadow-2xs flex flex-col justify-between hover:border-slate-300 transition-all">
                     <div className="space-y-2.5">
                       <div className="flex items-center justify-between border-b border-slate-100 pb-2">
                         <span className="text-xs font-extrabold text-slate-800 flex items-center gap-1.5">
                           <CheckCircle2 size={16} className="text-emerald-600" />
-                          <span>手紙開封・連絡先受取のみコース</span>
+                          <span>メッセージ開封・連絡先受取のみコース</span>
                         </span>
                         <span className="text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded">
                           最低限の費用
@@ -1098,7 +1098,7 @@ export const SuccessModal = ({
                       <ul className="space-y-1.5 text-xs text-slate-600 font-sans">
                         <li className="flex items-start gap-1.5">
                           <Check size={14} className="text-emerald-600 shrink-0 mt-0.5" />
-                          <span>手紙全文の開封 ＆ 直通連絡先の受け取り</span>
+                          <span>メッセージ全文の開封 ＆ 直通連絡先の受け取り</span>
                         </li>
                         <li className="flex items-start gap-1.5 text-slate-500">
                           <span className="text-slate-400 shrink-0 mt-0.5">※</span>
@@ -1112,7 +1112,7 @@ export const SuccessModal = ({
                           <span className="font-bold text-emerald-700">0円（無料）</span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span>② 手紙開封 ＆ 連絡先受取</span>
+                          <span>② メッセージ開封 ＆ 連絡先受取</span>
                           <span className="font-bold">600円（税込）</span>
                         </div>
                       </div>
@@ -1138,7 +1138,7 @@ export const SuccessModal = ({
                         className="w-full py-3.5 px-4 bg-slate-800 hover:bg-slate-900 text-white font-extrabold text-xs md:text-sm rounded-xl shadow-xs hover:scale-[1.01] active:scale-98 transition-all flex items-center justify-center gap-1.5 cursor-pointer font-sans"
                       >
                         <Heart size={16} className="text-rose-300" />
-                        <span>公的バッジなしで手紙を開封（600円）</span>
+                        <span>公的バッジなしでメッセージを開封（600円）</span>
                       </button>
                     </div>
                   </div>
@@ -1152,7 +1152,7 @@ export const SuccessModal = ({
                   </div>
                   <ul className="list-disc list-inside space-y-0.5 text-slate-600 pl-1 text-[10.5px]">
                     <li>月額費用や上記以外の追加課金は一切発生いたしません。</li>
-                    <li>万が一、本人確認審査に不合格となった場合、または手紙が開示されなかった場合は<strong>Stripeより決済代金を全額自動返金</strong>いたします。</li>
+                    <li>万が一、本人確認審査に不合格となった場合、またはメッセージが開示されなかった場合は<strong>Stripeより決済代金を全額自動返金</strong>いたします。</li>
                   </ul>
                 </div>
 
@@ -1162,7 +1162,7 @@ export const SuccessModal = ({
                     onClick={onClose}
                     className="text-xs text-slate-500 hover:text-slate-700 font-medium underline underline-offset-2 cursor-pointer"
                   >
-                    手紙詳細ページに戻る
+                    メッセージ詳細ページに戻る
                   </button>
                 </div>
               </div>
@@ -1219,7 +1219,7 @@ export const AgeVerificationGate = ({ onVerified, onStartEkyc }: { onVerified: (
         return;
       }
       if (calculatedRecvAge === null || calculatedRecvAge < 18) {
-        alert('法令（青少年保護）に基づき、18歳未満の方は手紙を開封できません。');
+        alert('法令（青少年保護）に基づき、18歳未満の方はメッセージを開封できません。');
         return;
       }
     }
@@ -1311,7 +1311,7 @@ export const AgeVerificationGate = ({ onVerified, onStartEkyc }: { onVerified: (
               <span>公的身分証承認（eKYC）</span>
             </h4>
             <p className="text-xs text-slate-600 leading-relaxed font-normal">
-              免許証・マイナンバー等で厳格確認。差出人へ「本人証明」が届き、信頼性が最大化されます。<span className="text-sky-950 font-bold block pt-0.5">※本人確認(600円)＋手紙開封(600円)＝総額1,200円</span>
+              免許証・マイナンバー等で厳格確認。差出人へ「本人証明」が届き、信頼性が最大化されます。<span className="text-sky-950 font-bold block pt-0.5">※本人確認(600円)＋メッセージ開封(600円)＝総額1,200円</span>
             </p>
           </div>
 
@@ -1355,7 +1355,7 @@ export const AgeVerificationGate = ({ onVerified, onStartEkyc }: { onVerified: (
               <span>登録時誓約を適用（無料）</span>
             </h4>
             <p className="text-xs text-slate-600 leading-relaxed font-normal">
-              アカウント登録時に同意済みの利用規約・18歳以上誓約をそのまま適用。<span className="text-emerald-800 font-bold block pt-0.5">※本人確認0円＋手紙開封(600円)＝総額600円のみ</span>
+              アカウント登録時に同意済みの利用規約・18歳以上誓約をそのまま適用。<span className="text-emerald-800 font-bold block pt-0.5">※本人確認0円＋メッセージ開封(600円)＝総額600円のみ</span>
             </p>
           </div>
 
@@ -1557,7 +1557,7 @@ export const AgeVerificationGate = ({ onVerified, onStartEkyc }: { onVerified: (
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle2 size={16} className="text-sky-600 shrink-0 mt-0.5" />
-                <span>審査通過後は手紙本文と連絡先（LINE/メール等）が<strong>即座に完全開示</strong>されます。</span>
+                <span>審査通過後はメッセージ本文と連絡先（LINE/メール等）が<strong>即座に完全開示</strong>されます。</span>
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle2 size={16} className="text-sky-600 shrink-0 mt-0.5" />
@@ -1704,7 +1704,7 @@ export const ReportModal = ({
           <div className="flex items-center justify-between gap-2">
             <span className="font-bold text-slate-700 flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-red-500"></span>
-              <span>通報対象: {targetType === 'post' ? '手紙（ボトルメール）' : 'ユーザーアカウント'}</span>
+              <span>通報対象: {targetType === 'post' ? 'メッセージ（ボトルメール）' : 'ユーザーアカウント'}</span>
             </span>
             <span className="font-mono font-bold text-slate-800 bg-white px-2 py-0.5 rounded border border-slate-200 text-[11px]">
               ID: #{targetId}
@@ -1782,7 +1782,7 @@ export const ReportModal = ({
               <div className="p-3 bg-rose-50/70 border border-rose-200/70 rounded-xl flex items-start gap-2.5 text-[11px] text-rose-900 leading-relaxed font-sans">
                 <Trash2 size={15} className="shrink-0 text-rose-600 mt-0.5" />
                 <div>
-                  <span>ご自身に関する手紙の<strong>「完全削除・掲載停止」</strong>をご希望の場合は、</span>
+                  <span>ご自身に関するメッセージの<strong>「完全削除・掲載停止」</strong>をご希望の場合は、</span>
                   <button 
                     type="button"
                     onClick={() => {

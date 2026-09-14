@@ -113,7 +113,7 @@ const DEFAULT_ANALYTICS_DATA = {
       { id: 'step_attempts', stepNumber: 2, name: 'クイズ照合挑戦', count: 45, subLabel: '第1問・合言葉の回答を開始した回数', icon: 'HelpCircle', color: '#0284c7', convFromPrev: 37.5, convOverall: 37.5, dropFromPrev: 62.5 },
       { id: 'step_matches', stepNumber: 3, name: '想い出完全合致 (正解)', count: 18, subLabel: '第1問・第2問を突破した件数', icon: 'Sparkles', color: '#059669', convFromPrev: 40.0, convOverall: 15.0, dropFromPrev: 60.0 },
       { id: 'step_ekyc', stepNumber: 4, name: 'eKYC本人確認・利用宣誓', count: 16, subLabel: '公的書類提出＆電子的宣誓の同意', icon: 'ShieldCheck', color: '#4f46e5', convFromPrev: 88.9, convOverall: 13.3, dropFromPrev: 11.1 },
-      { id: 'step_paid', stepNumber: 5, name: '開封・開通決済', count: 15, subLabel: '手紙開封・開通手数料の決済完了', icon: 'CreditCard', color: '#d97706', convFromPrev: 93.8, convOverall: 12.5, dropFromPrev: 6.2 },
+      { id: 'step_paid', stepNumber: 5, name: '開封・開通決済', count: 15, subLabel: 'メッセージ開封・開通手数料の決済完了', icon: 'CreditCard', color: '#d97706', convFromPrev: 93.8, convOverall: 12.5, dropFromPrev: 6.2 },
       { id: 'step_bridge', stepNumber: 6, name: '連絡先安全開示 (再会成立)', count: 15, subLabel: 'セキュア・ブリッジ完了・奇跡の再会', icon: 'Heart', color: '#db2777', convFromPrev: 100, convOverall: 12.5, dropFromPrev: 0 }
     ],
     insight: {
@@ -300,7 +300,7 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
       ["ステップ項目", "通過率 (%)", "離脱率 (%)", "防衛・照合の役割"],
       ["第1問（主要な思い出・あだ名等）", `${twoStepQuestionStats.q1PassRate || 0}%`, `${twoStepQuestionStats.q1DropRate || 0}%`, twoStepQuestionStats.q1Summary || ""],
       ["第2問（詳細な思い出の質問・出来事等）", `${twoStepQuestionStats.q2PassRate || 0}%`, `${twoStepQuestionStats.q2DropRate || 0}%`, twoStepQuestionStats.q2Summary || ""],
-      ["両問完全正解（本人確定）", `${twoStepQuestionStats.bothPassRate || 0}%`, "-", "2問すべて正解して手紙開封・連絡先開示へ到達"]
+      ["両問完全正解（本人確定）", `${twoStepQuestionStats.bothPassRate || 0}%`, "-", "2問すべて正解してメッセージ開封・連絡先開示へ到達"]
     ];
 
     const csvContent = "\uFEFF" + rows.map(r => r.join(',')).join('\n');
@@ -1079,7 +1079,7 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
                     想い出が届くまでの所要期間分布
                   </h3>
                   <p className="text-xs text-black/55 font-sans">
-                    手紙を海に流してから相手に発見・照合されるまでの期間の内訳
+                    メッセージを海に流してから相手に発見・照合されるまでの期間の内訳
                   </p>
                 </div>
               </div>
@@ -1479,7 +1479,7 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
 
                 <h4 className="text-base font-serif font-bold text-black">二重ロック完全クリア</h4>
                 <p className="text-xs text-neutral-600 leading-relaxed">
-                  2問すべてに正解した真の当事者。手紙開封および本人確認（eKYC）へ自動進行。
+                  2問すべてに正解した真の当事者。メッセージ開封および本人確認（eKYC）へ自動進行。
                 </p>
               </div>
 
@@ -1569,7 +1569,7 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
             <div className="p-3.5 rounded-2xl bg-emerald-50/60 border border-emerald-200">
               <span className="text-emerald-900 font-bold block mb-1">🟢 正解試行 (VERIFY_SUCCESS)</span>
               <p className="text-emerald-950/80 text-[11px]">
-                秘密の質問にすべて合格し、お相手との手紙・連絡先ブリッジが開通したイベント。
+                秘密の質問にすべて合格し、お相手とのメッセージ・連絡先ブリッジが開通したイベント。
               </p>
             </div>
             <div className="p-3.5 rounded-2xl bg-amber-50/60 border border-amber-200">
@@ -1642,7 +1642,7 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
                 </div>
                 <h4 className="font-bold text-sm text-sky-950">③ 公的eKYC本人確認</h4>
                 <p className="text-[11px] text-sky-800 leading-relaxed">
-                  運転免許証・マイナンバー等による本人照合を完了し、手紙を開封する資格を獲得。
+                  運転免許証・マイナンバー等による本人照合を完了し、メッセージを開封する資格を獲得。
                 </p>
                 <div className="pt-2 border-t border-sky-200 text-xs font-mono font-bold text-sky-900">
                   審査合格率 98.2%
@@ -1655,9 +1655,9 @@ export const QuizMatchingAnalyticsView: React.FC<QuizMatchingAnalyticsViewProps>
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-200 text-emerald-800">GOAL 🏆</span>
                   <span className="text-xs font-bold text-emerald-800">{summary.disclosureRate || 100}%</span>
                 </div>
-                <h4 className="font-bold text-sm text-emerald-950">④ 手紙開封・連絡先安全開示</h4>
+                <h4 className="font-bold text-sm text-emerald-950">④ メッセージ開封・連絡先安全開示</h4>
                 <p className="text-[11px] text-emerald-800 leading-relaxed">
-                  手数料決済完了後、手紙全文とお相手のSNS連絡先（LINE ID等）を安全に引き渡し完了。
+                  手数料決済完了後、メッセージ全文とお相手のSNS連絡先（LINE ID等）を安全に引き渡し完了。
                 </p>
                 <div className="pt-2 border-t border-emerald-200 text-xs font-mono font-bold text-emerald-900">
                   再会完結・直接連絡へ

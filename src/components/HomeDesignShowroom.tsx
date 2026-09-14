@@ -44,7 +44,7 @@ const ARCHIVED_IMAGE_GALLERY = [
     statusBg: 'bg-amber-100 text-amber-900 border-amber-300 font-bold',
     src: step01WatercolorWriteReversed,
     aspect: '16:9',
-    desc: '左右反転レイアウト。左側に万年筆で手紙を書く手元、右側に空の透明ガラスボトルとコルク栓を配置した水彩イラスト。'
+    desc: '左右反転レイアウト。左側に万年筆でメッセージを書く手元、右側に空の透明ガラスボトルとコルク栓を配置した水彩イラスト。'
   },
   {
     id: 'step1-watercolor-write',
@@ -64,7 +64,7 @@ const ARCHIVED_IMAGE_GALLERY = [
     statusBg: 'bg-amber-100 text-amber-900 border-amber-300 font-bold',
     src: step02WatercolorBeach,
     aspect: '16:9',
-    desc: '朝の優しい光と波打ち際の砂浜に静かに打ち上げられたボトルメール。手紙がしっかり巻かれて入り、コルクが閉まった水彩アート。'
+    desc: '朝の優しい光と波打ち際の砂浜に静かに打ち上げられたボトルメール。メッセージがしっかり巻かれて入り、コルクが閉まった水彩アート。'
   },
   {
     id: 'step3-watercolor-reconnect-exact',
@@ -74,17 +74,17 @@ const ARCHIVED_IMAGE_GALLERY = [
     statusBg: 'bg-amber-100 text-amber-900 border-amber-300 font-bold',
     src: step03WatercolorReconnectExact,
     aspect: '16:9',
-    desc: '写真調と全く同一の斜め後ろからのアングル。顔は見えすぎず、手紙を広げて読む手元と、砂浜のボトル・コルクが主役の水彩イラスト。'
+    desc: '写真調と全く同一の斜め後ろからのアングル。顔は見えすぎず、メッセージを広げて読む手元と、砂浜のボトル・コルクが主役の水彩イラスト。'
   },
   {
     id: 'step3-watercolor-reconnect',
-    title: '🎨 STEP 3【届く】：水彩イラスト調・砂浜で手紙を開封する感動（横顔アップ）',
+    title: '🎨 STEP 3【届く】：水彩イラスト調・砂浜でメッセージを開封する感動（横顔アップ）',
     category: 'STEP 03 (イラスト調)',
     status: '🗄️ アーカイブ保存',
     statusBg: 'bg-slate-100 text-slate-700 border-slate-300',
     src: step03WatercolorReconnect,
     aspect: '16:9',
-    desc: '朝の穏やかな砂浜でボトルを開封し、広げた手紙を大切に読む女性の横顔。'
+    desc: '朝の穏やかな砂浜でボトルを開封し、広げたメッセージを大切に読む女性の横顔。'
   },
   {
     id: 'hero-mist-small',
@@ -124,7 +124,7 @@ const ARCHIVED_IMAGE_GALLERY = [
     statusBg: 'bg-violet-100 text-violet-800 border-violet-300',
     src: step01PatternBRoom,
     aspect: '16:9',
-    desc: '白レースカーテンから自然光が注ぐお部屋のデスク。ペンで手紙を書く手元、机の上に空のボトルとコルク。'
+    desc: '白レースカーテンから自然光が注ぐお部屋のデスク。ペンでメッセージを書く手元、机の上に空のボトルとコルク。'
   },
   {
     id: 'step1-person-writing',
@@ -134,7 +134,7 @@ const ARCHIVED_IMAGE_GALLERY = [
     statusBg: 'bg-slate-100 text-slate-700 border-slate-300',
     src: step01PersonWriting,
     aspect: '16:9',
-    desc: '海風を感じながらテラス席で真剣に手紙を書く女性の横顔と、机の上のボトルとコルク。'
+    desc: '海風を感じながらテラス席で真剣にメッセージを書く女性の横顔と、机の上のボトルとコルク。'
   },
   {
     id: 'step1-close-ocean-alt',
@@ -164,7 +164,7 @@ const ARCHIVED_IMAGE_GALLERY = [
     statusBg: 'bg-emerald-100 text-emerald-800 border-emerald-300',
     src: stepMistDriftImg,
     aspect: '16:9',
-    desc: '朝の穏やかな波打ち際の濡れた砂浜に打ち上げられたボトルメール。手紙がしっかり巻かれて入り、コルク栓が閉まった状態。'
+    desc: '朝の穏やかな波打ち際の濡れた砂浜に打ち上げられたボトルメール。メッセージがしっかり巻かれて入り、コルク栓が閉まった状態。'
   },
   {
     id: 'step2-drift-sea',
@@ -188,13 +188,13 @@ const ARCHIVED_IMAGE_GALLERY = [
   },
   {
     id: 'step3-reconnect-adopted',
-    title: 'STEP 3【届く】：砂浜でボトルを開け手紙を読む奇跡',
+    title: 'STEP 3【届く】：砂浜でボトルを開けメッセージを読む奇跡',
     category: 'STEP 03',
     status: '👑 採用中',
     statusBg: 'bg-emerald-100 text-emerald-800 border-emerald-300',
     src: stepMistReconnectImg,
     aspect: '16:9',
-    desc: '朝の穏やかな砂浜でボトルを開け、大切に手紙を広げて想いを読む感動の瞬間。'
+    desc: '朝の穏やかな砂浜でボトルを開け、大切にメッセージを広げて想いを読む感動の瞬間。'
   }
 ];
 
@@ -228,7 +228,7 @@ const SAMPLE_BOTTLES = [
     era: '2010年代',
     location: '京都府京都市',
     relationship: '初恋・サークルの先輩',
-    excerpt: '卒業ライブの日に渡せなかった手紙がずっと部屋にありました。またあのギターの音色が聴きたいです。',
+    excerpt: '卒業ライブの日に渡せなかったメッセージがずっと部屋にありました。またあのギターの音色が聴きたいです。',
     secretQuestion: '学園祭で最後に演奏した曲のバンド名は？',
     createdTime: '漂流 本日',
     tagBg: 'bg-rose-100 text-rose-800 border-rose-200'
@@ -440,7 +440,7 @@ export const HomeDesignShowroom = () => {
                 <WaterRippleRainbowText lines={['あの日言えなかった想いを', 'あの人へ', '再会のボトルメール']} />
               </div>
               <p className="text-xs sm:text-sm md:text-base text-slate-800 font-serif leading-relaxed font-medium">
-                同窓生、昔の友人、お世話になったあの人。連絡先はわからないけれど、もう一度だけ話してみたい大切な人へ、想いを言葉にして海に流す。そして、あなたを探している誰かが流した手紙を、自分の名前やゆかりの地から見つけ出す。ここは、お互いを想い合う偶然と奇跡が交差する、静かな再会の海です。
+                同窓生、昔の友人、お世話になったあの人。連絡先はわからないけれど、もう一度だけ話してみたい大切な人へ、想いを言葉にして海に流す。そして、あなたを探している誰かが流したメッセージを、自分の名前やゆかりの地から見つけ出す。ここは、お互いを想い合う偶然と奇跡が交差する、静かな再会の海です。
               </p>
               <div className="flex justify-center pt-1">
                 <button onClick={() => setIsConceptModalOpen(true)} className="px-6 py-2.5 bg-white/90 backdrop-blur-xs text-brand-dark border border-zinc-300 rounded-full text-xs font-serif font-bold shadow-2xs hover:shadow-md transition-all flex items-center gap-2 cursor-pointer">
@@ -453,7 +453,7 @@ export const HomeDesignShowroom = () => {
                   <PenTool size={16} /> <span>ボトルメールを流す</span> <ArrowRight size={15} />
                 </Link>
                 <Link to="/search" className="w-full sm:w-auto min-w-[220px] px-7 py-3.5 bg-white hover:bg-sky-50 text-slate-800 font-bold rounded-2xl text-xs sm:text-sm border-2 border-sky-200 flex items-center justify-center gap-2">
-                  <Search size={16} className="text-sky-600" /> <span>自分宛ての手紙を探す</span>
+                  <Search size={16} className="text-sky-600" /> <span>自分宛てのメッセージを探す</span>
                 </Link>
               </div>
 
@@ -464,8 +464,8 @@ export const HomeDesignShowroom = () => {
                   <Link to="/pricing" className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">料金表・詳細を見る →</Link>
                 </div>
                 <div className="grid grid-cols-3 gap-2 text-center text-xs">
-                  <div className="bg-emerald-50/70 p-2 rounded-xl border border-emerald-200"><span className="text-[10px] text-emerald-800 font-bold block">手紙を書く・投函</span><strong className="text-xs sm:text-sm font-serif font-black text-emerald-600">完全0円</strong></div>
-                  <div className="bg-emerald-50/70 p-2 rounded-xl border border-emerald-200"><span className="text-[10px] text-emerald-800 font-bold block">手紙を探す・閲覧</span><strong className="text-xs sm:text-sm font-black font-serif text-emerald-600">完全0円</strong></div>
+                  <div className="bg-emerald-50/70 p-2 rounded-xl border border-emerald-200"><span className="text-[10px] text-emerald-800 font-bold block">メッセージを書く・投函</span><strong className="text-xs sm:text-sm font-serif font-black text-emerald-600">完全0円</strong></div>
+                  <div className="bg-emerald-50/70 p-2 rounded-xl border border-emerald-200"><span className="text-[10px] text-emerald-800 font-bold block">メッセージを探す・閲覧</span><strong className="text-xs sm:text-sm font-black font-serif text-emerald-600">完全0円</strong></div>
                   <div className="bg-sky-50/70 p-2 rounded-xl border border-sky-200"><span className="text-[10px] text-sky-900 font-bold block">想い出照合・再会時</span><strong className="text-xs sm:text-sm font-black font-serif text-sky-700">開通時のみ 600円</strong></div>
                 </div>
                 <p className="text-[10px] text-slate-500 text-center leading-tight">※お相手とクイズで想い出が一致し、連絡先を開示する瞬間まで一切料金はかかりません。（詳細はこちら）</p>
@@ -483,7 +483,7 @@ export const HomeDesignShowroom = () => {
               <div className="bg-white/95 rounded-2xl border-2 border-emerald-500/80 p-4 space-y-3 flex flex-col justify-between shadow-xs">
                 <div className="space-y-2">
                   <div className="flex items-center justify-between border-b border-emerald-100 pb-2"><span className="text-xs font-bold text-emerald-700 uppercase">STEP 01</span><span className="text-xs font-serif font-bold bg-emerald-50 text-emerald-700 px-2.5 py-0.5 rounded-full border border-emerald-200">【綴る】</span></div>
-                  <div className="rounded-xl aspect-[16/10] overflow-hidden border border-emerald-200"><img src={stepMistWriteImg} alt="手紙を書く" className="w-full h-full object-cover" /></div>
+                  <div className="rounded-xl aspect-[16/10] overflow-hidden border border-emerald-200"><img src={stepMistWriteImg} alt="メッセージを書く" className="w-full h-full object-cover" /></div>
                   <h3 className="font-serif font-bold text-slate-900 text-sm">ボトルに思い出を託す</h3>
                   <p className="text-xs text-slate-600 leading-relaxed font-sans">お相手の名前や当時の思い出、二人しか知らない『秘密の質問』を添えて、匿名でメッセージを静かに投稿します。</p>
                 </div>
@@ -494,7 +494,7 @@ export const HomeDesignShowroom = () => {
                   <div className="flex items-center justify-between border-b border-sky-100 pb-2"><span className="text-xs font-bold text-sky-700 uppercase">STEP 02</span><span className="text-xs font-serif font-bold bg-sky-50 text-sky-700 px-2.5 py-0.5 rounded-full border border-sky-200">【漂う】</span></div>
                   <div className="rounded-xl aspect-[16/10] overflow-hidden border border-sky-200"><img src={stepMistDriftImg} alt="漂う" className="w-full h-full object-cover" /></div>
                   <h3 className="font-serif font-bold text-slate-900 text-sm">ネットの海をめぐる</h3>
-                  <p className="text-xs text-slate-600 leading-relaxed font-sans">手紙は検索エンジンを通じてWebの海へ芽吹き、記憶をたどる「あの人」の検索窓で見つけられる日を静かに待ち続けます。</p>
+                  <p className="text-xs text-slate-600 leading-relaxed font-sans">メッセージは検索エンジンを通じてWebの海へ芽吹き、記憶をたどる「あの人」の検索窓で見つけられる日を静かに待ち続けます。</p>
                 </div>
                 <span className="text-[10px] text-sky-700 font-bold pt-2 border-t border-sky-100">● 検索に届くWeb最適化</span>
               </div>
@@ -503,7 +503,7 @@ export const HomeDesignShowroom = () => {
                   <div className="flex items-center justify-between border-b border-teal-100 pb-2"><span className="text-xs font-bold text-teal-700 uppercase">STEP 03</span><span className="text-xs font-serif font-bold bg-teal-50 text-teal-700 px-2.5 py-0.5 rounded-full border border-teal-200">【届く】</span></div>
                   <div className="rounded-xl aspect-[16/10] overflow-hidden border border-teal-200"><img src={stepMistReconnectImg} alt="届く" className="w-full h-full object-cover" /></div>
                   <h3 className="font-serif font-bold text-slate-900 text-sm">奇跡の再会を果たす</h3>
-                  <p className="text-xs text-slate-600 leading-relaxed font-sans">見つけたお相手が思い出クイズに正解することで、初めて手紙が開き、手紙のやり取りやLINE等で直接つながれます。</p>
+                  <p className="text-xs text-slate-600 leading-relaxed font-sans">見つけたお相手が思い出クイズに正解することで、初めてメッセージが開き、メッセージのやり取りやLINE等で直接つながれます。</p>
                 </div>
                 <span className="text-[10px] text-teal-700 font-bold pt-2 border-t border-teal-100">● 想いが通じ合う瞬間</span>
               </div>
@@ -592,7 +592,7 @@ export const HomeDesignShowroom = () => {
                   <div className="flex justify-between items-start"><span className="text-[10px] font-bold text-teal-800 bg-teal-50 border border-teal-200 px-2.5 py-0.5 rounded-full">{b.era} / {b.relationship}</span><span className="text-[10px] text-slate-400 font-mono">{b.createdTime}</span></div>
                   <h3 className="text-base font-serif font-bold text-slate-900">{b.targetName} 様</h3>
                   <p className="text-xs text-slate-600 font-sans line-clamp-2">出会った場所: {b.location} / 「{b.excerpt}」</p>
-                  <div className="pt-1 flex items-center gap-1 text-[10px] text-teal-700 font-bold"><span>手紙を引出す</span> <ArrowRight size={12} /></div>
+                  <div className="pt-1 flex items-center gap-1 text-[10px] text-teal-700 font-bold"><span>メッセージを引出す</span> <ArrowRight size={12} /></div>
                 </div>
               ))}
             </div>
@@ -631,7 +631,7 @@ export const HomeDesignShowroom = () => {
 
               {/* リード文 */}
               <p className="text-xs sm:text-sm md:text-base text-slate-800 font-serif leading-relaxed font-medium">
-                同窓生、昔の友人、お世話になったあの人。連絡先はわからないけれど、もう一度だけ話してみたい大切な人へ、想いを言葉にして海に流す。そして、あなたを探している誰かが流した手紙を、自分の名前やゆかりの地から見つけ出す。ここは、お互いを想い合う偶然と奇跡が交差する、静かな再会の海です。
+                同窓生、昔の友人、お世話になったあの人。連絡先はわからないけれど、もう一度だけ話してみたい大切な人へ、想いを言葉にして海に流す。そして、あなたを探している誰かが流したメッセージを、自分の名前やゆかりの地から見つけ出す。ここは、お互いを想い合う偶然と奇跡が交差する、静かな再会の海です。
               </p>
 
               {/* コンセプトボタン */}
@@ -648,7 +648,7 @@ export const HomeDesignShowroom = () => {
                   <PenTool size={16} /> <span>ボトルメールを流す</span> <ArrowRight size={15} />
                 </Link>
                 <Link to="/search" className="w-full sm:w-auto min-w-[220px] px-7 py-3.5 bg-white hover:bg-sky-50 text-slate-800 font-bold rounded-2xl text-xs sm:text-sm border-2 border-sky-200 flex items-center justify-center gap-2">
-                  <Search size={16} className="text-sky-600" /> <span>自分宛ての手紙を探す</span>
+                  <Search size={16} className="text-sky-600" /> <span>自分宛てのメッセージを探す</span>
                 </Link>
               </div>
 
@@ -659,8 +659,8 @@ export const HomeDesignShowroom = () => {
                   <Link to="/pricing" className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">料金表・詳細を見る →</Link>
                 </div>
                 <div className="grid grid-cols-3 gap-2 text-center text-xs">
-                  <div className="bg-emerald-50/70 p-2 rounded-xl border border-emerald-200"><span className="text-[10px] text-emerald-800 font-bold block">手紙を書く・投函</span><strong className="text-xs sm:text-sm font-serif font-black text-emerald-600">完全0円</strong></div>
-                  <div className="bg-emerald-50/70 p-2 rounded-xl border border-emerald-200"><span className="text-[10px] text-emerald-800 font-bold block">手紙を探す・閲覧</span><strong className="text-xs sm:text-sm font-black font-serif text-emerald-600">完全0円</strong></div>
+                  <div className="bg-emerald-50/70 p-2 rounded-xl border border-emerald-200"><span className="text-[10px] text-emerald-800 font-bold block">メッセージを書く・投函</span><strong className="text-xs sm:text-sm font-serif font-black text-emerald-600">完全0円</strong></div>
+                  <div className="bg-emerald-50/70 p-2 rounded-xl border border-emerald-200"><span className="text-[10px] text-emerald-800 font-bold block">メッセージを探す・閲覧</span><strong className="text-xs sm:text-sm font-black font-serif text-emerald-600">完全0円</strong></div>
                   <div className="bg-sky-50/70 p-2 rounded-xl border border-sky-200"><span className="text-[10px] text-sky-900 font-bold block">想い出照合・再会時</span><strong className="text-xs sm:text-sm font-black font-serif text-sky-700">開通時のみ 600円</strong></div>
                 </div>
                 <p className="text-[10px] text-slate-500 text-center leading-tight">※お相手とクイズで想い出が一致し、連絡先を開示する瞬間まで一切料金はかかりません。（詳細はこちら）</p>
@@ -678,7 +678,7 @@ export const HomeDesignShowroom = () => {
               <div className="bg-white/95 rounded-2xl border-2 border-emerald-500/80 p-4 space-y-3 flex flex-col justify-between shadow-xs">
                 <div className="space-y-2">
                   <div className="flex items-center justify-between border-b border-emerald-100 pb-2"><span className="text-xs font-bold text-emerald-700 uppercase">STEP 01</span><span className="text-xs font-serif font-bold bg-emerald-50 text-emerald-700 px-2.5 py-0.5 rounded-full border border-emerald-200">【綴る】</span></div>
-                  <div className="rounded-xl aspect-[16/10] overflow-hidden border border-emerald-200"><img src={stepMistWriteImg} alt="手紙を書く" className="w-full h-full object-cover" /></div>
+                  <div className="rounded-xl aspect-[16/10] overflow-hidden border border-emerald-200"><img src={stepMistWriteImg} alt="メッセージを書く" className="w-full h-full object-cover" /></div>
                   <h3 className="font-serif font-bold text-slate-900 text-sm">ボトルに思い出を託す</h3>
                   <p className="text-xs text-slate-600 leading-relaxed font-sans">お相手の名前や当時の思い出、二人しか知らない『秘密の質問』を添えて、匿名でメッセージを静かに投稿します。</p>
                 </div>
@@ -689,7 +689,7 @@ export const HomeDesignShowroom = () => {
                   <div className="flex items-center justify-between border-b border-sky-100 pb-2"><span className="text-xs font-bold text-sky-700 uppercase">STEP 02</span><span className="text-xs font-serif font-bold bg-sky-50 text-sky-700 px-2.5 py-0.5 rounded-full border border-sky-200">【漂う】</span></div>
                   <div className="rounded-xl aspect-[16/10] overflow-hidden border border-sky-200"><img src={stepMistDriftImg} alt="漂う" className="w-full h-full object-cover" /></div>
                   <h3 className="font-serif font-bold text-slate-900 text-sm">ネットの海をめぐる</h3>
-                  <p className="text-xs text-slate-600 leading-relaxed font-sans">手紙は検索エンジンを通じてWebの海へ芽吹き、記憶をたどる「あの人」の検索窓で見つけられる日を静かに待ち続けます。</p>
+                  <p className="text-xs text-slate-600 leading-relaxed font-sans">メッセージは検索エンジンを通じてWebの海へ芽吹き、記憶をたどる「あの人」の検索窓で見つけられる日を静かに待ち続けます。</p>
                 </div>
                 <span className="text-[10px] text-sky-700 font-bold pt-2 border-t border-sky-100">● 検索に届くWeb最適化</span>
               </div>
@@ -698,7 +698,7 @@ export const HomeDesignShowroom = () => {
                   <div className="flex items-center justify-between border-b border-teal-100 pb-2"><span className="text-xs font-bold text-teal-700 uppercase">STEP 03</span><span className="text-xs font-serif font-bold bg-teal-50 text-teal-700 px-2.5 py-0.5 rounded-full border border-teal-200">【届く】</span></div>
                   <div className="rounded-xl aspect-[16/10] overflow-hidden border border-teal-200"><img src={stepMistReconnectImg} alt="届く" className="w-full h-full object-cover" /></div>
                   <h3 className="font-serif font-bold text-slate-900 text-sm">奇跡の再会を果たす</h3>
-                  <p className="text-xs text-slate-600 leading-relaxed font-sans">見つけたお相手が思い出クイズに正解することで、初めて手紙が開き、手紙のやり取りやLINE等で直接つながれます。</p>
+                  <p className="text-xs text-slate-600 leading-relaxed font-sans">見つけたお相手が思い出クイズに正解することで、初めてメッセージが開き、メッセージのやり取りやLINE等で直接つながれます。</p>
                 </div>
                 <span className="text-[10px] text-teal-700 font-bold pt-2 border-t border-teal-100">● 想いが通じ合う瞬間</span>
               </div>
@@ -787,7 +787,7 @@ export const HomeDesignShowroom = () => {
                   <div className="flex justify-between items-start"><span className="text-[10px] font-bold text-teal-800 bg-teal-50 border border-teal-200 px-2.5 py-0.5 rounded-full">{b.era} / {b.relationship}</span><span className="text-[10px] text-slate-400 font-mono">{b.createdTime}</span></div>
                   <h3 className="text-base font-serif font-bold text-slate-900">{b.targetName} 様</h3>
                   <p className="text-xs text-slate-600 font-sans line-clamp-2">出会った場所: {b.location} / 「{b.excerpt}」</p>
-                  <div className="pt-1 flex items-center gap-1 text-[10px] text-teal-700 font-bold"><span>手紙を引出す</span> <ArrowRight size={12} /></div>
+                  <div className="pt-1 flex items-center gap-1 text-[10px] text-teal-700 font-bold"><span>メッセージを引出す</span> <ArrowRight size={12} /></div>
                 </div>
               ))}
             </div>
@@ -843,7 +843,7 @@ export const HomeDesignShowroom = () => {
 
               {/* リード文 */}
               <p className="text-xs sm:text-sm md:text-base text-slate-800 font-serif leading-relaxed font-medium max-w-2xl mx-auto px-2">
-                同窓生、昔の友人、お世話になったあの人。連絡先はわからないけれど、もう一度だけ話してみたい大切な人へ、想いを言葉にして海に流す。そして、あなたを探している誰かが流した手紙を、自分の名前やゆかりの地から見つけ出す。ここは、お互いを想い合う偶然と奇跡が交差する、静かな再会の海です。
+                同窓生、昔の友人、お世話になったあの人。連絡先はわからないけれど、もう一度だけ話してみたい大切な人へ、想いを言葉にして海に流す。そして、あなたを探している誰かが流したメッセージを、自分の名前やゆかりの地から見つけ出す。ここは、お互いを想い合う偶然と奇跡が交差する、静かな再会の海です。
               </p>
 
               {/* コンセプトボタン */}
@@ -860,7 +860,7 @@ export const HomeDesignShowroom = () => {
                   <PenTool size={16} /> <span>ボトルメールを流す</span> <ArrowRight size={15} />
                 </Link>
                 <Link to="/search" className="w-full sm:w-auto min-w-[220px] px-7 py-3.5 bg-white hover:bg-sky-50 text-slate-800 font-bold rounded-2xl text-xs sm:text-sm border-2 border-sky-200 flex items-center justify-center gap-2">
-                  <Search size={16} className="text-sky-600" /> <span>自分宛ての手紙を探す</span>
+                  <Search size={16} className="text-sky-600" /> <span>自分宛てのメッセージを探す</span>
                 </Link>
               </div>
 
@@ -871,8 +871,8 @@ export const HomeDesignShowroom = () => {
                   <Link to="/pricing" className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">料金表・詳細を見る →</Link>
                 </div>
                 <div className="grid grid-cols-3 gap-2 text-center text-xs">
-                  <div className="bg-emerald-50/70 p-2 rounded-xl border border-emerald-200"><span className="text-[10px] text-emerald-800 font-bold block">手紙を書く・投函</span><strong className="text-xs sm:text-sm font-serif font-black text-emerald-600">完全0円</strong></div>
-                  <div className="bg-emerald-50/70 p-2 rounded-xl border border-emerald-200"><span className="text-[10px] text-emerald-800 font-bold block">手紙を探す・閲覧</span><strong className="text-xs sm:text-sm font-black font-serif text-emerald-600">完全0円</strong></div>
+                  <div className="bg-emerald-50/70 p-2 rounded-xl border border-emerald-200"><span className="text-[10px] text-emerald-800 font-bold block">メッセージを書く・投函</span><strong className="text-xs sm:text-sm font-serif font-black text-emerald-600">完全0円</strong></div>
+                  <div className="bg-emerald-50/70 p-2 rounded-xl border border-emerald-200"><span className="text-[10px] text-emerald-800 font-bold block">メッセージを探す・閲覧</span><strong className="text-xs sm:text-sm font-black font-serif text-emerald-600">完全0円</strong></div>
                   <div className="bg-sky-50/70 p-2 rounded-xl border border-sky-200"><span className="text-[10px] text-sky-900 font-bold block">想い出照合・再会時</span><strong className="text-xs sm:text-sm font-black font-serif text-sky-700">開通時のみ 600円</strong></div>
                 </div>
                 <p className="text-[10px] text-slate-500 text-center leading-tight">※お相手とクイズで想い出が一致し、連絡先を開示する瞬間まで一切料金はかかりません。（詳細はこちら）</p>
@@ -890,7 +890,7 @@ export const HomeDesignShowroom = () => {
               <div className="bg-white/95 rounded-2xl border-2 border-emerald-500/80 p-4 space-y-3 flex flex-col justify-between shadow-xs">
                 <div className="space-y-2">
                   <div className="flex items-center justify-between border-b border-emerald-100 pb-2"><span className="text-xs font-bold text-emerald-700 uppercase">STEP 01</span><span className="text-xs font-serif font-bold bg-emerald-50 text-emerald-700 px-2.5 py-0.5 rounded-full border border-emerald-200">【綴る】</span></div>
-                  <div className="rounded-xl aspect-[16/10] overflow-hidden border border-emerald-200"><img src={stepMistWriteImg} alt="手紙を書く" className="w-full h-full object-cover" /></div>
+                  <div className="rounded-xl aspect-[16/10] overflow-hidden border border-emerald-200"><img src={stepMistWriteImg} alt="メッセージを書く" className="w-full h-full object-cover" /></div>
                   <h3 className="font-serif font-bold text-slate-900 text-sm">ボトルに思い出を託す</h3>
                   <p className="text-xs text-slate-600 leading-relaxed font-sans">お相手の名前や当時の思い出、二人しか知らない『秘密の質問』を添えて、匿名でメッセージを静かに投稿します。</p>
                 </div>
@@ -901,7 +901,7 @@ export const HomeDesignShowroom = () => {
                   <div className="flex items-center justify-between border-b border-sky-100 pb-2"><span className="text-xs font-bold text-sky-700 uppercase">STEP 02</span><span className="text-xs font-serif font-bold bg-sky-50 text-sky-700 px-2.5 py-0.5 rounded-full border border-sky-200">【漂う】</span></div>
                   <div className="rounded-xl aspect-[16/10] overflow-hidden border border-sky-200"><img src={stepMistDriftImg} alt="漂う" className="w-full h-full object-cover" /></div>
                   <h3 className="font-serif font-bold text-slate-900 text-sm">ネットの海をめぐる</h3>
-                  <p className="text-xs text-slate-600 leading-relaxed font-sans">手紙は検索エンジンを通じてWebの海へ芽吹き、記憶をたどる「あの人」の検索窓で見つけられる日を静かに待ち続けます。</p>
+                  <p className="text-xs text-slate-600 leading-relaxed font-sans">メッセージは検索エンジンを通じてWebの海へ芽吹き、記憶をたどる「あの人」の検索窓で見つけられる日を静かに待ち続けます。</p>
                 </div>
                 <span className="text-[10px] text-sky-700 font-bold pt-2 border-t border-sky-100">● 検索に届くWeb最適化</span>
               </div>
@@ -910,7 +910,7 @@ export const HomeDesignShowroom = () => {
                   <div className="flex items-center justify-between border-b border-teal-100 pb-2"><span className="text-xs font-bold text-teal-700 uppercase">STEP 03</span><span className="text-xs font-serif font-bold bg-teal-50 text-teal-700 px-2.5 py-0.5 rounded-full border border-teal-200">【届く】</span></div>
                   <div className="rounded-xl aspect-[16/10] overflow-hidden border border-teal-200"><img src={stepMistReconnectImg} alt="届く" className="w-full h-full object-cover" /></div>
                   <h3 className="font-serif font-bold text-slate-900 text-sm">奇跡の再会を果たす</h3>
-                  <p className="text-xs text-slate-600 leading-relaxed font-sans">見つけたお相手が思い出クイズに正解することで、初めて手紙が開き、手紙のやり取りやLINE等で直接つながれます。</p>
+                  <p className="text-xs text-slate-600 leading-relaxed font-sans">見つけたお相手が思い出クイズに正解することで、初めてメッセージが開き、メッセージのやり取りやLINE等で直接つながれます。</p>
                 </div>
                 <span className="text-[10px] text-teal-700 font-bold pt-2 border-t border-teal-100">● 想いが通じ合う瞬間</span>
               </div>
@@ -999,7 +999,7 @@ export const HomeDesignShowroom = () => {
                   <div className="flex justify-between items-start"><span className="text-[10px] font-bold text-teal-800 bg-teal-50 border border-teal-200 px-2.5 py-0.5 rounded-full">{b.era} / {b.relationship}</span><span className="text-[10px] text-slate-400 font-mono">{b.createdTime}</span></div>
                   <h3 className="text-base font-serif font-bold text-slate-900">{b.targetName} 様</h3>
                   <p className="text-xs text-slate-600 font-sans line-clamp-2">出会った場所: {b.location} / 「{b.excerpt}」</p>
-                  <div className="pt-1 flex items-center gap-1 text-[10px] text-teal-700 font-bold"><span>手紙を引出す</span> <ArrowRight size={12} /></div>
+                  <div className="pt-1 flex items-center gap-1 text-[10px] text-teal-700 font-bold"><span>メッセージを引出す</span> <ArrowRight size={12} /></div>
                 </div>
               ))}
             </div>

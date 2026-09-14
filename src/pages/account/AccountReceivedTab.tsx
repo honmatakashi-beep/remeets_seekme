@@ -113,7 +113,7 @@ export const AccountReceivedTab = (props: any) => {
         <div className="text-center py-12 border border-dashed border-slate-200 rounded-3xl p-6 bg-white/50 space-y-3">
           <p className="text-xs font-serif text-slate-500">まだ再会希望のエピソードは届いていません。</p>
           <p className="text-[11px] text-slate-400 leading-relaxed max-w-sm mx-auto">
-            あなたを探している知人が手紙を見つけ、当時の思い出エピソードを添えて申請するとここに表示されます。
+            あなたを探している知人がメッセージを見つけ、当時の思い出エピソードを添えて申請するとここに表示されます。
           </p>
         </div>
       ) : (

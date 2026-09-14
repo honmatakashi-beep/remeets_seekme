@@ -265,23 +265,23 @@ export const Navbar = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) 
           </Link>
           
           <div className="flex items-center gap-2 sm:gap-3">
-          {/* 手紙を書くボタン（CTA） */}
+          {/* メッセージを届けるボタン（CTA） */}
           <Link
             to="/create"
             className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-700 hover:from-teal-700 hover:via-emerald-700 hover:to-teal-800 text-white font-bold rounded-full text-xs shadow-xs shadow-teal-950/20 hover:shadow-sm transition-all hover:scale-[1.03] active:scale-98 cursor-pointer shrink-0 border border-teal-400/40"
           >
             <Send size={13} className="text-teal-100 shrink-0 drop-shadow-2xs" />
-            <span className="drop-shadow-2xs">手紙を書く</span>
+            <span className="drop-shadow-2xs">メッセージを届ける</span>
           </Link>
 
-          {/* 手紙を探す Link */}
+          {/* メッセージを探す Link */}
           <Link
             to="/search"
             onClick={() => setIsMenuOpen(false)}
             className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 text-slate-800 text-xs font-semibold font-sans transition-all border border-slate-200 shrink-0"
           >
             <Search size={14} className="text-teal-600" />
-            <span>手紙を探す</span>
+            <span>メッセージを探す</span>
           </Link>
 
           {/* ご利用ガイド Link */}
@@ -368,7 +368,7 @@ export const Navbar = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) 
                   className="flex items-center gap-3 px-3 py-2.5 text-xs text-slate-700 hover:text-teal-700 hover:bg-teal-50/60 rounded-xl transition-all font-semibold text-left"
                 >
                   <Send size={16} className="text-teal-600 shrink-0" />
-                  <span>手紙を書く</span>
+                  <span>メッセージを届ける</span>
                 </Link>
 
                 <Link
@@ -377,7 +377,7 @@ export const Navbar = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) 
                   className="flex items-center gap-3 px-3 py-2.5 text-xs text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/60 rounded-xl transition-all font-semibold text-left"
                 >
                   <Search size={16} className="text-emerald-600 shrink-0" />
-                  <span>想い出の手紙を探す</span>
+                  <span>想い出のメッセージを探す</span>
                 </Link>
 
                 {user && (
@@ -558,7 +558,7 @@ export const Footer = () => {
             />
           </div>
           <p className="text-xs text-brand-dark/60 leading-relaxed font-serif max-w-sm sm:max-w-md lg:max-w-none">
-            私を探している誰かに向けて、自分からの手紙を届けておく灯台型プラットフォーム。
+            私を探している誰かに向けて、自分からのメッセージを届けておく灯台型プラットフォーム。
           </p>
           <p className="text-[10px] text-brand-dark/50 font-sans">
             運営: ReMEETs SeekMe 事務局
@@ -567,8 +567,8 @@ export const Footer = () => {
         <div className="space-y-2.5 sm:space-y-3">
           <h4 className="text-[11px] sm:text-xs font-bold text-brand-dark/80 tracking-widest uppercase">サービス</h4>
           <ul className="space-y-1.5 sm:space-y-2 text-xs text-brand-dark/60">
-            <li><Link to="/create" className="hover:text-teal-700">手紙を書く</Link></li>
-            <li><Link to="/search" className="hover:text-teal-700">想い出の手紙を探す</Link></li>
+            <li><Link to="/create" className="hover:text-teal-700">メッセージを届ける</Link></li>
+            <li><Link to="/search" className="hover:text-teal-700">想い出のメッセージを探す</Link></li>
             <li><Link to="/pricing" className="hover:text-teal-700">利用料金表</Link></li>
             <li><Link to="/supporter" className="hover:text-teal-700">SeekMeを応援（寄付）</Link></li>
             <li><Link to="/success-stories" className="hover:text-teal-700">奇跡の再会体験談</Link></li>
@@ -589,7 +589,7 @@ export const Footer = () => {
             <li><Link to="/faq" className="hover:text-brand-primary">よくあるご質問</Link></li>
             <li><Link to="/manual" className="hover:text-brand-primary">ご利用マニュアル</Link></li>
             <li><Link to="/contact" className="hover:text-brand-primary">お問い合わせ</Link></li>
-            <li><Link to="/deletion-request" className="hover:text-brand-primary">手紙の削除依頼</Link></li>
+            <li><Link to="/deletion-request" className="hover:text-brand-primary">メッセージの削除依頼</Link></li>
             <li><Link to="/payment-preview" className="hover:text-brand-primary text-teal-700 font-bold flex items-center gap-1">💳 決済プレビュー</Link></li>
           </ul>
         </div>
@@ -647,13 +647,13 @@ export const GoogleSearchResultPreview = ({
   const maidenKanaText = targetMaidenNameKana ? ` / ${targetMaidenNameKana}` : '';
   const maidenText = targetMaidenName ? `（旧姓: ${targetMaidenName}${maidenKanaText}）` : '';
   const kanaText = targetNameKana ? `（${targetNameKana}）` : '';
-  const title = `${targetName || '〇〇'}${kanaText}${maidenText} 様へ｜ReMEETs SEEKME 〜想い出の手紙〜`;
+  const title = `${targetName || '〇〇'}${kanaText}${maidenText} 様へ｜ReMEETs SEEKME 〜想い出のメッセージ〜`;
   const eraFormatted = era ? formatEraLabel(era) : '1990年代';
   const rawYear = era ? String(era).replace(/[^0-9]/g, '') : '1990';
   const slugPreview = [targetName || '山田太郎', targetNameKana || 'やまだたろう', rawYear, displayLocation].filter(Boolean).join('_');
   const displayUrl = `https://remeets.jp › posts › 123 › ${slugPreview}`;
   const msgPreview = searcherProfile || teaser || '私を探しているあなたへ。メッセージをお待ちしています。';
-  const snippet = `【${displayLocation}・${eraFormatted}】${targetName || '〇〇'}${kanaText}${maidenText} 様からの想い出の手紙：「${msgPreview.slice(0, 65)}${msgPreview.length > 65 ? '...' : ''}」相互エピソード承認とeKYC本人確認で安心の再会をサポート。`;
+  const snippet = `【${displayLocation}・${eraFormatted}】${targetName || '〇〇'}${kanaText}${maidenText} 様からの想い出のメッセージ：「${msgPreview.slice(0, 65)}${msgPreview.length > 65 ? '...' : ''}」相互エピソード承認とeKYC本人確認で安心の再会をサポート。`;
 
   return (
     <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm font-sans max-w-2xl overflow-hidden text-left my-2">
@@ -696,7 +696,7 @@ export const GoogleSearchResultPreview = ({
               <span>💡</span> 検索されたお相手の視点
             </p>
             <p className="text-blue-800/90 leading-relaxed text-[10.5px]">
-              お相手がご自身の名前をGoogle検索した際、「自分宛の手紙がある！」と一目で気づくことができます。
+              お相手がご自身の名前をGoogle検索した際、「自分宛のメッセージがある！」と一目で気づくことができます。
             </p>
           </div>
 
@@ -705,7 +705,7 @@ export const GoogleSearchResultPreview = ({
               <span>🔒</span> プライバシー保護機能
             </p>
             <p className="text-emerald-800/90 leading-relaxed text-[10.5px]">
-              手紙の本文全文・思い出クイズ・連絡先はGoogleには載りません。正解者のみに安全に開示されます。
+              メッセージの本文全文・思い出クイズ・連絡先はGoogleには載りません。正解者のみに安全に開示されます。
             </p>
           </div>
         </div>

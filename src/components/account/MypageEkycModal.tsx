@@ -496,7 +496,7 @@ export const MypageEkycModal: React.FC<MypageEkycModalProps> = ({
                   <h3 className="text-xl font-serif font-bold text-sky-950">公的本人確認（eKYC）完了！🎉</h3>
                   <p className="text-xs text-sky-800 leading-relaxed">
                     撮影書類の照合および本人確認手続きが正常に完了いたしました。<br />
-                    あなたのアカウントおよびお手紙に「🛡️公的本人確認済」の動く虹色封蝋バッジが付与されました。
+                    あなたのアカウントおよびメッセージに「🛡️公的本人確認済」の動く虹色封蝋バッジが付与されました。
                   </p>
                 </div>
 

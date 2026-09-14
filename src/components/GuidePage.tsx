@@ -54,7 +54,7 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
               ReMEETs ご利用ガイド
             </h1>
             <p className="text-xs md:text-sm text-brand-dark/60 font-sans leading-relaxed mt-1">
-              手紙の投函から奇跡の発見、思い出クイズでの本人照合、連絡先の安全な受け取りまでのご利用手順をご案内します。
+              メッセージの投函から奇跡の発見、思い出クイズでの本人照合、連絡先の安全な受け取りまでのご利用手順をご案内します。
             </p>
           </div>
         </div>
@@ -124,7 +124,7 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
                 再会へと繋がる 4つのステップ
               </h2>
               <p className="text-xs text-slate-500 font-sans">
-                手紙の投函から、奇跡の発見、質問の解読、そしてSNS連絡先の開示まで
+                メッセージの投函から、奇跡の発見、質問の解読、そしてSNS連絡先の開示まで
               </p>
             </div>
 
@@ -161,7 +161,7 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
               </h3>
               <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans">
                 探したいお相手の名前、忘れられない思い出の地、そして<strong className="text-slate-900">「二人だけしか答えを知らない思い出クイズ（2問）」</strong>をボトルに詰めて投稿（無料）。
-                手紙はWebの大海原へと解き放たれ、静かにお相手を待ち続けます。
+                メッセージはWebの大海原へと解き放たれ、静かにお相手を待ち続けます。
               </p>
 
               <div className="pt-1">
@@ -198,7 +198,7 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
             <div className="absolute top-0 right-0 bottom-0 w-1/2 sm:w-5/12 md:w-1/2 pointer-events-none overflow-hidden select-none">
               <img 
                 src={guideScene02Soft} 
-                alt="手紙を発見するイラスト" 
+                alt="メッセージを発見するイラスト" 
                 className="w-full h-full object-cover object-right group-hover:scale-105 transition-transform duration-700 ease-out"
               />
               <div className="absolute inset-0 bg-gradient-to-r from-white via-white/70 via-20% to-transparent" />
@@ -215,11 +215,11 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
                 </span>
               </div>
               <h3 className="text-lg md:text-xl font-bold font-serif text-slate-900">
-                ふとエゴサーチしたお相手が、手紙を発見！
+                ふとエゴサーチしたお相手が、メッセージを発見！
               </h3>
               <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans">
-                お相手がふと自分の名前や出身地などをGoogle等で検索（エゴサーチ）した際、あなたが出した手紙ページが検索結果にヒット！<br />
-                「えっ、これ私宛ての手紙…!? あおいからだ！」と奇跡の再会ストーリーが動き出します（新着メール通知アラートも無料）。
+                お相手がふと自分の名前や出身地などをGoogle等で検索（エゴサーチ）した際、あなたが出したメッセージページが検索結果にヒット！<br />
+                「えっ、これ私宛てのメッセージ…!? あおいからだ！」と奇跡の再会ストーリーが動き出します（新着メール通知アラートも無料）。
               </p>
 
               <div className="pt-1">
@@ -276,7 +276,7 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
                 ふたりだけの「思い出クイズ」に答えて心がつながる
               </h3>
               <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans">
-                手紙を開いたお相手は、あなたが出題した「思い出クイズ（2問）」に回答します（無料）。<br />
+                メッセージを開いたお相手は、あなたが出題した「思い出クイズ（2問）」に回答します（無料）。<br />
                 第三者やサクラには絶対に答えられない正解を入力することで、時代を超えて「本人であること」が確証されます。
               </p>
 
@@ -314,7 +314,7 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
             <div className="absolute top-0 right-0 bottom-0 w-1/2 sm:w-5/12 md:w-1/2 pointer-events-none overflow-hidden select-none">
               <img 
                 src={guideScene04Soft} 
-                alt="手紙開封と再会イラスト" 
+                alt="メッセージ開封と再会イラスト" 
                 className="w-full h-full object-cover object-right group-hover:scale-105 transition-transform duration-700 ease-out"
               />
               <div className="absolute inset-0 bg-gradient-to-r from-white via-white/70 via-20% to-transparent" />
@@ -327,14 +327,14 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
                   Scene 04
                 </span>
                 <span className="text-[10px] font-bold text-indigo-900 bg-indigo-50 border border-indigo-200 px-2.5 py-0.5 rounded-full">
-                  手紙開封・連絡先受取: 600円（税込・単発都度払い / 月額0円）
+                  メッセージ開封・連絡先受取: 600円（税込・単発都度払い / 月額0円）
                 </span>
               </div>
               <h3 className="text-lg md:text-xl font-bold font-serif text-slate-900">
-                手紙を開いて、差出人の連絡先を受け取る！
+                メッセージを開いて、差出人の連絡先を受け取る！
               </h3>
               <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans">
-                思い出クイズに正解後、手紙の開封・連絡先受取手続き（600円）を実施。<br />
+                思い出クイズに正解後、メッセージの開封・連絡先受取手続き（600円）を実施。<br />
                 差出人が設定した<strong className="text-indigo-900">連絡先（LINE ID, メールアドレス等）</strong>が画面上に開示されます。直接メッセージを送ることで、確実に再会を果たせます！（※公的本人確認は任意オプション+600円、同時決済時1,200円）
               </p>
 
@@ -388,7 +388,7 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
               ReMEETsは、不特定多数の異性との出会いを目的とした「インターネット異性紹介事業（出会い系サイト）」ではありません。過去に実在した同級生、恩師、昔の友人など、特定の想い出の相手との「合意に基づく健全な再会」をお手伝いするための専用サービスです。
             </p>
             <p className="text-xs text-slate-700 leading-relaxed font-sans">
-              登録・手紙の投函・検索・思い出クイズ回答はすべて<strong className="text-amber-900 font-bold">永久無料（0円）</strong>。費用が発生するのは思い出クイズ正解後の手紙開封（600円）のみです。月額料金や自動引き落としは一切ありません。
+              登録・メッセージの投函・検索・思い出クイズ回答はすべて<strong className="text-amber-900 font-bold">永久無料（0円）</strong>。費用が発生するのは思い出クイズ正解後のメッセージ開封（600円）のみです。月額料金や自動引き落としは一切ありません。
             </p>
           </div>
 
@@ -399,7 +399,7 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
                 基本機能は完全無料（0円）
               </span>
               <p className="text-[11px] text-slate-600 leading-snug">
-                手紙の投函、エゴサーチ検索、思い出クイズへの回答まで費用は一切発生しません。
+                メッセージの投函、エゴサーチ検索、思い出クイズへの回答まで費用は一切発生しません。
               </p>
             </div>
 
@@ -419,7 +419,7 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
                 開示費 600円・月額ゼロ
               </span>
               <p className="text-[11px] text-slate-600 leading-snug">
-                サブスクなし。手紙開封・SNS開示時（600円 / 任意eKYC付き1,200円）の買い切り型で安全に運用します。
+                サブスクなし。メッセージ開封・SNS開示時（600円 / 任意eKYC付き1,200円）の買い切り型で安全に運用します。
               </p>
             </div>
           </div>
@@ -444,7 +444,7 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
               ReMEETs 詳細ご利用マニュアル（全7章）
             </h2>
             <p className="text-xs md:text-sm text-slate-500 font-sans leading-relaxed">
-              手紙の投函・検索・クイズ作成のコツ・開示手続き・マイページ管理・通知設定・サポーター寄付・警察治安連携まで網羅して解説します。
+              メッセージの投函・検索・クイズ作成のコツ・開示手続き・マイページ管理・通知設定・サポーター寄付・警察治安連携まで網羅して解説します。
             </p>
           </div>
 
@@ -457,7 +457,7 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 text-xs">
               <a href="#sec-01" className="p-2 bg-white hover:bg-slate-100 text-slate-800 font-bold rounded-xl border border-slate-200 transition-all shadow-2xs flex items-center gap-1.5 hover:border-slate-400">
                 <span className="w-5 h-5 rounded-full bg-slate-900 text-white flex items-center justify-center text-[10px] shrink-0 font-sans">01</span>
-                <span>手紙を書く (0円)</span>
+                <span>メッセージを届ける (0円)</span>
               </a>
               <a href="#sec-02" className="p-2 bg-white hover:bg-blue-50 text-blue-900 font-bold rounded-xl border border-blue-200 transition-all shadow-2xs flex items-center gap-1.5 hover:border-blue-300">
                 <span className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] shrink-0 font-sans">02</span>
@@ -486,12 +486,12 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
             </div>
           </div>
 
-          {/* 01 手紙を書く */}
+          {/* 01 メッセージを届ける */}
           <section id="sec-01" className="space-y-4 scroll-mt-20 pt-2 border-t border-slate-100">
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2">
               <h3 className="text-base md:text-lg font-bold font-serif text-slate-900 flex items-center gap-2.5">
                 <span className="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-sans shrink-0">01</span>
-                <span>手紙を書く（ボトルメールの投函）</span>
+                <span>メッセージを届ける（ボトルメールの投函）</span>
               </h3>
               <span className="text-xs font-bold text-teal-800 bg-teal-50 border border-teal-200 px-3 py-1 rounded-full flex items-center gap-1">
                 <CheckCircle2 size={13} className="text-teal-600" />
@@ -511,8 +511,8 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
                 <li><strong>交流のあった年代：</strong> 相手と過ごした時代（例：1990年代）を選択します。</li>
                 <li><strong>あなたの表示名：</strong> 当時のあだ名や、二人の間だけで通じる呼び名を使用してください。</li>
                 <li><strong>思い出クイズ（2問）：</strong> 本人確認のための最重要ステップです。第三者が推測しにくい二人の記憶に基づく具体的なエピソードを質問に設定してください。</li>
-                <li><strong>開示用連絡先（LINE等）：</strong> クイズに正解し、手続きを行ったお相手だけに安全に公開される連絡先（LINE ID、メールアドレス等）を設定します。手紙の本文欄には直接書き込まず、こちらの専用欄にご入力ください。</li>
-                <li><strong>メッセージ：</strong> 相手が思い出クイズに正解した後に表示される手紙本文です。</li>
+                <li><strong>開示用連絡先（LINE等）：</strong> クイズに正解し、手続きを行ったお相手だけに安全に公開される連絡先（LINE ID、メールアドレス等）を設定します。メッセージの本文欄には直接書き込まず、こちらの専用欄にご入力ください。</li>
+                <li><strong>メッセージ：</strong> 相手が思い出クイズに正解した後に表示されるメッセージ本文です。</li>
                 <li><strong>AIによる自動検閲：</strong> 投稿内容はAI（Gemini API）によって自動解析され、不適切な表現や個人情報の過度な露出がある場合は安全のために投稿が制限されます。</li>
               </ul>
             </div>
@@ -551,10 +551,10 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
             <div className="p-3.5 bg-slate-100/70 rounded-xl border border-slate-200 text-xs space-y-1.5">
               <span className="font-bold text-slate-800 flex items-center gap-1">
                 <HelpCircle size={14} className="text-slate-600" />
-                よくある質問：手紙を流した後、相手が見つからなかったらどうなりますか？
+                よくある質問：メッセージを流した後、相手が見つからなかったらどうなりますか？
               </span>
               <p className="text-slate-600 text-[11px] leading-relaxed pl-4">
-                期限切れで自動削除されることはなく、お相手が見つけるまでWeb海流に静かに漂い続けます。マイページの「投函した手紙」からいつでも内容の修正や公開停止・削除が可能です。
+                期限切れで自動削除されることはなく、お相手が見つけるまでWeb海流に静かに漂い続けます。マイページの「投函したメッセージ」からいつでも内容の修正や公開停止・削除が可能です。
               </p>
             </div>
           </section>
@@ -564,7 +564,7 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2">
               <h3 className="text-base md:text-lg font-bold font-serif text-slate-900 flex items-center gap-2.5">
                 <span className="w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-sans shrink-0">02</span>
-                <span>奇跡を拾う（自分宛ての手紙を探す ＆ 新着入荷通知アラート）</span>
+                <span>奇跡を拾う（自分宛てのメッセージを探す ＆ 新着入荷通知アラート）</span>
               </h3>
               <span className="text-xs font-bold text-blue-800 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full flex items-center gap-1">
                 <CheckCircle2 size={13} className="text-blue-600" />
@@ -573,23 +573,23 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
             </div>
 
             <p className="text-xs md:text-sm text-slate-700 leading-relaxed font-sans">
-              「自分宛ての手紙を探す」ページでは、ご自身宛てのメッセージが届いていないかを、ご自身の名前やゆかりの地のキーワードで簡単に見つけることができます。
+              「自分宛てのメッセージを探す」ページでは、ご自身宛てのメッセージが届いていないかを、ご自身の名前やゆかりの地のキーワードで簡単に見つけることができます。
             </p>
 
             <div className="bg-blue-50/60 p-4 md:p-5 rounded-2xl border border-blue-200/80 space-y-3">
               <div>
-                <p className="text-xs font-bold text-blue-950 font-serif">🔍 自分宛ての手紙を見つけるヒント：</p>
+                <p className="text-xs font-bold text-blue-950 font-serif">🔍 自分宛てのメッセージを見つけるヒント：</p>
                 <ul className="list-disc pl-5 space-y-1.5 text-xs text-blue-900/90 leading-relaxed mt-1">
                   <li>ご自身の姓、名、あるいは旧姓などの漢字やひらがなで検索をお試しください。</li>
                   <li>お相手と出会った地域や、思い出のゆかりの地などで絞り込むと、届いたボトルが非常に見つかりやすくなります。</li>
-                  <li>年代や関係性（部活動、同級生、元同僚など）を指定することで、効率よく自分宛ての手紙を絞り込めます。</li>
+                  <li>年代や関係性（部活動、同級生、元同僚など）を指定することで、効率よく自分宛てのメッセージを絞り込めます。</li>
                 </ul>
               </div>
 
               <div className="border-t border-blue-200/80 pt-3">
                 <p className="text-xs font-bold text-blue-950 flex items-center gap-1.5 font-serif">
                   <span className="px-2 py-0.5 bg-blue-600 text-white text-[10px] rounded-md font-sans">便利機能</span>
-                  🔔 自分宛ての手紙が投稿されたらメールで受け取る（新着入荷通知アラート）
+                  🔔 自分宛てのメッセージが投稿されたらメールで受け取る（新着入荷通知アラート）
                 </p>
                 <p className="text-xs text-blue-900/90 leading-relaxed mt-1 font-sans">
                   検索画面であなたのお名前やゆかりの地を設定し、<strong>「この検索条件でメール通知を保存する」</strong>を有効にしておくと、今後あなたを探しているお相手が新しくボトルメールを投函した瞬間に、システムから自動でメール通知が届きます。<br />
@@ -602,10 +602,10 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
             <div className="p-3.5 bg-slate-100/70 rounded-xl border border-slate-200 text-xs space-y-1.5">
               <span className="font-bold text-slate-800 flex items-center gap-1">
                 <HelpCircle size={14} className="text-slate-600" />
-                よくある質問：同姓同名の手紙が複数ヒットした場合はどう見分ければいいですか？
+                よくある質問：同姓同名のメッセージが複数ヒットした場合はどう見分ければいいですか？
               </span>
               <p className="text-slate-600 text-[11px] leading-relaxed pl-4">
-                ボトルの詳細画面には、ゆかりの地（都道府県）や年代、差出人のあだ名、手紙の冒頭が表示されています。心当たりのある情報と照らし合わせてご自身宛てのものかご判断ください。
+                ボトルの詳細画面には、ゆかりの地（都道府県）や年代、差出人のあだ名、メッセージの冒頭が表示されています。心当たりのある情報と照らし合わせてご自身宛てのものかご判断ください。
               </p>
             </div>
           </section>
@@ -615,23 +615,23 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2">
               <h3 className="text-base md:text-lg font-bold font-serif text-slate-900 flex items-center gap-2.5">
                 <span className="w-7 h-7 rounded-full bg-amber-600 text-white flex items-center justify-center text-xs font-sans shrink-0">03</span>
-                <span>再会への一歩（思い出クイズ回答〜手紙開封・連絡先受取）</span>
+                <span>再会への一歩（思い出クイズ回答〜メッセージ開封・連絡先受取）</span>
               </h3>
               <span className="text-xs font-bold text-amber-900 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full flex items-center gap-1">
                 <Coins size={13} className="text-amber-600" />
-                クイズ回答: 0円 / 手紙開封・連絡先受取: 600円（税込・都度払い）
+                クイズ回答: 0円 / メッセージ開封・連絡先受取: 600円（税込・都度払い）
               </span>
             </div>
 
             <p className="text-xs md:text-sm text-slate-700 leading-relaxed font-sans">
-              自分宛てと思われる手紙を見つけたら、詳細を確認します。メッセージ本文と連絡先を開示するには、差出人が設定した「思い出クイズ（2問）」に回答して本人照合を行います。
+              自分宛てと思われるメッセージを見つけたら、詳細を確認します。メッセージ本文と連絡先を開示するには、差出人が設定した「思い出クイズ（2問）」に回答して本人照合を行います。
             </p>
 
             <div className="bg-amber-50/70 p-4 md:p-5 rounded-2xl border border-amber-200/80 space-y-3">
               <p className="text-xs font-bold text-amber-950 font-serif">🚀 再会へのステップ：</p>
               <ol className="list-decimal pl-5 space-y-2 text-xs text-amber-950 leading-relaxed">
                 <li><strong>クイズに回答（無料 0円）：</strong> 思い出クイズ（2問）に全問正解すると、本人照合が完了しロックが解除されます。</li>
-                <li><strong>手紙の開封と受け取り手続き（600円）：</strong> 差出人からの手紙全文を確認し、開通手続き（600円・月額ゼロ・Stripe安全決済 / 任意公的本人確認付き1,200円）を行います。</li>
+                <li><strong>メッセージの開封と受け取り手続き（600円）：</strong> 差出人からのメッセージ全文を確認し、開通手続き（600円・月額ゼロ・Stripe安全決済 / 任意公的本人確認付き1,200円）を行います。</li>
                 <li><strong>連絡先（LINE ID等）の開示：</strong> 差出人が設定した連絡先（LINE ID、メールアドレス等）が画面上に即時開示されます。</li>
                 <li><strong>直接連絡・再会成功：</strong> 開示された連絡先へ直接メッセージをお送りいただくことで、感動の再会を果たせます。</li>
               </ol>
@@ -646,7 +646,7 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
               <ul className="list-disc pl-5 space-y-1 text-xs text-slate-600 leading-relaxed">
                 <li><strong>回答の表記ゆれ対応：</strong> ひらがな・漢字の表記ゆれを柔軟に照合します。思い出の言葉をそのまま入力してください。</li>
                 <li><strong>総当たり防止レートリミット：</strong> 不正なプログラムや第三者による当てずっぽうの連続回答を防ぐため、短時間に何度も間違えた場合は一時的に回答がロックされます。</li>
-                <li><strong>課金発生タイミングの保証：</strong> クイズに回答するだけでは1円も費用は発生しません。全問正解し、ご自身が納得して手紙を開封する段階で初めて600円（都度払い）の手続きとなります。</li>
+                <li><strong>課金発生タイミングの保証：</strong> クイズに回答するだけでは1円も費用は発生しません。全問正解し、ご自身が納得してメッセージを開封する段階で初めて600円（都度払い）の手続きとなります。</li>
               </ul>
             </div>
 
@@ -676,29 +676,29 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
             </div>
 
             <p className="text-xs md:text-sm text-slate-700 leading-relaxed font-sans">
-              ReMEETsでは、一度開封した手紙やご自身が流したボトルの状況を、マイページ（アカウント画面）からいつでも安全に確認・管理できます。
+              ReMEETsでは、一度開封したメッセージやご自身が流したボトルの状況を、マイページ（アカウント画面）からいつでも安全に確認・管理できます。
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-              {/* 開封済みのお手紙 */}
+              {/* 開封済みのメッセージ */}
               <div className="p-4 md:p-5 bg-indigo-50/50 rounded-2xl border border-indigo-200 space-y-2">
                 <span className="text-xs font-bold text-indigo-950 font-serif flex items-center gap-1.5">
                   <Lock size={15} className="text-indigo-600" />
-                  ① 開封済みのお手紙（永久保存）
+                  ① 開封済みのメッセージ（永久保存）
                 </span>
                 <p className="text-xs text-slate-600 leading-relaxed font-sans">
-                  開通手続きを行ったお手紙のメッセージ全文、差出人の連絡先（LINE ID、メールアドレス等）、開封日時は<strong>「マイページ」→「開封済みのお手紙」</strong>に永久保存されます。いつでも再確認・LINE IDのコピーが可能です。
+                  開通手続きを行ったメッセージのメッセージ全文、差出人の連絡先（LINE ID、メールアドレス等）、開封日時は<strong>「マイページ」→「開封済みのメッセージ」</strong>に永久保存されます。いつでも再確認・LINE IDのコピーが可能です。
                 </p>
               </div>
 
-              {/* 投函した手紙の管理 */}
+              {/* 投函したメッセージの管理 */}
               <div className="p-4 md:p-5 bg-teal-50/50 rounded-2xl border border-teal-200 space-y-2">
                 <span className="text-xs font-bold text-teal-950 font-serif flex items-center gap-1.5">
                   <Send size={15} className="text-teal-600" />
                   ② 自分が流したボトルの管理・編集
                 </span>
                 <p className="text-xs text-slate-600 leading-relaxed font-sans">
-                  あなたが流したボトルの閲覧数、お相手からのクイズ回答状況（正解/回答中）をリアルタイムで確認できます。必要に応じて手紙のメッセージ修正や、公開停止・物理削除もワンタップで行えます。
+                  あなたが流したボトルの閲覧数、お相手からのクイズ回答状況（正解/回答中）をリアルタイムで確認できます。必要に応じてメッセージのメッセージ修正や、公開停止・物理削除もワンタップで行えます。
                 </p>
               </div>
             </div>
@@ -721,7 +721,7 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
                 よくある質問：開示された相手のLINE IDを後から確認し直すことはできますか？
               </span>
               <p className="text-slate-600 text-[11px] leading-relaxed pl-4">
-                はい。マイページの「開封済みのお手紙」に一覧としてずっと残りますので、いつでも確認・コピーしていただけます。
+                はい。マイページの「開封済みのメッセージ」に一覧としてずっと残りますので、いつでも確認・コピーしていただけます。
               </p>
             </div>
           </section>
@@ -760,7 +760,7 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
                   ② 登録メールアドレスへの即時メール通知
                 </p>
                 <p className="text-xs text-rose-900/80 leading-relaxed pl-3.5">
-                  お相手がクイズに答えた時や全問正解して手紙を開封した際、ご登録のメールアドレス宛に自動的にお知らせメールが送信されます。メール内のリンクからすぐに結果画面を確認できます。
+                  お相手がクイズに答えた時や全問正解してメッセージを開封した際、ご登録のメールアドレス宛に自動的にお知らせメールが送信されます。メール内のリンクからすぐに結果画面を確認できます。
                 </p>
               </div>
 
@@ -790,7 +790,7 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
             </div>
 
             <p className="text-xs md:text-sm text-slate-700 leading-relaxed font-sans">
-              ReMEETsは、すべての方が無料で手紙を流せるよう、広告を一切排除した個人運営とAI安全監査費を温かいご寄付で支えていただいています。
+              ReMEETsは、すべての方が無料でメッセージを流せるよう、広告を一切排除した個人運営とAI安全監査費を温かいご寄付で支えていただいています。
             </p>
 
             <div className="p-4 md:p-5 bg-gradient-to-br from-amber-50/80 via-rose-50/40 to-white border border-amber-200 rounded-2xl space-y-3">
@@ -899,7 +899,7 @@ export const GuidePage: React.FC<GuidePageProps> = ({ defaultTab = 'flow' }) => 
               <span>利用料金・各種手数料について</span>
             </div>
             <p className="text-xs text-slate-600 leading-relaxed font-sans max-w-xl">
-              基本機能（登録・作成・検索・回答）は完全無料。手紙開封・SNS連絡先開示のみ1通あたり600円（買い切り・月額不要）です。サービス別の詳細料金表および特定商取引法に基づく表記は、専用ページに集約しております。
+              基本機能（登録・作成・検索・回答）は完全無料。メッセージ開封・SNS連絡先開示のみ1通あたり600円（買い切り・月額不要）です。サービス別の詳細料金表および特定商取引法に基づく表記は、専用ページに集約しております。
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2 shrink-0">

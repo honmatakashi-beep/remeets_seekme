@@ -787,7 +787,7 @@ export const AdminSystemCenterView: React.FC<AdminSystemCenterViewProps> = ({
                   <div className="flex justify-between items-center text-xs">
                     <span className="font-bold text-black flex items-center gap-1.5">
                       <span className="w-5 h-5 rounded-full bg-brand-primary/10 text-brand-primary flex items-center justify-center text-[10px]">3</span>
-                      思い出検索・漂流手紙取得上限 (15分ごと)
+                      思い出検索・漂流メッセージ取得上限 (15分ごと)
                     </span>
                     <span className="font-serif font-extrabold text-brand-primary text-sm px-2.5 py-0.5 bg-white rounded-lg border border-brand-border">
                       {limitsForm.searchMax} 回
@@ -868,7 +868,7 @@ export const AdminSystemCenterView: React.FC<AdminSystemCenterViewProps> = ({
                   <div className="flex justify-between items-center text-xs">
                     <span className="font-bold text-black flex items-center gap-1.5">
                       <span className="w-5 h-5 rounded-full bg-brand-primary/10 text-brand-primary flex items-center justify-center text-[10px]">6</span>
-                      手紙内メッセージ送信上限 (15分ごと)
+                      メッセージ内メッセージ送信上限 (15分ごと)
                     </span>
                     <span className="font-serif font-extrabold text-brand-primary text-sm px-2.5 py-0.5 bg-white rounded-lg border border-brand-border">
                       {limitsForm.messageMax} 回
@@ -1216,7 +1216,7 @@ export const AdminSystemCenterView: React.FC<AdminSystemCenterViewProps> = ({
                     </div>
                     <div>
                       <span className="text-xs font-bold text-black block">Stripe 決済 (STRIPE_SECRET_KEY)</span>
-                      <span className="text-[10px] text-black/50">手紙開封・連絡先開示手数料（600円）決済 & Webhook</span>
+                      <span className="text-[10px] text-black/50">メッセージ開封・連絡先開示手数料（600円）決済 & Webhook</span>
                     </div>
                   </div>
                   <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold flex items-center gap-1 ${

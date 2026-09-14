@@ -1202,7 +1202,7 @@ export const AdminDashboard: React.FC = () => {
         handleDeletePost={handleDeletePost}
       />
 
-      {/* 手紙詳細モーダル */}
+      {/* メッセージ詳細モーダル */}
       <AdminPostDetailModal
         selectedPost={selectedPost}
         onClose={() => setSelectedPost(null)}

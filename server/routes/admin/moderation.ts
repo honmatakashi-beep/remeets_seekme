@@ -661,7 +661,7 @@ export const moderationRouter = express.Router();
           target_type: 'post',
           target_id: p3,
           report_type: 'spam',
-          reason: '【商用宣伝・外部誘導】手紙の末尾にSNSアカウントや外部サイトへの不審なURLが記載されています。',
+          reason: '【商用宣伝・外部誘導】メッセージの末尾にSNSアカウントや外部サイトへの不審なURLが記載されています。',
           contact_info: 'reporter3@example.com',
           status: 'pending'
         }
@@ -801,7 +801,7 @@ export const moderationRouter = express.Router();
           const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
           const prompt = `
             あなたは「ReMEETs（再会の海）」のAI安全防衛監査官です。
-            以下のテキスト（投函ボトルメールまたは手紙文章）をリアルタイムで精密評価し、危険度・カテゴリ別リスクを分析してください。
+            以下のテキスト（投函ボトルメールまたはメッセージ文章）をリアルタイムで精密評価し、危険度・カテゴリ別リスクを分析してください。
 
             【入力テキスト】: "${text}"
 

@@ -196,7 +196,7 @@ export const postsRouter = express.Router();
               VALUES (?, 'match', ?, ?, 0)
             `).run(
               u.id,
-              `📬 あなた（${u.full_name || u.nickname} 様）宛てと思われる新しい想い出の手紙が海に流されました。`,
+              `📬 あなた（${u.full_name || u.nickname} 様）宛てと思われる新しい想い出のメッセージが海に流されました。`,
               `/post/${postId}`
             );
           }
@@ -262,7 +262,7 @@ export const postsRouter = express.Router();
         const resolvedMaidenName = p.searcher_maiden_name || p.owner_maiden_name || '';
         const resolvedContactType = p.contact_type || p.owner_contact_type || 'LINE';
         const resolvedContactId = p.contact_id || p.owner_contact_id || (p.owner_username ? `@${p.owner_username}` : (p.searcher_name ? `@${p.searcher_name}` : ''));
-        const resolvedContactNote = p.contact_note || 'お手紙を見つけていただきありがとうございます！LINEまたはメールにてご連絡をお待ちしております。';
+        const resolvedContactNote = p.contact_note || 'メッセージを見つけていただきありがとうございます！LINEまたはメールにてご連絡をお待ちしております。';
         return {
           ...p,
           searcher_full_name: resolvedFullName,
@@ -848,7 +848,7 @@ export const postsRouter = express.Router();
         const resolvedMaidenName = post.searcher_maiden_name || author?.maiden_name || '';
         const resolvedContactType = post.contact_type || author?.contact_type || 'LINE';
         const resolvedContactId = post.contact_id || author?.contact_id || (author?.username ? `@${author.username}` : (post.searcher_name ? `@${post.searcher_name}` : '@r_wataya_780'));
-        const resolvedContactNote = post.contact_note || 'お手紙を見つけていただきありがとうございます！LINEまたはメールにてご連絡をお待ちしております。';
+        const resolvedContactNote = post.contact_note || 'メッセージを見つけていただきありがとうございます！LINEまたはメールにてご連絡をお待ちしております。';
 
         postData.searcher_full_name = resolvedFullName;
         postData.owner_full_name = resolvedFullName;
@@ -890,7 +890,7 @@ export const postsRouter = express.Router();
     const postId = req.params.id;
 
     try {
-      // 🛡️ SEC-019: 手紙単位での総当たり攻撃防御（単一IP 5回ミスで24h、複数IP分散攻撃 計15回ミスで30分一時凍結）
+      // 🛡️ SEC-019: メッセージ単位での総当たり攻撃防御（単一IP 5回ミスで24h、複数IP分散攻撃 計15回ミスで30分一時凍結）
       const recentPostFails = db.prepare(`
         SELECT SUM(count) as total_fails 
         FROM failed_attempts 
@@ -898,7 +898,7 @@ export const postsRouter = express.Router();
       `).get(postId) as any;
 
       if (recentPostFails && recentPostFails.total_fails >= 15) {
-        return res.status(403).json({ error: "このお手紙への回答試行が一時的に集中したため、セキュリティ保護により30分間ロックされています。しばらくしてからお試しください。" });
+        return res.status(403).json({ error: "このメッセージへの回答試行が一時的に集中したため、セキュリティ保護により30分間ロックされています。しばらくしてからお試しください。" });
       }
 
       // Check for lock
@@ -1032,7 +1032,7 @@ export const postsRouter = express.Router();
     try {
       const post = db.prepare("SELECT * FROM posts WHERE id = ?").get(postId) as any;
       if (!post) {
-        return res.status(404).json({ error: "手紙が見つかりませんでした。" });
+        return res.status(404).json({ error: "メッセージが見つかりませんでした。" });
       }
 
       const userId = req.user ? req.user.id : null;
@@ -1046,7 +1046,7 @@ export const postsRouter = express.Router();
       }
       const contactType = post.contact_type || 'LINE';
       const contactId = post.contact_id || `@${author?.username || post.searcher_name || 'remeets_contact'}`;
-      const contactNote = post.contact_note || 'お手紙を見つけていただきありがとうございます！LINEまたはメールにてご連絡をお待ちしております。';
+      const contactNote = post.contact_note || 'メッセージを見つけていただきありがとうございます！LINEまたはメールにてご連絡をお待ちしております。';
       const searcherMaidenName = post.searcher_maiden_name || author?.maiden_name || '';
       const resolvedSearcherFullName = post.searcher_full_name || author?.full_name || '綿矢 りさ';
 
@@ -1055,7 +1055,7 @@ export const postsRouter = express.Router();
         ? db.prepare("SELECT * FROM payment_transactions WHERE post_id = ? AND user_id = ? AND status = 'completed'").get(postId, userId) as any
         : null;
 
-      // 既に解決済みの手紙である場合
+      // 既に解決済みのメッセージである場合
       if (post.status === 'resolved') {
         if (isOwner || isVerifiedFinder || existingTx) {
           // すでに正当に開示済みの本人または回答者：課金なしで安全に再取得
@@ -1074,15 +1074,15 @@ export const postsRouter = express.Router();
           });
         } else {
           // 第三者による不正な後追い決済・閲覧要求を遮断
-          return res.status(400).json({ error: "この手紙は既に他のお受取人様によって解決・開示済みです。" });
+          return res.status(400).json({ error: "このメッセージは既に他のお受取人様によって解決・開示済みです。" });
         }
       }
 
-      // 未解決手紙の初回決済トランザクション
+      // 未解決メッセージの初回決済トランザクション
       const txId = `tx_reveal_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
       const desc = finalAmount === 1200 
-        ? `公的eKYC認証＋手紙開示手数料（${post.searcher_name}様宛 一括決済）`
-        : `手紙開示・接続手数料（${post.searcher_name}様宛）`;
+        ? `公的eKYC認証＋メッセージ開示手数料（${post.searcher_name}様宛 一括決済）`
+        : `メッセージ開示・接続手数料（${post.searcher_name}様宛）`;
       const netProfit = finalAmount === 1200 ? 957 : 578;
 
       // DB更新のアトミックトランザクション実行
@@ -1108,7 +1108,7 @@ export const postsRouter = express.Router();
         createNotification(
           post.user_id,
           "reunion_success",
-          `🎉【再会成立】「${post.target_name}」様宛の手紙・連絡先が受け取られました！`,
+          `🎉【再会成立】「${post.target_name}」様宛のメッセージ・連絡先が受け取られました！`,
           `/account`
         );
       }
@@ -1204,7 +1204,7 @@ export const postsRouter = express.Router();
     try {
       const post = db.prepare("SELECT * FROM posts WHERE id = ?").get(postId) as any;
       if (!post) {
-        return res.status(404).json({ error: "該当するお手紙（目印）が見つかりませんでした。" });
+        return res.status(404).json({ error: "該当するメッセージ（目印）が見つかりませんでした。" });
       }
 
       const userId = req.user ? req.user.id : null;
@@ -1226,12 +1226,12 @@ export const postsRouter = express.Router();
 
       const requestId = result.lastInsertRowid;
 
-      // 手紙の投稿者（Aさん）へ通知を発行
+      // メッセージの投稿者（Aさん）へ通知を発行
       if (post.user_id) {
         createNotification(
           post.user_id,
           "reunion_request",
-          `💌「${applicantName}」様から、あなたのお手紙に再会希望のエピソードが届きました！マイページで内容をご確認ください。`,
+          `💌「${applicantName}」様から、あなたのメッセージに再会希望のエピソードが届きました！マイページで内容をご確認ください。`,
           `/account?tab=received`
         );
       }
@@ -1309,7 +1309,7 @@ export const postsRouter = express.Router();
       }
 
       if (request.post_author_id !== req.user.id && req.user.role !== 'admin') {
-        return res.status(403).json({ error: "お手紙の投稿者本人のみが承認できます。" });
+        return res.status(403).json({ error: "メッセージの投稿者本人のみが承認できます。" });
       }
 
       db.prepare(`
@@ -1355,7 +1355,7 @@ export const postsRouter = express.Router();
       }
 
       if (request.post_author_id !== req.user.id && req.user.role !== 'admin') {
-        return res.status(403).json({ error: "お手紙の投稿者本人のみが操作できます。" });
+        return res.status(403).json({ error: "メッセージの投稿者本人のみが操作できます。" });
       }
 
       // もし決済済みだった場合は開封手数料600円を自動返金
@@ -1460,12 +1460,12 @@ export const postsRouter = express.Router();
           req.user.id, 
           request.post_id, 
           paymentAmount, 
-          `SeekMe再会開示手数料（${request.searcher_name}様宛 ${paymentAmount === 1200 ? 'eKYC＋手紙開封' : '手紙開封のみ'}）`,
+          `SeekMe再会開示手数料（${request.searcher_name}様宛 ${paymentAmount === 1200 ? 'eKYC＋メッセージ開封' : 'メッセージ開封のみ'}）`,
           paymentAmount === 1200 ? 957 : 578
         );
       })();
 
-      // 手紙投稿者へ連絡先開示完了通知
+      // メッセージ投稿者へ連絡先開示完了通知
       if (request.post_author_id) {
         createNotification(
           request.post_author_id,
@@ -1481,7 +1481,7 @@ export const postsRouter = express.Router();
       const resolvedAuthorMaidenName = request.searcher_maiden_name || request.author_maiden_name || '';
       const resolvedAuthorContactType = request.post_contact_type || request.author_contact_type || 'LINE';
       const resolvedAuthorContactId = request.post_contact_id || request.author_contact_id || `@${request.author_username || 'remeets_seekme'}`;
-      const resolvedAuthorContactNote = request.post_contact_note || 'お手紙を見つけていただきありがとうございます！温かいご連絡をお待ちしております。';
+      const resolvedAuthorContactNote = request.post_contact_note || 'メッセージを見つけていただきありがとうございます！温かいご連絡をお待ちしております。';
 
       res.json({
         success: true,

@@ -232,7 +232,7 @@ export const securityRouter = express.Router();
       // 脅威・悪質行為の内訳
       const threatDistribution = [
         { name: "出会い系・不当交際目的", count: 8, percentage: 44.4, color: "#ef4444", desc: "規約違反の不特定異性交際アプローチをAIが事前遮断" },
-        { name: "個人情報・実名・連絡先露出", count: 5, percentage: 27.8, color: "#f59e0b", desc: "公開手紙内への電話番号・LINE ID記載を自動マスク" },
+        { name: "個人情報・実名・連絡先露出", count: 5, percentage: 27.8, color: "#f59e0b", desc: "公開メッセージ内への電話番号・LINE ID記載を自動マスク" },
         { name: "ストーキング・居場所特定", count: 3, percentage: 16.7, color: "#8b5cf6", desc: "現住所や勤務先の執拗な割り出しをAI検閲隔離" },
         { name: "誹謗中傷・嫌がらせ言動", count: 2, percentage: 11.1, color: "#06b6d4", desc: "感情的な暴言・不当な追及メッセージをブロック" }
       ];
@@ -766,7 +766,7 @@ export const securityRouter = express.Router();
 
       res.json({
         success: true,
-        message: `テストデータの一括消去が完了しました。（削除手紙: ${deletedPostsCount}件, 削除通報: ${deletedReportsCount}件, 誤答ロック解除: ${deletedLocksCount}件, 警報履歴: 初期化済）`,
+        message: `テストデータの一括消去が完了しました。（削除メッセージ: ${deletedPostsCount}件, 削除通報: ${deletedReportsCount}件, 誤答ロック解除: ${deletedLocksCount}件, 警報履歴: 初期化済）`,
         deletedPostsCount,
         deletedReportsCount,
         deletedLocksCount
@@ -777,10 +777,10 @@ export const securityRouter = express.Router();
     }
   });
 
-  // 🚨 スパム検知グループの詳細手紙・ユーザー情報取得 API
+  // 🚨 スパム検知グループの詳細メッセージ・ユーザー情報取得 API
 
 
-  // 🚨 スパム検知グループの詳細手紙・ユーザー情報取得 API
+  // 🚨 スパム検知グループの詳細メッセージ・ユーザー情報取得 API
   securityRouter.post("/live-alerts/spam-details", authenticateToken, isAdmin, (req: any, res) => {
     try {
       const { postIds, ip, userId } = req.body;
@@ -838,10 +838,10 @@ export const securityRouter = express.Router();
     }
   });
 
-  // 🚨 スパム検知グループに対する一括防衛アクション API（手紙一括削除・ユーザー凍結・IP遮断）
+  // 🚨 スパム検知グループに対する一括防衛アクション API（メッセージ一括削除・ユーザー凍結・IP遮断）
 
 
-  // 🚨 スパム検知グループに対する一括防衛アクション API（手紙一括削除・ユーザー凍結・IP遮断）
+  // 🚨 スパム検知グループに対する一括防衛アクション API（メッセージ一括削除・ユーザー凍結・IP遮断）
   securityRouter.post("/live-alerts/spam-action", authenticateToken, isAdmin, (req: any, res) => {
     try {
       const { postIds, userId, ip, actionType, alertId } = req.body;
@@ -857,7 +857,7 @@ export const securityRouter = express.Router();
       }
 
       db.transaction(() => {
-        // 1. 手紙の削除・隔離
+        // 1. メッセージの削除・隔離
         if (actionType === 'DELETE_POSTS' || actionType === 'RESOLVE_ALL') {
           if (idList.length > 0) {
             const placeholders = idList.map(() => '?').join(',');

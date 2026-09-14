@@ -32,8 +32,8 @@ import {
 } from './CreditCardPaymentForm';
 
 export type PaymentScenario = 
-  | 'letter_reveal'        // 手紙開示・連絡先開示 (600円)
-  | 'letter_with_ekyc'     // 手紙開示 + eKYC同時 (1,200円)
+  | 'letter_reveal'        // メッセージ開示・連絡先開示 (600円)
+  | 'letter_with_ekyc'     // メッセージ開示 + eKYC同時 (1,200円)
   | 'mypage_ekyc'          // マイページ単体eKYC (600円)
   | 'supporter_donation'   // サポーター支援・コーヒー寄付 (500円〜)
   | 'system_donation';     // 運営応援寄付 (1,000円〜)
@@ -114,12 +114,12 @@ export const AdminPaymentShowroom: React.FC = () => {
       amount = 600;
       type = 'open_fee';
       ekycStatus = 'none';
-      desc = '【検証模擬決済】手紙開示・連絡先交換手数料（¥600）';
+      desc = '【検証模擬決済】メッセージ開示・連絡先交換手数料（¥600）';
     } else if (currentScenario === 'letter_with_ekyc') {
       amount = 1200;
       type = 'open_fee';
       ekycStatus = 'verified';
-      desc = '【検証模擬決済】手紙開封＋公的eKYC本人確認（¥1,200）';
+      desc = '【検証模擬決済】メッセージ開封＋公的eKYC本人確認（¥1,200）';
     } else if (currentScenario === 'mypage_ekyc') {
       amount = 600;
       type = 'ekyc_fee';
@@ -249,11 +249,11 @@ export const AdminPaymentShowroom: React.FC = () => {
             <div className="flex items-center justify-between text-xs font-bold mb-1">
               <span className="flex items-center gap-1">
                 <Coins size={14} className="text-emerald-600" />
-                ① 通常手紙開示
+                ① 通常メッセージ開示
               </span>
               <span className="text-[11px] font-serif text-emerald-700 font-bold">600円</span>
             </div>
-            <p className="text-[10px] text-slate-500 line-clamp-1">手紙全文 ＋ 連絡先開示</p>
+            <p className="text-[10px] text-slate-500 line-clamp-1">メッセージ全文 ＋ 連絡先開示</p>
           </button>
 
           <button
@@ -272,7 +272,7 @@ export const AdminPaymentShowroom: React.FC = () => {
               </span>
               <span className="text-[11px] font-serif text-indigo-700 font-bold">1,200円</span>
             </div>
-            <p className="text-[10px] text-slate-500 line-clamp-1">手紙開示 600円 ＋ eKYC 600円</p>
+            <p className="text-[10px] text-slate-500 line-clamp-1">メッセージ開示 600円 ＋ eKYC 600円</p>
           </button>
 
           <button
@@ -342,8 +342,8 @@ export const AdminPaymentShowroom: React.FC = () => {
             <div>
               <span className="text-xs font-bold text-indigo-700 uppercase tracking-widest block font-sans">Live Component Preview</span>
               <h3 className="text-base font-bold text-slate-900 font-serif">
-                {currentScenario === 'letter_reveal' && '① 通常手紙開示・連絡先交換（600円）'}
-                {currentScenario === 'letter_with_ekyc' && '② 手紙開示 ＋ 公的本人確認eKYC（1,200円）'}
+                {currentScenario === 'letter_reveal' && '① 通常メッセージ開示・連絡先交換（600円）'}
+                {currentScenario === 'letter_with_ekyc' && '② メッセージ開示 ＋ 公的本人確認eKYC（1,200円）'}
                 {currentScenario === 'mypage_ekyc' && '③ マイページ公的eKYC本人確認（600円）'}
                 {currentScenario === 'supporter_donation' && '④ サポーター支援・コーヒー寄付モーダル'}
                 {currentScenario === 'system_donation' && '⑤ ReMEETs運営応援・寄付モーダル'}
@@ -411,8 +411,8 @@ export const AdminPaymentShowroom: React.FC = () => {
               onCardCvcChange={setCardCvc}
               onCardNameChange={setCardName}
               amountText={
-                currentScenario === 'letter_reveal' ? '手紙開示・接続手数料: 600 円（税込・買い切り）' :
-                currentScenario === 'letter_with_ekyc' ? '手紙開封 600円 ＋ eKYC 600円：合計 1,200 円（税込）' :
+                currentScenario === 'letter_reveal' ? 'メッセージ開示・接続手数料: 600 円（税込・買い切り）' :
+                currentScenario === 'letter_with_ekyc' ? 'メッセージ開封 600円 ＋ eKYC 600円：合計 1,200 円（税込）' :
                 currentScenario === 'mypage_ekyc' ? 'eKYC本人確認審査費用: 600 円（税込）' :
                 currentScenario === 'supporter_donation' ? 'ご支援額: ¥' + (donationQty * 500).toLocaleString() + '（税込）' :
                 'ご支援・寄付額: ¥' + customDonationAmount.toLocaleString() + '（税込）'
@@ -427,7 +427,7 @@ export const AdminPaymentShowroom: React.FC = () => {
               refundGuaranteeText={
                 currentScenario === 'supporter_donation' || currentScenario === 'system_donation'
                   ? '決済はStripeの国際最高セキュリティ規格 (PCI-DSS Level 1) で安全に処理されます。'
-                  : '手紙開封または本人確認（eKYC）審査が不承認となった場合は、Stripe仮売上システムにより全額即時自動返金されます。'
+                  : 'メッセージ開封または本人確認（eKYC）審査が不承認となった場合は、Stripe仮売上システムにより全額即時自動返金されます。'
               }
             />
 
@@ -458,8 +458,8 @@ export const AdminPaymentShowroom: React.FC = () => {
                   <>
                     <Lock size={15} />
                     <span>
-                      {currentScenario === 'letter_reveal' && '600円 で手紙と連絡先を開く（テスト決済）'}
-                      {currentScenario === 'letter_with_ekyc' && '1,200円 で公的本人確認＆手紙開示（テスト決済）'}
+                      {currentScenario === 'letter_reveal' && '600円 でメッセージと連絡先を開く（テスト決済）'}
+                      {currentScenario === 'letter_with_ekyc' && '1,200円 で公的本人確認＆メッセージ開示（テスト決済）'}
                       {currentScenario === 'mypage_ekyc' && '600円 でeKYC本人確認審査を実行（テスト決済）'}
                       {currentScenario === 'supporter_donation' && '¥' + (donationQty * 500).toLocaleString() + ' でサポーター支援を実行'}
                       {currentScenario === 'system_donation' && '¥' + customDonationAmount.toLocaleString() + ' でReMEETsを応援寄付'}
@@ -554,7 +554,7 @@ export const AdminPaymentShowroom: React.FC = () => {
                 <span className="font-bold text-emerald-400"><span className="font-serif font-bold">0</span> 円（完全無料）</span>
               </div>
               <div className="flex justify-between items-center border-b border-slate-800 pb-1.5">
-                <span>通常手紙開封・連絡先開示</span>
+                <span>通常メッセージ開封・連絡先開示</span>
                 <span className="font-bold text-white"><span className="font-serif font-bold">600</span> 円（買い切り）</span>
               </div>
               <div className="flex justify-between items-center border-b border-slate-800 pb-1.5">
@@ -562,7 +562,7 @@ export const AdminPaymentShowroom: React.FC = () => {
                 <span className="font-bold text-white"><span className="font-serif font-bold">600</span> 円（1回）</span>
               </div>
               <div className="flex justify-between items-center pt-1">
-                <span>手紙開封＋eKYC同時決済</span>
+                <span>メッセージ開封＋eKYC同時決済</span>
                 <span className="font-bold text-amber-300"><span className="font-serif font-bold">1,200</span> 円（税込）</span>
               </div>
             </div>
@@ -610,8 +610,8 @@ export const AdminPaymentShowroom: React.FC = () => {
                 onCardCvcChange={setCardCvc}
                 onCardNameChange={setCardName}
                 amountText={
-                  currentScenario === 'letter_reveal' ? '手紙開示・接続手数料: 600 円（税込・買い切り）' :
-                  currentScenario === 'letter_with_ekyc' ? '手紙開封 600円 ＋ eKYC 600円：合計 1,200 円（税込）' :
+                  currentScenario === 'letter_reveal' ? 'メッセージ開示・接続手数料: 600 円（税込・買い切り）' :
+                  currentScenario === 'letter_with_ekyc' ? 'メッセージ開封 600円 ＋ eKYC 600円：合計 1,200 円（税込）' :
                   currentScenario === 'mypage_ekyc' ? 'eKYC本人確認審査費用: 600 円（税込）' :
                   currentScenario === 'supporter_donation' ? 'ご支援額: ¥' + (donationQty * 500).toLocaleString() + '（税込）' :
                   'ご支援・寄付額: ¥' + customDonationAmount.toLocaleString() + '（税込）'
@@ -626,7 +626,7 @@ export const AdminPaymentShowroom: React.FC = () => {
                 refundGuaranteeText={
                   currentScenario === 'supporter_donation' || currentScenario === 'system_donation'
                     ? '決済はStripeの国際最高セキュリティ規格 (PCI-DSS Level 1) で安全に処理されます。'
-                    : '手紙開封または本人確認（eKYC）審査が不承認となった場合は、Stripe仮売上システムにより全額即時自動返金されます。'
+                    : 'メッセージ開封または本人確認（eKYC）審査が不承認となった場合は、Stripe仮売上システムにより全額即時自動返金されます。'
                 }
               />
 

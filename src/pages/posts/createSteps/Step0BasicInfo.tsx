@@ -270,15 +270,15 @@ export const Step0BasicInfo = (props: any) => {
             </div>
 
             <div className="space-y-4">
-              {/* 差出人ニックネーム（手紙ごとの呼び名） */}
+              {/* 差出人ニックネーム（メッセージごとの呼び名） */}
               <div className="space-y-1.5 bg-amber-50/50 p-4 rounded-xl border border-amber-200/80">
                 <div className="flex items-center justify-between">
                   <label className="text-xs sm:text-sm font-bold text-black flex items-center gap-1.5">
                     <Sparkles size={15} className="text-amber-700" />
-                    この手紙でのあなたのニックネーム（当時のあだ名・呼び名）
+                    このメッセージでのあなたのニックネーム（当時のあだ名・呼び名）
                     <span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
                   </label>
-                  <span className="text-[11px] text-amber-900/70 font-medium">※ 手紙ごとに自由に変更可能</span>
+                  <span className="text-[11px] text-amber-900/70 font-medium">※ メッセージごとに自由に変更可能</span>
                 </div>
                 <input 
                   required
@@ -498,7 +498,7 @@ export const Step0BasicInfo = (props: any) => {
 
                   <div className="pt-3 space-y-3 text-xs md:text-sm">
                     <p className="text-xs md:text-sm text-amber-900 bg-amber-50/80 p-2.5 rounded-xl border border-amber-200/60 font-medium leading-relaxed font-sans">
-                      💡 <strong>手紙本文との違い:</strong> お相手へのご挨拶や近況報告、本格的なメッセージ、開示用連絡先は、最後の<strong>【Step 3（非公開の手紙本文）】</strong>で安全に入力します。
+                      💡 <strong>メッセージ本文との違い:</strong> お相手へのご挨拶や近況報告、本格的なメッセージ、開示用連絡先は、最後の<strong>【Step 3（非公開のメッセージ本文）】</strong>で安全に入力します。
                     </p>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 pt-0.5">
@@ -522,7 +522,7 @@ export const Step0BasicInfo = (props: any) => {
                         <ul className="text-xs md:text-sm text-rose-950/85 space-y-1 list-disc list-inside leading-relaxed font-sans">
                           <li>電話番号、LINE ID、メールアドレス（※連絡先はStep 3で安全開示）</li>
                           <li>詳細な自宅番地、実名フルネーム、勤務先の具体的部署</li>
-                          <li>「元気？会いたいから連絡して」（※手紙の本文はStep 3で書く）</li>
+                          <li>「元気？会いたいから連絡して」（※メッセージの本文はStep 3で書く）</li>
                           <li>誹謗中傷、金銭要求、トラブルに関する記述</li>
                         </ul>
                       </div>

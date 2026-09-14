@@ -47,7 +47,7 @@ export const AdminPostDetailModal: React.FC<AdminPostDetailModalProps> = ({
                     to={getPostUrl(selectedPost)} 
                     className="text-[10px] font-bold text-teal-700 hover:underline flex items-center gap-1 uppercase tracking-widest bg-teal-50 px-2 py-0.5 rounded border border-teal-200"
                   >
-                    手紙の公開ページを開く <ExternalLink size={10} />
+                    メッセージの公開ページを開く <ExternalLink size={10} />
                   </Link>
                 </div>
               </div>
@@ -70,7 +70,7 @@ export const AdminPostDetailModal: React.FC<AdminPostDetailModalProps> = ({
                         <span className="text-sm font-bold text-black font-mono">{selectedPost.searcher_username || '不明'}</span>
                       </div>
                       <div className="flex justify-between py-3 border-b border-brand-border">
-                        <span className="text-base text-black/60">差出人ニックネーム（手紙表記）</span>
+                        <span className="text-base text-black/60">差出人ニックネーム（メッセージ表記）</span>
                         <span className="text-sm font-bold text-black">{selectedPost.searcher_name || <span className="text-black/35 font-normal">未設定</span>}</span>
                       </div>
                       <div className="flex justify-between py-3 border-b border-brand-border">
@@ -144,7 +144,7 @@ export const AdminPostDetailModal: React.FC<AdminPostDetailModalProps> = ({
 
                 <div className="space-y-8">
                   <section className="space-y-4">
-                    <h3 className="text-[12px] font-bold text-black uppercase tracking-[0.2em]">手紙の本文</h3>
+                    <h3 className="text-[12px] font-bold text-black uppercase tracking-[0.2em]">メッセージの本文</h3>
                     <div className="p-6 bg-white text-black border border-brand-border rounded-2xl">
                       <p className="text-base font-serif leading-relaxed opacity-90 whitespace-pre-wrap">
                         "{selectedPost.message}"
@@ -160,10 +160,10 @@ export const AdminPostDetailModal: React.FC<AdminPostDetailModalProps> = ({
                   </section>
 
                   <section className="space-y-4">
-                    <h3 className="text-[12px] font-bold text-black uppercase tracking-[0.2em]">手紙の一般公開ページ</h3>
+                    <h3 className="text-[12px] font-bold text-black uppercase tracking-[0.2em]">メッセージの一般公開ページ</h3>
                     <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-2xl flex flex-col justify-between gap-3 shadow-sm">
                       <p className="text-[11px] text-emerald-900 leading-relaxed font-sans font-semibold">
-                        思い出クイズへの解答や、差出人への返事が行える一般ユーザー向けの実際の手紙公開確認ページです。
+                        思い出クイズへの解答や、差出人への返事が行える一般ユーザー向けの実際のメッセージ公開確認ページです。
                       </p>
                       <div>
                         <Link 
@@ -171,7 +171,7 @@ export const AdminPostDetailModal: React.FC<AdminPostDetailModalProps> = ({
                           target="_blank"
                           className="w-full px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm hover:shadow flex items-center justify-center gap-1.5 cursor-pointer text-center"
                         >
-                          <span>手紙の公開ページを開く</span>
+                          <span>メッセージの公開ページを開く</span>
                           <ExternalLink size={14} />
                         </Link>
                       </div>

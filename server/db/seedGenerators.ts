@@ -258,7 +258,7 @@ const MEMORY_THEMES: MemorySceneTheme[] = [
     messageTemplates: [
       "夕焼けの音楽室で一緒に吹いたハーモニー、今でも鮮明に覚えています。金賞を獲ったあの瞬間の涙と抱擁は一生の宝物です。元気ですか？",
       "コンクール直前の厳しい練習を乗り越えられたのは、あなたが隣で笑顔で支えてくれたからです。またいつか一緒に音を奏でたいですね。",
-      "卒業式の日に部室の黒板にみんなで寄せ書きをしたのが懐かしいです。あの頃の情熱を思い出し、ふと手紙を書きました。"
+      "卒業式の日に部室の黒板にみんなで寄せ書きをしたのが懐かしいです。あの頃の情熱を思い出し、ふとメッセージを書きました。"
     ],
     q1Templates: [
       { q: "夏のコンクール地区予選で金賞を受賞した思い出の自由曲の題名は？", a: "アルヴァマー序曲" },
@@ -345,7 +345,7 @@ const MEMORY_THEMES: MemorySceneTheme[] = [
     messageTemplates: [
       "ピザの箱が積み上がったオフィスで、リリースボタンを押した瞬間のあの静寂と歓声。あの情熱は今の私の礎です。久しぶりに語り合いたいですね。",
       "深夜3時に非常階段から見上げた東京の夜景、覚えていますか？過酷だったけれど本当に楽しい日々でした。元気でやっていますか？",
-      "どんな困難なバグにも諦めずに立ち向かってくれたあなたの姿に救われました。あの頃の感謝を伝えたくて手紙を流します。"
+      "どんな困難なバグにも諦めずに立ち向かってくれたあなたの姿に救われました。あの頃の感謝を伝えたくてメッセージを流します。"
     ],
     q1Templates: [
       { q: "ベータ版リリースのコードネームとして設定したプロジェクト名は？", a: "プロジェクトフェニックス" },
@@ -373,7 +373,7 @@ const MEMORY_THEMES: MemorySceneTheme[] = [
     ],
     messageTemplates: [
       "夕焼けチャイムが鳴るまで空き地の秘密基地で語り合った日々。引っ越してしまってからずっと気になっていました。元気でいますか？",
-      "夏休みの朝、首からラジオ体操カードを下げて走った神社。あの頃の無邪気な笑顔がふと浮かび、手紙をボトルに託しました。",
+      "夏休みの朝、首からラジオ体操カードを下げて走った神社。あの頃の無邪気な笑顔がふと浮かび、メッセージをボトルに託しました。",
       "大人になって街の景色は変わってしまったけれど、二人で見た夕日は今も心の中にあります。また昔のように笑い合いたいです。"
     ],
     q1Templates: [
@@ -460,7 +460,7 @@ const MEMORY_THEMES: MemorySceneTheme[] = [
     ],
     messageTemplates: [
       "先生があの放課後の進路相談でかけてくださった『自分を信じて進めばいい』という言葉が、今も私の人生の道標です。先生、お元気ですか？",
-      "不登校気味だった私を毎朝迎えに来てくださり、職員室で温かいお茶を出してくださったこと、一生忘れません。心からの感謝を伝えたくて手紙を書きました。",
+      "不登校気味だった私を毎朝迎えに来てくださり、職員室で温かいお茶を出してくださったこと、一生忘れません。心からの感謝を伝えたくてメッセージを書きました。",
       "厳しくも温かいご指導のおかげで、私も無事に社会人となり人を育てる立場になりました。先生への恩返しとして、元気なお姿を一目拝見したいです。"
     ],
     q1Templates: [
@@ -488,7 +488,7 @@ const MEMORY_THEMES: MemorySceneTheme[] = [
     ],
     messageTemplates: [
       "残り3秒からの劇的な逆転ブザービーター、あの奇跡のシュートは一生忘れられない青春のハイライトです。元気ですか？",
-      "コートを汗だくになって走り抜けた日々。あの頃の熱い情熱を思い出し手紙を書きました。"
+      "コートを汗だくになって走り抜けた日々。あの頃の熱い情熱を思い出しメッセージを書きました。"
     ],
     q1Templates: [
       { q: "最後の公式戦で決めた劇的な逆転シュートのプレイ名は？", a: "ブザービーター" },
@@ -622,7 +622,7 @@ const OPENING_GREETINGS = [
   "あの頃が急に懐かしくなって、ボトルを流してみました。",
   "覚えていますか？",
   "久しぶり！元気にやってる？",
-  "ずっと気になっていたのですが、思い切って手紙を書きました。"
+  "ずっと気になっていたのですが、思い切ってメッセージを書きました。"
 ];
 
 // 多彩な感情・追憶エピソード挿入フレーズ
@@ -681,7 +681,7 @@ export const assertAndSanitizeQuizAnswer = (answer: string, fallbackSubject: str
 };
 
 /**
- * 既存の手紙・ユーザーデータを一切削除せず、安全に指定件数の想い出ボトルメールを追加生成する関数
+ * 既存のメッセージ・ユーザーデータを一切削除せず、安全に指定件数の想い出ボトルメールを追加生成する関数
  * （完全ランダム・方程式のない自然な作文＆100%ユニーク保証・頭切れゼロ恒久ガードレール完備）
  */
 export const generateAdditionalSamplePosts = async (count: number = 50) => {
@@ -909,7 +909,7 @@ export const generateAdditionalSamplePosts = async (count: number = 50) => {
           candContext = `当時${relation}で活動していた仲間です。${memoryAction}あの熱い日々を懐かしく思い出しています。`;
           break;
         case 8:
-          // 【手紙風・拝啓スタイル型】
+          // 【メッセージ風・拝啓スタイル型】
           candContext = `突然のボトルメールで驚かれるかもしれませんが、当時${relation}で${memoryAction}友人です。どうか届きますように。`;
           break;
         case 9:
@@ -989,7 +989,7 @@ export const generateAdditionalSamplePosts = async (count: number = 50) => {
       if (hasTargetMaiden) {
         const targetMaidenStyle = (seedIndex * 3 + msgAttempt) % 4;
         if (targetMaidenStyle === 0) {
-          messageParts.push(`ご結婚されて苗字が変わられているかもしれませんが、当時の旧姓・${targetMaidenLastName}さん宛てにお手紙を託します。`);
+          messageParts.push(`ご結婚されて苗字が変わられているかもしれませんが、当時の旧姓・${targetMaidenLastName}さん宛てにメッセージを託します。`);
         } else if (targetMaidenStyle === 1) {
           messageParts.push(`苗字が変わられているかもしれませんが、当時の${targetMaidenLastName}さんへ届きますように。`);
         } else {
@@ -1171,7 +1171,7 @@ export const generateAdditionalSamplePosts = async (count: number = 50) => {
 };
 
 /**
- * 既存の重複サンプル手紙を一括クリーンアップし、完全重複ゼロの指定件数（デフォルト200通）で再構築する関数
+ * 既存の重複サンプルメッセージを一括クリーンアップし、完全重複ゼロの指定件数（デフォルト200通）で再構築する関数
  */
 export const reseedCleanUniquePosts = async (count: number = 200) => {
   console.log(`[Reseed Unique Engine] Resetting and generating ${count} 100% natural & unique sample posts with zero duplicates...`);

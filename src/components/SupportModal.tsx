@@ -119,7 +119,7 @@ export const SupportModal: React.FC<SupportModalProps> = ({ isOpen, onClose, onS
               {/* Emotional Copy Box */}
               <div className="p-4 bg-amber-50/80 border border-amber-200/80 rounded-2xl space-y-2 text-slate-800">
                 <p className="text-xs md:text-sm font-medium leading-relaxed text-slate-800">
-                  「ReMEETsは、大切な思い出を持つすべての方が無料で手紙を流せるよう、個人運営とAI安全監査費を寄付で賄っています。この海が消えてしまわないよう、1杯のコーヒー代で応援していただけませんか？」
+                  「ReMEETsは、大切な思い出を持つすべての方が無料でメッセージを流せるよう、個人運営とAI安全監査費を寄付で賄っています。この海が消えてしまわないよう、1杯のコーヒー代で応援していただけませんか？」
                 </p>
                 <div className="flex items-center gap-1.5 text-[11px] text-amber-800/80 font-bold pt-1">
                   <Coffee size={14} className="text-amber-600 shrink-0" />

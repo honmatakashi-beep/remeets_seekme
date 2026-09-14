@@ -176,7 +176,7 @@ export const miscRouter = express.Router();
           user_id: 0,
           category: "classmate",
           title: "卒業から35年。懐かしいあだ名とお互いの記憶が繋いでくれた奇跡",
-          message: "中学の卒業以来、お互いに転居が重なり連絡先が分からなくなっていました。ふとReMEETsで当時の陸上部の手紙を見つけ、懐かしい想い出のキーワードをきっかけに35年ぶりにメッセージが開通。当時のあだ名で呼び合い、まるで当時にタイムスリップしたような感動でした。今では年に一度集まる仲に戻り、一生の友人を再び取り戻せました。",
+          message: "中学の卒業以来、お互いに転居が重なり連絡先が分からなくなっていました。ふとReMEETsで当時の陸上部のメッセージを見つけ、懐かしい想い出のキーワードをきっかけに35年ぶりにメッセージが開通。当時のあだ名で呼び合い、まるで当時にタイムスリップしたような感動でした。今では年に一度集まる仲に戻り、一生の友人を再び取り戻せました。",
           era: "1980年代後半",
           gender: "男性",
           consent: 1,
@@ -189,7 +189,7 @@ export const miscRouter = express.Router();
           user_id: 0,
           category: "mentor",
           title: "定年退職された吹奏楽部の恩師へ。30年越しの『ありがとう』が届いた日",
-          message: "山本先生が定年退職されたと風の噂で聞き、当時の部活仲間で『どうしても感謝を伝えたい』と手紙を流しました。先生のご家族がこの手紙を見つけて先生に伝えてくださり、30年ぶりに温かいお返事をいただくことができました。先日、当時の部員一同で先生を囲んで同窓会を開き、最高の恩返しができました。",
+          message: "山本先生が定年退職されたと風の噂で聞き、当時の部活仲間で『どうしても感謝を伝えたい』とメッセージを流しました。先生のご家族がこのメッセージを見つけて先生に伝えてくださり、30年ぶりに温かいお返事をいただくことができました。先日、当時の部員一同で先生を囲んで同窓会を開き、最高の恩返しができました。",
           era: "1990年代半ば",
           gender: "女性",
           consent: 1,
@@ -215,7 +215,7 @@ export const miscRouter = express.Router();
           user_id: 0,
           category: "neighbor",
           title: "さよならを言えないまま離れ離れになった幼馴染。40年ぶりの笑顔",
-          message: "小学校の時、親の急な転勤で手紙も渡せないまま引っ越してしまい、40年間ずっと心に引っかかっていました。ReMEETsに当時の公園の思い出を流したところ、彼女が検索して見つけてくれました。『ずっと探してたよ』と言われた瞬間、涙があふれました。今はお互いの子供のことや近況を楽しく語り合っています。",
+          message: "小学校の時、親の急な転勤でメッセージも渡せないまま引っ越してしまい、40年間ずっと心に引っかかっていました。ReMEETsに当時の公園の思い出を流したところ、彼女が検索して見つけてくれました。『ずっと探してたよ』と言われた瞬間、涙があふれました。今はお互いの子供のことや近況を楽しく語り合っています。",
           era: "1980年代初頭",
           gender: "女性",
           consent: 1,
@@ -707,17 +707,17 @@ export const miscRouter = express.Router();
     }
   });
 
-  // 🗑️ 手紙の削除・掲載停止依頼（Deletion Request）受付エンドポイント
+  // 🗑️ メッセージの削除・掲載停止依頼（Deletion Request）受付エンドポイント
   miscRouter.post("/deletion-requests", reportLimiter, optionalAuthenticateToken, (req: any, res: any) => {
     const { name, email, post_id, reason, content, explanation, url } = req.body || {};
 
     if (!post_id || !reason?.trim() || !content?.trim()) {
-      return res.status(400).json({ error: "対象手紙のID、申請理由、掲載内容・特徴は必須項目です。" });
+      return res.status(400).json({ error: "対象メッセージのID、申請理由、掲載内容・特徴は必須項目です。" });
     }
 
     const postIdNum = parseInt(post_id);
     if (isNaN(postIdNum) || postIdNum <= 0) {
-      return res.status(400).json({ error: "有効な手紙IDを指定してください。" });
+      return res.status(400).json({ error: "有効なメッセージIDを指定してください。" });
     }
 
     try {
@@ -757,7 +757,7 @@ export const miscRouter = express.Router();
       res.json({
         success: true,
         ticket_token: ticketToken,
-        message: "手紙の削除・掲載停止申請を受理いたしました。運営事務局にて迅速に確認・処置いたします。"
+        message: "メッセージの削除・掲載停止申請を受理いたしました。運営事務局にて迅速に確認・処置いたします。"
       });
     } catch (err: any) {
       console.error("Deletion request submission error:", err);

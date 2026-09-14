@@ -199,11 +199,11 @@
     </thead>
     <tbody>
       <tr><td><b>SEC-001</b></td><td>個人情報保護</td><td>クイズ正解平文データの通信露出遮断</td><td><span class="badge badge-high">高</span></td><td><span class="badge badge-pass">解決済</span></td><td>APIレスポンスから平文答えを物理削除</td></tr>
-      <tr><td><b>SEC-002</b></td><td>認可制御</td><td>解決済み手紙の第三者への個人情報漏洩遮断</td><td><span class="badge badge-high">高</span></td><td><span class="badge badge-pass">解決済</span></td><td>第三者には本文・LINE IDを完全非開示</td></tr>
+      <tr><td><b>SEC-002</b></td><td>認可制御</td><td>解決済みメッセージの第三者への個人情報漏洩遮断</td><td><span class="badge badge-high">高</span></td><td><span class="badge badge-pass">解決済</span></td><td>第三者には本文・LINE IDを完全非開示</td></tr>
       <tr><td><b>SEC-003</b></td><td>エンドポイント</td><td>認証なしデバッグAPI（/post_questions）の封鎖</td><td><span class="badge badge-high">高</span></td><td><span class="badge badge-pass">解決済</span></td><td>管理者権限（isAdmin）を付与し一般遮断</td></tr>
-      <tr><td><b>SEC-004</b></td><td>状態遷移</td><td>決済キャンセル時の手紙誤開示防止</td><td><span class="badge badge-high">高</span></td><td><span class="badge badge-pass">解決済</span></td><td>クイズ正解時は未解決維持、決済時のみ開示</td></tr>
+      <tr><td><b>SEC-004</b></td><td>状態遷移</td><td>決済キャンセル時のメッセージ誤開示防止</td><td><span class="badge badge-high">高</span></td><td><span class="badge badge-pass">解決済</span></td><td>クイズ正解時は未解決維持、決済時のみ開示</td></tr>
       <tr><td><b>SEC-005</b></td><td>安全防衛</td><td>電話番号・LINE ID・メアド直接記載すり抜け防止</td><td><span class="badge badge-high">高</span></td><td><span class="badge badge-pass">解決済</span></td><td>全角・記号正規化＋多重正規表現フィルター</td></tr>
-      <tr><td><b>SEC-006</b></td><td>決済保全</td><td>同一手紙に対する二重決済・多重課金防止</td><td><span class="badge badge-mid">中</span></td><td><span class="badge badge-pass">解決済</span></td><td>完了Tx検出時は追加課金なしで再返却</td></tr>
+      <tr><td><b>SEC-006</b></td><td>決済保全</td><td>同一メッセージに対する二重決済・多重課金防止</td><td><span class="badge badge-mid">中</span></td><td><span class="badge badge-pass">解決済</span></td><td>完了Tx検出時は追加課金なしで再返却</td></tr>
       <tr><td><b>SEC-007</b></td><td>決済保全</td><td>eKYC不合格時の返金台帳連携と未返金アラート</td><td><span class="badge badge-mid">中</span></td><td><span class="badge badge-pass">解決済</span></td><td>不合格時返金台帳自動同期・管理アラート</td></tr>
       <tr><td><b>SEC-008</b></td><td>認証</td><td>パスワードリセットトークンの使い捨て・失効</td><td><span class="badge badge-mid">中</span></td><td><span class="badge badge-pass">解決済</span></td><td>30分期限切れ・使用後即時NULLクリア</td></tr>
       <tr><td><b>SEC-009</b></td><td>認可・権限</td><td>一般ユーザーの管理者API（/admin/*）アクセス遮断</td><td><span class="badge badge-high">高</span></td><td><span class="badge badge-pass">解決済</span></td><td>RBACミドルウェアによる厳格アクセス拒否</td></tr>
@@ -215,8 +215,8 @@
       <tr><td><b>SEC-015</b></td><td>個人情報保護</td><td>通報ログ（reports）の第三者閲覧遮断</td><td><span class="badge badge-mid">中</span></td><td><span class="badge badge-pass">解決済</span></td><td>認可ミドルウェアによる保護</td></tr>
       <tr><td><b>SEC-016</b></td><td>個人情報保護</td><td>eKYC身分証原本の非蓄積・即時破棄ポリシー</td><td><span class="badge badge-high">高</span></td><td><span class="badge badge-pass">解決済</span></td><td>生画像をDB保存せず認証日時のみ保持</td></tr>
       <tr><td><b>SEC-017</b></td><td>IDOR防止</td><td>他人のメッセージログID改変閲覧防止</td><td><span class="badge badge-high">高</span></td><td><span class="badge badge-pass">解決済</span></td><td>送受信者本人のみ閲覧許可に厳格化</td></tr>
-      <tr><td><b>SEC-018</b></td><td>SEO保護</td><td>メタタグ・JSON-LDへの機微本文非混入</td><td><span class="badge badge-low">低</span></td><td><span class="badge badge-pass">解決済</span></td><td>動的メタタグから手紙本文・本名を除外</td></tr>
-      <tr><td><b>SEC-019</b></td><td>総当たり防御</td><td>手紙単位でのクイズ誤答ロック（分散攻撃防御）</td><td><span class="badge badge-high">高</span></td><td><span class="badge badge-pass">解決済</span></td><td>単一IP 5回で24h、分散計15回で30分凍結</td></tr>
+      <tr><td><b>SEC-018</b></td><td>SEO保護</td><td>メタタグ・JSON-LDへの機微本文非混入</td><td><span class="badge badge-low">低</span></td><td><span class="badge badge-pass">解決済</span></td><td>動的メタタグからメッセージ本文・本名を除外</td></tr>
+      <tr><td><b>SEC-019</b></td><td>総当たり防御</td><td>メッセージ単位でのクイズ誤答ロック（分散攻撃防御）</td><td><span class="badge badge-high">高</span></td><td><span class="badge badge-pass">解決済</span></td><td>単一IP 5回で24h、分散計15回で30分凍結</td></tr>
       <tr><td><b>SEC-020</b></td><td>なりすまし防止</td><td>eKYC承認後の本名・生年月日改ざんロック</td><td><span class="badge badge-high">高</span></td><td><span class="badge badge-pass">解決済</span></td><td>認証済みアカウントの氏名更新を禁止</td></tr>
       <tr><td><b>SEC-021</b></td><td>ファイル保護</td><td>添付画像形式の厳格検証 ＆ SVGスクリプト遮断</td><td><span class="badge badge-high">高</span></td><td><span class="badge badge-pass">解決済</span></td><td>Base64 MIME検証でSVG・HTMLを排除</td></tr>
       <tr><td><b>SEC-022</b></td><td>ヘッダー防御</td><td>セキュリティHTTPヘッダー導入（クリックジャッキング）</td><td><span class="badge badge-mid">中</span></td><td><span class="badge badge-pass">解決済</span></td><td>X-Frame-Options: SAMEORIGIN等適用</td></tr>
@@ -243,12 +243,12 @@
       <tr><td>Page 01-10</td><td>主要10画面のSPA配信（Home, Create, Search, Admin, FAQ等）</td><td><span class="badge badge-pass">10/10 PASS</span></td><td>Status 200 OK & レンダリング確認</td></tr>
       <tr><td>Header 01-03</td><td>セキュリティHTTPヘッダー（X-Frame-Options, nosniff等）</td><td><span class="badge badge-pass">3/3 PASS</span></td><td>SAMEORIGIN / nosniff / strict-origin</td></tr>
       <tr><td>E2E 01-02</td><td>差出人ユーザーA 新規登録 ＆ JWT発行</td><td><span class="badge badge-pass">PASS</span></td><td>201 Created & ログイン成功</td></tr>
-      <tr><td>E2E 03</td><td>想い出の手紙投函（2問クイズ・連絡先付き）</td><td><span class="badge badge-pass">PASS</span></td><td>Post ID生成 & DB格納</td></tr>
+      <tr><td>E2E 03</td><td>想い出のメッセージ投函（2問クイズ・連絡先付き）</td><td><span class="badge badge-pass">PASS</span></td><td>Post ID生成 & DB格納</td></tr>
       <tr><td>E2E 04</td><td>未ログイン/第三者閲覧時の本文・クイズ正解・連絡先の完全非送出</td><td><span class="badge badge-pass">PASS</span></td><td>カンニング・漏洩の物理遮断確認</td></tr>
       <tr><td>E2E 05-06</td><td>受取人ユーザーB 新規登録 ＆ ログイン</td><td><span class="badge badge-pass">PASS</span></td><td>独立JWTトークン発行確認</td></tr>
-      <tr><td>E2E 07-08</td><td>クイズ誤答判定（401）＆ 正解判定（quizPassed: true）</td><td><span class="badge badge-pass">PASS</span></td><td>正解時も決済前は手紙未解決維持</td></tr>
-      <tr><td>E2E 09-10</td><td>1,200円 Stripe決済完了 ➜ 手紙本文・LINE ID開示</td><td><span class="badge badge-pass">PASS</span></td><td>決済成功と同時に安全に開示</td></tr>
-      <tr><td>E2E 11</td><td>同一手紙に対する二重決済・多重課金防止</td><td><span class="badge badge-pass">PASS</span></td><td>alreadyUnlocked: true で情報再返却</td></tr>
+      <tr><td>E2E 07-08</td><td>クイズ誤答判定（401）＆ 正解判定（quizPassed: true）</td><td><span class="badge badge-pass">PASS</span></td><td>正解時も決済前はメッセージ未解決維持</td></tr>
+      <tr><td>E2E 09-10</td><td>1,200円 Stripe決済完了 ➜ メッセージ本文・LINE ID開示</td><td><span class="badge badge-pass">PASS</span></td><td>決済成功と同時に安全に開示</td></tr>
+      <tr><td>E2E 11</td><td>同一メッセージに対する二重決済・多重課金防止</td><td><span class="badge badge-pass">PASS</span></td><td>alreadyUnlocked: true で情報再返却</td></tr>
       <tr><td>E2E 12</td><td>解決後の無関係な第三者アクセス時の完全秘匿</td><td><span class="badge badge-pass">PASS</span></td><td>第三者へは本文・連絡先を完全遮断</td></tr>
       <tr><td>E2E 13-14</td><td>受取人ユーザーB 退会処理 ＆ トークン即時401失効</td><td><span class="badge badge-pass">PASS</span></td><td>物理データ消去 ＆ トークン無効化</td></tr>
     </tbody>
@@ -265,7 +265,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr><td>Step 1 (4項目)</td><td>本番データ初期化＆Seeding（手紙50件、体験談8件、NGワード73語）</td><td><span class="badge badge-pass">4/4 PASS</span></td><td>初期化・再展開の完全整合性</td></tr>
+      <tr><td>Step 1 (4項目)</td><td>本番データ初期化＆Seeding（メッセージ50件、体験談8件、NGワード73語）</td><td><span class="badge badge-pass">4/4 PASS</span></td><td>初期化・再展開の完全整合性</td></tr>
       <tr><td>Step 2 (3項目)</td><td>高負荷・DoS耐性（10並行ログイン、15並行検索、総当たりロック）</td><td><span class="badge badge-pass">3/3 PASS</span></td><td>高負荷時のサーバー非クラッシュ実証</td></tr>
       <tr><td>Step 3 (4項目)</td><td>警察照会ログ出力（刑訴法197条）、通報台帳、削除申請、売上統計</td><td><span class="badge badge-pass">4/4 PASS</span></td><td>令状照会データの一括自動出力実証</td></tr>
       <tr><td>Step 4 (3項目)</td><td>本番DB互換、Stripe Webhook署名検証、監査ログPIIマスキング</td><td><span class="badge badge-pass">3/3 PASS</span></td><td>偽装コールバック防御・ログ安全化</td></tr>

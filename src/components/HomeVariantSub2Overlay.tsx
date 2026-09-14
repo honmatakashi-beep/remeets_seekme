@@ -182,7 +182,7 @@ export const HomeVariantSub2Overlay: React.FC<HomeVariantSub2OverlayProps> = ({
 
             {/* リード文 */}
             <p className="text-xs sm:text-sm md:text-base text-slate-800 font-serif leading-relaxed font-medium max-w-2xl mx-auto px-2">
-              同窓生、昔の友人、お世話になったあの人。連絡先はわからないけれど、もう一度だけ話してみたい大切な人へ、想いを言葉にして海に流す。そして、あなたを探している誰かが流した手紙を、自分の名前やゆかりの地から見つけ出す。ここは、お互いを想い合う偶然と奇跡が交差する、静かな再会の海です。
+              同窓生、昔の友人、お世話になったあの人。連絡先はわからないけれど、もう一度だけ話してみたい大切な人へ、想いを言葉にして海に流す。そして、あなたを探している誰かが流したメッセージを、自分の名前やゆかりの地から見つけ出す。ここは、お互いを想い合う偶然と奇跡が交差する、静かな再会の海です。
             </p>
 
             {/* コンセプトボタン */}
@@ -199,7 +199,7 @@ export const HomeVariantSub2Overlay: React.FC<HomeVariantSub2OverlayProps> = ({
                 <PenTool size={16} /> <span>ボトルメールを流す</span> <ArrowRight size={15} />
               </Link>
               <Link to="/search" className="w-full sm:w-auto min-w-[220px] px-7 py-3.5 bg-white hover:bg-sky-50 text-slate-800 font-bold rounded-2xl text-xs sm:text-sm border-2 border-sky-200 flex items-center justify-center gap-2">
-                <Search size={16} className="text-sky-600" /> <span>自分宛ての手紙を探す</span>
+                <Search size={16} className="text-sky-600" /> <span>自分宛てのメッセージを探す</span>
               </Link>
             </div>
 
@@ -210,8 +210,8 @@ export const HomeVariantSub2Overlay: React.FC<HomeVariantSub2OverlayProps> = ({
                 <Link to="/pricing" className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">料金表・詳細を見る →</Link>
               </div>
               <div className="grid grid-cols-3 gap-2 text-center text-xs">
-                <div className="bg-emerald-50/70 p-2 rounded-xl border border-emerald-200"><span className="text-[10px] text-emerald-800 font-bold block">手紙を書く・投函</span><strong className="text-xs sm:text-sm font-serif font-black text-emerald-600">完全0円</strong></div>
-                <div className="bg-emerald-50/70 p-2 rounded-xl border border-emerald-200"><span className="text-[10px] text-emerald-800 font-bold block">手紙を探す・閲覧</span><strong className="text-xs sm:text-sm font-black font-serif text-emerald-600">完全0円</strong></div>
+                <div className="bg-emerald-50/70 p-2 rounded-xl border border-emerald-200"><span className="text-[10px] text-emerald-800 font-bold block">メッセージを書く・投函</span><strong className="text-xs sm:text-sm font-serif font-black text-emerald-600">完全0円</strong></div>
+                <div className="bg-emerald-50/70 p-2 rounded-xl border border-emerald-200"><span className="text-[10px] text-emerald-800 font-bold block">メッセージを探す・閲覧</span><strong className="text-xs sm:text-sm font-black font-serif text-emerald-600">完全0円</strong></div>
                 <div className="bg-sky-50/70 p-2 rounded-xl border border-sky-200"><span className="text-[10px] text-sky-900 font-bold block">想い出照合・再会時</span><strong className="text-xs sm:text-sm font-black font-serif text-sky-700">開通時のみ 600円</strong></div>
               </div>
               <p className="text-[10px] text-slate-500 text-center leading-tight">※お相手とクイズで想い出が一致し、連絡先を開示する瞬間まで一切料金はかかりません。（詳細はこちら）</p>
@@ -229,7 +229,7 @@ export const HomeVariantSub2Overlay: React.FC<HomeVariantSub2OverlayProps> = ({
             <div className="bg-white/95 rounded-2xl border-2 border-emerald-500/80 p-4 space-y-3 flex flex-col justify-between shadow-xs">
               <div className="space-y-2">
                 <div className="flex items-center justify-between border-b border-emerald-100 pb-2"><span className="text-xs font-bold text-emerald-700 uppercase">STEP 01</span><span className="text-xs font-serif font-bold bg-emerald-50 text-emerald-700 px-2.5 py-0.5 rounded-full border border-emerald-200">【綴る】</span></div>
-                <div className="rounded-xl aspect-[16/10] overflow-hidden border border-emerald-200"><img src={stepMistWriteImg} alt="手紙を書く" className="w-full h-full object-cover" /></div>
+                <div className="rounded-xl aspect-[16/10] overflow-hidden border border-emerald-200"><img src={stepMistWriteImg} alt="メッセージを書く" className="w-full h-full object-cover" /></div>
                 <h3 className="font-serif font-bold text-slate-900 text-sm">ボトルに思い出を託す</h3>
                 <p className="text-xs text-slate-600 leading-relaxed font-sans">お相手の名前や当時の思い出、二人しか知らない『秘密の質問』を添えて、匿名でメッセージを静かに投稿します。</p>
               </div>
@@ -240,7 +240,7 @@ export const HomeVariantSub2Overlay: React.FC<HomeVariantSub2OverlayProps> = ({
                 <div className="flex items-center justify-between border-b border-sky-100 pb-2"><span className="text-xs font-bold text-sky-700 uppercase">STEP 02</span><span className="text-xs font-serif font-bold bg-sky-50 text-sky-700 px-2.5 py-0.5 rounded-full border border-sky-200">【漂う】</span></div>
                 <div className="rounded-xl aspect-[16/10] overflow-hidden border border-sky-200"><img src={stepMistDriftImg} alt="漂う" className="w-full h-full object-cover" /></div>
                 <h3 className="font-serif font-bold text-slate-900 text-sm">ネットの海をめぐる</h3>
-                <p className="text-xs text-slate-600 leading-relaxed font-sans">手紙は検索エンジンを通じてWebの海へ芽吹き、記憶をたどる「あの人」の検索窓で見つけられる日を静かに待ち続けます。</p>
+                <p className="text-xs text-slate-600 leading-relaxed font-sans">メッセージは検索エンジンを通じてWebの海へ芽吹き、記憶をたどる「あの人」の検索窓で見つけられる日を静かに待ち続けます。</p>
               </div>
               <span className="text-[10px] text-sky-700 font-bold pt-2 border-t border-sky-100">● 検索に届くWeb最適化</span>
             </div>
@@ -249,7 +249,7 @@ export const HomeVariantSub2Overlay: React.FC<HomeVariantSub2OverlayProps> = ({
                 <div className="flex items-center justify-between border-b border-teal-100 pb-2"><span className="text-xs font-bold text-teal-700 uppercase">STEP 03</span><span className="text-xs font-serif font-bold bg-teal-50 text-teal-700 px-2.5 py-0.5 rounded-full border border-teal-200">【届く】</span></div>
                 <div className="rounded-xl aspect-[16/10] overflow-hidden border border-teal-200"><img src={stepMistReconnectImg} alt="届く" className="w-full h-full object-cover" /></div>
                 <h3 className="font-serif font-bold text-slate-900 text-sm">奇跡の再会を果たす</h3>
-                <p className="text-xs text-slate-600 leading-relaxed font-sans">見つけたお相手が思い出クイズに正解することで、初めて手紙が開き、手紙のやり取りやLINE等で直接つながれます。</p>
+                <p className="text-xs text-slate-600 leading-relaxed font-sans">見つけたお相手が思い出クイズに正解することで、初めてメッセージが開き、メッセージのやり取りやLINE等で直接つながれます。</p>
               </div>
               <span className="text-[10px] text-teal-700 font-bold pt-2 border-t border-teal-100">● 想いが通じ合う瞬間</span>
             </div>
@@ -348,7 +348,7 @@ export const HomeVariantSub2Overlay: React.FC<HomeVariantSub2OverlayProps> = ({
                 <span className="text-[5px] font-black tracking-tighter uppercase -mt-0.5 text-white">eKYC済</span>
               </div>
               <div className="text-xs text-slate-700 leading-snug">
-                <span className="font-bold text-sky-950">虹色の「公的確認」マーク</span>は、差出人が運転免許証等による本人確認を完了している<span className="font-bold text-teal-900">実在証明付きの安心なお手紙</span>です。
+                <span className="font-bold text-sky-950">虹色の「公的確認」マーク</span>は、差出人が運転免許証等による本人確認を完了している<span className="font-bold text-teal-900">実在証明付きの安心なメッセージ</span>です。
               </div>
             </div>
             <button 
@@ -394,7 +394,7 @@ export const HomeVariantSub2Overlay: React.FC<HomeVariantSub2OverlayProps> = ({
                   {b.location ? `出会った場所: ${b.location} / ` : ''}「{b.excerpt || b.message || '大切なメッセージが託されています'}」
                 </p>
                 <div className="pt-1 flex items-center gap-1 text-[10px] text-teal-700 font-bold">
-                  <span>手紙を引出す</span> <ArrowRight size={12} />
+                  <span>メッセージを引出す</span> <ArrowRight size={12} />
                 </div>
               </div>
             ))}

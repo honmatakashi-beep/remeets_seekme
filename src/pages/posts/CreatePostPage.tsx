@@ -38,7 +38,7 @@ export const CreatePostPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [warningMessage, setWarningMessage] = useState<string | null>(null);
 
-  // 進行ステップ ('form': 手紙作成, 'preview': プレビュー確認, 'plan': 公開方法選択, 'success': 投函完了)
+  // 進行ステップ ('form': メッセージ作成, 'preview': プレビュー確認, 'plan': 公開方法選択, 'success': 投函完了)
   const [step, setStep] = useState<'form' | 'preview' | 'plan' | 'success'>('form');
 
   // 選択されたプラン ('free' | 'ekyc')
@@ -189,7 +189,7 @@ export const CreatePostPage = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // 2. 実際に手紙を保存・公開する処理
+  // 2. 実際にメッセージを保存・公開する処理
   const executeSubmitPost = async (authToken?: string, withEkyc?: boolean) => {
     const activeToken = authToken || token;
     const isEkycPlan = withEkyc !== undefined ? withEkyc : pendingPlan === 'ekyc';
@@ -266,7 +266,7 @@ export const CreatePostPage = () => {
         }
       } else {
         const err = await res.json();
-        setWarningMessage(err.error || '手紙の登録に失敗しました。入力内容をご確認ください。');
+        setWarningMessage(err.error || 'メッセージの登録に失敗しました。入力内容をご確認ください。');
         setStep('plan');
       }
     } catch (e) {
@@ -285,7 +285,7 @@ export const CreatePostPage = () => {
       // 未ログインの場合は無料アカウント登録モーダルを開く
       setShowAuthModal(true);
     } else {
-      // ログイン済みの場合は手紙作成を実行
+      // ログイン済みの場合はメッセージ作成を実行
       executeSubmitPost(token, plan === 'ekyc');
     }
   };
@@ -335,7 +335,7 @@ export const CreatePostPage = () => {
       if (res.ok) {
         login(data.token, data.user);
         setShowAuthModal(false);
-        // 登録・ログイン完了と同時に選択プランで手紙を自動投稿
+        // 登録・ログイン完了と同時に選択プランでメッセージを自動投稿
         await executeSubmitPost(data.token, pendingPlan === 'ekyc');
       } else {
         setAuthError(data.error || (authMode === 'register' ? 'アカウント登録に失敗しました。' : 'ログインに失敗しました。'));
@@ -348,7 +348,7 @@ export const CreatePostPage = () => {
     }
   };
 
-  // 4.5 テスト用のワンクリック自動アカウント登録＆手紙設置
+  // 4.5 テスト用のワンクリック自動アカウント登録＆メッセージ設置
   const handleQuickTestAuth = async () => {
     const rand = Math.floor(1000 + Math.random() * 9000);
     const testEmail = `test_user_${rand}@example.com`;
@@ -457,7 +457,7 @@ export const CreatePostPage = () => {
           <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${
             step === 'form' ? 'bg-white/20 text-white' : 'bg-slate-300 text-slate-700'
           }`}>1</span>
-          <span>手紙作成</span>
+          <span>メッセージ作成</span>
         </div>
         <span className="text-slate-300 font-bold">→</span>
         <div className={`flex items-center gap-1 px-3 py-1.5 rounded-full transition-all ${
@@ -489,7 +489,7 @@ export const CreatePostPage = () => {
       </div>
 
       {/* =========================================================================
-          A. プレビュー画面（手紙を見つけた相手が実際に見るHTML画面のリアルプレビュー & 見え方比較）
+          A. プレビュー画面（メッセージを見つけた相手が実際に見るHTML画面のリアルプレビュー & 見え方比較）
       ========================================================================= */}
       {step === 'preview' ? (
         <div className="space-y-6 animate-fade-in">
@@ -504,7 +504,7 @@ export const CreatePostPage = () => {
               ネット公開画面の完成プレビュー
             </h1>
             <p className="text-xs sm:text-sm text-slate-500 font-sans">
-              ネット上に手紙が流された際、このような画面として公開されます。
+              ネット上にメッセージが流された際、このような画面として公開されます。
             </p>
           </div>
 
@@ -610,7 +610,7 @@ export const CreatePostPage = () => {
                 ? 'border-amber-400/90 shadow-[0_10px_35px_rgba(251,191,36,0.18)]'
                 : 'border-slate-300 shadow-md'
             }`}>
-              {/* 手紙ヘッダー */}
+              {/* メッセージヘッダー */}
               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-teal-100 pb-4">
                 <div className="space-y-1.5 flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
@@ -669,10 +669,10 @@ export const CreatePostPage = () => {
                 </div>
               </div>
 
-              {/* 手紙メタデータ（大きめ・見やすい文字サイズ） */}
+              {/* メッセージメタデータ（大きめ・見やすい文字サイズ） */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-white/90 p-5 sm:p-6 rounded-2xl border border-slate-200/90 font-sans shadow-2xs">
                 <div className="space-y-1">
-                  <span className="text-xs font-bold text-slate-500 block">手紙を書いた人</span>
+                  <span className="text-xs font-bold text-slate-500 block">メッセージを書いた人</span>
                   <div className="text-base sm:text-lg font-bold text-slate-900 font-sans">
                     <span>{fullName || '未入力'}</span>
                     {fullNameKana && (
@@ -707,12 +707,12 @@ export const CreatePostPage = () => {
                 </div>
               </div>
 
-              {/* 手紙メッセージ本文 */}
+              {/* メッセージ本文 */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between border-b border-teal-100 pb-1.5">
                   <span className="text-xs font-bold text-teal-800 font-sans flex items-center gap-1.5">
                     <span>✉️</span>
-                    <span>手紙メッセージ本文（公開プレビュー）</span>
+                    <span>メッセージ本文（公開プレビュー）</span>
                   </span>
                   <span className="text-[11px] text-slate-400 font-sans">
                     当時の想い出・メッセージ
@@ -747,7 +747,7 @@ export const CreatePostPage = () => {
                 <span className="text-[10px] font-extrabold text-teal-700 tracking-widest uppercase font-mono flex items-center gap-1">
                   <span>ABOUT THIS LETTER</span>
                   <span>・</span>
-                  <span>手紙に込められた想いと安心の仕組み</span>
+                  <span>メッセージに込められた想いと安心の仕組み</span>
                 </span>
                 <h3 className="text-base sm:text-lg font-serif font-bold text-slate-900 flex items-center gap-2 flex-wrap">
                   <span>🕊️ 連絡先がわからなくなってしまった貴方へ</span>
@@ -762,18 +762,18 @@ export const CreatePostPage = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-              {/* 1. 手紙の目的 */}
+              {/* 1. メッセージの目的 */}
               <div className="p-4 sm:p-5 bg-gradient-to-br from-teal-50/70 to-emerald-50/30 rounded-2xl border border-teal-200/80 space-y-2">
                 <div className="flex items-center gap-2">
                   <div className="w-6 h-6 rounded-lg bg-teal-700 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
                     1
                   </div>
                   <strong className="text-slate-900 text-xs sm:text-sm font-bold block font-serif">
-                    手紙に込められた想い
+                    メッセージに込められた想い
                   </strong>
                 </div>
                 <p className="text-slate-600 text-[11.5px] leading-relaxed">
-                  引っ越しや環境の変化で連絡先が途絶えた大切な人に向けて、差出人が<strong>「もう一度話したい、元気か知りたい」</strong>という想いを込めて海に託した手紙です。
+                  引っ越しや環境の変化で連絡先が途絶えた大切な人に向けて、差出人が<strong>「もう一度話したい、元気か知りたい」</strong>という想いを込めて海に託したメッセージです。
                 </p>
               </div>
 
@@ -788,7 +788,7 @@ export const CreatePostPage = () => {
                   </strong>
                 </div>
                 <p className="text-slate-600 text-[11.5px] leading-relaxed">
-                  「自分宛てかもしれない」と思ったら、手紙下のボタンから<strong>当時の呼び名や想い出のエピソードを添えて返信</strong>できます（登録・申請は無料）。
+                  「自分宛てかもしれない」と思ったら、メッセージ下のボタンから<strong>当時の呼び名や想い出のエピソードを添えて返信</strong>できます（登録・申請は無料）。
                 </p>
               </div>
 
@@ -827,7 +827,7 @@ export const CreatePostPage = () => {
               className="w-full sm:w-auto px-5 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer font-sans"
             >
               <ArrowLeft size={14} />
-              <span>手紙を修正する</span>
+              <span>メッセージを修正する</span>
             </button>
 
             <button
@@ -838,7 +838,7 @@ export const CreatePostPage = () => {
               }}
               className="w-full sm:w-auto px-7 py-3.5 bg-gradient-to-r from-teal-700 via-emerald-700 to-teal-800 hover:from-teal-800 hover:to-emerald-800 text-white font-bold text-xs sm:text-sm rounded-2xl shadow-md hover:shadow-lg active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer font-serif"
             >
-              <span>手紙の公開方法を選択する（次へ）</span>
+              <span>メッセージの公開方法を選択する（次へ）</span>
               <ArrowRight size={16} />
             </button>
           </div>
@@ -863,7 +863,7 @@ export const CreatePostPage = () => {
                 STEP 3: SELECT PUBLISH PLAN
               </span>
               <h2 className="text-xl sm:text-3xl font-bold text-slate-900 font-serif">
-                手紙の公開方法を選択してください
+                メッセージの公開方法を選択してください
               </h2>
               <p className="text-xs sm:text-sm text-slate-600 font-sans leading-relaxed">
                 お相手があなたを見つけた際、<strong>「間違いなく本物のあの人だ！」</strong>と確信できるよう、公的本人確認（eKYC）認証マーク付きでの投函を推奨しています。
@@ -873,9 +873,9 @@ export const CreatePostPage = () => {
               <div className="p-3.5 bg-sky-50/80 rounded-2xl border border-sky-200 text-left text-xs text-sky-900 flex items-start gap-2.5 font-sans mt-3">
                 <CheckCircle2 size={16} className="text-sky-600 shrink-0 mt-0.5" />
                 <div className="space-y-0.5 leading-relaxed">
-                  <strong className="block text-sky-950 font-bold">手紙の設置とアカウント連携について</strong>
+                  <strong className="block text-sky-950 font-bold">メッセージの設置とアカウント連携について</strong>
                   <span>
-                    お相手から再会エピソードが届いた際の<strong>メール通知</strong>および、マイページでの<strong>手紙の再確認・管理</strong>のため、プラン選択後にアカウント登録（30秒）を行います。
+                    お相手から再会エピソードが届いた際の<strong>メール通知</strong>および、マイページでの<strong>メッセージの再確認・管理</strong>のため、プラン選択後にアカウント登録（30秒）を行います。
                     {pendingPlan === 'ekyc' && ' 公的本人確認（eKYC）では身元確認証明のためアカウント登録が必須となります。'}
                   </span>
                 </div>
@@ -913,7 +913,7 @@ export const CreatePostPage = () => {
                         <ShieldCheck size={12} />
                       </div>
                       <span className="leading-snug">
-                        手紙と検索カードに<strong>動く虹色公的認証マーク（封蝋印）</strong>が付与
+                        メッセージと検索カードに<strong>動く虹色公的認証マーク（封蝋印）</strong>が付与
                       </span>
                     </li>
                     <li className="flex items-start gap-2.5">
@@ -939,7 +939,7 @@ export const CreatePostPage = () => {
                     className="w-full py-4 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-sm sm:text-base rounded-2xl shadow-lg hover:shadow-xl active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer font-serif disabled:opacity-50"
                   >
                     <ShieldCheck size={18} className="text-amber-100" />
-                    <span>公的認証付きで手紙を書く（600円） ✨</span>
+                    <span>公的認証付きでメッセージを届ける（600円） ✨</span>
                   </button>
                   <span className="text-[11px] text-amber-800/80 text-center block mt-2 font-sans">
                     ※ 審査落ち時や不一致時は全額即時自動返金
@@ -956,10 +956,10 @@ export const CreatePostPage = () => {
                         BASIC
                       </span>
                       <h4 className="text-lg sm:text-xl font-serif font-bold text-slate-800 mt-1">
-                        通常の手紙として書く
+                        通常のメッセージとして届ける
                       </h4>
                       <p className="text-xs text-slate-500 font-sans mt-0.5">
-                        まずは費用をかけずに手紙を作成
+                        まずは費用をかけずにメッセージを作成
                       </p>
                     </div>
                     <div className="text-right">
@@ -998,7 +998,7 @@ export const CreatePostPage = () => {
                     className="w-full py-4 bg-slate-800 hover:bg-slate-900 text-white font-bold text-sm sm:text-base rounded-2xl shadow-md hover:shadow-lg active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer font-serif disabled:opacity-50"
                   >
                     <Send size={16} className="text-slate-300" />
-                    <span>通常公開で手紙を書く</span>
+                    <span>通常公開でメッセージを届ける</span>
                   </button>
                   <span className="text-[11px] text-slate-400 text-center block mt-2 font-sans">
                     ※ 維持費・月額費用などは一切不要
@@ -1030,13 +1030,13 @@ export const CreatePostPage = () => {
               }}
               className="text-xs text-slate-500 hover:text-slate-800 font-bold transition-all cursor-pointer underline"
             >
-              手紙の文章や内容を修正する
+              メッセージの文章や内容を修正する
             </button>
           </div>
         </div>
       ) : step === 'success' ? (
         /* =========================================================================
-            C. 投函・公開完了画面（インターネットの海に手紙が公開された完了ページ）
+            C. 投函・公開完了画面（インターネットの海にメッセージが公開された完了ページ）
         ========================================================================= */
         <div className="space-y-6 animate-fade-in text-left">
           {/* お祝いヘッダーバナー */}
@@ -1051,15 +1051,15 @@ export const CreatePostPage = () => {
             </span>
 
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-white tracking-wide">
-              手紙がインターネットの海に届けられました
+              メッセージがインターネットの海に届けられました
             </h1>
 
             <p className="text-xs sm:text-sm text-emerald-100/90 max-w-lg mx-auto font-sans leading-relaxed">
-              あなたを探しているお相手に向けた想い出の手紙が正常に公開されました。お相手がこの手紙を見つけ、当時の思い出を届けてくれる日を心待ちにしましょう。
+              あなたを探しているお相手に向けた想い出のメッセージが正常に公開されました。お相手がこのメッセージを見つけ、当時の思い出を届けてくれる日を心待ちにしましょう。
             </p>
           </div>
 
-          {/* 公開された手紙の要約カード */}
+          {/* 公開されたメッセージの要約カード */}
           <div className="bg-white rounded-3xl border-2 border-slate-200 p-6 sm:p-8 space-y-6 shadow-lg text-left">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
               <div className="flex items-center gap-2 flex-wrap">
@@ -1084,7 +1084,7 @@ export const CreatePostPage = () => {
                 </span>
               ) : (
                 <span className="text-xs font-bold text-slate-600 bg-slate-100 border border-slate-200 px-3 py-1 rounded-full">
-                  ✉️ 通常の手紙として公開中
+                  ✉️ 通常のメッセージとして公開中
                 </span>
               )}
             </div>
@@ -1092,7 +1092,7 @@ export const CreatePostPage = () => {
             {/* お名前 & メッセージ抜粋 */}
             <div className="space-y-3">
               <div>
-                <span className="text-xs font-bold text-slate-400 font-sans">手紙を書いた人</span>
+                <span className="text-xs font-bold text-slate-400 font-sans">メッセージを書いた人</span>
                 <h2 className="text-xl sm:text-2xl font-serif font-bold text-slate-900">
                   {fullName}
                   {formData.maidenName && (
@@ -1114,7 +1114,7 @@ export const CreatePostPage = () => {
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-teal-900 flex items-center gap-1.5 font-sans">
                     <Share2 size={14} className="text-teal-700" />
-                    <span>あなたのお手紙の専用URL（シェア・保存用）</span>
+                    <span>あなたのメッセージの専用URL（シェア・保存用）</span>
                   </span>
                   <span className="text-[10px] text-teal-700 font-mono">
                     PUBLIC LINK
@@ -1155,7 +1155,7 @@ export const CreatePostPage = () => {
                   </button>
                 </div>
                 <p className="text-[11px] text-teal-800/80 font-sans">
-                  ※ SNSやブログ、メモ帳等にこのURLを保存しておくと、いつでも直接手紙を開くことができます。
+                  ※ SNSやブログ、メモ帳等にこのURLを保存しておくと、いつでも直接メッセージを開くことができます。
                 </p>
               </div>
             )}
@@ -1165,7 +1165,7 @@ export const CreatePostPage = () => {
           <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 space-y-4 shadow-sm text-left font-sans">
             <h3 className="text-base sm:text-lg font-serif font-bold text-slate-900 flex items-center gap-2">
               <Sparkles size={18} className="text-teal-600" />
-              <span>今後の通知と手紙の管理について</span>
+              <span>今後の通知とメッセージの管理について</span>
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
@@ -1187,9 +1187,9 @@ export const CreatePostPage = () => {
 
               <div className="p-4 bg-amber-50/50 rounded-2xl border border-amber-100 space-y-1.5">
                 <span className="text-[10px] font-bold text-amber-800 font-mono block">3. いつでも再確認</span>
-                <strong className="text-slate-900 block">マイページで手紙を管理</strong>
+                <strong className="text-slate-900 block">マイページでメッセージを管理</strong>
                 <p className="text-slate-600 text-[11px] leading-relaxed">
-                  ログイン後のマイページから、いつでも手紙の内容再確認・メッセージ修正・取り下げが可能です。
+                  ログイン後のマイページから、いつでもメッセージの内容再確認・メッセージ修正・取り下げが可能です。
                 </p>
               </div>
             </div>
@@ -1202,7 +1202,7 @@ export const CreatePostPage = () => {
                 次はどちらのページをご覧になりますか？
               </h3>
               <p className="text-xs text-slate-300 font-sans">
-                公開された実際の手紙ページ、または手紙を管理できるマイページへ移動できます。
+                公開された実際のメッセージページ、またはメッセージを管理できるマイページへ移動できます。
               </p>
             </div>
 
@@ -1224,7 +1224,7 @@ export const CreatePostPage = () => {
                 className="py-4 px-6 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold text-sm rounded-2xl shadow-md hover:shadow-lg active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer font-serif"
               >
                 <Eye size={18} />
-                <span>公開された実際の手紙を見に行く</span>
+                <span>公開された実際のメッセージを見に行く</span>
               </button>
 
               <button
@@ -1233,7 +1233,7 @@ export const CreatePostPage = () => {
                 className="py-4 px-6 bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm rounded-2xl shadow-md hover:shadow-lg active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer border border-slate-700 font-serif"
               >
                 <User size={18} />
-                <span>マイページで手紙を管理・確認する</span>
+                <span>マイページでメッセージを管理・確認する</span>
               </button>
             </div>
 
@@ -1262,8 +1262,8 @@ export const CreatePostPage = () => {
                 プライバシー・防犯設計
               </span>
             }
-            title="手紙を書く"
-            description="私を探している誰かに向けて、あなたからの手紙を届けておきましょう。学校名や詳細な住所は非公開のため、プライバシーを完全に守りながら待つことができます。"
+            title="メッセージを届ける"
+            description="私を探している誰かに向けて、あなたからのメッセージを届けておきましょう。学校名や詳細な住所は非公開のため、プライバシーを完全に守りながら待つことができます。"
           />
 
           {/* 🧪 【テスト・動作確認用】一括自動入力バー */}
@@ -1416,7 +1416,7 @@ export const CreatePostPage = () => {
                         maidenName: '',
                         birthYear: '1978',
                         hometownPref: '大阪府',
-                        message: '昔お世話になった皆様へ。ふと当時の温かい思い出が蘇り、こちらに手紙を書くことにしました。元気でお過ごしでしょうか。',
+                        message: '昔お世話になった皆様へ。ふと当時の温かい思い出が蘇り、こちらにメッセージを届けることにしました。元気でお過ごしでしょうか。',
                         contactType: 'LINE',
                         contactId: 'suzuki_kenichi_1978',
                         contactNote: '週末に返信いたします。'
@@ -1443,7 +1443,7 @@ export const CreatePostPage = () => {
                         maidenName: '',
                         birthYear: '1978',
                         hometownPref: '大阪府',
-                        message: '昔お世話になった皆様へ。ふと当時の温かい思い出が蘇り、こちらに手紙を書くことにしました。元気でお過ごしでしょうか。',
+                        message: '昔お世話になった皆様へ。ふと当時の温かい思い出が蘇り、こちらにメッセージを届けることにしました。元気でお過ごしでしょうか。',
                         contactType: 'LINE',
                         contactId: 'suzuki_kenichi_1978',
                         contactNote: '週末に返信いたします。'
@@ -1470,7 +1470,7 @@ export const CreatePostPage = () => {
               <span>安心・安全のための「公開メッセージの約束ごと」</span>
             </div>
             <p className="text-xs text-slate-600 font-sans leading-relaxed">
-              手紙はGoogle検索等にも掲載される目印となります。悪質な居場所特定や嫌がらせを防ぐため、以下のルールをお守りください。
+              メッセージはGoogle検索等にも掲載される目印となります。悪質な居場所特定や嫌がらせを防ぐため、以下のルールをお守りください。
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1 text-xs">
               <div className="p-3 bg-white/90 rounded-2xl border border-teal-100 shadow-2xs space-y-1">
@@ -1801,7 +1801,7 @@ export const CreatePostPage = () => {
                   <ArrowRight size={16} />
                 </button>
                 <p className="text-[11px] text-slate-400 mt-2 font-sans">
-                  ※ 次の画面で、ネット公開画面の完成プレビューを確認して手紙を作成できます。
+                  ※ 次の画面で、ネット公開画面の完成プレビューを確認してメッセージを作成できます。
                 </p>
               </div>
             </div>
@@ -1842,7 +1842,7 @@ export const CreatePostPage = () => {
                       {authMode === 'register' ? 'Registration' : 'Login'}
                     </span>
                     <h3 className="text-base sm:text-lg font-serif font-bold text-slate-900 mt-0.5">
-                      {authMode === 'register' ? 'アカウント登録（手紙の作成）' : 'ログインして手紙を公開'}
+                      {authMode === 'register' ? 'アカウント登録（メッセージの作成）' : 'ログインしてメッセージを公開'}
                     </h3>
                   </div>
                 </div>
@@ -1866,7 +1866,7 @@ export const CreatePostPage = () => {
                       className="py-2.5 px-3 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 font-serif active:scale-98"
                     >
                       <Sparkles size={13} className="text-amber-200" />
-                      <span>⚡ ワンクリックで登録して手紙を書く</span>
+                      <span>⚡ ワンクリックで登録してメッセージを届ける</span>
                     </button>
                     <button
                       type="button"
@@ -1889,7 +1889,7 @@ export const CreatePostPage = () => {
                   </p>
                   <ul className="space-y-1 text-[11px] text-slate-600 list-disc pl-4">
                     <li>相手から再会エピソードが届いた際に<strong>メール通知</strong>を受け取るため</li>
-                    <li>マイページで手紙の内容を<strong>いつでも再確認・編集・削除</strong>できるようにするため</li>
+                    <li>マイページでメッセージの内容を<strong>いつでも再確認・編集・削除</strong>できるようにするため</li>
                     <li>公的本人確認（eKYC）を行う場合、<strong>身元確認データを安全に紐付ける</strong>ため</li>
                   </ul>
                 </div>
@@ -1972,7 +1972,7 @@ export const CreatePostPage = () => {
                     ) : (
                       <>
                         <Send size={14} />
-                        <span>{authMode === 'register' ? '登録して手紙を書く ✨' : 'ログインして手紙を書く ✨'}</span>
+                        <span>{authMode === 'register' ? '登録してメッセージを届ける ✨' : 'ログインしてメッセージを届ける ✨'}</span>
                       </>
                     )}
                   </button>
@@ -2027,7 +2027,7 @@ export const CreatePostPage = () => {
               ...prev,
               is_ekyc_verified: true
             }));
-            // 手紙側にも eKYC 認証反映
+            // メッセージ側にも eKYC 認証反映
             fetch(`/api/posts/${createdPostData.id}`, {
               headers: token ? { 'Authorization': `Bearer ${token}` } : {}
             }).catch(() => {});

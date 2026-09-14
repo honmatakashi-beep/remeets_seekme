@@ -37,7 +37,7 @@ export interface ManualSectionDetailRendererProps {
                 <div className="p-4 rounded-2xl bg-zinc-50 border border-brand-border space-y-2">
                   <span className="font-bold text-xs text-rose-900 block">① 私的目的の覗き見・検索の絶対禁止</span>
                   <p className="text-[11px] text-black/70">
-                    面識のない第三者の手紙本文やクイズ解答履歴を興味本位で検索・閲覧する行為は即時懲戒解雇および刑事告発の対象となります。管理画面上の全検索・全閲覧は管理者IDとIPアドレス付きで暗号化ログに記録されます。
+                    面識のない第三者のメッセージ本文やクイズ解答履歴を興味本位で検索・閲覧する行為は即時懲戒解雇および刑事告発の対象となります。管理画面上の全検索・全閲覧は管理者IDとIPアドレス付きで暗号化ログに記録されます。
                   </p>
                 </div>
                 <div className="p-4 rounded-2xl bg-zinc-50 border border-brand-border space-y-2">
@@ -137,7 +137,7 @@ export interface ManualSectionDetailRendererProps {
                     <tr>
                       <td className="p-2 border border-brand-border font-bold text-teal-900">⚡ 最高管理者 (Admin)</td>
                       <td className="p-2 border border-brand-border">運用責任者 / CTO</td>
-                      <td className="p-2 border border-brand-border">ユーザー管理、手紙編集・削除、手動返金実行、一括通知配信、レート制限調整</td>
+                      <td className="p-2 border border-brand-border">ユーザー管理、メッセージ編集・削除、手動返金実行、一括通知配信、レート制限調整</td>
                       <td className="p-2 border border-brand-border">M&Aデータ室閲覧不可、オーナーロール変更不可</td>
                     </tr>
                     <tr>
@@ -237,7 +237,7 @@ export interface ManualSectionDetailRendererProps {
                   <span className="px-2 py-0.5 bg-zinc-200 text-black/70 rounded font-bold text-[10px]">案3: デジタルカード発行</span>
                   <h5 className="font-bold text-xs text-black">PDF記念証発行モデル</h5>
                   <p className="text-[11px] text-black/70">
-                    手紙本文と連絡先がデザインされた記念デジタルレターカード（画像/PDF）を発行しダウンロード提供。記念品としての所有感を演出。
+                    メッセージ本文と連絡先がデザインされた記念デジタルレターカード（画像/PDF）を発行しダウンロード提供。記念品としての所有感を演出。
                   </p>
                 </div>
               </div>
@@ -323,7 +323,7 @@ export interface ManualSectionDetailRendererProps {
             <div className="p-5 rounded-2xl bg-zinc-50 border border-brand-border space-y-2">
               <h4 className="font-bold text-sm text-black">ボトルメール管理 ＆ 証跡付きアーカイブ削除の基本方針</h4>
               <p className="text-[11px] text-black/70 leading-relaxed">
-                漂流中のボトルメール（手紙）はユーザーの想いが込められた大切なデータです。誤字脱字による連絡不能を救済するための「ダイレクト編集」と、規約違反や差出人申告による「証跡付き削除」を適切に執行します。
+                漂流中のボトルメール（メッセージ）はユーザーの想いが込められた大切なデータです。誤字脱字による連絡不能を救済するための「ダイレクト編集」と、規約違反や差出人申告による「証跡付き削除」を適切に執行します。
               </p>
             </div>
 
@@ -347,10 +347,10 @@ export interface ManualSectionDetailRendererProps {
               <div className="p-4 bg-amber-50 rounded-2xl border border-amber-200 text-[11px] text-amber-950 space-y-2">
                 <span className="font-bold text-amber-900 block flex items-center gap-1.5">
                   <AlertTriangle size={15} />
-                  手紙削除時の厳格ルール: 削除理由の選択が必須
+                  メッセージ削除時の厳格ルール: 削除理由の選択が必須
                 </span>
                 <p>
-                  ReMEETsでは、手紙を削除してもデータベースから完全抹消（物理DELETE）せず、<code>deleted_posts</code> テーブルへ「実行管理者ID」「削除日時」「削除理由コード」「原文データ」を永久保全します。警察捜査やトラブル時の証拠保全のためです。
+                  ReMEETsでは、メッセージを削除してもデータベースから完全抹消（物理DELETE）せず、<code>deleted_posts</code> テーブルへ「実行管理者ID」「削除日時」「削除理由コード」「原文データ」を永久保全します。警察捜査やトラブル時の証拠保全のためです。
                 </p>
               </div>
               <div className="overflow-x-auto">
@@ -432,7 +432,7 @@ export interface ManualSectionDetailRendererProps {
                 Gemini 2.5 Flash リアルタイムAI検閲エンジンの動作仕様
               </span>
               <p className="text-xs text-teal-950 leading-relaxed font-serif">
-                ReMEETsでは、手紙投函時に Google Gemini 2.5 Flash API を呼び出し、文章の「ストーカー性」「脅迫・怨恨」「直接連絡先露出」「不当な出会い目的」をリアルタイムで多層判定します。危険判定された手紙は即座に隔離（<code>ai_flagged = 1</code>）され、一般タイムラインには一切流れません。
+                ReMEETsでは、メッセージ投函時に Google Gemini 2.5 Flash API を呼び出し、文章の「ストーカー性」「脅迫・怨恨」「直接連絡先露出」「不当な出会い目的」をリアルタイムで多層判定します。危険判定されたメッセージは即座に隔離（<code>ai_flagged = 1</code>）され、一般タイムラインには一切流れません。
               </p>
             </div>
 
@@ -528,7 +528,7 @@ export interface ManualSectionDetailRendererProps {
                 <li><b>処置の決定:</b>
                   <ul className="list-disc pl-4 mt-1 space-y-1 text-black/70">
                     <li><b>違反なし:</b>「却下（問題なし）」をクリックして通報をクローズ。</li>
-                    <li><b>軽微な違反:</b>「手紙を非公開化」をクリック。</li>
+                    <li><b>軽微な違反:</b>「メッセージを非公開化」をクリック。</li>
                     <li><b>重大な違反（ストーカー・脅迫）:</b>「アカウント即時凍結（Block）」をクリック。当該ユーザーの全ボトルが非公開化され、新規ログインが遮断されます。</li>
                   </ul>
                 </li>
@@ -581,7 +581,7 @@ export interface ManualSectionDetailRendererProps {
                     </tr>
                     <tr>
                       <td className="p-2 border border-brand-border font-bold text-amber-700">🟡 通常 (Medium)</td>
-                      <td className="p-2 border border-brand-border">eKYC再審査依頼、秘密の質問に関する問い合わせ、手紙削除依頼</td>
+                      <td className="p-2 border border-brand-border">eKYC再審査依頼、秘密の質問に関する問い合わせ、メッセージ削除依頼</td>
                       <td className="p-2 border border-brand-border font-bold">12時間以内</td>
                       <td className="p-2 border border-brand-border">モデレーター (Moderator)</td>
                     </tr>
@@ -602,7 +602,7 @@ export interface ManualSectionDetailRendererProps {
                 <li><b>未対応 (Unresolved):</b> 新規着信時のデフォルト状態。担当者が返信を開始する際に「保留中」へ変更。</li>
                 <li><b>保留中 (Pending):</b> ユーザーからの追加身分証提出やエンジニア調査を待っている状態。</li>
                 <li><b>完了 (Resolved):</b> メール送信完了し対応が完了した状態。</li>
-                <li><b>必須事項:</b> 対応完了時は、必ず「管理者対応メモ」に対応日時、返信内容の要約、処理内容（例:「600円手動返金完了」「手紙ID:123削除完了」）を記録してください。</li>
+                <li><b>必須事項:</b> 対応完了時は、必ず「管理者対応メモ」に対応日時、返信内容の要約、処理内容（例:「600円手動返金完了」「メッセージID:123削除完了」）を記録してください。</li>
               </ol>
             </div>
           </div>
@@ -634,8 +634,8 @@ export interface ManualSectionDetailRendererProps {
                     <tr>
                       <td className="p-2 border border-brand-border font-mono">TPL-01</td>
                       <td className="p-2 border border-brand-border font-bold">ボトル投函完了通知</td>
-                      <td className="p-2 border border-brand-border">手紙投函完了時</td>
-                      <td className="p-2 border border-brand-border">手紙が海へ流されたことの報告と、マイページURL</td>
+                      <td className="p-2 border border-brand-border">メッセージ投函完了時</td>
+                      <td className="p-2 border border-brand-border">メッセージが海へ流されたことの報告と、マイページURL</td>
                     </tr>
                     <tr>
                       <td className="p-2 border border-brand-border font-mono">TPL-02</td>
@@ -762,7 +762,7 @@ export interface ManualSectionDetailRendererProps {
                     <tr>
                       <td className="p-2 border border-brand-border font-bold">照合ボトルID</td>
                       <td className="p-2 border border-brand-border font-mono">post_8841</td>
-                      <td className="p-2 border border-brand-border">開通対象の手紙レコードへのリンク</td>
+                      <td className="p-2 border border-brand-border">開通対象のメッセージレコードへのリンク</td>
                     </tr>
                   </tbody>
                 </table>
@@ -1180,7 +1180,7 @@ export interface ManualSectionDetailRendererProps {
               <div className="p-4 bg-zinc-50 rounded-2xl border border-brand-border space-y-2">
                 <span className="font-bold text-xs text-teal-950 block">【C. 本番データ管理 (2項目)】</span>
                 <ul className="list-disc pl-4 space-y-1 text-[11px] text-black/70">
-                  <li><b>7. 開発用テストデータの完全初期化:</b> デバッグユーザー・テスト手紙の一括削除。</li>
+                  <li><b>7. 開発用テストデータの完全初期化:</b> デバッグユーザー・テストメッセージの一括削除。</li>
                   <li><b>8. 情緒豊かな300件サンプルデータのSeeding:</b> ローンチ初期の寂しさを排除する良質サンプル投入。</li>
                 </ul>
               </div>
@@ -1324,7 +1324,7 @@ export interface ManualSectionDetailRendererProps {
                     <tr>
                       <td className="p-2 border border-brand-border font-mono">5</td>
                       <td className="p-2 border border-brand-border font-bold">AI誤検知免責</td>
-                      <td className="p-2 border border-brand-border">健全な手紙がAI誤検知で一時隔離された場合の機会損失について運営免責を明記。</td>
+                      <td className="p-2 border border-brand-border">健全なメッセージがAI誤検知で一時隔離された場合の機会損失について運営免責を明記。</td>
                     </tr>
                     <tr>
                       <td className="p-2 border border-brand-border font-mono">6</td>
@@ -1460,7 +1460,7 @@ export interface ManualSectionDetailRendererProps {
                 <li><b>春 (Spring / 桜色):</b> 背景に薄紅パステル、希望と再会の情緒を強調。</li>
                 <li><b>夏 (Summer / 海色 - デフォルト):</b> エメラルドグリーン＆ティールブルー、波打ち際の爽やかさ。</li>
                 <li><b>秋 (Autumn / 夕暮れ色):</b> 茜色＆アンバーゴールド、郷愁と温もりの想い出。</li>
-                <li><b>冬 (Winter / 澄んだ夜空):</b> ディープスレート＆シルバーホワイト、静謐な手紙の世界。</li>
+                <li><b>冬 (Winter / 澄んだ夜空):</b> ディープスレート＆シルバーホワイト、静謐なメッセージの世界。</li>
               </ul>
             </div>
           </div>

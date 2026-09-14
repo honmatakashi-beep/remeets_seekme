@@ -73,7 +73,7 @@ export const SuccessStoriesPage = () => {
       relationship: "中学時代の親友（陸上部）",
       title: "卒業から35年。懐かしいあだ名とお互いの記憶が繋いでくれた奇跡",
       participants: "佐藤 健 様（52歳）＆ 鈴木 信一郎 様（51歳）",
-      description: "中学の卒業以来、お互いに転居が重なり連絡先が分からなくなっていました。ふとReMEETsで当時の陸上部の手紙を見つけ、懐かしい想い出のキーワードをきっかけに35年ぶりにメッセージが開通。当時のあだ名で呼び合い、まるで当時にタイムスリップしたような感動でした。今では年に一度集まる仲に戻り、一生の友人を再び取り戻せました。",
+      description: "中学の卒業以来、お互いに転居が重なり連絡先が分からなくなっていました。ふとReMEETsで当時の陸上部のメッセージを見つけ、懐かしい想い出のキーワードをきっかけに35年ぶりにメッセージが開通。当時のあだ名で呼び合い、まるで当時にタイムスリップしたような感動でした。今では年に一度集まる仲に戻り、一生の友人を再び取り戻せました。",
       bg: "bg-amber-50/40 border-amber-200/80"
     },
     {
@@ -84,7 +84,7 @@ export const SuccessStoriesPage = () => {
       relationship: "高校吹奏楽部の顧問と元部長",
       title: "定年退職された吹奏楽部の恩師へ。30年越しの『ありがとう』が届いた日",
       participants: "高橋 由美子 様（45歳）＆ 山本 栄治 先生（71歳）",
-      description: "山本先生が定年退職されたと風の噂で聞き、当時の部活仲間で『どうしても感謝を伝えたい』と手紙を流しました。先生のご家族がこの手紙を見つけて先生に伝えてくださり、30年ぶりに温かいお返事をいただくことができました。先日、当時の部員一同で先生を囲んで同窓会を開き、最高の恩返しができました。",
+      description: "山本先生が定年退職されたと風の噂で聞き、当時の部活仲間で『どうしても感謝を伝えたい』とメッセージを流しました。先生のご家族がこのメッセージを見つけて先生に伝えてくださり、30年ぶりに温かいお返事をいただくことができました。先日、当時の部員一同で先生を囲んで同窓会を開き、最高の恩返しができました。",
       bg: "bg-indigo-50/30 border-indigo-200/60"
     },
     {
@@ -106,7 +106,7 @@ export const SuccessStoriesPage = () => {
       relationship: "小学校時代の幼馴染",
       title: "さよならを言えないまま離れ離れになった幼馴染。40年ぶりの笑顔",
       participants: "松田 恵美 様（48歳）＆ 川上 陽子 様（48歳）",
-      description: "小学校の時、親の急な転勤で手紙も渡せないまま引っ越してしまい、40年間ずっと心に引っかかっていました。ReMEETsに当時の公園の思い出を流したところ、彼女が検索して見つけてくれました。『ずっと探してたよ』と言われた瞬間、涙があふれました。今はお互いの子供のことや近況を楽しく語り合っています。",
+      description: "小学校の時、親の急な転勤でメッセージも渡せないまま引っ越してしまい、40年間ずっと心に引っかかっていました。ReMEETsに当時の公園の思い出を流したところ、彼女が検索して見つけてくれました。『ずっと探してたよ』と言われた瞬間、涙があふれました。今はお互いの子供のことや近況を楽しく語り合っています。",
       bg: "bg-rose-50/30 border-rose-200/60"
     },
     {
@@ -358,7 +358,7 @@ export const SuccessStoriesPage = () => {
                 className="px-6 py-3 bg-gradient-to-r from-sky-600 via-teal-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 text-white font-extrabold text-xs sm:text-sm rounded-2xl shadow-sm hover:shadow-md hover:scale-[1.02] active:scale-98 transition-all flex items-center gap-2 cursor-pointer"
               >
                 <Mail size={15} />
-                <span>手紙を海へ流す（新規投函）</span>
+                <span>メッセージを海へ流す（新規投函）</span>
               </Link>
               <button 
                 onClick={() => setIsModalOpen(true)} 
@@ -372,7 +372,7 @@ export const SuccessStoriesPage = () => {
                 className="px-5 py-3 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 font-bold text-xs sm:text-sm rounded-2xl flex items-center gap-1.5 transition-all"
               >
                 <Search size={15} />
-                <span>手紙を探す</span>
+                <span>メッセージを探す</span>
               </Link>
             </>
           ) : (
@@ -382,7 +382,7 @@ export const SuccessStoriesPage = () => {
                 className="px-6 py-3 bg-gradient-to-r from-sky-600 via-teal-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 text-white font-extrabold text-xs sm:text-sm rounded-2xl shadow-sm hover:shadow-md hover:scale-[1.02] active:scale-98 transition-all flex items-center gap-2 cursor-pointer"
               >
                 <Mail size={15} />
-                <span>手紙を書く</span>
+                <span>メッセージを届ける</span>
               </Link>
               <button 
                 onClick={() => setIsModalOpen(true)} 
@@ -396,7 +396,7 @@ export const SuccessStoriesPage = () => {
                 className="px-5 py-3 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 font-bold text-xs sm:text-sm rounded-2xl flex items-center gap-1.5 transition-all"
               >
                 <Search size={15} />
-                <span>誰かの手紙を探してみる</span>
+                <span>誰かのメッセージを探してみる</span>
               </Link>
             </>
           )}

@@ -72,9 +72,9 @@ export const FaqPage: React.FC = () => {
     },
     {
       id: 'edit',
-      label: '手紙の編集・削除・退会',
+      label: 'メッセージの編集・削除・退会',
       icon: Trash2,
-      description: '手紙の修正・完全削除、退会時のデータ抹消、海外利用について'
+      description: 'メッセージの修正・完全削除、退会時のデータ抹消、海外利用について'
     },
   ];
 
@@ -88,19 +88,19 @@ export const FaqPage: React.FC = () => {
       answer: (
         <>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            ボトルメール（手紙）を海へ流すこと、手紙を検索して一覧を見ること、想い出クイズへ挑戦すること、および会員登録・維持は<strong className="text-slate-900 font-bold">完全無料（0円）</strong>です。
+            ボトルメール（メッセージ）を海へ流すこと、メッセージを検索して一覧を見ること、想い出クイズへ挑戦すること、および会員登録・維持は<strong className="text-slate-900 font-bold">完全無料（0円）</strong>です。
           </p>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            費用が発生するのは、二人だけの想い出クイズに正解し、<strong className="text-slate-900 font-bold">「手紙を開封してお相手の連絡先を開示する瞬間」</strong>のみ（完全買い切り型・都度決済）です。ご希望の確認方法に応じて以下の明瞭な料金となっております。
+            費用が発生するのは、二人だけの想い出クイズに正解し、<strong className="text-slate-900 font-bold">「メッセージを開封してお相手の連絡先を開示する瞬間」</strong>のみ（完全買い切り型・都度決済）です。ご希望の確認方法に応じて以下の明瞭な料金となっております。
           </p>
           <ul className="list-disc pl-5 space-y-1.5 text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
             <li>
-              <strong className="text-slate-900">① 通常の手紙開封（無料の年齢誓約を利用する場合）: 総額 600円（税込）</strong><br />
-              想い出クイズ正解後、手紙全文を閲覧し、お相手の連絡先（LINE IDやメールアドレス）を開示して直接繋がることができます。
+              <strong className="text-slate-900">① 通常のメッセージ開封（無料の年齢誓約を利用する場合）: 総額 600円（税込）</strong><br />
+              想い出クイズ正解後、メッセージ全文を閲覧し、お相手の連絡先（LINE IDやメールアドレス）を開示して直接繋がることができます。
             </li>
             <li>
-              <strong className="text-slate-900">② 公的本人確認付き手紙開封（eKYC公的身分証認証を行う場合）: 総額 1,200円（税込）</strong><br />
-              手紙開封手数料（600円）＋ 運転免許証やマイナンバーカード等による公的本人確認審査手数料（600円）の合計金額となります。プロフィールに「🛡️ 公的本人確認済」バッジが付与され、お相手に最高の安心・信頼を届けて再会できます。（※eKYC審査で書類不備等により不合格となった場合は、Stripe仮売上により全額100%即時自動返金されます）
+              <strong className="text-slate-900">② 公的本人確認付きメッセージ開封（eKYC公的身分証認証を行う場合）: 総額 1,200円（税込）</strong><br />
+              メッセージ開封手数料（600円）＋ 運転免許証やマイナンバーカード等による公的本人確認審査手数料（600円）の合計金額となります。プロフィールに「🛡️ 公的本人確認済」バッジが付与され、お相手に最高の安心・信頼を届けて再会できます。（※eKYC審査で書類不備等により不合格となった場合は、Stripe仮売上により全額100%即時自動返金されます）
             </li>
           </ul>
         </>
@@ -118,7 +118,7 @@ export const FaqPage: React.FC = () => {
             いいえ、月額料金や自動更新・後からの追加請求は一切ございません。
           </p>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            一般的なマッチングアプリのような月額会員制（サブスク）ではなく、手紙開封（600円）や公的本人確認eKYC（600円）といった1回ごとの都度買い切りモデルです。使わない月に勝手に引き落とされる心配は100%ありません。
+            一般的なマッチングアプリのような月額会員制（サブスク）ではなく、メッセージ開封（600円）や公的本人確認eKYC（600円）といった1回ごとの都度買い切りモデルです。使わない月に勝手に引き落とされる心配は100%ありません。
           </p>
         </>
       ),
@@ -169,7 +169,7 @@ export const FaqPage: React.FC = () => {
       question: '差出人と受け取る側のどちらがお金を払うのですか？',
       answer: (
         <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-          手紙を見つけてクイズに正解し、<strong className="text-slate-900 font-bold">「お相手の連絡先を開示したい」と希望した側（開封者）</strong> が開通手数料（600円）をお支払いいただきます。手紙を最初に流した側（差出人）は、投函時も開通通知を受け取る時も費用はかかりません。
+          メッセージを見つけてクイズに正解し、<strong className="text-slate-900 font-bold">「お相手の連絡先を開示したい」と希望した側（開封者）</strong> が開通手数料（600円）をお支払いいただきます。メッセージを最初に流した側（差出人）は、投函時も開通通知を受け取る時も費用はかかりません。
         </p>
       ),
       tags: ['差出人', '受取人', '負担']
@@ -185,7 +185,7 @@ export const FaqPage: React.FC = () => {
             はい。想い出のボトルメールを後世まで安全に残し続けるためのサーバーインフラ維持・AI安全検閲の運用のために、<strong className="text-slate-900 font-bold">「サポーター寄付（1口 500円〜 / 任意金額）」</strong> を受け付けております。
           </p>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            寄付は完全に任意（自由意志）であり、寄付を行わなくても手紙の投函・検索・開封など全ての基本機能を通常どおりご利用いただけます。月額自動引き落としではなく完全な都度決済（買い切り）であり、寄付完了時には感謝の証としてプロフィールにサポーターバッジが付与されます。
+            寄付は完全に任意（自由意志）であり、寄付を行わなくてもメッセージの投函・検索・開封など全ての基本機能を通常どおりご利用いただけます。月額自動引き落としではなく完全な都度決済（買い切り）であり、寄付完了時には感謝の証としてプロフィールにサポーターバッジが付与されます。
           </p>
         </>
       ),
@@ -209,7 +209,7 @@ export const FaqPage: React.FC = () => {
             <p className="text-xs md:text-sm text-slate-600 font-sans m-0">・「放課後によく二人で買い食いした駄菓子屋のおばちゃんの名前は？」</p>
           </div>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            これにより、同姓同名の別人や悪意ある第三者が手紙を勝手に開封したり、連絡先を取得したりすることを完全に遮断しています。
+            これにより、同姓同名の別人や悪意ある第三者がメッセージを勝手に開封したり、連絡先を取得したりすることを完全に遮断しています。
           </p>
         </>
       ),
@@ -243,7 +243,7 @@ export const FaqPage: React.FC = () => {
             ReMEETsでは、アプリ内でメッセージを永続させるのではなく、<strong className="text-slate-900 font-bold">「お相手のLINE IDやメールアドレスを安全に引き渡し、プラットフォームの役割を完結」</strong> させるモデルを採用しています。
           </p>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            開示完了画面に表示される「LINEを開く」や「メールを送る」ボタンから、普段使い慣れた連絡手段で直接お相手へ温かい再会のメッセージをお送りいただけます。同時に、差出人へも「あなたの手紙がお相手に届きました」と自動メール通知が届きます。
+            開示完了画面に表示される「LINEを開く」や「メールを送る」ボタンから、普段使い慣れた連絡手段で直接お相手へ温かい再会のメッセージをお送りいただけます。同時に、差出人へも「あなたのメッセージがお相手に届きました」と自動メール通知が届きます。
           </p>
         </>
       ),
@@ -257,10 +257,10 @@ export const FaqPage: React.FC = () => {
       answer: (
         <>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            手紙を一度流しておけば、<strong className="text-slate-900 font-bold">インターネット上の海（Google検索）に宛名と想い出のキーワードが安全にインデックス</strong> されます。
+            メッセージを一度流しておけば、<strong className="text-slate-900 font-bold">インターネット上の海（Google検索）に宛名と想い出のキーワードが安全にインデックス</strong> されます。
           </p>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            お相手がふと自分の名前や出身校を検索（エゴサーチ）した際や、知人から「ReMEETsであなた宛の手紙が流れているよ」とシェアされた際にいつでも手紙を見つけることができます。手紙はあなたが削除しない限り、何年間でも海を漂い続けます。
+            お相手がふと自分の名前や出身校を検索（エゴサーチ）した際や、知人から「ReMEETsであなた宛のメッセージが流れているよ」とシェアされた際にいつでもメッセージを見つけることができます。メッセージはあなたが削除しない限り、何年間でも海を漂い続けます。
           </p>
         </>
       ),
@@ -270,14 +270,14 @@ export const FaqPage: React.FC = () => {
       id: 'q-quiz-5',
       category: 'quiz',
       categoryName: '想い出クイズ・再会',
-      question: '一度開封した手紙や相手の連絡先は、後からもう一度確認できますか？追加料金はかかりますか？',
+      question: '一度開封したメッセージや相手の連絡先は、後からもう一度確認できますか？追加料金はかかりますか？',
       answer: (
         <>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
             はい、<strong className="text-slate-900 font-bold">追加料金は一切かからず何度でもご確認いただけます。</strong>
           </p>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            一度想い出クイズに正解して開封を完了した手紙は、マイページの「開封済みボトルメール（再会達成一覧）」に大切に永久保存されます。いつでも相手のLINE ID、メールアドレス、手紙の全文を再確認できますのでご安心ください。
+            一度想い出クイズに正解して開封を完了したメッセージは、マイページの「開封済みボトルメール（再会達成一覧）」に大切に永久保存されます。いつでも相手のLINE ID、メールアドレス、メッセージの全文を再確認できますのでご安心ください。
           </p>
         </>
       ),
@@ -296,7 +296,7 @@ export const FaqPage: React.FC = () => {
             ご安心ください。一般公開されるタイムラインや検索一覧には、本名や詳細な住所・連絡先などの個人情報は一切表示されません。
           </p>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            手紙の宛名（あだ名やイニシャル可）と、想い出の年代・ゆかりの都道府県、そして思い出クイズの設問文のみが表示されます。手紙の本文全文やお互いの連絡先は、<strong className="text-slate-900 font-bold">「思い出クイズ完全一致 ＋ 手紙開封・公的本人確認」</strong> を完了した当事者2名にのみ暗号化復号されて表示されます。
+            メッセージの宛名（あだ名やイニシャル可）と、想い出の年代・ゆかりの都道府県、そして思い出クイズの設問文のみが表示されます。メッセージの本文全文やお互いの連絡先は、<strong className="text-slate-900 font-bold">「思い出クイズ完全一致 ＋ メッセージ開封・公的本人確認」</strong> を完了した当事者2名にのみ暗号化復号されて表示されます。
           </p>
         </>
       ),
@@ -306,11 +306,11 @@ export const FaqPage: React.FC = () => {
       id: 'q-safety-2',
       category: 'safety',
       categoryName: '安全性・プライバシー',
-      question: '手紙の本文に自分のLINE IDや電話番号を直接書いて流してもいいですか？',
+      question: 'メッセージの本文に自分のLINE IDや電話番号を直接書いて流してもいいですか？',
       answer: (
         <>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            いいえ、手紙本文への直接の連絡先（LINE ID、電話番号、メールアドレス、SNSアカウント、詳細な住所等）の記載は安全規約により<strong className="text-slate-900 font-bold">固く禁止</strong>されています。
+            いいえ、メッセージ本文への直接の連絡先（LINE ID、電話番号、メールアドレス、SNSアカウント、詳細な住所等）の記載は安全規約により<strong className="text-slate-900 font-bold">固く禁止</strong>されています。
           </p>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
             第三者による悪用や個人情報漏洩を防ぐため、AIおよびシステムが自動検知して投稿を遮断または非公開化します。連絡先は必ず専用の「秘密の連絡先」設定欄に入力してください（想い出クイズ正解者のみに暗号化復号して安全に引き渡されます）。
@@ -340,7 +340,7 @@ export const FaqPage: React.FC = () => {
       id: 'q-safety-4',
       category: 'safety',
       categoryName: '安全性・プライバシー',
-      question: '嫌がらせやストーカー行為、心当たりのない不審な手紙が届いた場合の対策はどうなっていますか？',
+      question: '嫌がらせやストーカー行為、心当たりのない不審なメッセージが届いた場合の対策はどうなっていますか？',
       answer: (
         <>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
@@ -348,7 +348,7 @@ export const FaqPage: React.FC = () => {
           </p>
           <ul className="list-disc pl-5 space-y-1 text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
             <li><strong className="text-slate-900">AIによる自動検閲・隔離:</strong> 脅迫・ストーカー・嫌がらせ文面をAIが24時間リアルタイム検知し自動隔離します。</li>
-            <li><strong className="text-slate-900">通報・ブロック機能:</strong> 不審な手紙を見かけた場合、ワンタップで運営事務局へ通報・非表示ブロックが可能です。</li>
+            <li><strong className="text-slate-900">通報・ブロック機能:</strong> 不審なメッセージを見かけた場合、ワンタップで運営事務局へ通報・非表示ブロックが可能です。</li>
             <li><strong className="text-slate-900">警察・捜査機関との連携:</strong> 刑事事件や公安・サイバー捜査機関からの正式な照会要請に対し、OAuth認証UID・IPアドレス・決済記録等のログ開示協力体制を完備しています。</li>
           </ul>
         </>
@@ -442,10 +442,10 @@ export const FaqPage: React.FC = () => {
       id: 'q-account-2',
       category: 'account',
       categoryName: '登録・ログイン・通知',
-      question: '手紙にお相手から返信や開封があったら、どのように通知されますか？',
+      question: 'メッセージにお相手から返信や開封があったら、どのように通知されますか？',
       answer: (
         <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-          あなた宛ての手紙が見つかった際や、あなたが流した手紙にお相手から開封アクションがあった際は、アカウントにご登録いただいた <strong className="text-slate-900 font-bold">メールアドレス宛てに「再会開通お知らせメール」</strong> がリアルタイムで届きます。
+          あなた宛てのメッセージが見つかった際や、あなたが流したメッセージにお相手から開封アクションがあった際は、アカウントにご登録いただいた <strong className="text-slate-900 font-bold">メールアドレス宛てに「再会開通お知らせメール」</strong> がリアルタイムで届きます。
         </p>
       ),
       tags: ['通知', 'メール', '開通通知']
@@ -454,7 +454,7 @@ export const FaqPage: React.FC = () => {
       id: 'q-account-3',
       category: 'account',
       categoryName: '登録・ログイン・通知',
-      question: '探している相手の手紙がまだ見つからない場合、後から流れてきたときに通知を受け取ることはできますか？',
+      question: '探している相手のメッセージがまだ見つからない場合、後から流れてきたときに通知を受け取ることはできますか？',
       answer: (
         <>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
@@ -468,32 +468,32 @@ export const FaqPage: React.FC = () => {
       tags: ['新着通知', '入荷アラート', 'キーワード登録', '自動メール通知', 'エゴサーチ']
     },
 
-    // 6. 手紙の編集・削除・退会
+    // 6. メッセージの編集・削除・退会
     {
       id: 'q-edit-1',
       category: 'edit',
-      categoryName: '手紙の編集・削除・退会',
-      question: '流した手紙の内容を修正したり、後から消すことはできますか？',
+      categoryName: 'メッセージの編集・削除・退会',
+      question: '流したメッセージの内容を修正したり、後から消すことはできますか？',
       answer: (
         <>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            はい、いつでも可能です。ログイン後、マイページの「流したボトルメール一覧」から、該当の手紙の <strong className="text-slate-900 font-bold">「編集」または「海から引き上げる（完全削除）」</strong> をワンタップで実行できます。
+            はい、いつでも可能です。ログイン後、マイページの「流したボトルメール一覧」から、該当のメッセージの <strong className="text-slate-900 font-bold">「編集」または「海から引き上げる（完全削除）」</strong> をワンタップで実行できます。
           </p>
           <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-            削除を実行した手紙はデータベースから物理的に完全抹消され、海（検索一覧・タイムライン）からも即座に消去されます。
+            削除を実行したメッセージはデータベースから物理的に完全抹消され、海（検索一覧・タイムライン）からも即座に消去されます。
           </p>
         </>
       ),
-      tags: ['手紙の編集', '削除', '手紙の消去']
+      tags: ['メッセージの編集', '削除', 'メッセージの消去']
     },
     {
       id: 'q-edit-2',
       category: 'edit',
-      categoryName: '手紙の編集・削除・退会',
+      categoryName: 'メッセージの編集・削除・退会',
       question: '退会したい場合はどのように手続きすればいいですか？',
       answer: (
         <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
-          マイページの「アカウント設定」内にある「退会・データ完全消去」よりいつでもご自身で即時退会いただけます。退会と同時に、流した手紙・プロフィール・認証履歴などの全データが安全に物理消去されます。
+          マイページの「アカウント設定」内にある「退会・データ完全消去」よりいつでもご自身で即時退会いただけます。退会と同時に、流したメッセージ・プロフィール・認証履歴などの全データが安全に物理消去されます。
         </p>
       ),
       tags: ['退会', 'アカウント削除', 'データ抹消']
@@ -501,7 +501,7 @@ export const FaqPage: React.FC = () => {
     {
       id: 'q-edit-3',
       category: 'edit',
-      categoryName: '手紙の編集・削除・退会',
+      categoryName: 'メッセージの編集・削除・退会',
       question: '海外在住ですが、利用することはできますか？',
       answer: (
         <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans m-0">
@@ -725,7 +725,7 @@ export const FaqPage: React.FC = () => {
               解決しない疑問やご不安はございますか？
             </h3>
             <p className="text-xs text-slate-600 leading-relaxed max-w-lg font-sans">
-              ReMEETs カスタマーサポート事務局が、手紙の流し方や決済、操作方法について丁寧にご案内いたします。
+              ReMEETs カスタマーサポート事務局が、メッセージの流し方や決済、操作方法について丁寧にご案内いたします。
             </p>
           </div>
 

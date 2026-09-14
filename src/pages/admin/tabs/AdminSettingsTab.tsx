@@ -98,7 +98,7 @@ export const AdminSettingsTab: React.FC<AdminSettingsTabProps> = ({
                           )}
                         </div>
                         <p className="text-[11px] text-slate-600 font-serif leading-normal">
-                          情緒的な背景・手紙投稿カード・ボトルスライダー・虹色水面波紋エフェクトを配置した洗練の黄金比デザイン。
+                          情緒的な背景・メッセージ投稿カード・ボトルスライダー・虹色水面波紋エフェクトを配置した洗練の黄金比デザイン。
                         </p>
                       </button>
 

@@ -128,7 +128,7 @@ export const PoliceDemoGuideView = (props: any) => {
                   Google検索結果スニペット ➔ 一般公開マスキング着地実演
                 </div>
                 <p className="text-[11px] text-slate-600 font-serif leading-relaxed">
-                  <strong>【自動動作】</strong> Google検索風モック画面で「山田太郎 1995年 緑中」と自動タイピング ➔ マスキングされた検索結果をクリック ➔ ReMEETsの手紙詳細画面へ着地し、一般画面では実名・本文・連絡先が完全に伏字（***）で安全に保護されている様子を実演。
+                  <strong>【自動動作】</strong> Google検索風モック画面で「山田太郎 1995年 緑中」と自動タイピング ➔ マスキングされた検索結果をクリック ➔ ReMEETsのメッセージ詳細画面へ着地し、一般画面では実名・本文・連絡先が完全に伏字（***）で安全に保護されている様子を実演。
                 </p>
                 <div className="text-[10px] text-emerald-800 bg-emerald-50 p-2 rounded-lg font-mono">
                   💡 警察へのメッセージ: 「Google等の一般ネット検索に対しても個人情報や機微な想い出が晒されることは100%ありません」
@@ -166,7 +166,7 @@ export const PoliceDemoGuideView = (props: any) => {
                   電話番号・住所・ストーカー執着文のミリ秒即時隔離実演
                 </div>
                 <p className="text-[11px] text-slate-600 font-serif leading-relaxed">
-                  <strong>【自動動作】</strong> 手紙投稿画面に「電話番号・住所・ストーカー的威圧文」を自動入力 ➔ 投函ボタン ➔ AI（Gemini & 正規表現）がミリ秒で検知し、一般公開させず隔離（`ai_flagged = 1`）する様子を実演。
+                  <strong>【自動動作】</strong> メッセージ投稿画面に「電話番号・住所・ストーカー的威圧文」を自動入力 ➔ 投函ボタン ➔ AI（Gemini & 正規表現）がミリ秒で検知し、一般公開させず隔離（`ai_flagged = 1`）する様子を実演。
                 </p>
                 <div className="text-[10px] text-emerald-800 bg-emerald-50 p-2 rounded-lg font-mono">
                   💡 警察へのメッセージ: 「危険な投稿や個人情報の無断晒しは、一般の目に触れる前にAIが自動で隔離・証拠保全します」
@@ -204,7 +204,7 @@ export const PoliceDemoGuideView = (props: any) => {
                   公的eKYC（身分証審査）＆電子的利用宣誓同意フロー実演
                 </div>
                 <p className="text-[11px] text-slate-600 font-serif leading-relaxed">
-                  <strong>【自動動作】</strong> 手紙開封時の公的eKYCモーダル ➔ 運転免許証提出 ➔ 「犯罪・ストーキングに利用しない」電子的利用宣誓の同意チェックが進行する様子を解説。
+                  <strong>【自動動作】</strong> メッセージ開封時の公的eKYCモーダル ➔ 運転免許証提出 ➔ 「犯罪・ストーキングに利用しない」電子的利用宣誓の同意チェックが進行する様子を解説。
                 </p>
                 <div className="text-[10px] text-emerald-800 bg-emerald-50 p-2 rounded-lg font-mono">
                   💡 警察へのメッセージ: 「日本の法令に準拠した厳格な身元確認と電子的宣誓により、匿名や捨てアカウントでの悪用を完全に防ぎます」
@@ -344,7 +344,7 @@ export const PoliceDemoGuideView = (props: any) => {
                       不特定多数の異性が無差別に閲覧・返信できる出会い系ではないか？
                     </td>
                     <td className="p-3 leading-relaxed">
-                      2人しか知り得ない共通の記憶（クイズ）に完全一致しない限り手紙の開封・接触は不可。連続失敗時のレートリミット遮断により、総当たりアタックも完全防御。
+                      2人しか知り得ない共通の記憶（クイズ）に完全一致しない限りメッセージの開封・接触は不可。連続失敗時のレートリミット遮断により、総当たりアタックも完全防御。
                     </td>
                     <td className="p-3 text-center font-bold text-emerald-800 text-[10px] bg-emerald-50">
                       異性紹介事業<br />対象外
@@ -412,7 +412,7 @@ export const PoliceDemoGuideView = (props: any) => {
                       匿名アカウントによるなりすましや犯罪利用を防げるか？
                     </td>
                     <td className="p-3 leading-relaxed">
-                      手紙開封時は「犯罪・ストーカーに利用しない」電子的利用宣誓への法的同意を義務付け。さらに身元信頼性を高めたいユーザー向けに公的身分証（運転免許証等）による公的eKYC審査（任意オプション600円）を提供。
+                      メッセージ開封時は「犯罪・ストーカーに利用しない」電子的利用宣誓への法的同意を義務付け。さらに身元信頼性を高めたいユーザー向けに公的身分証（運転免許証等）による公的eKYC審査（任意オプション600円）を提供。
                     </td>
                     <td className="p-3 text-center font-bold text-blue-800 text-[10px] bg-blue-50">
                       犯収法・携帯法<br />準拠
@@ -429,7 +429,7 @@ export const PoliceDemoGuideView = (props: any) => {
                       捨てアカウントによる嫌がらせやサクラ投稿を抑止できるか？
                     </td>
                     <td className="p-3 leading-relaxed">
-                      手紙開封手数料（600円）およびeKYC審査手数料（600円）の適正な経済的障壁を設置。カード名義と本人確認の照合により、悪質利用者の多重参入を排除。
+                      メッセージ開封手数料（600円）およびeKYC審査手数料（600円）の適正な経済的障壁を設置。カード名義と本人確認の照合により、悪質利用者の多重参入を排除。
                     </td>
                     <td className="p-3 text-center font-bold text-slate-800 text-[10px] bg-slate-50">
                       特商法<br />完全表記

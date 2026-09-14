@@ -85,7 +85,7 @@ const GALLERY_BOTTLES = [
     era: '2010年代',
     location: '京都府京都市',
     relationship: '初恋・サークルの先輩',
-    excerpt: '卒業ライブの日に渡せなかった手紙がずっと部屋にありました。またあのギターの音色が聴きたいです。',
+    excerpt: '卒業ライブの日に渡せなかったメッセージがずっと部屋にありました。またあのギターの音色が聴きたいです。',
     secretQuestion: '学園祭で最後に演奏した曲のバンド名は？',
     createdTime: '漂流 本日',
     tagBg: 'bg-rose-100 text-rose-800 border-rose-200'
@@ -151,7 +151,7 @@ export const HomeVariantSub3Minimal: React.FC<HomeVariantSub3MinimalProps> = ({
           <span className="text-xs font-sans text-slate-500 tracking-[0.3em] uppercase block font-mono">〜再会のボトルメール〜</span>
           <h1 className="text-lg md:text-2xl font-serif text-slate-800 font-bold leading-relaxed pt-2">あの日言えなかった想いを、あの人へ。<br/>再会のボトルメール</h1>
           <p className="text-xs md:text-sm text-slate-600 font-serif leading-loose max-w-2xl mx-auto">
-            同窓生、昔の友人、お世話になったあの人。連絡先はわからないけれど、もう一度だけ話してみたい大切な人へ、想いを言葉にして海に流す。そして、あなたを探している誰かが流した手紙を、自分の名前やゆかりの地から見つけ出す。ここは、お互いを想い合う偶然と奇跡が交差する、静かな再会の海です。
+            同窓生、昔の友人、お世話になったあの人。連絡先はわからないけれど、もう一度だけ話してみたい大切な人へ、想いを言葉にして海に流す。そして、あなたを探している誰かが流したメッセージを、自分の名前やゆかりの地から見つけ出す。ここは、お互いを想い合う偶然と奇跡が交差する、静かな再会の海です。
           </p>
           <div className="flex justify-center pt-2">
             <button 
@@ -169,7 +169,7 @@ export const HomeVariantSub3Minimal: React.FC<HomeVariantSub3MinimalProps> = ({
               <PenTool size={14} /><span>ボトルメールを流す</span>
             </Link>
             <Link to="/search" className="px-8 py-3.5 bg-white hover:bg-slate-50 border border-slate-300 text-slate-800 text-xs font-serif font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 shadow-sm">
-              <Search size={14} /><span>自分宛ての手紙を探す</span>
+              <Search size={14} /><span>自分宛てのメッセージを探す</span>
             </Link>
           </div>
 
@@ -180,8 +180,8 @@ export const HomeVariantSub3Minimal: React.FC<HomeVariantSub3MinimalProps> = ({
               <Link to="/pricing" className="text-[10px] text-slate-600 hover:underline">料金表・詳細を見る →</Link>
             </div>
             <div className="grid grid-cols-3 gap-3">
-              <div className="p-3 bg-white border border-slate-200 rounded-lg text-center"><span className="text-[10px] text-slate-400 block">手紙を書く・投函</span><strong className="font-serif text-slate-900">完全0円</strong></div>
-              <div className="p-3 bg-white border border-slate-200 rounded-lg text-center"><span className="text-[10px] text-slate-400 block">手紙を探す・閲覧</span><strong className="font-serif text-slate-900">完全0円</strong></div>
+              <div className="p-3 bg-white border border-slate-200 rounded-lg text-center"><span className="text-[10px] text-slate-400 block">メッセージを書く・投函</span><strong className="font-serif text-slate-900">完全0円</strong></div>
+              <div className="p-3 bg-white border border-slate-200 rounded-lg text-center"><span className="text-[10px] text-slate-400 block">メッセージを探す・閲覧</span><strong className="font-serif text-slate-900">完全0円</strong></div>
               <div className="p-3 bg-white border border-slate-200 rounded-lg text-center"><span className="text-[10px] text-slate-400 block">想い出照合・再会時</span><strong className="font-serif text-slate-900">開通時のみ 600円</strong></div>
             </div>
             <p className="text-[10px] text-slate-400 text-center">※お相手とクイズで想い出が一致し、連絡先を開示する瞬間まで一切料金はかかりません。（詳細はこちら）</p>
@@ -225,14 +225,14 @@ export const HomeVariantSub3Minimal: React.FC<HomeVariantSub3MinimalProps> = ({
                 </div>
                 <h3 className="font-serif font-bold text-base text-slate-900">ネットの海をめぐる</h3>
                 <p className="text-xs text-slate-600 leading-relaxed font-sans">
-                  手紙は検索エンジンを通じてWebの海へ芽吹き、記憶をたどる「あの人」の検索窓で見つけられる日を静かに待ち続けます。
+                  メッセージは検索エンジンを通じてWebの海へ芽吹き、記憶をたどる「あの人」の検索窓で見つけられる日を静かに待ち続けます。
                 </p>
               </div>
               <span className="relative z-10 text-[10px] text-slate-400 font-bold pt-3 border-t border-slate-100 block">● 検索に届くWeb最適化</span>
             </div>
 
             <div className="relative p-7 bg-white border border-slate-200 rounded-xl space-y-4 flex flex-col justify-between overflow-hidden min-h-[220px] shadow-sm">
-              {/* 右下の透かしアイコン (STEP 03: 届く - 開封される手紙) */}
+              {/* 右下の透かしアイコン (STEP 03: 届く - 開封されるメッセージ) */}
               <div className="absolute -bottom-3 -right-3 text-slate-900/[0.13] pointer-events-none select-none">
                 <MailOpen size={115} strokeWidth={1.3} />
               </div>
@@ -243,7 +243,7 @@ export const HomeVariantSub3Minimal: React.FC<HomeVariantSub3MinimalProps> = ({
                 </div>
                 <h3 className="font-serif font-bold text-base text-slate-900">奇跡の再会を果たす</h3>
                 <p className="text-xs text-slate-600 leading-relaxed font-sans">
-                  見つけたお相手が思い出クイズに正解することで、初めて手紙が開き、手紙のやり取りやLINE等で直接つながれます。
+                  見つけたお相手が思い出クイズに正解することで、初めてメッセージが開き、メッセージのやり取りやLINE等で直接つながれます。
                 </p>
               </div>
               <span className="relative z-10 text-[10px] text-slate-400 font-bold pt-3 border-t border-slate-100 block">● 想いが通じ合う瞬間</span>
@@ -365,7 +365,7 @@ export const HomeVariantSub3Minimal: React.FC<HomeVariantSub3MinimalProps> = ({
                   <h3 className="text-sm sm:text-base font-serif font-bold text-slate-900">{targetName} 様</h3>
                   <p className="text-xs text-slate-600 font-sans line-clamp-2">出会った場所: {location} / 「{excerpt}」</p>
                   <div className="pt-1 text-[10px] text-slate-700 font-serif flex items-center gap-1 font-bold">
-                    <span>手紙を引き出す</span> <ArrowRight size={10} />
+                    <span>メッセージを引き出す</span> <ArrowRight size={10} />
                   </div>
                 </div>
               );
@@ -432,7 +432,7 @@ export const HomeVariantSub3Minimal: React.FC<HomeVariantSub3MinimalProps> = ({
                     }}
                     className="flex-1 py-3 bg-slate-900 hover:bg-slate-800 text-white text-xs font-serif font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-sm"
                   >
-                    <span>この手紙のクイズに答えて開封する</span>
+                    <span>このメッセージのクイズに答えて開封する</span>
                     <ArrowRight size={13} />
                   </button>
                   <button

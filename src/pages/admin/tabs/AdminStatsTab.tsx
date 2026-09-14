@@ -610,7 +610,7 @@ export const AdminStatsTab = (props: any) => {
                       A. ボトル投函 ＆ 再会マッチング分析
                     </h2>
                     <p className="text-xs text-slate-500 font-sans">
-                      手紙の投函推移、時代・地域別の分布、再会ファネル転換率の分析データです。
+                      メッセージの投函推移、時代・地域別の分布、再会ファネル転換率の分析データです。
                     </p>
                   </div>
                 </div>

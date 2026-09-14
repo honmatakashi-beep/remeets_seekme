@@ -338,7 +338,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
                 className="w-full px-3.5 py-2.5 bg-white border border-slate-200 hover:border-indigo-400 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 rounded-xl text-xs font-medium text-slate-900 transition-all"
               />
               <p className="text-[10px] text-slate-400 mt-1">
-                ※昔の同級生やお知り合いが旧姓でお手紙を探している際に気づきやすくなります。マイアカウントのお名前横に表示されます。
+                ※昔の同級生やお知り合いが旧姓でメッセージを探している際に気づきやすくなります。マイアカウントのお名前横に表示されます。
               </p>
             </div>
 
@@ -390,7 +390,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
                   メール通知の受け取り
                 </div>
                 <div className="text-[10px] text-slate-500">
-                  お手紙の開封や大切なお知らせをメールで受け取る
+                  メッセージの開封や大切なお知らせをメールで受け取る
                 </div>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">

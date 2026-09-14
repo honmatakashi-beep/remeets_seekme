@@ -436,9 +436,9 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
     if (alertType === 'EMERGENCY_REPORT') {
       if (actionType === 'DISMISS_REPORT') confirmMsg = 'この通報を「却下・誤報」として処理しますか？';
       else if (actionType === 'RESOLVE_REPORT') confirmMsg = '通報を「解決済み」として処理しますか？';
-      else if (actionType === 'DELETE_POST') confirmMsg = '通報対象の手紙（ボトルメール）を即時削除・アーカイブしますか？';
+      else if (actionType === 'DELETE_POST') confirmMsg = '通報対象のメッセージ（ボトルメール）を即時削除・アーカイブしますか？';
       else if (actionType === 'BLOCK_USER') confirmMsg = '被通報者のアカウントを即時凍結しますか？';
-      else if (actionType === 'RESOLVE_AND_DEFEND') confirmMsg = '【🚨 緊急一括防衛】\n・通報対象の手紙を削除\n・投稿者を凍結\n・通報を解決済みに変更\nを一括実行しますか？';
+      else if (actionType === 'RESOLVE_AND_DEFEND') confirmMsg = '【🚨 緊急一括防衛】\n・通報対象のメッセージを削除\n・投稿者を凍結\n・通報を解決済みに変更\nを一括実行しますか？';
     }
     // AI検閲
     else if (alertType === 'AI_SAFETY_VIOLATION') {
@@ -453,10 +453,10 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
     }
     // 連投スパム
     else if (alertType === 'MASS_POSTING_SPAM') {
-      if (actionType === 'DELETE_POSTS') confirmMsg = `連投された手紙（${modalDetails?.posts?.length || selectedAlertModal.postCount || ''}件）を全て削除（隔離）しますか？`;
+      if (actionType === 'DELETE_POSTS') confirmMsg = `連投されたメッセージ（${modalDetails?.posts?.length || selectedAlertModal.postCount || ''}件）を全て削除（隔離）しますか？`;
       else if (actionType === 'BLOCK_USER') confirmMsg = `該当ユーザーを即座にアカウント凍結（ロック）しますか？`;
       else if (actionType === 'BLOCK_IP') confirmMsg = `接続元IP（${selectedAlertModal.ip}）からのアクセスを30日間ブロックしますか？`;
-      else if (actionType === 'RESOLVE_ALL') confirmMsg = `【🚨 緊急一括防衛】\n・連投手紙の全削除\n・ユーザーアカウント凍結\n・接続元IPブロック\nを一括で即時実行します。よろしいですか？`;
+      else if (actionType === 'RESOLVE_ALL') confirmMsg = `【🚨 緊急一括防衛】\n・連投メッセージの全削除\n・ユーザーアカウント凍結\n・接続元IPブロック\nを一括で即時実行します。よろしいですか？`;
     }
 
     if (confirmMsg && !window.confirm(confirmMsg)) return;
@@ -518,7 +518,7 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
   const getActionLabel = (actionType?: string) => {
     if (!actionType) return '防衛措置完了';
     if (actionType === 'RESOLVE_ALL') return '🚨 緊急一括防衛';
-    if (actionType === 'DELETE_POSTS' || actionType === 'DELETE_POST') return '🗑️ 手紙削除';
+    if (actionType === 'DELETE_POSTS' || actionType === 'DELETE_POST') return '🗑️ メッセージ削除';
     if (actionType === 'BLOCK_USER') return '🚫 アカウント凍結';
     if (actionType === 'BLOCK_IP') return '🛡️ IP遮断';
     if (actionType === 'RESOLVE_AND_DEFEND') return '🚨 通報一括防衛';
@@ -1278,9 +1278,9 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
                      '🔒 クイズ総当たり不正回答 攻撃元調査 ＆ 防衛センター'}
                   </h3>
                   <p className="text-xs text-slate-300 mt-0.5">
-                    {selectedAlertModal.type === 'EMERGENCY_REPORT' ? '通報された手紙の内容、申告理由、通報者および被通報者のアカウント情報を照合し、即座に対処します。' :
+                    {selectedAlertModal.type === 'EMERGENCY_REPORT' ? '通報されたメッセージの内容、申告理由、通報者および被通報者のアカウント情報を照合し、即座に対処します。' :
                      selectedAlertModal.type === 'MASS_POSTING_SPAM' ? '短時間に連続投函されたボトルメールの内容と投稿者アカウント・接続元IPを即時調査し、一括対処を実行します。' :
-                     selectedAlertModal.type === 'AI_SAFETY_VIOLATION' ? 'AI安全防衛エンジンが自動隔離した手紙の危険度・判定理由を確認し、公開復帰または完全削除を実行します。' :
+                     selectedAlertModal.type === 'AI_SAFETY_VIOLATION' ? 'AI安全防衛エンジンが自動隔離したメッセージの危険度・判定理由を確認し、公開復帰または完全削除を実行します。' :
                      '短時間にクイズ誤答を繰り返した接続元IPの履歴を確認し、ブロック期間の延長または誤認解除を実行します。'}
                   </p>
                 </div>
@@ -1335,13 +1335,13 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
                         </div>
                       </div>
 
-                      {/* 対象手紙 (Post) */}
+                      {/* 対象メッセージ (Post) */}
                       {modalDetails.targetPost && (
                         <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-3">
                           <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
                             <div className="flex items-center gap-2 font-bold text-slate-800 text-sm">
                               <Flame size={16} className="text-rose-600" />
-                              <span>通報された手紙 (ボトル #{modalDetails.targetPost.id})</span>
+                              <span>通報されたメッセージ (ボトル #{modalDetails.targetPost.id})</span>
                             </div>
                             <span className="text-xs text-slate-500 font-mono">{modalDetails.targetPost.created_at}</span>
                           </div>
@@ -1396,10 +1396,10 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
                         </div>
                       </div>
 
-                      {/* 手紙本文 */}
+                      {/* メッセージ本文 */}
                       <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-3">
                         <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
-                          <span className="font-bold text-slate-800 text-sm">手紙本文 (ボトル #{modalDetails.post.id})</span>
+                          <span className="font-bold text-slate-800 text-sm">メッセージ本文 (ボトル #{modalDetails.post.id})</span>
                           <span className="text-xs text-slate-500">宛先: <b>{modalDetails.post.target_name}</b> | 差出人: <b>{modalDetails.post.searcher_name || '匿名'}</b></span>
                         </div>
                         <p className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-800 leading-relaxed font-sans">
@@ -1523,12 +1523,12 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
                         </div>
                       </div>
 
-                      {/* 2. 連投された手紙一覧 */}
+                      {/* 2. 連投されたメッセージ一覧 */}
                       <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
                         <div className="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
                           <div className="flex items-center gap-2 font-bold text-slate-800 text-sm">
                             <Flame size={16} className="text-amber-500" />
-                            <span>連続投函された手紙一覧（全 {modalDetails?.posts?.length || 0} 件）</span>
+                            <span>連続投函されたメッセージ一覧（全 {modalDetails?.posts?.length || 0} 件）</span>
                           </div>
                           <span className="text-xs text-slate-500">
                             短時間に投函されたボトルメール
@@ -1564,7 +1564,7 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
                             ))
                           ) : (
                             <div className="p-8 text-center text-slate-400">
-                              該当する手紙データが見つかりませんでした（既に削除済みの可能性があります）。
+                              該当するメッセージデータが見つかりませんでした（既に削除済みの可能性があります）。
                             </div>
                           )}
                         </div>
@@ -1602,7 +1602,7 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
                         className="px-3.5 py-2 rounded-xl bg-orange-100 hover:bg-orange-200 text-orange-900 text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
                       >
                         <Trash2 size={13} />
-                        <span>手紙を削除</span>
+                        <span>メッセージを削除</span>
                       </button>
                     )}
                     {modalDetails?.targetUser && (
@@ -1648,7 +1648,7 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
                       className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
                     >
                       <Trash2 size={13} />
-                      <span>手紙を削除アーカイブ</span>
+                      <span>メッセージを削除アーカイブ</span>
                     </button>
                     <button
                       type="button"
@@ -1696,7 +1696,7 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
                       className="px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-all cursor-pointer disabled:opacity-40 flex items-center gap-1.5"
                     >
                       <Trash2 size={14} className="text-slate-600" />
-                      <span>手紙を一括削除 ({modalDetails?.posts?.length || 0}件)</span>
+                      <span>メッセージを一括削除 ({modalDetails?.posts?.length || 0}件)</span>
                     </button>
 
                     {modalDetails?.userInfo && (
@@ -1730,7 +1730,7 @@ export const AdminLiveAlertMonitor: React.FC<AdminLiveAlertMonitorProps> = ({
                       className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-700 hover:to-rose-800 text-white text-xs font-extrabold shadow-md shadow-rose-600/30 transition-all cursor-pointer disabled:opacity-50 flex items-center gap-2 animate-pulse"
                     >
                       <Zap size={15} />
-                      <span>🚨 緊急一括防衛（手紙全削除 ＋ 凍結）</span>
+                      <span>🚨 緊急一括防衛（メッセージ全削除 ＋ 凍結）</span>
                     </button>
                   </>
                 )}

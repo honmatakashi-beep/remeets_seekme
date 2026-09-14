@@ -48,7 +48,7 @@ export const AdminPostDeleteModal: React.FC<AdminPostDeleteModalProps> = ({
               <div className="flex justify-between items-center">
                 <h3 className="text-xl font-serif font-bold text-black flex items-center gap-2">
                   <AlertTriangle className="text-red-600 animate-pulse" size={24} />
-                  手紙を直接削除（アーカイブ監査）
+                  メッセージを直接削除（アーカイブ監査）
                 </h3>
                 <button 
                   onClick={() => {

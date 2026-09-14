@@ -44,7 +44,7 @@ export const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
               <ul className="list-disc list-inside space-y-1 text-[11px] text-rose-800">
                 <li>ログイン用アカウント情報（メールアドレス・パスワード・SNS連携）は物理消去されます。</li>
                 <li>新着入荷アラートや通知はすべて自動的に停止・消去されます。</li>
-                <li>過去に投函された手紙の差出人本名・連絡先IDは「退会済ユーザー」として即時サニタイズされます。</li>
+                <li>過去に投函されたメッセージの差出人本名・連絡先IDは「退会済ユーザー」として即時サニタイズされます。</li>
               </ul>
             </div>
 

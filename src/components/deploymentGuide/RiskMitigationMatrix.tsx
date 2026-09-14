@@ -7,7 +7,7 @@ export const RiskMitigationMatrix: React.FC = () => {
             <span className="text-base select-none">🛡️</span>
             <div>
               <strong>セキュリティ適合性監査マトリクス：</strong>
-              ReMEETsのすべての利用動線（会員登録から手紙投函、クイズゲート、メッセージ開通、事件防止まで）に対し、想定されるストーカー行為や不正アビューズ脅威をリストアップ。一次防衛策（システムによるバリデーションバリケード）と二次防衛策（Gemini AIによるセマンティック文脈監視）の二重自動フィルタおよび、司法照会用のログ保存の仕組みを完全に公開しています。
+              ReMEETsのすべての利用動線（会員登録からメッセージ投函、クイズゲート、メッセージ開通、事件防止まで）に対し、想定されるストーカー行為や不正アビューズ脅威をリストアップ。一次防衛策（システムによるバリデーションバリケード）と二次防衛策（Gemini AIによるセマンティック文脈監視）の二重自動フィルタおよび、司法照会用のログ保存の仕組みを完全に公開しています。
             </div>
           </div>
 
@@ -38,8 +38,8 @@ export const RiskMitigationMatrix: React.FC = () => {
                 </tr>
 
                 <tr className="hover:bg-brand-light/10 transition-colors">
-                  <td className="p-4 font-bold text-black border-r border-[#3B627F]/20 bg-[#3B627F]/5">② 手紙ボトル投函（基本）</td>
-                  <td className="p-4 text-black/75 border-r border-[#3B627F]/20">手紙内の「実名・連絡先交換」によるプラットフォーム外への誘導・ハラスメント</td>
+                  <td className="p-4 font-bold text-black border-r border-[#3B627F]/20 bg-[#3B627F]/5">② メッセージボトル投函（基本）</td>
+                  <td className="p-4 text-black/75 border-r border-[#3B627F]/20">メッセージ内の「実名・連絡先交換」によるプラットフォーム外への誘導・ハラスメント</td>
                   <td className="p-4 text-black/70 leading-relaxed border-r border-[#3B627F]/20">
                     文字入力ボックスフックに、メール/電話Regex、LINE/インスタ等SNSアカウントの検知Regexをバインド。外部手段の直接掲載自体を仕組みから厳格に弾きます。
                   </td>
@@ -53,7 +53,7 @@ export const RiskMitigationMatrix: React.FC = () => {
                 </tr>
 
                 <tr className="hover:bg-brand-light/10 transition-colors">
-                  <td className="p-4 font-bold text-black border-r border-[#3B627F]/20 bg-[#3B627F]/5">② 手紙ボトル投函（他人特定）</td>
+                  <td className="p-4 font-bold text-black border-r border-[#3B627F]/20 bg-[#3B627F]/5">② メッセージボトル投函（他人特定）</td>
                   <td className="p-4 text-black/75 border-r border-[#3B627F]/20">標的のお相手以外の第三者プライバシー権利侵害・特定情報の掲載</td>
                   <td className="p-4 text-black/70 leading-relaxed border-r border-[#3B627F]/20">
                     宛先を規定の「お名前」「都道府県」「出会った当時の関係性」などの曖昧なデータに制約。具体的なアパート名、個別地番、職場名称などは入力不可。
@@ -96,9 +96,9 @@ export const RiskMitigationMatrix: React.FC = () => {
 
                 <tr className="hover:bg-brand-light/10 transition-colors">
                   <td className="p-4 font-bold text-black border-r border-[#3B627F]/20 bg-[#3B627F]/5">⑤ クイズ解答試行</td>
-                  <td className="p-4 text-black/75 border-r border-[#3B627F]/20">あてずっぽうなどクイズの総当たり解答による手紙の不正な解凍（個人情報リーク）</td>
+                  <td className="p-4 text-black/75 border-r border-[#3B627F]/20">あてずっぽうなどクイズの総当たり解答によるメッセージの不正な解凍（個人情報リーク）</td>
                   <td className="p-4 text-black/70 leading-relaxed border-r border-[#3B627F]/20">
-                    同じボトル、または同じIP/セッションから一定回数（基本は5回）連続で回答を誤った場合に、<strong>プログラム的に手紙の回答権を24時間完全にロックアウト</strong>。
+                    同じボトル、または同じIP/セッションから一定回数（基本は5回）連続で回答を誤った場合に、<strong>プログラム的にメッセージの回答権を24時間完全にロックアウト</strong>。
                   </td>
                   <td className="p-4 text-black/70 leading-relaxed border-r border-[#3B627F]/20">
                     不自然な多回数失敗ボトルの検知。バーストした過剰なアタックセッションを検疫。

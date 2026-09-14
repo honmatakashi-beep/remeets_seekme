@@ -34,7 +34,7 @@ export const SupportBanner: React.FC<SupportBannerProps> = ({ variant = 'card', 
               <span className="text-[10px] bg-teal-500/30 text-teal-200 border border-teal-500/40 px-2 py-0.5 rounded-full font-bold">1口 500円〜</span>
             </div>
             <p className="text-xs text-slate-300 leading-relaxed max-w-xl">
-              ReMEETsは大切な思い出を持つすべての方が無料で手紙を投稿できるよう、寄付で運営費とAI安全監査費を賄っています。この海を守る応援をお願いできませんか？
+              ReMEETsは大切な思い出を持つすべての方が無料でメッセージを投稿できるよう、寄付で運営費とAI安全監査費を賄っています。この海を守る応援をお願いできませんか？
             </p>
           </div>
         </div>
@@ -83,10 +83,10 @@ export const SupportBanner: React.FC<SupportBannerProps> = ({ variant = 'card', 
 
       <div className="space-y-2 relative z-10">
         <h3 className="text-base md:text-lg font-bold font-serif text-slate-900 leading-snug">
-          「ReMEETsは、大切な思い出を持つすべての方が無料で手紙を流せるよう、個人運営とAI安全監査費を寄付で賄っています。この海が消えてしまわないよう、1杯のコーヒー代で応援していただけませんか？」
+          「ReMEETsは、大切な思い出を持つすべての方が無料でメッセージを流せるよう、個人運営とAI安全監査費を寄付で賄っています。この海が消えてしまわないよう、1杯のコーヒー代で応援していただけませんか？」
         </h3>
         <p className="text-xs text-slate-600 leading-relaxed">
-          広告や高額な月額料金を排除し、すべての方が安心して再会の手紙を託せる環境を維持するために、皆様の温かいご支援を必要としております。
+          広告や高額な月額料金を排除し、すべての方が安心して再会のメッセージを託せる環境を維持するために、皆様の温かいご支援を必要としております。
         </p>
       </div>
 

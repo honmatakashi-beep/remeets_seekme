@@ -66,7 +66,7 @@ export const AdminModPostPreviewModal: React.FC<AdminModPostPreviewModalProps> =
 
           {/* Message Body */}
           <div className="space-y-1">
-            <span className="text-[11px] font-bold text-slate-700 block">手紙の本文:</span>
+            <span className="text-[11px] font-bold text-slate-700 block">メッセージの本文:</span>
             <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 font-serif text-slate-800 leading-relaxed text-sm whitespace-pre-wrap">
               {selectedModPostModal.message || selectedModPostModal.content}
             </div>
@@ -115,7 +115,7 @@ export const AdminModPostPreviewModal: React.FC<AdminModPostPreviewModalProps> =
               className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
             >
               <Trash2 size={14} />
-              <span>🗑️ 手紙を削除する</span>
+              <span>🗑️ メッセージを削除する</span>
             </button>
           </div>
         </div>

@@ -109,7 +109,7 @@ export const EkycExplanationModal: React.FC<EkycExplanationModalProps> = ({
               </div>
             </div>
             <p className="text-[10.5px] text-slate-500 font-sans leading-relaxed">
-              ※ ネット公開時や検索結果一覧で、手紙カード右上に<strong>動く虹色公認バッジ</strong>が表示され、相手の「なりすまし不安」を100%解消します。
+              ※ ネット公開時や検索結果一覧で、メッセージカード右上に<strong>動く虹色公認バッジ</strong>が表示され、相手の「なりすまし不安」を100%解消します。
             </p>
           </div>
 
@@ -145,7 +145,7 @@ export const EkycExplanationModal: React.FC<EkycExplanationModalProps> = ({
                   <span>2. 生まれ年（年齢）の100%一致証明</span>
                 </div>
                 <p className="text-[11px] text-emerald-900/80 pl-5 leading-relaxed">
-                  手紙に記載された生まれ年・年齢が公的身分証の生年月日と完全に一致していることが確認されています。
+                  メッセージに記載された生まれ年・年齢が公的身分証の生年月日と完全に一致していることが確認されています。
                 </p>
               </div>
 
@@ -156,7 +156,7 @@ export const EkycExplanationModal: React.FC<EkycExplanationModalProps> = ({
                   <span>3. なりすまし・冷やかし・悪質業者の完全排除</span>
                 </div>
                 <p className="text-[11px] text-slate-600 pl-5 leading-relaxed">
-                  1人1アカウントの厳格な照合管理により、架空の人物や迷惑業者による手紙ではありません。
+                  1人1アカウントの厳格な照合管理により、架空の人物や迷惑業者によるメッセージではありません。
                 </p>
               </div>
 

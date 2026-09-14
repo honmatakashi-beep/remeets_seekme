@@ -95,11 +95,11 @@ export const AccountSentTab = (props: any) => {
         <div className="text-center py-12 border border-dashed border-slate-200 rounded-3xl p-6 bg-white/50 space-y-3">
           <p className="text-xs font-serif text-slate-500">送信した再会申請はまだありません。</p>
           <p className="text-[11px] text-slate-400 leading-relaxed max-w-sm mx-auto">
-            手紙の検索画面から気になる人を探し、エピソードを添えて再会希望を送信しましょう。
+            メッセージの検索画面から気になる人を探し、エピソードを添えて再会希望を送信しましょう。
           </p>
           <div className="pt-2">
             <Link to="/search" className="text-xs font-bold text-teal-700 hover:underline">
-              手紙を探しに行く →
+              メッセージを探しに行く →
             </Link>
           </div>
         </div>

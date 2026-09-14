@@ -37,7 +37,7 @@ export const Step2Message = (props: any) => {
             {/* 赤バック注意事項（前ページと同じスタイル） */}
             <div className="flex items-start gap-1.5 text-[11px] text-red-800 font-bold bg-red-50/90 p-2.5 rounded-xl border border-red-200/90 leading-relaxed">
               <AlertTriangle size={14} className="shrink-0 mt-0.5 text-red-600" />
-              <span>【連絡先の鉄則】手紙本文には電話番号・住所等を書かず、必ず専用の『開示用連絡先』欄へご入力ください。（※思い出の質問に正解し開示手続きを行ったお相手にのみ安全に暗号化開示されます）</span>
+              <span>【連絡先の鉄則】メッセージ本文には電話番号・住所等を書かず、必ず専用の『開示用連絡先』欄へご入力ください。（※思い出の質問に正解し開示手続きを行ったお相手にのみ安全に暗号化開示されます）</span>
             </div>
 
             {/* 具体例・OK/NG例：アコーディオン開閉（ピル型ボタン） */}
@@ -55,7 +55,7 @@ export const Step2Message = (props: any) => {
 
               <div className="pt-3 space-y-3 text-xs md:text-sm">
                 <p className="text-xs md:text-sm text-amber-900 bg-amber-50/80 p-2.5 rounded-xl border border-amber-200/60 font-medium leading-relaxed font-sans">
-                  💡 <strong>手紙本文について:</strong> この手紙本文は一般公開されず、質問に全問正解したお相手のみが開封できます。当時の想いや再会へのメッセージを安心してお書きください。
+                  💡 <strong>メッセージ本文について:</strong> このメッセージ本文は一般公開されず、質問に全問正解したお相手のみが開封できます。当時の想いや再会へのメッセージを安心してお書きください。
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 pt-0.5">
@@ -77,7 +77,7 @@ export const Step2Message = (props: any) => {
                       ❌ 書いてはいけない内容（AI検閲対象）
                     </span>
                     <ul className="text-xs md:text-sm text-rose-950/85 space-y-1.5 list-disc list-inside leading-relaxed font-sans">
-                      <li>手紙本文内への直接の電話番号・住所・口座番号の記入（※連絡先は下の専用欄へ）</li>
+                      <li>メッセージ本文内への直接の電話番号・住所・口座番号の記入（※連絡先は下の専用欄へ）</li>
                       <li>威圧的な要求、金銭の催促、トラブルに関する記述</li>
                       <li>誹謗中傷、プライバシー侵害、わいせつな表現</li>
                     </ul>
@@ -87,14 +87,14 @@ export const Step2Message = (props: any) => {
             </details>
           </div>
 
-          {/* 3. 【お相手 様】へ届ける手紙 カード */}
+          {/* 3. 【お相手 様】へ届けるメッセージ カード */}
           <div className="space-y-5 bg-white/95 p-5 md:p-6 rounded-2xl border border-indigo-200/80 shadow-xs overflow-hidden transition-all">
             <div className="flex items-center justify-between border-b border-indigo-200/80 bg-gradient-to-r from-indigo-50/70 via-sky-50/30 to-[#FAF6F0] -mx-5 -mt-5 p-4 md:-mx-6 md:-mt-6 md:p-5 border-l-4 border-l-indigo-700">
               <div className="flex items-center gap-2.5">
                 <span className="w-1.5 h-5 bg-indigo-700 rounded-full inline-block shrink-0" />
                 <Mail size={22} className="text-indigo-800 shrink-0" />
                 <h3 className="text-base sm:text-lg md:text-xl font-bold text-slate-900 tracking-tight">
-                  3. 【{formData.targetName || 'お相手'} 様】へ届ける手紙
+                  3. 【{formData.targetName || 'お相手'} 様】へ届けるメッセージ
                 </h3>
               </div>
               <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wider bg-indigo-800 text-white shadow-2xs shrink-0 flex items-center gap-1">
@@ -107,10 +107,10 @@ export const Step2Message = (props: any) => {
             <div className="bg-indigo-50/70 border border-indigo-200/80 p-3.5 rounded-xl text-xs space-y-1 text-indigo-950 font-sans">
               <div className="font-bold flex items-center gap-1.5 text-indigo-900">
                 <ShieldCheck size={15} className="text-indigo-700 shrink-0" />
-                <span>🔒 {formData.targetName || 'お相手'} 様が思い出の質問に全問正解した後にのみ開示される非公開の手紙です</span>
+                <span>🔒 {formData.targetName || 'お相手'} 様が思い出の質問に全問正解した後にのみ開示される非公開のメッセージです</span>
               </div>
               <p className="text-indigo-900/85 leading-relaxed text-[11px] pl-5">
-                ※ 手紙本文には電話番号・LINE ID・メールアドレス等の連絡先や詳細な住所は直接書かないでください（AI安全監査により投函エラーとなります）。<br />
+                ※ メッセージ本文には電話番号・LINE ID・メールアドレス等の連絡先や詳細な住所は直接書かないでください（AI安全監査により投函エラーとなります）。<br />
                 ※ お相手に開示する連絡先は、すぐ下の<strong>「4. 開示用連絡先設定」欄に1つだけ</strong>ご入力ください。
               </p>
             </div>
@@ -118,7 +118,7 @@ export const Step2Message = (props: any) => {
             <div className="space-y-2">
               <label className="text-xs sm:text-sm font-bold text-black flex items-center gap-1.5">
                 <Mail size={14} className="text-black" />
-                手紙のメッセージ本文<span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
+                メッセージのメッセージ本文<span className="text-[10px] text-red-600 font-bold ml-1">＊必須</span>
               </label>
               <textarea 
                 required

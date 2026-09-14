@@ -659,7 +659,7 @@ eKYC身元認証費,${totalEkycCost},円,単価 ${ekycCost}円
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {/* アクション①: 想い出照合＆手紙開封（課金導線） */}
+          {/* アクション①: 想い出照合＆メッセージ開封（課金導線） */}
           <div className="p-5 rounded-2xl border border-emerald-200 bg-gradient-to-b from-emerald-50/40 to-white space-y-4 shadow-sm">
             <div className="flex items-start justify-between border-b border-emerald-100 pb-3">
               <div className="space-y-0.5">
@@ -667,7 +667,7 @@ eKYC身元認証費,${totalEkycCost},円,単価 ${ekycCost}円
                   <MailOpen size={12} />
                   <span>課金アクション①</span>
                 </div>
-                <h5 className="text-sm font-bold text-black">想い出照合 ＆ 手紙開封者（連絡先開示）</h5>
+                <h5 className="text-sm font-bold text-black">想い出照合 ＆ メッセージ開封者（連絡先開示）</h5>
                 <p className="text-[11px] text-black/60">クイズ正解後に600円決済＋eKYC＋SMS認証を実施</p>
               </div>
               <div className="text-right">
@@ -734,7 +734,7 @@ eKYC身元認証費,${totalEkycCost},円,単価 ${ekycCost}円
                   <span>アクション②</span>
                 </div>
                 <h5 className="text-sm font-bold text-black">投函者の自発的eKYC認証（信頼バッジ）</h5>
-                <p className="text-[11px] text-black/60">手紙投函時に自ら本人確認を完了し、認証済マークを付与</p>
+                <p className="text-[11px] text-black/60">メッセージ投函時に自ら本人確認を完了し、認証済マークを付与</p>
               </div>
               <div className="text-right">
                 <span className="text-xs text-black/50 block">対象人数</span>
@@ -773,7 +773,7 @@ eKYC身元認証費,${totalEkycCost},円,単価 ${ekycCost}円
             </div>
 
             <div className="text-[11px] text-black/60 bg-amber-50/60 p-2 rounded-lg border border-amber-100">
-              💡 <b>安心設計</b>: 投函時のeKYC原価は、アクション①の手紙開封手数料（{formatRawYen(openFee)}）の純利益（+{formatRawYen(openActionGrossProfit)}）から余裕で相殺・回収されます。
+              💡 <b>安心設計</b>: 投函時のeKYC原価は、アクション①のメッセージ開封手数料（{formatRawYen(openFee)}）の純利益（+{formatRawYen(openActionGrossProfit)}）から余裕で相殺・回収されます。
             </div>
           </div>
         </div>

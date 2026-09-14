@@ -50,7 +50,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
     const fetchPost = async () => {
       if (!resolvedId) {
         setLoading(false);
-        setError('該当する手紙（目印）のIDが指定されていません。');
+        setError('該当するメッセージ（目印）のIDが指定されていません。');
         return;
       }
       try {
@@ -61,11 +61,11 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
           setPost(data);
           setError(null);
         } else {
-          if (!post) setError('該当する手紙（目印）が見つかりませんでした。');
+          if (!post) setError('該当するメッセージ（目印）が見つかりませんでした。');
         }
       } catch (err) {
         console.error(err);
-        if (!post) setError('手紙の読み込み中に通信エラーが発生しました。');
+        if (!post) setError('メッセージの読み込み中に通信エラーが発生しました。');
       } finally {
         setLoading(false);
       }
@@ -133,7 +133,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center p-6 text-center space-y-4 font-sans">
         <AlertTriangle size={36} className="text-amber-500" />
-        <h2 className="text-xl font-bold text-slate-850">{error || '手紙が見つかりませんでした'}</h2>
+        <h2 className="text-xl font-bold text-slate-850">{error || 'メッセージが見つかりませんでした'}</h2>
         <BackToHomeButton />
       </div>
     );
@@ -158,14 +158,14 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
           <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center gap-3 text-emerald-900 text-xs sm:text-sm font-medium animate-in fade-in duration-300">
             <CheckCircle2 size={20} className="text-emerald-600 shrink-0" />
             <div>
-              <strong className="block font-bold">手紙を書きました！</strong>
-              <span>あなたを探す誰かがGoogleやサイト内で検索した際、この手紙が見つかります。</span>
+              <strong className="block font-bold">メッセージを届けました！</strong>
+              <span>あなたを探す誰かがGoogleやサイト内で検索した際、このメッセージが見つかります。</span>
             </div>
           </div>
         )}
 
         {/* ===================================================
-            1. エモーショナルな手紙デザイン（上部カード）
+            1. エモーショナルなメッセージデザイン（上部カード）
         =================================================== */}
         <div className="relative rounded-3xl bg-gradient-to-br from-white via-teal-50/20 to-sky-50/30 border-2 border-teal-300/80 p-6 sm:p-10 shadow-lg text-left space-y-6 overflow-hidden">
           {/* 背景装飾 */}
@@ -215,7 +215,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
           {/* 氏名・旧姓 ＆ eKYC公的証明バナー */}
           <div className="space-y-2">
             <div className="flex flex-wrap items-baseline gap-2">
-              <span className="text-xs font-bold text-slate-500 font-sans">手紙を書いた人</span>
+              <span className="text-xs font-bold text-slate-500 font-sans">メッセージを書いた人</span>
               {Boolean(post.is_ekyc_verified) && (
                 <button
                   type="button"
@@ -241,16 +241,16 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               <div className="p-3 bg-gradient-to-r from-teal-50/90 via-sky-50/70 to-emerald-50/80 rounded-2xl border border-teal-200/90 flex items-start gap-2.5 text-xs text-teal-950 font-sans">
                 <ShieldCheck size={16} className="text-teal-600 shrink-0 mt-0.5" />
                 <div className="leading-relaxed">
-                  <strong className="font-bold block text-teal-900">【公的本人確認（eKYC）完了済みのお手紙です】</strong>
+                  <strong className="font-bold block text-teal-900">【公的本人確認（eKYC）完了済みのメッセージです】</strong>
                   差出人は運転免許証・マイナンバーカード等による身元確認（本名・実在・生まれ年の一致）を完了しています。なりすまし等の心配なく、安心して再会希望をお送りいただけます。
                 </div>
               </div>
             )}
 
-            {/* 手紙メタデータ（大きめ・見やすい文字サイズ） */}
+            {/* メッセージメタデータ（大きめ・見やすい文字サイズ） */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-white/90 p-5 sm:p-6 rounded-2xl border border-slate-200/90 font-sans shadow-2xs">
               <div className="space-y-1">
-                <span className="text-xs font-bold text-slate-500 block">手紙を書いた人</span>
+                <span className="text-xs font-bold text-slate-500 block">メッセージを書いた人</span>
                 <div className="text-base sm:text-lg font-bold text-slate-900 font-sans">
                   <span>{postFullName}</span>
                   {postKana && (
@@ -332,7 +332,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               <span className="text-[10px] font-extrabold text-teal-700 tracking-widest uppercase font-mono flex items-center gap-1">
                 <span>ABOUT THIS LETTER</span>
                 <span>・</span>
-                <span>手紙に込められた想いと安心の仕組み</span>
+                <span>メッセージに込められた想いと安心の仕組み</span>
               </span>
               <h3 className="text-base sm:text-lg font-serif font-bold text-slate-900 flex items-center gap-2 flex-wrap">
                 <span>🕊️ 連絡先がわからなくなってしまった貴方へ</span>
@@ -347,18 +347,18 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-            {/* 1. 手紙の目的 */}
+            {/* 1. メッセージの目的 */}
             <div className="p-4 sm:p-5 bg-gradient-to-br from-teal-50/70 to-emerald-50/30 rounded-2xl border border-teal-200/80 space-y-2">
               <div className="flex items-center gap-2">
                 <div className="w-6 h-6 rounded-lg bg-teal-700 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
                   1
                 </div>
                 <strong className="text-slate-900 text-xs sm:text-sm font-bold block font-serif">
-                  手紙に込められた想い
+                  メッセージに込められた想い
                 </strong>
               </div>
               <p className="text-slate-600 text-[11.5px] leading-relaxed">
-                引っ越しや環境の変化で連絡先が途絶えた大切な人に向けて、差出人が<strong>「もう一度話したい、元気か知りたい」</strong>という想いを込めて海に託した手紙です。
+                引っ越しや環境の変化で連絡先が途絶えた大切な人に向けて、差出人が<strong>「もう一度話したい、元気か知りたい」</strong>という想いを込めて海に託したメッセージです。
               </p>
             </div>
 
@@ -373,7 +373,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                 </strong>
               </div>
               <p className="text-slate-600 text-[11.5px] leading-relaxed">
-                「自分宛てかもしれない」と思ったら、手紙下のボタンから<strong>当時の呼び名や想い出のエピソードを添えて返信</strong>できます（登録・申請は無料）。
+                「自分宛てかもしれない」と思ったら、メッセージ下のボタンから<strong>当時の呼び名や想い出のエピソードを添えて返信</strong>できます（登録・申請は無料）。
               </p>
             </div>
 
@@ -400,12 +400,12 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
         </div>
 
         {/* ===================================================
-            4. サブCTA: 「あなたも手紙を書きませんか？」
+            4. サブCTA: 「あなたもメッセージを届けませんか？」
         =================================================== */}
         <div className="p-6 rounded-3xl bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-700 text-white shadow-md flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
           <div className="space-y-1">
             <h3 className="text-base sm:text-lg font-serif font-bold">
-              あなたも大切な人に向けて、手紙を書きませんか？
+              あなたも大切な人に向けて、メッセージを届けませんか？
             </h3>
             <p className="text-xs text-teal-100 font-sans">
               お名前とゆかりの地を登録しておくだけで、探している知人が見つけられます。
@@ -415,7 +415,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
             to="/create"
             className="px-6 py-3 bg-white text-teal-800 hover:bg-teal-50 font-bold rounded-2xl text-xs sm:text-sm shadow-sm transition-all whitespace-nowrap"
           >
-            手紙を書く
+            メッセージを届ける
           </Link>
         </div>
       </div>

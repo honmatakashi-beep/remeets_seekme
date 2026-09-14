@@ -140,7 +140,7 @@ export const useAdminVersions = ({
       if (res.ok) {
         const data = await res.json();
         setSimulatedPostId(data.postId);
-        setSimulationSuccessMsg(`🚨 違反疑い手紙(ID: #${data.postId})を自動隔離シミュレーションしました！直ちにモデレーションタブまたは通報一覧に自動隔離反映されています。`);
+        setSimulationSuccessMsg(`🚨 違反疑いメッセージ(ID: #${data.postId})を自動隔離シミュレーションしました！直ちにモデレーションタブまたは通報一覧に自動隔離反映されています。`);
         fetchData();
       } else {
         const err = await res.json().catch(() => ({}));

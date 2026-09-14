@@ -23,7 +23,7 @@ export const authRouter = express.Router();
   authRouter.post("/register", registrationLimiter, async (req, res) => {
     let { username, email, password, fullName: reqFullName, lastName, firstName, maidenName, nickname, birthdate, gender, captchaAnswer, captchaId, snsProvider, quickPost } = req.body;
     
-    // 手紙作成時からの簡易登録またはSNS登録時の自動補完
+    // メッセージ作成時からの簡易登録またはSNS登録時の自動補完
     if (!captchaAnswer && (quickPost || snsProvider || req.body.contactId)) {
       captchaAnswer = "4";
     }
@@ -83,7 +83,7 @@ export const authRouter = express.Router();
       username = generatedUid;
     }
 
-    // 動的パスワードポリシー検証（手紙簡易登録時は6文字以上、通常はポリシー）
+    // 動的パスワードポリシー検証（メッセージ簡易登録時は6文字以上、通常はポリシー）
     if (password.length < 6) {
       return res.status(400).json({ error: "パスワードは6文字以上で入力してください。" });
     }
@@ -171,7 +171,7 @@ export const authRouter = express.Router();
       const verificationToken = crypto.randomBytes(32).toString("hex");
       const fullName = `${lastName} ${firstName}`.trim();
       
-      // 手紙作成からの登録、またはSNS登録、またはテストアカウント（test_user_*）は即座に認証済みにする
+      // メッセージ作成からの登録、またはSNS登録、またはテストアカウント（test_user_*）は即座に認証済みにする
       const isAutoVerify = Boolean(quickPost || snsProvider || email.startsWith('test_user_') || req.body.contactId);
       const isVerifiedVal = isAutoVerify ? 1 : 0;
 
@@ -605,7 +605,7 @@ export const authRouter = express.Router();
         try { db.prepare("UPDATE contacts SET user_id = NULL WHERE user_id = ?").run(userId); } catch (e) {}
         try { db.prepare("UPDATE reports SET reporter_id = NULL WHERE reporter_id = ?").run(userId); } catch (e) {}
 
-        // 3. 退会ユーザーの手紙の個人情報物理消去（差出人本名・連絡先IDの消去）
+        // 3. 退会ユーザーのメッセージの個人情報物理消去（差出人本名・連絡先IDの消去）
         db.prepare(`
           UPDATE posts 
           SET searcher_full_name = '退会済ユーザー', 

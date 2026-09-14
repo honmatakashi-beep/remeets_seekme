@@ -165,7 +165,7 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
             メール通知（検索アラート）の認証に成功しました！
           </div>
           <p className="text-xs sm:text-sm text-green-700 font-sans">
-            あなたを探しているお相手からの新着ボトルメール（あなたの名前や出身校・ゆかりの地域宛ての手紙）が投函された際、このメールアドレス宛てにすぐに自動通知されます。あなたの個人情報は完全に保護されます。
+            あなたを探しているお相手からの新着ボトルメール（あなたの名前や出身校・ゆかりの地域宛てのメッセージ）が投函された際、このメールアドレス宛てにすぐに自動通知されます。あなたの個人情報は完全に保護されます。
           </p>
         </div>
       )}
@@ -173,8 +173,8 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
         icon={<Search size={24} className="text-teal-600" />}
         iconBoxClassName="bg-teal-50 text-teal-600 border border-teal-100"
         category="Search Directory"
-        title="手紙を探す"
-        description="探しているお相手のお名前やご自身のお名前、ゆかりの都道府県などで検索し、あなたを待っている大切な人からの手紙と出会うことができます。"
+        title="メッセージを探す"
+        description="探しているお相手のお名前やご自身のお名前、ゆかりの都道府県などで検索し、あなたを待っている大切な人からのメッセージと出会うことができます。"
       />
 
       {/* 🔍 上部統合検索 & 絞り込み & 新着通知コントロールカード */}
@@ -230,7 +230,7 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
           </select>
         </div>
 
-        {/* 🔔 新着手紙の自動メール通知ガイド＆設定パネル */}
+        {/* 🔔 新着メッセージの自動メール通知ガイド＆設定パネル */}
         <div className="mt-3 p-3.5 sm:p-4 bg-gradient-to-r from-teal-50/90 via-sky-50/50 to-white rounded-2xl border border-teal-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
           <div className="flex items-start sm:items-center gap-2.5">
             <span className="p-2 bg-teal-600 text-white rounded-xl shrink-0 shadow-2xs mt-0.5 sm:mt-0">
@@ -239,7 +239,7 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-bold text-teal-950 text-xs sm:text-sm font-serif">
-                  あなた宛て新着手紙の自動メール通知
+                  あなた宛て新着メッセージの自動メール通知
                 </span>
                 {user && (
                   <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
@@ -251,8 +251,8 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
               </div>
               <p className="text-[11px] text-slate-600 font-sans mt-0.5 leading-relaxed">
                 {user 
-                  ? `あなた（${user.fullName || user.username} 様）宛ての手紙が新しく流された際、登録メール宛てにお知らせします。`
-                  : 'あなたを探している大切な人からの手紙が届いた際、メールで自動通知を受け取ることができます。'}
+                  ? `あなた（${user.fullName || user.username} 様）宛てのメッセージが新しく流された際、登録メール宛てにお知らせします。`
+                  : 'あなたを探している大切な人からのメッセージが届いた際、メールで自動通知を受け取ることができます。'}
               </p>
             </div>
           </div>
@@ -295,8 +295,8 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
           <div>
             <p className="font-bold text-xs text-amber-950">💡 検索方法のアドバイス</p>
             <p className="mt-0.5 text-[11px] text-amber-900/90 leading-relaxed font-sans">
-              現在検索条件が未入力のため、<b>最新の手紙（新着順）</b>を表示しています。<br />
-              お相手またはご自身宛ての手紙をお探しの場合は、上の検索ボックスに<b>「お名前（フルネーム・苗字・旧姓）」</b>や<b>「ゆかりの都道府県」「年代」</b>等を入力して検索してください。（※市区町村や学校名は防犯のため非公開となっており、再会申請が承認・開通された後に連絡先が開示されます）
+              現在検索条件が未入力のため、<b>最新のメッセージ（新着順）</b>を表示しています。<br />
+              お相手またはご自身宛てのメッセージをお探しの場合は、上の検索ボックスに<b>「お名前（フルネーム・苗字・旧姓）」</b>や<b>「ゆかりの都道府県」「年代」</b>等を入力して検索してください。（※市区町村や学校名は防犯のため非公開となっており、再会申請が承認・開通された後に連絡先が開示されます）
             </p>
           </div>
         </div>
@@ -330,10 +330,10 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
                 </div>
                 <div className="space-y-1.5">
                   <h3 className="text-base md:text-xl font-serif font-bold text-slate-800">
-                    該当する手紙が見つかりませんでした
+                    該当するメッセージが見つかりませんでした
                   </h3>
                   <p className="text-xs md:text-sm font-serif text-slate-600 leading-relaxed">
-                    まだ手紙が書かれていないか、異なる表記で投稿されている可能性があります。<br />
+                    まだメッセージが書かれていないか、異なる表記で投稿されている可能性があります。<br />
                     ひらがな、旧姓、または都道府県のみで再検索をお試しいただくか、<b>「新着通知」</b>をご登録ください。
                   </p>
                 </div>
@@ -347,7 +347,7 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
                     className="px-6 py-3 bg-gradient-to-r from-teal-700 via-teal-800 to-indigo-800 hover:from-teal-800 hover:to-indigo-900 text-white font-bold text-xs rounded-2xl shadow-md hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer font-sans active:scale-98"
                   >
                     <Bell size={14} />
-                    <span>あなたを探す手紙が届いたらメールで通知を受け取る ✨</span>
+                    <span>あなたを探すメッセージが届いたらメールで通知を受け取る ✨</span>
                   </button>
                 </div>
               </div>
@@ -357,7 +357,7 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
           <div className="space-y-6">
             <div className="flex items-center justify-between border-b border-brand-border/60 pb-3">
               <p className="text-xs text-brand-dark/70 font-serif">
-                該当する手紙： <span className="font-bold text-brand-primary text-sm">{posts.length}</span> 通
+                該当するメッセージ： <span className="font-bold text-brand-primary text-sm">{posts.length}</span> 通
                 <span className="ml-2 text-brand-dark/40 font-sans">
                   ({currentPage} / {totalPages} ページ目 - 1ページ上限20件)
                 </span>
@@ -375,7 +375,7 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
                   <span className="text-[5px] font-black tracking-tighter uppercase -mt-0.5 text-white">eKYC済</span>
                 </div>
                 <div className="text-xs text-slate-700 leading-snug">
-                  <span className="font-bold text-sky-950">虹色の「公的確認」マーク</span>は、差出人が運転免許証等による本人確認を完了している<span className="font-bold text-teal-900">実在証明付きの安心なお手紙</span>です。
+                  <span className="font-bold text-sky-950">虹色の「公的確認」マーク</span>は、差出人が運転免許証等による本人確認を完了している<span className="font-bold text-teal-900">実在証明付きの安心なメッセージ</span>です。
                 </div>
               </div>
               <button 
@@ -530,7 +530,7 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
                         ✓ 登録完了
                       </span>
                       <h3 className="text-lg md:text-xl font-serif font-bold text-slate-900">
-                        新着手紙のメール通知を登録しました！
+                        新着メッセージのメール通知を登録しました！
                       </h3>
                       <p className="text-xs text-slate-600 leading-relaxed max-w-md mx-auto">
                         探したい人【<span className="font-bold text-teal-800">{alertForm.targetName || 'あなた'}</span>】宛ての新着ボトルメールが海に流された際、ご登録のメールアドレス宛てに自動でお知らせいたします。
@@ -571,7 +571,7 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
                           Email Alert
                         </span>
                         <h3 className="text-base sm:text-lg font-serif font-bold text-slate-900 mt-0.5">
-                          新着手紙のメール通知（入荷アラート）
+                          新着メッセージのメール通知（入荷アラート）
                         </h3>
                       </div>
                     </div>
@@ -830,19 +830,19 @@ export const SuccessStoryModal = ({
             </div>
           ) : !submitted ? (
             <form onSubmit={handleSubmit} className="space-y-5 text-left">
-              {/* 対象の手紙情報が渡されている場合のコンテキストカード */}
+              {/* 対象のメッセージ情報が渡されている場合のコンテキストカード */}
               {initialPost && (
                 <div className="p-4 bg-gradient-to-r from-amber-50/80 to-emerald-50/80 rounded-2xl border border-amber-200/80 space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-bold text-amber-900 bg-amber-100/80 px-2 py-0.5 rounded-md flex items-center gap-1">
                       <Mail size={11} className="text-amber-700" />
-                      <span>対象のボトルお手紙と自動連携中</span>
+                      <span>対象のボトルメッセージと自動連携中</span>
                     </span>
                     <span className="text-[10px] font-mono text-slate-400 font-bold">ID: #{initialPost.id}</span>
                   </div>
                   <div className="space-y-0.5">
                     <h4 className="text-xs font-serif font-bold text-slate-900">
-                      {initialPost.target_name} 様 宛てのお手紙（{initialPost.era ? (initialPost.era.toString().startsWith('19') ? initialPost.era : `19${initialPost.era}`) : '当時'}年頃）
+                      {initialPost.target_name} 様 宛てのメッセージ（{initialPost.era ? (initialPost.era.toString().startsWith('19') ? initialPost.era : `19${initialPost.era}`) : '当時'}年頃）
                     </h4>
                     {initialPost.searcher_profile && (
                       <p className="text-[11px] text-slate-600 truncate">
@@ -871,7 +871,7 @@ export const SuccessStoryModal = ({
                   >
                     <Send size={15} className={role === 'sender' ? 'text-teal-600' : 'text-slate-400'} />
                     <span>🍾 差出人側</span>
-                    <span className="text-[9px] font-normal text-slate-400">手紙を流した人</span>
+                    <span className="text-[9px] font-normal text-slate-400">メッセージを流した人</span>
                   </button>
 
                   <button
@@ -885,7 +885,7 @@ export const SuccessStoryModal = ({
                   >
                     <MessageSquare size={15} className={role === 'receiver' ? 'text-emerald-600' : 'text-slate-400'} />
                     <span>📩 受取人側</span>
-                    <span className="text-[9px] font-normal text-slate-400">手紙を見つけた人</span>
+                    <span className="text-[9px] font-normal text-slate-400">メッセージを見つけた人</span>
                   </button>
 
                   <button
@@ -917,7 +917,7 @@ export const SuccessStoryModal = ({
                     role === 'sender'
                       ? '例：30年越しのボトルメールが親友に届いた奇跡の日'
                       : role === 'receiver'
-                      ? '例：自分宛ての手紙を発見した時の震えるような感動'
+                      ? '例：自分宛てのメッセージを発見した時の震えるような感動'
                       : '例：ReMEETsを通じて恩師と再会できました'
                   }
                   value={title}
@@ -938,7 +938,7 @@ export const SuccessStoryModal = ({
                     role === 'sender'
                       ? '例：中学卒業以来会えていなかった親友へボトルメールを流しました。最初は半信半疑でしたが、秘密のクイズに正解通知が届いた時は鳥肌が立ちました！今は昔のように連絡を取り合っています。このシステムを作ってくれた運営の皆様、本当にありがとうございました。'
                       : role === 'receiver'
-                      ? '例：自分宛ての手紙が届いているのを発見した時は本当に驚きました。昔の思い出の質問（クイズ）に正解して連絡先が開通した瞬間、当時の記憶が一気に蘇り胸が熱くなりました。見つけてくれたお相手にも運営様にも心から感謝しています。'
+                      ? '例：自分宛てのメッセージが届いているのを発見した時は本当に驚きました。昔の思い出の質問（クイズ）に正解して連絡先が開通した瞬間、当時の記憶が一気に蘇り胸が熱くなりました。見つけてくれたお相手にも運営様にも心から感謝しています。'
                       : '例：ReMEETsを通じて懐かしい知人と再会を果たすことができました。温かい仕組みを作ってくださり本当に感謝しております。'
                   }
                   value={message}
