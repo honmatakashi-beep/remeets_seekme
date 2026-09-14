@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams, useLocation, Link } from 'react-router-dom';
+import { useNavigate, useParams, useLocation, useSearchParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft, ArrowRight, Check, CheckCircle2, Copy, Heart,
@@ -13,13 +13,19 @@ import { BottleLoader, BackToHomeButton, GoogleSearchResultPreview } from '../..
 
 export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) => {
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
+  const location = useLocation();
   const { user, token } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
   const { check: checkNg } = useNgFilter();
 
-  const [post, setPost] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  // URLパラメータまたはクエリパラメータまたはstateからIDを確実に解決
+  const queryId = searchParams.get('id');
+  const previewData = location.state?.postPreview;
+  const resolvedId = id || queryId || (previewData?.id ? String(previewData.id) : null);
+
+  const [post, setPost] = useState<any>(previewData || null);
+  const [loading, setLoading] = useState(!previewData);
   const [error, setError] = useState<string | null>(null);
 
   // 再会希望エピソード送信モーダル
@@ -37,26 +43,31 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
 
   useEffect(() => {
     const fetchPost = async () => {
+      if (!resolvedId) {
+        setLoading(false);
+        setError('該当する手紙（目印）のIDが指定されていません。');
+        return;
+      }
       try {
-        setLoading(true);
-        const res = await fetch(`/api/posts/${id}`);
+        if (!post) setLoading(true);
+        const res = await fetch(`/api/posts/${resolvedId}`);
         if (res.ok) {
           const data = await res.json();
           setPost(data);
+          setError(null);
         } else {
-          setError('該当する手紙（目印）が見つかりませんでした。');
+          if (!post) setError('該当する手紙（目印）が見つかりませんでした。');
         }
       } catch (err) {
         console.error(err);
-        setError('手紙の読み込み中に通信エラーが発生しました。');
+        if (!post) setError('手紙の読み込み中に通信エラーが発生しました。');
       } finally {
         setLoading(false);
       }
     };
-    if (id) {
-      fetchPost();
-    }
-  }, [id]);
+
+    fetchPost();
+  }, [resolvedId]);
 
   const handleSendReunionRequest = async (e: React.FormEvent) => {
     e.preventDefault();
