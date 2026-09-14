@@ -78,10 +78,10 @@ export const GuideSampleInlineViewer: React.FC<GuideSampleInlineViewerProps> = (
   };
 
   const currentUrl = 
-    activeScene === 1 ? 'https://remeets.app/bottle/btl-88920' :
-    activeScene === 2 ? 'https://remeets.app/search?name=藤井裕太&area=愛知県' :
-    activeScene === 3 ? 'https://remeets.app/bottle/btl-88920/quiz' :
-    'https://remeets.app/bottle/btl-88920/opened';
+    activeScene === 1 ? 'https://seekme.remeets.link/posts/msg-88920' :
+    activeScene === 2 ? 'https://seekme.remeets.link/notifications/match-88920' :
+    activeScene === 3 ? 'https://seekme.remeets.link/posts/msg-88920/request' :
+    'https://seekme.remeets.link/posts/msg-88920/opened';
 
   return (
     <div
@@ -117,12 +117,12 @@ export const GuideSampleInlineViewer: React.FC<GuideSampleInlineViewerProps> = (
       </div>
 
       {/* 2. Scene Switcher Tabs with Price Tags */}
-      <div className="bg-slate-800 px-4 py-2.5 border-b border-slate-700 flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap">
+      <div className="bg-slate-850 px-4 py-2.5 border-b border-slate-700 flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap">
         {[
-          { id: 1, label: '01 投稿画面', price: '費用: 0円' },
-          { id: 2, label: '02 検索結果', price: '費用: 0円' },
-          { id: 3, label: '03 質問照合', price: '費用: 0円' },
-          { id: 4, label: '04 連絡先開示', price: '開通: 600円' },
+          { id: 1, label: '01 メッセージ登録', price: '費用: 0円' },
+          { id: 2, label: '02 自動照合・通知', price: '費用: 0円' },
+          { id: 3, label: '03 エピソード照合', price: '費用: 0円' },
+          { id: 4, label: '04 メッセージ開通', price: '開通: 600円' },
         ].map((tab) => (
           <button
             key={tab.id}
@@ -149,30 +149,30 @@ export const GuideSampleInlineViewer: React.FC<GuideSampleInlineViewerProps> = (
         className="p-3 sm:p-5 md:p-8 bg-slate-100 font-sans max-h-[75vh] overflow-y-auto overscroll-contain" 
         data-lenis-prevent
       >
-        {/* SCENE 01: ボトル詳細画面（PostDetailPage完全一致スタイル） */}
+        {/* SCENE 01: メッセージ登録・非公開詳細画面 */}
         {activeScene === 1 && (
           <div className="max-w-2xl mx-auto space-y-4">
             <div className="bg-white rounded-3xl p-5 sm:p-7 shadow-lg border border-slate-200/90 space-y-5 relative overflow-hidden">
-              {/* Top Status & Bottle ID */}
+              {/* Top Status & Message ID */}
               <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-4">
                 <span className="text-xs font-bold text-teal-800 bg-teal-50 px-3 py-1 rounded-full border border-teal-200 flex items-center gap-1.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-teal-500 animate-pulse" />
-                  海流漂流中（公開中）
+                  暗号化保管中（完全非公開照合）
                 </span>
                 <div className="flex items-center gap-2 text-xs text-slate-500 font-mono">
-                  <span>管理番号: BTL-88920</span>
+                  <span>管理番号: MSG-88920</span>
                   <span>•</span>
-                  <span>投函: 2026年7月15日</span>
+                  <span>登録: 2026年7月15日</span>
                 </div>
               </div>
 
-              {/* Recipient & Sender Header (本番完全一致) */}
+              {/* Recipient & Sender Header */}
               <div className="space-y-2">
                 <span className="text-[10px] font-extrabold text-teal-700 bg-teal-50 px-2.5 py-0.5 rounded-full uppercase tracking-widest border border-teal-200/60 font-sans">
                   RECIPIENT & SENDER
                 </span>
                 <h3 className="text-xl sm:text-2xl font-black font-serif text-slate-900 leading-tight">
-                  「藤井 裕太」様へ届いている思い出のメッセージ
+                  「藤井 裕太」様へ向けた想い出メッセージ
                 </h3>
 
                 {/* 差出人サポーター＆本人確認バッジ */}
@@ -195,7 +195,7 @@ export const GuideSampleInlineViewer: React.FC<GuideSampleInlineViewerProps> = (
               {/* Target Info Chips Grid */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs bg-slate-50 p-3 rounded-2xl border border-slate-200">
                 <div className="p-1.5">
-                  <span className="text-slate-400 block text-[10px]">お相手の名前</span>
+                  <span className="text-slate-400 block text-[10px]">お相手のお名前</span>
                   <strong className="text-slate-800 text-xs sm:text-sm">藤井 裕太 様</strong>
                 </div>
                 <div className="p-1.5">
@@ -208,152 +208,89 @@ export const GuideSampleInlineViewer: React.FC<GuideSampleInlineViewerProps> = (
                 </div>
                 <div className="p-1.5">
                   <span className="text-slate-400 block text-[10px]">ゆかりの地</span>
-                  <strong className="text-slate-800 text-xs sm:text-sm">愛知県（市以下非公開）</strong>
+                  <strong className="text-slate-800 text-xs sm:text-sm">愛知県（暗号化管理）</strong>
                 </div>
               </div>
 
-              {/* Emotional Letter Message Box (便箋風) */}
+              {/* Private Message Preview Box */}
               <div className="p-5 sm:p-6 bg-gradient-to-br from-amber-50/70 via-rose-50/30 to-amber-50/50 rounded-2xl border-2 border-amber-200/90 space-y-3 relative shadow-xs">
                 <div className="flex items-center justify-between border-b border-amber-200/80 pb-2.5">
                   <div className="flex items-center gap-2 text-xs font-bold text-amber-950 font-serif">
                     <Heart size={15} className="text-rose-500 fill-rose-500" />
-                    <span>あおいさんからの想い出メッセージ</span>
+                    <span>あおいさんからの想い出メッセージ（暗号化保管中）</span>
                   </div>
-                  <span className="text-[10px] text-amber-800 font-serif">便箋レター</span>
+                  <span className="text-[10px] text-amber-800 font-serif">非公開メッセージ</span>
                 </div>
-                <p className="text-xs sm:text-sm text-slate-800 leading-relaxed font-serif whitespace-pre-line p-1">
-                  {`小学校の時の幼馴染の裕太くんへ。
-
-放課後はいつも駄菓子屋の『きくや商店』でベビースターラーメンを買って、近くの公園で秘密基地を作って遊んでいたのを覚えていますか？
-
-引っ越しで離れてしまってから、ずっとどうしているか気になっていました。
-もしこのメッセージを見つけたら、また昔みたいにお話ししたいです。
-
-あおいより`}
-                </p>
-              </div>
-
-              {/* Secret Quiz Lock Card (思い出クイズ2問仕様) */}
-              <div className="p-4 sm:p-5 bg-amber-50/90 rounded-2xl border-2 border-amber-300 space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-xs font-bold text-amber-950">
-                    <Lock size={15} className="text-amber-700" />
-                    <span>思い出クイズ（本人確認・全2問設定中）</span>
-                  </div>
-                  <span className="text-[10px] bg-amber-200/80 text-amber-900 px-2 py-0.5 rounded-full font-bold">
-                    正解者のみ開示
-                  </span>
+                <div className="p-4 bg-white/90 rounded-xl border border-amber-200/60 text-center space-y-2">
+                  <Lock size={20} className="text-amber-600 mx-auto" />
+                  <p className="text-xs text-slate-700 leading-relaxed font-sans">
+                    メッセージ本文および連絡先は暗号化されています。<br />
+                    お相手による<strong>「想い出エピソードの照合・相互承認」</strong>完了後に安全に開通します。
+                  </p>
                 </div>
-
-                <div className="space-y-1.5 text-xs text-amber-950 font-medium">
-                  <div className="p-2.5 bg-white rounded-xl border border-amber-200 flex items-start gap-2">
-                    <span className="font-bold text-amber-700 shrink-0">Q1:</span>
-                    <span>小学生の時に放課後一緒によく通っていた駄菓子屋の名前は？</span>
-                  </div>
-                  <div className="p-2.5 bg-white rounded-xl border border-amber-200 flex items-start gap-2">
-                    <span className="font-bold text-amber-700 shrink-0">Q2:</span>
-                    <span>二人で放課後に秘密基地を作っていた公園の名前は？</span>
-                  </div>
-                </div>
-                <p className="text-[11px] text-amber-800 font-sans">
-                  ※第三者には絶対に推測できない記憶の答えを入力して本人照合を行います（費用: 0円）。
-                </p>
               </div>
 
               {/* Action Button */}
               <button
-                onClick={() => onSelectScene(3)}
+                onClick={() => onSelectScene(2)}
                 className="w-full py-3.5 bg-gradient-to-r from-sky-600 via-teal-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 text-white text-xs sm:text-sm font-bold rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.01] active:scale-98"
               >
-                <span>あなたが「藤井 裕太」さんですか？（思い出クイズに答える）</span>
+                <span>システム自動照合の流れを見る (Scene 02へ)</span>
                 <ArrowRight size={16} />
               </button>
             </div>
           </div>
         )}
 
-        {/* SCENE 02: 検索・エゴサーチ画面（Google再現 ＆ 本番SearchPageカード） */}
+        {/* SCENE 02: システム自動照合 ＆ マッチング通知 */}
         {activeScene === 2 && (
           <div className="max-w-2xl mx-auto space-y-4">
-            {/* 1. Google検索スニペット再現 */}
-            <div className="bg-white rounded-3xl p-5 shadow-md border border-slate-200 space-y-3">
-              <div className="text-[10px] font-bold text-slate-500 font-mono flex items-center justify-between border-b border-slate-100 pb-2">
-                <span className="flex items-center gap-1.5 text-blue-600">
-                  <Search size={13} /> Google 検索エンジン表示再現
-                </span>
-                <span>google.com</span>
-              </div>
-              <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex items-center gap-2 text-xs font-mono font-bold text-slate-800">
-                <Search size={14} className="text-blue-600 shrink-0" />
-                <span>藤井裕太 1990年代 愛知県 幼馴染</span>
-              </div>
-
-              <div className="p-3 bg-white rounded-xl border border-blue-100 space-y-1">
-                <div className="text-[11px] text-slate-500 font-mono">https://remeets.app › bottle › btl-88920</div>
-                <h4
-                  onClick={() => onSelectScene(1)}
-                  className="text-sm sm:text-base font-bold text-blue-700 hover:underline cursor-pointer font-serif leading-snug"
-                >
-                  ReMEETs | 「藤井 裕太」様へ届いている思い出のメッセージ（あおいより）
-                </h4>
-                <p className="text-xs text-slate-600 leading-relaxed font-sans">
-                  愛知県 1990年代 幼馴染。「小学校の時の幼馴染の裕太くんへ。放課後いつも駄菓子屋のきくや商店で...」あおいさんがあなたを探しています。思い出のクイズに答えてメッセージを開封...
-                </p>
-              </div>
-            </div>
-
-            {/* 2. ReMEETsサイト内検索ヒット結果 ＆ 新着アラート機能 */}
+            {/* 1. 自動照合検知カード */}
             <div className="bg-white rounded-3xl p-5 sm:p-6 shadow-md border border-teal-200/90 space-y-4">
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <span className="flex items-center gap-1.5 text-xs font-bold text-teal-900 font-serif">
                   <Sparkles size={15} className="text-teal-600" />
-                  ReMEETs サイト内検索結果（1件ヒット）
+                  ReMEETs SEEKME システム自動照合検知
                 </span>
                 <span className="text-[10px] bg-teal-100 text-teal-800 font-bold px-2.5 py-0.5 rounded-full">
-                  費用: 0円（検索無料）
+                  照合完了（一致率: 100%）
                 </span>
               </div>
 
-              {/* 検索結果カード（本番BottleCard風） */}
-              <div 
-                onClick={() => onSelectScene(1)}
-                className="p-4 bg-slate-50 hover:bg-teal-50/40 rounded-2xl border border-slate-200 hover:border-teal-300 transition-all cursor-pointer space-y-2 group"
-              >
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-slate-900 text-sm font-serif group-hover:text-teal-700 transition-colors">
-                    藤井 裕太 様 宛てのメッセージ
-                  </span>
-                  <span className="text-[10px] bg-teal-50 text-teal-800 border border-teal-200 px-2 py-0.5 rounded-full font-bold">
-                    漂流中
-                  </span>
+              {/* マッチング結果カード */}
+              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
+                <div className="flex items-center gap-2 text-xs font-bold text-slate-900 font-serif">
+                  <CheckCircle2 size={16} className="text-teal-600" />
+                  <span>あなた宛ての想い出メッセージが検出されました</span>
                 </div>
-                <p className="text-xs text-slate-600 line-clamp-2 font-serif">
-                  「小学校の時の幼馴染の裕太くんへ。放課後はいつも駄菓子屋のきくや商店で...」
-                </p>
-                <div className="flex items-center justify-between pt-1 text-[11px] text-slate-500">
-                  <span>差出人: あおい</span>
-                  <span className="text-teal-700 font-bold flex items-center gap-1">
-                    詳細を見る <ChevronRight size={13} />
-                  </span>
+                <div className="grid grid-cols-3 gap-2 text-xs bg-white p-3 rounded-xl border border-slate-200">
+                  <div>
+                    <span className="text-[10px] text-slate-400 block">お相手</span>
+                    <strong className="text-slate-800">あおい 様</strong>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-slate-400 block">ゆかりの地</span>
+                    <strong className="text-slate-800">愛知県</strong>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-slate-400 block">年代</span>
+                    <strong className="text-slate-800">1990年代</strong>
+                  </div>
                 </div>
               </div>
 
-              {/* 新着入荷通知アラート（メール通知）保存UI */}
+              {/* 新着マッチングメール通知UI */}
               <div className="p-4 bg-gradient-to-r from-teal-50 to-sky-50 rounded-2xl border border-teal-200 space-y-2">
                 <div className="flex items-center gap-2 text-xs font-bold text-teal-950">
-                  <Bell size={15} className="text-teal-600 shrink-0" />
-                  <span>新着入荷通知アラート（無料メール通知）</span>
+                  <Mail size={15} className="text-teal-600 shrink-0" />
+                  <span>新着マッチング通知メール（自動配信済み）</span>
                 </div>
-                <p className="text-xs text-slate-600 leading-relaxed font-sans">
-                  まだ届いていない場合でも、検索条件（藤井裕太・愛知県）を保存しておくと、お相手が新しくメッセージを流した瞬間にメールで通知を受け取れます。
-                </p>
-                <button
-                  type="button"
-                  className="px-3.5 py-2 bg-white hover:bg-teal-50 text-teal-800 border border-teal-300 rounded-xl text-xs font-bold shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer"
-                >
-                  <Bell size={13} className="text-teal-600" />
-                  <span>この検索条件でメール通知を保存する</span>
-                </button>
+                <div className="p-3 bg-white rounded-xl border border-teal-100 text-xs text-slate-700 leading-relaxed font-sans space-y-1">
+                  <p className="font-bold text-slate-900">件名: 【ReMEETs SEEKME】あなた宛ての想い出メッセージが届いています</p>
+                  <p className="text-[11px] text-slate-600">
+                    藤井 裕太 様宛てに、あおい様（愛知県・1990年代）からの想い出メッセージが登録されました。当時の想い出エピソードを入力して再会希望申請を行うことができます。
+                  </p>
+                </div>
               </div>
 
               <div className="flex gap-2 pt-1">
@@ -361,13 +298,13 @@ export const GuideSampleInlineViewer: React.FC<GuideSampleInlineViewerProps> = (
                   onClick={() => onSelectScene(1)}
                   className="flex-1 py-3 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
                 >
-                  <span>ボトル詳細を見る (Scene 01)</span>
+                  <span>メッセージ登録を見る (Scene 01)</span>
                 </button>
                 <button
                   onClick={() => onSelectScene(3)}
                   className="flex-1 py-3 bg-gradient-to-r from-sky-600 via-teal-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 text-white text-xs font-bold rounded-xl transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
                 >
-                  <span>クイズに答えて照合する (Scene 03)</span>
+                  <span>想い出エピソードで照合する (Scene 03)</span>
                   <ArrowRight size={14} />
                 </button>
               </div>
@@ -375,14 +312,14 @@ export const GuideSampleInlineViewer: React.FC<GuideSampleInlineViewerProps> = (
           </div>
         )}
 
-        {/* SCENE 03: 思い出クイズ回答モーダル（QuizModal完全一致スタイル） */}
+        {/* SCENE 03: 想い出エピソード提出・照合画面 */}
         {activeScene === 3 && (
           <div className="max-w-xl mx-auto space-y-4">
             <div className="bg-white rounded-3xl p-5 sm:p-7 shadow-xl border-2 border-amber-300 space-y-5">
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <div className="flex items-center gap-2 text-xs font-bold text-amber-950 font-serif">
                   <Lock size={16} className="text-amber-600" />
-                  <span>思い出クイズ回答（本人照合ステップ）</span>
+                  <span>想い出エピソードによる本人確認（再会希望申請）</span>
                 </div>
                 <span className="text-[10px] bg-amber-100 text-amber-900 font-bold px-2.5 py-0.5 rounded-full">
                   費用: 0円（完全無料）
@@ -390,54 +327,34 @@ export const GuideSampleInlineViewer: React.FC<GuideSampleInlineViewerProps> = (
               </div>
 
               <div className="p-3 bg-amber-50/60 rounded-xl border border-amber-200 text-xs flex justify-between">
-                <span>対象: <strong>BTL-88920 (藤井 裕太 様宛)</strong></span>
+                <span>対象: <strong>MSG-88920 (藤井 裕太 様宛)</strong></span>
                 <span>差出人: <strong className="text-teal-700">あおい</strong></span>
               </div>
 
-              {/* 設問 1 */}
-              <div className="space-y-2 p-4 bg-slate-50 rounded-2xl border border-slate-200">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-800">Q1: 小学生の時に放課後よく通った駄菓子屋の名前は？</span>
-                  <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1">
-                    <CheckCircle2 size={11} /> 一致
-                  </span>
+              {/* 想い出エピソード入力・照合例 */}
+              <div className="space-y-3 p-4 bg-slate-50 rounded-2xl border border-slate-200">
+                <span className="text-xs font-bold text-slate-800 block font-serif">
+                  当時のふたりだけの想い出エピソード
+                </span>
+                <div className="p-3 bg-white text-slate-800 text-xs sm:text-sm rounded-xl border border-slate-200 font-sans leading-relaxed">
+                  「小学校の時に放課後いつも『きくや商店』でベビースターラーメンを買って、さくら児童公園の裏庭で秘密基地を作って遊んだ記憶」
                 </div>
-                <div className="flex gap-2 items-center">
-                  <input
-                    type="text"
-                    readOnly
-                    value="きくや商店"
-                    className="w-full px-3 py-2 bg-emerald-50 text-emerald-950 font-bold text-xs sm:text-sm rounded-xl border-2 border-emerald-400 font-sans"
-                  />
+                <div className="flex items-center justify-between pt-1">
+                  <span className="text-[11px] text-emerald-800 font-bold flex items-center gap-1">
+                    <CheckCircle2 size={13} className="text-emerald-600" />
+                    差出人（あおい様）による確認 ＆ 承認完了
+                  </span>
                 </div>
               </div>
 
-              {/* 設問 2 */}
-              <div className="space-y-2 p-4 bg-slate-50 rounded-2xl border border-slate-200">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-800">Q2: 二人で放課後に秘密基地を作っていた公園の名前は？</span>
-                  <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1">
-                    <CheckCircle2 size={11} /> 一致
-                  </span>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <input
-                    type="text"
-                    readOnly
-                    value="さくら児童公園"
-                    className="w-full px-3 py-2 bg-emerald-50 text-emerald-950 font-bold text-xs sm:text-sm rounded-xl border-2 border-emerald-400 font-sans"
-                  />
-                </div>
-              </div>
-
-              {/* 全問正解エフェクト */}
+              {/* 承認完了エフェクト */}
               <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-300 text-xs text-emerald-900 space-y-1.5 text-center">
                 <div className="font-extrabold text-sm sm:text-base flex items-center justify-center gap-1.5 text-emerald-950">
                   <Sparkles size={18} className="text-emerald-600" />
-                  <span>🎉 全2問の一致を確認！本人照合完了</span>
+                  <span>🎉 想い出の一致を確認！相互承認完了</span>
                 </div>
                 <p className="text-xs text-emerald-800 leading-relaxed max-w-md mx-auto font-sans">
-                  お互いしか知らない思い出の照合に成功しました。差出人のあおいさんに通知が届き、メッセージ開封・連絡先受取手続きへ進むことができます。
+                  差出人のあおい様が想い出エピソードを確認し、ご本人であることを承認しました。メッセージ開通・連絡先受取手続きへ進むことができます。
                 </p>
               </div>
 
@@ -445,14 +362,14 @@ export const GuideSampleInlineViewer: React.FC<GuideSampleInlineViewerProps> = (
                 onClick={() => onSelectScene(4)}
                 className="w-full py-3.5 bg-gradient-to-r from-sky-600 via-teal-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 text-white text-xs sm:text-sm font-bold rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.01]"
               >
-                <span>メッセージを開封して連絡先を受け取る (Scene 04へ)</span>
+                <span>メッセージを開通して連絡先を受け取る (Scene 04へ)</span>
                 <ArrowRight size={16} />
               </button>
             </div>
           </div>
         )}
 
-        {/* SCENE 04: メッセージ開封・連絡先開示画面（LetterViewer完全一致スタイル） */}
+        {/* SCENE 04: メッセージ開通・連絡先開示画面 */}
         {activeScene === 4 && (
           <div className="max-w-2xl mx-auto space-y-4">
             <div className="bg-white rounded-3xl p-5 sm:p-7 shadow-xl border-2 border-indigo-200/90 space-y-5">
@@ -465,7 +382,7 @@ export const GuideSampleInlineViewer: React.FC<GuideSampleInlineViewerProps> = (
                       REUNION UNLOCKED
                     </span>
                     <h4 className="text-sm sm:text-base font-black font-serif">
-                      メッセージの開封 ＆ SNS連絡先の開通完了
+                      メッセージの開通 ＆ 連絡先の開示完了
                     </h4>
                   </div>
                 </div>
@@ -478,11 +395,11 @@ export const GuideSampleInlineViewer: React.FC<GuideSampleInlineViewerProps> = (
               <div className="p-5 sm:p-6 bg-gradient-to-br from-amber-50/80 via-rose-50/30 to-amber-50/60 rounded-2xl border-2 border-amber-200/90 space-y-3 shadow-xs">
                 <div className="flex items-center gap-2 text-xs font-bold text-amber-950 border-b border-amber-200/80 pb-2.5">
                   <Heart size={16} className="text-rose-500 fill-rose-500" />
-                  <span>あおいさんからのメッセージ全文（ロック解除済み）</span>
+                  <span>あおいさんからの想い出メッセージ（開通完了）</span>
                 </div>
                 <p className="font-serif leading-relaxed text-slate-800 text-xs sm:text-sm p-2 bg-white/90 rounded-xl border border-amber-100 shadow-2xs whitespace-pre-line">
                   {`裕太くん！
-メッセージを見つけてくれて、思い出の質問に答えてくれて本当にありがとう！
+メッセージを見つけて、当時の思い出を書いてくれて本当にありがとう！
 奇跡みたいに嬉しいです。
 
 引っ越してからずっと、あの頃の楽しかった思い出を大切にしていました。

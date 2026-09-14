@@ -20,7 +20,7 @@ export const SupporterPage: React.FC = () => {
           
           <div className="inline-flex items-center gap-2 bg-teal-50 border border-teal-200 px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wide text-teal-800 shadow-2xs">
             <Coffee size={14} className="text-teal-600 shrink-0" />
-            <span>ReMEETs OFFICIAL SUPPORTER & DONATION</span>
+            <span>ReMEETs SEEKME OFFICIAL SUPPORTER & DONATION</span>
           </div>
 
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[40px] font-serif font-bold tracking-wide sm:tracking-widest leading-relaxed max-w-full mx-auto flex flex-col items-center gap-1 sm:gap-2 px-2 text-sky-850">
@@ -29,7 +29,7 @@ export const SupporterPage: React.FC = () => {
           </h1>
 
           <p className="text-xs sm:text-sm text-slate-700 max-w-2xl mx-auto leading-relaxed font-medium">
-            ReMEETsは、もう一度会いたい大切な人との再会をつなぐボトルメールプラットフォームです。<br className="hidden md:inline" />
+            ReMEETs SEEKMEは、もう一度会いたい大切な人との再会をつなぐ完全非公開・想い出再会プラットフォームです。<br className="hidden md:inline" />
             営利広告に頼らず、安心・安全な治安とAI安全防衛体制を維持し続けるため、温かい活動ご支援（寄付）をお願いしております。
           </p>
 
@@ -62,7 +62,7 @@ export const SupporterPage: React.FC = () => {
             <div>
               <span className="text-[10.5px] font-bold text-teal-700 uppercase tracking-widest block font-sans">OUR MISSION & PHILOSOPHY</span>
               <h2 className="text-lg md:text-xl font-bold font-serif text-slate-900">
-                なぜ、ボトルメールの投函や検索を無料で行っているのか
+                なぜ、想い出メッセージの登録や自動照合を無料で行っているのか
               </h2>
             </div>
           </div>
@@ -72,20 +72,20 @@ export const SupporterPage: React.FC = () => {
               人生の中で、もう一度会いたい人、どうしても伝えたい感謝や昔の思い出があるとき、複雑な月額課金や広告まみれの画面は、人の温かい感情を冷めさせてしまいます。
             </p>
             <p style={{ fontSize: '11px', lineHeight: '1.8' }}>
-              そのため、ReMEETsでは<strong>「メッセージを流す・思い出を探す」といった基本機能をすべて永久無料</strong>でお手伝いしています。また、画面いっぱいに広がる営利広告バナーを一切排除し、純粋で温かい「思い出の海」としての独立性と静けさを保っています。
+              そのため、ReMEETs SEEKMEでは<strong>「想い出メッセージの登録・システム自動照合」といった基本機能をすべて永久無料</strong>でお手伝いしています。また、画面いっぱいに広がる営利広告バナーを一切排除し、純粋で安全な「想い出再会空間」としての独立性と静けさを保っています。
             </p>
             <p style={{ fontSize: '11px', lineHeight: '1.8' }}>
-              費用が発生するのは、お互いの思い出クイズが合致し<strong>「ボトルメールを開封（連絡先・メッセージを開通）する瞬間」のみ</strong>です。なりすましや悪質行為を防ぐ公的本人確認（eKYC）の実費と、システム運用費用の一部として開通手数料（600円）をご負担いただく仕組みをとっています。
+              費用が発生するのは、想い出エピソードによる本人確認が成立し<strong>「メッセージを開通（連絡先・メッセージを開示）する瞬間」のみ</strong>です。なりすましや悪質行為を防ぐ公的本人確認（eKYC）の実費と、システム運用費用の一部として開通手数料（600円）をご負担いただく仕組みをとっています。
             </p>
 
             <div className="p-3 bg-sky-50/70 border-l-4 border-sky-600 rounded-r-xl font-serif text-slate-800 space-y-1 my-2.5">
-              <p className="font-bold text-sky-950" style={{ fontSize: '11px' }}>「安全な海を維持するためのセキュリティ費用とAI防衛費」</p>
+              <p className="font-bold text-sky-950" style={{ fontSize: '11px' }}>「安全な非公開照合空間を維持するためのセキュリティ費用とAI防衛費」</p>
               <p className="font-sans text-slate-600 leading-relaxed" style={{ fontSize: '10.5px', lineHeight: '1.7' }}>
-                実名や詳細住所の漏洩、誹謗中傷、ストーカー行為等の不適切投稿を24時間体制で水際検知・安全隔離する高度なAI安全防衛エンジンの運用費や、公的本人確認（eKYC）のシステム原価、高セキュリティ暗号化サーバー維持費は、開封時のお手数料だけでは賄いきれないのが現状です。
+                実名や詳細住所の漏洩、誹謗中傷、ストーカー行為等の不適切投稿を24時間体制で水際検知・安全隔離する高度なAI安全防衛エンジンの運用費や、公的本人確認（eKYC）のシステム原価、高セキュリティ暗号化サーバー維持費は、開通時のお手数料だけでは賄いきれないのが現状です。
               </p>
             </div>
             <p style={{ fontSize: '11px', lineHeight: '1.8' }}>
-              「この温かい海を無くしたくない」「昔の友人との再会をつないでくれた感謝を伝えたい」と思ってくださる有志の皆様のサポーター寄付によって、ReMEETsは広告に頼ることなく健全に守られ、運営を続けることができています。
+              「この温かい場所を無くしたくない」「大切な人との再会をつないでくれた感謝を伝えたい」と思ってくださる有志の皆様のサポーター寄付によって、ReMEETs SEEKMEは広告に頼ることなく健全に守られ、運営を続けることができています。
             </p>
           </div>
         </section>
@@ -143,7 +143,7 @@ export const SupporterPage: React.FC = () => {
               </div>
               <h3 className="font-bold text-slate-900 font-serif" style={{ fontSize: '12px' }}>② 暗号化DB・高可用性サーバー維持</h3>
               <p className="text-slate-600 leading-relaxed font-sans" style={{ fontSize: '10.5px', lineHeight: '1.65' }}>
-                あなたとお相手の大切な思い出のメッセージや照合データを10年後・20年後も安全に保管するための、暗号化クラウドデータベースおよび高速サーバー運用インフラ費に充当されます。
+                あなたとお相手の大切な想い出メッセージや照合データを10年後・20年後も安全に保管するための、暗号化クラウドデータベースおよび高速サーバー運用インフラ費に充当されます。
               </p>
             </div>
 
@@ -201,10 +201,10 @@ export const SupporterPage: React.FC = () => {
               <Sparkles size={24} className="text-amber-500 shrink-0 mt-0.5" />
               <div className="space-y-1">
                 <h3 className="font-extrabold text-slate-900 font-serif" style={{ fontSize: '13px' }}>
-                  ⭐ マイページ＆プロファイルに「公式サポーター」ゴールドバッジ付与
+                  ⭐ マイアカウント＆プロファイルに「公式サポーター」ゴールドバッジ付与
                 </h3>
                 <p className="text-slate-600 leading-relaxed font-sans" style={{ fontSize: '10.5px', lineHeight: '1.7' }}>
-                  ご寄付完了後、アカウントのマイページおよびコミュニティ画面にて「⭐ 公式サポーター認証済み」ゴールドバッジが自動的に点灯いたします。温かいお心遣いを可視化し、プラットフォーム全体で感謝を表します。
+                  ご寄付完了後、アカウントのマイアカウント画面にて「⭐ 公式サポーター認証済み」ゴールドバッジが自動的に点灯いたします。温かいお心遣いを可視化し、プラットフォーム全体で感謝を表します。
                 </p>
               </div>
             </div>
@@ -237,7 +237,7 @@ export const SupporterPage: React.FC = () => {
                 月額サブスクリプションのように毎月自動引き落としされますか？
               </h3>
               <p className="text-slate-600 leading-relaxed pl-4 font-sans" style={{ fontSize: '10.5px', lineHeight: '1.65' }}>
-                いいえ。ReMEETsのサポーター寄付はすべて<strong>「単発の一括決済（都度払い）」</strong>です。月額課金や自動更新は一切ありません。応援したい時にいつでも何度でも都度寄付いただけます。
+                いいえ。ReMEETs SEEKMEのサポーター寄付はすべて<strong>「単発の一括決済（都度払い）」</strong>です。月額課金や自動更新は一切ありません。応援したい時にいつでも何度でも都度寄付いただけます。
               </p>
             </div>
 
@@ -287,7 +287,7 @@ export const SupporterPage: React.FC = () => {
                 寄付しないとアプリの機能は制限されますか？
               </h3>
               <p className="text-slate-600 leading-relaxed pl-4 font-sans" style={{ fontSize: '10.5px', lineHeight: '1.65' }}>
-                いいえ、一切制限されません。ボトルメールの作成・投函・検索・クイズ照合機能はすべてのユーザー様に無料で開放されています。寄付は完全任意となっております。
+                いいえ、一切制限されません。想い出メッセージの登録・システム自動照合・想い出エピソード照合機能はすべてのユーザー様に無料で開放されています。寄付は完全任意となっております。
               </p>
             </div>
 

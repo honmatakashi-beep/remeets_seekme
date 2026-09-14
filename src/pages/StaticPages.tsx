@@ -17,8 +17,8 @@ export const TermsContent = () => (
     <section className="space-y-2">
       <h3 className="text-lg font-bold mb-3 border-b border-brand-border pb-2 text-black font-serif">第1条（目的及び本規約の適用範囲）</h3>
       <p className="leading-relaxed text-xs text-black font-sans">
-        1. 本利用規約（以下「本規約」）は、ReMEETs運営事務局（以下「当事務局」）が提供する、かつての知人等との合意に基づく再会を支援するWebインフラ「ReMEETs」（以下「本サービス」）の利用条件を定めるものです。<br />
-        2. 本サービスは、過去に実在した同級生、恩師、知人等との健全な再会を目的とした専用サービスであり、不特定多数に対する無差別な異性交際を斡旋する「インターネット異性紹介事業（出会い系サイト）」には該当いたしません。<br />
+        1. 本利用規約（以下「本規約」）は、ReMEETs運営事務局（以下「当事務局」）が提供する、かつての知人等との合意に基づく再会を支援するプライベート照合インフラ「ReMEETs SEEKME」（以下「本サービス」）の利用条件を定めるものです。<br />
+        2. 本サービスは、過去に実在した同級生、恩師、知人等との健全な再会を目的とした専用サービスであり、メッセージをサイト上で一般公開せず暗号化保管し、システムによる自動照合を行う設計となっております。不特定多数に対する無差別な異性交際を斡旋する「インターネット異性紹介事業（出会い系サイト）」には該当いたしません。<br />
         3. 本サービスにアクセス、または会員登録されたすべてのユーザーは、本規約の全条項に同意したものとみなされます。
       </p>
     </section>
@@ -37,16 +37,17 @@ export const TermsContent = () => (
         1. 利用者は、自己の責任において本サービスのアカウントを適切に管理するものとします。<br />
         2. 本サービスでは、パスワード漏洩リスクの排除、重複登録アタックの防止、および成りすまし行為の排除を目的として、信頼性の高い外部SNS（LINE、Google等）を用いたOAuth基盤認証ならびにメール認証を導入しています。<br />
         3. ユーザーは、実体のない使い捨てSNSアカウントを用いた嫌がらせ・荒らし・不正アクセス目的の大量登録を行ってはなりません。<br />
-        4. メッセージの開封・連絡先開示等の特定機能の利用にあたり、公的身分証明書を用いた本人確認（eKYC）およびSMS電話番号認証の完了を任意または必須として求める場合があります。なお、eKYC時に送信される身分証明書の画像生データは提携eKYC事業者のセキュア環境下でのみ処理・検証され、当事務局サーバー側には一切保存されません。
+        4. 本サービスにおける想い出メッセージの作成・登録は、原則として<strong>1ユーザーにつき1通</strong>とします。内容の変更・推敲はマイアカウントからいつでも行えます。<br />
+        5. メッセージの開通・連絡先開示等の特定機能の利用にあたり、公的身分証明書を用いた本人確認（eKYC）およびSMS電話番号認証の完了を任意または必須として求める場合があります。なお、eKYC時に送信される身分証明書の画像生データは提携eKYC事業者のセキュア環境下でのみ処理・検証され、当事務局サーバー側には一切保存されません。
       </p>
     </section>
 
     <section className="space-y-2">
       <h3 className="text-lg font-bold mb-3 border-b border-brand-border pb-2 text-black font-serif">第4条（サービス利用料金・決済・サポーター寄付）</h3>
       <p className="leading-relaxed text-xs text-black font-sans">
-        1. 本サービスへの会員登録、メッセージ（ボトルメール）の投函、自分宛てのメッセージの検索・一覧閲覧、新着メール通知アラートの登録、および思い出クイズへの回答はすべて<strong>永久無料（0円）</strong>です。<br />
-        2. お相手からのメッセージの開封および連絡先開示（引き渡し）システムを利用する際、1通あたり<strong>600円（税込・買い切り）</strong>のシステム利用料が発生します。<br />
-        3. 公的本人確認（eKYC）を希望する場合、審査実費として1回あたり<strong>600円（税込）</strong>の本人確認手数料が発生します（メッセージ開封と同時に利用する場合は合計1,200円）。<br />
+        1. 本サービスへの会員登録、想い出メッセージの登録（暗号化保管）、システム自動照合による通知受信、および再会希望エピソードの送信はすべて<strong>永久無料（0円）</strong>です。<br />
+        2. 相互の合意成立後、メッセージの開通および連絡先開示（引き渡し）システムを利用する際、1通あたり<strong>600円（税込・買い切り）</strong>のシステム利用料が発生します。<br />
+        3. 公的本人確認（eKYC）を希望する場合、審査実費として1回あたり<strong>600円（税込）</strong>の本人確認手数料が発生します（メッセージ開通と同時に利用する場合は合計1,200円）。<br />
         4. 本サービスの健全な運営とAI安全監査体制を支援するための「サポーター寄付（1口 500円〜）」は完全任意であり、税務上の寄付金控除の対象外となります。<br />
         5. 本サービスには月額会費や自動更新されるサブスクリプション費用は一切発生いたしません。<br />
         6. デジタルコンテンツおよびシステム即時開通の性質上、決済完了後の各種手数料および寄付金の返金・換金には原則として応じられません（ただし、eKYC審査で不合格となった場合は自動的に仮売上の全額取消・返金が行われます）。
@@ -56,7 +57,7 @@ export const TermsContent = () => (
     <section className="space-y-2">
       <h3 className="text-lg font-bold mb-3 border-b border-brand-border pb-2 text-black font-serif">第5条（AI安全自動診断・モデレーションおよびコンテンツ監視）</h3>
       <p className="leading-relaxed text-xs text-black font-sans">
-        1. 当事務局は、本サービスの健全性維持、ストーカー行為の未然抑止、プライバシー保護、誹謗中傷排除のため、投稿・更新されたメッセージ（ボトルメール）およびメッセージに対して、最新のAIモデレーションエンジン（Gemini API等）およびシステムによる自動診断・検閲を常時実施します。<br />
+        1. 当事務局は、本サービスの健全性維持、ストーカー行為の未然抑止、プライバシー保護、誹謗中傷排除のため、登録・更新された想い出メッセージおよび再会申請テキストに対して、最新のAIモデレーションエンジン（Gemini API等）およびシステムによる自動診断・検閲を常時実施します。<br />
         2. AIまたはシステムにより禁止事項（過度な個人情報の直接掲載、脅迫・付きまといの兆候、公序良俗・法令違反等）に該当すると判定された投稿は、事前通知なく自動的に即時非公開（安全隔離・物理保全）または削除される場合があります。<br />
         3. ユーザーは、本サービスを利用してテキストを送信・更新することにより、安全確保およびモデレーションを目的とした当該AI自動診断処理の実行に明示的に同意したものとみなされます。<br />
         4. AI判定の誤検知・不検知、またはこれに伴う一時的な非公開措置によりユーザーに生じた機会損失や不利益について、当事務局は故意または重過失がある場合を除き一切の責任を負いません。
@@ -70,7 +71,6 @@ export const TermsContent = () => (
         ・不特定の異性との交際・出会いを目的とした利用（出会い系・マッチング目的利用、売春・パパ活等）<br />
         ・他者へのストーカー行為、付きまとい、威嚇、強要、名誉毀損または誹謗中傷<br />
         ・メッセージ本文欄への直接的な連絡先情報（LINE ID、電話番号、詳細住所等）の記載<br />
-        ・bot等の自動化プログラムを用いた思い出クイズの総当たり回答（ブルートフォースアタック）<br />
         ・実在しない人物の偽装登録、第三者への成りすまし、または虚偽の事実の投稿<br />
         ・商業目的の宣伝・勧誘・スパム送信、マルチ商法・宗教勧誘行為<br />
         ・法令、公序良俗、または本規約に違反する一切の行為
@@ -89,16 +89,16 @@ export const TermsContent = () => (
       <h3 className="text-lg font-bold mb-3 border-b border-brand-border pb-2 text-black font-serif">第8条（奇跡の再会報告・体験談の投稿および利用許諾）</h3>
       <p className="leading-relaxed text-xs text-black font-sans">
         1. ユーザーは、本サービスを通じて大切な方と再会できた際、任意で「奇跡の再会報告（体験談）」投稿フォームより感謝・再会メッセージを当事務局へ送信することができます。<br />
-        2. ユーザーが投稿したメッセージ・年代・性別情報は、当事務局による目視およびAIによる事前審査（個人情報の除外・完全匿名化処理）を経た上で、本サービス公式Webサイト（トップページ、体験談ページ等）に無償・非独占的に掲載・紹介されることに同意するものとします。<br />
+        2. ユーザーが投稿したメッセージ・年代・性別情報は、当事務局による目視およびAIによる事前審査（個人情報の除外・完全匿名化処理）を経た上で、本サービス公式Webサイト（体験談ページ等）に無償・非独占的に掲載・紹介されることに同意するものとします。<br />
         3. ユーザーは、虚偽の事実、他者の名誉・プライバシーを侵害する内容、または第三者の権利を害するメッセージを投稿してはなりません。<br />
         4. 掲載された体験談の削除または非公開化を希望する場合、ユーザーはお問い合わせフォーム等よりいつでも当事務局へ申し出ることができ、当事務局は速やかに対応するものとします。
       </p>
     </section>
 
     <section className="space-y-2">
-      <h3 className="text-lg font-bold mb-3 border-b border-brand-border pb-2 text-black font-serif">第9条（リアルタイム速報通知およびメール配信）</h3>
+      <h3 className="text-lg font-bold mb-3 border-b border-brand-border pb-2 text-black font-serif">第9条（リアルタイム通知およびメール配信）</h3>
       <p className="leading-relaxed text-xs text-black font-sans">
-        1. 本サービスでは、ユーザーが投函したメッセージに対してお相手が思い出クイズに正解した場合、またはメッセージ・連絡先が開示された場合等に、WebSocket接続によるリアルタイム画面速報通知および登録メールアドレス宛への自動通知メール配信を行います。<br />
+        1. 本サービスでは、ユーザー宛てのメッセージの自動照合が成立した場合、再会希望が届いた場合、またはメッセージ・連絡先が開示された場合等に、画面上のリアルタイム通知および登録メールアドレス宛への自動通知メール配信を行います。<br />
         2. 通信障害、端末設定、またはメール受信拒否等に起因する通知の遅延や不達について、当事務局は故意または重過失がある場合を除き責任を負いません。
       </p>
     </section>
@@ -107,7 +107,7 @@ export const TermsContent = () => (
       <h3 className="text-lg font-bold mb-3 border-b border-brand-border pb-2 text-black font-serif">第10条（退会およびデータの取り扱い）</h3>
       <p className="leading-relaxed text-xs text-black font-sans">
         1. ユーザーは、マイページよりいつでも退会手続きを行うことができます。<br />
-        2. 退会時、アカウント情報および関連データは速やかに削除または適切に匿名化処理されます。ただし、法令に基づく保管義務がある情報やセキュリティ監査ログ、および不正利用防止のための接続ログについては一定期間安全に保存されます。
+        2. 退会時、アカウント情報および想い出メッセージ等の関連データは速やかに削除または適切に匿名化処理されます。ただし、法令に基づく保管義務がある情報やセキュリティ監査ログ、および不正利用防止のための接続ログについては一定期間安全に保存されます。
       </p>
     </section>
 
@@ -115,7 +115,7 @@ export const TermsContent = () => (
       <h3 className="text-lg font-bold mb-3 border-b border-brand-border pb-2 text-black font-serif">第11条（本サービスの変更・中断・終了および免責）</h3>
       <p className="leading-relaxed text-xs text-black font-sans">
         1. 当事務局は、運用上、技術上、経営上の都合その他やむを得ない事由により、本サービス上での事前告知等をもって、本サービスの提供を一時中断、休止、または終了（サービス閉鎖）することができるものとします。<br />
-        2. 運営不能やサービス閉鎖を含む本サービスの終了が生じた場合であっても、過去にユーザーが支払った各種利用手数料（メッセージ開封・開通手数料 600円、eKYC審査実費等）およびサポーター寄付金について、理由の如何を問わず返金、返還、損害賠償等の請求には応じられません。<br />
+        2. 運営不能やサービス閉鎖を含む本サービスの終了が生じた場合であっても、過去にユーザーが支払った各種利用手数料（メッセージ開通手数料 600円、eKYC審査実費等）およびサポーター寄付金について、理由の如何を問わず返金、返還、損害賠償等の請求には応じられません。<br />
         3. 当事務局は、本サービスの連絡先開示機能を通じて開示された連絡先を用いて行われる当事者間の連絡、実際の対面、交際、その他一切のやり取りにおけるトラブルについて、当事者間で解決するものとし、当事務局は故意または重過失がある場合を除き一切の責任を負いません。
       </p>
     </section>
@@ -130,7 +130,7 @@ export const TermsContent = () => (
 
     <div className="pt-4 border-t border-brand-border/60 text-right text-[11px] text-neutral-500 font-mono space-y-1">
       <div>制定日・施行日：2026年8月15日（本番サービス運用開始日）</div>
-      <div>最終改定日：2026年8月20日（SNS連携規定・利用資格・警察照会連携の明記改定）</div>
+      <div>最終改定日：2026年9月15日（SEEKME非公開自動照合仕様・1人1通規約・警察照会連携の明記改定）</div>
     </div>
   </div>
 );
@@ -140,7 +140,7 @@ export const PrivacyContent = () => (
     <section className="space-y-2">
       <h3 className="text-lg font-bold mb-3 border-b border-brand-border pb-2 text-black font-serif">1. 基本方針（プライバシー保護への姿勢）</h3>
       <p className="leading-relaxed text-xs text-black font-sans">
-        ReMEETs運営事務局（以下「当事務局」）は、ユーザーの皆様の大切な想い出と個人情報の重要性を深く認識し、個人情報の保護に関する法律（個人情報保護法）その他関連法令・ガイドラインを遵守し、以下の方針に基づき個人情報を適切かつ安全に取り扱います。
+        ReMEETs SEEKME運営事務局（以下「当事務局」）は、ユーザーの皆様の大切な想い出と個人情報の重要性を深く認識し、個人情報の保護に関する法律（個人情報保護法）その他関連法令・ガイドラインを遵守し、以下の方針に基づき個人情報を適切かつ安全に取り扱います。
       </p>
     </section>
 
@@ -151,9 +151,9 @@ export const PrivacyContent = () => (
         ・<strong>SNS連携（OAuth）認証情報：</strong> LINE、Google等の外部認証プロバイダより取得するアカウント識別子（UID）、表示ニックネーム、プロフィール画像URL、およびメールアドレス（※パスワードは当事務局側では一切取得・保持いたしません）。<br />
         ・<strong>本人確認（eKYC）認証情報：</strong> 提携eKYC事業者より返却される公的身分証明書の審査結果ステータス（合格/不合格）および承認日時（※運転免許証等の画像生データは当事務局サーバーには保存されません）。<br />
         ・<strong>決済関連情報：</strong> Stripe決済システムにより安全に処理される決済トークン、取引ID、決済日時、決済金額（※クレジットカード番号やCVC等の決済生データは当事務局サーバーを一切通過・保持いたしません）。<br />
-        ・<strong>投稿・メッセージ情報：</strong> ボトルメール本文、想い出クイズ（質問・正解）、開示用連絡先（LINE ID等）、およびそのAI安全自動診断結果（モデレーション判定フラグ・隔離理由）。<br />
+        ・<strong>登録想い出メッセージ情報：</strong> 想い出メッセージ本文、照合用属性情報（お名前、旧姓、ゆかりの地、生まれ年）、開示用連絡先（LINE ID等）、およびそのAI安全自動診断結果（モデレーション判定フラグ・隔離理由）。<br />
         ・<strong>奇跡の再会報告（体験談）情報：</strong> ユーザーから任意で投稿いただく感謝メッセージ、出会った年代、性別、およびWeb掲載同意情報。<br />
-        ・<strong>アクセス・通信ログ：</strong> 接続元IPアドレス、アクセス日時タイムスタンプ、ご利用端末・ブラウザ情報（User-Agent）、リアルタイム通知（WebSocket）接続識別子。
+        ・<strong>アクセス・通信ログ：</strong> 接続元IPアドレス、アクセス日時タイムスタンプ、ご利用端末・ブラウザ情報（User-Agent）、リアルタイム通知接続識別子。
       </p>
     </section>
 
@@ -162,9 +162,9 @@ export const PrivacyContent = () => (
       <p className="leading-relaxed text-xs text-black font-sans">
         取得した個人情報は、以下の目的のためにのみ利用します。<br />
         ・アカウントの認証、本人特定、および重複登録・成りすまし行為の排除<br />
-        ・想い出ボトルの検索・マッチング、思い出クイズによる本人照合、および連絡先開示（引き渡し）手続きの安全な実施<br />
-        ・AI（人工知能）安全モデルを用いた投稿内容のリアルタイム診断による、ストーカー行為・個人情報漏洩・誹謗中傷・法令違反の未然抑止および治安維持<br />
-        ・思い出ボトルの照合・クイズ正解時のリアルタイム速報通知および登録メールアドレスへの自動配信<br />
+        ・想い出メッセージの安全な暗号化保管、システムによる自動照合、および相互合意に基づく連絡先開示（引き渡し）手続きの実施<br />
+        ・AI（人工知能）安全モデルを用いた登録内容のリアルタイム診断による、ストーカー行為・個人情報漏洩・誹謗中傷・法令違反の未然抑止および治安維持<br />
+        ・想い出メッセージの照合成立時や再会希望受信時のリアルタイム速報通知および登録メールアドレスへの自動配信<br />
         ・ユーザーから任意で投稿された再会体験談の審査、匿名化編集、および公式Webサイト上での適法な掲載・紹介<br />
         ・お問い合わせへの対応、システムの安定運用、セキュリティ監査、およびサービス品質の向上
       </p>
@@ -175,7 +175,7 @@ export const PrivacyContent = () => (
       <p className="leading-relaxed text-xs text-black font-sans">
         1. <strong>身分証明書画像生データの非保持（金庫モデル）：</strong> ユーザーが提出する運転免許証・マイナンバーカード等の画像データは、提携eKYC事業者のセキュアな認証サーバー側でのみ処理され、当事務局のサーバーには一切保存されません。当事務局は認証ステータス（合格/不合格）と承認日時のみを安全に保持します。<br />
         2. <strong>クレジットカード情報の非保持：</strong> 決済処理は国際規格（PCI-DSS Level 1）に準拠したStripe基盤により直接処理され、当事務局サーバーにカード番号等が通過・蓄積されることはありません。<br />
-        3. <strong>通信・保管の暗号化：</strong> 全通信はSSL/TLSにより暗号化され、データベース内の機微情報は高度な暗号化ストレージにて厳重に管理されます。
+        3. <strong>通信・保管の暗号化：</strong> 全通信はSSL/TLSにより暗号化され、データベース内の想い出メッセージおよび個人情報は高度な暗号化ストレージにて厳重に非公開管理されます。
       </p>
     </section>
 
@@ -195,16 +195,16 @@ export const PrivacyContent = () => (
     </section>
 
     <section className="space-y-2">
-      <h3 className="text-lg font-bold mb-3 border-b border-brand-border pb-2 text-black font-serif">7. 位置情報・プライバシーの保護方針（都道府県までの公開）</h3>
+      <h3 className="text-lg font-bold mb-3 border-b border-brand-border pb-2 text-black font-serif">7. メッセージの完全非公開・プライベート保護方針</h3>
       <p className="leading-relaxed text-xs text-black font-sans">
-        ボトルメール投函時にお相手のゆかりの地として市区町村まで入力された場合でも、Webサイト上で一般公開されるのは「都道府県」までとなります。市区町村以下の詳細な住所情報が一般公開されることはなく、個人の現在地およびプライバシーを厳格に保護します。
+        本サービスに登録された想い出メッセージおよび個人情報は、Webサイト上や検索エンジン上に一般公開されることはありません。システム内部で暗号化保管され、照合条件に合致した正規のお相手との間でのみ安全に照合・相互開示が行われます。
       </p>
     </section>
 
     <section className="space-y-2">
       <h3 className="text-lg font-bold mb-3 border-b border-brand-border pb-2 text-black font-serif">8. 保有個人データの開示・訂正・利用停止・削除請求</h3>
       <p className="leading-relaxed text-xs text-black font-sans">
-        ユーザーは、マイページより登録情報の確認・変更・退会手続きを行うことができます。また、個人情報保護法に基づく保有個人データの開示、訂正、追加、削除、利用停止等をご希望の場合は、お問い合わせフォームよりご請求いただけます。ご本人確認を行った上で、法令に従い合理的な期間内に対応いたします。
+        ユーザーは、マイページより登録情報の確認・変更・メッセージ修正・退会手続きをいつでも行うことができます。また、個人情報保護法に基づく保有個人データの開示、訂正、追加、削除、利用停止等をご希望の場合は、お問い合わせフォームよりご請求いただけます。ご本人確認を行った上で、法令に従い合理的な期間内に対応いたします。
       </p>
     </section>
 
@@ -218,7 +218,7 @@ export const PrivacyContent = () => (
 
     <div className="pt-4 border-t border-brand-border/60 text-right text-[11px] text-neutral-500 font-mono space-y-1">
       <div>制定・公表日：2026年8月15日（本番サービス運用開始日）</div>
-      <div>最終改定日：2026年8月20日（SNS連携規定・非保持金庫モデル・警察照会連携の明記改定）</div>
+      <div>最終改定日：2026年9月15日（SEEKME完全非公開照合仕様・非保持金庫モデル・警察照会連携の明記改定）</div>
     </div>
   </div>
 );
@@ -264,23 +264,23 @@ export const GuidelinesContent = () => (
         <span>健全な想い出再会のための基本姿勢（出会い系目的の完全排除）</span>
       </h3>
       <p className="leading-relaxed text-xs text-slate-700 font-sans">
-        ReMEETsは、過去に実在した同級生、恩師、幼馴染、昔の知人など、大切な思い出を共有する特定の当事者同士が再びつながるための「想い出再会専用プラットフォーム」です。<br />
+        ReMEETs SEEKMEは、過去に実在した同級生、恩師、幼馴染、昔の知人など、大切な思い出を共有する特定の当事者同士が再びつながるための「完全非公開・想い出再会専用プラットフォーム」です。<br />
         不特定多数との無差別な異性交際を目的とした利用（出会い系・マッチング・パパ活・ナンパ等）は固く禁止されており、発見次第アカウントを即時停止（BAN）いたします。
       </p>
     </section>
 
-    {/* 2. キーワード設定の工夫 */}
+    {/* 2. 手がかり設定の工夫 */}
     <section className="space-y-2 p-5 bg-white rounded-2xl border border-slate-200 shadow-2xs">
       <h3 className="text-base font-bold text-slate-900 font-serif flex items-center gap-2 border-b border-slate-100 pb-2">
         <span className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-sans">02</span>
-        <span>お相手に届くキーワード設定の工夫（検索性向上のヒント）</span>
+        <span>お相手との安全な自動照合のための設定（照合精度向上のヒント）</span>
       </h3>
       <p className="leading-relaxed text-xs text-slate-700 font-sans">
-        お探しの当事者が自分宛てのメッセージを検索（エゴサーチ等）した際に発見できるよう、以下の「手がかりキーワード」を丁寧に設定してください。
+        お探しの相手がメッセージを登録した際にシステムが確実に照合（マッチング）できるよう、以下の「あなたとお相手の手がかり」を丁寧に設定してください。
       </p>
       <ul className="list-disc pl-5 space-y-1 text-xs text-slate-600 leading-relaxed">
-        <li><strong>相手の名前：</strong> 漢字表記に加え、旧姓やひらがな、当時呼んでいたニックネーム等を活用。</li>
-        <li><strong>ゆかりの地：</strong> 二人が出会った地域や学校、部活動の場所を設定（※一般公開されるのは「都道府県」までです）。</li>
+        <li><strong>相手のお名前：</strong> 漢字表記に加え、旧姓やふりがな、当時呼んでいたニックネーム等を正確に入力。</li>
+        <li><strong>ゆかりの地：</strong> 二人が出会った地域や学校、部活動の場所を設定（※当事者照合用の内部データとして暗号化管理され、外部への一覧公開はされません）。</li>
         <li><strong>年代・カテゴリ：</strong> 交流のあった年代（例：1990年代）や関係性（同級生、元同僚等）を正確に選択。</li>
       </ul>
     </section>
@@ -296,29 +296,29 @@ export const GuidelinesContent = () => (
           ⚠️ メッセージの本文欄に、LINE ID、メールアドレス、電話番号、詳細な住所などを直接記載してはなりません。
         </p>
         <p className="text-slate-700 text-[11px]">
-          メッセージ本文はクイズ正解前の画面にも一部露出するため、安全保護の観点からAI検閲により即時自動隔離（非公開化）の対象となります。連絡先情報は、必ず所定の<strong>「開示用連絡先」専用欄</strong>にご入力ください（思い出クイズに全問正解し、手続きを完了したお相手にのみ安全に開示されます）。
+          メッセージ本文は安全に暗号化保管されますが、安全保護の観点からAI検閲により即時自動隔離（非公開化）の対象となります。連絡先情報は、必ず所定の<strong>「開示用連絡先」専用欄</strong>にご入力ください（想い出エピソードによる照合・相互確認および手続きを完了したお相手にのみ安全に開示されます）。
         </p>
       </div>
     </section>
 
-    {/* 4. クイズ作成ガイドライン */}
+    {/* 4. 想い出エピソードガイドライン */}
     <section className="space-y-3 p-5 bg-white rounded-2xl border border-slate-200 shadow-2xs">
       <h3 className="text-base font-bold text-slate-900 font-serif flex items-center gap-2 border-b border-slate-100 pb-2">
         <span className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-sans">04</span>
-        <span>思い出クイズ作成ガイドライン（良問のコツと不適切例）</span>
+        <span>想い出エピソードによる本人照合ガイドライン（良問のコツと適切なエピソード例）</span>
       </h3>
       <p className="text-xs text-slate-700 leading-relaxed">
-        思い出クイズ（2問）は、探しているご本人であるかを確実に確かめるための最重要防衛システムです。第三者には推測できない「ふたりだけの記憶」を設定してください。
+        再会希望申請時に入力する「想い出エピソード」は、探しているご本人であるかを差出人が確実に確かめるための最重要照合システムです。第三者には推測できない「ふたりだけの記憶」をご記載ください。
       </p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
         <div className="p-3.5 bg-emerald-50/60 rounded-xl border border-emerald-200 space-y-1">
           <span className="font-bold text-emerald-900 flex items-center gap-1">
-            ⭕ 適切な出題例（ふたりだけの固有の記憶）
+            ⭕ 適切な記載例（ふたりだけの固有の記憶）
           </span>
           <p className="text-slate-600 text-[11px] leading-relaxed">
-            ・「高2の文化祭で一緒に作った出し物の看板文字は？」（例: 喫茶ポエム）<br />
-            ・「放課後によく二人で通っていた駄菓子屋の名前は？」（例: きくや商店）<br />
-            ・「中学の卒業式の日、帰り道に埋めたタイムカプセルの場所は？」
+            ・「高2の文化祭で一緒に作った出し物の看板文字や当日のハプニング」<br />
+            ・「放課後によく二人で通っていた駄菓子屋の名前や当時の話題」<br />
+            ・「中学の卒業式の日、帰り道に埋めたタイムカプセルの場所と約束」
           </p>
         </div>
         <div className="p-3.5 bg-rose-50/60 rounded-xl border border-rose-200 space-y-1">
@@ -327,8 +327,8 @@ export const GuidelinesContent = () => (
           </span>
           <p className="text-slate-600 text-[11px] leading-relaxed">
             ・「私の誕生月は何月？」（SNS等で容易に特定可能）<br />
-            ・「私の好きな食べ物は？」（当てずっぽうで正解される恐れあり）<br />
-            ・「私たちの出身中学校の名前は？」（卒業名簿等で特定されるリスクあり）
+            ・「私の好きな食べ物は？」（当てずっぽうで推測される恐れあり）<br />
+            ・「出身中学校の名前のみ」（卒業名簿等で特定されるリスクあり）
           </p>
         </div>
       </div>
@@ -345,7 +345,7 @@ export const GuidelinesContent = () => (
         <li><strong>他者への誹謗中傷・嫌がらせ:</strong> 特定の個人を侮辱・批判したり、プライバシーを侵害するおそれのある投稿。</li>
         <li><strong>ストーカー行為・一方的な付きまとい:</strong> 相手が恐怖や嫌悪感を抱くような執拗な表現、一方的な恋愛感情の押し付け行為。</li>
         <li><strong>性的・暴力的な表現、商業スパム:</strong> 公序良俗に反するテキスト、マルチ商法・宗教勧誘・アフィリエイト目的の投稿。</li>
-        <li><strong>bot等によるクイズ総当たり攻撃:</strong> 不正なプログラムを用いた自動回答行為。</li>
+        <li><strong>bot等による総当たり攻撃・不正申請:</strong> 不正なプログラムを用いた自動照会・なりすまし行為。</li>
       </ul>
     </section>
 
@@ -356,7 +356,7 @@ export const GuidelinesContent = () => (
         <span>AI水際検閲（Gemini API）と自動隔離・警察捜査連携体制</span>
       </h3>
       <p className="leading-relaxed text-xs text-slate-700 font-sans">
-        ボトルメールが投函・更新された際、システム内部のNGワード判定に加え、高度なAI（Google Gemini API）による文脈診断が24時間自動実行されます。<br />
+        メッセージが登録・更新された際、システム内部のNGワード判定に加え、高度なAI（Google Gemini API）による文脈診断が24時間自動実行されます。<br />
         ストーカー行為の兆候、個人情報の過度な露出、脅迫や誹謗中傷と判定された投稿は、第三者の目に触れる前に<strong>自動的に非公開（安全隔離・物理保全）</strong>されます。また、重大事案については刑事訴訟法第197条第2項に基づき、接続IPアドレスおよびアクセスログを警察・公安機関へ速やかに提供いたします。
       </p>
     </section>
@@ -411,7 +411,7 @@ export const CompanyContent = () => (
     <div className="divide-y divide-zinc-200 text-xs text-black bg-white rounded-2xl border border-zinc-200 overflow-hidden shadow-2xs">
       <div className="grid grid-cols-1 md:grid-cols-3 p-4 gap-2 bg-slate-50/60">
         <span className="font-bold text-neutral-800">サービス名</span>
-        <span className="md:col-span-2 text-neutral-900 font-medium">ReMEETs (リミーツ)</span>
+        <span className="md:col-span-2 text-neutral-900 font-medium">ReMEETs SEEKME (リミーツ シークミー)</span>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 p-4 gap-2">
         <span className="font-bold text-neutral-800">運営事業者 / 運営責任者</span>
@@ -435,15 +435,15 @@ export const CompanyContent = () => (
       <div className="grid grid-cols-1 md:grid-cols-3 p-4 gap-2">
         <span className="font-bold text-neutral-800">役務の内容</span>
         <span className="md:col-span-2 text-neutral-900 font-medium leading-relaxed">
-          想い出のメッセージ（ボトルメール）の投函・検索プラットフォームの提供、思い出クイズによる本人照合、およびメッセージ開封・連絡先開示（引き渡し）システムサービスの提供。
+          想い出メッセージの登録・暗号化保管・システム自動照合プラットフォームの提供、想い出エピソードによる本人確認、およびメッセージ開通・連絡先開示（引き渡し）システムサービスの提供。
         </span>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 p-4 gap-2 bg-slate-50/60">
         <span className="font-bold text-neutral-800">役務の対価（販売価格）</span>
         <span className="md:col-span-2 text-neutral-900 font-medium leading-relaxed space-y-1 block">
-          ・<strong>基本機能（登録・投函・検索・クイズ回答・新着通知アラート）：</strong> 完全無料（0円）<br />
-          ・<strong>メッセージ開封・連絡先開示手数料：</strong> 1通あたり 600円（税込・買い切り）<br />
-          ・<strong>公的本人確認（eKYC）審査手数料（任意オプション）：</strong> 1回あたり 600円（税込）（※メッセージ開封と同時利用時 1,200円）<br />
+          ・<strong>基本機能（会員登録・メッセージ登録・システム自動照合・再会希望申請・新着通知アラート）：</strong> 完全無料（0円）<br />
+          ・<strong>メッセージ開通・連絡先開示手数料：</strong> 1通あたり 600円（税込・買い切り）<br />
+          ・<strong>公的本人確認（eKYC）審査手数料（任意オプション）：</strong> 1回あたり 600円（税込）（※メッセージ開通と同時利用時 1,200円）<br />
           ・<strong>サポーター寄付（任意）：</strong> 1口 500円〜（都度決済・税務上の寄付金控除対象外）<br />
           <span className="text-[11px] text-emerald-800 font-bold block pt-0.5">※月額会費や自動更新のサブスクリプション費用は一切発生いたしません。</span>
         </span>
@@ -464,7 +464,7 @@ export const CompanyContent = () => (
       <div className="grid grid-cols-1 md:grid-cols-3 p-4 gap-2">
         <span className="font-bold text-neutral-800">お支払時期・役務の提供時期</span>
         <span className="md:col-span-2 text-neutral-900 font-medium leading-relaxed">
-          決済手続き完了時にお支払いが確定し、手続き完了後即時にシステム上でメッセージの開封・想い出照合および連絡先開示が完了します。
+          決済手続き完了時にお支払いが確定し、手続き完了後即時にシステム上でメッセージの開通・想い出照合および連絡先開示が完了します。
         </span>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 p-4 gap-2 bg-slate-50/60">
@@ -537,7 +537,7 @@ export const PricingPage = () => {
           iconBoxClassName="bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-sm"
           category="Service Pricing"
           title="利用料金表"
-          description="ReMEETsは、月額会費や自動更新が一切発生しない「完全買い切り・透明安心モデル」です。基本機能はずっと0円、必要なときだけ都度ご利用いただけます。"
+          description="ReMEETs SEEKMEは、月額会費や自動更新が一切発生しない「完全買い切り・透明安心モデル」です。基本機能はずっと0円、必要なときだけ都度ご利用いただけます。"
         />
 
         {/* ① 差出人と受取人のご利用料金 */}
@@ -549,7 +549,7 @@ export const PricingPage = () => {
                 差出人と受取人のご利用料金
               </h2>
             </div>
-            <span className="text-xs text-slate-500 font-sans hidden sm:inline">基本0円・開封時のみ都度決済</span>
+            <span className="text-xs text-slate-500 font-sans hidden sm:inline">基本0円・開通時のみ都度決済</span>
           </div>
 
           {/* 差出人＆受取人カード（PC: 2カラム / スマホ: 1カラム） */}
@@ -582,7 +582,7 @@ export const PricingPage = () => {
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 size={15} className="text-emerald-600 shrink-0 mt-0.5" />
-                    <span><strong>ボトルメールの投函：</strong>0 円（何通でも無制限）</span>
+                    <span><strong>想い出メッセージの登録（暗号化保管）：</strong>0 円（原則1人1通）</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 size={15} className="text-emerald-600 shrink-0 mt-0.5" />
@@ -595,7 +595,7 @@ export const PricingPage = () => {
                 </ul>
               </div>
               <div className="pt-2 border-t border-emerald-100 text-[11px] text-slate-500">
-                ※ 投函から再会後のやり取りまで、追加料金は一切かかりません。
+                ※ メッセージ登録から再会後のやり取りまで、追加料金は一切かかりません。
               </div>
             </div>
 
@@ -607,7 +607,7 @@ export const PricingPage = () => {
                     <span className="w-7 h-7 rounded-full bg-indigo-600 text-white text-xs font-bold flex items-center justify-center shrink-0 shadow-2xs mt-0.5">受</span>
                     <div>
                       <h3 className="font-bold text-indigo-950 text-sm leading-snug">受取人</h3>
-                      <span className="text-[11px] text-indigo-700/90 font-medium block">（メッセージを開封する側）</span>
+                      <span className="text-[11px] text-indigo-700/90 font-medium block">（メッセージを受け取る側）</span>
                     </div>
                   </div>
                   <div className="flex flex-col items-end shrink-0">
@@ -616,18 +616,18 @@ export const PricingPage = () => {
                       <span className="text-xs sm:text-sm font-bold">円</span>
                     </div>
                     <span className="text-[10px] text-indigo-800 font-bold bg-indigo-100/90 px-2 py-0.5 rounded-full mt-0.5">
-                      開封時のみ / 税込
+                      開通時のみ / 税込
                     </span>
                   </div>
                 </div>
                 <ul className="space-y-2 text-slate-700 text-xs">
                   <li className="flex items-start gap-2">
                     <CheckCircle2 size={15} className="text-indigo-600 shrink-0 mt-0.5" />
-                    <span><strong>会員登録・メッセージ検索・クイズ回答：</strong>0 円</span>
+                    <span><strong>会員登録・システム自動照合・再会希望申請：</strong>0 円</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CreditCard size={15} className="text-indigo-600 shrink-0 mt-0.5" />
-                    <span><strong>メッセージ開封・連絡先開示：</strong>600 円（正解時のみ都度精算）</span>
+                    <span><strong>メッセージ開通・連絡先開示：</strong>600 円（再会成立時のみ都度精算）</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <ShieldCheck size={15} className="text-amber-600 shrink-0 mt-0.5" />
@@ -635,12 +635,12 @@ export const PricingPage = () => {
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 size={15} className="text-indigo-600 shrink-0 mt-0.5" />
-                    <span><strong>メッセージ開封後の直接やり取り：</strong>0 円</span>
+                    <span><strong>メッセージ開通後の直接やり取り：</strong>0 円</span>
                   </li>
                 </ul>
               </div>
               <div className="pt-2 border-t border-indigo-100 text-[11px] text-slate-500">
-                ※ クイズ正解後のメッセージ開封時のみ発生する完全買い切り価格です。
+                ※ 想い出照合・相互承認後のメッセージ開通時のみ発生する完全買い切り価格です。
               </div>
             </div>
           </div>
@@ -679,13 +679,13 @@ export const PricingPage = () => {
               <div className="p-3 bg-white/90 rounded-2xl border border-amber-100 space-y-1 shadow-2xs">
                 <span className="font-bold text-slate-900 block text-xs">✉️ 差出人が受ける場合</span>
                 <p className="text-slate-600 text-[11px] leading-relaxed">
-                  メッセージの投函時やマイページでいつでも実施可能。プロフィールに「🛡️ 公的本人確認済」バッジが付与され、お相手がメッセージを見つけた際の信頼感と返信率が大幅に向上します。
+                  メッセージの登録時やマイアカウントでいつでも実施可能。プロフィールに「🛡️ 公的本人確認済」バッジが付与され、お相手がメッセージを受け取った際の信頼感と返信率が大幅に向上します。
                 </p>
               </div>
               <div className="p-3 bg-white/90 rounded-2xl border border-amber-100 space-y-1 shadow-2xs">
                 <span className="font-bold text-slate-900 block text-xs">🔍 受取人が受ける場合</span>
                 <p className="text-slate-600 text-[11px] leading-relaxed">
-                  メッセージ開封時（開封600円＋eKYC600円＝計1,200円）や、事前・事後にいつでも選択可能。安心・安全な身元確認を行ってお相手と連絡を取り合えます。
+                  メッセージ開通時（開通600円＋eKYC600円＝計1,200円）や、事前・事後にいつでも選択可能。安心・安全な身元確認を行ってお相手と連絡を取り合えます。
                 </p>
               </div>
             </div>
@@ -731,14 +731,14 @@ export const PricingPage = () => {
                 Optional Supporter
               </span>
               <h3 className="text-base md:text-lg font-bold font-serif text-slate-900">
-                ReMEETsの運営を応援する（選択式寄付）
+                ReMEETs SEEKMEの運営を応援する（選択式寄付）
               </h3>
             </div>
           </div>
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-sans">
             <div className="space-y-0.5 max-w-xl">
               <p className="text-slate-700 leading-relaxed text-[11.5px]">
-                ReMEETsは、すべての方が無料でメッセージを流せるよう、個人運営とAI安全監査費を温かい寄付で支えていただいています。コーヒー1杯分（500円〜）から応援いただけます。
+                ReMEETs SEEKMEは、すべての方が無料で想い出メッセージを登録・照合できるよう、個人運営とAI安全監査費を温かい寄付で支えていただいています。コーヒー1杯分（500円〜）から応援いただけます。
               </p>
               <p className="text-[10px] text-slate-500 font-sans">
                 ※ 月額自動課金なし・1回限りの都度決済（寄付金控除対象外）
@@ -759,6 +759,7 @@ export const PricingPage = () => {
     </div>
   );
 };
+
 export const SafetyPage = () => (
   <div className="max-w-4xl mx-auto px-6 py-12 md:py-24 text-black font-sans animate-in fade-in duration-300">
     <BackToHomeButton />
@@ -793,7 +794,7 @@ export const SafetyPage = () => (
         <div className="flex items-center justify-between border-b border-brand-border pb-3 flex-wrap gap-2">
           <h2 className="text-lg md:text-xl font-serif font-bold flex items-center gap-2 text-black">
             <ShieldCheck size={22} className="text-emerald-600" />
-            <span>ReMEETsの安心・安全を守る 6大セキュリティ体系</span>
+            <span>ReMEETs SEEKMEの安心・安全を守る 6大セキュリティ体系</span>
           </h2>
           <span className="text-[11px] font-bold bg-emerald-100 text-emerald-900 px-3 py-1 rounded-full border border-emerald-300">
             多層防御システム稼働中
@@ -801,19 +802,19 @@ export const SafetyPage = () => (
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {/* 1. 共有記憶クイズ認証 ＆ 5回誤答ロック */}
+            {/* 1. 想い出エピソード照合 ＆ 相互承認制 */}
             <div className="p-5 md:p-6 rounded-2xl border border-brand-border bg-slate-50/90 backdrop-blur-xs space-y-3 flex flex-col justify-between hover:border-emerald-300 transition-all shadow-2xs">
               <div className="space-y-2.5">
                 <div className="flex items-center gap-2.5">
                   <span className="w-7 h-7 bg-emerald-600 text-white rounded-xl flex items-center justify-center text-xs font-bold font-mono shadow-2xs">1</span>
-                  <h3 className="font-serif font-bold text-sm text-slate-900">共有記憶クイズ ＆ 5回誤答ロック</h3>
+                  <h3 className="font-serif font-bold text-sm text-slate-900">想い出エピソード照合 ＆ 相互承認制</h3>
                 </div>
                 <p className="text-xs text-slate-700 leading-relaxed font-sans">
-                  当事者しか知り得ない「二人の共通の思い出」に関する質問に完全正解しない限り、メッセージは一切開封されません。当てずっぽうの推測やスクリプトによる総当たり攻撃（ブルートフォース）を自動検知し、5回連続の誤答で即座にアクセスを安全ロックします。
+                  当事者しか知り得ない「二人の共通の想い出エピソード」を申請時に提出し、差出人本人が確認・承認しない限りメッセージは一切開通しません。第三者による当てずっぽうの接触やなりすましを完全に防ぎます。
                 </p>
               </div>
               <div className="pt-2 border-t border-slate-200/80 text-[11px] text-emerald-800 font-bold flex items-center gap-1">
-                <span>✓ 第三者の無差別接触・推測を完全遮断</span>
+                <span>✓ 第三者の無差別接触・なりすましを完全遮断</span>
               </div>
             </div>
 
@@ -857,7 +858,7 @@ export const SafetyPage = () => (
                   <h3 className="font-serif font-bold text-sm text-slate-900">クレカ身元保証 ＆ セキュア開示</h3>
                 </div>
                 <p className="text-xs text-slate-700 leading-relaxed font-sans">
-                  メッセージ開封時にStripe暗号化決済（600円）を経由することで、カード会社側の本人照合により架空人物やいたずら開封を強固に排除。アプリ内に無駄なチャットを残さず、想い出照合後に直通連絡先を安全に引き渡してプラットフォームが完結します。
+                  メッセージ開通時にStripe暗号化決済（600円）を経由することで、カード会社側の本人照合により架空人物やいたずら開通を強固に排除。アプリ内に無駄なチャットを残さず、想い出照合後に直通連絡先を安全に引き渡してプラットフォームが完結します。
                 </p>
               </div>
               <div className="pt-2 border-t border-slate-200/80 text-[11px] text-teal-850 font-bold flex items-center gap-1">
@@ -865,15 +866,15 @@ export const SafetyPage = () => (
               </div>
             </div>
 
-            {/* 5. 個人情報の自動伏字化 ＆ 差出人のプライバシー保護 */}
+            {/* 5. 完全非公開・暗号化保管 ＆ プライバシー保護 */}
             <div className="p-5 md:p-6 rounded-2xl border border-brand-border bg-slate-50/90 backdrop-blur-xs space-y-3 flex flex-col justify-between hover:border-amber-300 transition-all shadow-2xs">
               <div className="space-y-2.5">
                 <div className="flex items-center gap-2.5">
                   <span className="w-7 h-7 bg-amber-600 text-white rounded-xl flex items-center justify-center text-xs font-bold font-mono shadow-2xs">5</span>
-                  <h3 className="font-serif font-bold text-sm text-slate-900">個人情報マスキング ＆ プライバシー</h3>
+                  <h3 className="font-serif font-bold text-sm text-slate-900">完全非公開・暗号化保管 ＆ プライバシー</h3>
                 </div>
                 <p className="text-xs text-slate-700 leading-relaxed font-sans">
-                  メッセージ本文などの全体公開エリアでは、電話番号やSNS ID、住所などの連絡先投稿を自動で伏字化（マスキング）。差出人ご自身の本名や個人情報は第三者に晒されず、クイズに正解した正規のお相手のみに安全に開示される非公開制御を徹底しています。
+                  メッセージ本文や手がかり情報はすべて安全に暗号化保管され、外部への一覧公開・無差別検索は一切行われません。システムによる自動照合と想い出エピソード承認を経て、正規のお相手のみに安全に開示される非公開制御を徹底しています。
                 </p>
               </div>
               <div className="pt-2 border-t border-slate-200/80 text-[11px] text-amber-900 font-bold flex items-center gap-1">
@@ -911,7 +912,7 @@ export const SafetyPage = () => (
         </section>
 
         <div className="pt-6 text-center">
-          <p className="text-xs text-black/55 mb-2">何らかの不都合や個人情報の違法掲載、削除が必要なボトルがございましたら：</p>
+          <p className="text-xs text-black/55 mb-2">何らかの不都合や個人情報の違法掲載、削除が必要なメッセージがございましたら：</p>
           <Link to="/deletion-request" className="btn-primary inline-flex animate-none text-xs">
             削除申請（オプトアウト）はこちら
           </Link>
@@ -955,7 +956,7 @@ export const DeletionRequestPage = () => {
     { value: "差出人に心当たりがなく不安・削除してほしい（オプトアウト）", label: "⚠️ 差出人に心当たりがなく不安・削除してほしい（オプトアウト）" },
     { value: "ストーカー・一方的な付きまとい・威迫の懸念がある", label: "🚨 ストーカー・一方的な付きまとい・威迫の懸念がある（最優先審査）" },
     { value: "誹謗中傷・プライバシー侵害・不快な内容が含まれる", label: "🛑 誹謗中傷・プライバシー侵害・不快な内容が含まれる" },
-    { value: "投稿者本人によるボトルの取り下げ・完全削除希望", label: "📝 投稿者本人によるボトルの取り下げ・完全削除希望" },
+    { value: "投稿者本人によるメッセージの取り下げ・完全削除希望", label: "📝 投稿者本人によるメッセージの取り下げ・完全削除希望" },
     { value: "誤った情報の記載・誤認投稿", label: "🔄 誤った情報の記載・誤認投稿" },
     { value: "肖像権・写真・画像の無断掲載", label: "🔒 肖像権・写真・画像の無断掲載" },
     { value: "その他安全上の理由", label: "❓ その他安全上の理由" }
@@ -1069,8 +1070,8 @@ export const DeletionRequestPage = () => {
           icon={<Trash2 size={26} className="text-rose-600" />}
           iconBoxClassName="bg-rose-50 text-rose-600 border border-rose-200"
           category="Deletion & Privacy Protection"
-          title="メッセージ（ボトルメール）の削除・掲載停止依頼"
-          description="ご自身の個人情報が掲載されている場合や、差出人に心当たりがないメッセージについて、24時間体制で迅速に非公開・完全削除の申請を受理いたします。"
+          title="メッセージの削除・登録解除依頼"
+          description="ご自身の個人情報が登録されている場合や、差出人に心当たりがないメッセージについて、24時間体制で迅速に非公開・完全削除の申請を受理いたします。"
         />
 
         {/* 🔒 24時間体制・オプトアウト保障バッジ */}
