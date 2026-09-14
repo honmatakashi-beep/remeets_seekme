@@ -244,12 +244,16 @@ export const Navbar = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) 
       )}
       <nav className="border-b border-brand-border bg-white/90 backdrop-blur-md w-full relative z-40 shadow-2xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 md:h-20 flex items-center justify-between relative">
-          <Link to="/" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2.5 group py-1">
+          <Link to="/" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2 sm:gap-2.5 group py-1">
             <img 
               src="/logo.png" 
               alt="ReMEETs SeekMe" 
               className="h-5.5 sm:h-6.5 md:h-7.5 w-auto object-contain transition-transform group-hover:scale-[1.02]" 
             />
+            {/* 🔴 確認用: SEEKME 赤文字ラベル */}
+            <span className="text-xs sm:text-sm font-extrabold text-red-600 bg-red-50 border border-red-300 px-2 py-0.5 rounded-lg tracking-wider font-sans shadow-2xs animate-pulse">
+              SEEKME
+            </span>
             <div className="flex flex-col">
               <span className="text-[10px] md:text-xs font-bold text-teal-700 tracking-wider font-serif">
                 SeekMe
