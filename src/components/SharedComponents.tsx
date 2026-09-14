@@ -618,12 +618,34 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-export const GoogleSearchResultPreview = ({ targetName, era, location, searcherName, teaser }: { targetName: string; era: string; location?: string; searcherName: string; teaser?: string }) => {
-  const displayUrl = `https://remeets.jp › name › ${targetName ? encodeURIComponent(targetName) : '...'}`;
-  const title = `${targetName || '〇〇'} 様へ届いている思い出ボトル｜ReMEETs 再会のボトルメール`;
-  const displayLocation = location ? (location.match(/.*?[都道府県]/)?.[0] || location) : 'ゆかりの地';
-  const eraFormatted = formatEraLabel(era);
-  const snippet = `${eraFormatted}に${displayLocation}で出会った「${searcherName || '〇〇'}」様があなたを探しています。思い出の手がかり：${teaser || '思い出の質問に正解すると手紙が開封されます。'}`;
+export const GoogleSearchResultPreview = ({ 
+  targetName, 
+  era = '1990', 
+  location, 
+  targetHometown,
+  targetMaidenName,
+  searcherName, 
+  teaser,
+  searcherProfile,
+  category
+}: { 
+  targetName: string; 
+  era?: string; 
+  location?: string; 
+  targetHometown?: string;
+  targetMaidenName?: string;
+  searcherName?: string; 
+  teaser?: string; 
+  searcherProfile?: string;
+  category?: string;
+}) => {
+  const displayLocation = (targetHometown || location) ? ((targetHometown || location)!.match(/.*?[都道府県]/)?.[0] || (targetHometown || location)!) : '全国';
+  const maidenText = targetMaidenName ? `（旧姓: ${targetMaidenName}）` : '';
+  const title = `${targetName || '〇〇'}${maidenText} 様へ｜ReMEETs SeekMe 〜私を探すあなたへ〜`;
+  const displayUrl = `https://remeets.jp/seekme › name › ${targetName ? encodeURIComponent(targetName) : '...'}`;
+  const eraFormatted = era ? formatEraLabel(era) : '1990年代';
+  const msgPreview = searcherProfile || teaser || '私を探しているあなたへ。メッセージをお待ちしています。';
+  const snippet = `【${displayLocation}・${eraFormatted}】${targetName || '〇〇'}${maidenText} 様からの置き手紙：「${msgPreview.slice(0, 65)}${msgPreview.length > 65 ? '...' : ''}」相互エピソード承認とeKYC本人確認で安心の再会をサポート。`;
 
   return (
     <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm font-sans max-w-2xl overflow-hidden text-left my-2">
@@ -647,7 +669,7 @@ export const GoogleSearchResultPreview = ({ targetName, era, location, searcherN
             <div className="w-3.5 h-3.5 rounded-full bg-emerald-600 text-white flex items-center justify-center font-serif text-[8px] font-bold shrink-0">
               R
             </div>
-            <span className="text-slate-700 font-sans font-medium">ReMEETs 再会プラットフォーム</span>
+            <span className="text-slate-700 font-sans font-medium">ReMEETs SeekMe</span>
             <span className="text-slate-300">›</span>
             <span className="text-slate-500 truncate">{displayUrl}</span>
           </div>
