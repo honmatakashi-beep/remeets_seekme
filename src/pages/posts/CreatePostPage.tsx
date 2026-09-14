@@ -1219,222 +1219,114 @@ export const CreatePostPage = () => {
         /* =========================================================================
             C. 投函・公開完了画面（インターネットの海にメッセージが公開された完了ページ）
         ========================================================================= */
-        <div className="space-y-6 animate-fade-in text-left">
-          {/* お祝いヘッダーバナー */}
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-teal-800 via-emerald-800 to-teal-950 text-white p-6 sm:p-10 shadow-2xl text-center space-y-3 border-2 border-emerald-400/40">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none" />
-            <div className="w-16 h-16 bg-white/15 rounded-3xl mx-auto flex items-center justify-center backdrop-blur-md border border-white/30 shadow-lg text-amber-300 animate-bounce">
-              <Sparkles size={32} />
+        <div className="max-w-2xl mx-auto space-y-6 animate-fade-in text-left">
+          {/* 1. 清潔感のある白ベースの完了ヘッダー（緑ベタ廃止） */}
+          <div className="bg-white rounded-3xl border-2 border-emerald-200/80 p-6 sm:p-10 shadow-lg text-center space-y-3">
+            <div className="w-14 h-14 bg-gradient-to-br from-emerald-50 to-teal-100 text-emerald-700 rounded-2xl mx-auto flex items-center justify-center border border-emerald-200 shadow-2xs">
+              <Sparkles size={28} />
             </div>
 
-            <span className="text-[10px] font-extrabold uppercase tracking-widest bg-emerald-500/20 text-emerald-200 px-3.5 py-1 rounded-full border border-emerald-400/40 inline-block font-mono">
+            <span className="text-[10px] font-extrabold uppercase tracking-widest bg-emerald-50 text-emerald-800 px-3.5 py-1 rounded-full border border-emerald-200 inline-block font-sans">
               PUBLISH COMPLETE
             </span>
 
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-white tracking-wide">
-              メッセージがインターネットの海に届けられました
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-serif font-bold text-slate-900 tracking-wide leading-snug">
+              メッセージがインターネットの海に<br className="sm:hidden" />届けられました
             </h1>
 
-            <p className="text-xs sm:text-sm text-emerald-100/90 max-w-lg mx-auto font-sans leading-relaxed">
-              あなたを探しているお相手に向けた想い出のメッセージが正常に公開されました。お相手がこのメッセージを見つけ、当時の思い出を届けてくれる日を心待ちにしましょう。
+            <p className="text-xs sm:text-sm text-slate-600 max-w-lg mx-auto font-sans leading-relaxed">
+              あなたを探しているお相手に向けた想い出のメッセージが正常に公開されました。<br className="hidden sm:inline" />
+              お相手がこのメッセージを見つけ、当時の思い出を届けてくれる日を心待ちにしましょう。
             </p>
           </div>
 
-          {/* 公開されたメッセージの要約カード */}
-          <div className="bg-white rounded-3xl border-2 border-slate-200 p-6 sm:p-8 space-y-6 shadow-lg text-left">
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-xs font-bold bg-teal-100 text-teal-800 px-3 py-1 rounded-full uppercase tracking-wider font-mono">
-                  {formData.hometownPref || '全国'}
-                </span>
-                {formData.birthYear && (
-                  <span className="text-xs font-bold bg-sky-100 text-sky-900 px-3 py-1 rounded-full font-mono">
-                    {formatBirthYearLabel(parseInt(formData.birthYear, 10))}
-                  </span>
-                )}
-                <span className="text-[11px] text-slate-400 font-mono">
-                  #{createdPostData?.id || 'ONLINE'}
-                </span>
-              </div>
-
-              {/* 認証マーク */}
-              {(createdPostData?.is_ekyc_verified || pendingPlan === 'ekyc' || user?.is_ekyc_verified) ? (
-                <span className="seal-rainbow px-3.5 py-1 text-white text-xs font-bold rounded-full shadow-xs flex items-center gap-1.5 font-serif">
-                  <ShieldCheck size={14} className="text-amber-200" />
-                  <span>🌈 公的本人確認（eKYC）認証済み</span>
-                </span>
-              ) : (
-                <span className="text-xs font-bold text-slate-600 bg-slate-100 border border-slate-200 px-3 py-1 rounded-full">
-                  ✉️ 通常のメッセージとして公開中
-                </span>
-              )}
-            </div>
-
-            {/* お名前 & メッセージ抜粋 */}
-            <div className="space-y-3">
-              <div>
-                <span className="text-xs font-bold text-slate-700 font-sans">メッセージを書いた人</span>
-                <h2 className="text-xl sm:text-2xl font-bold text-slate-950 font-sans">
-                  {fullName}
-                  {formData.maidenName && (
-                    <span className="text-sm font-normal text-slate-600 font-sans ml-2">
-                      （旧姓: {formData.maidenName}）
-                    </span>
-                  )}
-                </h2>
-              </div>
-
-              <div className="p-5 sm:p-6 bg-white rounded-2xl border-2 border-slate-200 font-sans text-slate-950 font-medium text-sm sm:text-base leading-relaxed whitespace-pre-wrap shadow-xs">
-                {formData.message}
-              </div>
-            </div>
-
-            {/* 🔗 公開URLシェアボックス */}
-            {createdPostData && (
-              <div className="p-4 sm:p-5 bg-teal-50/60 rounded-2xl border border-teal-200/80 space-y-2.5">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-teal-900 flex items-center gap-1.5 font-sans">
-                    <Share2 size={14} className="text-teal-700" />
-                    <span>あなたのメッセージの専用URL（シェア・保存用）</span>
-                  </span>
-                  <span className="text-[10px] text-teal-700 font-mono">
-                    PUBLIC LINK
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    readOnly
-                    value={`${window.location.origin}${getPostUrl(createdPostData)}`}
-                    className="flex-1 px-3.5 py-2 text-xs bg-white border border-teal-200 rounded-xl text-slate-700 font-mono select-all outline-none"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      navigator.clipboard.writeText(`${window.location.origin}${getPostUrl(createdPostData)}`);
-                      setCopiedUrl(true);
-                      setTimeout(() => setCopiedUrl(false), 2500);
-                    }}
-                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shrink-0 shadow-xs ${
-                      copiedUrl
-                        ? 'bg-emerald-600 text-white'
-                        : 'bg-teal-700 hover:bg-teal-800 text-white'
-                    }`}
-                  >
-                    {copiedUrl ? (
-                      <>
-                        <Check size={14} />
-                        <span>コピー完了！</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy size={14} />
-                        <span>URLをコピー</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-                <p className="text-[11px] text-teal-800/80 font-sans">
-                  ※ SNSやブログ、メモ帳等にこのURLを保存しておくと、いつでも直接メッセージを開くことができます。
-                </p>
-              </div>
-            )}
-          </div>
-
-          {/* 💡 メッセージ公開後の流れとアクション手順 */}
-          <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 space-y-4 shadow-sm text-left font-sans">
-            <div className="flex items-center justify-between gap-2 flex-wrap border-b border-slate-100 pb-3">
-              <h3 className="text-base sm:text-lg font-serif font-bold text-slate-900 flex items-center gap-2">
-                <Sparkles size={18} className="text-teal-600" />
-                <span>お相手から連絡が届いた際の流れ（あなたのアクション手順）</span>
-              </h3>
-              <span className="text-[10px] font-bold text-teal-800 bg-teal-50 border border-teal-200 px-2.5 py-0.5 rounded-full">
-                🛡️ 承認するまで個人情報は完全非開示
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-              <div className="p-4 bg-teal-50/60 rounded-2xl border border-teal-100 space-y-1.5">
-                <span className="text-[10px] font-bold text-teal-700 font-mono block">STEP 1. 通知が届く</span>
-                <strong className="text-slate-900 block">📧 メール & マイページでお知らせ</strong>
-                <p className="text-slate-600 text-[11px] leading-relaxed">
-                  お相手があなたを見つけてエピソードを送信すると、ご登録のメールアドレスとマイページに即座に通知が届きます。
-                </p>
-              </div>
-
-              <div className="p-4 bg-sky-50/60 rounded-2xl border border-sky-100 space-y-1.5">
-                <span className="text-[10px] font-bold text-sky-700 font-mono block">STEP 2. エピソード確認</span>
-                <strong className="text-slate-900 block">📖 本人かどうかを判定</strong>
-                <p className="text-slate-600 text-[11px] leading-relaxed">
-                  マイページの「届いた再会希望」で2人だけの思い出エピソードを読み、探していた本人であれば「承認」を押します。
-                </p>
-              </div>
-
-              <div className="p-4 bg-emerald-50/60 rounded-2xl border border-emerald-100 space-y-1.5">
-                <span className="text-[10px] font-bold text-emerald-800 font-mono block">STEP 3. 連絡先開示</span>
-                <strong className="text-slate-900 block">🎉 双方の連絡先を安全に開示</strong>
-                <p className="text-slate-600 text-[11px] leading-relaxed">
-                  公的本人確認・開通手続きを経て、画面上でお互いの連絡先（LINE ID等）が開示され、直接連絡が取れるようになります。
-                </p>
-              </div>
-            </div>
-            
-            <p className="text-[11px] text-slate-500 bg-slate-50 p-3 rounded-xl border border-slate-200/80 leading-relaxed">
-              ※ あなたがエピソードを読んで「承認」するまで、あなたの本名や連絡先はお相手に一切開示されません。心当たりのない申請はワンタップで見送ることができます。
-            </p>
-          </div>
-
-          {/* メインCTAボタン群 */}
-          <div className="p-6 bg-gradient-to-r from-teal-900 via-slate-900 to-teal-950 text-white rounded-3xl shadow-xl space-y-4">
-            <div className="text-center space-y-1">
-              <h3 className="text-base sm:text-lg font-bold text-white font-serif">
-                次はどちらのページをご覧になりますか？
-              </h3>
-              <p className="text-xs text-slate-300 font-sans">
-                公開された実際のメッセージページ、またはメッセージを管理できるマイページへ移動できます。
+          {/* 2. メッセージ公開後の流れと確認方法（シンプル3ステップ） */}
+          <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 space-y-5 shadow-sm text-left font-sans">
+            <div className="border-b border-slate-100 pb-3">
+              <h2 className="text-base sm:text-lg font-serif font-bold text-slate-900 flex items-center gap-2">
+                <CheckCircle2 size={20} className="text-teal-700" />
+                <span>今後の確認方法と連絡が届いたときの流れ</span>
+              </h2>
+              <p className="text-xs text-slate-500 mt-1">
+                メッセージは公開されたまま安全に待機します。あなたがアクションを行うタイミングは以下の通りです。
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-              <button
-                type="button"
-                onClick={() => {
-                  if (createdPostData) {
-                    navigate(getPostUrl(createdPostData), {
-                      state: {
-                        justPosted: true,
-                        postPreview: createdPostData
-                      }
-                    });
-                  } else {
-                    navigate('/');
-                  }
-                }}
-                className="py-4 px-6 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold text-sm rounded-2xl shadow-md hover:shadow-lg active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer font-serif"
-              >
-                <Eye size={18} />
-                <span>公開された実際のメッセージを見に行く</span>
-              </button>
+            <div className="space-y-3.5">
+              {/* STEP 1. メッセージの確認・修正 */}
+              <div className="p-4 bg-slate-50/80 rounded-2xl border border-slate-200 flex items-start gap-3.5">
+                <div className="w-8 h-8 rounded-xl bg-slate-800 text-white flex items-center justify-center font-bold text-xs shrink-0 font-sans shadow-2xs mt-0.5">
+                  1
+                </div>
+                <div className="space-y-1">
+                  <strong className="text-slate-900 text-sm font-bold block font-serif">
+                    メッセージの確認・修正は「マイアカウント」でいつでも可能
+                  </strong>
+                  <p className="text-slate-600 text-xs leading-relaxed">
+                    公開中のメッセージ内容の確認や修正、削除はマイアカウントからいつでも自由に行えます。
+                  </p>
+                </div>
+              </div>
 
-              <button
-                type="button"
-                onClick={() => navigate('/account')}
-                className="py-4 px-6 bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm rounded-2xl shadow-md hover:shadow-lg active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer border border-slate-700 font-serif"
-              >
-                <User size={18} />
-                <span>マイページでメッセージを管理・確認する</span>
-              </button>
+              {/* STEP 2. 通知とお相手からの再会申請 */}
+              <div className="p-4 bg-teal-50/60 rounded-2xl border border-teal-100 flex items-start gap-3.5">
+                <div className="w-8 h-8 rounded-xl bg-teal-700 text-white flex items-center justify-center font-bold text-xs shrink-0 font-sans shadow-2xs mt-0.5">
+                  2
+                </div>
+                <div className="space-y-1">
+                  <strong className="text-slate-900 text-sm font-bold block font-serif">
+                    お相手から連絡が届いたら、メールとマイアカウントに通知
+                  </strong>
+                  <p className="text-slate-600 text-xs leading-relaxed">
+                    お相手がメッセージを見つけて「再会申請（当時の思い出エピソード）」を届けると、ご登録のメールアドレスおよびマイアカウント通知にすぐにお知らせが届きます。
+                  </p>
+                </div>
+              </div>
+
+              {/* STEP 3. あなたの承認で連絡先が開示・再会成立 */}
+              <div className="p-4 bg-emerald-50/60 rounded-2xl border border-emerald-100 flex items-start gap-3.5">
+                <div className="w-8 h-8 rounded-xl bg-emerald-700 text-white flex items-center justify-center font-bold text-xs shrink-0 font-sans shadow-2xs mt-0.5">
+                  3
+                </div>
+                <div className="space-y-1">
+                  <strong className="text-slate-900 text-sm font-bold block font-serif">
+                    エピソードを読んで「承認」すると、連絡先が開示され再会成立
+                  </strong>
+                  <p className="text-slate-600 text-xs leading-relaxed">
+                    届いたエピソードをマイアカウントで確認し、あなたが「確かにあの人だ！」と承認した時のみ、お相手にあなたの連絡先が開示されて直接連絡が取れるようになります（相互承認制）。
+                  </p>
+                </div>
+              </div>
             </div>
 
-            <div className="pt-2 text-center">
-              <Link
-                to="/"
-                className="text-xs text-slate-400 hover:text-white underline font-sans"
-              >
-                トップページへ戻る
-              </Link>
+            {/* 安心のプライバシー保証 */}
+            <div className="p-3.5 bg-sky-50/70 rounded-xl border border-sky-100 text-xs text-sky-900 flex items-start gap-2 font-sans">
+              <ShieldCheck size={16} className="text-teal-700 shrink-0 mt-0.5" />
+              <span className="leading-relaxed">
+                <strong>安心の相互承認システム:</strong> あなたがエピソードを読んで承認するまで、お相手に本名や連絡先が開示されることは一切ありません。心当たりのない連絡は安心して見送ることができます。
+              </span>
             </div>
+          </div>
+
+          {/* 3. シンプルなアクションボタン */}
+          <div className="p-5 bg-white rounded-3xl border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
+            <button
+              type="button"
+              onClick={() => navigate('/')}
+              className="w-full sm:w-auto px-6 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer font-sans"
+            >
+              <span>🏠 ホームへ戻る</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => navigate('/account')}
+              className="w-full sm:w-auto px-7 py-3.5 bg-gradient-to-r from-teal-700 via-emerald-700 to-teal-800 hover:from-teal-800 hover:to-emerald-800 text-white font-bold text-xs sm:text-sm rounded-2xl shadow-md hover:shadow-lg active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer font-serif"
+            >
+              <User size={16} />
+              <span>マイアカウントでメッセージを確認する</span>
+              <ArrowRight size={16} />
+            </button>
           </div>
         </div>
       ) : (
