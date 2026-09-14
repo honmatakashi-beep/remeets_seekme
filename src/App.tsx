@@ -82,7 +82,7 @@ export default function App() {
                 <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                 <Route path="/reset-password" element={<ResetPasswordPage />} />
                 <Route path="/success-stories" element={<SuccessStoriesPage />} />
-                <Route path="/create" element={<ProtectedRoute><CreatePostPage /></ProtectedRoute>} />
+                <Route path="/create" element={<CreatePostPage />} />
                 <Route path="/edit/:id" element={<ProtectedRoute><EditPostPage /></ProtectedRoute>} />
                 <Route path="/account" element={<ProtectedRoute><AccountPage /></ProtectedRoute>} />
                 <Route path="/post/:id" element={<PostDetailPage onOpenOnboarding={() => {}} />} />
