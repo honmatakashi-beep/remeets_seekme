@@ -11,6 +11,7 @@ import { useAuth, useNgFilter } from '../../contexts/AuthContext';
 import { PREFECTURES, BIRTH_YEAR_OPTIONS, formatBirthYearLabel, getPostUrl, PageHeader } from '../../lib/utils';
 import { GoogleSearchResultPreview, BackToHomeButton } from '../../components/SharedComponents';
 import { MypageEkycModal } from '../../components/account/MypageEkycModal';
+import { EkycExplanationModal } from '../../components/posts/EkycExplanationModal';
 
 export const CreatePostPage = () => {
   const { user, token, login, updateUser } = useAuth();
@@ -42,6 +43,9 @@ export const CreatePostPage = () => {
 
   // プレビュー表示切り替えタブ ('ekyc': 認証あり表示, 'free': 通常無料表示)
   const [previewTab, setPreviewTab] = useState<'ekyc' | 'free'>('ekyc');
+
+  // 公認バッジ証明内容モーダル表示ステート
+  const [showEkycExplanationModal, setShowEkycExplanationModal] = useState(false);
 
   // 公開URLコピー完了ステート
   const [copiedUrl, setCopiedUrl] = useState(false);
@@ -517,16 +521,26 @@ export const CreatePostPage = () => {
           <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="space-y-1 text-left">
               <div className="flex items-center gap-2 flex-wrap">
-                <div className="w-5 h-5 rounded-full seal-rainbow flex items-center justify-center text-white shadow-2xs shrink-0">
-                  <ShieldCheck size={12} />
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowEkycExplanationModal(true)}
+                  className="w-8 h-8 rounded-full seal-rainbow flex items-center justify-center text-white shadow-xs shrink-0 cursor-pointer hover:scale-110 active:scale-95 transition-all ring-2 ring-amber-200"
+                  title="クリックして公認バッジの証明内容を確認"
+                >
+                  <ShieldCheck size={16} />
+                </button>
                 <h4 className="text-xs sm:text-sm font-bold text-slate-800 font-serif">
                   公的本人確認（公認バッジ）の表示切替
                 </h4>
                 {previewTab === 'ekyc' ? (
-                  <span className="text-[10px] font-bold text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full font-sans">
-                    ✨ バッジ表示中
-                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setShowEkycExplanationModal(true)}
+                    className="text-[10px] font-bold text-amber-900 bg-amber-50 hover:bg-amber-100 border border-amber-300 px-2.5 py-0.5 rounded-full font-sans cursor-pointer transition-colors flex items-center gap-1"
+                  >
+                    <span>✨ バッジ表示中</span>
+                    <span className="text-[9px] text-amber-700 underline">詳細確認</span>
+                  </button>
                 ) : (
                   <span className="text-[10px] font-bold text-slate-500 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full font-sans">
                     通常表示中
@@ -542,10 +556,13 @@ export const CreatePostPage = () => {
             <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200 shrink-0 self-start sm:self-center">
               <button
                 type="button"
-                onClick={() => setPreviewTab('ekyc')}
-                className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                onClick={() => {
+                  setPreviewTab('ekyc');
+                  setShowEkycExplanationModal(true);
+                }}
+                className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                   previewTab === 'ekyc'
-                    ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-xs'
+                    ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-xs ring-2 ring-amber-300'
                     : 'text-slate-500 hover:text-slate-800'
                 }`}
               >
@@ -555,7 +572,7 @@ export const CreatePostPage = () => {
               <button
                 type="button"
                 onClick={() => setPreviewTab('free')}
-                className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                   previewTab === 'free'
                     ? 'bg-slate-700 text-white shadow-xs'
                     : 'text-slate-500 hover:text-slate-800'
@@ -575,9 +592,14 @@ export const CreatePostPage = () => {
                 <Eye size={14} className="text-teal-600" />
                 <span>ネット公開画面の実物プレビュー</span>
                 {previewTab === 'ekyc' && (
-                  <span className="text-[10px] font-bold bg-amber-100 text-amber-900 px-2 py-0.5 rounded-md border border-amber-300 font-mono ml-1">
-                    🌈 eKYC認証マーク点灯中
-                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setShowEkycExplanationModal(true)}
+                    className="text-[10px] font-bold bg-amber-100 hover:bg-amber-200 text-amber-950 px-2.5 py-0.5 rounded-md border border-amber-300 font-mono ml-1 cursor-pointer transition-colors inline-flex items-center gap-1"
+                  >
+                    <span>🌈 eKYC公認バッジ点灯中</span>
+                    <span className="text-[9px] underline">確認 🔍</span>
+                  </button>
                 )}
               </span>
               <span className="text-[11px] text-slate-400 font-mono">
@@ -598,27 +620,40 @@ export const CreatePostPage = () => {
                       SEEKME LETTER
                     </span>
                     {previewTab === 'ekyc' && (
-                      <div className="flex items-center gap-1.5 bg-gradient-to-r from-sky-50 to-teal-50 border border-teal-300 px-2.5 py-0.5 rounded-full shadow-2xs">
-                        <div className="w-4 h-4 rounded-full seal-rainbow flex items-center justify-center text-white shadow-xs shrink-0">
-                          <ShieldCheck size={10} />
+                      <button
+                        type="button"
+                        onClick={() => setShowEkycExplanationModal(true)}
+                        className="flex items-center gap-1.5 bg-gradient-to-r from-sky-50 via-teal-50 to-amber-50 hover:from-sky-100 hover:to-amber-100 border border-teal-300 hover:border-amber-400 px-3 py-1 rounded-full shadow-2xs cursor-pointer hover:scale-105 active:scale-95 transition-all group"
+                        title="クリックして公的本人確認（eKYC）の証明内容を確認"
+                      >
+                        <div className="w-5 h-5 rounded-full seal-rainbow flex items-center justify-center text-white shadow-xs shrink-0">
+                          <ShieldCheck size={11} />
                         </div>
-                        <span className="text-[10px] font-black text-teal-950 font-sans">
+                        <span className="text-[11px] font-black text-teal-950 font-sans">
                           公的本人確認済
                         </span>
-                      </div>
+                        <span className="text-[9px] font-bold text-teal-800 bg-white/90 border border-teal-200 px-1.5 py-0.2 rounded-full font-sans group-hover:bg-amber-500 group-hover:text-white transition-colors">
+                          詳細 🔍
+                        </span>
+                      </button>
                     )}
                   </div>
                   <h3 className="text-xl sm:text-2xl font-serif font-bold text-slate-900">
                     {fullName || 'お名前'} 様からの手紙
                   </h3>
                 </div>
-                <div className="text-xs text-slate-500 font-sans flex items-center gap-2">
+                <div className="text-xs text-slate-500 font-sans flex items-center gap-3">
                   <span>公開予定：本日</span>
                   {previewTab === 'ekyc' && (
-                    <div className="w-7 h-7 rounded-full seal-rainbow flex flex-col items-center justify-center text-white shadow-xs shrink-0" title="差出人は公的本人確認（eKYC）完了済み">
-                      <ShieldCheck size={12} className="text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.6)]" />
-                      <span className="text-[5px] font-black tracking-tighter uppercase -mt-0.5 text-white">eKYC済</span>
-                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowEkycExplanationModal(true)}
+                      className="w-12 h-12 rounded-full seal-rainbow flex flex-col items-center justify-center text-white shadow-md hover:shadow-xl hover:scale-110 active:scale-95 transition-all cursor-pointer ring-2 ring-amber-300 shrink-0 group"
+                      title="クリックして公的本人確認の証明内容を確認"
+                    >
+                      <ShieldCheck size={18} className="text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)] group-hover:rotate-6 transition-transform" />
+                      <span className="text-[6px] font-black tracking-tighter uppercase -mt-0.5 text-white drop-shadow-xs">eKYC済</span>
+                    </button>
                   )}
                 </div>
               </div>
@@ -1894,6 +1929,16 @@ export const CreatePostPage = () => {
             }).catch(() => {});
           }
         }}
+      />
+
+      {/* 🔍 公的本人確認（公認バッジ）証明内容・サイト表示プレビューモーダル */}
+      <EkycExplanationModal
+        isOpen={showEkycExplanationModal}
+        onClose={() => setShowEkycExplanationModal(false)}
+        senderName={fullName || 'あなた'}
+        birthYear={formData.birthYear ? formatBirthYearLabel(formData.birthYear) : undefined}
+        hometownPref={formData.hometownPref}
+        mode="preview"
       />
     </div>
   );

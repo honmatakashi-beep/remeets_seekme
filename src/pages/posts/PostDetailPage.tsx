@@ -10,6 +10,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useNgFilter } from '../../contexts/AuthContext';
 import { formatEraLabel, formatBirthYearLabel, PREFECTURES } from '../../lib/utils';
 import { BottleLoader, BackToHomeButton, GoogleSearchResultPreview } from '../../components/SharedComponents';
+import { EkycExplanationModal } from '../../components/posts/EkycExplanationModal';
 
 export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) => {
   const { id } = useParams();
@@ -27,6 +28,9 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
   const [post, setPost] = useState<any>(previewData || null);
   const [loading, setLoading] = useState(!previewData);
   const [error, setError] = useState<string | null>(null);
+
+  // 公認バッジ証明内容モーダル
+  const [showEkycExplanationModal, setShowEkycExplanationModal] = useState(false);
 
   // 再会希望エピソード送信モーダル
   const [showRequestModal, setShowRequestModal] = useState(false);
@@ -180,14 +184,22 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
             
             <div className="flex items-center gap-2">
               {Boolean(post.is_ekyc_verified) && (
-                <div className="flex items-center gap-1.5 bg-gradient-to-r from-sky-50 to-teal-50 border border-teal-300 px-2.5 py-1 rounded-full shadow-2xs">
+                <button
+                  type="button"
+                  onClick={() => setShowEkycExplanationModal(true)}
+                  className="flex items-center gap-1.5 bg-gradient-to-r from-sky-50 via-teal-50 to-amber-50 hover:from-sky-100 hover:to-amber-100 border border-teal-300 hover:border-amber-400 px-3 py-1 rounded-full shadow-2xs cursor-pointer hover:scale-105 active:scale-95 transition-all group"
+                  title="クリックして公的本人確認（eKYC）の証明内容を確認"
+                >
                   <div className="w-5 h-5 rounded-full seal-rainbow flex items-center justify-center text-white shadow-xs">
                     <ShieldCheck size={11} />
                   </div>
                   <span className="text-[11px] font-black text-teal-950 font-sans">
                     公的本人確認済
                   </span>
-                </div>
+                  <span className="text-[9px] font-bold text-teal-800 bg-white/90 border border-teal-200 px-1.5 py-0.2 rounded-full font-sans group-hover:bg-amber-500 group-hover:text-white transition-colors">
+                    詳細 🔍
+                  </span>
+                </button>
               )}
               <span className="text-xs font-bold text-teal-700 bg-white/90 border border-teal-200 px-3 py-1 rounded-full shadow-2xs">
                 💌 私を探すあなたへ
@@ -200,9 +212,14 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
             <div className="flex flex-wrap items-baseline gap-2">
               <span className="text-xs font-bold text-slate-500 font-sans">手紙を書いた人</span>
               {Boolean(post.is_ekyc_verified) && (
-                <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded-full font-sans">
-                  ✓ 氏名・生まれ年 公的確認済み
-                </span>
+                <button
+                  type="button"
+                  onClick={() => setShowEkycExplanationModal(true)}
+                  className="text-[10px] font-bold text-emerald-900 bg-emerald-100/90 hover:bg-emerald-200 border border-emerald-300 px-2.5 py-0.5 rounded-full font-sans cursor-pointer transition-colors inline-flex items-center gap-1"
+                >
+                  <span>✓ 氏名・生まれ年 公的確認済み</span>
+                  <span className="text-[9px] underline">確認 🔍</span>
+                </button>
               )}
             </div>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-slate-900 tracking-wide flex items-center gap-2 flex-wrap">
@@ -462,6 +479,16 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
           </div>
         )}
       </AnimatePresence>
+
+      {/* 🔍 公的本人確認（公認バッジ）証明内容モーダル */}
+      <EkycExplanationModal
+        isOpen={showEkycExplanationModal}
+        onClose={() => setShowEkycExplanationModal(false)}
+        senderName={post?.searcher_name || post?.full_name || post?.user_name}
+        birthYear={post?.birth_year ? formatBirthYearLabel(post.birth_year) : undefined}
+        hometownPref={post?.hometown_pref || post?.target_hometown}
+        mode="detail"
+      />
     </div>
   );
 };
