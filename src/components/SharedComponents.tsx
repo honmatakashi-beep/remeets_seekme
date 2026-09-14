@@ -620,32 +620,40 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 export const GoogleSearchResultPreview = ({ 
   targetName, 
+  targetNameKana,
   era = '1990', 
   location, 
   targetHometown,
   targetMaidenName,
+  targetMaidenNameKana,
   searcherName, 
   teaser,
   searcherProfile,
   category
 }: { 
   targetName: string; 
+  targetNameKana?: string;
   era?: string; 
   location?: string; 
   targetHometown?: string;
   targetMaidenName?: string;
+  targetMaidenNameKana?: string;
   searcherName?: string; 
   teaser?: string; 
   searcherProfile?: string;
   category?: string;
 }) => {
   const displayLocation = (targetHometown || location) ? ((targetHometown || location)!.match(/.*?[都道府県]/)?.[0] || (targetHometown || location)!) : '全国';
-  const maidenText = targetMaidenName ? `（旧姓: ${targetMaidenName}）` : '';
-  const title = `${targetName || '〇〇'}${maidenText} 様へ｜ReMEETs SeekMe 〜私を探すあなたへ〜`;
-  const displayUrl = `https://remeets.jp/seekme › name › ${targetName ? encodeURIComponent(targetName) : '...'}`;
+  const maidenKanaText = targetMaidenNameKana ? ` / ${targetMaidenNameKana}` : '';
+  const maidenText = targetMaidenName ? `（旧姓: ${targetMaidenName}${maidenKanaText}）` : '';
+  const kanaText = targetNameKana ? `（${targetNameKana}）` : '';
+  const title = `${targetName || '〇〇'}${kanaText}${maidenText} 様へ｜ReMEETs SEEKME 〜想い出の手紙〜`;
   const eraFormatted = era ? formatEraLabel(era) : '1990年代';
+  const rawYear = era ? String(era).replace(/[^0-9]/g, '') : '1990';
+  const slugPreview = [targetName || '山田太郎', targetNameKana || 'やまだたろう', rawYear, displayLocation].filter(Boolean).join('_');
+  const displayUrl = `https://remeets.jp › posts › 123 › ${slugPreview}`;
   const msgPreview = searcherProfile || teaser || '私を探しているあなたへ。メッセージをお待ちしています。';
-  const snippet = `【${displayLocation}・${eraFormatted}】${targetName || '〇〇'}${maidenText} 様からの想い出の手紙：「${msgPreview.slice(0, 65)}${msgPreview.length > 65 ? '...' : ''}」相互エピソード承認とeKYC本人確認で安心の再会をサポート。`;
+  const snippet = `【${displayLocation}・${eraFormatted}】${targetName || '〇〇'}${kanaText}${maidenText} 様からの想い出の手紙：「${msgPreview.slice(0, 65)}${msgPreview.length > 65 ? '...' : ''}」相互エピソード承認とeKYC本人確認で安心の再会をサポート。`;
 
   return (
     <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm font-sans max-w-2xl overflow-hidden text-left my-2">

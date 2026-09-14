@@ -408,7 +408,13 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
                         </span>
                       </div>
                       <h3 className="text-base font-serif font-bold text-brand-dark group-hover:text-teal-700 transition-all truncate">
-                        {post.target_name} 様
+                        <span>{post.target_name}</span>
+                        {(post.target_name_kana || post.target_last_name_kana) && (
+                          <span className="text-xs text-slate-500 font-sans font-normal ml-1">
+                            （{post.target_name_kana || `${post.target_last_name_kana || ''} ${post.target_first_name_kana || ''}`.trim()}）
+                          </span>
+                        )}
+                        <span className="ml-1">様</span>
                         {(post.target_maiden_name || post.maiden_name) && (
                           <span className="text-xs text-slate-500 font-sans font-normal ml-1.5">
                             （旧姓: {post.target_maiden_name || post.maiden_name}）

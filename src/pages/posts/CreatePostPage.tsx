@@ -22,7 +22,10 @@ export const CreatePostPage = () => {
   const [formData, setFormData] = useState({
     lastName: '',
     firstName: '',
+    lastNameKana: '',
+    firstNameKana: '',
     maidenName: '',
+    maidenNameKana: '',
     birthYear: '',
     hometownPref: '',
     message: '',
@@ -110,6 +113,7 @@ export const CreatePostPage = () => {
   }, [user]);
 
   const fullName = `${formData.lastName} ${formData.firstName}`.trim();
+  const fullNameKana = `${formData.lastNameKana} ${formData.firstNameKana}`.trim();
 
   // リアルタイム特定情報（学校名・会社名・駅名・連絡先等）の検知ロジック
   const getPrivacyWarning = (text: string): string | null => {
@@ -196,6 +200,11 @@ export const CreatePostPage = () => {
     const effLastName = formData.lastName.trim() || '山田';
     const effFirstName = formData.firstName.trim() || '太郎';
     const effFullName = `${effLastName} ${effFirstName}`.trim();
+    const effLastNameKana = formData.lastNameKana.trim();
+    const effFirstNameKana = formData.firstNameKana.trim();
+    const effFullNameKana = `${effLastNameKana} ${effFirstNameKana}`.trim();
+    const effMaidenName = formData.maidenName.trim();
+    const effMaidenNameKana = formData.maidenNameKana.trim();
     const effHometown = formData.hometownPref || '神奈川県';
     const effMessage = formData.message.trim() || '元気にしていますか？あの時一緒に過ごした放課後の夕暮れの風景を今でもよく思い出します。もし私を探してくれたら、メッセージを届けてください。';
     const effContactId = formData.contactId.trim() || 'yamada_taro_test2026';
@@ -216,11 +225,19 @@ export const CreatePostPage = () => {
         body: JSON.stringify({
           searcherName: effFullName,
           searcherFullName: effFullName,
-          searcherMaidenName: formData.maidenName.trim(),
+          searcherMaidenName: effMaidenName,
+          searcherLastNameKana: effLastNameKana || undefined,
+          searcherFirstNameKana: effFirstNameKana || undefined,
+          searcherNameKana: effFullNameKana || undefined,
+          searcherMaidenNameKana: effMaidenNameKana || undefined,
           birthYear: effBirthYear,
           targetName: effFullName, // SeekMe では自分自身が目印
           targetLastName: effLastName,
           targetFirstName: effFirstName,
+          targetLastNameKana: effLastNameKana || undefined,
+          targetFirstNameKana: effFirstNameKana || undefined,
+          targetNameKana: effFullNameKana || undefined,
+          targetMaidenNameKana: effMaidenNameKana || undefined,
           targetHometown: effHometown,
           message: effMessage,
           contactType: effContactType,
@@ -620,7 +637,18 @@ export const CreatePostPage = () => {
                   </div>
                   <div className="flex items-center gap-2.5 flex-wrap">
                     <h3 className="text-xl sm:text-2xl font-serif font-bold text-slate-900 leading-snug">
-                      {fullName || 'お名前'} 様から貴方へのメッセージです。
+                      <span>{fullName || 'お名前'}</span>
+                      {fullNameKana && (
+                        <span className="text-xs sm:text-sm font-normal text-slate-500 font-sans tracking-normal ml-1">
+                          （{fullNameKana}）
+                        </span>
+                      )}
+                      <span> 様から貴方へのメッセージです。</span>
+                      {formData.maidenName && (
+                        <span className="text-xs sm:text-sm font-normal text-slate-500 font-sans ml-1">
+                          （旧姓: {formData.maidenName}{formData.maidenNameKana ? ` / ${formData.maidenNameKana}` : ''}）
+                        </span>
+                      )}
                     </h3>
                     {previewTab === 'ekyc' && (
                       <button
@@ -667,11 +695,17 @@ export const CreatePostPage = () => {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-white/80 p-4 rounded-2xl border border-slate-200/80 font-sans text-xs">
                 <div>
                   <span className="text-slate-400 block text-[10px]">手紙を書いた人</span>
-                  <span className="font-bold text-slate-800">{fullName || '未入力'}</span>
+                  <span className="font-bold text-slate-800">
+                    {fullName || '未入力'}
+                    {fullNameKana ? `（${fullNameKana}）` : ''}
+                  </span>
                 </div>
                 <div>
                   <span className="text-slate-400 block text-[10px]">旧姓</span>
-                  <span className="font-bold text-slate-800">{formData.maidenName || 'なし'}</span>
+                  <span className="font-bold text-slate-800">
+                    {formData.maidenName || 'なし'}
+                    {formData.maidenNameKana ? `（${formData.maidenNameKana}）` : ''}
+                  </span>
                 </div>
                 <div>
                   <span className="text-slate-400 block text-[10px]">ゆかりの地</span>
@@ -1503,18 +1537,64 @@ export const CreatePostPage = () => {
                 </div>
               </div>
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-700 block flex items-center justify-between">
-                  <span>旧姓・当時の苗字</span>
-                  <span className="text-slate-400 font-normal text-[11px]">任意（結婚等で改姓された方）</span>
-                </label>
-                <input
-                  type="text"
-                  value={formData.maidenName}
-                  onChange={e => setFormData(prev => ({ ...prev, maidenName: e.target.value }))}
-                  placeholder="例：佐藤（当時の苗字）"
-                  className="w-full px-4 py-2.5 text-xs sm:text-sm border border-slate-200 rounded-xl bg-slate-50/60 focus:bg-white focus:border-teal-600 outline-none transition-all shadow-inner"
-                />
+              {/* ふりがな（せい・めい） */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-teal-50/40 p-3.5 sm:p-4 rounded-2xl border border-teal-100/80">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-teal-900 block flex items-center justify-between">
+                    <span>ふりがな（せい）</span>
+                    <span className="text-teal-700 font-bold text-[10px]">Google検索・読み間違い防止用</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.lastNameKana}
+                    onChange={e => setFormData(prev => ({ ...prev, lastNameKana: e.target.value }))}
+                    placeholder="例：やまだ（ひらがな）"
+                    className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-teal-200/80 rounded-xl bg-white focus:border-teal-600 outline-none transition-all shadow-2xs font-sans"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-teal-900 block flex items-center justify-between">
+                    <span>ふりがな（めい）</span>
+                    <span className="text-teal-700 font-bold text-[10px]">ひらがな検索対応</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.firstNameKana}
+                    onChange={e => setFormData(prev => ({ ...prev, firstNameKana: e.target.value }))}
+                    placeholder="例：たろう（ひらがな）"
+                    className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-teal-200/80 rounded-xl bg-white focus:border-teal-600 outline-none transition-all shadow-2xs font-sans"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700 block flex items-center justify-between">
+                    <span>旧姓・当時の苗字</span>
+                    <span className="text-slate-400 font-normal text-[11px]">任意（改姓された方）</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.maidenName}
+                    onChange={e => setFormData(prev => ({ ...prev, maidenName: e.target.value }))}
+                    placeholder="例：佐藤（当時の苗字）"
+                    className="w-full px-4 py-2.5 text-xs sm:text-sm border border-slate-200 rounded-xl bg-slate-50/60 focus:bg-white focus:border-teal-600 outline-none transition-all shadow-inner"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700 block flex items-center justify-between">
+                    <span>旧姓のふりがな</span>
+                    <span className="text-slate-400 font-normal text-[11px]">任意</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.maidenNameKana}
+                    onChange={e => setFormData(prev => ({ ...prev, maidenNameKana: e.target.value }))}
+                    placeholder="例：さとう"
+                    className="w-full px-4 py-2.5 text-xs sm:text-sm border border-slate-200 rounded-xl bg-slate-50/60 focus:bg-white focus:border-teal-600 outline-none transition-all shadow-inner"
+                  />
+                </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -1676,7 +1756,9 @@ export const CreatePostPage = () => {
 
               <GoogleSearchResultPreview
                 targetName={fullName || 'あなたのお名前'}
+                targetNameKana={fullNameKana || undefined}
                 targetMaidenName={formData.maidenName}
+                targetMaidenNameKana={formData.maidenNameKana || undefined}
                 targetHometown={formData.hometownPref || 'ゆかりの都道府県'}
                 searcherProfile={formData.message || '私を探しているあなたへ。メッセージをお待ちしています。'}
                 era={formData.birthYear ? `${formData.birthYear}年生まれ` : undefined}
@@ -1950,6 +2032,7 @@ export const CreatePostPage = () => {
         isOpen={showEkycExplanationModal}
         onClose={() => setShowEkycExplanationModal(false)}
         senderName={fullName || 'あなた'}
+        senderKana={fullNameKana || undefined}
         birthYear={formData.birthYear ? formatBirthYearLabel(formData.birthYear) : undefined}
         hometownPref={formData.hometownPref}
         mode="preview"

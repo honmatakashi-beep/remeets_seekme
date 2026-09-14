@@ -124,6 +124,14 @@ export function initDatabase() {
         target_name TEXT NOT NULL,
         target_last_name TEXT,
         target_first_name TEXT,
+        target_last_name_kana TEXT,
+        target_first_name_kana TEXT,
+        target_name_kana TEXT,
+        target_maiden_name_kana TEXT,
+        searcher_last_name_kana TEXT,
+        searcher_first_name_kana TEXT,
+        searcher_name_kana TEXT,
+        searcher_maiden_name_kana TEXT,
         target_name_en TEXT,
         target_hometown TEXT,
         target_school TEXT,
@@ -458,6 +466,14 @@ export function initDatabase() {
     
     // posts columns migration
     try { db.exec("ALTER TABLE posts ADD COLUMN searcher_maiden_name TEXT"); } catch (e) {}
+    try { db.exec("ALTER TABLE posts ADD COLUMN target_last_name_kana TEXT"); } catch (e) {}
+    try { db.exec("ALTER TABLE posts ADD COLUMN target_first_name_kana TEXT"); } catch (e) {}
+    try { db.exec("ALTER TABLE posts ADD COLUMN target_name_kana TEXT"); } catch (e) {}
+    try { db.exec("ALTER TABLE posts ADD COLUMN target_maiden_name_kana TEXT"); } catch (e) {}
+    try { db.exec("ALTER TABLE posts ADD COLUMN searcher_last_name_kana TEXT"); } catch (e) {}
+    try { db.exec("ALTER TABLE posts ADD COLUMN searcher_first_name_kana TEXT"); } catch (e) {}
+    try { db.exec("ALTER TABLE posts ADD COLUMN searcher_name_kana TEXT"); } catch (e) {}
+    try { db.exec("ALTER TABLE posts ADD COLUMN searcher_maiden_name_kana TEXT"); } catch (e) {}
     
     // search_alerts columns migration
     try { db.exec("ALTER TABLE search_alerts ADD COLUMN user_id INTEGER"); } catch (e) {}

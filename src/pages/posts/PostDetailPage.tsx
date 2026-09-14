@@ -20,10 +20,11 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
   const navigate = useNavigate();
   const { check: checkNg } = useNgFilter();
 
-  // URLパラメータまたはクエリパラメータまたはstateからIDを確実に解決
+  // URLパラメータまたはクエリパラメータまたはstateからIDを確実に解決（/posts/123/xxx のスラッグ対応）
   const queryId = searchParams.get('id');
+  const rawParamId = id ? (id.includes('-') ? id.split('-')[0] : id) : null;
   const previewData = location.state?.postPreview;
-  const resolvedId = id || queryId || (previewData?.id ? String(previewData.id) : null);
+  const resolvedId = rawParamId || queryId || (previewData?.id ? String(previewData.id) : null);
 
   const [post, setPost] = useState<any>(previewData || null);
   const [loading, setLoading] = useState(!previewData);
@@ -139,7 +140,9 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
   }
 
   const postFullName = post.searcher_full_name || post.searcher_name || post.target_name || 'お名前';
+  const postKana = (post.target_name_kana || post.searcher_name_kana || (post.target_last_name_kana || post.target_first_name_kana ? `${post.target_last_name_kana || ''} ${post.target_first_name_kana || ''}` : '')).trim();
   const postMaidenName = post.searcher_maiden_name || post.maiden_name || '';
+  const postMaidenNameKana = post.target_maiden_name_kana || post.searcher_maiden_name_kana || '';
   const postLocation = post.target_hometown ? (post.target_hometown.match(/.*?[都道府県]/)?.[0] || post.target_hometown) : '全国';
   const postBirthYear = post.birth_year ? formatBirthYearLabel(post.birth_year) : (post.era ? formatEraLabel(post.era) : '');
 
@@ -223,10 +226,16 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               )}
             </div>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-slate-900 tracking-wide flex items-center gap-2 flex-wrap">
-              <span>{postFullName} 様から貴方へのメッセージです。</span>
+              <span>{postFullName}</span>
+              {postKana && (
+                <span className="text-xs sm:text-sm font-normal text-slate-500 font-sans tracking-normal -ml-1">
+                  （{postKana}）
+                </span>
+              )}
+              <span>様から貴方へのメッセージです。</span>
               {postMaidenName && (
                 <span className="text-sm sm:text-base font-normal text-slate-500 font-sans">
-                  （旧姓: {postMaidenName}）
+                  （旧姓: {postMaidenName}{postMaidenNameKana ? ` / ${postMaidenNameKana}` : ''}）
                 </span>
               )}
             </h1>
@@ -507,10 +516,11 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
       <EkycExplanationModal
         isOpen={showEkycExplanationModal}
         onClose={() => setShowEkycExplanationModal(false)}
-        senderName={post?.searcher_name || post?.full_name || post?.user_name}
+        senderName={postFullName}
+        senderKana={postKana || undefined}
         birthYear={post?.birth_year ? formatBirthYearLabel(post.birth_year) : undefined}
         hometownPref={post?.hometown_pref || post?.target_hometown}
-        mode="detail"
+        mode="general"
       />
     </div>
   );

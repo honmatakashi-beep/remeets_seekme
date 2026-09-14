@@ -74,6 +74,15 @@ export const postsRouter = express.Router();
       }
     }
 
+    const targetLastNameKana = req.body.targetLastNameKana || req.body.lastNameKana || null;
+    const targetFirstNameKana = req.body.targetFirstNameKana || req.body.firstNameKana || null;
+    const targetNameKana = req.body.targetNameKana || req.body.fullNameKana || (targetLastNameKana || targetFirstNameKana ? `${targetLastNameKana || ''} ${targetFirstNameKana || ''}`.trim() : null);
+    const targetMaidenNameKana = req.body.targetMaidenNameKana || req.body.maidenNameKana || null;
+    const searcherLastNameKana = targetLastNameKana;
+    const searcherFirstNameKana = targetFirstNameKana;
+    const searcherNameKana = targetNameKana;
+    const searcherMaidenNameKana = targetMaidenNameKana;
+
     const { imageUrl, captchaToken } = req.body;
 
     // Simple Captcha Check (Mock for now)
@@ -104,13 +113,16 @@ export const postsRouter = express.Router();
 
       const stmt = db.prepare(`
         INSERT INTO posts (
-          user_id, searcher_name, searcher_full_name, searcher_maiden_name, searcher_profile, searcher_birthdate, searcher_gender, birth_year,
+          user_id, searcher_name, searcher_full_name, searcher_maiden_name,
+          searcher_last_name_kana, searcher_first_name_kana, searcher_name_kana, searcher_maiden_name_kana,
+          searcher_profile, searcher_birthdate, searcher_gender, birth_year,
           target_name, target_last_name, target_first_name, 
+          target_last_name_kana, target_first_name_kana, target_name_kana, target_maiden_name_kana,
           target_name_en, target_hometown, target_school,
           era, category, secret_question, secret_answer, secret_answer_plain, message, 
           contact_type, contact_id, contact_note, image_url,
           ai_flagged, ai_reason, ai_diagnosed
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `);
 
       const aiFlaggedVal = hasForbidden ? 1 : 0;
@@ -118,8 +130,11 @@ export const postsRouter = express.Router();
       const aiDiagnosedVal = hasForbidden ? 1 : 0;
 
       const result = stmt.run(
-        userId, searcherName, searcherFullName, searcherMaidenName, searcherProfile, userBirthdate, userGender, birthYear,
+        userId, searcherName, searcherFullName, searcherMaidenName,
+        searcherLastNameKana, searcherFirstNameKana, searcherNameKana, searcherMaidenNameKana,
+        searcherProfile, userBirthdate, userGender, birthYear,
         targetName, targetLastName || null, targetFirstName || null,
+        targetLastNameKana, targetFirstNameKana, targetNameKana, targetMaidenNameKana,
         targetNameEn || null, targetHometown, targetSchool || null,
         era || null, category || null, firstQ.question, hashedA1, req.body.questions[0].answer, message, 
         contactType || null, contactId || null, contactNote || null, safeImageUrl || null,
@@ -297,6 +312,7 @@ export const postsRouter = express.Router();
       const posts = db.prepare(`
         SELECT posts.id, posts.user_id, posts.searcher_name, posts.searcher_full_name, posts.searcher_profile, posts.searcher_maiden_name, posts.maiden_name, posts.message,
                posts.target_name, posts.target_last_name, posts.target_first_name, 
+               posts.target_last_name_kana, posts.target_first_name_kana, posts.target_name_kana, posts.target_maiden_name_kana,
                posts.target_hometown, posts.target_school, posts.era, posts.birth_year, posts.category, posts.status, posts.created_at,
                COALESCE(posts.is_ekyc_verified, u.is_ekyc_verified, 0) as is_ekyc_verified
         FROM posts 
@@ -318,6 +334,7 @@ export const postsRouter = express.Router();
     let baseQuery = `
       SELECT posts.id, posts.user_id, posts.searcher_name, posts.searcher_full_name, posts.searcher_profile, posts.searcher_maiden_name, posts.maiden_name, posts.message,
              posts.target_name, posts.target_last_name, posts.target_first_name, 
+             posts.target_last_name_kana, posts.target_first_name_kana, posts.target_name_kana, posts.target_maiden_name_kana,
              posts.target_hometown, posts.target_school, posts.era, posts.birth_year, posts.category, posts.status, posts.created_at,
              COALESCE(posts.is_ekyc_verified, u.is_ekyc_verified, 0) as is_ekyc_verified
       FROM posts 
@@ -341,12 +358,16 @@ export const postsRouter = express.Router();
         posts.target_name LIKE ? OR 
         posts.target_last_name LIKE ? OR 
         posts.target_first_name LIKE ? OR 
+        posts.target_name_kana LIKE ? OR
+        posts.target_last_name_kana LIKE ? OR
+        posts.target_first_name_kana LIKE ? OR
+        posts.target_maiden_name_kana LIKE ? OR
         posts.target_hometown LIKE ? OR 
         posts.searcher_name LIKE ? OR 
         posts.searcher_profile LIKE ? OR
         posts.message LIKE ?
       )`;
-      params.push(searchStr, searchStr, searchStr, searchStr, searchStr, searchStr, searchStr);
+      params.push(searchStr, searchStr, searchStr, searchStr, searchStr, searchStr, searchStr, searchStr, searchStr, searchStr, searchStr);
     }
 
     if (hometown) {
@@ -438,6 +459,7 @@ export const postsRouter = express.Router();
     let baseQuery = `
       SELECT posts.id, posts.user_id, posts.searcher_name, posts.searcher_full_name, posts.searcher_profile, posts.searcher_maiden_name, posts.maiden_name, posts.message,
              posts.target_name, posts.target_last_name, posts.target_first_name, 
+             posts.target_last_name_kana, posts.target_first_name_kana, posts.target_name_kana, posts.target_maiden_name_kana,
              posts.target_hometown, posts.target_school, posts.era, posts.birth_year, posts.category, posts.status, posts.created_at,
              COALESCE(posts.is_ekyc_verified, u.is_ekyc_verified, 0) as is_ekyc_verified
       FROM posts 
@@ -456,8 +478,8 @@ export const postsRouter = express.Router();
     }
 
     if (name) {
-      sqlQuery += " AND (posts.target_name LIKE ? OR posts.target_last_name LIKE ? OR posts.target_first_name LIKE ? OR posts.target_name_en LIKE ? OR posts.searcher_maiden_name LIKE ? OR posts.maiden_name LIKE ?)";
-      params.push(`%${name}%`, `%${name}%`, `%${name}%`, `%${name}%`, `%${name}%`, `%${name}%`);
+      sqlQuery += " AND (posts.target_name LIKE ? OR posts.target_last_name LIKE ? OR posts.target_first_name LIKE ? OR posts.target_name_kana LIKE ? OR posts.target_last_name_kana LIKE ? OR posts.target_first_name_kana LIKE ? OR posts.target_maiden_name_kana LIKE ? OR posts.target_name_en LIKE ? OR posts.searcher_maiden_name LIKE ? OR posts.maiden_name LIKE ?)";
+      params.push(`%${name}%`, `%${name}%`, `%${name}%`, `%${name}%`, `%${name}%`, `%${name}%`, `%${name}%`, `%${name}%`, `%${name}%`, `%${name}%`);
     }
     if (era) {
       const numVal = parseInt(String(era).replace(/[^0-9]/g, ''), 10);
@@ -621,15 +643,22 @@ export const postsRouter = express.Router();
       const hashedA1 = await bcrypt.hash(firstQ.answer, 10);
       const hashedA2 = await bcrypt.hash(secondQ.answer, 10);
 
+      const targetLastNameKana = req.body.targetLastNameKana || req.body.lastNameKana || null;
+      const targetFirstNameKana = req.body.targetFirstNameKana || req.body.firstNameKana || null;
+      const targetNameKana = req.body.targetNameKana || req.body.fullNameKana || (targetLastNameKana || targetFirstNameKana ? `${targetLastNameKana || ''} ${targetFirstNameKana || ''}`.trim() : null);
+      const targetMaidenNameKana = req.body.targetMaidenNameKana || req.body.maidenNameKana || null;
+
       db.prepare(`
         UPDATE posts SET 
           searcher_name = ?, searcher_full_name = ?, searcher_profile = ?, target_name = ?, target_last_name = ?, target_first_name = ?, 
+          target_last_name_kana = ?, target_first_name_kana = ?, target_name_kana = ?, target_maiden_name_kana = ?,
           target_name_en = ?, target_hometown = ?, target_school = ?,
           era = ?, category = ?, secret_question = ?, secret_answer = ?, secret_answer_plain = ?, message = ?, image_url = ?,
           ai_diagnosed = 0
         WHERE id = ?
       `).run(
         searcherName, searcherFullName, searcherProfile, targetName, targetLastName || null, targetFirstName || null,
+        targetLastNameKana, targetFirstNameKana, targetNameKana, targetMaidenNameKana,
         targetNameEn || null, targetHometown, targetSchool || null,
         era || null, category || null, firstQ.question, hashedA1, req.body.questions[0].answer, message, imageUrl || null,
         req.params.id

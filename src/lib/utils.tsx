@@ -92,39 +92,40 @@ export const getCategoryText = (cat?: string): string => {
 
 export const getPostUrl = (post: {
   id: number;
-  target_name: string;
+  target_name?: string;
+  searcher_name?: string;
+  searcher_full_name?: string;
+  target_name_kana?: string;
+  target_last_name_kana?: string;
+  target_first_name_kana?: string;
   target_hometown?: string;
   era?: string;
+  birth_year?: number | string;
   relationship?: string;
   category?: string;
 }): string => {
-  if (!post) return '/';
+  if (!post || !post.id) return '/';
 
-  const relMap: Record<string, string> = {
-    "friend": "同級生・友人",
-    "school": "学校・同級生",
-    "work": "同僚・仕事仲間",
-    "love": "初恋・元恋人",
-    "family": "家族・親戚",
-    "neighborhood": "近所・幼馴染",
-    "hobby": "趣味・サークル",
-    "other": "その他"
-  };
-
-  const rawRel = post.relationship || post.category || '';
-  const rel = rawRel ? (relMap[rawRel] || rawRel) : 'any';
-  const name = post.target_name ? encodeURIComponent(post.target_name) : 'someone';
-
-  const maskedHometown = post.target_hometown
+  const name = (post.target_name || post.searcher_full_name || post.searcher_name || 'someone').trim();
+  const kana = (post.target_name_kana || (post.target_last_name_kana || post.target_first_name_kana ? `${post.target_last_name_kana || ''}${post.target_first_name_kana || ''}` : '')).trim();
+  
+  const rawHometown = post.target_hometown
     ? (post.target_hometown.match(/.*?[都道府県]/)?.[0] || post.target_hometown)
-    : 'anywhere';
-  const hometown = encodeURIComponent(maskedHometown);
+    : '';
+  
+  const birthYear = post.birth_year ? String(post.birth_year) : (post.era ? formatEraLabel(post.era).replace(/[^0-9]/g, '') : '');
 
-  const eraFormatted = formatEraLabel(post.era);
-  const era = encodeURIComponent(eraFormatted);
-  const relationship = encodeURIComponent(rel);
+  // SEO用スラッグを結合（例: 伊藤美咲_いとうみさき_1990_東京都）
+  const slugParts = [
+    name.replace(/[\s/]/g, ''),
+    kana.replace(/[\s/]/g, ''),
+    birthYear,
+    rawHometown.replace(/[\s/]/g, '')
+  ].filter(Boolean);
 
-  return `/name/${name}/${hometown}/${era}/${relationship}?id=${post.id}`;
+  const slug = slugParts.length > 0 ? encodeURIComponent(slugParts.join('_')) : '';
+
+  return slug ? `/posts/${post.id}/${slug}` : `/posts/${post.id}`;
 };
 
 // --- PageHeader Component ---
