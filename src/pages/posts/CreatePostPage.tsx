@@ -662,7 +662,7 @@ export const CreatePostPage = () => {
                     </span>
                   </div>
                   <div className="flex items-center gap-2.5 flex-wrap">
-                    <h3 className="text-xl sm:text-2xl md:text-3xl font-serif font-bold text-slate-900 leading-snug space-y-0.5">
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-serif font-bold text-slate-900 leading-snug space-y-0.5">
                       <span className="block">
                         <span>{fullName || 'お名前'} 様から</span>
                         {formData.maidenName && (
@@ -671,7 +671,7 @@ export const CreatePostPage = () => {
                           </span>
                         )}
                       </span>
-                      <span className="block text-lg sm:text-xl md:text-2xl text-slate-800">
+                      <span className="block text-sm sm:text-base md:text-lg font-bold text-slate-800">
                         貴方へのメッセージです。
                       </span>
                     </h3>
@@ -716,11 +716,11 @@ export const CreatePostPage = () => {
                 </div>
               </div>
 
-              {/* メッセージメタデータ（大きめ・見やすい文字サイズ・高コントラスト） */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-white p-5 sm:p-6 rounded-2xl border-2 border-slate-200 font-sans shadow-xs">
+              {/* メッセージメタデータ（すっきり見やすい文字サイズ・高コントラスト） */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-white p-4 sm:p-5 rounded-2xl border-2 border-slate-200 font-sans shadow-xs">
                 <div className="space-y-1">
                   <span className="text-xs font-bold text-slate-700 block font-sans">メッセージを書いた人</span>
-                  <div className="text-base sm:text-lg font-bold text-slate-950 font-serif">
+                  <div className="text-sm sm:text-base font-bold text-slate-950 font-serif">
                     <span>{fullName || '未入力'}</span>
                     {fullNameKana && (
                       <span className="text-xs font-normal text-slate-600 font-sans ml-1">
@@ -731,7 +731,7 @@ export const CreatePostPage = () => {
                 </div>
                 <div className="space-y-1">
                   <span className="text-xs font-bold text-slate-700 block font-sans">旧姓</span>
-                  <div className="text-base sm:text-lg font-bold text-slate-950 font-serif">
+                  <div className="text-sm sm:text-base font-bold text-slate-950 font-serif">
                     <span>{formData.maidenName || 'なし'}</span>
                     {formData.maidenNameKana && (
                       <span className="text-xs font-normal text-slate-600 font-sans ml-1">
@@ -742,13 +742,13 @@ export const CreatePostPage = () => {
                 </div>
                 <div className="space-y-1">
                   <span className="text-xs font-bold text-slate-700 block font-sans">ゆかりの地</span>
-                  <div className="text-base sm:text-lg font-bold text-slate-950 font-serif">
+                  <div className="text-sm sm:text-base font-bold text-slate-950 font-serif">
                     {formData.hometownPref || '未選択'}
                   </div>
                 </div>
                 <div className="space-y-1">
                   <span className="text-xs font-bold text-slate-700 block font-sans">生まれ年</span>
-                  <div className="text-base sm:text-lg font-bold text-slate-950 font-serif">
+                  <div className="text-sm sm:text-base font-bold text-slate-950 font-serif">
                     {formData.birthYear ? formatBirthYearLabel(formData.birthYear) : '非公開'}
                   </div>
                 </div>
@@ -765,8 +765,8 @@ export const CreatePostPage = () => {
                     当時の想い出・メッセージ
                   </span>
                 </div>
-                <div className="bg-white/95 p-6 sm:p-8 rounded-2xl border-2 border-slate-300/90 shadow-sm">
-                  <p className="font-letter-mincho font-serif text-base sm:text-lg md:text-xl font-medium text-slate-950 leading-relaxed sm:leading-loose tracking-wide whitespace-pre-wrap">
+                <div className="bg-white/95 p-5 sm:p-7 rounded-2xl border-2 border-slate-300/90 shadow-sm">
+                  <p className="font-letter-mincho font-serif text-sm sm:text-base md:text-[17px] font-medium text-slate-950 leading-relaxed sm:leading-loose tracking-wide whitespace-pre-wrap">
                     {formData.message || (
                       `元気にしていますか？\nあの頃、放課後の夕暮れのグラウンドで語り合った夢や、一緒に過ごした何気ない日常の風景を今でもよく思い出します。\n月日が流れて連絡先がわからなくなってしまいましたが、もしこのメッセージを見つけてくれたら、またあの頃のように気軽にお話しできたら嬉しいです。`
                     )}
