@@ -1418,46 +1418,6 @@ export const AccountPage = () => {
                           className="w-full text-xs font-mono text-slate-600 bg-white px-2.5 py-1 rounded-lg border border-slate-200 outline-none select-all"
                         />
                       </div>
-
-                      {/* 💡 メッセージ公開後の流れ案内ボックス */}
-                      <div className="p-4 bg-slate-50/80 rounded-2xl border border-slate-200/80 space-y-2 text-left">
-                        <div className="flex items-center justify-between gap-2 flex-wrap">
-                          <div className="flex items-center gap-1.5">
-                            <Sparkles size={14} className="text-teal-600" />
-                            <span className="text-xs font-bold font-serif text-slate-900">
-                              💡 メッセージ公開後の流れ（お相手から連絡が届いたら？）
-                            </span>
-                          </div>
-                          <span className="text-[10px] text-teal-800 bg-teal-50 px-2 py-0.5 rounded-md font-bold border border-teal-200/60">
-                            安心の3ステップ
-                          </span>
-                        </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs pt-1">
-                          <div className="p-2.5 bg-white rounded-xl border border-slate-200 shadow-2xs space-y-0.5">
-                            <span className="text-[10px] font-bold text-teal-700 block font-mono">1. メールでお知らせ</span>
-                            <p className="text-[11px] text-slate-600 leading-relaxed">
-                              お相手があなたを見つけてエピソードを送ると、登録メールとマイページに通知が届きます。
-                            </p>
-                          </div>
-                          <div className="p-2.5 bg-white rounded-xl border border-slate-200 shadow-2xs space-y-0.5">
-                            <span className="text-[10px] font-bold text-teal-700 block font-mono">2. エピソードを確認</span>
-                            <p className="text-[11px] text-slate-600 leading-relaxed">
-                              下の「届いた再会希望」タブで届いたエピソードを読み、本人かどうかを確認します。
-                            </p>
-                          </div>
-                          <div className="p-2.5 bg-white rounded-xl border border-slate-200 shadow-2xs space-y-0.5">
-                            <span className="text-[10px] font-bold text-teal-700 block font-mono">3. 承認して連絡先開示</span>
-                            <p className="text-[11px] text-slate-600 leading-relaxed">
-                              本人と確信できたら「承認」を押します。公的本人確認・開通後にお互いの連絡先が開示されます。
-                            </p>
-                          </div>
-                        </div>
-
-                        <p className="text-[10.5px] text-slate-500 pt-0.5">
-                          ※ あなたがエピソードを読んで「承認」するまで、あなたの本名や連絡先はお相手に一切開示されません。
-                        </p>
-                      </div>
                     </div>
                   </div>
                 ) : (
