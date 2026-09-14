@@ -106,8 +106,8 @@ export const getPostUrl = (post: {
 }): string => {
   if (!post || !post.id) return '/';
 
-  const name = (post.target_name || post.searcher_full_name || post.searcher_name || 'someone').trim();
-  const kana = (post.target_name_kana || (post.target_last_name_kana || post.target_first_name_kana ? `${post.target_last_name_kana || ''}${post.target_first_name_kana || ''}` : '')).trim();
+  const rawKana = post.target_name_kana || ((post.target_last_name_kana || post.target_first_name_kana) ? `${post.target_last_name_kana || ''}${post.target_first_name_kana || ''}` : '') || '';
+  const kana = rawKana.replace(/undefined/g, '').trim();
   
   const rawHometown = post.target_hometown
     ? (post.target_hometown.match(/.*?[都道府県]/)?.[0] || post.target_hometown)
