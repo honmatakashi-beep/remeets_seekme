@@ -219,7 +219,7 @@ export const postsRouter = express.Router();
                u.username as verifier_username, u.full_name as verifier_full_name, u.nickname as verifier_nickname
         FROM posts p
         LEFT JOIN users u ON p.verified_by = u.id
-        WHERE p.user_id = ?
+        WHERE p.user_id = ? AND (p.status IS NULL OR (p.status != 'deleted' AND p.status != 'archived'))
         ORDER BY p.created_at DESC
       `).all(req.user.id);
       res.json(posts);

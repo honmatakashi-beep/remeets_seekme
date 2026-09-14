@@ -81,3 +81,130 @@ export const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
     </AnimatePresence>
   );
 };
+
+interface DeletePublicMessageModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  post: any;
+  consent: boolean;
+  setConsent: (val: boolean) => void;
+  onDelete: () => void;
+  isDeleting: boolean;
+}
+
+export const DeletePublicMessageModal: React.FC<DeletePublicMessageModalProps> = ({
+  isOpen,
+  onClose,
+  post,
+  consent,
+  setConsent,
+  onDelete,
+  isDeleting
+}) => {
+  if (!isOpen || !post) return null;
+
+  const authorName = post.target_name || post.searcher_full_name || 'あなたのメッセージ';
+  const previewMessage = post.message || post.searcher_profile || '';
+
+  return (
+    <AnimatePresence>
+      <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm font-sans" data-lenis-prevent>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: 15 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 15 }}
+          className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 space-y-5 shadow-2xl border border-rose-200 relative text-left"
+        >
+          {/* ヘッダー */}
+          <div className="flex items-center gap-3 border-b border-rose-100 pb-4">
+            <div className="w-11 h-11 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0 border border-rose-200 shadow-2xs">
+              <Trash2 size={22} />
+            </div>
+            <div>
+              <h3 className="text-base sm:text-lg font-serif font-bold text-slate-900">公開メッセージを削除しますか？</h3>
+              <p className="text-xs text-rose-600 font-bold font-sans">ネット（Google検索・公開画面）から完全に削除されます</p>
+            </div>
+          </div>
+
+          {/* 対象メッセージの簡易表示 */}
+          <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 space-y-1.5 text-xs">
+            <div className="flex items-center justify-between text-slate-600 font-bold">
+              <span>削除対象のメッセージ</span>
+              <span className="text-slate-900">{authorName}</span>
+            </div>
+            {previewMessage && (
+              <p className="text-slate-700 line-clamp-2 bg-white p-2 rounded-xl border border-slate-200 text-[11px] leading-relaxed">
+                {previewMessage}
+              </p>
+            )}
+          </div>
+
+          {/* ネットからの完全削除・注意事項 */}
+          <div className="p-4 bg-rose-50/80 rounded-2xl border border-rose-200 text-xs text-rose-950 space-y-2.5 leading-relaxed">
+            <p className="font-bold flex items-center gap-1.5 text-rose-900 text-sm">
+              <AlertCircle size={16} className="text-rose-600 shrink-0" />
+              <span>削除に関する重要なお知らせ（必ずご確認ください）</span>
+            </p>
+            <ul className="space-y-2 text-[11px] text-rose-900">
+              <li className="flex items-start gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-500 mt-1.5 shrink-0" />
+                <span><strong>ネット上から完全に非公開化：</strong> 削除を実行すると、ReMEETs SEEKMEの公開画面およびGoogle等の検索エンジンからこのメッセージが完全に削除されます。</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-500 mt-1.5 shrink-0" />
+                <span><strong>相手から見つからなくなります：</strong> あなたを探している大切な人が検索しても、このメッセージは表示されなくなります。</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-500 mt-1.5 shrink-0" />
+                <span><strong>いつでも新規作成が可能：</strong> 削除完了後は、マイアカウントや新規作成画面から、いつでも新しい内容でメッセージを作成・公開できます。</span>
+              </li>
+            </ul>
+          </div>
+
+          {/* 同意チェック */}
+          <label className="flex items-start gap-3 p-3.5 rounded-2xl bg-slate-50 border border-slate-200 hover:border-rose-300 cursor-pointer text-xs text-slate-800 transition-colors">
+            <input
+              type="checkbox"
+              checked={consent}
+              onChange={(e) => setConsent(e.target.checked)}
+              className="mt-0.5 rounded border-slate-300 text-rose-600 focus:ring-rose-500 h-4 w-4 shrink-0"
+            />
+            <span className="font-bold leading-normal">
+              上記内容を理解し、この公開メッセージをネット上から完全に削除することに同意します。
+            </span>
+          </label>
+
+          {/* アクションボタン */}
+          <div className="flex gap-3 pt-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 py-3 border border-slate-300 hover:bg-slate-50 rounded-xl text-xs font-bold text-slate-700 transition-all cursor-pointer"
+            >
+              キャンセル
+            </button>
+            <button
+              type="button"
+              disabled={!consent || isDeleting}
+              onClick={onDelete}
+              className="flex-1 py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold transition-all shadow-md disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-1.5"
+            >
+              {isDeleting ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <span>削除中...</span>
+                </>
+              ) : (
+                <>
+                  <Trash2 size={14} />
+                  <span>公開メッセージを完全に削除</span>
+                </>
+              )}
+            </button>
+          </div>
+        </motion.div>
+      </div>
+    </AnimatePresence>
+  );
+};
+

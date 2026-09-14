@@ -23,7 +23,7 @@ import { CreditCardPaymentForm } from '../components/CreditCardPaymentForm';
 import postSuccessSoft from '../assets/images/post_success_soft_1785869214309.jpg';
 import { EditProfileModal } from "../components/account/EditProfileModal";
 import { EditPublicMessageModal } from "../components/account/EditPublicMessageModal";
-import { DeleteAccountModal } from "../components/account/AccountDeleteModals";
+import { DeleteAccountModal, DeletePublicMessageModal } from "../components/account/AccountDeleteModals";
 import { MypageEkycModal } from "../components/account/MypageEkycModal";
 import { AccountAlertModal } from "../components/account/AccountAlertModal";
 import quizMatchHearts from '../assets/images/quiz_match_hearts_pastel_1785940521320.jpg';
@@ -58,8 +58,39 @@ export const AccountPage = () => {
   const [showEmailChangeSuccess, setShowEmailChangeSuccess] = useState(false);
   const [showEditProfileModal, setShowEditProfileModal] = useState(false);
   const [showEditMessageModal, setShowEditMessageModal] = useState(false);
+  const [showDeletePublicMessageModal, setShowDeletePublicMessageModal] = useState(false);
+  const [isDeletingPublicMessage, setIsDeletingPublicMessage] = useState(false);
+  const [deletePublicMessageConsent, setDeletePublicMessageConsent] = useState(false);
   const [copiedPostLink, setCopiedPostLink] = useState(false);
   const navigate = useNavigate();
+
+  const handleDeletePublicMessage = async () => {
+    if (!deletePublicMessageConsent || !token || !myPosts || myPosts.length === 0) return;
+    const targetPost = myPosts[0];
+    setIsDeletingPublicMessage(true);
+    try {
+      const res = await fetch(`/api/posts/${targetPost.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (res.ok) {
+        setMyPosts([]);
+        setShowDeletePublicMessageModal(false);
+        setDeletePublicMessageConsent(false);
+        alert('公開メッセージを削除しました。Google検索および公開画面から完全に削除されました。いつでも新しいメッセージを作成できます。');
+      } else {
+        const err = await res.json();
+        alert(err.error || 'メッセージの削除に失敗しました。');
+      }
+    } catch (err) {
+      console.error('Failed to delete public message:', err);
+      alert('通信エラーが発生しました。もう一度お試しください。');
+    } finally {
+      setIsDeletingPublicMessage(false);
+    }
+  };
 
   // 再会ストーリー・感謝の声モーダル＆投稿管理
   const [storyModalOpen, setStoryModalOpen] = useState(false);
@@ -1248,7 +1279,7 @@ export const AccountPage = () => {
                   </div>
 
                   {currentPost ? (
-                    <div className="flex items-center gap-2 self-end sm:self-auto">
+                    <div className="flex items-center gap-2 self-end sm:self-auto flex-wrap justify-end">
                       <button
                         type="button"
                         onClick={() => setShowEditMessageModal(true)}
@@ -1265,6 +1296,18 @@ export const AccountPage = () => {
                         <Eye size={13} />
                         <span>公開画面</span>
                       </Link>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setDeletePublicMessageConsent(false);
+                          setShowDeletePublicMessageModal(true);
+                        }}
+                        className="px-3 py-2 border border-rose-200 bg-rose-50/60 hover:bg-rose-100 text-rose-700 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer active:scale-95"
+                        title="Google検索・公開画面から完全に削除します"
+                      >
+                        <Trash2 size={13} />
+                        <span>🗑️ 削除</span>
+                      </button>
                     </div>
                   ) : (
                     <Link
@@ -1409,6 +1452,23 @@ export const AccountPage = () => {
               onUpdated={(updatedPost) => {
                 setMyPosts(prev => prev.map(p => p.id === updatedPost.id ? { ...p, ...updatedPost } : p));
               }}
+              onDeleteRequested={() => {
+                setDeletePublicMessageConsent(false);
+                setShowDeletePublicMessageModal(true);
+              }}
+            />
+          )}
+
+          {/* 公開メッセージ削除確認ポップアップモーダル */}
+          {myPosts && myPosts.length > 0 && (
+            <DeletePublicMessageModal
+              isOpen={showDeletePublicMessageModal}
+              onClose={() => setShowDeletePublicMessageModal(false)}
+              post={myPosts[0]}
+              consent={deletePublicMessageConsent}
+              setConsent={setDeletePublicMessageConsent}
+              onDelete={handleDeletePublicMessage}
+              isDeleting={isDeletingPublicMessage}
             />
           )}
 
