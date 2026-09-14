@@ -452,8 +452,8 @@ export const HomeDesignShowroom = () => {
                 <Link to="/create" className="w-full sm:w-auto min-w-[220px] px-7 py-3.5 bg-gradient-to-r from-sky-600 via-blue-700 to-indigo-800 text-white font-bold rounded-2xl text-xs sm:text-sm shadow-md hover:shadow-lg flex items-center justify-center gap-2">
                   <PenTool size={16} /> <span>ボトルメールを流す</span> <ArrowRight size={15} />
                 </Link>
-                <Link to="/search" className="w-full sm:w-auto min-w-[220px] px-7 py-3.5 bg-white hover:bg-sky-50 text-slate-800 font-bold rounded-2xl text-xs sm:text-sm border-2 border-sky-200 flex items-center justify-center gap-2">
-                  <Search size={16} className="text-sky-600" /> <span>自分宛てのメッセージを探す</span>
+                <Link to="/account" className="w-full sm:w-auto min-w-[220px] px-7 py-3.5 bg-white hover:bg-sky-50 text-slate-800 font-bold rounded-2xl text-xs sm:text-sm border-2 border-sky-200 flex items-center justify-center gap-2">
+                  <Sparkles size={16} className="text-sky-600" /> <span>マイアカウント（照合状況）</span>
                 </Link>
               </div>
 
@@ -584,7 +584,6 @@ export const HomeDesignShowroom = () => {
           <div className="space-y-4">
             <div className="flex items-end justify-between border-b border-teal-200 pb-3">
               <div><span className="text-[11px] font-bold text-teal-700 uppercase tracking-widest font-sans block">Bottle Mail Gallery</span><h2 className="text-xl font-serif font-bold text-slate-900">ネットの海に漂うみんなの想い</h2><p className="text-xs text-slate-600 font-sans">タップしてボトルを開けてみてください。自分と同じように、大切な人を探している一通が見つかります。</p></div>
-              <Link to="/search" className="text-xs text-teal-800 font-bold flex items-center gap-1 hover:underline">すべて見る <ArrowRight size={12} /></Link>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {SAMPLE_BOTTLES.map((b) => (
@@ -647,8 +646,8 @@ export const HomeDesignShowroom = () => {
                 <Link to="/create" className="w-full sm:w-auto min-w-[220px] px-7 py-3.5 bg-gradient-to-r from-sky-600 via-blue-700 to-indigo-800 text-white font-bold rounded-2xl text-xs sm:text-sm shadow-md hover:shadow-lg flex items-center justify-center gap-2">
                   <PenTool size={16} /> <span>ボトルメールを流す</span> <ArrowRight size={15} />
                 </Link>
-                <Link to="/search" className="w-full sm:w-auto min-w-[220px] px-7 py-3.5 bg-white hover:bg-sky-50 text-slate-800 font-bold rounded-2xl text-xs sm:text-sm border-2 border-sky-200 flex items-center justify-center gap-2">
-                  <Search size={16} className="text-sky-600" /> <span>自分宛てのメッセージを探す</span>
+                <Link to="/account" className="w-full sm:w-auto min-w-[220px] px-7 py-3.5 bg-white hover:bg-sky-50 text-slate-800 font-bold rounded-2xl text-xs sm:text-sm border-2 border-sky-200 flex items-center justify-center gap-2">
+                  <Sparkles size={16} className="text-sky-600" /> <span>マイアカウント（照合状況）</span>
                 </Link>
               </div>
 
@@ -779,7 +778,6 @@ export const HomeDesignShowroom = () => {
           <div className="space-y-4">
             <div className="flex items-end justify-between border-b border-teal-200 pb-3">
               <div><span className="text-[11px] font-bold text-teal-700 uppercase tracking-widest font-sans block">Bottle Mail Gallery</span><h2 className="text-xl font-serif font-bold text-slate-900">ネットの海に漂うみんなの想い</h2><p className="text-xs text-slate-600 font-sans">タップしてボトルを開けてみてください。自分と同じように、大切な人を探している一通が見つかります。</p></div>
-              <Link to="/search" className="text-xs text-teal-800 font-bold flex items-center gap-1 hover:underline">すべて見る <ArrowRight size={12} /></Link>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {SAMPLE_BOTTLES.map((b) => (
@@ -859,8 +857,8 @@ export const HomeDesignShowroom = () => {
                 <Link to="/create" className="w-full sm:w-auto min-w-[220px] px-7 py-3.5 bg-gradient-to-r from-sky-600 via-blue-700 to-indigo-800 text-white font-bold rounded-2xl text-xs sm:text-sm shadow-md hover:shadow-lg flex items-center justify-center gap-2">
                   <PenTool size={16} /> <span>ボトルメールを流す</span> <ArrowRight size={15} />
                 </Link>
-                <Link to="/search" className="w-full sm:w-auto min-w-[220px] px-7 py-3.5 bg-white hover:bg-sky-50 text-slate-800 font-bold rounded-2xl text-xs sm:text-sm border-2 border-sky-200 flex items-center justify-center gap-2">
-                  <Search size={16} className="text-sky-600" /> <span>自分宛てのメッセージを探す</span>
+                <Link to="/account" className="w-full sm:w-auto min-w-[220px] px-7 py-3.5 bg-white hover:bg-sky-50 text-slate-800 font-bold rounded-2xl text-xs sm:text-sm border-2 border-sky-200 flex items-center justify-center gap-2">
+                  <Sparkles size={16} className="text-sky-600" /> <span>マイアカウント（照合状況）</span>
                 </Link>
               </div>
 
@@ -991,7 +989,6 @@ export const HomeDesignShowroom = () => {
           <div className="space-y-4">
             <div className="flex items-end justify-between border-b border-teal-200 pb-3">
               <div><span className="text-[11px] font-bold text-teal-700 uppercase tracking-widest font-sans block">Bottle Mail Gallery</span><h2 className="text-xl font-serif font-bold text-slate-900">ネットの海に漂うみんなの想い</h2><p className="text-xs text-slate-600 font-sans">タップしてボトルを開けてみてください。自分と同じように、大切な人を探している一通が見つかります。</p></div>
-              <Link to="/search" className="text-xs text-teal-800 font-bold flex items-center gap-1 hover:underline">すべて見る <ArrowRight size={12} /></Link>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {SAMPLE_BOTTLES.map((b) => (

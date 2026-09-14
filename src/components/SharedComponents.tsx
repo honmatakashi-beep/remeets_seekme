@@ -274,21 +274,11 @@ export const Navbar = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) 
             <span className="drop-shadow-2xs">メッセージを届ける</span>
           </Link>
 
-          {/* メッセージを探す Link */}
-          <Link
-            to="/search"
-            onClick={() => setIsMenuOpen(false)}
-            className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 text-slate-800 text-xs font-semibold font-sans transition-all border border-slate-200 shrink-0"
-          >
-            <Search size={14} className="text-teal-600" />
-            <span>メッセージを探す</span>
-          </Link>
-
           {/* ご利用ガイド Link */}
           <Link
             to="/guide"
             onClick={() => setIsMenuOpen(false)}
-            className="hidden md:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-brand-primary/5 hover:bg-brand-primary/10 text-brand-dark text-xs font-semibold font-sans transition-all border border-brand-primary/15 hover:border-brand-primary/30 shrink-0"
+            className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-brand-primary/5 hover:bg-brand-primary/10 text-brand-dark text-xs font-semibold font-sans transition-all border border-brand-primary/15 hover:border-brand-primary/30 shrink-0"
           >
             <BookOpen size={14} className="text-brand-primary" />
             <span>ご利用ガイド</span>
@@ -369,15 +359,6 @@ export const Navbar = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) 
                 >
                   <Send size={16} className="text-teal-600 shrink-0" />
                   <span>メッセージを届ける</span>
-                </Link>
-
-                <Link
-                  to="/search"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 text-xs text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/60 rounded-xl transition-all font-semibold text-left"
-                >
-                  <Search size={16} className="text-emerald-600 shrink-0" />
-                  <span>想い出のメッセージを探す</span>
                 </Link>
 
                 {user && (
@@ -568,7 +549,7 @@ export const Footer = () => {
           <h4 className="text-[11px] sm:text-xs font-bold text-brand-dark/80 tracking-widest uppercase">サービス</h4>
           <ul className="space-y-1.5 sm:space-y-2 text-xs text-brand-dark/60">
             <li><Link to="/create" className="hover:text-teal-700">メッセージを届ける</Link></li>
-            <li><Link to="/search" className="hover:text-teal-700">想い出のメッセージを探す</Link></li>
+            <li><Link to="/safety" className="hover:text-teal-700">安全への取り組み（完全非公開）</Link></li>
             <li><Link to="/pricing" className="hover:text-teal-700">利用料金表</Link></li>
             <li><Link to="/supporter" className="hover:text-teal-700">SeekMeを応援（寄付）</Link></li>
             <li><Link to="/success-stories" className="hover:text-teal-700">奇跡の再会体験談</Link></li>

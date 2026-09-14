@@ -368,11 +368,11 @@ export const SuccessStoriesPage = () => {
                 <span>再会エピソードを投稿する</span>
               </button>
               <Link 
-                to="/search" 
+                to="/account" 
                 className="px-5 py-3 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 font-bold text-xs sm:text-sm rounded-2xl flex items-center gap-1.5 transition-all"
               >
-                <Search size={15} />
-                <span>メッセージを探す</span>
+                <Sparkles size={15} />
+                <span>マイアカウント（照合状況）</span>
               </Link>
             </>
           ) : (
@@ -392,11 +392,11 @@ export const SuccessStoriesPage = () => {
                 <span>エピソードを投稿する</span>
               </button>
               <Link 
-                to="/search" 
+                to="/account" 
                 className="px-5 py-3 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 font-bold text-xs sm:text-sm rounded-2xl flex items-center gap-1.5 transition-all"
               >
-                <Search size={15} />
-                <span>誰かのメッセージを探してみる</span>
+                <Sparkles size={15} />
+                <span>マイアカウント（照合状況）</span>
               </Link>
             </>
           )}

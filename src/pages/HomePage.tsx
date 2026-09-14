@@ -2,13 +2,12 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  ArrowRight, BookOpen, CheckCircle2, ChevronLeft, ChevronRight,
-  CreditCard, Heart, Lock, MapPin, Search, Send, ShieldAlert,
+  ArrowRight, BookOpen, CheckCircle2,
+  CreditCard, Heart, Lock, MapPin, Send, ShieldAlert,
   ShieldCheck, Sparkles, Image as ImageIcon, X
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { cn, getPostUrl, formatEraLabel, formatBirthYearLabel, getCategoryText, PREFECTURES } from '../lib/utils';
-import { BottleLoader } from '../components/SharedComponents';
+import { cn, formatEraLabel, formatBirthYearLabel, getCategoryText, PREFECTURES } from '../lib/utils';
 import { HomePageTestVariant } from '../components/HomePageTestVariant';
 import { HomeVariantSub2Overlay } from '../components/HomeVariantSub2Overlay';
 import { HomeVariantSub3Minimal } from '../components/HomeVariantSub3Minimal';
@@ -24,8 +23,6 @@ import { EkycExplanationModal } from '../components/posts/EkycExplanationModal';
 export type HomeDesignMode = 'v2' | 'v1' | 'sub2' | 'sub3';
 
 export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) => {
-  const [posts, setPosts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
   const [homeDesign, setHomeDesign] = useState<HomeDesignMode>(() => {
     return (localStorage.getItem('remeets_home_design') as HomeDesignMode) || 
            (localStorage.getItem('remeets_home_design_mode') as HomeDesignMode) || 
@@ -74,14 +71,11 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
   const [ekycName, setEkycName] = useState('');
   const [ekycBirthdate, setEkycBirthdate] = useState('');
   const [ekycVerified, setEkycVerified] = useState(() => localStorage.getItem('ekyc_verified') === 'true');
-  const [query, setQuery] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
   const [isConceptModalOpen, setIsConceptModalOpen] = useState(false);
   const [showEkycExplanationModal, setShowEkycExplanationModal] = useState(false);
   const [showStats, setShowStats] = useState(true);
   const [stats, setStats] = useState({ totalUsers: 0, totalReunions: 0, todayPosts: 0 });
   const [featuredStories, setFeaturedStories] = useState<any[]>([]);
-  const ITEMS_PER_PAGE = 4;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -97,23 +91,6 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
       }
     };
     fetchFeaturedStories();
-  }, []);
-
-  useEffect(() => {
-    const fetchRecentPosts = async () => {
-      try {
-        const res = await fetch('/api/posts/recent');
-        if (res.ok) {
-          const data = await res.json();
-          setPosts(data);
-        }
-      } catch (err) {
-        console.error('Failed to fetch recent posts', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchRecentPosts();
   }, []);
 
   useEffect(() => {
@@ -171,24 +148,11 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
     return () => clearInterval(interval);
   }, [ekycStep]);
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (query.trim()) {
-      navigate(`/search?q=${encodeURIComponent(query)}`);
-    } else {
-      navigate('/search');
-    }
-  };
-
-  const totalPages = Math.ceil(posts.length / ITEMS_PER_PAGE);
-  const paginatedPosts = posts.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
-
   if (homeDesign === 'v2') {
     return (
       <>
         <HomePageTestVariant 
           onToggleDesign={toggleHomeDesign} 
-          recentPosts={posts} 
           onOpenConceptModal={() => setIsConceptModalOpen(true)}
         />
 
@@ -304,9 +268,9 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
 
           <div className="relative z-10 space-y-3 sm:space-y-4">
             <span className="text-xl xs:text-2xl sm:text-3xl md:text-5xl font-serif font-bold text-[#3B627F] tracking-wider block leading-none select-none [text-rendering:geometricPrecision] antialiased">
-              ReMEETs
+              ReMEETs <span className="text-teal-700">SeekMe</span>
               <span className="block text-[8.5px] xs:text-[9.5px] sm:text-xs md:text-sm font-sans font-medium text-brand-primary/90 tracking-[0.2em] sm:tracking-[0.3em] mt-1 sm:mt-2 uppercase">
-                〜再会のボトルメール〜
+                〜私を探すあなたへ〜
               </span>
             </span>
             
@@ -316,14 +280,14 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                 lines={[
                   'あの日言えなかった想いを',
                   'あの人へ',
-                  '再会のボトルメール'
+                  '完全非公開・安心の再会メッセージ'
                 ]}
               />
               <div className="mt-3 sm:mt-4 w-20 h-[1px] bg-gradient-to-r from-transparent via-brand-primary/20 to-transparent" />
             </div>
 
             <p className="text-sm md:text-base text-slate-800 font-serif font-medium max-w-2xl mx-auto leading-relaxed md:leading-loose pt-2.5 px-2 [text-rendering:geometricPrecision] antialiased">
-              同窓生、昔の友人、お世話になったあの人。連絡先はわからないけれど、もう一度だけ話してみたい大切な人へ、想いを言葉にして海に流す。そして、あなたを探している誰かが流したメッセージを、自分の名前やゆかりの地から見つけ出す。ここは、お互いを想い合う偶然と奇跡が交差する、静かな再会の海です。
+              同窓生、昔の友人、お世話になったあの人。連絡先はわからないけれど、もう一度だけ伝えたい大切な想いを言葉にして預けておく。メッセージはインターネット上に一切公開されず、双方が一致した時だけ安全につながる、完全非公開のプライベート再会プラットフォームです。
             </p>
 
             <div className="flex justify-center pt-3 px-2 md:px-0 animate-fade-in w-full max-w-xl mx-auto">
@@ -334,18 +298,18 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                 className="group w-full flex items-center justify-center gap-2.5 px-6 py-3 bg-white/90 backdrop-blur-xs text-brand-dark border border-zinc-300/80 rounded-full transition-all text-xs md:text-sm font-serif tracking-[0.1em] shadow-sm hover:shadow-[0_6px_22px_rgba(161,196,253,0.3)] hover:-translate-y-0.5 cursor-pointer duration-300 btn-hover-rainbow"
               >
                 <span className="font-semibold text-brand-dark transition-colors duration-300 relative z-10">
-                  ボトルメールが届ける再会の奇跡
+                  想いが届く安心の再会システム
                 </span>
               </button>
             </div>
 
-            {/* 🛡️ 【安心の0円保証】探す・投函は完全無料の直感的可視化バッジ */}
+            {/* 🛡️ 【安心の0円保証】預ける・保管・照合は完全無料の直感的可視化バッジ */}
             <div className="pt-2 max-w-xl mx-auto px-2">
               <div className="bg-white/90 backdrop-blur-md rounded-2xl border border-emerald-200/90 p-3 sm:p-4 shadow-sm text-left font-sans transition-all hover:shadow-md">
                 <div className="flex items-center justify-between border-b border-emerald-100 pb-2 mb-2.5">
                   <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-emerald-900">
                     <ShieldCheck size={18} className="text-emerald-600 shrink-0" />
-                    <span>ReMEETsの安心料金ポリシー</span>
+                    <span>ReMEETs SeekMe の安心料金ポリシー</span>
                   </div>
                   <Link 
                     to="/pricing" 
@@ -361,21 +325,21 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                     to="/pricing"
                     className="bg-emerald-50/70 hover:bg-emerald-100/80 border border-emerald-200/60 hover:border-emerald-400/80 rounded-xl p-2 flex flex-col items-center justify-center transition-all duration-200 hover:scale-[1.02] hover:shadow-xs group cursor-pointer"
                   >
-                    <span className="text-[10px] text-emerald-800 font-bold group-hover:text-emerald-900 leading-tight">メッセージを届ける<span className="hidden sm:inline">・</span><br className="sm:hidden" />投函</span>
+                    <span className="text-[10px] text-emerald-800 font-bold group-hover:text-emerald-900 leading-tight">メッセージ作成<span className="hidden sm:inline">・</span><br className="sm:hidden" />登録</span>
                     <span className="text-xs sm:text-sm font-black text-emerald-600 font-serif">完全0円</span>
                   </Link>
                   <Link 
                     to="/pricing"
                     className="bg-emerald-50/70 hover:bg-emerald-100/80 border border-emerald-200/60 hover:border-emerald-400/80 rounded-xl p-2 flex flex-col items-center justify-center transition-all duration-200 hover:scale-[1.02] hover:shadow-xs group cursor-pointer"
                   >
-                    <span className="text-[10px] text-emerald-800 font-bold group-hover:text-emerald-900 leading-tight">メッセージを探す<span className="hidden sm:inline">・</span><br className="sm:hidden" />閲覧</span>
+                    <span className="text-[10px] text-emerald-800 font-bold group-hover:text-emerald-900 leading-tight">暗号化保管<span className="hidden sm:inline">・</span><br className="sm:hidden" />自動照合</span>
                     <span className="text-xs sm:text-sm font-black text-emerald-600 font-serif">完全0円</span>
                   </Link>
                   <Link 
                     to="/pricing"
                     className="bg-sky-50/70 hover:bg-sky-100/80 border border-sky-200/60 hover:border-sky-400/80 rounded-xl p-2 flex flex-col items-center justify-center transition-all duration-200 hover:scale-[1.02] hover:shadow-xs group cursor-pointer"
                   >
-                    <span className="text-[10px] text-sky-900 font-bold group-hover:text-sky-950 leading-tight">想い出照合<span className="hidden sm:inline">・</span><br className="sm:hidden" />再会時</span>
+                    <span className="text-[10px] text-sky-900 font-bold group-hover:text-sky-950 leading-tight">相互承認<span className="hidden sm:inline">・</span><br className="sm:hidden" />再会成立時</span>
                     <span className="text-xs sm:text-sm font-black text-sky-700 font-serif">開通時のみ 600円</span>
                   </Link>
                 </div>
@@ -385,7 +349,7 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                     to="/pricing"
                     className="text-[10px] text-slate-500 hover:text-emerald-700 transition-colors inline-flex items-center justify-center gap-1 leading-tight"
                   >
-                    <span>※お相手とクイズで想い出が一致し、連絡先を開示する瞬間まで一切料金はかかりません。（詳細はこちら）</span>
+                    <span>※お相手とエピソードが合意・承認され、連絡先を開示する瞬間まで一切料金はかかりません。（詳細はこちら）</span>
                   </Link>
                 </div>
               </div>
@@ -394,31 +358,31 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
         </div>
       </div>
 
-      {/* Primary Hero Action: Write & Send Bottle Mail (ボトルメールを流すメイン構造) */}
+      {/* Primary Hero Action: Write & Deposit Message (メッセージを預けるメイン構造) */}
       <div className="max-w-4xl mx-auto space-y-6 relative z-10 font-sans">
         
-        {/* Main Card: Write & Send Letter */}
+        {/* Main Card: Write & Deposit Message */}
         <div id="write-letter-card" className="bg-gradient-to-br from-white via-[#faf9f6] to-[#f5f7f6] border border-slate-200/90 p-6 md:p-10 rounded-[32px] shadow-sm hover:shadow-md transition-all space-y-8">
           
           <div className="flex flex-col items-center text-center space-y-2 border-b border-brand-primary/15 pb-6">
             <span className="text-[10px] md:text-xs font-bold text-teal-700 bg-teal-50 border border-teal-200/80 px-3 py-1 rounded-full font-sans inline-flex items-center gap-1.5">
               <Sparkles size={12} className="text-teal-600" />
-              <span>メイン機能｜登録・投函・保管 0円</span>
+              <span>メイン機能｜登録・暗号化保管 0円</span>
             </span>
             <h3 className="text-xl md:text-2xl font-serif font-bold pt-1 text-center">
               <span className="animated-rainbow-text inline-block pb-0.5 [text-rendering:geometricPrecision] antialiased">
-                逢いたい人へ、再会のボトルメールを流す
+                逢いたい人へ、想い出のメッセージを預ける
               </span>
             </h3>
             <div className="flex items-center justify-center gap-2 text-[11px] text-slate-500 font-sans pt-0.5">
               <ShieldCheck size={16} className="text-emerald-600 shrink-0" />
-              <span>匿名投稿OK / いつでも修正・削除可能</span>
+              <span>完全非公開 / ネット上に晒されない安心設計 / いつでも推敲・削除可能</span>
             </div>
           </div>
 
           <div className="space-y-4">
             <p className="text-xs md:text-sm text-brand-dark/85 leading-relaxed text-center">
-              同窓生、昔の友人、お世話になったあの人へ。連絡先は分からなくても、もう一度伝えたい大切な想いを言葉にして海に浮かべましょう。
+              同窓生、昔の友人、お世話になったあの人へ。連絡先は分からなくても、もう一度伝えたい大切な想いを言葉にして安全にシステムへ預けましょう。
             </p>
 
             <div className="pt-2">
@@ -428,7 +392,7 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                 className="w-full h-11 sm:h-13 bg-brand-dark hover:bg-[#1e4f7a] text-white rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold font-sans tracking-normal text-center flex items-center justify-center gap-2.5 transition-all duration-300 shadow-md hover:shadow-lg active:scale-[0.99] cursor-pointer group"
               >
                 <Send size={18} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" />
-                <span>ボトルメールを流す（無料）</span>
+                <span>メッセージを届ける（無料）</span>
               </Link>
             </div>
           </div>
@@ -437,11 +401,11 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
           <div className="pt-6 border-t border-brand-border/60 space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 text-left">
               <span className="text-xs font-semibold text-brand-primary uppercase tracking-wider block font-sans">
-                ボトルメールで「あの人」と再会する3つのステップ
+                完全非公開で「あの人」と再会する3つのステップ
               </span>
               <span className="text-[11px] text-slate-500 font-sans flex items-center gap-1 shrink-0">
                 <Sparkles size={12} className="text-amber-500" />
-                <span>想いを残すシンプルな流れ</span>
+                <span>安心・安全のシンプルな流れ</span>
               </span>
             </div>
 
@@ -455,21 +419,21 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                       <span className="text-[10px] sm:text-xs font-sans font-bold tracking-[0.22em] text-emerald-700/80 uppercase">STEP</span>
                       <span className="text-lg sm:text-xl md:text-2xl font-serif font-extrabold tracking-wider text-emerald-600">01</span>
                     </div>
-                    <span className="text-[11px] sm:text-xs font-serif font-bold bg-emerald-50 text-emerald-700 px-2 sm:px-2.5 py-0.5 rounded-full border border-emerald-200">【メッセージを届ける】</span>
+                    <span className="text-[11px] sm:text-xs font-serif font-bold bg-emerald-50 text-emerald-700 px-2 sm:px-2.5 py-0.5 rounded-full border border-emerald-200">【預ける】</span>
                   </div>
                   <div className="relative overflow-hidden rounded-xl aspect-[16/10] bg-slate-100 border border-emerald-200 p-1 shadow-inner group-hover:border-emerald-400 transition-colors duration-300">
                     <img 
                       src={stepMistWriteImg} 
-                      alt="メッセージを届ける" 
+                      alt="メッセージを預ける" 
                       className="w-full h-full object-cover object-center rounded-lg group-hover:scale-[1.04] transition-transform duration-500 ease-out"
                     />
                   </div>
                   <div className="space-y-1">
                     <h5 className="font-extrabold text-slate-900 text-xs sm:text-[13px] md:text-sm font-serif flex items-center gap-1.5 leading-snug">
-                      <span>ボトルに思い出を託す</span>
+                      <span>想い出を安全に登録</span>
                     </h5>
                     <p className="text-[11px] sm:text-xs text-slate-600 leading-relaxed font-sans">
-                      お相手のお名前と、お二人しか知らない「思い出の質問（クイズ）」を設定して投稿します。
+                      お相手のお名前やゆかりの地、お二人だけのメッセージを安全に登録します（一般公開されません）。
                     </p>
                   </div>
                 </div>
@@ -483,21 +447,21 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                       <span className="text-[10px] sm:text-xs font-sans font-bold tracking-[0.22em] text-sky-700/80 uppercase">STEP</span>
                       <span className="text-lg sm:text-xl md:text-2xl font-serif font-extrabold tracking-wider text-sky-600">02</span>
                     </div>
-                    <span className="text-[11px] sm:text-xs font-serif font-bold bg-sky-50 text-sky-700 px-2 sm:px-2.5 py-0.5 rounded-full border border-sky-200">【漂う】</span>
+                    <span className="text-[11px] sm:text-xs font-serif font-bold bg-sky-50 text-sky-700 px-2 sm:px-2.5 py-0.5 rounded-full border border-sky-200">【照合】</span>
                   </div>
                   <div className="relative overflow-hidden rounded-xl aspect-[16/10] bg-slate-100 border border-sky-200 p-1 shadow-inner group-hover:border-sky-400 transition-colors duration-300">
                     <img 
                       src={stepMistDriftImg} 
-                      alt="海で大切に保管" 
+                      alt="安全に自動照合" 
                       className="w-full h-full object-cover object-center rounded-lg group-hover:scale-[1.04] transition-transform duration-500 ease-out"
                     />
                   </div>
                   <div className="space-y-1">
                     <h5 className="font-extrabold text-slate-900 text-xs sm:text-[13px] md:text-sm font-serif flex items-center gap-1.5 leading-snug">
-                      <span>ネットの海をめぐる</span>
+                      <span>システムが自動照合</span>
                     </h5>
                     <p className="text-[11px] sm:text-xs text-slate-600 leading-relaxed font-sans">
-                      誰かが探すその日まで、プライバシーを守りながら安全な海（Web）に静かに漂います。
+                      双方が登録した情報をもとに、システムがバックグラウンドで厳重に安全照合します。
                     </p>
                   </div>
                 </div>
@@ -511,21 +475,21 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
                       <span className="text-[10px] sm:text-xs font-sans font-bold tracking-[0.22em] text-teal-700/80 uppercase">STEP</span>
                       <span className="text-lg sm:text-xl md:text-2xl font-serif font-extrabold tracking-wider text-teal-600">03</span>
                     </div>
-                    <span className="text-[11px] sm:text-xs font-serif font-bold bg-teal-50 text-teal-700 px-2 sm:px-2.5 py-0.5 rounded-full border border-teal-200">【届く】</span>
+                    <span className="text-[11px] sm:text-xs font-serif font-bold bg-teal-50 text-teal-700 px-2 sm:px-2.5 py-0.5 rounded-full border border-teal-200">【再会】</span>
                   </div>
                   <div className="relative overflow-hidden rounded-xl aspect-[16/10] bg-slate-100 border border-teal-200 p-1 shadow-inner group-hover:border-teal-400 transition-colors duration-300">
                     <img 
                       src={stepMistReconnectImg} 
-                      alt="正解して想いが繋がる" 
+                      alt="エピソード承認で再会" 
                       className="w-full h-full object-cover object-center rounded-lg group-hover:scale-[1.04] transition-transform duration-500 ease-out"
                     />
                   </div>
                   <div className="space-y-1">
                     <h5 className="font-extrabold text-slate-900 text-xs sm:text-[13px] md:text-sm font-serif flex items-center gap-1.5 leading-snug">
-                      <span>思い出クイズで再会</span>
+                      <span>エピソード承認で開通</span>
                     </h5>
                     <p className="text-[11px] sm:text-xs text-slate-600 leading-relaxed font-sans">
-                      お相手が検索で見つけ、思い出クイズに正解するとメッセージが開き、直接つながれます。
+                      届いたエピソードを確認して承認すると、本人確認を経てお互いの連絡先が開示されます。
                     </p>
                   </div>
                 </div>
@@ -534,31 +498,6 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
             </div>
           </div>
 
-        </div>
-
-        {/* Compact Sub Section: Search for letters addressed to you */}
-        <div className="bg-white/90 border border-slate-200/90 p-5 md:p-6 rounded-2xl shadow-sm space-y-3">
-          <div className="flex items-center justify-between">
-            <h4 className="text-xs md:text-sm font-bold text-slate-800 flex items-center gap-2">
-              <Search size={16} className="text-teal-600" />
-              <span>自分宛てのメッセージ（ボトルメール）が届いていないか探す</span>
-            </h4>
-            <span className="text-[10px] text-slate-500 font-sans">検索・閲覧 無料</span>
-          </div>
-
-          <form onSubmit={handleSearchSubmit} className="relative">
-            <input 
-              type="text"
-              value={query}
-              onChange={e => setQuery(e.target.value)}
-              placeholder="お名前（フルネーム）を入力して検索（例: 山田太郎）"
-              className="w-full pl-4 pr-12 h-11 border border-slate-300 rounded-xl bg-slate-50 focus:border-teal-600 outline-none focus:ring-2 focus:ring-teal-600/20 transition-all font-sans placeholder:text-slate-400 text-slate-900 text-xs font-medium"
-            />
-            <button type="submit" className="absolute right-1.5 top-1/2 -translate-y-1/2 px-3 h-8 bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold rounded-lg flex items-center gap-1 transition-all shadow cursor-pointer">
-              <Search size={13} />
-              <span>検索</span>
-            </button>
-          </form>
         </div>
 
       </div>
@@ -756,128 +695,7 @@ export const HomePage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }
         </div>
       )}
 
-      {/* Recent Bottles */}
-      <div className="space-y-6">
-        <div className="flex items-end justify-between border-b border-brand-border pb-4">
-          <div className="space-y-1">
-            <h2 className="text-2xl font-serif font-bold text-brand-dark tracking-wider">最近流されたボトルメール</h2>
-            <p className="text-xs text-brand-dark/50 font-serif">海面を漂う、いつかの誰かへのメッセージ。</p>
-          </div>
-          <Link to="/search" className="text-xs text-brand-primary uppercase tracking-[0.2em] font-sans font-bold flex items-center gap-2 hover:underline">
-            <span>すべて見る</span>
-            <ArrowRight size={14} />
-          </Link>
-        </div>
 
-        {loading ? (
-          <BottleLoader />
-        ) : posts.length === 0 ? (
-          <div className="text-center py-12 text-sm text-brand-dark/50 font-serif">
-            漂流しているボトルがまだありません。あなたの手で最初のボトルを流してみませんか？
-          </div>
-        ) : (
-          <div className="space-y-6">
-            {/* 🌈 公的確認マーク（eKYC）の安心ガイドバー */}
-            <div className="bg-gradient-to-r from-sky-50/90 via-teal-50/80 to-indigo-50/90 border border-sky-200/80 rounded-2xl p-3 sm:p-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 sm:gap-3 text-left shadow-2xs">
-              <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-7 h-7 rounded-full seal-rainbow flex flex-col items-center justify-center text-white shrink-0 shadow-xs">
-                  <ShieldCheck size={12} className="text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.6)]" />
-                  <span className="text-[5px] font-black tracking-tighter uppercase -mt-0.5 text-white">eKYC済</span>
-                </div>
-                <div className="text-xs text-slate-700 leading-snug">
-                  <span className="font-bold text-sky-950">虹色の「公的確認」マーク</span>は、差出人が運転免許証等による本人確認を完了している<span className="font-bold text-teal-900">実在証明付きの安心なメッセージ</span>です。
-                </div>
-              </div>
-              <button 
-                type="button"
-                onClick={() => setShowEkycExplanationModal(true)} 
-                className="shrink-0 text-[11px] font-bold text-sky-850 hover:text-sky-950 bg-white hover:bg-sky-50 border border-sky-300 px-3 py-1 rounded-full shadow-2xs transition-all whitespace-nowrap cursor-pointer flex items-center gap-1 self-end sm:self-center"
-              >
-                <span>マークの意味・安心の仕組み</span>
-                <ArrowRight size={11} />
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 md:gap-6">
-              {paginatedPosts.map((post: any) => (
-                <Link 
-                  key={post.id}
-                  to={getPostUrl(post)}
-                  state={{ postPreview: post }}
-                  className="p-6 block hover:-translate-y-1 hover:shadow-xl transition-all border-2 border-slate-300 hover:border-teal-600 duration-300 rounded-3xl space-y-4 bg-white group text-left shadow-md relative overflow-hidden"
-                >
-                  <div className="flex justify-between items-start gap-3">
-                    <div className="space-y-1 flex-1 min-w-0">
-                      <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className="text-[10px] font-bold text-teal-800 uppercase tracking-widest block bg-teal-50 border border-teal-200 px-2 py-0.5 rounded-full w-fit font-sans">
-                          {post.target_hometown ? (post.target_hometown.match(/.*?[都道府県]/)?.[0] || post.target_hometown) : '全国'}
-                          {(post.birth_year || post.era) && ` / ${post.birth_year ? formatBirthYearLabel(post.birth_year) : formatEraLabel(post.era)}`}
-                        </span>
-                        <span className="text-[10px] text-brand-dark/40 font-mono">
-                          {new Date(post.created_at).toLocaleDateString('ja-JP')}
-                        </span>
-                      </div>
-                      <h3 className="text-lg font-serif font-bold text-brand-dark group-hover:text-teal-700 transition-colors truncate">
-                        {post.target_name} 様
-                        {(post.target_maiden_name || post.maiden_name) && (
-                          <span className="text-xs text-slate-500 font-sans font-normal ml-1.5">
-                            （旧姓: {post.target_maiden_name || post.maiden_name}）
-                          </span>
-                        )}
-                      </h3>
-                    </div>
-
-                    {/* 🌈 カード右上の動く虹色公的認証マーク（封蝋印：eKYC認証済みの場合のみ表示） */}
-                    {Boolean(post.is_ekyc_verified) && (
-                      <div className="flex flex-col items-center shrink-0 -mt-1 -mr-1" title="差出人は公的本人確認（eKYC）完了済み">
-                        <div className="w-7 h-7 rounded-full seal-rainbow flex flex-col items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform">
-                          <ShieldCheck size={12} className="text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]" />
-                          <span className="text-[5px] font-black tracking-tighter uppercase -mt-0.5 text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">eKYC済</span>
-                        </div>
-                        <span className="mt-0.5 text-[7px] font-extrabold text-sky-950 bg-white/95 border border-sky-300 px-1.5 py-0.2 rounded-full shadow-2xs whitespace-nowrap">
-                          公的確認
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                  <p className="text-xs text-brand-dark/70 font-sans leading-relaxed line-clamp-2">
-                    {post.message || post.searcher_profile || '私を探しているあなたへ。メッセージをお待ちしています。'}
-                  </p>
-                  <div className="pt-2 flex items-center gap-2 text-[10px] text-teal-700 font-bold uppercase tracking-widest font-sans">
-                    <span>メッセージを開く</span>
-                    <ArrowRight size={12} className="group-hover:translate-x-1 transition-all" />
-                  </div>
-                </Link>
-              ))}
-            </div>
-
-            {/* Pagination Controls */}
-            {totalPages > 1 && (
-              <div className="flex items-center justify-center gap-4 pt-4 font-sans">
-                <button
-                  disabled={currentPage === 1}
-                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                  className="px-4 py-2 border border-brand-border rounded-xl text-xs font-bold text-brand-dark disabled:opacity-40 disabled:cursor-not-allowed bg-white hover:bg-zinc-50 transition-colors flex items-center gap-1"
-                >
-                  <ChevronLeft size={14} />
-                  <span>前ページ</span>
-                </button>
-                <span className="text-xs text-brand-dark/60 font-semibold font-sans">
-                  {currentPage} / {totalPages} ページ
-                </span>
-                <button
-                  disabled={currentPage === totalPages}
-                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                  className="px-4 py-2 border border-brand-border rounded-xl text-xs font-bold text-brand-dark disabled:opacity-40 disabled:cursor-not-allowed bg-white hover:bg-zinc-50 transition-colors flex items-center gap-1"
-                >
-                  <span>次ページ</span>
-                  <ChevronRight size={14} />
-                </button>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
 
       {/* Concept Story Modal (Vintage Deckle-Edged Letter) */}
       <ConceptStoryModal 

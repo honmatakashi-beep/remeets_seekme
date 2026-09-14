@@ -112,7 +112,7 @@ export const AccountNotificationsTab = (props: any) => {
           badgeText: "🔍 あなた宛てメッセージ検知",
           colorClasses: "bg-sky-100 text-sky-900 border-sky-300",
           actionText: "メッセージを見に行く",
-          defaultLink: "/search"
+          defaultLink: "/account?tab=received"
         };
       case "admin_broadcast":
       case "broadcast":

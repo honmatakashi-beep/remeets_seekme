@@ -77,8 +77,7 @@ export const SitemapPage = () => {
       icon: <Home size={20} />,
       links: [
         { label: "ホーム", path: "/" },
-        { label: "ボトルメールを流す", path: "/create" },
-        { label: "ボトルメールを探す", path: "/search" },
+        { label: "メッセージを書く", path: "/create" },
         { label: "初めての方へ（ガイド）", path: "/guide" },
         { label: "奇跡の再会報告（体験談）", path: "/success-stories" },
       ]

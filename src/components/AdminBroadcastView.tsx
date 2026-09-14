@@ -111,7 +111,7 @@ const PRESET_TEMPLATES: PresetTemplate[] = [
 ・通知一覧およびマイページの視認性・操作性改善
 
 ぜひ、あなたの懐かしい想い出のボトルメールを探してみてください。`,
-    link: '/search',
+    link: '/account',
     channels: { inApp: true, email: false },
     description: '機能改善や新UI公開時のユーザー活性化プロモーション'
   },

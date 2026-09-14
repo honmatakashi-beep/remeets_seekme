@@ -230,11 +230,11 @@ export const NotFoundPage = () => (
           </Link>
 
           <Link
-            to="/search"
+            to="/account"
             className="px-5 py-3 bg-teal-600 hover:bg-teal-700 text-white rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
           >
-            <Search size={14} />
-            <span>メッセージを探す</span>
+            <Sparkles size={14} />
+            <span>マイアカウント</span>
           </Link>
 
           <Link

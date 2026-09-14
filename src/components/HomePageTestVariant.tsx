@@ -17,23 +17,13 @@ import {
   User,
   Heart,
   BookOpen,
-  Compass,
   CheckCircle2,
-  PenTool,
   Send,
-  Users,
-  MessageSquare,
   CreditCard,
-  Search,
   Mail,
   MapPin,
-  HelpCircle,
-  Clock,
-  Anchor,
-  ChevronLeft,
-  ChevronRight
+  Clock
 } from 'lucide-react';
-import { getPostUrl } from '../lib/utils';
 
 interface HomePageTestVariantProps {
   onToggleDesign: () => void;
@@ -69,72 +59,11 @@ const DEFAULT_SUCCESS_STORIES = [
   }
 ];
 
-// サンプル想いボトル（共感ギャラリー用）
-const GALLERY_BOTTLES = [
-  {
-    id: 'sample-1',
-    targetName: '世田谷区 〇〇中学 サッカー部 Aくんへ',
-    era: '1990年代',
-    location: '東京都世田谷区',
-    relationship: '中学の部活仲間',
-    excerpt: 'あの夏の最後の大会、僕のパスからゴールを決めてくれたこと今でも鮮明に覚えています。みんな元気にしていますか？',
-    secretQuestion: '大会の帰りにみんなで食べたアイスの種類は？',
-    createdTime: '漂流 3日前',
-    tagBg: 'bg-teal-100 text-teal-800 border-teal-200'
-  },
-  {
-    id: 'sample-2',
-    targetName: '2005年 横浜 / 保健室のH先生へ',
-    era: '2000年代',
-    location: '神奈川県横浜市',
-    relationship: '恩師・先生',
-    excerpt: '学校に行けなかった時期、否定せずに話を聞いてくれた先生の優しさに救われました。私も今では小学校の教員になりました。',
-    secretQuestion: '先生の保健室のデスクに置いてあった小さな観葉植物の名前は？',
-    createdTime: '漂流 昨日',
-    tagBg: 'bg-sky-100 text-sky-800 border-sky-200'
-  },
-  {
-    id: 'sample-3',
-    targetName: '京都 軽音サークル 初恋のM先輩へ',
-    era: '2010年代',
-    location: '京都府京都市',
-    relationship: '初恋・サークルの先輩',
-    excerpt: '卒業ライブの日に渡せなかったメッセージがずっと部屋にありました。またあのギターの音色が聴きたいです。',
-    secretQuestion: '学園祭で最後に演奏した曲のバンド名は？',
-    createdTime: '漂流 本日',
-    tagBg: 'bg-rose-100 text-rose-800 border-rose-200'
-  },
-  {
-    id: 'sample-4',
-    targetName: '旅先の福岡で財布を落とした私を助けてくれた親切な方へ',
-    era: '2010年代',
-    location: '福岡県博多区',
-    relationship: '旅先での恩人',
-    excerpt: '一銭もなく途方に暮れていた高校生の私に電車代を貸して下さり本当にありがとうございました。ずっとお礼が言いたかったです。',
-    secretQuestion: '駅前の喫茶店でご馳走していただいたあたたかい飲み物は？',
-    createdTime: '漂流 5日前',
-    tagBg: 'bg-emerald-100 text-emerald-800 border-emerald-200'
-  },
-  {
-    id: 'sample-5',
-    targetName: '1980年代 札幌 バンドを結成していたKさんへ',
-    era: '1980年代',
-    location: '北海道札幌市',
-    relationship: '昔のバンド仲間',
-    excerpt: '上京するときに交わした約束を果たせぬまま年月が経ってしまいました。もう一度アコースティックギターを合わせませんか。',
-    secretQuestion: '初めてスタジオで作ったオリジナル曲のタイトルは？',
-    createdTime: '漂流 1週間前',
-    tagBg: 'bg-amber-100 text-amber-800 border-amber-200'
-  }
-];
-
-export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onToggleDesign, recentPosts = [], onOpenConceptModal }) => {
+export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onToggleDesign, onOpenConceptModal }) => {
   const navigate = useNavigate();
   const [lastName, setLastName] = useState('');
   const [firstName, setFirstName] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedBottle, setSelectedBottle] = useState<any | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
   const [isLocalConceptModalOpen, setIsLocalConceptModalOpen] = useState(false);
 
   const handleOpenConcept = () => {
@@ -144,12 +73,6 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
       setIsLocalConceptModalOpen(true);
     }
   };
-
-  // 1ページあたり4件表示 (標準版と同等)
-  const PAGE_SIZE = 4;
-  const displayList = recentPosts && recentPosts.length > 0 ? recentPosts : GALLERY_BOTTLES;
-  const totalPages = Math.max(1, Math.ceil(displayList.length / PAGE_SIZE));
-  const paginatedList = displayList.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   // 公開統計情報（管理画面でON/OFF制御可能）
   const [publicStats, setPublicStats] = useState<{
@@ -357,7 +280,7 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
                 </motion.div>
               </div>
 
-              {/* ヒーローアクション: 「メッセージを書く」「メッセージを探す」同サイズ2大ボタン */}
+              {/* ヒーローアクション: 「メッセージを書く」「マイアカウント」2大ボタン */}
               <motion.div 
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -374,11 +297,11 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
                 </Link>
 
                 <Link
-                  to="/search"
+                  to="/account"
                   className="w-full sm:w-auto min-w-[220px] px-7 py-3.5 sm:py-4 bg-white hover:bg-teal-50/50 text-slate-800 font-bold rounded-2xl text-xs sm:text-sm transition-all border-2 border-teal-200 hover:border-teal-500 shadow-2xs hover:shadow-md flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.01] active:scale-95 group whitespace-nowrap"
                 >
-                  <Search size={17} className="text-teal-600 shrink-0 group-hover:scale-110 transition-transform" />
-                  <span className="font-bold text-slate-800 tracking-wide">私を探す人・メッセージを探す</span>
+                  <Sparkles size={17} className="text-teal-600 shrink-0 group-hover:scale-110 transition-transform" />
+                  <span className="font-bold text-slate-800 tracking-wide">マイアカウント（照合状況）</span>
                 </Link>
               </motion.div>
 
@@ -888,200 +811,8 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
             )}
           </AnimatePresence>
 
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b border-teal-200/80 pb-3">
-            <div className="space-y-1 text-left">
-              <span className="text-[11px] font-bold text-teal-700 uppercase tracking-widest font-sans">Bottle Mail Gallery</span>
-              <h2 className="text-xl md:text-2xl font-serif font-bold text-slate-900 tracking-wider">
-                ネットの海に漂うみんなの想い
-              </h2>
-              <p className="text-xs text-slate-600 max-w-lg font-sans leading-relaxed">
-                タップしてボトルを開けてみてください。自分と同じように、大切な人を探している一通が見つかります。
-              </p>
-            </div>
-            <Link to="/search" className="text-xs text-teal-800 hover:text-teal-950 font-sans font-bold flex items-center gap-1 hover:underline shrink-0 self-start sm:self-auto">
-              <span>すべてを見る</span>
-              <ArrowRight size={14} />
-            </Link>
-          </div>
-
-          {/* 波間にゆらゆら揺れるボトルグリッド (通常版と全く同じカードデザイン・内容で表示) */}
-          <div className="space-y-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 md:gap-6">
-              {recentPosts && recentPosts.length > 0 ? (
-                (paginatedList as any[]).map((post: any) => {
-                  const postUrl = post.id ? getPostUrl(post) : `/search?query=${encodeURIComponent(post.target_name || '')}`;
-                  const eraStr = post.era ? (post.era.toString().startsWith('19') ? post.era : `19${post.era}`) : '1980';
-                  const catStr = post.category === 'friend' ? '友人' : post.category === 'love' ? '初恋・恋人' : post.category === 'work' ? '仕事' : 'その他';
-                  const hometownStr = post.target_hometown ? (post.target_hometown.match(/.*?[都道府県]/)?.[0] || post.target_hometown) : '未設定';
-                  const schoolStr = post.target_school ? (post.category === 'work' ? '関連職場（正解後に開示）' : '関連学校（正解後に開示）') : '未設定';
-
-                  return (
-                    <Link 
-                      key={post.id}
-                      to={postUrl}
-                      className="p-6 block hover:-translate-y-1 hover:shadow-xl transition-all border-2 border-slate-300 hover:border-teal-600 duration-300 rounded-3xl space-y-4 bg-white group text-left shadow-md"
-                    >
-                      <div className="flex justify-between items-start">
-                        <div className="space-y-1">
-                          <span className="text-[10px] font-[700] text-teal-800 uppercase tracking-widest block bg-teal-50 border border-teal-200/80 px-2.5 py-0.5 rounded-full w-fit font-sans">
-                            {eraStr}年代 / {catStr}
-                          </span>
-                          <h3 className="text-lg font-serif font-bold text-slate-900 group-hover:text-teal-700 transition-colors">
-                            {post.target_name} 様
-                          </h3>
-                        </div>
-                        <span className="text-[10px] text-slate-400 font-mono">
-                          {post.created_at ? new Date(post.created_at).toLocaleDateString('ja-JP') : '流漂中'}
-                        </span>
-                      </div>
-                      <p className="text-xs text-slate-600 font-sans leading-relaxed line-clamp-2">
-                        差し出し人: {post.searcher_name || '非公開'} <br/>
-                        出会った場所: {hometownStr} (市区町村以下は非公開) / 所属・関係先：{schoolStr}<br/>
-                        “{post.searcher_profile || post.content || 'お相手への簡単なメッセージ。当時の出来事など...'}”
-                      </p>
-                      <div className="pt-2 flex items-center gap-2 text-[10px] text-teal-700 font-bold uppercase tracking-widest font-sans">
-                        <span>メッセージを引出す</span>
-                        <ArrowRight size={12} className="group-hover:translate-x-1 transition-all" />
-                      </div>
-                    </Link>
-                  );
-                })
-              ) : (
-                (paginatedList as any[]).map((b: any, i: number) => {
-                  const cleanTargetName = b.targetName ? b.targetName.replace(/\s*様へ$/, '').replace(/\s*様$/, '') : 'お相手';
-                  const searchUrl = `/search?query=${encodeURIComponent(cleanTargetName)}`;
-
-                  return (
-                    <Link 
-                      key={b.id || i}
-                      to={searchUrl}
-                      className="p-6 block hover:-translate-y-1 hover:shadow-xl transition-all border-2 border-slate-300 hover:border-teal-600 duration-300 rounded-3xl space-y-4 bg-white group text-left shadow-md"
-                    >
-                      <div className="flex justify-between items-start">
-                        <div className="space-y-1">
-                          <span className="text-[10px] font-[700] text-teal-800 uppercase tracking-widest block bg-teal-50 border border-teal-200/80 px-2.5 py-0.5 rounded-full w-fit font-sans">
-                            {b.era || '1980年代'} / {b.category || '友人'}
-                          </span>
-                          <h3 className="text-lg font-serif font-bold text-slate-900 group-hover:text-teal-700 transition-colors">
-                            {cleanTargetName} 様
-                          </h3>
-                        </div>
-                        <span className="text-[10px] text-slate-400 font-mono">
-                          {b.createdTime || '最近'}
-                        </span>
-                      </div>
-                      <p className="text-xs text-slate-600 font-sans leading-relaxed line-clamp-2">
-                        差し出し人: {b.searcherName || '非公開'} <br/>
-                        出会った場所: {b.location || '未設定'} (市区町村以下は非公開) / 所属・関係先：{b.school || '関連学校（正解後に開示）'}<br/>
-                        “{b.excerpt || 'お相手への簡単なメッセージ。当時の出来事など...'}”
-                      </p>
-                      <div className="pt-2 flex items-center gap-2 text-[10px] text-teal-700 font-bold uppercase tracking-widest font-sans">
-                        <span>メッセージを引出す</span>
-                        <ArrowRight size={12} className="group-hover:translate-x-1 transition-all" />
-                      </div>
-                    </Link>
-                  );
-                })
-              )}
-            </div>
-
-            {/* Pagination Controls (標準版と同等のUI) */}
-            {totalPages > 1 && (
-              <div className="flex items-center justify-center gap-4 pt-2 font-sans">
-                <button
-                  disabled={currentPage === 1}
-                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                  className="px-4 py-2 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 disabled:opacity-40 disabled:cursor-not-allowed bg-white hover:bg-slate-50 transition-colors flex items-center gap-1 cursor-pointer shadow-2xs"
-                >
-                  <ChevronLeft size={14} />
-                  <span>前ページ</span>
-                </button>
-                <span className="text-xs text-slate-600 font-semibold font-sans">
-                  {currentPage} / {totalPages} ページ
-                </span>
-                <button
-                  disabled={currentPage === totalPages}
-                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                  className="px-4 py-2 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 disabled:opacity-40 disabled:cursor-not-allowed bg-white hover:bg-slate-50 transition-colors flex items-center gap-1 cursor-pointer shadow-2xs"
-                >
-                  <span>次ページ</span>
-                  <ChevronRight size={14} />
-                </button>
-              </div>
-            )}
-          </div>
         </div>
       </section>
-
-      {/* モーダル: 漂うボトルメール詳細表示 */}
-      <AnimatePresence>
-        {selectedBottle && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 max-w-lg w-full space-y-5 relative shadow-2xl text-left"
-            >
-              <button
-                onClick={() => setSelectedBottle(null)}
-                className="absolute right-4 top-4 p-2 text-slate-400 hover:text-slate-700 bg-slate-100 rounded-full cursor-pointer transition-colors"
-              >
-                <X size={18} />
-              </button>
-
-              <div className="space-y-2.5">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-xs font-bold">
-                  <span>🍾 漂うボトルメールサンプル</span>
-                </div>
-                <h3 className="text-lg font-serif font-bold text-slate-900">
-                  {selectedBottle.targetName}
-                </h3>
-                <div className="flex items-center gap-2 text-xs text-slate-500 font-sans">
-                  <span>年代: {selectedBottle.era}</span>
-                  <span>•</span>
-                  <span>地域: {selectedBottle.location}</span>
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <span className="text-xs font-bold text-slate-500 font-sans">【メッセージ（手がかり一部）】</span>
-                <p className="text-xs sm:text-sm font-serif text-slate-800 bg-slate-50 p-4 rounded-2xl border border-slate-200 leading-relaxed italic">
-                  “{selectedBottle.excerpt}”
-                </p>
-              </div>
-
-              <div className="space-y-1.5 bg-amber-50/80 p-4 rounded-2xl border border-amber-200/80">
-                <span className="text-xs font-bold text-amber-900 font-sans flex items-center gap-1.5">
-                  <Key size={14} className="text-amber-600" /> 思い出の質問（秘密のクイズ）
-                </span>
-                <p className="text-xs text-amber-950 font-sans leading-relaxed">
-                  {selectedBottle.secretQuestion}
-                </p>
-              </div>
-
-              <div className="pt-2 space-y-2">
-                <button
-                  onClick={() => {
-                    setSelectedBottle(null);
-                    navigate('/create');
-                  }}
-                  className="w-full py-3.5 bg-gradient-to-r from-teal-700 to-indigo-900 hover:from-teal-800 hover:to-indigo-950 text-white font-bold rounded-xl text-xs sm:text-sm transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer font-sans"
-                >
-                  <span>自分もこの海に一通浮かべてみる 🍾</span>
-                  <ArrowRight size={16} />
-                </button>
-                <button
-                  onClick={() => setSelectedBottle(null)}
-                  className="w-full py-2 text-xs text-slate-500 hover:text-slate-800 font-sans text-center cursor-pointer"
-                >
-                  閉じる
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
 
       {/* Concept Story Modal (Vintage Deckle-Edged Letter) */}
       <ConceptStoryModal 
@@ -1091,3 +822,4 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
     </div>
   );
 };
+

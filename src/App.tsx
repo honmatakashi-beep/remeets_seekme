@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, ConfirmContext } from './contexts/AuthContext';
 import { Navbar, Footer, ProtectedRoute } from './components/SharedComponents';
 import { ScrollToTop, ScrollToTopButton, CreatePostPage, EditPostPage, PostDetailPage } from './pages/PostPages';
@@ -78,7 +78,7 @@ export default function App() {
                 <Routes>
                   <Route path="/guide" element={<GuidePage />} />
                   <Route path="/" element={<HomePage onOpenOnboarding={() => {}} />} />
-                  <Route path="/search" element={<SearchPage onOpenOnboarding={() => {}} />} />
+                  <Route path="/search" element={<Navigate to="/" replace />} />
                   <Route path="/login" element={<LoginPage />} />
                   <Route path="/register" element={<RegisterPage />} />
                   <Route path="/verify-email" element={<VerifyEmailPage />} />

@@ -108,11 +108,11 @@ export const AccountSentTab = (props: any) => {
         <div className="text-center py-12 border border-dashed border-slate-200 rounded-3xl p-6 bg-white/50 space-y-3">
           <p className="text-xs font-serif text-slate-500">送った再会申請はまだありません。</p>
           <p className="text-[11px] text-slate-400 leading-relaxed max-w-sm mx-auto">
-            メッセージを探す画面から気になる相手を見つけ、エピソードを添えて再会希望を送りましょう。
+            あなたから想い出のメッセージを預けると、システムが自動照合を行い、再会申請やお相手への通知が届きます。
           </p>
           <div className="pt-2">
-            <Link to="/search" className="text-xs font-bold text-teal-700 hover:underline">
-              メッセージを探す →
+            <Link to="/create" className="text-xs font-bold text-teal-700 hover:underline">
+              メッセージを書く →
             </Link>
           </div>
         </div>

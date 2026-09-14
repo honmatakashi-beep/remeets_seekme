@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { ConceptStoryModal } from './ConceptStoryModal';
 import {
   Sparkles,
@@ -9,19 +9,8 @@ import {
   ArrowRight,
   BookOpen,
   PenTool,
-  Search,
-  CreditCard,
-  PenLine,
-  Waves,
-  MailOpen,
-  X,
-  Clock,
-  Heart,
-  MapPin,
-  HelpCircle,
-  AlertCircle
+  CreditCard
 } from 'lucide-react';
-import { getPostUrl } from '../lib/utils';
 
 interface HomeVariantSub3MinimalProps {
   onToggleDesign?: () => void;
@@ -56,53 +45,6 @@ const DEFAULT_SUCCESS_STORIES = [
   }
 ];
 
-const GALLERY_BOTTLES = [
-  {
-    id: 'sample-1',
-    targetName: '世田谷区 〇〇中学 サッカー部 Aくんへ',
-    era: '1990年代',
-    location: '東京都世田谷区',
-    relationship: '中学の部活仲間',
-    excerpt: 'あの夏の最後の大会、僕のパスからゴールを決めてくれたこと今でも鮮明に覚えています。みんな元気にしていますか？',
-    secretQuestion: '大会の帰りにみんなで食べたアイスの種類は？',
-    createdTime: '漂流 3日前',
-    tagBg: 'bg-teal-100 text-teal-800 border-teal-200'
-  },
-  {
-    id: 'sample-2',
-    targetName: '2005年 横浜 / 保健室のH先生へ',
-    era: '2000年代',
-    location: '神奈川県横浜市',
-    relationship: '恩師・先生',
-    excerpt: '学校に行けなかった時期、否定せずに話を聞いてくれた先生の優しさに救われました。私も今では小学校の教員になりました。',
-    secretQuestion: '先生の保健室のデスクに置いてあった小さな観葉植物の名前は？',
-    createdTime: '漂流 昨日',
-    tagBg: 'bg-sky-100 text-sky-800 border-sky-200'
-  },
-  {
-    id: 'sample-3',
-    targetName: '京都 軽音サークル 初恋のM先輩へ',
-    era: '2010年代',
-    location: '京都府京都市',
-    relationship: '初恋・サークルの先輩',
-    excerpt: '卒業ライブの日に渡せなかったメッセージがずっと部屋にありました。またあのギターの音色が聴きたいです。',
-    secretQuestion: '学園祭で最後に演奏した曲のバンド名は？',
-    createdTime: '漂流 本日',
-    tagBg: 'bg-rose-100 text-rose-800 border-rose-200'
-  },
-  {
-    id: 'sample-4',
-    targetName: '旅先の福岡で財布を落とした私を助けてくれた親切な方へ',
-    era: '2010年代',
-    location: '福岡県博多区',
-    relationship: '旅先での恩人',
-    excerpt: '一銭もなく途方に暮れていた高校生の私に電車代を貸して下さり本当にありがとうございました。ずっとお礼が言いたかったです。',
-    secretQuestion: '駅前の喫茶店でご馳走していただいたあたたかい飲み物は？',
-    createdTime: '漂流 5日前',
-    tagBg: 'bg-emerald-100 text-emerald-800 border-emerald-200'
-  }
-];
-
 const TRIGGER_CATEGORIES = [
   { label: '学校（同級生・先生）', category: 'school', icon: '🎓' },
   { label: '職場（同僚・上司）', category: 'work', icon: '💼' },
@@ -114,13 +56,11 @@ const TRIGGER_CATEGORIES = [
 
 export const HomeVariantSub3Minimal: React.FC<HomeVariantSub3MinimalProps> = ({
   onToggleDesign,
-  recentPosts,
   onOpenConceptModal
 }) => {
   const [lastName, setLastName] = useState('');
   const [firstName, setFirstName] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedBottle, setSelectedBottle] = useState<any | null>(null);
   const [isConceptModalOpen, setIsConceptModalOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -137,8 +77,6 @@ export const HomeVariantSub3Minimal: React.FC<HomeVariantSub3MinimalProps> = ({
       }
     });
   };
-
-  const displayBottles = (recentPosts && recentPosts.length > 0) ? recentPosts.slice(0, 4) : GALLERY_BOTTLES;
 
   return (
     <div className="min-h-screen bg-[#FDF9F0]/60 pb-32 font-sans text-slate-800 selection:bg-teal-100 selection:text-teal-900">
@@ -166,10 +104,10 @@ export const HomeVariantSub3Minimal: React.FC<HomeVariantSub3MinimalProps> = ({
           </div>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-3 font-sans">
             <Link to="/create" className="px-8 py-3.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-serif font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 shadow-sm">
-              <PenTool size={14} /><span>ボトルメールを流す</span>
+              <PenTool size={14} /><span>メッセージを書く</span>
             </Link>
-            <Link to="/search" className="px-8 py-3.5 bg-white hover:bg-slate-50 border border-slate-300 text-slate-800 text-xs font-serif font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 shadow-sm">
-              <Search size={14} /><span>自分宛てのメッセージを探す</span>
+            <Link to="/account" className="px-8 py-3.5 bg-white hover:bg-slate-50 border border-slate-300 text-slate-800 text-xs font-serif font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 shadow-sm">
+              <Sparkles size={14} className="text-amber-500" /><span>マイアカウント（照合状況）</span>
             </Link>
           </div>
 
@@ -336,117 +274,7 @@ export const HomeVariantSub3Minimal: React.FC<HomeVariantSub3MinimalProps> = ({
           <div className="p-2"><span className="text-xs text-slate-400 block">本日の投函</span><strong className="text-base font-serif font-bold text-slate-900">12 通</strong></div>
         </div>
 
-        {/* 7. ギャラリー */}
-        <div className="space-y-4">
-          <div className="flex justify-between items-end border-b border-slate-200 pb-2">
-            <div>
-              <span className="text-[10px] uppercase font-bold text-slate-400 font-mono">Bottle Mail Gallery</span>
-              <h2 className="text-xl font-serif font-bold text-slate-900">ネットの海に漂うみんなの想い</h2>
-              <p className="text-xs text-slate-600 font-sans">タップしてボトルを開けてみてください。自分と同じように、大切な人を探している一通が見つかります。</p>
-            </div>
-            <Link to="/search" className="text-xs text-slate-700 font-bold hover:underline">すべて見る →</Link>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {displayBottles.map((b: any) => {
-              const targetName = b.target_name || b.targetName || '大切なあの人';
-              const era = b.target_era || b.era || '昔の思い出';
-              const rel = b.target_relationship || b.relationship || '大切なご関係';
-              const location = b.target_location || b.location || 'ゆかりの地';
-              const excerpt = b.message ? (b.message.length > 50 ? b.message.substring(0, 50) + '...' : b.message) : (b.excerpt || '想い出のボトルメールです');
-              const bottleUrl = b.id ? getPostUrl(b) : '/search';
-
-              return (
-                <div 
-                  key={b.id} 
-                  onClick={() => setSelectedBottle(b)} 
-                  className="p-5 bg-white border border-slate-200 hover:border-slate-400 rounded-xl space-y-2 cursor-pointer transition-all text-left shadow-sm hover:shadow-md"
-                >
-                  <span className="text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full">{era} / {rel}</span>
-                  <h3 className="text-sm sm:text-base font-serif font-bold text-slate-900">{targetName} 様</h3>
-                  <p className="text-xs text-slate-600 font-sans line-clamp-2">出会った場所: {location} / 「{excerpt}」</p>
-                  <div className="pt-1 text-[10px] text-slate-700 font-serif flex items-center gap-1 font-bold">
-                    <span>メッセージを引き出す</span> <ArrowRight size={10} />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
       </motion.div>
-
-      {/* ボトル詳細プレビューモーダル */}
-      <AnimatePresence>
-        {selectedBottle && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-white rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl border border-slate-200"
-            >
-              <div className="p-6 space-y-4">
-                <div className="flex justify-between items-start">
-                  <div className="space-y-1">
-                    <span className="text-xs font-mono font-bold text-slate-400">BOTTLE MAIL PREVIEW</span>
-                    <h3 className="text-lg font-serif font-bold text-slate-900">
-                      {selectedBottle.target_name || selectedBottle.targetName} 様 宛て
-                    </h3>
-                  </div>
-                  <button
-                    onClick={() => setSelectedBottle(null)}
-                    className="p-1 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
-                  >
-                    <X size={20} />
-                  </button>
-                </div>
-
-                <div className="p-4 bg-slate-50 rounded-xl space-y-2 border border-slate-100">
-                  <div className="flex items-center gap-2 text-xs text-slate-500">
-                    <MapPin size={13} />
-                    <span>場所: {selectedBottle.target_location || selectedBottle.location || '非公開'}</span>
-                    <span className="mx-1">•</span>
-                    <Clock size={13} />
-                    <span>年代: {selectedBottle.target_era || selectedBottle.era || '非公開'}</span>
-                  </div>
-                  <p className="text-xs text-slate-700 font-serif leading-relaxed italic">
-                    「{selectedBottle.message || selectedBottle.excerpt}」
-                  </p>
-                </div>
-
-                <div className="p-3 bg-amber-50/60 border border-amber-200/60 rounded-xl flex items-start gap-2.5">
-                  <HelpCircle size={16} className="text-amber-600 shrink-0 mt-0.5" />
-                  <div className="space-y-0.5">
-                    <span className="text-[11px] font-bold text-amber-900 block">秘密の思い出クイズ</span>
-                    <p className="text-[11px] text-amber-800/90 font-sans">
-                      {selectedBottle.secret_question || selectedBottle.secretQuestion || '「あの時、一緒に見た映画のタイトルは？」'}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex gap-2 pt-2">
-                  <button
-                    onClick={() => {
-                      const url = selectedBottle.id ? getPostUrl(selectedBottle) : '/search';
-                      setSelectedBottle(null);
-                      navigate(url);
-                    }}
-                    className="flex-1 py-3 bg-slate-900 hover:bg-slate-800 text-white text-xs font-serif font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-sm"
-                  >
-                    <span>このメッセージのクイズに答えて開封する</span>
-                    <ArrowRight size={13} />
-                  </button>
-                  <button
-                    onClick={() => setSelectedBottle(null)}
-                    className="px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-serif font-bold rounded-xl transition-colors"
-                  >
-                    閉じる
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
 
       {/* コンセプトストーリーモーダル */}
       <ConceptStoryModal
