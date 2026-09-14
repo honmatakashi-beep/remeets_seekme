@@ -141,6 +141,41 @@ export const CreatePostPage = () => {
 
   const privacyWarning = getPrivacyWarning(formData.message);
 
+  // 🤖 AI メッセージ自動作文用 state & ハンドラー
+  const [aiGenerating, setAiGenerating] = useState(false);
+  const [showAiAssistant, setShowAiAssistant] = useState(false);
+  const [aiSituation, setAiSituation] = useState<'school_friends' | 'teacher_senior' | 'work_colleague' | 'general_gratitude'>('school_friends');
+  const [aiGeneratedSuccess, setAiGeneratedSuccess] = useState(false);
+
+  const handleGenerateAiMessage = async (customSit?: 'school_friends' | 'teacher_senior' | 'work_colleague' | 'general_gratitude') => {
+    const sit = customSit || aiSituation;
+    setAiGenerating(true);
+    try {
+      const res = await fetch('/api/posts/ai-draft', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          lastName: formData.lastName,
+          firstName: formData.firstName,
+          maidenName: formData.maidenName,
+          hometownPref: formData.hometownPref,
+          birthYear: formData.birthYear,
+          situation: sit
+        })
+      });
+      const data = await res.json();
+      if (data.success && data.message) {
+        setFormData(prev => ({ ...prev, message: data.message }));
+        setAiGeneratedSuccess(true);
+        setTimeout(() => setAiGeneratedSuccess(false), 3000);
+      }
+    } catch (err) {
+      console.error('AI draft generation error:', err);
+    } finally {
+      setAiGenerating(false);
+    }
+  };
+
   // フォームバリデーション
   const validateForm = (): boolean => {
     setWarningMessage(null);
@@ -1464,37 +1499,6 @@ export const CreatePostPage = () => {
             </div>
           </div>
 
-          {/* 🛡️ 公開メッセージの「安心の約束ごと（3箇条）」バナー */}
-          <div className="bg-gradient-to-br from-teal-50/90 via-sky-50/60 to-emerald-50/80 border border-teal-200/90 rounded-3xl p-5 sm:p-6 space-y-3.5 shadow-sm">
-            <div className="flex items-center gap-2 text-teal-900 font-bold text-sm sm:text-base font-serif">
-              <ShieldCheck size={20} className="text-teal-600 shrink-0" />
-              <span>安心・安全のための「公開メッセージの約束ごと」</span>
-            </div>
-            <p className="text-xs text-slate-600 font-sans leading-relaxed">
-              メッセージはGoogle検索等にも掲載されます。悪質な居場所特定や嫌がらせを防ぐため、以下のルールをお守りください。
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1 text-xs">
-              <div className="p-3 bg-white/90 rounded-2xl border border-teal-100 shadow-2xs space-y-1">
-                <span className="font-bold text-rose-700 block">🚫 学校名・会社名は書かない</span>
-                <span className="text-[11px] text-slate-500 leading-tight block">
-                  〇〇高校、〇〇大学、勤務先などの固有名詞は避けてください。
-                </span>
-              </div>
-              <div className="p-3 bg-white/90 rounded-2xl border border-teal-100 shadow-2xs space-y-1">
-                <span className="font-bold text-rose-700 block">🚫 駅名・詳細住所は書かない</span>
-                <span className="text-[11px] text-slate-500 leading-tight block">
-                  最寄り駅や町名・番地は書かず、都道府県のみを公開します。
-                </span>
-              </div>
-              <div className="p-3 bg-white/90 rounded-2xl border border-teal-100 shadow-2xs space-y-1">
-                <span className="font-bold text-emerald-700 block">⭕ 二人だけの思い出を書く</span>
-                <span className="text-[11px] text-slate-500 leading-tight block">
-                  「文化祭のバンド」「部活帰りのアイス」など懐かしい情景が最適です。
-                </span>
-              </div>
-            </div>
-          </div>
-
           {/* 警告メッセージ */}
           {warningMessage && (
             <div className="p-4 bg-red-50 border border-red-200 text-red-800 rounded-2xl text-xs sm:text-sm font-bold flex items-start gap-2.5 animate-shake shadow-sm">
@@ -1645,9 +1649,9 @@ export const CreatePostPage = () => {
 
             {/* 2. 探している相手に向けた公開メッセージ */}
             <div className="bg-white rounded-3xl border-2 border-slate-200/90 p-5 sm:p-7 space-y-4 shadow-sm">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center font-bold text-xs border border-teal-200">
+                  <div className="w-8 h-8 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center font-bold text-xs border border-teal-200 shrink-0">
                     2
                   </div>
                   <div>
@@ -1655,20 +1659,121 @@ export const CreatePostPage = () => {
                     <p className="text-xs text-slate-500 font-sans">あなたを探している相手に向けた温かいひと言をご記入ください。</p>
                   </div>
                 </div>
-                <span className="text-[11px] font-mono text-slate-400">
-                  {formData.message.length}文字（15文字以上）
-                </span>
+
+                <div className="flex items-center gap-2 self-end sm:self-auto">
+                  <button
+                    type="button"
+                    onClick={() => setShowAiAssistant(!showAiAssistant)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer ${
+                      showAiAssistant
+                        ? 'bg-teal-600 text-white shadow-teal-200'
+                        : 'bg-gradient-to-r from-teal-50 to-sky-50 hover:from-teal-100 hover:to-sky-100 text-teal-800 border border-teal-200'
+                    }`}
+                  >
+                    <Sparkles size={14} className={showAiAssistant ? 'animate-spin' : 'text-teal-600'} />
+                    <span>AIで自動作文</span>
+                  </button>
+                  <span className="text-[11px] font-mono text-slate-400 bg-slate-50 px-2 py-1 rounded-lg border border-slate-100">
+                    {formData.message.length}文字
+                  </span>
+                </div>
               </div>
 
-              <div className="space-y-2">
-                <textarea
-                  required
-                  rows={4}
-                  value={formData.message}
-                  onChange={e => setFormData(prev => ({ ...prev, message: e.target.value }))}
-                  placeholder="例：元気にしていますか？あの時一緒に過ごした放課後の夕暮れの風景を今でもよく思い出します。もし私を探してくれたら、メッセージを届けてください。"
-                  className="w-full p-4 text-sm border border-slate-200 rounded-2xl bg-slate-50/60 focus:bg-white focus:border-teal-600 outline-none transition-all shadow-inner font-serif leading-relaxed"
-                />
+              {/* 🤖 AI自動作文アシスタントパネル */}
+              {showAiAssistant && (
+                <div className="bg-gradient-to-br from-teal-50/90 via-sky-50/70 to-emerald-50/80 border border-teal-200 rounded-2xl p-4 sm:p-5 space-y-3.5 animate-fade-in shadow-2xs">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-teal-900 font-bold text-xs sm:text-sm font-serif">
+                      <Sparkles size={16} className="text-teal-600 shrink-0" />
+                      <span>AIメッセージ自動作文アシスタント</span>
+                    </div>
+                    {aiGeneratedSuccess && (
+                      <span className="text-[11px] font-bold text-emerald-700 bg-emerald-100/80 px-2.5 py-0.5 rounded-full animate-pulse flex items-center gap-1">
+                        <Check size={12} /> 作成しました！
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[11px] sm:text-xs text-slate-600 leading-relaxed font-sans">
+                    シチュエーションを選ぶだけで、お名前やゆかりの地の情報をもとに安心・温かい公開メッセージを自動生成します。
+                  </p>
+
+                  {/* シチュエーション選択ボタン */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    {[
+                      { id: 'school_friends', label: '🎒 同級生・学生時代', desc: '学校や放課後の思い出' },
+                      { id: 'teacher_senior', label: '🎾 部活・恩師・先輩', desc: '部活動やご指導の感謝' },
+                      { id: 'work_colleague', label: '💼 職場・同期・同僚', desc: '苦楽を共にした仕事仲間' },
+                      { id: 'general_gratitude', label: '🤝 お世話になった人', desc: '温かい支援や再会の願い' }
+                    ].map(sit => (
+                      <button
+                        key={sit.id}
+                        type="button"
+                        onClick={() => {
+                          setAiSituation(sit.id as any);
+                          handleGenerateAiMessage(sit.id as any);
+                        }}
+                        disabled={aiGenerating}
+                        className={`p-2.5 rounded-xl text-left border transition-all cursor-pointer flex flex-col justify-between ${
+                          aiSituation === sit.id
+                            ? 'bg-white border-teal-500 shadow-sm ring-2 ring-teal-500/20'
+                            : 'bg-white/70 hover:bg-white border-slate-200 hover:border-teal-300'
+                        }`}
+                      >
+                        <span className="text-xs font-bold text-slate-800 block truncate">{sit.label}</span>
+                        <span className="text-[10px] text-slate-500 mt-1 line-clamp-1">{sit.desc}</span>
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="flex items-center justify-between pt-1">
+                    <span className="text-[10px] text-slate-500">※ 生成後も自由に編集できます</span>
+                    <button
+                      type="button"
+                      disabled={aiGenerating}
+                      onClick={() => handleGenerateAiMessage()}
+                      className="px-4 py-2 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white rounded-xl text-xs font-bold shadow-sm transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                    >
+                      {aiGenerating ? (
+                        <>
+                          <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                          <span>AIが作文中...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles size={14} />
+                          <span>選択した内容で再生成</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* メッセージ記入テキストエリア */}
+              <div className="space-y-3">
+                <div className="relative">
+                  <textarea
+                    required
+                    rows={4}
+                    value={formData.message}
+                    onChange={e => setFormData(prev => ({ ...prev, message: e.target.value }))}
+                    placeholder="例：元気にしていますか？あの時一緒に過ごした放課後の夕暮れの風景を今でもよく思い出します。もし私を探してくれたら、メッセージを届けてください。"
+                    className="w-full p-4 text-sm border border-slate-200 rounded-2xl bg-slate-50/60 focus:bg-white focus:border-teal-600 outline-none transition-all shadow-inner font-serif leading-relaxed"
+                  />
+                  {!formData.message && !showAiAssistant && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowAiAssistant(true);
+                        handleGenerateAiMessage('school_friends');
+                      }}
+                      className="absolute bottom-3 right-3 px-3 py-1.5 bg-teal-50 hover:bg-teal-100 text-teal-700 border border-teal-200 rounded-xl text-xs font-bold flex items-center gap-1 transition-all shadow-2xs cursor-pointer"
+                    >
+                      <Sparkles size={13} className="text-teal-600" />
+                      <span>AIにおまかせで書く</span>
+                    </button>
+                  )}
+                </div>
 
                 {/* リアルタイム検知アラート */}
                 {privacyWarning && (
@@ -1677,6 +1782,34 @@ export const CreatePostPage = () => {
                     <span>{privacyWarning}</span>
                   </div>
                 )}
+
+                {/* 🛡️ メッセージ記入欄の直下に配置された「安心の約束ごと（3箇条）」 */}
+                <div className="bg-gradient-to-br from-teal-50/60 via-sky-50/40 to-slate-50 border border-teal-100 rounded-2xl p-4 space-y-2.5">
+                  <div className="flex items-center gap-1.5 text-teal-900 font-bold text-xs font-serif">
+                    <ShieldCheck size={16} className="text-teal-600 shrink-0" />
+                    <span>安心・安全のための「公開メッセージの約束ごと」</span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                    <div className="p-2.5 bg-white/95 rounded-xl border border-teal-100 shadow-2xs space-y-0.5">
+                      <span className="font-bold text-rose-700 block text-[11px]">🚫 学校名・会社名は書かない</span>
+                      <span className="text-[10px] text-slate-500 leading-tight block">
+                        〇〇高校、〇〇大学、勤務先などの固有名詞は避けてください。
+                      </span>
+                    </div>
+                    <div className="p-2.5 bg-white/95 rounded-xl border border-teal-100 shadow-2xs space-y-0.5">
+                      <span className="font-bold text-rose-700 block text-[11px]">🚫 駅名・詳細住所は書かない</span>
+                      <span className="text-[10px] text-slate-500 leading-tight block">
+                        最寄り駅や番地は書かず、都道府県のみを公開します。
+                      </span>
+                    </div>
+                    <div className="p-2.5 bg-white/95 rounded-xl border border-teal-100 shadow-2xs space-y-0.5">
+                      <span className="font-bold text-emerald-700 block text-[11px]">⭕ 二人だけの思い出を書く</span>
+                      <span className="text-[10px] text-slate-500 leading-tight block">
+                        「文化祭のバンド」「部活帰りのアイス」など情景が最適です。
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 

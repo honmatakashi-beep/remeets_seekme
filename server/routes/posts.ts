@@ -1502,6 +1502,100 @@ export const postsRouter = express.Router();
     }
   });
 
+  // 🤖 AIによる公開メッセージ自動作文エンドポイント
+  postsRouter.post("/ai-draft", async (req, res) => {
+    try {
+      const {
+        lastName = "",
+        firstName = "",
+        maidenName = "",
+        hometownPref = "",
+        birthYear = "",
+        situation = "school_friends",
+        customKeywords = ""
+      } = req.body || {};
+
+      const fullName = `${lastName} ${firstName}`.trim();
+      const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY || "";
+
+      let generatedMessage = "";
+
+      if (apiKey) {
+        try {
+          const { GoogleGenAI } = await import("@google/genai");
+          const ai = new GoogleGenAI({ apiKey });
+          
+          let situationLabel = "学生時代の同級生・懐かしい友人";
+          if (situation === "teacher_senior") situationLabel = "部活動の仲間・恩師・お世話になった先輩";
+          if (situation === "work_colleague") situationLabel = "当時の職場の同僚・仕事仲間";
+          if (situation === "general_gratitude") situationLabel = "昔お世話になった大切な人・感謝を伝えたい相手";
+
+          const prompt = `
+あなたは再会プラットフォーム「ReMEETs SEEKME」の心温まるメッセージ作成アシスタントです。
+自分（差出人）を探しているお相手に向けて、Web上に公開しておく呼びかけメッセージ（公開メッセージ）を作成してください。
+
+【差出人の情報】
+- お名前: ${fullName || '未入力'} ${maidenName ? `(旧姓: ${maidenName})` : ''}
+- ゆかりの都道府県: ${hometownPref || '未選択'}
+- 生まれ年: ${birthYear ? `${birthYear}年頃` : '非公開'}
+- 伝えたい相手・シチュエーション: ${situationLabel}
+${customKeywords ? `- 込めたい思い出やキーワード: ${customKeywords}` : ''}
+
+【必須執筆ルール】
+1. 文字数は 80文字〜150文字 程度。
+2. 読む人の心に響く、温かく穏やかな日本語で表現してください。
+3. 防犯徹底のため、具体的な学校名、会社名、詳細な住所（番地・最寄り駅など）は一切書かないでください。
+4. 「手紙」「目印」という単語は一切使用せず、「メッセージ」などの言葉を用いてください。
+5. 出力は生成されたメッセージ本文のみ（前置きや解説なし）を返してください。
+`;
+
+          const result = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: prompt,
+          });
+
+          if (result && result.text) {
+            generatedMessage = result.text.trim().replace(/^["「『]|["」』]$/g, "");
+          }
+        } catch (aiErr) {
+          console.warn("[AI Draft] Gemini API invocation error, using organic fallback:", aiErr);
+        }
+      }
+
+      // フォールバック（APIキーなし・通信失敗時も100%情緒豊かに即応）
+      if (!generatedMessage) {
+        const fallbacks: Record<string, string[]> = {
+          school_friends: [
+            `元気にしていますか？あの頃みんなで笑い合った放課後の時間や、何気ない帰り道の景色を今でも懐かしく思い出します。もし私を探してくれたら、ぜひメッセージを届けてください。`,
+            `懐かしい日々からずいぶん時間が経ちましたが、ふと当時の思い出が蘇りここにメッセージを残します。お互い元気に過ごしていることを祈っています。また当時の思い出を語り合いましょう。`,
+            `当時の友人たちへ。引っ越しなどで連絡先が途絶えてしまいましたが、元気でお過ごしでしょうか。もしこのメッセージを見かけたら、気軽にお返事をもらえると嬉しいです。`
+          ],
+          teacher_senior: [
+            `当時温かくご指導いただいた皆様へ。教えていただいたことや励ましの言葉は、今でも私の大きな支えとなっています。近況をご報告したく、メッセージを残させていただきます。`,
+            `部活動や行事で共に汗を流した先輩・仲間の皆さんへ。ふとあの頃の情熱的な日々が懐かしくなり、ここに言葉を残します。もし見つけていただけたら、温かいご連絡をお待ちしています。`
+          ],
+          work_colleague: [
+            `当時同じ職場で共に切磋琢磨した仲間の皆さんへ。大変な日々も多かったですが、皆さんと過ごした時間はかけがえのない財産です。元気でお過ごしでしたら、ぜひ近況を教えてください。`,
+            `昔お世話になった職場の皆様へ。ふと当時の懐かしい思い出が蘇り、こちらにメッセージを届けることにしました。お互いの近況などを語り合える機会を心から楽しみにしています。`
+          ],
+          general_gratitude: [
+            `昔お世話になった大切なあなたへ。当時は伝えきれなかった感謝の気持ちを、今でも心に抱き続けています。もし私を探してくれたら、メッセージを届けていただけると幸いです。`,
+            `あたたかい想い出をくれた大切な人へ。元気でお過ごしでしょうか。偶然でもこのメッセージが届くことを願い、ここに言葉を残します。`
+          ]
+        };
+
+        const targetList = fallbacks[situation] || fallbacks.school_friends;
+        const randomIndex = Math.floor(Math.random() * targetList.length);
+        generatedMessage = targetList[randomIndex];
+      }
+
+      res.json({ success: true, message: generatedMessage });
+    } catch (err: any) {
+      console.error("Failed to generate AI draft:", err);
+      res.status(500).json({ error: "メッセージの自動生成中にエラーが発生しました。" });
+    }
+  });
+
   // --- Admin Routes ---
 
 
