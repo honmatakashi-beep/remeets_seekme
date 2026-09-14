@@ -662,13 +662,18 @@ export const CreatePostPage = () => {
                     </span>
                   </div>
                   <div className="flex items-center gap-2.5 flex-wrap">
-                    <h3 className="text-xl sm:text-2xl md:text-3xl font-serif font-bold text-slate-900 leading-snug">
-                      <span>{fullName || 'お名前'} 様から貴方へのメッセージです。</span>
-                      {formData.maidenName && (
-                        <span className="text-xs sm:text-sm font-normal text-slate-500 font-sans ml-1">
-                          （旧姓: {formData.maidenName}{formData.maidenNameKana ? ` / ${formData.maidenNameKana}` : ''}）
-                        </span>
-                      )}
+                    <h3 className="text-xl sm:text-2xl md:text-3xl font-serif font-bold text-slate-900 leading-snug space-y-0.5">
+                      <span className="block">
+                        <span>{fullName || 'お名前'} 様から</span>
+                        {formData.maidenName && (
+                          <span className="text-xs sm:text-sm font-normal text-slate-500 font-sans ml-1.5 align-middle">
+                            （旧姓: {formData.maidenName}{formData.maidenNameKana ? ` / ${formData.maidenNameKana}` : ''}）
+                          </span>
+                        )}
+                      </span>
+                      <span className="block text-lg sm:text-xl md:text-2xl text-slate-800">
+                        貴方へのメッセージです。
+                      </span>
                     </h3>
                     {previewTab === 'ekyc' && (
                       <button

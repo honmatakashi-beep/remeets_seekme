@@ -215,13 +215,18 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                 )}
               </div>
               <div className="flex items-center gap-2.5 flex-wrap pt-1">
-                <h2 className="text-xl sm:text-2xl md:text-3xl font-serif font-bold text-slate-900 leading-snug">
-                  <span>{postFullName || 'お名前'} 様から貴方へのメッセージです。</span>
-                  {postMaidenName && (
-                    <span className="text-xs sm:text-sm font-normal text-slate-500 font-sans ml-1">
-                      （旧姓: {postMaidenName}{postMaidenNameKana ? ` / ${postMaidenNameKana}` : ''}）
-                    </span>
-                  )}
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-serif font-bold text-slate-900 leading-snug space-y-0.5">
+                  <span className="block">
+                    <span>{postFullName || 'お名前'} 様から</span>
+                    {postMaidenName && (
+                      <span className="text-xs sm:text-sm font-normal text-slate-500 font-sans ml-1.5 align-middle">
+                        （旧姓: {postMaidenName}{postMaidenNameKana ? ` / ${postMaidenNameKana}` : ''}）
+                      </span>
+                    )}
+                  </span>
+                  <span className="block text-lg sm:text-xl md:text-2xl text-slate-800">
+                    貴方へのメッセージです。
+                  </span>
                 </h2>
                 {Boolean(post.is_ekyc_verified) && (
                   <button
