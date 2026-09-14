@@ -633,6 +633,26 @@ export const authRouter = express.Router();
         req.user.id
       );
 
+      // ユーザーの公開メッセージ（postsテーブル）の連絡先・ゆかりの地・旧姓も同期更新
+      try {
+        db.prepare(`
+          UPDATE posts 
+          SET contact_type = COALESCE(?, contact_type),
+              contact_id = COALESCE(?, contact_id),
+              target_hometown = COALESCE(?, target_hometown),
+              searcher_maiden_name = COALESCE(?, searcher_maiden_name)
+          WHERE user_id = ?
+        `).run(
+          actualContactType ?? null,
+          actualContactId ?? null,
+          hometown ?? null,
+          actualMaidenName ?? null,
+          req.user.id
+        );
+      } catch (postSyncErr) {
+        console.warn("Failed to sync posts from user profile update:", postSyncErr);
+      }
+
       if (emailChanged) {
         await sendVerificationEmail(email, verificationToken!);
       }

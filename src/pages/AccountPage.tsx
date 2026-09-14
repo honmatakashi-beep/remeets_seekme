@@ -784,71 +784,73 @@ export const AccountPage = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [resMy, resConnected, resProfile, resNotifications] = await Promise.all([
-          fetch('/api/posts/my-posts', {
-            headers: { 'Authorization': `Bearer ${token}` }
-          }),
-          fetch('/api/posts/connected-posts', {
-            headers: { 'Authorization': `Bearer ${token}` }
-          }),
-          fetch('/api/auth/me', {
-            headers: { 'Authorization': `Bearer ${token}` }
-          }),
-          fetch('/api/notifications', {
-            headers: { 'Authorization': `Bearer ${token}` }
-          })
-        ]);
+  const fetchData = async () => {
+    if (!token) return;
+    try {
+      const [resMy, resConnected, resProfile, resNotifications] = await Promise.all([
+        fetch('/api/posts/my-posts', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+        fetch('/api/posts/connected-posts', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+        fetch('/api/auth/me', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+        fetch('/api/notifications', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        })
+      ]);
 
-        if (resMy.ok) {
-          const myData = await resMy.json();
-          setMyPosts(myData);
-        }
-        if (resConnected.ok) {
-          const connectedData = await resConnected.json();
-          setConnectedPosts(connectedData);
-        }
-        if (resNotifications.ok) {
-          const notifData = await resNotifications.json();
-          setNotifications(notifData);
-        }
-        await fetchMyAlerts();
-        await fetchMyStories();
-        if (resProfile.ok) {
-          const profile = await resProfile.json();
-          setEditingNickname(profile.nickname || '');
-          setEditingEmail(profile.email || '');
-          setEditingMaidenName(profile.maiden_name || '');
-          if (profile.email_notifications !== undefined) {
-            setEditingEmailNotifications(!!profile.email_notifications);
-          }
-          if (profile.contact_type) setEditingContactType(profile.contact_type);
-          if (profile.contact_id) setEditingContactId(profile.contact_id);
-          if (profile.gender) setEditingGender(profile.gender);
-          updateUser({ 
-            fullName: profile.fullName, 
-            lastName: profile.lastName, 
-            firstName: profile.firstName, 
-            nickname: profile.nickname, 
-            email: profile.email,
-            maiden_name: profile.maiden_name,
-            hometown: profile.hometown,
-            birthdate: profile.birthdate,
-            gender: profile.gender,
-            email_notifications: profile.email_notifications !== undefined ? profile.email_notifications : true,
-            contact_type: profile.contact_type || editingContactType,
-            contact_id: profile.contact_id || editingContactId,
-            is_ekyc_verified: profile.is_ekyc_verified
-          });
-        }
-      } catch (err) {
-        console.error('Failed to fetch my posts, received letters or profile', err);
-      } finally {
-        setLoading(false);
+      if (resMy.ok) {
+        const myData = await resMy.json();
+        setMyPosts(myData);
       }
-    };
+      if (resConnected.ok) {
+        const connectedData = await resConnected.json();
+        setConnectedPosts(connectedData);
+      }
+      if (resNotifications.ok) {
+        const notifData = await resNotifications.json();
+        setNotifications(notifData);
+      }
+      await fetchMyAlerts();
+      await fetchMyStories();
+      if (resProfile.ok) {
+        const profile = await resProfile.json();
+        setEditingNickname(profile.nickname || '');
+        setEditingEmail(profile.email || '');
+        setEditingMaidenName(profile.maiden_name || '');
+        if (profile.email_notifications !== undefined) {
+          setEditingEmailNotifications(!!profile.email_notifications);
+        }
+        if (profile.contact_type) setEditingContactType(profile.contact_type);
+        if (profile.contact_id) setEditingContactId(profile.contact_id);
+        if (profile.gender) setEditingGender(profile.gender);
+        updateUser({ 
+          fullName: profile.fullName, 
+          lastName: profile.lastName, 
+          firstName: profile.firstName, 
+          nickname: profile.nickname, 
+          email: profile.email,
+          maiden_name: profile.maiden_name,
+          hometown: profile.hometown,
+          birthdate: profile.birthdate,
+          gender: profile.gender,
+          email_notifications: profile.email_notifications !== undefined ? profile.email_notifications : true,
+          contact_type: profile.contact_type || editingContactType,
+          contact_id: profile.contact_id || editingContactId,
+          is_ekyc_verified: profile.is_ekyc_verified
+        });
+      }
+    } catch (err) {
+      console.error('Failed to fetch my posts, received letters or profile', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     if (token) fetchData();
   }, [token]);
 
@@ -1381,9 +1383,13 @@ export const AccountPage = () => {
                             承認時のみ開示
                           </span>
                         </div>
-                        <div className="text-xs font-mono font-bold text-teal-950">
-                          <span className="bg-teal-200/60 px-1.5 py-0.5 rounded mr-1.5 text-[11px]">{currentPost.contact_type || 'LINE'}</span>
-                          <span>{currentPost.contact_id || '未登録'}</span>
+                        <div className="text-xs font-mono font-bold text-teal-950 flex items-center gap-1.5 flex-wrap">
+                          <span className="bg-teal-200/60 px-1.5 py-0.5 rounded text-[11px]">
+                            {currentPost.contact_type || (user as any)?.contact_type || editingContactType || localStorage.getItem('remeets_default_contact_type') || 'LINE'}
+                          </span>
+                          <span>
+                            {currentPost.contact_id || (user as any)?.contact_id || editingContactId || localStorage.getItem('remeets_default_contact_id') || '未登録'}
+                          </span>
                         </div>
                       </div>
 
@@ -1477,6 +1483,7 @@ export const AccountPage = () => {
             token={token}
             updateUser={updateUser}
             getAgeFromBirthdate={getAgeFromBirthdate}
+            onSuccess={fetchData}
           />
 
           {/* Tab Selection Segments: Modern Pill Card Control */}
