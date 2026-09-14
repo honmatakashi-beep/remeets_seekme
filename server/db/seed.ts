@@ -1085,44 +1085,44 @@ export const seedData = async (force: boolean = false) => {
 
     const notifTemplates = [
       {
-        type: "reunion_reveal",
-        content: "【想い出開通】昔の同窓生「佐藤 さくら」様とのボトルメール（1998年頃・青葉中学校）の想い出クイズが一致し、連絡先とメッセージが開通しました！早速内容をご確認ください。",
+        type: "reunion_request",
+        content: "【再会希望の受信】昔の同窓生「佐藤 さくら」様より、あなたの公開メッセージ（1998年頃・青葉中学校）に想い出エピソードが届きました！「届いた再会希望」タブより内容をご確認のうえ、承認を行ってください。",
         link: "/account?tab=received",
         is_read: 0,
         created_at: new Date(now.getTime() - 1000 * 60 * 35).toISOString().replace('T', ' ').substring(0, 19)
       },
       {
-        type: "reunion",
-        content: "【クイズ照合成功】あなたが海に流したボトルメール「高橋 健二 様宛てのメッセージ」にお相手からの思い出回答が届き、見事正解しました！相手のメッセージを開封できます。",
+        type: "reunion_approved",
+        content: "【再会希望が承認されました】あなたが送信した「高橋 健二 様宛て」の再会希望エピソードがお相手に承認されました！本人確認と決済を行って連絡先をお受け取りください。",
         link: "/account?tab=sent",
         is_read: 0,
         created_at: new Date(now.getTime() - 1000 * 60 * 120).toISOString().replace('T', ' ').substring(0, 19)
       },
       {
         type: "admin_broadcast",
-        content: "【ReMEETs運営事務局より】\nいつもReMEETsをご利用いただき誠にありがとうございます。\n\nより安心して想い出の再会を果たしていただけるよう、AI安全防衛エンジンの精度向上と、本人確認（eKYC）認証スピードの高速化アップデートを実施いたしました。\n\n引き続き、温かい思い出の海を守るため健全な運営に努めてまいります。ご不明な点がございましたら「お問い合わせ」窓口よりお気軽にお寄せください。",
+        content: "【ReMEETs SEEKME 運営事務局より】\nいつも ReMEETs SEEKME をご利用いただき誠にありがとうございます。\n\nより安心して想い出の再会を果たしていただけるよう、AI安全防衛エンジンの精度向上と、本人確認（eKYC）認証スピードの高速化アップデートを実施いたしました。\n\n引き続き、温かい想い出のメッセージを守るため健全な運営に努めてまいります。ご不明な点がございましたら「お問い合わせ」窓口よりお気軽にお寄せください。",
         link: null,
         is_read: 1,
         created_at: new Date(now.getTime() - 86400000 * 1).toISOString().replace('T', ' ').substring(0, 19)
       },
       {
         type: "system",
-        content: "【公式サポーター認定】ReMEETsプラットフォームのサーバー運営・AI安全防衛への温かいご寄付（1口 500円）をいただき、心より御礼申し上げます。\n\nプロフィール等に「⭐ 公式サポーター」ゴールドバッジが付与されました。温かいご支援に心より感謝申し上げます。",
-        link: "/supporter",
+        content: "【公式サポーター認定】ReMEETs SEEKME プラットフォームのサーバー運営・AI安全防衛への温かいご寄付（1口 500円）をいただき、心より御礼申し上げます。\n\nマイアカウント等に「⭐ 公式サポーター」ゴールドバッジが付与されました。温かいご支援に心より感謝申し上げます。",
+        link: "/account#supporter-donation-card",
         is_read: 1,
         created_at: new Date(now.getTime() - 86400000 * 2).toISOString().replace('T', ' ').substring(0, 19)
       },
       {
         type: "system",
-        content: "【公的本人確認 完了】ご提出いただいた公的証明書類（eKYC）の審査が正常に完了し、承認されました。\n\nアカウントに「🛡️ 公的本人確認済み」バッジが点灯し、安心・スムーズにメッセージを開封していただけるようになりました。",
+        content: "【公的本人確認 完了】ご提出いただいた公的証明書類（eKYC）の審査が正常に完了し、承認されました。\n\nアカウントに「🛡️ 公的本人確認済み」バッジが点灯し、安心・スムーズにお相手との連絡先を開示していただけるようになりました。",
         link: "/account?tab=profile",
         is_read: 1,
         created_at: new Date(now.getTime() - 86400000 * 3).toISOString().replace('T', ' ').substring(0, 19)
       },
       {
         type: "broadcast",
-        content: "【漂流レポート】あなたが海に流したボトルメールが、これまでに全国から「34回」静かに検索・閲覧されました。大切なメッセージは暗号化され、安全に海を漂っています。",
-        link: "/account?tab=sent",
+        content: "【メッセージ閲覧レポート】あなたが公開したメッセージが、これまでに全国から「34回」静かに検索・閲覧されました。大切なメッセージは暗号化され、安全に保護・公開されています。",
+        link: "/account",
         is_read: 1,
         created_at: new Date(now.getTime() - 86400000 * 5).toISOString().replace('T', ' ').substring(0, 19)
       }
