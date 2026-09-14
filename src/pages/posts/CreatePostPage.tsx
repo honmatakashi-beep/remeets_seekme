@@ -611,15 +611,16 @@ export const CreatePostPage = () => {
             }`}>
               {/* 手紙ヘッダー */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-teal-100 pb-4">
-                <div className="space-y-1">
+                <div className="space-y-1.5">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-xs font-bold text-teal-800 uppercase tracking-widest font-mono">
-                      SEEKME LETTER
+                    <span className="text-[11px] font-bold text-teal-800 tracking-wider font-sans bg-teal-50 border border-teal-200 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                      <span>💌</span>
+                      <span>想い出再会プラットフォーム ReMEETs 公式レター</span>
                     </span>
                   </div>
                   <div className="flex items-center gap-2.5 flex-wrap">
                     <h3 className="text-xl sm:text-2xl font-serif font-bold text-slate-900">
-                      {fullName || 'お名前'} 様からの手紙
+                      {fullName || 'お名前'} 様から貴方宛のメッセージです。
                     </h3>
                     {previewTab === 'ekyc' && (
                       <button

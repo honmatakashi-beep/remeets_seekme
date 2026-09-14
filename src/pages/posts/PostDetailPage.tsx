@@ -201,8 +201,8 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                   </span>
                 </button>
               )}
-              <span className="text-xs font-bold text-teal-700 bg-white/90 border border-teal-200 px-3 py-1 rounded-full shadow-2xs">
-                💌 私を探すあなたへ
+              <span className="text-xs font-bold text-teal-800 bg-teal-50 border border-teal-200 px-3 py-1 rounded-full shadow-2xs">
+                💌 ReMEETs 公式レター
               </span>
             </div>
           </div>
@@ -223,7 +223,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
               )}
             </div>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-slate-900 tracking-wide flex items-center gap-2 flex-wrap">
-              <span>{postFullName}</span>
+              <span>{postFullName} 様から貴方宛のメッセージです。</span>
               {postMaidenName && (
                 <span className="text-sm sm:text-base font-normal text-slate-500 font-sans">
                   （旧姓: {postMaidenName}）
