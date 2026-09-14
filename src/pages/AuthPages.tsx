@@ -272,28 +272,32 @@ export const LoginPage = () => {
           </Link>
         </div>
 
-        {/* 開発・審査用クイック入力 */}
-        <div className="pt-2">
-          <div className="p-2.5 bg-stone-50 rounded-xl border border-stone-200/60 text-center space-y-1">
-            <span className="text-[10px] text-stone-400 block font-mono">
-              【動作確認用クイック入力】
+        {/* 🧪 【テスト・動作確認用】一括自動入力バー */}
+        <div className="p-3 bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50/60 rounded-2xl border border-amber-200/80 shadow-2xs space-y-2 text-center">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-amber-900 flex items-center gap-1.5 font-sans">
+              <Sparkles size={14} className="text-amber-600 shrink-0" />
+              <span>【テスト用】ワンクリック自動入力</span>
             </span>
-            <div className="flex items-center justify-center gap-2 flex-wrap">
-              <button
-                type="button"
-                onClick={() => handleQuickFill('admin', 'admin123')}
-                className="px-2 py-0.5 bg-white hover:bg-amber-50 border border-stone-200 text-stone-600 text-[10px] rounded font-medium cursor-pointer shadow-2xs"
-              >
-                👑 管理者
-              </button>
-              <button
-                type="button"
-                onClick={() => handleQuickFill('test@example.com', 'password123')}
-                className="px-2 py-0.5 bg-white hover:bg-amber-50 border border-stone-200 text-stone-600 text-[10px] rounded font-medium cursor-pointer shadow-2xs"
-              >
-                👤 テストユーザー
-              </button>
-            </div>
+            <span className="text-[10px] text-amber-700/70 font-mono">
+              動作確認用
+            </span>
+          </div>
+          <div className="grid grid-cols-2 gap-2 pt-0.5">
+            <button
+              type="button"
+              onClick={() => handleQuickFill('test@example.com', 'password123')}
+              className="py-2 px-2.5 bg-white hover:bg-amber-100/70 border border-amber-300/80 text-amber-950 text-xs rounded-xl font-bold transition-all shadow-2xs flex items-center justify-center gap-1.5 cursor-pointer"
+            >
+              <span>👤 テストユーザー</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => handleQuickFill('admin', 'admin123')}
+              className="py-2 px-2.5 bg-white hover:bg-amber-100/70 border border-amber-300/80 text-amber-950 text-xs rounded-xl font-bold transition-all shadow-2xs flex items-center justify-center gap-1.5 cursor-pointer"
+            >
+              <span>👑 管理者</span>
+            </button>
           </div>
         </div>
       </div>
@@ -823,6 +827,23 @@ export const RegisterPage = () => {
 
             {/* メールアドレス ＆ パスワード入力フォーム */}
             <form onSubmit={handleStep1Submit} className="space-y-5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-stone-800">基本認証情報</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const rand = Math.floor(1000 + Math.random() * 9000);
+                    setEmail(`test_user_${rand}@example.com`);
+                    setPassword('Password123!');
+                  }}
+                  className="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 rounded-lg text-[11px] font-bold transition-all shadow-2xs shrink-0 flex items-center gap-1 cursor-pointer"
+                  title="検証用のテストメールアドレス・パスワードを自動入力"
+                >
+                  <Sparkles size={12} className="text-amber-600" />
+                  <span>⚡ テスト自動入力</span>
+                </button>
+              </div>
+
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-stone-800 tracking-wider uppercase block font-sans">
                   メールアドレス <span className="text-rose-500">*</span>
@@ -899,20 +920,43 @@ export const RegisterPage = () => {
         {/* ========================================================= */}
         {step === 2 && (
           <form onSubmit={handleFinalSubmit} className="space-y-6">
-            {/* 上部：選択された登録メールの確認 ＆ 戻るボタン */}
-            <div className="flex items-center justify-between p-3.5 bg-sky-50/70 border border-sky-200/80 rounded-2xl text-xs">
+            {/* 上部：選択された登録メールの確認 ＆ テスト自動入力 ＆ 戻るボタン */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 bg-sky-50/70 border border-sky-200/80 rounded-2xl text-xs gap-2">
               <div className="flex items-center gap-2 text-stone-700">
                 <span className="w-2 h-2 rounded-full bg-blue-500"></span>
                 <span className="font-bold">登録メール:</span>
                 <span className="font-mono text-stone-900 font-semibold">{email}</span>
               </div>
-              <button
-                type="button"
-                onClick={() => setStep(1)}
-                className="text-xs text-blue-700 hover:underline font-bold font-sans cursor-pointer"
-              >
-                変更する
-              </button>
+              <div className="flex items-center gap-2 self-end sm:self-auto">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setLastName('山田');
+                    setFirstName('太郎');
+                    setNickname('タロウ');
+                    setBirthYear('1995');
+                    setBirthMonth('8');
+                    setBirthDay('15');
+                    setGender('その他 / 回答しない');
+                    setCaptchaAnswer('4');
+                    setAgreed(true);
+                    setHasReadTerms(true);
+                    setHasReadPrivacy(true);
+                  }}
+                  className="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 rounded-lg text-[11px] font-bold transition-all shadow-2xs shrink-0 flex items-center gap-1 cursor-pointer"
+                  title="検証用のテスト氏名・生年月日・規約同意を一括自動入力"
+                >
+                  <Sparkles size={12} className="text-amber-600" />
+                  <span>⚡ 全項目テスト自動入力</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setStep(1)}
+                  className="text-xs text-blue-700 hover:underline font-bold font-sans cursor-pointer"
+                >
+                  メール変更
+                </button>
+              </div>
             </div>
 
             {/* 1. 本名（公的氏名）入力欄 ＆ 安心注記 */}
@@ -1305,24 +1349,22 @@ export const RegisterPage = () => {
               </p>
 
               {/* 開発・テスト用アシスト機能 */}
-              {debugCode && (
-                <div className="mt-3 pt-3 border-t border-stone-200/80">
-                  <div className="inline-flex items-center gap-2 p-2 bg-sky-100/80 border border-sky-300 text-sky-950 rounded-xl text-xs font-sans">
-                    <Sparkles size={13} className="text-sky-600 shrink-0" />
-                    <span>【テスト用確認コード】</span>
-                    <strong className="font-mono text-sm font-bold text-blue-900 tracking-wider bg-white px-2 py-0.5 rounded border border-sky-300">
-                      {debugCode}
-                    </strong>
-                    <button
-                      type="button"
-                      onClick={() => setVerificationCode(debugCode)}
-                      className="px-2.5 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[11px] font-bold cursor-pointer transition-colors shadow-2xs"
-                    >
-                      自動入力する
-                    </button>
-                  </div>
+              <div className="mt-3 pt-3 border-t border-stone-200/80">
+                <div className="inline-flex items-center gap-2 p-2 bg-amber-50 border border-amber-300 text-amber-950 rounded-xl text-xs font-sans">
+                  <Sparkles size={13} className="text-amber-600 shrink-0" />
+                  <span>【テスト用】確認コード自動入力:</span>
+                  <strong className="font-mono text-sm font-bold text-amber-900 tracking-wider bg-white px-2 py-0.5 rounded border border-amber-300">
+                    {debugCode || '123456'}
+                  </strong>
+                  <button
+                    type="button"
+                    onClick={() => setVerificationCode(debugCode || '123456')}
+                    className="px-2.5 py-1 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-lg text-[11px] font-bold cursor-pointer transition-colors shadow-2xs"
+                  >
+                    ⚡ 自動入力
+                  </button>
                 </div>
-              )}
+              </div>
             </div>
 
             {/* 注意事項アコーディオン/コールアウト */}

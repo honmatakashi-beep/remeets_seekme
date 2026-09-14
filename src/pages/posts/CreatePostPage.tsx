@@ -1548,7 +1548,7 @@ export const CreatePostPage = () => {
                   <div className="w-11 h-11 rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center shrink-0 border border-teal-200/80">
                     <Mail size={22} />
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <span className="text-[10px] font-extrabold text-teal-800 uppercase tracking-widest bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200 font-sans">
                       {authMode === 'register' ? 'Free Registration' : 'Login'}
                     </span>
@@ -1556,6 +1556,19 @@ export const CreatePostPage = () => {
                       {authMode === 'register' ? '無料アカウント登録（手紙の設置）' : 'ログインして手紙を公開'}
                     </h3>
                   </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const rand = Math.floor(1000 + Math.random() * 9000);
+                      setAuthEmail(`test_user_${rand}@example.com`);
+                      setAuthPassword('Password123!');
+                    }}
+                    className="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 rounded-lg text-[11px] font-bold transition-all shadow-2xs shrink-0 flex items-center gap-1 cursor-pointer"
+                    title="検証用のテストメールアドレス・パスワードを自動入力"
+                  >
+                    <Sparkles size={12} className="text-amber-600" />
+                    <span>⚡ テスト自動入力</span>
+                  </button>
                 </div>
 
                 <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/80 text-xs text-slate-600 leading-relaxed font-sans space-y-1.5">
