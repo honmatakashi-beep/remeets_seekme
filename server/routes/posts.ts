@@ -53,6 +53,10 @@ export const postsRouter = express.Router();
       gender
     } = validation as any;
 
+    const effContactType = contactType || req.body.contactType || (req.user as any)?.contact_type || 'LINE';
+    const effContactId = contactId || req.body.contactId || (req.user as any)?.contact_id || null;
+    const effContactNote = contactNote || req.body.contactNote || null;
+
     const userBirthdate = req.user?.birthdate || birthdate || null;
     const userGender = req.user?.gender || gender || null;
     const searcherMaidenName = req.body.searcherMaidenName || req.body.maidenName || null;
@@ -141,7 +145,7 @@ export const postsRouter = express.Router();
         targetLastNameKana, targetFirstNameKana, targetNameKana, targetMaidenNameKana,
         targetNameEn || null, targetHometown, targetSchool || null,
         era || null, category || null, firstQ.question, hashedA1, req.body.questions[0].answer, message, 
-        contactType || null, contactId || null, contactNote || null, safeImageUrl || null,
+        effContactType || null, effContactId || null, effContactNote || null, safeImageUrl || null,
         aiFlaggedVal, aiReasonVal, aiDiagnosedVal
       );
       const postId = result.lastInsertRowid;
@@ -157,6 +161,47 @@ export const postsRouter = express.Router();
           JSON.stringify({ verified: true, verifiedAt: new Date().toISOString() }),
           postId
         );
+      }
+
+      // 👤 ユーザープロフィールの確実な自動同期（マイアカウントに即時反映）
+      if (userId) {
+        try {
+          const userBirthVal = userBirthdate || (birthYear ? `${birthYear}-01-01` : null);
+          db.prepare(`
+            UPDATE users 
+            SET full_name = COALESCE(?, full_name),
+                last_name = COALESCE(?, last_name),
+                first_name = COALESCE(?, first_name),
+                nickname = COALESCE(?, nickname),
+                maiden_name = COALESCE(?, maiden_name),
+                last_name_kana = COALESCE(?, last_name_kana),
+                first_name_kana = COALESCE(?, first_name_kana),
+                maiden_name_kana = COALESCE(?, maiden_name_kana),
+                hometown = COALESCE(?, hometown),
+                contact_type = COALESCE(?, contact_type),
+                contact_id = COALESCE(?, contact_id),
+                birthdate = COALESCE(?, birthdate),
+                gender = COALESCE(?, gender)
+            WHERE id = ?
+          `).run(
+            searcherFullName || null,
+            targetLastName || (searcherFullName ? searcherFullName.split(' ')[0] : null),
+            targetFirstName || (searcherFullName ? searcherFullName.split(' ').slice(1).join(' ') : null),
+            searcherFullName || null,
+            searcherMaidenName || null,
+            searcherLastNameKana || null,
+            searcherFirstNameKana || null,
+            searcherMaidenNameKana || null,
+            targetHometown || null,
+            effContactType || null,
+            effContactId || null,
+            userBirthVal,
+            userGender || null,
+            userId
+          );
+        } catch (syncErr) {
+          console.error("Failed to sync user profile in users table:", syncErr);
+        }
       }
 
       logAction(userId, "POST_CREATED", `Post ID: ${postId}${hasForbidden ? ' (NG Word Flagged)' : ''}`, req.ip);
@@ -281,6 +326,7 @@ export const postsRouter = express.Router();
           target_maiden_name_kana = ?,
           target_hometown = ?,
           era = ?,
+          birth_year = ?,
           message = ?,
           searcher_profile = ?,
           contact_type = ?,
@@ -297,7 +343,8 @@ export const postsRouter = express.Router();
         maidenName !== undefined ? maidenName : existing.searcher_maiden_name,
         maidenNameKana !== undefined ? maidenNameKana : existing.target_maiden_name_kana,
         hometownPref || existing.target_hometown,
-        birthYear || existing.era,
+        birthYear ? `${birthYear}年生まれ` : existing.era,
+        birthYear ? parseInt(birthYear, 10) : existing.birth_year,
         message !== undefined ? message : existing.message,
         message !== undefined ? message : existing.searcher_profile,
         contactType || existing.contact_type,
@@ -305,6 +352,38 @@ export const postsRouter = express.Router();
         contactNote !== undefined ? contactNote : existing.contact_note,
         id
       );
+
+      // ユーザー情報も同期
+      try {
+        db.prepare(`
+          UPDATE users 
+          SET full_name = COALESCE(?, full_name),
+              last_name = COALESCE(?, last_name),
+              first_name = COALESCE(?, first_name),
+              maiden_name = COALESCE(?, maiden_name),
+              last_name_kana = COALESCE(?, last_name_kana),
+              first_name_kana = COALESCE(?, first_name_kana),
+              maiden_name_kana = COALESCE(?, maiden_name_kana),
+              hometown = COALESCE(?, hometown),
+              contact_type = COALESCE(?, contact_type),
+              contact_id = COALESCE(?, contact_id)
+          WHERE id = ?
+        `).run(
+          fullName || null,
+          lastName || null,
+          firstName || null,
+          maidenName || null,
+          targetLastNameKana || null,
+          targetFirstNameKana || null,
+          maidenNameKana || null,
+          hometownPref || null,
+          contactType || null,
+          contactId || null,
+          req.user.id
+        );
+      } catch (uErr) {
+        console.warn("Failed to sync users on my-post update:", uErr);
+      }
 
       const updated = db.prepare("SELECT * FROM posts WHERE id = ?").get(id);
       res.json({ success: true, post: updated, message: "公開メッセージを更新しました。" });

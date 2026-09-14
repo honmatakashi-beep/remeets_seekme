@@ -983,6 +983,13 @@ export function initDatabase() {
     try { db.prepare("ALTER TABLE users ADD COLUMN last_name TEXT").run(); } catch (e) {}
     try { db.prepare("ALTER TABLE users ADD COLUMN first_name TEXT").run(); } catch (e) {}
     try { db.prepare("ALTER TABLE users ADD COLUMN nickname TEXT").run(); } catch (e) {}
+    try { db.prepare("ALTER TABLE users ADD COLUMN maiden_name TEXT").run(); } catch (e) {}
+    try { db.prepare("ALTER TABLE users ADD COLUMN hometown TEXT").run(); } catch (e) {}
+    try { db.prepare("ALTER TABLE users ADD COLUMN last_name_kana TEXT").run(); } catch (e) {}
+    try { db.prepare("ALTER TABLE users ADD COLUMN first_name_kana TEXT").run(); } catch (e) {}
+    try { db.prepare("ALTER TABLE users ADD COLUMN maiden_name_kana TEXT").run(); } catch (e) {}
+    try { db.prepare("ALTER TABLE users ADD COLUMN contact_type TEXT").run(); } catch (e) {}
+    try { db.prepare("ALTER TABLE users ADD COLUMN contact_id TEXT").run(); } catch (e) {}
     try { db.prepare("ALTER TABLE users ADD COLUMN is_ekyc_verified INTEGER DEFAULT 0").run(); } catch (e) {}
     try { db.prepare("ALTER TABLE users ADD COLUMN ekyc_verified_at DATETIME").run(); } catch (e) {}
     try { db.prepare("ALTER TABLE users ADD COLUMN ekyc_document_type TEXT").run(); } catch (e) {}

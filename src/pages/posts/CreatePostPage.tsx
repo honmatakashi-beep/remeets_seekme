@@ -316,6 +316,31 @@ export const CreatePostPage = () => {
         const data = await res.json();
         setCreatedPostData(data);
 
+        // 👤 フロントエンド側のユーザー情報も即座に同期更新（マイアカウントへの即時反映を保証）
+        try {
+          if (effContactType) localStorage.setItem('remeets_default_contact_type', effContactType);
+          if (effContactId) localStorage.setItem('remeets_default_contact_id', effContactId);
+          if (isAlreadyVerified) localStorage.setItem('ekyc_verified', 'true');
+
+          updateUser({
+            fullName: effFullName,
+            lastName: effLastName,
+            firstName: effFirstName,
+            nickname: effFullName,
+            maiden_name: effMaidenName,
+            lastNameKana: effLastNameKana,
+            firstNameKana: effFirstNameKana,
+            maidenNameKana: effMaidenNameKana,
+            hometown: effHometown,
+            contact_type: effContactType,
+            contact_id: effContactId,
+            birthdate: formData.birthYear ? `${formData.birthYear}-01-01` : (user?.birthdate || '1990-01-01'),
+            is_ekyc_verified: isAlreadyVerified
+          });
+        } catch (syncErr) {
+          console.error("Failed to sync frontend user state:", syncErr);
+        }
+
         if (isAlreadyVerified) {
           // 🛡️ 既に公的本人確認（eKYC）認証済みの場合は、eKYCモーダルをスキップして即座に完了画面へ進む
           setStep('success');

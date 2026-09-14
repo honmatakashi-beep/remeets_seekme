@@ -6,7 +6,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation, useSearchParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Activity, ArrowRight, Bell, BookOpen, CheckCircle, CheckCircle2,
+  Activity, ArrowRight, Bell, BookOpen, Check, CheckCircle, CheckCircle2,
   CheckSquare, Coffee, Cpu, Edit, Edit3, ExternalLink, Eye, EyeOff,
   Heart, Lock, Mail, MessageSquare, RotateCcw, Search, Send,
   ShieldCheck, Sparkles, Trash2, User as UserIcon, X, AlertCircle,
@@ -14,7 +14,7 @@ import {
   MessageCircle, Key, Plus, Zap, MapPin
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { cn, PageHeader, formatEraLabel, getCategoryText, getPostUrl, PREFECTURES } from '../lib/utils';
+import { cn, PageHeader, formatEraLabel, formatBirthYearLabel, getCategoryText, getPostUrl, PREFECTURES } from '../lib/utils';
 import { BottleLoader, WarningMessage, BackToHomeButton } from '../components/SharedComponents';
 import { SuccessStoryModal } from './SearchPage';
 import { DocumentCameraOverlay, stopAllGlobalCameraStreams } from '../components/DocumentCameraOverlay';
@@ -834,11 +834,13 @@ export const AccountPage = () => {
             nickname: profile.nickname, 
             email: profile.email,
             maiden_name: profile.maiden_name,
+            hometown: profile.hometown,
             birthdate: profile.birthdate,
             gender: profile.gender,
             email_notifications: profile.email_notifications !== undefined ? profile.email_notifications : true,
             contact_type: profile.contact_type || editingContactType,
-            contact_id: profile.contact_id || editingContactId
+            contact_id: profile.contact_id || editingContactId,
+            is_ekyc_verified: profile.is_ekyc_verified
           });
         }
       } catch (err) {

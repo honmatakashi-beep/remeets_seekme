@@ -78,7 +78,10 @@ export const validateAndFilterPost = (data: PostData, bypassForbidden = false) =
     questions: questions.map(q => ({
       question: filterNGWords(q.question),
       answer: q.answer.trim().toLowerCase()
-    }))
+    })),
+    contactType: data.contactType || null,
+    contactId: data.contactId || null,
+    contactNote: data.contactNote || null
   };
 };
 
