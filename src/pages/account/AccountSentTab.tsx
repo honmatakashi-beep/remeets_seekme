@@ -5,23 +5,33 @@ import { useAuth } from "../../contexts/AuthContext";
 
 export const AccountSentTab = (props: any) => {
   const { token, user } = useAuth();
-  const [requests, setRequests] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [requests, setRequests] = useState<any[]>(props.requests || []);
+  const [loading, setLoading] = useState<boolean>(props.requests !== undefined ? false : true);
   const [payingRequestId, setPayingRequestId] = useState<number | null>(null);
   const [contactType, setContactType] = useState("LINE");
   const [contactId, setContactId] = useState(user?.contact_id || "");
   const [isProcessing, setIsProcessing] = useState(false);
 
+  useEffect(() => {
+    if (props.requests !== undefined) {
+      setRequests(props.requests);
+      setLoading(false);
+    }
+  }, [props.requests]);
+
   const fetchSentRequests = async () => {
     if (!token) return;
     try {
-      setLoading(true);
+      if (!props.requests) setLoading(true);
       const res = await fetch("/api/posts/reunion-requests/sent", {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.ok) {
         const data = await res.json();
         setRequests(data || []);
+        if (props.onRequestsChange) {
+          props.onRequestsChange(data || []);
+        }
       }
     } catch (err) {
       console.error("Failed to fetch sent reunion requests:", err);
@@ -31,7 +41,9 @@ export const AccountSentTab = (props: any) => {
   };
 
   useEffect(() => {
-    fetchSentRequests();
+    if (props.requests === undefined) {
+      fetchSentRequests();
+    }
   }, [token]);
 
   const handlePayAndUnlock = async (requestId: number) => {
@@ -57,7 +69,8 @@ export const AccountSentTab = (props: any) => {
         const data = await res.json();
         alert("決済および連絡先の開示が完了しました！");
         setPayingRequestId(null);
-        fetchSentRequests();
+        await fetchSentRequests();
+        if (props.onRefresh) props.onRefresh();
       } else {
         const err = await res.json();
         alert(err.error || "開示処理に失敗しました。");

@@ -44,6 +44,8 @@ export const AccountPage = () => {
 
   const [myPosts, setMyPosts] = useState<any[]>([]);
   const [connectedPosts, setConnectedPosts] = useState<any[]>([]);
+  const [receivedRequests, setReceivedRequests] = useState<any[]>([]);
+  const [sentRequests, setSentRequests] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingNickname, setEditingNickname] = useState(user?.nickname || '');
   const [editingEmail, setEditingEmail] = useState(user?.email || '');
@@ -814,7 +816,7 @@ export const AccountPage = () => {
   const fetchData = async () => {
     if (!token) return;
     try {
-      const [resMy, resConnected, resProfile, resNotifications] = await Promise.all([
+      const [resMy, resConnected, resProfile, resNotifications, resReceived, resSent] = await Promise.all([
         fetch('/api/posts/my-posts', {
           headers: { 'Authorization': `Bearer ${token}` }
         }),
@@ -825,6 +827,12 @@ export const AccountPage = () => {
           headers: { 'Authorization': `Bearer ${token}` }
         }),
         fetch('/api/notifications', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+        fetch('/api/posts/reunion-requests/received', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+        fetch('/api/posts/reunion-requests/sent', {
           headers: { 'Authorization': `Bearer ${token}` }
         })
       ]);
@@ -840,6 +848,14 @@ export const AccountPage = () => {
       if (resNotifications.ok) {
         const notifData = await resNotifications.json();
         setNotifications(notifData);
+      }
+      if (resReceived.ok) {
+        const receivedData = await resReceived.json();
+        setReceivedRequests(receivedData || []);
+      }
+      if (resSent.ok) {
+        const sentData = await resSent.json();
+        setSentRequests(sentData || []);
       }
       await fetchMyAlerts();
       await fetchMyStories();
@@ -1546,11 +1562,11 @@ export const AccountPage = () => {
                 </span>
                 <span className="truncate">届いた再会希望</span>
                 <span className={`text-[9.5px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full font-bold transition-all shrink-0 ${
-                  connectedPosts.length > 0
+                  receivedRequests.length > 0
                     ? (activeSubTab === 'received' ? 'bg-emerald-600 text-white shadow-2xs' : 'bg-emerald-100 text-emerald-800 border border-emerald-300')
                     : (activeSubTab === 'received' ? 'bg-slate-200 text-slate-700 font-normal' : 'bg-slate-300/80 text-slate-600 font-normal')
                 }`}>
-                  {connectedPosts.length}通
+                  {receivedRequests.length}件
                 </span>
                 {activeSubTab === 'received' && (
                   <span className="absolute -top-1 -right-1 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-emerald-500 border-2 border-white rounded-full shadow-2xs animate-pulse" />
@@ -1574,11 +1590,11 @@ export const AccountPage = () => {
                 </span>
                 <span className="truncate">送った再会申請</span>
                 <span className={`text-[9.5px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full font-bold transition-all shrink-0 ${
-                  myPosts.length > 0
+                  sentRequests.length > 0
                     ? (activeSubTab === 'sent' ? 'bg-teal-600 text-white shadow-2xs' : 'bg-teal-100 text-teal-800 border border-teal-300')
                     : (activeSubTab === 'sent' ? 'bg-slate-200 text-slate-700 font-normal' : 'bg-slate-300/80 text-slate-600 font-normal')
                 }`}>
-                  {myPosts.length}通
+                  {sentRequests.length}件
                 </span>
                 {activeSubTab === 'sent' && (
                   <span className="absolute -top-1 -right-1 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-teal-500 border-2 border-white rounded-full shadow-2xs animate-pulse" />
@@ -1643,9 +1659,12 @@ export const AccountPage = () => {
             </div>
           </div>
 
-          <div className="py-2">
+          <div className="py-2 min-h-[480px]">
             {activeSubTab === "received" && (
               <AccountReceivedTab
+                requests={receivedRequests}
+                onRequestsChange={setReceivedRequests}
+                onRefresh={fetchData}
                 connectedPosts={connectedPosts}
                 setStoryTargetPost={setStoryTargetPost}
                 setStoryTargetRole={setStoryTargetRole}
@@ -1659,6 +1678,9 @@ export const AccountPage = () => {
 
             {activeSubTab === "sent" && (
               <AccountSentTab
+                requests={sentRequests}
+                onRequestsChange={setSentRequests}
+                onRefresh={fetchData}
                 myPosts={myPosts}
                 loading={loading}
                 setDeleteConfirmModal={setDeleteConfirmPost}

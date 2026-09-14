@@ -5,20 +5,30 @@ import { useAuth } from "../../contexts/AuthContext";
 
 export const AccountReceivedTab = (props: any) => {
   const { token } = useAuth();
-  const [requests, setRequests] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [requests, setRequests] = useState<any[]>(props.requests || []);
+  const [loading, setLoading] = useState<boolean>(props.requests !== undefined ? false : true);
   const [actionLoading, setActionLoading] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (props.requests !== undefined) {
+      setRequests(props.requests);
+      setLoading(false);
+    }
+  }, [props.requests]);
 
   const fetchReceivedRequests = async () => {
     if (!token) return;
     try {
-      setLoading(true);
+      if (!props.requests) setLoading(true);
       const res = await fetch("/api/posts/reunion-requests/received", {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.ok) {
         const data = await res.json();
         setRequests(data || []);
+        if (props.onRequestsChange) {
+          props.onRequestsChange(data || []);
+        }
       }
     } catch (err) {
       console.error("Failed to fetch received reunion requests:", err);
@@ -28,7 +38,9 @@ export const AccountReceivedTab = (props: any) => {
   };
 
   useEffect(() => {
-    fetchReceivedRequests();
+    if (props.requests === undefined) {
+      fetchReceivedRequests();
+    }
   }, [token]);
 
   const handleApprove = async (requestId: number) => {
@@ -46,7 +58,8 @@ export const AccountReceivedTab = (props: any) => {
       });
       if (res.ok) {
         alert("再会希望を承認しました！お相手が本人確認と決済を完了すると連絡先が開示されます。");
-        fetchReceivedRequests();
+        await fetchReceivedRequests();
+        if (props.onRefresh) props.onRefresh();
       } else {
         const err = await res.json();
         alert(err.error || "承認処理に失敗しました。");
@@ -75,7 +88,8 @@ export const AccountReceivedTab = (props: any) => {
       });
       if (res.ok) {
         alert("再会希望を見送りました。");
-        fetchReceivedRequests();
+        await fetchReceivedRequests();
+        if (props.onRefresh) props.onRefresh();
       } else {
         const err = await res.json();
         alert(err.error || "見送り処理に失敗しました。");
