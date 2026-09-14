@@ -512,69 +512,57 @@ export const CreatePostPage = () => {
           )}
 
           {/* =========================================================================
-              1. プレビュー見え方比較スイッチ（🌈 認証あり vs ✉️ 通常無料）
+              1. プレビュー見え方比較スイッチ（公認バッジ ON / OFF）
           ========================================================================= */}
-          <div className="bg-slate-900 text-white rounded-3xl p-5 sm:p-7 shadow-xl space-y-4 border border-slate-800">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="space-y-1">
-                <span className="text-[10px] font-extrabold uppercase tracking-widest text-amber-400 font-mono bg-amber-400/10 px-2 py-0.5 rounded-md border border-amber-400/30 inline-block">
-                  PREVIEW COMPARISON
-                </span>
-                <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2 font-serif">
-                  <Sparkles size={18} className="text-amber-400" />
-                  <span>ネット公開時の見え方を比較する</span>
-                </h3>
-                <p className="text-xs text-slate-300 font-sans leading-relaxed">
-                  公的本人確認（eKYC）の有無で、お相手に見える安心感がどう変わるか切り替えて確認できます。
-                </p>
+          <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-1 text-left">
+              <div className="flex items-center gap-2 flex-wrap">
+                <div className="w-5 h-5 rounded-full seal-rainbow flex items-center justify-center text-white shadow-2xs shrink-0">
+                  <ShieldCheck size={12} />
+                </div>
+                <h4 className="text-xs sm:text-sm font-bold text-slate-800 font-serif">
+                  公的本人確認（公認バッジ）の表示切替
+                </h4>
+                {previewTab === 'ekyc' ? (
+                  <span className="text-[10px] font-bold text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full font-sans">
+                    ✨ バッジ表示中
+                  </span>
+                ) : (
+                  <span className="text-[10px] font-bold text-slate-500 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full font-sans">
+                    通常表示中
+                  </span>
+                )}
               </div>
-
-              {/* 切り替えボタングループ */}
-              <div className="flex items-center bg-slate-800/90 p-1.5 rounded-2xl border border-slate-700 shrink-0 self-stretch sm:self-auto shadow-inner">
-                <button
-                  type="button"
-                  onClick={() => setPreviewTab('ekyc')}
-                  className={`flex-1 sm:flex-initial px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer font-serif ${
-                    previewTab === 'ekyc'
-                      ? 'bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-white shadow-md'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  <ShieldCheck size={15} className={previewTab === 'ekyc' ? 'text-amber-100' : 'text-slate-400'} />
-                  <span>🌈 公的認証あり（推奨）</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setPreviewTab('free')}
-                  className={`flex-1 sm:flex-initial px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer font-serif ${
-                    previewTab === 'free'
-                      ? 'bg-slate-700 text-white shadow-md'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  <Send size={13} className={previewTab === 'free' ? 'text-slate-200' : 'text-slate-400'} />
-                  <span>✉️ 通常表示</span>
-                </button>
-              </div>
+              <p className="text-xs text-slate-600 font-sans leading-relaxed">
+                公的本人確認を行うと公認バッジが付与されます。それにより相手に安心感を与え、連絡をもらえる確率が格段に上がります。
+              </p>
             </div>
 
-            {/* 現在のプレビューモードの解説タグ */}
-            <div className="pt-3 border-t border-slate-800/80 text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 font-sans">
-              {previewTab === 'ekyc' ? (
-                <span className="text-amber-300 font-medium flex items-center gap-1.5">
-                  <CheckCircle2 size={15} className="text-amber-400 shrink-0" />
-                  <span>
-                    【認証プレビュー中】動く虹色封蝋印・公的証明バッジが付与され、相手の「なりすまし不安」をゼロにします。
-                  </span>
-                </span>
-              ) : (
-                <span className="text-slate-400 font-medium flex items-center gap-1.5">
-                  <Check size={15} className="text-slate-500 shrink-0" />
-                  <span>
-                    【通常プレビュー中】認証マークなしの標準表示です（いつでも後からマイページで認証を追加できます）。
-                  </span>
-                </span>
-              )}
+            {/* ON / OFF 切り替えスイッチ */}
+            <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200 shrink-0 self-start sm:self-center">
+              <button
+                type="button"
+                onClick={() => setPreviewTab('ekyc')}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                  previewTab === 'ekyc'
+                    ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-xs'
+                    : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                <span className={`w-2 h-2 rounded-full ${previewTab === 'ekyc' ? 'bg-white animate-pulse' : 'bg-slate-400'}`} />
+                <span>公認バッジ ON</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setPreviewTab('free')}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                  previewTab === 'free'
+                    ? 'bg-slate-700 text-white shadow-xs'
+                    : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                <span>OFF</span>
+              </button>
             </div>
           </div>
 
