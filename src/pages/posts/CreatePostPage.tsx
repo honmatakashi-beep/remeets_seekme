@@ -1241,70 +1241,92 @@ export const CreatePostPage = () => {
           </div>
 
           {/* 2. メッセージ公開後の流れと確認方法（シンプル3ステップ） */}
-          <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 space-y-5 shadow-sm text-left font-sans">
-            <div className="border-b border-slate-100 pb-3">
-              <h2 className="text-base sm:text-lg font-serif font-bold text-slate-900 flex items-center gap-2">
-                <CheckCircle2 size={20} className="text-teal-700" />
+          <div className="bg-white rounded-3xl border-2 border-slate-200/90 p-6 sm:p-9 space-y-6 shadow-md text-left font-sans">
+            <div className="border-b border-slate-200 pb-4 space-y-1">
+              <span className="text-[10px] font-extrabold text-teal-800 uppercase tracking-widest bg-teal-50 px-3 py-0.5 rounded-full border border-teal-200 inline-block font-mono">
+                HOW IT WORKS
+              </span>
+              <h2 className="text-lg sm:text-2xl font-serif font-bold text-slate-900 flex items-center gap-2 mt-1">
+                <CheckCircle2 size={24} className="text-teal-700 shrink-0" />
                 <span>今後の確認方法と連絡が届いたときの流れ</span>
               </h2>
-              <p className="text-xs text-slate-500 mt-1">
-                メッセージは公開されたまま安全に待機します。あなたがアクションを行うタイミングは以下の通りです。
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed pt-1">
+                メッセージはインターネットの海に設置され、お相手が見つけるまで安全に待機します。あなたがアクションを行うポイントは以下の3つです。
               </p>
             </div>
 
-            <div className="space-y-3.5">
+            <div className="space-y-4">
               {/* STEP 1. メッセージの確認・修正 */}
-              <div className="p-4 bg-slate-50/80 rounded-2xl border border-slate-200 flex items-start gap-3.5">
-                <div className="w-8 h-8 rounded-xl bg-slate-800 text-white flex items-center justify-center font-bold text-xs shrink-0 font-sans shadow-2xs mt-0.5">
+              <div className="p-5 sm:p-6 bg-slate-50/90 rounded-2xl border border-slate-200 flex flex-col sm:flex-row items-start gap-4 hover:bg-slate-50 transition-colors">
+                <div className="w-10 h-10 rounded-2xl bg-slate-800 text-white flex items-center justify-center font-bold text-sm shrink-0 font-sans shadow-xs mt-0.5">
                   1
                 </div>
-                <div className="space-y-1">
-                  <strong className="text-slate-900 text-sm font-bold block font-serif">
+                <div className="space-y-1.5 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-bold text-slate-700 bg-slate-200/90 px-2.5 py-0.5 rounded-md font-mono">
+                      STEP 1
+                    </span>
+                    <span className="text-xs font-bold text-slate-500">いつでも確認・更新</span>
+                  </div>
+                  <h3 className="text-base sm:text-lg font-bold text-slate-900 font-serif leading-snug">
                     メッセージの確認・修正は「マイアカウント」でいつでも可能
-                  </strong>
-                  <p className="text-slate-600 text-xs leading-relaxed">
-                    公開中のメッセージ内容の確認や修正、削除はマイアカウントからいつでも自由に行えます。
+                  </h3>
+                  <p className="text-slate-600 text-xs sm:text-[13px] leading-relaxed font-sans">
+                    公開中のメッセージ内容の確認、文章の推敲・修正、または公開停止（削除）は、マイアカウント（マイページ）最上部からいつでも自由に行えます。
                   </p>
                 </div>
               </div>
 
               {/* STEP 2. 通知とお相手からの再会申請 */}
-              <div className="p-4 bg-teal-50/60 rounded-2xl border border-teal-100 flex items-start gap-3.5">
-                <div className="w-8 h-8 rounded-xl bg-teal-700 text-white flex items-center justify-center font-bold text-xs shrink-0 font-sans shadow-2xs mt-0.5">
+              <div className="p-5 sm:p-6 bg-gradient-to-r from-teal-50/80 to-sky-50/50 rounded-2xl border border-teal-200/90 flex flex-col sm:flex-row items-start gap-4 hover:shadow-xs transition-all">
+                <div className="w-10 h-10 rounded-2xl bg-teal-700 text-white flex items-center justify-center font-bold text-sm shrink-0 font-sans shadow-xs mt-0.5">
                   2
                 </div>
-                <div className="space-y-1">
-                  <strong className="text-slate-900 text-sm font-bold block font-serif">
-                    お相手から連絡が届いたら、メールとマイアカウントに通知
-                  </strong>
-                  <p className="text-slate-600 text-xs leading-relaxed">
-                    お相手がメッセージを見つけて「再会申請（当時の思い出エピソード）」を届けると、ご登録のメールアドレスおよびマイアカウント通知にすぐにお知らせが届きます。
+                <div className="space-y-1.5 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-bold text-teal-800 bg-teal-100 px-2.5 py-0.5 rounded-md font-mono">
+                      STEP 2
+                    </span>
+                    <span className="text-xs font-bold text-teal-800">お相手からのアクション</span>
+                  </div>
+                  <h3 className="text-base sm:text-lg font-bold text-teal-950 font-serif leading-snug">
+                    お相手から連絡が届いたら、メールとマイアカウントに即座に通知
+                  </h3>
+                  <p className="text-slate-700 text-xs sm:text-[13px] leading-relaxed font-sans">
+                    お相手がメッセージを見つけ、2人だけの想い出エピソードを添えて返信（再会申請）を届けると、ご登録のメールアドレスおよびマイアカウント通知にお知らせが届きます。
                   </p>
                 </div>
               </div>
 
               {/* STEP 3. あなたの承認で連絡先が開示・再会成立 */}
-              <div className="p-4 bg-emerald-50/60 rounded-2xl border border-emerald-100 flex items-start gap-3.5">
-                <div className="w-8 h-8 rounded-xl bg-emerald-700 text-white flex items-center justify-center font-bold text-xs shrink-0 font-sans shadow-2xs mt-0.5">
+              <div className="p-5 sm:p-6 bg-gradient-to-r from-emerald-50/80 to-teal-50/50 rounded-2xl border border-emerald-300/90 flex flex-col sm:flex-row items-start gap-4 hover:shadow-xs transition-all">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-700 text-white flex items-center justify-center font-bold text-sm shrink-0 font-sans shadow-xs mt-0.5">
                   3
                 </div>
-                <div className="space-y-1">
-                  <strong className="text-slate-900 text-sm font-bold block font-serif">
+                <div className="space-y-1.5 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-bold text-emerald-900 bg-emerald-100 px-2.5 py-0.5 rounded-md font-mono">
+                      STEP 3
+                    </span>
+                    <span className="text-xs font-bold text-emerald-800">相互承認で安心成立</span>
+                  </div>
+                  <h3 className="text-base sm:text-lg font-bold text-emerald-950 font-serif leading-snug">
                     エピソードを読んで「承認」すると、連絡先が開示され再会成立
-                  </strong>
-                  <p className="text-slate-600 text-xs leading-relaxed">
-                    届いたエピソードをマイアカウントで確認し、あなたが「確かにあの人だ！」と承認した時のみ、お相手にあなたの連絡先が開示されて直接連絡が取れるようになります（相互承認制）。
+                  </h3>
+                  <p className="text-slate-700 text-xs sm:text-[13px] leading-relaxed font-sans">
+                    届いたエピソードをマイアカウントで確認し、「確かにあの頃の仲間だ！」とあなたが【承認】した時のみ、お相手にあなたの連絡先（LINE ID等）が開示され、直接連絡が取れるようになります。
                   </p>
                 </div>
               </div>
             </div>
 
             {/* 安心のプライバシー保証 */}
-            <div className="p-3.5 bg-sky-50/70 rounded-xl border border-sky-100 text-xs text-sky-900 flex items-start gap-2 font-sans">
-              <ShieldCheck size={16} className="text-teal-700 shrink-0 mt-0.5" />
-              <span className="leading-relaxed">
-                <strong>安心の相互承認システム:</strong> あなたがエピソードを読んで承認するまで、お相手に本名や連絡先が開示されることは一切ありません。心当たりのない連絡は安心して見送ることができます。
-              </span>
+            <div className="p-4 bg-sky-50/80 rounded-2xl border border-sky-200 text-xs sm:text-[13px] text-sky-950 flex items-start gap-3 font-sans leading-relaxed">
+              <ShieldCheck size={18} className="text-teal-700 shrink-0 mt-0.5" />
+              <div>
+                <strong className="block text-sky-950 font-bold mb-0.5">🛡️ 安心の相互承認システム（完全非公開保護）</strong>
+                <span>あなたがエピソードを読んで承認するまで、お相手にあなたの本名や連絡先が開示されることは100%ありません。心当たりのない連絡はワンタップで安心して見送ることができます。</span>
+              </div>
             </div>
           </div>
 
