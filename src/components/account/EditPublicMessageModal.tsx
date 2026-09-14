@@ -4,7 +4,7 @@ import {
   X, Check, Sparkles, ShieldCheck, AlertTriangle, AlertCircle,
   Lock, Save, RefreshCw, Send, User, MapPin, Calendar, Trash2
 } from 'lucide-react';
-import { PREFECTURES, BIRTH_YEAR_OPTIONS } from '../../lib/utils';
+import { PREFECTURES, BIRTH_YEAR_OPTIONS, toHiragana } from '../../lib/utils';
 import { useNgFilter } from '../../contexts/AuthContext';
 
 interface EditPublicMessageModalProps {
@@ -281,20 +281,36 @@ export const EditPublicMessageModal: React.FC<EditPublicMessageModalProps> = ({
                   <label className="text-xs font-bold text-slate-600">ふりがな（せい）</label>
                   <input
                     type="text"
+                    lang="ja"
+                    inputMode="text"
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    spellCheck={false}
+                    pattern="^[ぁ-んー\s　]*$"
+                    title="全角ひらがなでご入力ください"
                     value={formData.lastNameKana}
-                    onChange={e => setFormData(prev => ({ ...prev, lastNameKana: e.target.value }))}
+                    onChange={e => setFormData(prev => ({ ...prev, lastNameKana: toHiragana(e.target.value) }))}
+                    onCompositionEnd={e => setFormData(prev => ({ ...prev, lastNameKana: toHiragana(e.currentTarget.value) }))}
                     placeholder="例：やまだ"
-                    className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl bg-white text-slate-950 focus:border-teal-600 outline-none"
+                    className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl bg-white text-slate-950 focus:border-teal-600 outline-none font-sans"
                   />
                 </div>
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-slate-600">ふりがな（めい）</label>
                   <input
                     type="text"
+                    lang="ja"
+                    inputMode="text"
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    spellCheck={false}
+                    pattern="^[ぁ-んー\s　]*$"
+                    title="全角ひらがなでご入力ください"
                     value={formData.firstNameKana}
-                    onChange={e => setFormData(prev => ({ ...prev, firstNameKana: e.target.value }))}
+                    onChange={e => setFormData(prev => ({ ...prev, firstNameKana: toHiragana(e.target.value) }))}
+                    onCompositionEnd={e => setFormData(prev => ({ ...prev, firstNameKana: toHiragana(e.currentTarget.value) }))}
                     placeholder="例：たろう"
-                    className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl bg-white text-slate-950 focus:border-teal-600 outline-none"
+                    className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl bg-white text-slate-950 focus:border-teal-600 outline-none font-sans"
                   />
                 </div>
               </div>
@@ -314,10 +330,18 @@ export const EditPublicMessageModal: React.FC<EditPublicMessageModalProps> = ({
                   <label className="text-xs font-bold text-slate-600">旧姓のふりがな</label>
                   <input
                     type="text"
+                    lang="ja"
+                    inputMode="text"
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    spellCheck={false}
+                    pattern="^[ぁ-んー\s　]*$"
+                    title="全角ひらがなでご入力ください"
                     value={formData.maidenNameKana}
-                    onChange={e => setFormData(prev => ({ ...prev, maidenNameKana: e.target.value }))}
+                    onChange={e => setFormData(prev => ({ ...prev, maidenNameKana: toHiragana(e.target.value) }))}
+                    onCompositionEnd={e => setFormData(prev => ({ ...prev, maidenNameKana: toHiragana(e.currentTarget.value) }))}
                     placeholder="例：さとう"
-                    className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl bg-white text-slate-950 focus:border-teal-600 outline-none"
+                    className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl bg-white text-slate-950 focus:border-teal-600 outline-none font-sans"
                   />
                 </div>
               </div>

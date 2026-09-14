@@ -8,7 +8,7 @@ import {
   Edit3, Mail, Key, Crown, CreditCard, FileCheck, Share2, Copy
 } from 'lucide-react';
 import { useAuth, useNgFilter } from '../../contexts/AuthContext';
-import { PREFECTURES, BIRTH_YEAR_OPTIONS, formatBirthYearLabel, getPostUrl, PageHeader } from '../../lib/utils';
+import { PREFECTURES, BIRTH_YEAR_OPTIONS, formatBirthYearLabel, getPostUrl, PageHeader, toHiragana } from '../../lib/utils';
 import { GoogleSearchResultPreview, BackToHomeButton } from '../../components/SharedComponents';
 import { MypageEkycModal } from '../../components/account/MypageEkycModal';
 import { EkycExplanationModal } from '../../components/posts/EkycExplanationModal';
@@ -1790,13 +1790,21 @@ export const CreatePostPage = () => {
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-teal-900 block flex items-center justify-between">
                     <span>ふりがな（せい）</span>
-                    <span className="text-teal-700 font-bold text-[10px]">Google検索・読み間違い防止用</span>
+                    <span className="text-teal-700 font-bold text-[10px]">ひらがな検索・読み間違い防止用</span>
                   </label>
                   <input
                     type="text"
+                    lang="ja"
+                    inputMode="text"
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    spellCheck={false}
+                    pattern="^[ぁ-んー\s　]*$"
+                    title="全角ひらがなでご入力ください"
                     value={formData.lastNameKana}
-                    onChange={e => setFormData(prev => ({ ...prev, lastNameKana: e.target.value }))}
-                    placeholder="例：やまだ（ひらがな）"
+                    onChange={e => setFormData(prev => ({ ...prev, lastNameKana: toHiragana(e.target.value) }))}
+                    onCompositionEnd={e => setFormData(prev => ({ ...prev, lastNameKana: toHiragana(e.currentTarget.value) }))}
+                    placeholder="例：やまだ"
                     className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-teal-200/80 rounded-xl bg-white focus:border-teal-600 outline-none transition-all shadow-2xs font-sans"
                   />
                 </div>
@@ -1808,9 +1816,17 @@ export const CreatePostPage = () => {
                   </label>
                   <input
                     type="text"
+                    lang="ja"
+                    inputMode="text"
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    spellCheck={false}
+                    pattern="^[ぁ-んー\s　]*$"
+                    title="全角ひらがなでご入力ください"
                     value={formData.firstNameKana}
-                    onChange={e => setFormData(prev => ({ ...prev, firstNameKana: e.target.value }))}
-                    placeholder="例：たろう（ひらがな）"
+                    onChange={e => setFormData(prev => ({ ...prev, firstNameKana: toHiragana(e.target.value) }))}
+                    onCompositionEnd={e => setFormData(prev => ({ ...prev, firstNameKana: toHiragana(e.currentTarget.value) }))}
+                    placeholder="例：たろう"
                     className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-teal-200/80 rounded-xl bg-white focus:border-teal-600 outline-none transition-all shadow-2xs font-sans"
                   />
                 </div>
@@ -1837,10 +1853,18 @@ export const CreatePostPage = () => {
                   </label>
                   <input
                     type="text"
+                    lang="ja"
+                    inputMode="text"
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    spellCheck={false}
+                    pattern="^[ぁ-んー\s　]*$"
+                    title="全角ひらがなでご入力ください"
                     value={formData.maidenNameKana}
-                    onChange={e => setFormData(prev => ({ ...prev, maidenNameKana: e.target.value }))}
+                    onChange={e => setFormData(prev => ({ ...prev, maidenNameKana: toHiragana(e.target.value) }))}
+                    onCompositionEnd={e => setFormData(prev => ({ ...prev, maidenNameKana: toHiragana(e.currentTarget.value) }))}
                     placeholder="例：さとう"
-                    className="w-full px-4 py-2.5 text-xs sm:text-sm border border-slate-200 rounded-xl bg-slate-50/60 focus:bg-white focus:border-teal-600 outline-none transition-all shadow-inner"
+                    className="w-full px-4 py-2.5 text-xs sm:text-sm border border-slate-200 rounded-xl bg-slate-50/60 focus:bg-white focus:border-teal-600 outline-none transition-all shadow-inner font-sans"
                   />
                 </div>
               </div>

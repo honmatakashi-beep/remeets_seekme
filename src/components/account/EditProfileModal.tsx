@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Edit3, Lock, CheckCircle2, RotateCcw, MapPin } from "lucide-react";
-import { PREFECTURES } from "../../lib/utils";
+import { PREFECTURES, toHiragana } from "../../lib/utils";
 
 interface EditProfileModalProps {
   isOpen: boolean;
@@ -326,15 +326,23 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
               </div>
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
-                  <span>旧姓フリガナ（カタカナ）</span>
+                  <span>旧姓のふりがな（ひらがな）</span>
                   <span className="text-[10px] text-slate-400 font-normal">任意</span>
                 </label>
                 <input
                   type="text"
+                  lang="ja"
+                  inputMode="text"
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  pattern="^[ぁ-んー\s　]*$"
+                  title="全角ひらがなでご入力ください"
                   value={editingMaidenNameKana}
-                  onChange={(e) => setEditingMaidenNameKana(e.target.value)}
-                  placeholder="例: スズキ"
-                  className="w-full px-3.5 py-2.5 bg-white border border-slate-200 hover:border-indigo-400 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 rounded-xl text-xs font-medium text-slate-900 transition-all"
+                  onChange={(e) => setEditingMaidenNameKana(toHiragana(e.target.value))}
+                  onCompositionEnd={(e) => setEditingMaidenNameKana(toHiragana(e.currentTarget.value))}
+                  placeholder="例: すずき"
+                  className="w-full px-3.5 py-2.5 bg-white border border-slate-200 hover:border-indigo-400 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 rounded-xl text-xs font-medium text-slate-900 transition-all font-sans"
                 />
               </div>
             </div>

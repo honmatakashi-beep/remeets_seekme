@@ -115,9 +115,11 @@ export const getPostUrl = (post: {
   
   const birthYear = post.birth_year ? String(post.birth_year) : (post.era ? formatEraLabel(post.era).replace(/[^0-9]/g, '') : '');
 
+  const targetName = post.target_name || post.searcher_name || post.searcher_full_name || '';
+
   // SEO用スラッグを結合（例: 伊藤美咲_いとうみさき_1990_東京都）
   const slugParts = [
-    name.replace(/[\s/]/g, ''),
+    targetName.replace(/[\s/]/g, ''),
     kana.replace(/[\s/]/g, ''),
     birthYear,
     rawHometown.replace(/[\s/]/g, '')
@@ -126,6 +128,34 @@ export const getPostUrl = (post: {
   const slug = slugParts.length > 0 ? encodeURIComponent(slugParts.join('_')) : '';
 
   return slug ? `/posts/${post.id}/${slug}` : `/posts/${post.id}`;
+};
+
+/**
+ * 文字列を全角ひらがな（ぁ-ん、ー、長音符、空白）のみに変換・正規化する関数
+ * - 半角カナ・全角カナをすべて全角ひらがなに自動変換
+ * - ひらがな・長音符・空白以外の文字（漢字・英数字・記号等）を除去して「ふりがな（ひらがな）入力」に固定
+ */
+export const toHiragana = (input: string): string => {
+  if (!input) return '';
+  
+  // 1. Unicode正規化（半角カナ等を全角カナに統一）
+  let str = input.normalize('NFKC');
+  
+  // 2. 全角カタカナ (ァ-ヶ: \u30A1-\u30F6) を 全角ひらがな (ぁ-ゖ: \u3041-\u3096) に変換
+  str = str.replace(/[\u30a1-\u30f6]/g, (match) => {
+    const charCode = match.charCodeAt(0) - 0x60;
+    return String.fromCharCode(charCode);
+  });
+  
+  // 3. ヴ・ヵ・ヶ などの特殊カタカナをひらがなに変換
+  str = str.replace(/ヴ/g, 'ゔ');
+  str = str.replace(/ヵ/g, 'か');
+  str = str.replace(/ヶ/g, 'け');
+  
+  // 4. ひらがな (ぁ-ん, ゔ, ゝ, ゞ)、長音符 (ー)、半角/全角スペース以外をすべて除去してふりがな入力に完全固定
+  str = str.replace(/[^\u3041-\u3096\u309D-\u309Fー\s　]/g, '');
+  
+  return str;
 };
 
 // --- PageHeader Component ---
