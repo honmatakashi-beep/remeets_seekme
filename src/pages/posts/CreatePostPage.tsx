@@ -5,14 +5,15 @@ import {
   ArrowRight, ArrowLeft, BookOpen, Check, CheckCircle2,
   HelpCircle, Info, Lock, MapPin, Send, Shield,
   ShieldCheck, Sparkles, User, AlertTriangle, Eye, AlertCircle, Calendar,
-  Edit3, Mail, Key
+  Edit3, Mail, Key, Crown, CreditCard, FileCheck
 } from 'lucide-react';
 import { useAuth, useNgFilter } from '../../contexts/AuthContext';
 import { PREFECTURES, BIRTH_YEAR_OPTIONS, formatBirthYearLabel, getPostUrl, PageHeader } from '../../lib/utils';
 import { GoogleSearchResultPreview, BackToHomeButton } from '../../components/SharedComponents';
+import { MypageEkycModal } from '../../components/account/MypageEkycModal';
 
 export const CreatePostPage = () => {
-  const { user, token, login } = useAuth();
+  const { user, token, login, updateUser } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { check: checkNg } = useNgFilter();
@@ -36,6 +37,9 @@ export const CreatePostPage = () => {
   // プレビュー表示モード
   const [isPreviewMode, setIsPreviewMode] = useState(false);
 
+  // 選択されたプラン ('free' | 'ekyc')
+  const [pendingPlan, setPendingPlan] = useState<'free' | 'ekyc'>('ekyc');
+
   // 無料アカウント登録・ログインモーダル
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState<'register' | 'login'>('register');
@@ -43,6 +47,10 @@ export const CreatePostPage = () => {
   const [authPassword, setAuthPassword] = useState('');
   const [authLoading, setAuthLoading] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
+
+  // eKYC身分証・決済モーダル
+  const [showEkycModal, setShowEkycModal] = useState(false);
+  const [createdPostData, setCreatedPostData] = useState<any>(null);
 
   // 初期値の引き継ぎ
   useEffect(() => {
@@ -164,8 +172,10 @@ export const CreatePostPage = () => {
   };
 
   // 2. 実際に手紙を保存・公開する処理
-  const executeSubmitPost = async (authToken?: string) => {
+  const executeSubmitPost = async (authToken?: string, withEkyc?: boolean) => {
     const activeToken = authToken || token;
+    const isEkycPlan = withEkyc !== undefined ? withEkyc : pendingPlan === 'ekyc';
+
     if (isSubmitting) return;
     setIsSubmitting(true);
     setWarningMessage(null);
@@ -204,12 +214,20 @@ export const CreatePostPage = () => {
 
       if (res.ok) {
         const data = await res.json();
-        navigate(getPostUrl(data), {
-          state: {
-            justPosted: true,
-            postPreview: data
-          }
-        });
+        setCreatedPostData(data);
+
+        if (isEkycPlan) {
+          // 🌟 eKYC認証プランの場合: eKYCモーダルを起動
+          setShowEkycModal(true);
+        } else {
+          // ✉️ 無料プランの場合: そのまま公開詳細ページへ遷移
+          navigate(getPostUrl(data), {
+            state: {
+              justPosted: true,
+              postPreview: data
+            }
+          });
+        }
       } else {
         const err = await res.json();
         setWarningMessage(err.error || '手紙の登録に失敗しました。入力内容をご確認ください。');
@@ -224,14 +242,15 @@ export const CreatePostPage = () => {
     }
   };
 
-  // 3. プレビュー画面から「この内容で手紙を置く」ボタン押下
-  const handleConfirmAndPublish = () => {
+  // 3. プレビュー画面からプラン選択ボタン押下
+  const handleSelectPlan = (plan: 'free' | 'ekyc') => {
+    setPendingPlan(plan);
     if (!token) {
       // 未ログインの場合は無料アカウント登録モーダルを開く
       setShowAuthModal(true);
     } else {
-      // ログイン済みの場合は即座に投稿
-      executeSubmitPost(token);
+      // ログイン済みの場合は手紙作成を実行
+      executeSubmitPost(token, plan === 'ekyc');
     }
   };
 
@@ -276,8 +295,8 @@ export const CreatePostPage = () => {
       if (res.ok) {
         login(data.token, data.user);
         setShowAuthModal(false);
-        // 登録・ログイン完了と同時に手紙を自動投稿
-        await executeSubmitPost(data.token);
+        // 登録・ログイン完了と同時に選択プランで手紙を自動投稿
+        await executeSubmitPost(data.token, pendingPlan === 'ekyc');
       } else {
         setAuthError(data.error || (authMode === 'register' ? 'アカウント登録に失敗しました。' : 'ログインに失敗しました。'));
       }
@@ -326,7 +345,7 @@ export const CreatePostPage = () => {
       if (res.ok) {
         login(data.token, data.user);
         setShowAuthModal(false);
-        await executeSubmitPost(data.token);
+        await executeSubmitPost(data.token, pendingPlan === 'ekyc');
       } else {
         setAuthError(data.error || `${provider.toUpperCase()}連携に失敗しました。`);
       }
@@ -488,44 +507,161 @@ export const CreatePostPage = () => {
             </div>
           </div>
 
-          {/* プレビュー画面確定ボタンエリア */}
-          <div className="p-6 bg-white rounded-3xl border-2 border-teal-400 space-y-4 shadow-xl text-center">
-            <div className="space-y-1 max-w-md mx-auto">
-              <h3 className="text-base font-bold text-slate-900 font-serif">
-                この内容で目印の手紙を置きますか？
+          {/* =========================================================================
+              4. 投函プランの選択エリア（🌟 eKYC公的認証付き 600円 vs ✉️ 通常無料 0円）
+          ========================================================================= */}
+          <div className="bg-white rounded-3xl border-2 border-slate-200 p-6 sm:p-8 space-y-6 shadow-xl text-left">
+            <div className="text-center space-y-1.5 max-w-lg mx-auto">
+              <span className="text-[10px] font-extrabold text-teal-800 uppercase tracking-widest bg-teal-50 px-3 py-0.5 rounded-full border border-teal-200 inline-block font-sans">
+                SELECT PUBLISH PLAN
+              </span>
+              <h3 className="text-lg sm:text-2xl font-bold text-slate-900 font-serif">
+                手紙の公開方法を選択してください
               </h3>
               <p className="text-xs text-slate-600 font-sans leading-relaxed">
-                お相手からの再会エピソードが届いた際、ご登録のメールアドレス宛てに迅速にお知らせいたします。
+                お相手があなたを見つけた際、<strong>「間違いなく本物のあの人だ！」</strong>と確信できるよう、公的本人確認（eKYC）認証マーク付きでの投函を推奨しています。
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 pt-1">
+              {/* プランA: 🌟 公的認証（eKYC）付き投函（おすすめ） */}
+              <div className="relative rounded-3xl border-2 border-amber-400 bg-gradient-to-b from-amber-50/60 via-white to-orange-50/30 p-6 sm:p-7 space-y-4 shadow-md hover:shadow-lg transition-all flex flex-col justify-between">
+                <div className="absolute -top-3 left-6 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[10px] font-black px-3 py-0.5 rounded-full shadow-xs uppercase tracking-wider flex items-center gap-1 font-sans">
+                  <Crown size={12} />
+                  <span>おすすめ・信頼度 No.1</span>
+                </div>
+
+                <div className="space-y-3 pt-1">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h4 className="text-base sm:text-lg font-serif font-bold text-amber-950 flex items-center gap-1.5">
+                        <span>公的本人確認（eKYC）付き</span>
+                      </h4>
+                      <p className="text-[11px] text-amber-800/80 font-sans mt-0.5">
+                        本名と生まれ年を公的書類で証明
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-2xl font-serif font-black text-amber-950">¥600</span>
+                      <span className="text-[10px] text-amber-700 block font-sans">税込 / 1回のみ</span>
+                    </div>
+                  </div>
+
+                  {/* 特徴リスト */}
+                  <ul className="space-y-2 text-xs text-slate-700 font-sans pt-2 border-t border-amber-200/80">
+                    <li className="flex items-start gap-2">
+                      <div className="w-5 h-5 rounded-full seal-rainbow flex items-center justify-center text-white shrink-0 mt-0.5 shadow-2xs">
+                        <ShieldCheck size={11} />
+                      </div>
+                      <span className="leading-snug">
+                        手紙と検索カードに<strong>動く虹色公的認証マーク（封蝋印）</strong>が付与
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 size={15} className="text-amber-600 shrink-0 mt-0.5" />
+                      <span className="leading-snug">
+                        運転免許証等で<strong>氏名・年齢の一致が100%証明</strong>される
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Sparkles size={15} className="text-amber-600 shrink-0 mt-0.5" />
+                      <span className="leading-snug">
+                        相手の「なりすまし不安」を解消し、<strong>再会エピソード返信率が大幅UP</strong>
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="pt-4 border-t border-amber-200/60">
+                  <button
+                    type="button"
+                    onClick={() => handleSelectPlan('ekyc')}
+                    disabled={isSubmitting}
+                    className="w-full py-3.5 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-xs sm:text-sm rounded-2xl shadow-md hover:shadow-lg active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer font-serif disabled:opacity-50"
+                  >
+                    <ShieldCheck size={16} className="text-amber-100" />
+                    <span>公的認証付きで手紙を置く（600円） ✨</span>
+                  </button>
+                  <span className="text-[10px] text-amber-800/70 text-center block mt-1.5 font-sans">
+                    ※ 審査落ち時や不一致時は全額即時自動返金
+                  </span>
+                </div>
+              </div>
+
+              {/* プランB: ✉️ 通常無料投函 */}
+              <div className="rounded-3xl border border-slate-200 bg-slate-50/50 hover:bg-white p-6 sm:p-7 space-y-4 shadow-xs hover:shadow-sm transition-all flex flex-col justify-between">
+                <div className="space-y-3">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 bg-slate-200/80 px-2 py-0.5 rounded-full inline-block font-mono">
+                        BASIC
+                      </span>
+                      <h4 className="text-base sm:text-lg font-serif font-bold text-slate-800 mt-1">
+                        通常の手紙として置く
+                      </h4>
+                      <p className="text-[11px] text-slate-500 font-sans mt-0.5">
+                        まずは費用をかけずに目印を設置
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-2xl font-serif font-bold text-slate-900">¥0</span>
+                      <span className="text-[10px] text-slate-500 block font-sans">完全無料</span>
+                    </div>
+                  </div>
+
+                  {/* 特徴リスト */}
+                  <ul className="space-y-2 text-xs text-slate-600 font-sans pt-2 border-t border-slate-200">
+                    <li className="flex items-start gap-2">
+                      <Check size={15} className="text-teal-600 shrink-0 mt-0.5" />
+                      <span className="leading-snug">
+                        初期費用・月額維持費は一切かかりません
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check size={15} className="text-teal-600 shrink-0 mt-0.5" />
+                      <span className="leading-snug">
+                        いつでも後からマイページで公的認証を追加可能
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-2 text-slate-400">
+                      <span className="text-[11px] leading-snug">
+                        ※ 公的認証マークは付与されず通常表示となります
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="pt-4 border-t border-slate-200">
+                  <button
+                    type="button"
+                    onClick={() => handleSelectPlan('free')}
+                    disabled={isSubmitting}
+                    className="w-full py-3.5 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs sm:text-sm rounded-2xl shadow-sm hover:shadow-md active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer font-serif disabled:opacity-50"
+                  >
+                    <Send size={15} className="text-slate-300" />
+                    <span>無料で手紙を置く（0円）</span>
+                  </button>
+                  <span className="text-[10px] text-slate-400 text-center block mt-1.5 font-sans">
+                    ※ 永久無料（維持費などは一切不要）
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* 戻るボタン */}
+            <div className="pt-3 flex justify-center border-t border-slate-100">
               <button
                 type="button"
                 onClick={() => {
                   setIsPreviewMode(false);
                   window.scrollTo({ top: 200, behavior: 'smooth' });
                 }}
-                className="w-full sm:w-auto px-6 py-3.5 border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-xs sm:text-sm rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                className="px-5 py-2 text-slate-500 hover:text-slate-800 text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
               >
-                <ArrowLeft size={15} />
-                <span>戻って修正する</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={handleConfirmAndPublish}
-                disabled={isSubmitting}
-                className="w-full sm:w-auto min-w-[280px] px-8 py-4 bg-gradient-to-r from-teal-700 via-emerald-700 to-teal-800 hover:from-teal-800 hover:to-emerald-800 active:scale-98 text-white font-bold text-sm sm:text-base rounded-2xl shadow-lg hover:shadow-xl transition-all disabled:opacity-40 cursor-pointer inline-flex items-center justify-center gap-2 font-serif"
-              >
-                <Send size={16} />
-                <span>{isSubmitting ? '登録処理中...' : user ? 'この内容で手紙を置く（無料公開） ✨' : 'この内容で手紙を置く（無料登録へ） ✨'}</span>
+                <ArrowLeft size={14} />
+                <span>入力画面に戻って手紙を修正する</span>
               </button>
             </div>
-
-            <p className="text-[11px] text-slate-400 font-sans">
-              ※ 手紙の設置は永久無料です。維持費や更新料などは一切発生しません。
-            </p>
           </div>
         </div>
       ) : (
@@ -1091,6 +1227,36 @@ export const CreatePostPage = () => {
           </div>
         )}
       </AnimatePresence>
+
+      {/* 🌈 公的本人確認（eKYC）認証 ＆ 600円決済モーダル */}
+      <MypageEkycModal
+        isOpen={showEkycModal}
+        onClose={() => {
+          setShowEkycModal(false);
+          if (createdPostData) {
+            navigate(getPostUrl(createdPostData), {
+              state: {
+                justPosted: true,
+                postPreview: {
+                  ...createdPostData,
+                  is_ekyc_verified: Boolean(user?.is_ekyc_verified || localStorage.getItem('ekyc_verified') === 'true')
+                }
+              }
+            });
+          }
+        }}
+        user={user}
+        token={token}
+        updateUser={(updated) => {
+          updateUser(updated);
+          if (createdPostData) {
+            // 手紙側にも eKYC 認証反映
+            fetch(`/api/posts/${createdPostData.id}`, {
+              headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+            }).catch(() => {});
+          }
+        }}
+      />
     </div>
   );
 };

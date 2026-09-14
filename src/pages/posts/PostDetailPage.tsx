@@ -166,22 +166,53 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                 #{post.id}
               </span>
             </div>
-            <span className="text-xs font-bold text-teal-700 bg-white/90 border border-teal-200 px-3 py-1 rounded-full shadow-2xs">
-              💌 私を探すあなたへ
-            </span>
+            
+            <div className="flex items-center gap-2">
+              {Boolean(post.is_ekyc_verified) && (
+                <div className="flex items-center gap-1.5 bg-gradient-to-r from-sky-50 to-teal-50 border border-teal-300 px-2.5 py-1 rounded-full shadow-2xs">
+                  <div className="w-5 h-5 rounded-full seal-rainbow flex items-center justify-center text-white shadow-xs">
+                    <ShieldCheck size={11} />
+                  </div>
+                  <span className="text-[11px] font-black text-teal-950 font-sans">
+                    公的本人確認済
+                  </span>
+                </div>
+              )}
+              <span className="text-xs font-bold text-teal-700 bg-white/90 border border-teal-200 px-3 py-1 rounded-full shadow-2xs">
+                💌 私を探すあなたへ
+              </span>
+            </div>
           </div>
 
-          {/* 氏名・旧姓 */}
-          <div className="space-y-1">
-            <span className="text-xs font-bold text-slate-500 font-sans">手紙を置いた人</span>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-slate-900 tracking-wide">
-              {postFullName}
+          {/* 氏名・旧姓 ＆ eKYC公的証明バナー */}
+          <div className="space-y-2">
+            <div className="flex flex-wrap items-baseline gap-2">
+              <span className="text-xs font-bold text-slate-500 font-sans">手紙を置いた人</span>
+              {Boolean(post.is_ekyc_verified) && (
+                <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded-full font-sans">
+                  ✓ 氏名・生まれ年 公的確認済み
+                </span>
+              )}
+            </div>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-slate-900 tracking-wide flex items-center gap-2 flex-wrap">
+              <span>{postFullName}</span>
               {postMaidenName && (
-                <span className="text-sm sm:text-base font-normal text-slate-500 font-sans ml-2">
+                <span className="text-sm sm:text-base font-normal text-slate-500 font-sans">
                   （旧姓: {postMaidenName}）
                 </span>
               )}
             </h1>
+
+            {/* 🛡️ 公的本人確認（eKYC）済みの安心解説バナー */}
+            {Boolean(post.is_ekyc_verified) && (
+              <div className="p-3 bg-gradient-to-r from-teal-50/90 via-sky-50/70 to-emerald-50/80 rounded-2xl border border-teal-200/90 flex items-start gap-2.5 text-xs text-teal-950 font-sans">
+                <ShieldCheck size={16} className="text-teal-600 shrink-0 mt-0.5" />
+                <div className="leading-relaxed">
+                  <strong className="font-bold block text-teal-900">【公的本人確認（eKYC）完了済みのお手紙です】</strong>
+                  差出人は運転免許証・マイナンバーカード等による身元確認（本名・実在・生まれ年の一致）を完了しています。なりすまし等の心配なく、安心して再会希望をお送りいただけます。
+                </div>
+              </div>
+            )}
           </div>
 
           {/* メッセージ本文 */}
