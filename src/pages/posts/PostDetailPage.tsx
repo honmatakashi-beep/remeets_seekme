@@ -249,7 +249,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
           </div>
 
           {/* メッセージ本文 */}
-          <div className="p-6 sm:p-8 bg-white/95 rounded-2xl border-2 border-teal-200/80 shadow-sm space-y-3 font-serif">
+          <div className="p-6 sm:p-8 bg-white/95 rounded-2xl border border-slate-200/90 shadow-sm space-y-3 font-serif">
             <div className="flex items-center justify-between border-b border-teal-100 pb-2">
               <span className="text-xs text-teal-800 font-extrabold uppercase tracking-widest font-sans flex items-center gap-1.5">
                 <span>✉️</span>
@@ -259,7 +259,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                 当時の想い出・メッセージ
               </span>
             </div>
-            <p className="text-base sm:text-lg md:text-xl font-bold text-slate-900 leading-relaxed sm:leading-loose whitespace-pre-wrap tracking-wide">
+            <p className="text-sm sm:text-base text-slate-800 font-semibold leading-relaxed sm:leading-loose whitespace-pre-wrap">
               {post.message || post.content || '昔の仲間や知人へ。もし私の名前を見つけたら、ぜひご連絡ください。'}
             </p>
           </div>
@@ -286,73 +286,76 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
         </div>
 
         {/* ===================================================
-            3. もし、この手紙に心当たりがあるなら（受取人への安心ガイド ＆ 簡単な行動手順）
+            3. 連絡先がわからなくなってしまった貴方へ（再会のきっかけと安心ガイド）
         =================================================== */}
-        <div className="bg-white rounded-3xl border-2 border-teal-200/70 p-6 sm:p-8 shadow-sm space-y-5 text-left font-sans">
+        <div className="bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-8 shadow-sm space-y-5 text-left font-sans">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
             <div className="space-y-1">
               <span className="text-[10px] font-extrabold text-teal-700 tracking-widest uppercase font-mono flex items-center gap-1">
-                <span>HOW TO RESPOND SAFELY</span>
+                <span>ABOUT THIS LETTER</span>
                 <span>・</span>
-                <span>安心・安全な返信手順</span>
+                <span>手紙が置かれた理由と安心の仕組み</span>
               </span>
-              <h3 className="text-lg sm:text-xl font-serif font-bold text-slate-900 flex items-center gap-2 flex-wrap">
-                <span>🌟 もし、このメッセージに心当たりがあるなら</span>
+              <h3 className="text-base sm:text-lg font-serif font-bold text-slate-900 flex items-center gap-2 flex-wrap">
+                <span>🕊️ 連絡先がわからなくなってしまった貴方へ</span>
               </h3>
+              <p className="text-xs text-slate-500 font-sans">
+                「もう一度つながるきっかけ」として、当時の大切な想い出と共に置かれたメッセージです。
+              </p>
             </div>
-            <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full self-start sm:self-auto shadow-2xs">
-              🔒 登録・申請無料 ／ 完全相互合意制
+            <span className="text-[11px] font-bold text-teal-800 bg-teal-50 border border-teal-200 px-3 py-1 rounded-full self-start sm:self-auto shadow-2xs">
+              🔒 登録・返信無料 ／ 完全相互合意制
             </span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-            {/* 1. 記憶の確認 */}
-            <div className="p-4 sm:p-5 bg-gradient-to-br from-teal-50/80 to-emerald-50/40 rounded-2xl border border-teal-200/90 space-y-2">
+            {/* 1. 手紙の目的 */}
+            <div className="p-4 sm:p-5 bg-gradient-to-br from-teal-50/70 to-emerald-50/30 rounded-2xl border border-teal-200/80 space-y-2">
               <div className="flex items-center gap-2">
                 <div className="w-6 h-6 rounded-lg bg-teal-700 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
                   1
                 </div>
                 <strong className="text-slate-900 text-xs sm:text-sm font-bold block font-serif">
-                  手紙の内容を確かめる
+                  手紙が置かれた理由
                 </strong>
               </div>
               <p className="text-slate-600 text-[11.5px] leading-relaxed">
-                差出人のお名前やメッセージを読み、当時の想い出やエピソードに心当たりがあるかお確かめください。
+                引っ越しや環境の変化で連絡先が途絶えた大切な人に向けて、差出人が<strong>「もう一度話したい、元気か知りたい」</strong>という想いを込めて海に託した手紙です。
               </p>
             </div>
 
-            {/* 2. 思い出を添えて返信 */}
-            <div className="p-4 sm:p-5 bg-gradient-to-br from-sky-50/80 to-blue-50/40 rounded-2xl border border-sky-200/90 space-y-2">
+            {/* 2. 心当たりがある時 */}
+            <div className="p-4 sm:p-5 bg-gradient-to-br from-sky-50/70 to-blue-50/30 rounded-2xl border border-sky-200/80 space-y-2">
               <div className="flex items-center gap-2">
                 <div className="w-6 h-6 rounded-lg bg-sky-700 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
                   2
                 </div>
                 <strong className="text-slate-900 text-xs sm:text-sm font-bold block font-serif">
-                  思い出を添えて返信する
+                  心当たりがある時は
                 </strong>
               </div>
               <p className="text-slate-600 text-[11.5px] leading-relaxed">
-                手紙下の<strong>『この人に再会を希望する』</strong>から、当時の呼び名や記憶を添えて返信します（登録・申請は無料）。
+                「自分宛てかもしれない」と思ったら、手紙下のボタンから<strong>当時の呼び名や想い出のエピソードを添えて返信</strong>できます（登録・申請は無料）。
               </p>
             </div>
 
-            {/* 3. 相互合意で連絡先開示 */}
-            <div className="p-4 sm:p-5 bg-gradient-to-br from-amber-50/80 to-orange-50/40 rounded-2xl border border-amber-200/90 space-y-2">
+            {/* 3. 安心の相互承認 */}
+            <div className="p-4 sm:p-5 bg-gradient-to-br from-amber-50/70 to-orange-50/30 rounded-2xl border border-amber-200/80 space-y-2">
               <div className="flex items-center gap-2">
                 <div className="w-6 h-6 rounded-lg bg-amber-700 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
                   3
                 </div>
                 <strong className="text-slate-900 text-xs sm:text-sm font-bold block font-serif">
-                  相互合意で連絡先を交換
+                  安心の相互合意システム
                 </strong>
               </div>
               <p className="text-slate-600 text-[11.5px] leading-relaxed">
-                差出人が届いたエピソードを読み<strong>『本人だ！』と双方が納得した場合のみ</strong>、安全に連絡先が開示されます。
+                差出人がエピソードを読み<strong>『確かにあの頃の仲間だ！』と双方が納得した場合のみ</strong>連絡先が開示されます。第三者には一切公開されません。
               </p>
             </div>
           </div>
 
-          <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-[11.5px] text-slate-600 leading-relaxed flex items-center gap-2">
+          <div className="p-3 bg-slate-50/80 rounded-xl border border-slate-200/80 text-[11.5px] text-slate-600 leading-relaxed flex items-center gap-2">
             <span className="text-base">✨</span>
             <span>一方的な連絡先開示や悪用はAIと相互承認システムで100%遮断されています。安心してお気持ちをお伝えください。</span>
           </div>

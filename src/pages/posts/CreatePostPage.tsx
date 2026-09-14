@@ -493,22 +493,24 @@ export const CreatePostPage = () => {
       ========================================================================= */}
       {step === 'preview' ? (
         <div className="space-y-6 animate-fade-in">
-          {/* プレビュー中ヘッダーバナー */}
-          <div className="p-4 sm:p-5 bg-gradient-to-r from-amber-500 via-teal-600 to-emerald-600 text-white rounded-3xl shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          {/* プレビュー中ヘッダーバナー（ベタ色を排除した上品で透明感のあるデザイン） */}
+          <div className="p-4 sm:p-5 bg-white/90 backdrop-blur-sm rounded-3xl border border-slate-200 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-sans">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center shrink-0 border border-white/30">
-                <Eye size={20} className="text-white" />
+              <div className="w-10 h-10 rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center shrink-0 border border-teal-200/80 shadow-2xs">
+                <Eye size={20} />
               </div>
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-widest bg-white/20 px-2 py-0.5 rounded-full border border-white/30 inline-block font-mono">
-                  STEP 2: LIVE HTML PREVIEW
-                </span>
-                <h2 className="text-base sm:text-lg font-serif font-bold text-white mt-0.5">
-                  ネット公開画面の完成プレビュー
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-[10px] font-bold uppercase tracking-widest bg-teal-50 text-teal-800 border border-teal-200 px-2.5 py-0.5 rounded-full inline-block font-mono">
+                    STEP 2: PREVIEW
+                  </span>
+                  <span className="text-[11px] text-slate-500">
+                    ネット公開画面の完成プレビュー
+                  </span>
+                </div>
+                <h2 className="text-sm sm:text-base font-serif font-bold text-slate-900 mt-0.5">
+                  手紙がネット上に置かれた際、このような画面として公開されます
                 </h2>
-                <p className="text-xs text-white/90 font-sans">
-                  ネット上に手紙が置かれた際、このような画面として公開されます。
-                </p>
               </div>
             </div>
 
@@ -518,7 +520,7 @@ export const CreatePostPage = () => {
                 setStep('form');
                 window.scrollTo({ top: 200, behavior: 'smooth' });
               }}
-              className="px-4 py-2 bg-white/95 hover:bg-white text-slate-800 hover:text-teal-900 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer shrink-0"
+              className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 border border-slate-200 rounded-xl text-xs font-bold transition-all shadow-2xs flex items-center gap-1.5 cursor-pointer shrink-0 font-sans"
             >
               <Edit3 size={13} />
               <span>入力画面に戻って修正</span>
@@ -723,7 +725,7 @@ export const CreatePostPage = () => {
                     当時の想い出・メッセージ
                   </span>
                 </div>
-                <p className="text-base sm:text-lg md:text-xl font-bold font-serif text-slate-900 bg-white/95 p-6 rounded-2xl border-2 border-teal-200/80 leading-relaxed sm:leading-loose whitespace-pre-wrap tracking-wide shadow-xs">
+                <p className="text-xs sm:text-sm md:text-base font-semibold font-serif text-slate-800 bg-white/95 p-5 rounded-2xl border border-slate-200/90 leading-relaxed sm:leading-loose whitespace-pre-wrap shadow-2xs">
                   {formData.message || '（メッセージが入力されていません）'}
                 </p>
               </div>
@@ -744,73 +746,76 @@ export const CreatePostPage = () => {
           </div>
 
           {/* =========================================================================
-              3. もし、この手紙に心当たりがあるなら（受取人への安心ガイド ＆ 簡単な行動手順）
+              3. 連絡先がわからなくなってしまった貴方へ（再会のきっかけと安心ガイド）
           ========================================================================= */}
-          <div className="bg-white rounded-3xl border-2 border-teal-200/70 p-6 sm:p-8 shadow-sm space-y-5 text-left font-sans">
+          <div className="bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-8 shadow-sm space-y-5 text-left font-sans">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
               <div className="space-y-1">
                 <span className="text-[10px] font-extrabold text-teal-700 tracking-widest uppercase font-mono flex items-center gap-1">
-                  <span>HOW TO RESPOND SAFELY</span>
+                  <span>ABOUT THIS LETTER</span>
                   <span>・</span>
-                  <span>安心・安全な返信手順</span>
+                  <span>手紙が置かれた理由と安心の仕組み</span>
                 </span>
-                <h3 className="text-lg sm:text-xl font-serif font-bold text-slate-900 flex items-center gap-2 flex-wrap">
-                  <span>🌟 もし、このメッセージに心当たりがあるなら</span>
+                <h3 className="text-base sm:text-lg font-serif font-bold text-slate-900 flex items-center gap-2 flex-wrap">
+                  <span>🕊️ 連絡先がわからなくなってしまった貴方へ</span>
                 </h3>
+                <p className="text-xs text-slate-500 font-sans">
+                  「もう一度つながるきっかけ」として、当時の大切な想い出と共に置かれたメッセージです。
+                </p>
               </div>
-              <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full self-start sm:self-auto shadow-2xs">
-                🔒 登録・申請無料 ／ 完全相互合意制
+              <span className="text-[11px] font-bold text-teal-800 bg-teal-50 border border-teal-200 px-3 py-1 rounded-full self-start sm:self-auto shadow-2xs">
+                🔒 登録・返信無料 ／ 完全相互合意制
               </span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-              {/* 1. 記憶の確認 */}
-              <div className="p-4 sm:p-5 bg-gradient-to-br from-teal-50/80 to-emerald-50/40 rounded-2xl border border-teal-200/90 space-y-2">
+              {/* 1. 手紙の目的 */}
+              <div className="p-4 sm:p-5 bg-gradient-to-br from-teal-50/70 to-emerald-50/30 rounded-2xl border border-teal-200/80 space-y-2">
                 <div className="flex items-center gap-2">
                   <div className="w-6 h-6 rounded-lg bg-teal-700 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
                     1
                   </div>
                   <strong className="text-slate-900 text-xs sm:text-sm font-bold block font-serif">
-                    手紙の内容を確かめる
+                    手紙が置かれた理由
                   </strong>
                 </div>
                 <p className="text-slate-600 text-[11.5px] leading-relaxed">
-                  差出人のお名前やメッセージを読み、当時の想い出やエピソードに心当たりがあるかお確かめください。
+                  引っ越しや環境の変化で連絡先が途絶えた大切な人に向けて、差出人が<strong>「もう一度話したい、元気か知りたい」</strong>という想いを込めて海に託した手紙です。
                 </p>
               </div>
 
-              {/* 2. 思い出を添えて返信 */}
-              <div className="p-4 sm:p-5 bg-gradient-to-br from-sky-50/80 to-blue-50/40 rounded-2xl border border-sky-200/90 space-y-2">
+              {/* 2. 心当たりがある時 */}
+              <div className="p-4 sm:p-5 bg-gradient-to-br from-sky-50/70 to-blue-50/30 rounded-2xl border border-sky-200/80 space-y-2">
                 <div className="flex items-center gap-2">
                   <div className="w-6 h-6 rounded-lg bg-sky-700 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
                     2
                   </div>
                   <strong className="text-slate-900 text-xs sm:text-sm font-bold block font-serif">
-                    思い出を添えて返信する
+                    心当たりがある時は
                   </strong>
                 </div>
                 <p className="text-slate-600 text-[11.5px] leading-relaxed">
-                  手紙下の<strong>『この人に再会を希望する』</strong>から、当時の呼び名や記憶を添えて返信します（登録・申請は無料）。
+                  「自分宛てかもしれない」と思ったら、手紙下のボタンから<strong>当時の呼び名や想い出のエピソードを添えて返信</strong>できます（登録・申請は無料）。
                 </p>
               </div>
 
-              {/* 3. 相互合意で連絡先開示 */}
-              <div className="p-4 sm:p-5 bg-gradient-to-br from-amber-50/80 to-orange-50/40 rounded-2xl border border-amber-200/90 space-y-2">
+              {/* 3. 安心の相互承認 */}
+              <div className="p-4 sm:p-5 bg-gradient-to-br from-amber-50/70 to-orange-50/30 rounded-2xl border border-amber-200/80 space-y-2">
                 <div className="flex items-center gap-2">
                   <div className="w-6 h-6 rounded-lg bg-amber-700 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
                     3
                   </div>
                   <strong className="text-slate-900 text-xs sm:text-sm font-bold block font-serif">
-                    相互合意で連絡先を交換
+                    安心の相互合意システム
                   </strong>
                 </div>
                 <p className="text-slate-600 text-[11.5px] leading-relaxed">
-                  差出人が届いたエピソードを読み<strong>『本人だ！』と双方が納得した場合のみ</strong>、安全に連絡先が開示されます。
+                  差出人がエピソードを読み<strong>『確かにあの頃の仲間だ！』と双方が納得した場合のみ</strong>連絡先が開示されます。第三者には一切公開されません。
                 </p>
               </div>
             </div>
 
-            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-[11.5px] text-slate-600 leading-relaxed flex items-center gap-2">
+            <div className="p-3 bg-slate-50/80 rounded-xl border border-slate-200/80 text-[11.5px] text-slate-600 leading-relaxed flex items-center gap-2">
               <span className="text-base">✨</span>
               <span>一方的な連絡先開示や悪用はAIと相互承認システムで100%遮断されています。安心してお気持ちをお伝えください。</span>
             </div>
