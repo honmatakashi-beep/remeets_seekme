@@ -173,8 +173,8 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
         icon={<Search size={24} className="text-teal-600" />}
         iconBoxClassName="bg-teal-50 text-teal-600 border border-teal-100"
         category="Search Directory"
-        title="目印の手紙を探す"
-        description="探しているお相手のお名前やご自身のお名前、ゆかりの都道府県などで検索し、あなたを待っている大切な人の置き手紙と出会うことができます。"
+        title="手紙を探す"
+        description="探しているお相手のお名前やご自身のお名前、ゆかりの都道府県などで検索し、あなたを待っている大切な人からの手紙と出会うことができます。"
       />
 
       {/* 🔍 上部統合検索 & 絞り込み & 新着通知コントロールカード */}
@@ -295,7 +295,7 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
           <div>
             <p className="font-bold text-xs text-amber-950">💡 検索方法のアドバイス</p>
             <p className="mt-0.5 text-[11px] text-amber-900/90 leading-relaxed font-sans">
-              現在検索条件が未入力のため、<b>最新の置かれた手紙（新着順）</b>を表示しています。<br />
+              現在検索条件が未入力のため、<b>最新の手紙（新着順）</b>を表示しています。<br />
               お相手またはご自身宛ての手紙をお探しの場合は、上の検索ボックスに<b>「お名前（フルネーム・苗字・旧姓）」</b>や<b>「ゆかりの都道府県」「年代」</b>等を入力して検索してください。（※市区町村や学校名は防犯のため非公開となっており、再会申請が承認・開通された後に連絡先が開示されます）
             </p>
           </div>
@@ -333,7 +333,7 @@ export const SearchPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void
                     該当する手紙が見つかりませんでした
                   </h3>
                   <p className="text-xs md:text-sm font-serif text-slate-600 leading-relaxed">
-                    まだ手紙が置かれていないか、異なる表記で投稿されている可能性があります。<br />
+                    まだ手紙が書かれていないか、異なる表記で投稿されている可能性があります。<br />
                     ひらがな、旧姓、または都道府県のみで再検索をお試しいただくか、<b>「新着通知」</b>をご登録ください。
                   </p>
                 </div>

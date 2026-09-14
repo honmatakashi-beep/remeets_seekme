@@ -635,7 +635,7 @@ export const CreatePostPage = () => {
 
               {/* 氏名・旧姓 & 認証バッジ */}
               <div className="space-y-1.5">
-                <span className="text-xs font-bold text-slate-500 font-sans">手紙を置いた人</span>
+                <span className="text-xs font-bold text-slate-500 font-sans">手紙を書いた人</span>
                 <div className="flex flex-wrap items-center gap-3">
                   <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-slate-900 tracking-wide">
                     {fullName || 'お名前'}
@@ -877,7 +877,7 @@ export const CreatePostPage = () => {
                     className="w-full py-4 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-sm sm:text-base rounded-2xl shadow-lg hover:shadow-xl active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer font-serif disabled:opacity-50"
                   >
                     <ShieldCheck size={18} className="text-amber-100" />
-                    <span>公的認証付きで手紙を置く（600円） ✨</span>
+                    <span>公的認証付きで手紙を書く（600円） ✨</span>
                   </button>
                   <span className="text-[11px] text-amber-800/80 text-center block mt-2 font-sans">
                     ※ 審査落ち時や不一致時は全額即時自動返金
@@ -894,10 +894,10 @@ export const CreatePostPage = () => {
                         BASIC
                       </span>
                       <h4 className="text-lg sm:text-xl font-serif font-bold text-slate-800 mt-1">
-                        通常の手紙として置く
+                        通常の手紙として書く
                       </h4>
                       <p className="text-xs text-slate-500 font-sans mt-0.5">
-                        まずは費用をかけずに目印を設置
+                        まずは費用をかけずに手紙を作成
                       </p>
                     </div>
                     <div className="text-right">
@@ -936,7 +936,7 @@ export const CreatePostPage = () => {
                     className="w-full py-4 bg-slate-800 hover:bg-slate-900 text-white font-bold text-sm sm:text-base rounded-2xl shadow-md hover:shadow-lg active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer font-serif disabled:opacity-50"
                   >
                     <Send size={16} className="text-slate-300" />
-                    <span>無料で手紙を置く（0円）</span>
+                    <span>無料で手紙を書く（0円）</span>
                   </button>
                   <span className="text-[11px] text-slate-400 text-center block mt-2 font-sans">
                     ※ 永久無料（維持費などは一切不要）
@@ -974,7 +974,7 @@ export const CreatePostPage = () => {
         </div>
       ) : step === 'success' ? (
         /* =========================================================================
-            C. 投函・公開完了画面（インターネットの海に手紙が置かれた完了ページ）
+            C. 投函・公開完了画面（インターネットの海に手紙が公開された完了ページ）
         ========================================================================= */
         <div className="space-y-6 animate-fade-in text-left">
           {/* お祝いヘッダーバナー */}
@@ -989,11 +989,11 @@ export const CreatePostPage = () => {
             </span>
 
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-white tracking-wide">
-              手紙がインターネットの海に置かれました
+              手紙がインターネットの海に届けられました
             </h1>
 
             <p className="text-xs sm:text-sm text-emerald-100/90 max-w-lg mx-auto font-sans leading-relaxed">
-              あなたを探しているお相手に向けた目印（手紙）が正常に公開されました。お相手がこの手紙を見つけ、当時の思い出を届けてくれる日を心待ちにしましょう。
+              あなたを探しているお相手に向けた想い出の手紙が正常に公開されました。お相手がこの手紙を見つけ、当時の思い出を届けてくれる日を心待ちにしましょう。
             </p>
           </div>
 
@@ -1030,7 +1030,7 @@ export const CreatePostPage = () => {
             {/* お名前 & メッセージ抜粋 */}
             <div className="space-y-3">
               <div>
-                <span className="text-xs font-bold text-slate-400 font-sans">手紙を置いた人</span>
+                <span className="text-xs font-bold text-slate-400 font-sans">手紙を書いた人</span>
                 <h2 className="text-xl sm:text-2xl font-serif font-bold text-slate-900">
                   {fullName}
                   {formData.maidenName && (
@@ -1200,8 +1200,8 @@ export const CreatePostPage = () => {
                 完全無料・防犯設計
               </span>
             }
-            title="目印の手紙を置く"
-            description="私を探している誰かに向けて、あなたの目印を置いておきましょう。学校名や詳細な住所は非公開のため、プライバシーを完全に守りながら待つことができます。"
+            title="手紙を書く"
+            description="私を探している誰かに向けて、あなたからの手紙を届けておきましょう。学校名や詳細な住所は非公開のため、プライバシーを完全に守りながら待つことができます。"
           />
 
           {/* 🧪 【テスト・動作確認用】一括自動入力バー */}
@@ -1354,7 +1354,7 @@ export const CreatePostPage = () => {
                         maidenName: '',
                         birthYear: '1978',
                         hometownPref: '大阪府',
-                        message: '昔お世話になった皆様へ。ふと当時の温かい思い出が蘇り、こちらに手紙を置くことにしました。元気でお過ごしでしょうか。',
+                        message: '昔お世話になった皆様へ。ふと当時の温かい思い出が蘇り、こちらに手紙を書くことにしました。元気でお過ごしでしょうか。',
                         contactType: 'LINE',
                         contactId: 'suzuki_kenichi_1978',
                         contactNote: '週末に返信いたします。'
@@ -1381,7 +1381,7 @@ export const CreatePostPage = () => {
                         maidenName: '',
                         birthYear: '1978',
                         hometownPref: '大阪府',
-                        message: '昔お世話になった皆様へ。ふと当時の温かい思い出が蘇り、こちらに手紙を置くことにしました。元気でお過ごしでしょうか。',
+                        message: '昔お世話になった皆様へ。ふと当時の温かい思い出が蘇り、こちらに手紙を書くことにしました。元気でお過ごしでしょうか。',
                         contactType: 'LINE',
                         contactId: 'suzuki_kenichi_1978',
                         contactNote: '週末に返信いたします。'
@@ -1756,7 +1756,7 @@ export const CreatePostPage = () => {
                       className="py-2.5 px-3 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 font-serif active:scale-98"
                     >
                       <Sparkles size={13} className="text-amber-200" />
-                      <span>⚡ ワンクリックで登録して手紙を置く</span>
+                      <span>⚡ ワンクリックで登録して手紙を書く</span>
                     </button>
                     <button
                       type="button"
@@ -1862,7 +1862,7 @@ export const CreatePostPage = () => {
                     ) : (
                       <>
                         <Send size={14} />
-                        <span>{authMode === 'register' ? '登録して手紙を置く（完全無料） ✨' : 'ログインして手紙を置く ✨'}</span>
+                        <span>{authMode === 'register' ? '登録して手紙を書く（完全無料） ✨' : 'ログインして手紙を書く ✨'}</span>
                       </>
                     )}
                   </button>

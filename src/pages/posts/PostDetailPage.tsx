@@ -149,7 +149,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
           <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center gap-3 text-emerald-900 text-xs sm:text-sm font-medium animate-in fade-in duration-300">
             <CheckCircle2 size={20} className="text-emerald-600 shrink-0" />
             <div>
-              <strong className="block font-bold">目印の手紙を置きました！</strong>
+              <strong className="block font-bold">手紙を書きました！</strong>
               <span>あなたを探す誰かがGoogleやサイト内で検索した際、この手紙が見つかります。</span>
             </div>
           </div>
@@ -198,7 +198,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
           {/* 氏名・旧姓 ＆ eKYC公的証明バナー */}
           <div className="space-y-2">
             <div className="flex flex-wrap items-baseline gap-2">
-              <span className="text-xs font-bold text-slate-500 font-sans">手紙を置いた人</span>
+              <span className="text-xs font-bold text-slate-500 font-sans">手紙を書いた人</span>
               {Boolean(post.is_ekyc_verified) && (
                 <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded-full font-sans">
                   ✓ 氏名・生まれ年 公的確認済み
@@ -301,12 +301,12 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
         </div>
 
         {/* ===================================================
-            4. サブCTA: 「あなたも手紙を置きませんか？」
+            4. サブCTA: 「あなたも手紙を書きませんか？」
         =================================================== */}
         <div className="p-6 rounded-3xl bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-700 text-white shadow-md flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
           <div className="space-y-1">
             <h3 className="text-base sm:text-lg font-serif font-bold">
-              あなたも大切な人に向けて、目印の手紙を置きませんか？
+              あなたも大切な人に向けて、手紙を書きませんか？
             </h3>
             <p className="text-xs text-teal-100 font-sans">
               何通でも完全無料。お名前とゆかりの地を登録しておくだけで、探している知人が見つけられます。
@@ -316,7 +316,7 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
             to="/create"
             className="px-6 py-3 bg-white text-teal-800 hover:bg-teal-50 font-bold rounded-2xl text-xs sm:text-sm shadow-sm transition-all whitespace-nowrap"
           >
-            目印の手紙を置く（無料）
+            手紙を書く（無料）
           </Link>
         </div>
       </div>

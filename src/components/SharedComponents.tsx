@@ -265,13 +265,13 @@ export const Navbar = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) 
           </Link>
           
           <div className="flex items-center gap-2 sm:gap-3">
-          {/* 置き手紙ボタン（CTA） */}
+          {/* 手紙を書くボタン（CTA） */}
           <Link
             to="/create"
             className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-700 hover:from-teal-700 hover:via-emerald-700 hover:to-teal-800 text-white font-bold rounded-full text-xs shadow-xs shadow-teal-950/20 hover:shadow-sm transition-all hover:scale-[1.03] active:scale-98 cursor-pointer shrink-0 border border-teal-400/40"
           >
             <Send size={13} className="text-teal-100 shrink-0 drop-shadow-2xs" />
-            <span className="drop-shadow-2xs">目印の手紙を置く（無料）</span>
+            <span className="drop-shadow-2xs">手紙を書く（無料）</span>
           </Link>
 
           {/* 手紙を探す Link */}
@@ -368,7 +368,7 @@ export const Navbar = ({ onOpenOnboarding }: { onOpenOnboarding?: () => void }) 
                   className="flex items-center gap-3 px-3 py-2.5 text-xs text-slate-700 hover:text-teal-700 hover:bg-teal-50/60 rounded-xl transition-all font-semibold text-left"
                 >
                   <Send size={16} className="text-teal-600 shrink-0" />
-                  <span>目印の手紙を置く（無料）</span>
+                  <span>手紙を書く（無料）</span>
                 </Link>
 
                 <Link
@@ -558,7 +558,7 @@ export const Footer = () => {
             />
           </div>
           <p className="text-xs text-brand-dark/60 leading-relaxed font-serif max-w-sm sm:max-w-md lg:max-w-none">
-            私を探している誰かに向けて、自分の目印（手紙）を置いておく灯台型プラットフォーム。
+            私を探している誰かに向けて、自分からの手紙を届けておく灯台型プラットフォーム。
           </p>
           <p className="text-[10px] text-brand-dark/50 font-sans">
             運営: ReMEETs SeekMe 事務局
@@ -567,7 +567,7 @@ export const Footer = () => {
         <div className="space-y-2.5 sm:space-y-3">
           <h4 className="text-[11px] sm:text-xs font-bold text-brand-dark/80 tracking-widest uppercase">サービス</h4>
           <ul className="space-y-1.5 sm:space-y-2 text-xs text-brand-dark/60">
-            <li><Link to="/create" className="hover:text-teal-700">目印の手紙を置く（無料）</Link></li>
+            <li><Link to="/create" className="hover:text-teal-700">手紙を書く（無料）</Link></li>
             <li><Link to="/search" className="hover:text-teal-700">想い出の手紙を探す</Link></li>
             <li><Link to="/pricing" className="hover:text-teal-700">利用料金表</Link></li>
             <li><Link to="/supporter" className="hover:text-teal-700">SeekMeを応援（寄付）</Link></li>
@@ -645,7 +645,7 @@ export const GoogleSearchResultPreview = ({
   const displayUrl = `https://remeets.jp/seekme › name › ${targetName ? encodeURIComponent(targetName) : '...'}`;
   const eraFormatted = era ? formatEraLabel(era) : '1990年代';
   const msgPreview = searcherProfile || teaser || '私を探しているあなたへ。メッセージをお待ちしています。';
-  const snippet = `【${displayLocation}・${eraFormatted}】${targetName || '〇〇'}${maidenText} 様からの置き手紙：「${msgPreview.slice(0, 65)}${msgPreview.length > 65 ? '...' : ''}」相互エピソード承認とeKYC本人確認で安心の再会をサポート。`;
+  const snippet = `【${displayLocation}・${eraFormatted}】${targetName || '〇〇'}${maidenText} 様からの想い出の手紙：「${msgPreview.slice(0, 65)}${msgPreview.length > 65 ? '...' : ''}」相互エピソード承認とeKYC本人確認で安心の再会をサポート。`;
 
   return (
     <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm font-sans max-w-2xl overflow-hidden text-left my-2">

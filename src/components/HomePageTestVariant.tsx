@@ -322,7 +322,7 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
                     className="my-1" 
                     lines={[
                       '私を探しているあなたへ',
-                      'ここに目印の手紙を置いておきます',
+                      'ここに手紙を書いておきます',
                       'ReMEETs SeekMe'
                     ]}
                   />
@@ -334,7 +334,7 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
                   transition={{ delay: 0.2 }}
                   className="text-xs sm:text-sm md:text-base text-slate-800 font-serif leading-relaxed sm:leading-relaxed tracking-wide max-w-2xl mx-auto font-medium"
                 >
-                  同窓生、昔の仲間、お世話になったあの人。もし誰かがあなたの名前をGoogleなどで探したとき、あたたかい目印が見つかるように。ここは、私を探す大切な人に向けて静かに手紙を置いておく、灯台のような再会プラットフォームです。
+                  同窓生、昔の仲間、お世話になったあの人。もし誰かがあなたの名前をGoogleなどで探したとき、あたたかい目印が見つかるように。ここは、私を探す大切な人に向けて静かに手紙を書いておく、灯台のような再会プラットフォームです。
                 </motion.p>
 
                 {/* サブデザインと同等の「ボトルメールが届ける再会の奇跡」コンセプトモーダル起動ボタン */}
@@ -357,7 +357,7 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
                 </motion.div>
               </div>
 
-              {/* ヒーローアクション: 「目印の手紙を置く」「手紙を探す」同サイズ2大ボタン */}
+              {/* ヒーローアクション: 「手紙を書く」「手紙を探す」同サイズ2大ボタン */}
               <motion.div 
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -369,7 +369,7 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
                   className="w-full sm:w-auto min-w-[220px] px-7 py-3.5 sm:py-4 bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-700 hover:from-teal-700 hover:to-emerald-800 text-white font-bold rounded-2xl text-xs sm:text-sm transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.01] active:scale-95 group border border-teal-400/30 whitespace-nowrap"
                 >
                   <Send size={17} className="text-teal-200 group-hover:rotate-12 transition-transform shrink-0" />
-                  <span className="font-bold tracking-wide">目印の手紙を置く（無料）</span>
+                  <span className="font-bold tracking-wide">手紙を書く（無料）</span>
                   <ArrowRight size={16} className="shrink-0 text-teal-200" />
                 </Link>
 
@@ -401,7 +401,7 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
                   
                   <div className="grid grid-cols-3 gap-2 text-center">
                     <div className="bg-emerald-50/60 border border-emerald-100/80 rounded-xl p-2 sm:p-2.5">
-                      <span className="text-[10px] text-emerald-800 font-bold block">目印の手紙を置く</span>
+                      <span className="text-[10px] text-emerald-800 font-bold block">手紙を書く</span>
                       <span className="text-base sm:text-lg font-bold text-emerald-700">0円</span>
                       <span className="text-[9px] text-slate-500 block">何通でも完全無料</span>
                     </div>
@@ -431,7 +431,7 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
           <div className="max-w-4xl mx-auto px-4 sm:px-6">
             <div className="grid grid-cols-3 gap-3 sm:gap-6 text-center">
               <div className="p-3 sm:p-4 rounded-2xl bg-white/80 border border-slate-200/80 shadow-2xs">
-                <span className="text-[10px] sm:text-xs text-slate-500 font-medium block">海を漂う目印の手紙</span>
+                <span className="text-[10px] sm:text-xs text-slate-500 font-medium block">海を漂う想い出の手紙</span>
                 <span className="text-lg sm:text-2xl md:text-3xl font-serif font-bold text-teal-800">
                   {publicStats.totalBottles > 0 ? publicStats.totalBottles.toLocaleString() : '320'}<span className="text-xs sm:text-sm font-sans font-normal ml-1">通</span>
                 </span>
@@ -472,7 +472,7 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4 md:gap-5 relative z-10">
-            {/* Step 1: 目印を置く */}
+            {/* Step 1: 手紙を書く */}
             <div className="group relative bg-white/95 backdrop-blur-xs rounded-2xl border-2 border-emerald-500/80 hover:border-emerald-600 shadow-xs hover:shadow-md transition-all text-left flex flex-col justify-between overflow-hidden hover:-translate-y-0.5 p-3.5 sm:p-4 md:p-5 space-y-2.5 sm:space-y-3">
               <div className="flex items-center justify-between border-b border-emerald-100 pb-2">
                 <div className="flex items-baseline gap-1.5 sm:gap-2">
@@ -480,14 +480,14 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
                   <span className="text-xl sm:text-2xl md:text-3xl font-serif font-extrabold tracking-wider text-emerald-600">01</span>
                 </div>
                 <span className="text-[11px] sm:text-xs font-serif font-bold bg-emerald-50 text-emerald-700 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full border border-emerald-200">
-                  【置く】
+                  【書く】
                 </span>
               </div>
 
               <div className="relative overflow-hidden rounded-xl aspect-[16/10] bg-slate-100 border border-emerald-200 p-1 shadow-inner group-hover:border-emerald-400 transition-colors duration-300">
                 <img 
                   src={stepMistWriteImg} 
-                  alt="目印の手紙を置く" 
+                  alt="手紙を書く" 
                   className="w-full h-full object-cover object-center rounded-lg group-hover:scale-[1.04] transition-transform duration-500 ease-out"
                 />
               </div>
@@ -495,7 +495,7 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
               <div className="space-y-2 sm:space-y-3 flex-1 flex flex-col justify-between pt-1">
                 <div className="space-y-1 sm:space-y-1.5">
                   <h3 className="text-sm sm:text-base md:text-lg font-serif font-extrabold text-slate-900 leading-snug tracking-tight">
-                    目印の手紙を置く（無料）
+                    手紙を書く（無料）
                   </h3>
                   <p className="text-[11px] sm:text-xs md:text-sm text-slate-600 font-sans leading-relaxed">
                     お名前・旧姓・ゆかりの都道府県とメッセージを投稿。学校名や詳細住所は非公開で防犯徹底。
@@ -653,7 +653,7 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
       </section>
 
       {/* ==========================================
-          4. 「私を探すあなたへ」目印の手紙を置くダイレクトフォーム
+          4. 「私を探すあなたへ」手紙を書くダイレクトフォーム
       ========================================== */}
       <section className="py-8 bg-gradient-to-b from-teal-50/20 to-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
@@ -664,11 +664,11 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
               <div className="text-center space-y-2">
                 <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-teal-100 text-teal-800 text-xs font-bold border border-teal-200 font-sans">
                   <Send size={13} className="text-teal-600" />
-                  <span>目印の手紙（置き手紙）</span>
+                  <span>想い出の手紙</span>
                 </span>
                 <h3 className="text-base sm:text-xl md:text-2xl font-serif font-bold text-slate-900 tracking-wide leading-relaxed space-y-1">
                   <span className="block">私を探している誰かに向けて。</span>
-                  <span className="block text-teal-800">あなたの目印を置いてみませんか？</span>
+                  <span className="block text-teal-800">あなたからの手紙を届けてみませんか？</span>
                 </h3>
               </div>
 
@@ -710,15 +710,15 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
                   <Send size={16} className="text-teal-200 shrink-0" />
                   <span className="font-bold tracking-wide">
                     {fullTargetName 
-                      ? `『${fullTargetName}』の名前で目印の手紙を置く（無料）`
-                      : '目印の手紙を作成する（完全無料）'}
+                      ? `『${fullTargetName}』の名前で手紙を書く（無料）`
+                      : '手紙を作成する（完全無料）'}
                   </span>
                   <ArrowRight size={16} className="shrink-0 text-teal-200" />
                 </button>
               </form>
 
               <div className="pt-2 border-t border-teal-200/60 text-[11px] sm:text-xs text-slate-500 font-sans text-center">
-                <span>※目印の手紙の設置・閲覧・エピソード申請は完全無料です。学校名や詳細住所は非公開で防犯徹底。</span>
+                <span>※手紙の投稿・閲覧・エピソード申請は完全無料です。学校名や詳細住所は非公開で防犯徹底。</span>
               </div>
             </div>
           </div>
@@ -738,7 +738,7 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
               </div>
               <div>
                 <span className="text-xs font-bold text-slate-800 block group-hover:text-teal-700 transition-colors">ご利用マニュアル</span>
-                <span className="text-[10px] text-slate-500 block">置き手紙〜再会までの流れ</span>
+                <span className="text-[10px] text-slate-500 block">手紙の投稿〜再会までの流れ</span>
               </div>
             </Link>
 
@@ -785,7 +785,7 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
                 SeekMe で生まれた再会のストーリー
               </h2>
               <p className="text-xs md:text-sm text-brand-dark/60 font-serif">
-                目印の手紙をきっかけに、再び繋がることができた方々からの温かいご報告。
+                手紙をきっかけに、再び繋がることができた方々からの温かいご報告。
               </p>
             </div>
             <Link to="/success-stories" className="text-xs text-teal-700 uppercase tracking-[0.2em] font-sans font-bold flex items-center gap-2 hover:underline shrink-0 self-start sm:self-auto">
@@ -816,7 +816,7 @@ export const HomePageTestVariant: React.FC<HomePageTestVariantProps> = ({ onTogg
                         STORY #{String(idx + 1).padStart(2, '0')} / {displayTag}
                       </span>
                       <div className="space-y-1.5 sm:space-y-2">
-                        <h4 className="text-xs sm:text-[13px] md:text-base font-serif font-bold text-brand-dark group-hover:text-teal-700 transition-colors line-clamp-2">「{story.title || '目印の手紙がつないだ温かい再会'}」</h4>
+                        <h4 className="text-xs sm:text-[13px] md:text-base font-serif font-bold text-brand-dark group-hover:text-teal-700 transition-colors line-clamp-2">「{story.title || '手紙がつないだ温かい再会'}」</h4>
                         <p className="text-[11px] sm:text-xs text-zinc-600 leading-relaxed font-sans line-clamp-6">
                           {story.message}
                         </p>
