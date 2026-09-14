@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Shield, X, Sparkles, CheckCircle2, AlertCircle, Eye, ArrowRight,
@@ -35,18 +35,24 @@ export const MypageEkycModal: React.FC<MypageEkycModalProps> = ({
   const [mypageEkycProgress, setMypageEkycProgress] = useState(0);
   const [mypageEkycCapturedImages, setMypageEkycCapturedImages] = useState<{ front?: string; thickness?: string; back?: string }>({});
 
+  const prevIsOpenRef = useRef(false);
+
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && !prevIsOpenRef.current) {
       setMypageEkycName(user?.fullName || user?.name || "");
       if (!mypageEkycBirthdate) {
         setMypageEkycBirthdate("1990-01-01");
       }
       setMypageEkycStep(1);
+      setMypageEkycProgress(0);
+      setIsMypagePaying(false);
     }
+    prevIsOpenRef.current = isOpen;
   }, [isOpen, user]);
 
   useEffect(() => {
-    if (mypageEkycStep !== 3 || !isOpen) {
+    // ステップ2（カメラ撮影中）以外の時、またはモーダルが閉じた時にカメラストリームを停止
+    if (mypageEkycStep !== 2 || !isOpen) {
       stopAllGlobalCameraStreams();
     }
     return () => {
@@ -277,6 +283,14 @@ export const MypageEkycModal: React.FC<MypageEkycModalProps> = ({
             {/* Step 3: 決済 */}
             {mypageEkycStep === 3 && (
               <div className="space-y-6 font-sans">
+                <div className="border-b border-zinc-150 pb-3">
+                  <span className="text-[10px] font-bold text-sky-700 uppercase tracking-widest block font-sans">Step 3 / 4</span>
+                  <h3 className="text-lg font-serif font-bold text-brand-dark">本人確認審査手数料の決済</h3>
+                  <p className="text-xs text-slate-500 font-sans mt-0.5">
+                    公的認証機関での書類照合および偽造防止審査のための手数料（600円・税込）をお支払いください。
+                  </p>
+                </div>
+
                 <CreditCardPaymentForm
                   cardNumber={mypagePayCardNumber}
                   cardExpiry={mypagePayCardExpiry}
@@ -492,9 +506,10 @@ export const MypageEkycModal: React.FC<MypageEkycModalProps> = ({
                     window.dispatchEvent(new Event('ekyc_changed'));
                     setShowMypageEkycModal(false);
                   }}
-                  className="w-full py-3 bg-gradient-to-r from-sky-400 via-sky-500 to-blue-500 hover:from-sky-500 hover:to-blue-600 text-white rounded-xl text-xs font-bold transition-all shadow-md cursor-pointer"
+                  className="w-full py-3.5 bg-gradient-to-r from-sky-500 via-sky-600 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white rounded-xl text-xs font-bold transition-all shadow-md cursor-pointer flex items-center justify-center gap-1.5"
                 >
-                  マイアカウントに戻る
+                  <CheckCircle2 size={16} />
+                  <span>認証を完了して次へ進む</span>
                 </button>
               </div>
             )}
