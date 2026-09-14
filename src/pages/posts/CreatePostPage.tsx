@@ -669,29 +669,41 @@ export const CreatePostPage = () => {
                 </div>
               </div>
 
-              {/* 手紙メタデータ */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-white/80 p-4 rounded-2xl border border-slate-200/80 font-sans text-xs">
-                <div>
-                  <span className="text-slate-400 block text-[10px]">手紙を書いた人</span>
-                  <span className="font-bold text-slate-800">
-                    {fullName || '未入力'}
-                    {fullNameKana ? `（${fullNameKana}）` : ''}
-                  </span>
+              {/* 手紙メタデータ（大きめ・見やすい文字サイズ） */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-white/90 p-5 sm:p-6 rounded-2xl border border-slate-200/90 font-sans shadow-2xs">
+                <div className="space-y-1">
+                  <span className="text-xs font-bold text-slate-500 block">手紙を書いた人</span>
+                  <div className="text-base sm:text-lg font-bold text-slate-900 font-serif">
+                    <span>{fullName || '未入力'}</span>
+                    {fullNameKana && (
+                      <span className="text-xs font-normal text-slate-500 font-sans ml-1">
+                        （{fullNameKana}）
+                      </span>
+                    )}
+                  </div>
                 </div>
-                <div>
-                  <span className="text-slate-400 block text-[10px]">旧姓</span>
-                  <span className="font-bold text-slate-800">
-                    {formData.maidenName || 'なし'}
-                    {formData.maidenNameKana ? `（${formData.maidenNameKana}）` : ''}
-                  </span>
+                <div className="space-y-1">
+                  <span className="text-xs font-bold text-slate-500 block">旧姓</span>
+                  <div className="text-base sm:text-lg font-bold text-slate-900 font-serif">
+                    <span>{formData.maidenName || 'なし'}</span>
+                    {formData.maidenNameKana && (
+                      <span className="text-xs font-normal text-slate-500 font-sans ml-1">
+                        （{formData.maidenNameKana}）
+                      </span>
+                    )}
+                  </div>
                 </div>
-                <div>
-                  <span className="text-slate-400 block text-[10px]">ゆかりの地</span>
-                  <span className="font-bold text-slate-800">{formData.hometownPref || '未選択'}</span>
+                <div className="space-y-1">
+                  <span className="text-xs font-bold text-slate-500 block">ゆかりの地</span>
+                  <div className="text-base sm:text-lg font-bold text-slate-900">
+                    {formData.hometownPref || '未選択'}
+                  </div>
                 </div>
-                <div>
-                  <span className="text-slate-400 block text-[10px]">生まれ年</span>
-                  <span className="font-bold text-slate-800">{formData.birthYear ? formatBirthYearLabel(formData.birthYear) : '非公開'}</span>
+                <div className="space-y-1">
+                  <span className="text-xs font-bold text-slate-500 block">生まれ年</span>
+                  <div className="text-sm sm:text-base font-bold text-slate-900">
+                    {formData.birthYear ? formatBirthYearLabel(formData.birthYear) : '非公開'}
+                  </div>
                 </div>
               </div>
 

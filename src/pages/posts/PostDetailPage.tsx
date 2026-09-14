@@ -246,6 +246,44 @@ export const PostDetailPage = ({ onOpenOnboarding }: { onOpenOnboarding?: () => 
                 </div>
               </div>
             )}
+
+            {/* 手紙メタデータ（大きめ・見やすい文字サイズ） */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-white/90 p-5 sm:p-6 rounded-2xl border border-slate-200/90 font-sans shadow-2xs">
+              <div className="space-y-1">
+                <span className="text-xs font-bold text-slate-500 block">手紙を書いた人</span>
+                <div className="text-base sm:text-lg font-bold text-slate-900 font-serif">
+                  <span>{postFullName}</span>
+                  {postKana && (
+                    <span className="text-xs font-normal text-slate-500 font-sans ml-1">
+                      （{postKana}）
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className="space-y-1">
+                <span className="text-xs font-bold text-slate-500 block">旧姓</span>
+                <div className="text-base sm:text-lg font-bold text-slate-900 font-serif">
+                  <span>{postMaidenName || 'なし'}</span>
+                  {postMaidenNameKana && (
+                    <span className="text-xs font-normal text-slate-500 font-sans ml-1">
+                      （{postMaidenNameKana}）
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className="space-y-1">
+                <span className="text-xs font-bold text-slate-500 block">ゆかりの地</span>
+                <div className="text-base sm:text-lg font-bold text-slate-900">
+                  {postLocation}
+                </div>
+              </div>
+              <div className="space-y-1">
+                <span className="text-xs font-bold text-slate-500 block">生まれ年</span>
+                <div className="text-sm sm:text-base font-bold text-slate-900">
+                  {postBirthYear || '非公開'}
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* メッセージ本文 */}
