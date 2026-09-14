@@ -938,7 +938,7 @@ export const AccountPage = () => {
           </span>
         }
         title="マイアカウント"
-        description="登録情報の変更、置いた手紙（目印）への再会申請の確認、及び想い出の照合・連絡先開示状況を一元管理できます。"
+        description="登録情報の変更、流した手紙（ボトルメール）への再会申請の確認、及び想い出の照合・連絡先開示状況を一元管理できます。"
         action={
           <button 
             type="button"
@@ -1234,7 +1234,7 @@ export const AccountPage = () => {
               <span className="text-[10px] text-teal-800 font-extrabold bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-200/60">
                 {activeSubTab === 'profile' && '🛡️ 本人確認・応援 表示中'}
                 {activeSubTab === 'received' && '💌 届いた再会希望 一覧表示中'}
-                {activeSubTab === 'sent' && '📮 置いた手紙 一覧表示中'}
+                {activeSubTab === 'sent' && '📮 流した手紙 一覧表示中'}
                 {activeSubTab === 'notifications' && '🔔 通知・履歴 表示中'}
               </span>
             </div>
@@ -1301,7 +1301,7 @@ export const AccountPage = () => {
                 }`}>
                   <Send size={12} />
                 </span>
-                <span className="truncate">置いた手紙</span>
+                <span className="truncate">流した手紙</span>
                 <span className={`text-[9.5px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full font-bold transition-all shrink-0 ${
                   myPosts.length > 0
                     ? (activeSubTab === 'sent' ? 'bg-teal-600 text-white shadow-2xs' : 'bg-teal-100 text-teal-800 border border-teal-300')

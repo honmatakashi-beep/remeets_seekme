@@ -509,7 +509,7 @@ export const CreatePostPage = () => {
                   </span>
                 </div>
                 <h2 className="text-sm sm:text-base font-serif font-bold text-slate-900 mt-0.5">
-                  手紙がネット上に置かれた際、このような画面として公開されます
+                  手紙がネット上に公開された際、このような画面として表示されます
                 </h2>
               </div>
             </div>
@@ -754,13 +754,13 @@ export const CreatePostPage = () => {
                 <span className="text-[10px] font-extrabold text-teal-700 tracking-widest uppercase font-mono flex items-center gap-1">
                   <span>ABOUT THIS LETTER</span>
                   <span>・</span>
-                  <span>手紙が置かれた理由と安心の仕組み</span>
+                  <span>手紙に込められた想いと安心の仕組み</span>
                 </span>
                 <h3 className="text-base sm:text-lg font-serif font-bold text-slate-900 flex items-center gap-2 flex-wrap">
                   <span>🕊️ 連絡先がわからなくなってしまった貴方へ</span>
                 </h3>
                 <p className="text-xs text-slate-500 font-sans">
-                  「もう一度つながるきっかけ」として、当時の大切な想い出と共に置かれたメッセージです。
+                  「もう一度つながるきっかけ」として、当時の大切な想い出と共に届けられたメッセージです。
                 </p>
               </div>
               <span className="text-[11px] font-bold text-teal-800 bg-teal-50 border border-teal-200 px-3 py-1 rounded-full self-start sm:self-auto shadow-2xs">
@@ -776,7 +776,7 @@ export const CreatePostPage = () => {
                     1
                   </div>
                   <strong className="text-slate-900 text-xs sm:text-sm font-bold block font-serif">
-                    手紙が置かれた理由
+                    手紙に込められた想い
                   </strong>
                 </div>
                 <p className="text-slate-600 text-[11.5px] leading-relaxed">
